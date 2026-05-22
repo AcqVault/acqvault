@@ -1,0 +1,384 @@
+[
+  {
+    "file": "RFO.pdf",
+    "source": "rfo",
+    "chars": 4947324,
+    "docs": 99,
+    "status": "ok"
+  },
+  {
+    "file": "far-companion.pdf",
+    "source": "far-companion",
+    "chars": 334863,
+    "docs": 256,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-04.pdf",
+    "source": "r-dfars",
+    "part": "4",
+    "chars": 237984,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-09.pdf",
+    "source": "r-dfars",
+    "part": "9",
+    "chars": 92251,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-1.pdf",
+    "source": "r-dfars",
+    "part": "1",
+    "chars": 46116,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-10.pdf",
+    "source": "r-dfars",
+    "part": "10",
+    "chars": 5624,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-11.pdf",
+    "source": "r-dfars",
+    "part": "11",
+    "chars": 36936,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-12.pdf",
+    "source": "r-dfars",
+    "part": "12",
+    "chars": 73628,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-13.pdf",
+    "source": "r-dfars",
+    "part": "13",
+    "chars": 4189,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-14.pdf",
+    "source": "r-dfars",
+    "part": "14",
+    "chars": 6057,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-15.pdf",
+    "source": "r-dfars",
+    "part": "15",
+    "chars": 230916,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-16.pdf",
+    "source": "r-dfars",
+    "part": "16",
+    "chars": 98409,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-17.pdf",
+    "source": "r-dfars",
+    "part": "17",
+    "chars": 228003,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-18.pdf",
+    "source": "r-dfars",
+    "part": "18",
+    "chars": 18388,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-19.pdf",
+    "source": "r-dfars",
+    "part": "19",
+    "chars": 110290,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-22.pdf",
+    "source": "r-dfars",
+    "part": "22",
+    "chars": 64691,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-23.pdf",
+    "source": "r-dfars",
+    "part": "23",
+    "chars": 48612,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-24.pdf",
+    "source": "r-dfars",
+    "part": "24",
+    "chars": 3373,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-25.pdf",
+    "source": "r-dfars",
+    "part": "25",
+    "chars": 664159,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-26.pdf",
+    "source": "r-dfars",
+    "part": "26",
+    "chars": 18946,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-27.pdf",
+    "source": "r-dfars",
+    "part": "27",
+    "chars": 324922,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-28.pdf",
+    "source": "r-dfars",
+    "part": "28",
+    "chars": 69674,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-29.pdf",
+    "source": "r-dfars",
+    "part": "29",
+    "chars": 42479,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-3.pdf",
+    "source": "r-dfars",
+    "part": "3",
+    "chars": 38684,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-30.pdf",
+    "source": "r-dfars",
+    "part": "30",
+    "chars": 6077,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-31.pdf",
+    "source": "r-dfars",
+    "part": "31",
+    "chars": 22587,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-32.pdf",
+    "source": "r-dfars",
+    "part": "32",
+    "chars": 111127,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-33.pdf",
+    "source": "r-dfars",
+    "part": "33",
+    "chars": 9110,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-34.pdf",
+    "source": "r-dfars",
+    "part": "34",
+    "chars": 54200,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-35.pdf",
+    "source": "r-dfars",
+    "part": "35",
+    "chars": 43268,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-36.pdf",
+    "source": "r-dfars",
+    "part": "36",
+    "chars": 53338,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-37.pdf",
+    "source": "r-dfars",
+    "part": "37",
+    "chars": 108220,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-39.pdf",
+    "source": "r-dfars",
+    "part": "39",
+    "chars": 67985,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-40.pdf",
+    "source": "r-dfars",
+    "part": "40",
+    "chars": 154908,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-41.pdf",
+    "source": "r-dfars",
+    "part": "41",
+    "chars": 15222,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-42.pdf",
+    "source": "r-dfars",
+    "part": "42",
+    "chars": 133347,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-43.pdf",
+    "source": "r-dfars",
+    "part": "43",
+    "chars": 15856,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-44.pdf",
+    "source": "r-dfars",
+    "part": "44",
+    "chars": 33069,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-45.pdf",
+    "source": "r-dfars",
+    "part": "45",
+    "chars": 62969,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-46.pdf",
+    "source": "r-dfars",
+    "part": "46",
+    "chars": 92415,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-47.pdf",
+    "source": "r-dfars",
+    "part": "47",
+    "chars": 89033,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-48.pdf",
+    "source": "r-dfars",
+    "part": "48",
+    "chars": 2332,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-49.pdf",
+    "source": "r-dfars",
+    "part": "49",
+    "chars": 34854,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-5.pdf",
+    "source": "r-dfars",
+    "part": "5",
+    "chars": 15981,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-50.pdf",
+    "source": "r-dfars",
+    "part": "50",
+    "chars": 14937,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-6.pdf",
+    "source": "r-dfars",
+    "part": "6",
+    "chars": 24496,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-7.pdf",
+    "source": "r-dfars",
+    "part": "7",
+    "chars": 46478,
+    "docs": 1,
+    "status": "ok"
+  },
+  {
+    "file": "DoD_RFO_Deviation_Part-8.pdf",
+    "source": "r-dfars",
+    "part": "8",
+    "chars": 73766,
+    "docs": 1,
+    "status": "ok"
+  }
+]
