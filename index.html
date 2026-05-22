@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AcqVault — AF Acquisition Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 52px;
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 0.5px solid rgba(255,255,255,0.07);
+}
+.nav-logo { font-size: 16px; font-weight: 800; letter-spacing: -0.05em; color: #fff; text-decoration: none; }
+.nav-logo span { color: #555; }
+.nav-center { display: flex; gap: 32px; }
+.nav-center a { font-size: 13px; color: #888; text-decoration: none; letter-spacing: -0.02em; transition: color 0.15s; }
+.nav-center a:hover { color: #fff; }
+.nav-cta {
+  font-size: 13px; font-weight: 600; letter-spacing: -0.02em;
+  background: #fff; color: #000; padding: 7px 18px; border-radius: 980px;
+  text-decoration: none; transition: background 0.15s;
+}
+.nav-cta:hover { background: #ddd; }
+
+/* ── HERO ── */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 120px 24px 80px;
+  text-align: center; overflow: hidden; background: #000;
+}
+#particles { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+
+.hero-content { position: relative; z-index: 2; max-width: 760px; }
+.hero-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #555; margin-bottom: 22px;
+}
+.hero-headline {
+  font-size: 66px; font-weight: 800; letter-spacing: -0.05em;
+  line-height: 1.03; color: #fff; margin-bottom: 22px;
+}
+.hero-headline em { font-style: normal; color: #555; }
+.hero-sub {
+  font-size: 19px; font-weight: 400; color: #777;
+  letter-spacing: -0.025em; line-height: 1.55;
+  max-width: 500px; margin: 0 auto 40px;
+}
+.hero-actions { display: flex; gap: 12px; justify-content: center; margin-bottom: 70px; }
+.btn-primary {
+  font-size: 15px; font-weight: 600; letter-spacing: -0.025em;
+  background: #fff; color: #000; padding: 13px 26px; border-radius: 980px;
+  text-decoration: none; transition: background 0.15s;
+}
+.btn-primary:hover { background: #e0e0e0; }
+.btn-ghost {
+  font-size: 15px; font-weight: 600; letter-spacing: -0.025em;
+  background: rgba(255,255,255,0.07); color: #fff;
+  padding: 13px 26px; border-radius: 980px;
+  border: 0.5px solid rgba(255,255,255,0.14);
+  text-decoration: none; transition: background 0.15s;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.13); }
+
+/* ── BROWSER MOCKUP ── */
+.browser-wrap { position: relative; z-index: 2; width: 100%; max-width: 700px; }
+.browser {
+  border-radius: 14px; overflow: hidden;
+  border: 0.5px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 0 0.5px rgba(255,255,255,0.04), 0 48px 100px rgba(0,0,0,0.9);
+}
+.b-chrome {
+  background: #161616; padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+}
+.b-dots { display: flex; gap: 6px; }
+.b-dots span { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+.b-url {
+  flex: 1; background: #0e0e0e; border-radius: 6px;
+  padding: 4px 0; font-size: 11px; color: #555;
+  letter-spacing: -0.01em; text-align: center;
+}
+.b-searchbar {
+  background: #0c0c0c; padding: 9px 13px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.05);
+}
+.b-input {
+  flex: 1; background: #1a1a1a; border: 0.5px solid #282828;
+  border-radius: 7px; padding: 7px 11px 7px 30px;
+  font-size: 12px; color: #ccc; letter-spacing: -0.02em;
+  position: relative; display: flex; align-items: center;
+}
+.b-input-icon { position: absolute; left: 10px; font-size: 13px; color: #555; }
+.b-cursor {
+  display: inline-block; width: 1.5px; height: 11px;
+  background: #aaa; margin-left: 1px; vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.b-rcount { font-size: 11px; color: #555; white-space: nowrap; }
+
+.b-filters {
+  background: #0f0f0f; padding: 7px 13px;
+  display: flex; align-items: center; gap: 6px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.04);
+  flex-wrap: wrap;
+}
+.b-fpill {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.01em;
+  padding: 2px 9px; border-radius: 20px; cursor: default;
+}
+.b-fpill-on { background: #fff; color: #000; }
+.b-fpill-off { background: transparent; border: 0.5px solid #282828; color: #555; }
+.b-fpill-dim { background: transparent; border: 0.5px solid #1e1e1e; color: #333; }
+.b-div { width: 0.5px; height: 13px; background: #282828; margin: 0 2px; }
+
+.b-results { background: #f5f5f7; padding: 9px 10px; display: flex; flex-direction: column; gap: 5px; }
+.b-card { background: #fff; border: 0.5px solid #e8e8e8; border-radius: 8px; padding: 9px 11px; }
+.b-cmeta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.b-ctag { font-size: 9px; font-weight: 800; letter-spacing: 0.03em; padding: 2px 6px; border-radius: 3px; }
+.b-ctag-rfo { background: #e8f0fe; color: #1a4aa8; }
+.b-ctag-rdfars { background: #e6f4ea; color: #1a6634; }
+.b-ctag-fc { background: #f0eeff; color: #3d2799; }
+.b-cbadge { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px; }
+.b-cbadge-open { background: #fff8e6; color: #7a4f00; }
+.b-cbadge-int { background: #fdecea; color: #7a1a1a; }
+.b-cbadge-prop { background: #f0eeff; color: #3d2799; }
+.b-cbadge-fin { background: #e6f4ea; color: #1a6634; }
+.b-cdate { font-size: 9px; color: #bbb; margin-left: auto; }
+.b-ctitle { font-size: 11px; font-weight: 700; letter-spacing: -0.03em; color: #0a0a0a; margin-bottom: 2px; line-height: 1.3; }
+.b-cref { font-size: 9px; color: #bbb; margin-bottom: 3px; }
+.b-csnip { font-size: 10px; color: #888; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── SECTIONS ── */
+.sec { padding: 110px 48px; }
+.sec-white { background: #fff; color: #000; }
+.sec-black { background: #000; color: #fff; }
+.sec-inner { max-width: 980px; margin: 0 auto; }
+
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+.eyebrow-dark { color: #555; }
+.eyebrow-light { color: #999; }
+h2.sec-head { font-size: 52px; font-weight: 800; letter-spacing: -0.05em; line-height: 1.04; margin-bottom: 18px; }
+p.sec-sub { font-size: 19px; letter-spacing: -0.025em; line-height: 1.55; max-width: 540px; }
+p.sec-sub-dark { color: #888; }
+p.sec-sub-light { color: #888; }
+
+/* ── FEATURES ── */
+.feats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 64px; }
+.feat { background: #fafafa; border: 0.5px solid #ebebeb; border-radius: 14px; padding: 30px 26px; }
+.feat-icon { font-size: 22px; margin-bottom: 18px; line-height: 1; color: #000; }
+.feat-title { font-size: 17px; font-weight: 800; letter-spacing: -0.04em; color: #000; margin-bottom: 10px; line-height: 1.2; }
+.feat-desc { font-size: 14px; color: #888; line-height: 1.6; letter-spacing: -0.01em; }
+
+/* ── SOURCES ── */
+.srcs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 64px; }
+.srcs-row2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px; }
+.src {
+  background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 14px; padding: 30px 26px;
+}
+.src.dim { opacity: 0.38; }
+.src-phase { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #444; margin-bottom: 12px; }
+.src-name { font-size: 20px; font-weight: 800; letter-spacing: -0.05em; line-height: 1.15; color: #fff; margin-bottom: 10px; }
+.src-desc { font-size: 14px; color: #666; line-height: 1.55; letter-spacing: -0.01em; }
+.src-pill { display: inline-block; margin-top: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 20px; }
+.src-live { background: rgba(40,200,64,0.1); color: #28c840; }
+.src-soon { background: rgba(255,255,255,0.05); color: #444; }
+
+/* ── CALLOUT ── */
+.callout {
+  background: #f5f5f7; border-radius: 20px; padding: 60px;
+  margin-top: 80px; text-align: center;
+}
+.callout-head { font-size: 36px; font-weight: 800; letter-spacing: -0.05em; color: #000; margin-bottom: 12px; line-height: 1.1; }
+.callout-sub { font-size: 17px; color: #888; letter-spacing: -0.02em; margin-bottom: 32px; max-width: 460px; margin-left: auto; margin-right: auto; }
+.callout-btn {
+  display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: -0.025em;
+  background: #000; color: #fff; padding: 14px 30px; border-radius: 980px;
+  text-decoration: none; transition: background 0.15s;
+}
+.callout-btn:hover { background: #222; }
+
+/* ── CTA STRIP ── */
+.cta-strip { background: #000; padding: 110px 48px; text-align: center; border-top: 0.5px solid rgba(255,255,255,0.07); }
+.cta-head { font-size: 52px; font-weight: 800; letter-spacing: -0.05em; line-height: 1.04; margin-bottom: 18px; }
+.cta-sub { font-size: 19px; color: #666; letter-spacing: -0.025em; margin-bottom: 44px; }
+.cta-meta { font-size: 12px; color: #444; margin-top: 16px; letter-spacing: -0.01em; }
+
+/* ── FOOTER ── */
+footer {
+  background: #000; border-top: 0.5px solid rgba(255,255,255,0.07);
+  padding: 36px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.foot-logo { font-size: 15px; font-weight: 800; letter-spacing: -0.05em; }
+.foot-logo span { color: #444; }
+.foot-copy { font-size: 12px; color: #444; letter-spacing: -0.01em; }
+.foot-links { display: flex; gap: 22px; }
+.foot-links a { font-size: 12px; color: #555; text-decoration: none; letter-spacing: -0.01em; transition: color 0.15s; }
+.foot-links a:hover { color: #999; }
+
+/* ── SCROLL ANIMATIONS ── */
+.fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+.fade-up.in { opacity: 1; transform: translateY(0); }
+.fade-up.d1 { transition-delay: 0.08s; }
+.fade-up.d2 { transition-delay: 0.18s; }
+.fade-up.d3 { transition-delay: 0.28s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">AcqVault<span>.com</span></a>
+  <div class="nav-center">
+    <a href="#">Sources</a>
+    <a href="#">How it works</a>
+    <a href="#">Search</a>
+  </div>
+  <a href="#" class="nav-cta">Get started</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="particles"></canvas>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Air Force Acquisition Research</p>
+    <h1 class="hero-headline">
+      The research library<br><em>the contracting</em><br><em>community</em> deserves.
+    </h1>
+    <p class="hero-sub">
+      AcqVault indexes the RFO, R-DFARS, FAR Companion, and DAF Contracting Compass — search the way you think, not the way regulations are filed.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start searching</a>
+      <a href="#" class="btn-ghost">See how it works ↓</a>
+    </div>
+  </div>
+
+  <!-- Browser mockup -->
+  <div class="browser-wrap">
+    <div class="browser">
+      <div class="b-chrome">
+        <div class="b-dots">
+          <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+        </div>
+        <div class="b-url">acqvault.com</div>
+      </div>
+      <div class="b-searchbar">
+        <div class="b-input" style="position:relative; display:flex; align-items:center;">
+          <span class="b-input-icon" style="position:absolute; left:10px; font-size:13px; color:#555;">⌕</span>
+          <span style="padding-left:22px; font-family:'Inter',sans-serif; font-size:12px; color:#ccc; letter-spacing:-0.02em;" id="btyping"></span><span class="b-cursor"></span>
+        </div>
+        <span class="b-rcount" id="bcount">— results</span>
+      </div>
+      <div class="b-filters">
+        <span class="b-fpill b-fpill-on">All</span>
+        <span class="b-fpill b-fpill-off">RFO</span>
+        <span class="b-fpill b-fpill-off">R-DFARS</span>
+        <span class="b-fpill b-fpill-off">FAR Companion</span>
+        <span class="b-fpill b-fpill-dim">DAF Compass</span>
+        <span class="b-div"></span>
+        <span class="b-fpill b-fpill-off">Open for comment</span>
+        <span class="b-fpill b-fpill-off">Interim</span>
+        <span class="b-fpill b-fpill-off">Proposed</span>
+        <span class="b-fpill b-fpill-off">Final</span>
+      </div>
+      <div class="b-results">
+        <div class="b-card">
+          <div class="b-cmeta">
+            <span class="b-ctag b-ctag-rfo">RFO</span>
+            <span class="b-cbadge b-cbadge-open">Open for comment</span>
+            <span class="b-cdate">Apr 14, 2025</span>
+          </div>
+          <div class="b-ctitle">Streamlined Sole Source Justification for Commercial Items</div>
+          <div class="b-cref">FAR Part 6.302-1</div>
+          <div class="b-csnip">Proposes reduced documentation burden for sole source awards under simplified acquisition threshold, aligned with market research...</div>
+        </div>
+        <div class="b-card">
+          <div class="b-cmeta">
+            <span class="b-ctag b-ctag-fc">FAR Companion</span>
+            <span class="b-cbadge b-cbadge-fin">Version 2.0</span>
+            <span class="b-cdate">Oct 30, 2025</span>
+          </div>
+          <div class="b-ctitle">FC 6.302-1 — Sole Source Practice Guidance</div>
+          <div class="b-cref">FAR Companion Part 6</div>
+          <div class="b-csnip">Practitioner guidance on exercising discretion for sole source determinations under the rewritten FAR Part 6...</div>
+        </div>
+        <div class="b-card">
+          <div class="b-cmeta">
+            <span class="b-ctag b-ctag-rdfars">R-DFARS</span>
+            <span class="b-cbadge b-cbadge-int">Interim rule</span>
+            <span class="b-cdate">Feb 28, 2025</span>
+          </div>
+          <div class="b-ctitle">Defense Unique Item Sole Source — Class Deviation</div>
+          <div class="b-cref">DFARS 206.302-1</div>
+          <div class="b-csnip">Class deviation authorizing streamlined J&amp;A for items with unique military specification requirements and no commercial substitute...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES — white -->
+<section class="sec sec-white">
+  <div class="sec-inner">
+    <p class="eyebrow eyebrow-dark fade-up">Why AcqVault</p>
+    <h2 class="sec-head fade-up">Acquisition research<br>without the friction.</h2>
+    <p class="sec-sub sec-sub-dark fade-up">Navigating acquisition.gov tabs, Federal Register alerts, and scattered PDFs shouldn't be your job. Researching what they say should be.</p>
+
+    <div class="feats">
+      <div class="feat fade-up">
+        <div class="feat-icon">⌕</div>
+        <div class="feat-title">Full-text search</div>
+        <div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, and DAF Contracting Compass simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div>
+      </div>
+      <div class="feat fade-up d1">
+        <div class="feat-icon">◎</div>
+        <div class="feat-title">Status at a glance</div>
+        <div class="feat-desc">Every document is tagged — Open for comment, Interim, Proposed, or Final. Know the rule's standing before you cite it in a J&A or D&F.</div>
+      </div>
+      <div class="feat fade-up d2">
+        <div class="feat-icon">↻</div>
+        <div class="feat-title">Always current</div>
+        <div class="feat-desc">Indexed monthly from the Federal Register API and acquisition.gov. No stale PDFs. No bookmarks that die mid-acquisition.</div>
+      </div>
+      <div class="feat fade-up">
+        <div class="feat-icon">⊘</div>
+        <div class="feat-title">No AI summaries</div>
+        <div class="feat-desc">You get the authoritative source text — not a model's interpretation of it. AcqVault is a research library, not a chatbot.</div>
+      </div>
+      <div class="feat fade-up d1">
+        <div class="feat-icon">⊞</div>
+        <div class="feat-title">Filter by anything</div>
+        <div class="feat-desc">Narrow by source, status, part number, or date range. Find exactly the regulation you need in the format you expect.</div>
+      </div>
+      <div class="feat fade-up d2">
+        <div class="feat-icon">◈</div>
+        <div class="feat-title">Free &amp; open access</div>
+        <div class="feat-desc">No cost, no subscriptions. AcqVault is a community resource built for the AF acquisition workforce — anyone can use it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES — black -->
+<section class="sec sec-black">
+  <div class="sec-inner">
+    <p class="eyebrow eyebrow-light fade-up">Data sources</p>
+    <h2 class="sec-head fade-up">Authoritative sources.<br>Always current.</h2>
+    <p class="sec-sub sec-sub-light fade-up">AcqVault pulls from official, primary sources — not summaries, not interpretations, not third-party digests.</p>
+
+    <div class="srcs fade-up" style="transition-delay:0.1s;">
+      <div class="src">
+        <div class="src-phase">Phase 1 — Live</div>
+        <div class="src-name">Revolutionary<br>FAR Overhaul</div>
+        <div class="src-desc">Proposed and interim rules from the Federal Register API — the live, official rulemaking record for FAR reform under Executive Order 14275 and OMB M-25-26.</div>
+        <span class="src-pill src-live">● Live now</span>
+      </div>
+      <div class="src">
+        <div class="src-phase">Phase 1 — Live</div>
+        <div class="src-name">R-DFARS</div>
+        <div class="src-desc">Proposed DFARS revisions, class deviations, and interim rules sourced directly from acquisition.gov — the DoD's authoritative acquisition portal.</div>
+        <span class="src-pill src-live">● Live now</span>
+      </div>
+    </div>
+    <div class="srcs-row2 fade-up" style="transition-delay:0.18s;">
+      <div class="src">
+        <div class="src-phase">Phase 1 — Live</div>
+        <div class="src-name">FAR Companion</div>
+        <div class="src-desc">The FAR Council's non-regulatory practice guide, organized parallel to each FAR section. Practitioner context, discretionary guidance, and contracting recommendations. Now at Version 2.0.</div>
+        <span class="src-pill src-live">● Live now</span>
+      </div>
+      <div class="src dim">
+        <div class="src-phase">Phase 2 — Coming soon</div>
+        <div class="src-name">DAF Contracting<br>Compass</div>
+        <div class="src-desc">The successor to DAFFARS — DAF-specific acquisition policy, guidance, and procedures for the Air and Space Forces contracting community.</div>
+        <span class="src-pill src-soon">Coming soon</span>
+      </div>
+    </div>
+
+    <div class="callout fade-up" style="transition-delay:0.15s;">
+      <div class="callout-head">Built alongside the overhaul.<br>Updated as it evolves.</div>
+      <div class="callout-sub">The RFO is a living initiative. AcqVault re-indexes monthly so you're always searching the current version of the reform — not a snapshot from six months ago.</div>
+      <a href="#" class="callout-btn">Start searching →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA — black -->
+<div class="cta-strip">
+  <div class="fade-up">
+    <h2 class="cta-head">Free. Open. Current.</h2>
+    <p class="cta-sub">No cost, no ads, no AI summaries. Just acquisition reform documents — searchable, organized, always up to date.</p>
+    <a href="#" class="btn-primary" style="font-size:17px; padding:15px 34px;">Start searching</a>
+    <p class="cta-meta">Free and open to all. No account required to search.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">AcqVault<span>.com</span></div>
+  <div class="foot-copy">© 2025 AcqVault. All rights reserved.</div>
+  <div class="foot-links">
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+    <a href="#">GitHub</a>
+  </div>
+</footer>
+
+<script>
+/* ── PARTICLE CANVAS ── */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let pts = [];
+const N = 90;
+
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+function initPts() {
+  pts = [];
+  for (let i = 0; i < N; i++) {
+    pts.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.28,
+      vy: (Math.random() - 0.5) * 0.28,
+      r: Math.random() * 1.4 + 0.4
+    });
+  }
+}
+function drawFrame() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  pts.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.fill();
+  });
+  for (let i = 0; i < pts.length; i++) {
+    for (let j = i + 1; j < pts.length; j++) {
+      const dx = pts[i].x - pts[j].x;
+      const dy = pts[i].y - pts[j].y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 130) {
+        ctx.beginPath();
+        ctx.moveTo(pts[i].x, pts[i].y);
+        ctx.lineTo(pts[j].x, pts[j].y);
+        ctx.strokeStyle = `rgba(255,255,255,${0.055 * (1 - d / 130)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawFrame);
+}
+window.addEventListener('resize', () => { resizeCanvas(); initPts(); });
+resizeCanvas(); initPts(); drawFrame();
+
+/* ── TYPING ANIMATION ── */
+const QUERIES = [
+  ["sole source justification", "47"],
+  ["FAR Companion 6.302-1 guidance", "23"],
+  ["simplified acquisition threshold", "61"],
+  ["R-DFARS class deviation 2025", "18"],
+  ["other than full and open competition", "34"],
+  ["undefinitized contract action", "12"],
+  ["RFO Part 12 commercial items", "29"]
+];
+let qi = 0, ci = 0, del = false;
+function tick() {
+  const el = document.getElementById('btyping');
+  const rc = document.getElementById('bcount');
+  if (!el) return;
+  const [q, cnt] = QUERIES[qi];
+  if (!del) {
+    el.textContent = q.slice(0, ci + 1);
+    ci++;
+    if (ci === q.length) {
+      del = true;
+      rc.textContent = cnt + ' results';
+      setTimeout(tick, 2200);
+      return;
+    }
+    setTimeout(tick, 52);
+  } else {
+    el.textContent = q.slice(0, ci - 1);
+    ci--;
+    if (ci === 0) {
+      del = false;
+      rc.textContent = '— results';
+      qi = (qi + 1) % QUERIES.length;
+      setTimeout(tick, 380);
+      return;
+    }
+    setTimeout(tick, 26);
+  }
+}
+setTimeout(tick, 900);
+
+/* ── SCROLL FADE-IN ── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
