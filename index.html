@@ -7,26 +7,115 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
+/* ── TOKENS ── */
+:root { --accent: #0071E3; --accent-hover: #0063c8; --accent-glow: rgba(0,113,227,0.22); }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
+/* ── ABOUT BAR (fixed, above nav) ── */
+.about-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 350;
+  background: #0d0d0d; border-bottom: 0.5px solid rgba(255,255,255,0.09);
+  padding: 0 48px; height: 42px;
+  display: flex; align-items: center;
+  transition: transform 0.32s cubic-bezier(0.16,1,0.3,1), opacity 0.32s;
+}
+.about-bar-inner { flex: 1; display: flex; align-items: center; gap: 10px; max-width: 960px; margin: 0 auto; }
+.about-text { font-size: 12.5px; color: #777; letter-spacing: -0.01em; line-height: 1.5; }
+.about-text strong { color: #ccc; font-weight: 600; }
+.about-feedback-btn {
+  background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+  font-size: 12.5px; font-weight: 700; color: var(--accent); padding: 0;
+  letter-spacing: -0.01em; transition: opacity 0.15s; flex-shrink: 0;
+}
+.about-feedback-btn:hover { opacity: 0.75; }
+.about-dismiss {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: #444;
+  font-size: 14px; padding: 4px 6px; transition: color 0.15s; line-height: 1;
+}
+.about-dismiss:hover { color: #888; }
+
+/* ── FEEDBACK MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  z-index: 700; display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.22s; padding: 24px;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: #fff; border-radius: 20px; width: 100%; max-width: 440px;
+  padding: 30px 32px; box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+  transform: translateY(18px); transition: transform 0.24s cubic-bezier(0.16,1,0.3,1);
+  color: #0a0a0a;
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.modal-header h3 { font-size: 17px; font-weight: 800; letter-spacing: -0.04em; }
+.modal-close {
+  background: #f2f2f2; border: none; border-radius: 50%; width: 28px; height: 28px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: #555; font-size: 13px; transition: background 0.15s;
+}
+.modal-close:hover { background: #e0e0e0; }
+.modal-sub { font-size: 13px; color: #888; line-height: 1.5; margin-bottom: 22px; letter-spacing: -0.01em; }
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase; color: #666; margin-bottom: 5px;
+}
+.optional { font-weight: 400; text-transform: none; letter-spacing: 0; color: #bbb; }
+.form-group input, .form-group textarea {
+  width: 100%; background: #f5f5f7; border: 0.5px solid #e5e5e5;
+  border-radius: 10px; padding: 10px 13px;
+  font-family: 'Inter', sans-serif; font-size: 14px; color: #0a0a0a;
+  outline: none; resize: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-group input:focus, .form-group textarea:focus {
+  border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.form-group input::placeholder, .form-group textarea::placeholder { color: #c2c2c2; }
+.feedback-submit {
+  width: 100%; background: var(--accent); border: none; border-radius: 10px;
+  padding: 12px; font-family: 'Inter', sans-serif; font-size: 14px;
+  font-weight: 700; color: #fff; cursor: pointer; margin-top: 4px;
+  transition: background 0.15s; letter-spacing: -0.01em;
+}
+.feedback-submit:hover { background: var(--accent-hover); }
+.feedback-submit:disabled { opacity: 0.5; cursor: default; }
+.feedback-success { text-align: center; padding: 20px 0 4px; display: none; }
+.success-icon { font-size: 34px; margin-bottom: 10px; color: #28c840; }
+.feedback-success strong { font-size: 16px; font-weight: 800; letter-spacing: -0.04em; display: block; margin-bottom: 6px; }
+.feedback-success p { font-size: 13px; color: #888; }
+
 /* ── NAV ── */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  position: fixed; top: 42px; left: 0; right: 0; z-index: 300;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 48px; height: 52px;
   background: rgba(0,0,0,0.82);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-bottom: 0.5px solid rgba(255,255,255,0.07);
-  transition: border-color 0.3s;
+  transition: top 0.32s cubic-bezier(0.16,1,0.3,1);
 }
 .nav-logo { font-size: 16px; font-weight: 800; letter-spacing: -0.05em; color: #fff; text-decoration: none; }
 .nav-logo span { color: #555; }
-.nav-center { display: flex; gap: 32px; }
+.nav-center { display: flex; gap: 28px; align-items: center; }
 .nav-center a { font-size: 13px; color: #888; text-decoration: none; letter-spacing: -0.02em; transition: color 0.15s; }
 .nav-center a:hover { color: #fff; }
+.nav-feedback-btn {
+  font-size: 13px; font-weight: 600; letter-spacing: -0.02em;
+  background: none; border: 0.5px solid rgba(255,255,255,0.18);
+  color: #aaa; padding: 5px 14px; border-radius: 980px;
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s, color 0.15s;
+}
+.nav-feedback-btn:hover { border-color: rgba(255,255,255,0.45); color: #fff; }
 .nav-cta { font-size: 13px; font-weight: 600; letter-spacing: -0.02em; background: #fff; color: #000; padding: 7px 18px; border-radius: 980px; text-decoration: none; transition: background 0.15s; }
 .nav-cta:hover { background: #ddd; }
 
@@ -34,24 +123,18 @@ nav {
 .hero {
   position: relative; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center;
-  justify-content: center; padding: 120px 24px 80px;
+  justify-content: center; padding: 156px 24px 80px; /* 42 about + 52 nav + 62 space */
   text-align: center; overflow: hidden; background: #000;
   transition: min-height 0.5s cubic-bezier(0.16,1,0.3,1), padding 0.5s cubic-bezier(0.16,1,0.3,1);
 }
-.hero.search-active {
-  min-height: 0; padding: 80px 24px 32px;
-}
+.hero.search-active { min-height: 0; padding: 116px 24px 32px; }
 #particles { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
-
 .hero-intro {
   position: relative; z-index: 2; max-width: 760px; width: 100%;
   transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.5s ease;
   overflow: hidden;
 }
-.hero.search-active .hero-intro {
-  opacity: 0; transform: translateY(-16px); max-height: 0; pointer-events: none;
-}
-
+.hero.search-active .hero-intro { opacity: 0; transform: translateY(-16px); max-height: 0; pointer-events: none; }
 .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #555; margin-bottom: 22px; }
 .hero-headline { font-size: 66px; font-weight: 800; letter-spacing: -0.05em; line-height: 1.03; color: #fff; margin-bottom: 22px; }
 .hero-headline em { font-style: normal; color: #555; }
@@ -62,46 +145,35 @@ nav {
 .btn-ghost { font-size: 15px; font-weight: 600; letter-spacing: -0.025em; background: rgba(255,255,255,0.07); color: #fff; padding: 13px 26px; border-radius: 980px; border: 0.5px solid rgba(255,255,255,0.14); text-decoration: none; transition: background 0.15s; }
 .btn-ghost:hover { background: rgba(255,255,255,0.13); }
 
-/* ── SEARCH BAR ── */
-.search-container {
-  position: relative; z-index: 2; width: 100%; max-width: 680px;
-  margin-bottom: 0;
-}
+/* ── SEARCH BAR — white, high contrast ── */
+.search-container { position: relative; z-index: 2; width: 100%; max-width: 680px; margin-bottom: 0; }
 .search-bar {
   display: flex; align-items: center; gap: 12px;
-  background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.15);
-  border-radius: 14px; padding: 14px 18px;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-  backdrop-filter: blur(10px);
+  background: #fff; border-radius: 14px; padding: 14px 18px;
+  box-shadow: 0 4px 28px rgba(0,0,0,0.38), 0 1px 4px rgba(0,0,0,0.2);
+  transition: box-shadow 0.2s;
 }
 .search-bar:focus-within {
-  background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.3);
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.42), 0 0 0 3px var(--accent-glow);
 }
-.search-icon { font-size: 18px; color: #666; flex-shrink: 0; }
+.search-icon { font-size: 18px; color: #bbb; flex-shrink: 0; }
 #search-input {
   flex: 1; background: transparent; border: none; outline: none;
   font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 400;
-  color: #fff; letter-spacing: -0.025em;
+  color: #0a0a0a; letter-spacing: -0.025em;
 }
-#search-input::placeholder { color: #555; }
-.search-count { font-size: 12px; color: #555; white-space: nowrap; letter-spacing: -0.01em; }
-.search-clear {
-  background: transparent; border: none; cursor: pointer; color: #555;
-  font-size: 18px; padding: 0; display: none; transition: color 0.15s;
-}
-.search-clear:hover { color: #aaa; }
+#search-input::placeholder { color: #c0c0c0; }
+.search-count { font-size: 12px; color: #999; white-space: nowrap; letter-spacing: -0.01em; }
+.search-clear { background: transparent; border: none; cursor: pointer; color: #ccc; font-size: 17px; padding: 0; display: none; transition: color 0.15s; }
+.search-clear:hover { color: #666; }
 .search-clear.visible { display: block; }
 
 /* ── BROWSER MOCKUP ── */
 .browser-wrap {
   position: relative; z-index: 2; width: 100%; max-width: 700px; margin-top: 48px;
-  transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.5s ease;
-  overflow: hidden;
+  transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.5s ease; overflow: hidden;
 }
-.hero.search-active .browser-wrap {
-  opacity: 0; transform: translateY(16px); max-height: 0; pointer-events: none;
-}
+.hero.search-active .browser-wrap { opacity: 0; transform: translateY(16px); max-height: 0; pointer-events: none; }
 .browser { border-radius: 14px; overflow: hidden; border: 0.5px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.04), 0 48px 100px rgba(0,0,0,0.9); }
 .b-chrome { background: #161616; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
 .b-dots { display: flex; gap: 6px; }
@@ -109,13 +181,13 @@ nav {
 .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
 .b-url { flex: 1; background: #0e0e0e; border-radius: 6px; padding: 4px 0; font-size: 11px; color: #555; text-align: center; }
 .b-searchbar { background: #0c0c0c; padding: 9px 13px; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
-.b-input { flex: 1; background: #1a1a1a; border: 0.5px solid #282828; border-radius: 7px; padding: 7px 11px 7px 30px; font-size: 12px; color: #ccc; letter-spacing: -0.02em; position: relative; display: flex; align-items: center; }
+.b-input { flex: 1; background: #fff; border-radius: 7px; padding: 7px 11px 7px 30px; font-size: 12px; color: #333; letter-spacing: -0.02em; position: relative; display: flex; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
 .b-cursor { display: inline-block; width: 1.5px; height: 11px; background: #aaa; margin-left: 1px; vertical-align: middle; animation: blink 1s step-end infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 .b-rcount { font-size: 11px; color: #555; white-space: nowrap; }
 .b-filters { background: #0f0f0f; padding: 7px 13px; display: flex; align-items: center; gap: 6px; border-bottom: 0.5px solid rgba(255,255,255,0.04); flex-wrap: wrap; }
 .b-fpill { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
-.b-fpill-on { background: #fff; color: #000; }
+.b-fpill-on { background: var(--accent); color: #fff; }
 .b-fpill-off { background: transparent; border: 0.5px solid #282828; color: #555; }
 .b-fpill-dim { background: transparent; border: 0.5px solid #1e1e1e; color: #333; }
 .b-div { width: 0.5px; height: 13px; background: #282828; margin: 0 2px; }
@@ -129,7 +201,6 @@ nav {
 .b-cbadge { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px; }
 .b-cbadge-open { background: #fff8e6; color: #7a4f00; }
 .b-cbadge-int { background: #fdecea; color: #7a1a1a; }
-.b-cbadge-prop { background: #f0eeff; color: #3d2799; }
 .b-cbadge-fin { background: #e6f4ea; color: #1a6634; }
 .b-cdate { font-size: 9px; color: #bbb; margin-left: auto; }
 .b-ctitle { font-size: 11px; font-weight: 700; letter-spacing: -0.03em; color: #0a0a0a; margin-bottom: 2px; line-height: 1.3; }
@@ -137,14 +208,11 @@ nav {
 .b-csnip { font-size: 10px; color: #888; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── RESULTS SECTION ── */
-#results-section {
-  display: none; background: #fff; min-height: 60vh;
-}
+#results-section { display: none; background: #fff; min-height: 60vh; }
 #results-section.visible { display: block; }
-
 .results-inner { max-width: 980px; margin: 0 auto; padding: 28px 24px 80px; }
 
-/* Filter bar */
+/* Filter bar — multi-select */
 .filter-bar {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   padding: 16px 0; border-bottom: 0.5px solid #ebebeb; margin-bottom: 20px;
@@ -158,10 +226,10 @@ nav {
   transition: all 0.12s; user-select: none;
 }
 .fpill:hover { border-color: #aaa; color: #333; }
-.fpill.active { background: #0a0a0a; border-color: #0a0a0a; color: #fff; font-weight: 600; }
+.fpill.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 .fpill.disabled { opacity: 0.35; cursor: not-allowed; }
 
-/* Result meta bar */
+/* Result meta */
 .result-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .result-count-label { font-size: 13px; color: #aaa; letter-spacing: -0.02em; }
 .result-count-label strong { color: #000; }
@@ -173,8 +241,7 @@ nav {
   padding: 16px 18px; cursor: pointer; transition: border-color 0.12s, background 0.12s;
 }
 .result-card:hover { border-color: #bbb; background: #fafafa; }
-.result-card.active { border-color: #0a0a0a; background: #0a0a0a; }
-
+.result-card.active { border-color: var(--accent); background: #f0f7ff; }
 .rc-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
 .rc-tag { font-size: 10px; font-weight: 800; letter-spacing: 0.03em; padding: 2px 8px; border-radius: 4px; }
 .rc-tag-rfo { background: #e8f0fe; color: #1a4aa8; }
@@ -187,30 +254,22 @@ nav {
 .rc-badge-final { background: #e6f4ea; color: #1a6634; }
 .rc-badge-unknown { background: #f0f0f0; color: #888; }
 .rc-date { font-size: 11px; color: #bbb; margin-left: auto; letter-spacing: -0.01em; }
-
 .rc-title { font-size: 14px; font-weight: 700; letter-spacing: -0.03em; color: #0a0a0a; margin-bottom: 4px; line-height: 1.3; }
 .rc-ref { font-size: 11px; color: #bbb; margin-bottom: 6px; letter-spacing: -0.01em; }
 .rc-snippet { font-size: 13px; color: #666; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .rc-snippet mark { background: #fff3cd; color: #000; border-radius: 2px; padding: 0 1px; font-style: normal; }
+.result-card.active .rc-title { color: #0a0a0a; }
 
-/* Active card overrides */
-.result-card.active .rc-title { color: #fff; }
-.result-card.active .rc-ref { color: #555; }
-.result-card.active .rc-snippet { color: #888; }
-.result-card.active .rc-date { color: #555; }
-
-/* No results */
+/* No results / loading */
 .no-results { text-align: center; padding: 60px 0; color: #aaa; font-size: 15px; }
 .no-results strong { display: block; font-size: 22px; font-weight: 700; color: #000; letter-spacing: -0.04em; margin-bottom: 8px; }
-
-/* Loading spinner */
 .loading { text-align: center; padding: 60px 0; }
-.spinner { width: 24px; height: 24px; border: 2px solid #e0e0e0; border-top-color: #0a0a0a; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto; }
+.spinner { width: 24px; height: 24px; border: 2px solid #e0e0e0; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── DETAIL DRAWER ── */
 #drawer {
-  position: fixed; top: 0; right: 0; bottom: 0; width: 440px;
+  position: fixed; top: 0; right: 0; bottom: 0; width: 460px;
   background: #fff; z-index: 400;
   transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
@@ -221,27 +280,70 @@ nav {
 #drawer.open { transform: translateX(0); }
 
 .drawer-header {
-  padding: 20px 20px 16px; border-bottom: 0.5px solid #ebebeb;
-  display: flex; align-items: flex-start; gap: 12px; flex-shrink: 0;
+  padding: 18px 18px 14px; border-bottom: 0.5px solid #ebebeb;
+  display: flex; align-items: flex-start; gap: 10px; flex-shrink: 0;
 }
 .drawer-close {
   background: #f2f2f2; border: none; border-radius: 50%; width: 28px; height: 28px;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; color: #666; font-size: 16px; transition: background 0.15s; margin-top: 2px;
+  flex-shrink: 0; color: #666; font-size: 14px; transition: background 0.15s; margin-top: 2px;
 }
 .drawer-close:hover { background: #e0e0e0; }
 .drawer-title { font-size: 15px; font-weight: 700; letter-spacing: -0.04em; color: #0a0a0a; line-height: 1.3; flex: 1; }
 
-.drawer-meta { padding: 14px 20px; border-bottom: 0.5px solid #ebebeb; display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+.drawer-meta { padding: 11px 18px; border-bottom: 0.5px solid #ebebeb; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; flex-shrink: 0; }
 
-.drawer-body { flex: 1; overflow-y: auto; padding: 20px; }
-.drawer-dl { margin-bottom: 16px; }
-.drawer-dl dt { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; margin-bottom: 4px; }
+/* Citation bar */
+.drawer-cite-bar {
+  padding: 9px 18px; background: #f8f8fa; border-bottom: 0.5px solid #ebebeb;
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.cite-label { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #aaa; white-space: nowrap; }
+.cite-text {
+  flex: 1; font-size: 12px; font-weight: 600; color: #333;
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  letter-spacing: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.cite-copy-btn {
+  font-size: 11px; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap;
+  background: var(--accent); color: #fff; border: none; border-radius: 6px;
+  padding: 4px 10px; cursor: pointer; font-family: 'Inter', sans-serif;
+  transition: background 0.15s; flex-shrink: 0;
+}
+.cite-copy-btn:hover { background: var(--accent-hover); }
+.cite-copy-btn.copied { background: #28c840; }
+
+.drawer-body { flex: 1; overflow-y: auto; padding: 18px; }
+.drawer-dl { margin-bottom: 13px; }
+.drawer-dl dt { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; margin-bottom: 3px; }
 .drawer-dl dd { font-size: 13px; color: #333; letter-spacing: -0.02em; line-height: 1.45; }
-.drawer-content { font-size: 13px; color: #555; line-height: 1.7; border-top: 0.5px solid #ebebeb; padding-top: 16px; margin-top: 4px; white-space: pre-wrap; word-break: break-word; }
+
+/* Hierarchical regulation content */
+.drawer-content { border-top: 0.5px solid #ebebeb; padding-top: 16px; margin-top: 4px; word-break: break-word; }
+.dc-part {
+  font-size: 10.5px; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase;
+  color: #0a0a0a; margin: 22px 0 8px; padding-bottom: 7px;
+  border-bottom: 1.5px solid #0a0a0a;
+}
+.dc-part:first-child { margin-top: 0; }
+.dc-subpart {
+  font-size: 13px; font-weight: 700; letter-spacing: -0.03em; color: #111;
+  margin: 14px 0 5px; border-left: 2.5px solid var(--accent); padding-left: 10px;
+}
+.dc-section {
+  font-size: 13px; font-weight: 700; color: #222; margin: 10px 0 4px;
+  letter-spacing: -0.02em;
+}
+.dc-text { font-size: 13px; color: #555; line-height: 1.78; margin: 3px 0; }
+.dc-para { font-size: 13px; color: #555; line-height: 1.78; margin: 2px 0; }
+.dc-l1 { padding-left: 18px; }
+.dc-l2 { padding-left: 36px; color: #666; }
+.dc-l3 { padding-left: 54px; color: #777; }
+.dc-l4 { padding-left: 70px; color: #888; }
+.dc-gap { height: 7px; }
 .drawer-content mark { background: #fff3cd; color: #000; border-radius: 2px; padding: 0 1px; }
 
-.drawer-footer { padding: 16px 20px; border-top: 0.5px solid #ebebeb; flex-shrink: 0; }
+.drawer-footer { padding: 14px 18px; border-top: 0.5px solid #ebebeb; flex-shrink: 0; }
 .drawer-orig-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   width: 100%; background: #0a0a0a; border: none; border-radius: 10px;
@@ -272,8 +374,9 @@ p.sec-sub { font-size: 19px; letter-spacing: -0.025em; line-height: 1.55; max-wi
 p.sec-sub-dark { color: #888; }
 p.sec-sub-light { color: #888; }
 .feats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 64px; }
-.feat { background: #fafafa; border: 0.5px solid #ebebeb; border-radius: 14px; padding: 30px 26px; }
-.feat-icon { font-size: 22px; margin-bottom: 18px; color: #000; }
+.feat { background: #fafafa; border: 0.5px solid #ebebeb; border-radius: 14px; padding: 30px 26px; transition: border-color 0.15s; }
+.feat:hover { border-color: #d0d0d0; }
+.feat-icon { font-size: 20px; margin-bottom: 18px; color: var(--accent); }
 .feat-title { font-size: 17px; font-weight: 800; letter-spacing: -0.04em; color: #000; margin-bottom: 10px; line-height: 1.2; }
 .feat-desc { font-size: 14px; color: #888; line-height: 1.6; letter-spacing: -0.01em; }
 .srcs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 64px; }
@@ -309,15 +412,66 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
 </head>
 <body>
 
-<nav>
+<!-- ══════════════════════════════════════════
+     ABOUT BAR  — dismissible, fixed at top
+     ══════════════════════════════════════════ -->
+<div class="about-bar" id="about-bar">
+  <div class="about-bar-inner">
+    <span class="about-text">
+      <strong>Hi, I'm Iz.</strong> I built AcqVault after finding acquisition research needlessly cumbersome — fumbling through multiple sites for every reg. The site is in its early stages, so feedback genuinely helps.&ensp;<button class="about-feedback-btn" onclick="openFeedback()">Submit feedback →</button>
+    </span>
+  </div>
+  <button class="about-dismiss" onclick="dismissAbout()" aria-label="Dismiss">✕</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FEEDBACK MODAL
+     SETUP: Sign up at formspree.io, create a free form, and replace
+     'YOUR_FORM_ID' in the JS below with your form ID (e.g. xpwzrqkb).
+     Formspree routes submissions to your account email at no cost.
+     ══════════════════════════════════════════ -->
+<div class="modal-overlay" id="feedback-modal" role="dialog" aria-modal="true" aria-label="Submit Feedback">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Submit Feedback</h3>
+      <button class="modal-close" onclick="closeFeedback()" aria-label="Close">✕</button>
+    </div>
+    <p class="modal-sub">Name and email are optional — only needed if you'd like a follow-up conversation.</p>
+    <form id="feedback-form">
+      <div class="form-group">
+        <label>Name <span class="optional">(optional)</span></label>
+        <input type="text" id="fb-name" placeholder="Your name" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Email <span class="optional">(optional)</span></label>
+        <input type="email" id="fb-email" placeholder="your@email.com" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Feedback</label>
+        <textarea id="fb-message" rows="5" placeholder="What's working, what isn't, what you'd add…" required></textarea>
+      </div>
+      <button type="submit" class="feedback-submit" id="fb-submit">Send Feedback</button>
+    </form>
+    <div class="feedback-success" id="feedback-success">
+      <div class="success-icon">✓</div>
+      <strong>Thanks — got it.</strong>
+      <p>Your feedback goes directly to Iz.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════  NAV  ══════════════════════════════════════════ -->
+<nav id="main-nav">
   <a href="/" class="nav-logo">AcqVault<span>.com</span></a>
   <div class="nav-center">
     <a href="#sources">Sources</a>
     <a href="#features">How it works</a>
+    <button class="nav-feedback-btn" onclick="openFeedback()">Feedback</button>
   </div>
   <a href="#" class="nav-cta" onclick="document.getElementById('search-input').focus(); return false;">Search</a>
 </nav>
 
+<!-- ══════════════════════════════════════════  HERO  ══════════════════════════════════════════ -->
 <section class="hero" id="hero">
   <canvas id="particles"></canvas>
 
@@ -348,8 +502,8 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
       </div>
       <div class="b-searchbar">
         <div class="b-input" style="position:relative;display:flex;align-items:center;">
-          <span style="position:absolute;left:10px;font-size:13px;color:#555;">⌕</span>
-          <span style="padding-left:22px;font-family:'Inter',sans-serif;font-size:12px;color:#ccc;letter-spacing:-0.02em;" id="btyping"></span><span class="b-cursor"></span>
+          <span style="position:absolute;left:10px;font-size:13px;color:#bbb;">⌕</span>
+          <span style="padding-left:22px;font-family:'Inter',sans-serif;font-size:12px;color:#333;letter-spacing:-0.02em;" id="btyping"></span><span class="b-cursor"></span>
         </div>
         <span class="b-rcount" id="bcount">— results</span>
       </div>
@@ -367,7 +521,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
         <div class="b-card">
           <div class="b-cmeta"><span class="b-ctag b-ctag-rfo">RFO</span><span class="b-cbadge b-cbadge-open">Open for comment</span><span class="b-cdate">Apr 14, 2025</span></div>
           <div class="b-ctitle">Streamlined Sole Source Justification for Commercial Items</div>
-          <div class="b-cref">FAR Part 6.302-1</div>
+          <div class="b-cref">RFO 6.302-1</div>
           <div class="b-csnip">Proposes reduced documentation burden for sole source awards under simplified acquisition threshold...</div>
         </div>
         <div class="b-card">
@@ -379,21 +533,21 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
         <div class="b-card">
           <div class="b-cmeta"><span class="b-ctag b-ctag-rdfars">R-DFARS</span><span class="b-cbadge b-cbadge-int">Interim rule</span><span class="b-cdate">Feb 28, 2025</span></div>
           <div class="b-ctitle">Defense Unique Item Sole Source — Class Deviation</div>
-          <div class="b-cref">DFARS 206.302-1</div>
-          <div class="b-csnip">Class deviation authorizing streamlined J&A for items with unique military specification requirements...</div>
+          <div class="b-cref">R-DFARS 206.302-1</div>
+          <div class="b-csnip">Class deviation authorizing streamlined J&amp;A for items with unique military specification requirements...</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- RESULTS SECTION -->
+<!-- ══════════════════════════════════════════  RESULTS  ══════════════════════════════════════════ -->
 <div id="results-section">
   <div class="results-inner">
     <div class="filter-bar">
       <span class="filter-label">Source</span>
       <div id="source-filters" style="display:flex;gap:6px;flex-wrap:wrap;">
-        <div class="fpill active" data-source="all">All</div>
+        <div class="fpill active" data-source="all">All Sources</div>
         <div class="fpill" data-source="rfo">RFO</div>
         <div class="fpill" data-source="r-dfars">R-DFARS</div>
         <div class="fpill" data-source="far-companion">FAR Companion</div>
@@ -416,7 +570,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
   </div>
 </div>
 
-<!-- FEATURES -->
+<!-- ══════════════════════════════════════════  FEATURES  ══════════════════════════════════════════ -->
 <section class="sec sec-white" id="features">
   <div class="sec-inner">
     <p class="eyebrow eyebrow-dark fade-up">Why AcqVault</p>
@@ -427,13 +581,13 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
       <div class="feat fade-up d1"><div class="feat-icon">◎</div><div class="feat-title">Status at a glance</div><div class="feat-desc">Every document is tagged — Open for comment, Interim, Class Deviation, Proposed, or Final. Know the rule's standing before you cite it.</div></div>
       <div class="feat fade-up d2"><div class="feat-icon">↻</div><div class="feat-title">Always current</div><div class="feat-desc">Indexed monthly from the Federal Register API and acquisition.gov. No stale PDFs. No bookmarks that die mid-acquisition.</div></div>
       <div class="feat fade-up"><div class="feat-icon">⊘</div><div class="feat-title">No AI summaries</div><div class="feat-desc">You get the authoritative source text — not a model's interpretation of it. AcqVault is a research library, not a chatbot.</div></div>
-      <div class="feat fade-up d1"><div class="feat-icon">⊞</div><div class="feat-title">Filter by anything</div><div class="feat-desc">Narrow by source, status, part number, or date range. Find exactly the regulation you need in the format you expect.</div></div>
+      <div class="feat fade-up d1"><div class="feat-icon">⊞</div><div class="feat-title">Multi-source filtering</div><div class="feat-desc">Select one or several sources simultaneously — RFO, R-DFARS, FAR Companion. Stack your filters and narrow by status too.</div></div>
       <div class="feat fade-up d2"><div class="feat-icon">◈</div><div class="feat-title">Free &amp; open access</div><div class="feat-desc">No cost, no subscriptions. AcqVault is a community resource built for the AF acquisition workforce.</div></div>
     </div>
   </div>
 </section>
 
-<!-- SOURCES -->
+<!-- ══════════════════════════════════════════  SOURCES  ══════════════════════════════════════════ -->
 <section class="sec sec-black" id="sources">
   <div class="sec-inner">
     <p class="eyebrow eyebrow-light fade-up">Data sources</p>
@@ -467,10 +621,14 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
 <footer>
   <div class="foot-logo">AcqVault<span>.com</span></div>
   <div class="foot-copy">© 2025 AcqVault. All rights reserved.</div>
-  <div class="foot-links"><a href="#">Privacy</a><a href="#">Contact</a><a href="https://github.com/AcqVault/acqvault">GitHub</a></div>
+  <div class="foot-links">
+    <a href="#">Privacy</a>
+    <a href="#" onclick="openFeedback(); return false;">Feedback</a>
+    <a href="https://github.com/AcqVault/acqvault" target="_blank" rel="noopener">GitHub</a>
+  </div>
 </footer>
 
-<!-- DETAIL DRAWER -->
+<!-- ══════════════════════════════════════════  DRAWER  ══════════════════════════════════════════ -->
 <div id="drawer-backdrop"></div>
 <div id="drawer" role="dialog" aria-modal="true" aria-label="Document detail">
   <div class="drawer-header">
@@ -478,6 +636,11 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
     <div class="drawer-title" id="drawer-title"></div>
   </div>
   <div class="drawer-meta" id="drawer-meta"></div>
+  <div class="drawer-cite-bar">
+    <span class="cite-label">Cite</span>
+    <span class="cite-text" id="cite-text"></span>
+    <button class="cite-copy-btn" id="cite-copy-btn">Copy</button>
+  </div>
   <div class="drawer-body">
     <dl>
       <div class="drawer-dl"><dt>Source</dt><dd id="drawer-source"></dd></div>
@@ -491,29 +654,120 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════  SCRIPT  ══════════════════════════════════════════ -->
 <script>
-// ── MEILISEARCH CONFIG ────────────────────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────────────────────────
 const MEILI_HOST = 'https://getmeilimeilisearchv190-production-a931.up.railway.app';
 const MEILI_KEY  = 'f68d1b50a6aa870ed16adce86770732894bb7c543b88f64385c2a321b7e8be73';
 const INDEX      = 'acqvault';
 
-// ── SOURCE URL MAP ────────────────────────────────────────────────────────────
+// Web3Forms — feedback submissions route to izzo.lopez@gmail.com
+const FORMSPREE_ENDPOINT = 'https://api.web3forms.com/submit';
+
 const SOURCE_URLS = {
-  'rfo':            'https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system',
-  'r-dfars':        'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide',
-  'far-companion':  'https://www.acquisition.gov/far-companion',
+  'rfo':           'https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system',
+  'r-dfars':       'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide',
+  'far-companion': 'https://www.acquisition.gov/far-companion',
 };
+const SOURCE_LABELS = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion' };
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let activeSource   = 'all';
-let activeStatuses = [];
-let activeDocId    = null;
-let debounceTimer  = null;
+const activeSources = new Set(); // empty Set = all sources shown
+let   activeStatuses = [];
+let   activeDocId    = null;
+let   debounceTimer  = null;
+
+// ── CITATION GENERATOR ────────────────────────────────────────────────────────
+// Follows the citation format taught in CON 090/091:
+// [Source] [Part].[Subpart][Section]-[Subsection]([paragraph])
+// e.g. "RFO 6.302-1(a)" or "R-DFARS 206.302-1" or "FAR Companion Part 15"
+function generateCitation(hit) {
+  const label = SOURCE_LABELS[hit.source] || hit.source.toUpperCase();
+
+  // 1. Try to extract a specific section number from the title
+  //    Matches patterns like: 6.302-1, 15.304, 219.501-70, 52.212-4
+  const titleMatch = (hit.title || '').match(/\b(\d{1,3}\.\d{3,6}(?:-\d+)?(?:\.\d+)?)\b/);
+  if (titleMatch) return `${label} ${titleMatch[1]}`;
+
+  // 2. Try filename
+  const fileMatch = (hit.filename || '').match(/\b(\d{1,3}\.\d{3,6}(?:-\d+)?)\b/);
+  if (fileMatch) return `${label} ${fileMatch[1]}`;
+
+  // 3. Fall back to part number
+  if (hit.part) return `${label} Part ${hit.part}`;
+
+  return label;
+}
+
+// ── CONTENT FORMATTER — hierarchical rendering ────────────────────────────────
+// Parses regulation text and renders tiered structure:
+// PART header → Subpart → Section → (a)(1)(i)(A) paragraphs
+function formatContent(text) {
+  if (!text) return '<div class="dc-text" style="color:#bbb;font-style:italic;">No content available.</div>';
+  const lines = text.split('\n');
+  let html = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw  = lines[i];
+    const line = raw.trim();
+
+    if (!line) {
+      html += '<div class="dc-gap"></div>';
+      continue;
+    }
+
+    // PART X — TITLE  /  PART X. TITLE  (e.g. "PART 6—COMPETITION REQUIREMENTS")
+    if (/^PART\s+\d+/i.test(line) && line.length < 140) {
+      html += `<div class="dc-part">${esc(line)}</div>`;
+    }
+    // Subpart X.X — Title
+    else if (/^Subpart\s+[\d.]+/i.test(line) && line.length < 140) {
+      html += `<div class="dc-subpart">${esc(line)}</div>`;
+    }
+    // Section number like "6.302-1 Title of section"
+    else if (/^\d{1,3}\.\d{3,6}(-\d+)?\s+[A-Z]/.test(line) && line.length < 220) {
+      html += `<div class="dc-section">${esc(line)}</div>`;
+    }
+    // (a) paragraph — level 1
+    else if (/^\([a-z]\)\s/.test(line)) {
+      html += `<div class="dc-para dc-l1">${esc(line)}</div>`;
+    }
+    // (1) sub-paragraph — level 2
+    else if (/^\(\d+\)\s/.test(line)) {
+      html += `<div class="dc-para dc-l2">${esc(line)}</div>`;
+    }
+    // (i)(ii)(iii) sub-sub — level 3
+    else if (/^\([ivxlcdm]+\)\s/i.test(line) && /^\([ivxlcdm]+\)/i.test(line)) {
+      html += `<div class="dc-para dc-l3">${esc(line)}</div>`;
+    }
+    // (A)(B) — level 4
+    else if (/^\([A-Z]\)\s/.test(line)) {
+      html += `<div class="dc-para dc-l4">${esc(line)}</div>`;
+    }
+    // All-caps short lines — likely a title/header within content
+    else if (line === line.toUpperCase() && line.length > 3 && line.length < 80 && /[A-Z]{3}/.test(line)) {
+      html += `<div class="dc-section">${esc(line)}</div>`;
+    }
+    // Regular text
+    else {
+      html += `<div class="dc-text">${esc(line)}</div>`;
+    }
+  }
+  return html;
+}
+
+function esc(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 // ── SEARCH ────────────────────────────────────────────────────────────────────
 async function search(query) {
-  const filter = buildFilter(activeSource, activeStatuses);
-  const body = {
+  const filter = buildFilter(activeSources, activeStatuses);
+  const body   = {
     q: query,
     limit: 40,
     attributesToHighlight: ['title', 'content'],
@@ -525,37 +779,38 @@ async function search(query) {
   if (filter) body.filter = filter;
 
   const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-    method: 'POST',
+    method:  'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MEILI_KEY}` },
-    body: JSON.stringify(body)
+    body:    JSON.stringify(body),
   });
   return res.json();
 }
 
-function buildFilter(source, statuses) {
+// Supports multi-source OR logic + status OR logic
+function buildFilter(sources, statuses) {
   const parts = [];
-  if (source && source !== 'all') parts.push(`source = "${source}"`);
-  if (statuses.length) parts.push('(' + statuses.map(s => `status = "${s}"`).join(' OR ') + ')');
+  if (sources.size > 0) {
+    parts.push('(' + [...sources].map(s => `source = "${s}"`).join(' OR ') + ')');
+  }
+  if (statuses.length) {
+    parts.push('(' + statuses.map(s => `status = "${s}"`).join(' OR ') + ')');
+  }
   return parts.join(' AND ') || null;
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
-const SOURCE_LABELS = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion' };
-
 function statusClass(status) {
   const s = (status || '').toLowerCase();
-  if (s.includes('open')) return 'rc-badge-open';
-  if (s.includes('interim')) return 'rc-badge-interim';
-  if (s.includes('class')) return 'rc-badge-class';
+  if (s.includes('open'))     return 'rc-badge-open';
+  if (s.includes('interim'))  return 'rc-badge-interim';
+  if (s.includes('class'))    return 'rc-badge-class';
   if (s.includes('proposed')) return 'rc-badge-proposed';
-  if (s.includes('final')) return 'rc-badge-final';
+  if (s.includes('final'))    return 'rc-badge-final';
   return 'rc-badge-unknown';
 }
-
 function badgeTag(status) {
   return `<span class="rc-badge ${statusClass(status)}">${status || 'Unknown'}</span>`;
 }
-
 function sourceTag(source) {
   const label = SOURCE_LABELS[source] || source;
   return `<span class="rc-tag rc-tag-${source}">${label}</span>`;
@@ -579,7 +834,7 @@ function renderResults(data, query) {
     const snippet  = hl.content || '';
     const isActive = hit.id === activeDocId ? ' active' : '';
     return `
-      <div class="result-card${isActive}" data-id="${hit.id}" data-source="${hit.source}">
+      <div class="result-card${isActive}" data-id="${hit.id}">
         <div class="rc-meta">
           ${sourceTag(hit.source)}
           ${badgeTag(hit.status)}
@@ -593,8 +848,7 @@ function renderResults(data, query) {
 
   list.querySelectorAll('.result-card').forEach(card => {
     card.addEventListener('click', () => {
-      const id  = card.dataset.id;
-      const hit = hits.find(h => h.id === id);
+      const hit = hits.find(h => h.id === card.dataset.id);
       if (hit) openDrawer(hit);
     });
   });
@@ -603,25 +857,33 @@ function renderResults(data, query) {
 // ── DRAWER ────────────────────────────────────────────────────────────────────
 function openDrawer(hit) {
   activeDocId = hit.id;
-  const hl    = hit._formatted || hit;
 
-  document.getElementById('drawer-title').textContent   = hit.title || 'Document';
-  document.getElementById('drawer-source').textContent  = SOURCE_LABELS[hit.source] || hit.source;
-  document.getElementById('drawer-part').textContent    = hit.part ? `Part ${hit.part}` : '—';
-  document.getElementById('drawer-file').textContent    = hit.filename || '—';
-  document.getElementById('drawer-content').textContent = hit.content || '';
+  document.getElementById('drawer-title').textContent  = hit.title || 'Document';
+  document.getElementById('drawer-source').textContent = SOURCE_LABELS[hit.source] || hit.source;
+  document.getElementById('drawer-part').textContent   = hit.part ? `Part ${hit.part}` : '—';
+  document.getElementById('drawer-file').textContent   = hit.filename || '—';
 
-  const meta = document.getElementById('drawer-meta');
-  meta.innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
+  // Citation
+  const citation = generateCitation(hit);
+  document.getElementById('cite-text').textContent = citation;
+  const copyBtn = document.getElementById('cite-copy-btn');
+  copyBtn.textContent = 'Copy';
+  copyBtn.classList.remove('copied');
+  copyBtn.onclick = () => copyCitation(citation, copyBtn);
 
-  const orig = document.getElementById('drawer-orig');
-  orig.href = SOURCE_URLS[hit.source] || '#';
+  // Hierarchical content
+  document.getElementById('drawer-content').innerHTML = formatContent(hit.content || '');
+
+  // Meta badges
+  document.getElementById('drawer-meta').innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
+
+  // Original link
+  document.getElementById('drawer-orig').href = SOURCE_URLS[hit.source] || '#';
 
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawer-backdrop').classList.add('visible');
   document.body.style.overflow = 'hidden';
 
-  // Highlight active card
   document.querySelectorAll('.result-card').forEach(c => {
     c.classList.toggle('active', c.dataset.id === hit.id);
   });
@@ -635,23 +897,43 @@ function closeDrawer() {
   document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
 }
 
+function copyCitation(citation, btn) {
+  navigator.clipboard.writeText(citation).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+  }).catch(() => {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = citation;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+  });
+}
+
 document.getElementById('drawer-close').addEventListener('click', closeDrawer);
 document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDrawer(); closeFeedback(); }
+});
 
-// ── SEARCH INPUT ──────────────────────────────────────────────────────────────
-const hero        = document.getElementById('hero');
+// ── SEARCH INPUT & LIFECYCLE ──────────────────────────────────────────────────
+const hero          = document.getElementById('hero');
 const resultsSection = document.getElementById('results-section');
-const searchInput = document.getElementById('search-input');
-const searchCount = document.getElementById('search-count');
-const searchClear = document.getElementById('search-clear');
+const searchInput   = document.getElementById('search-input');
+const searchCount   = document.getElementById('search-count');
+const searchClear   = document.getElementById('search-clear');
 
 async function runSearch() {
   const q = searchInput.value.trim();
-  if (!q) {
-    deactivateSearch();
-    return;
-  }
+  if (!q) { deactivateSearch(); return; }
   activateSearch();
   document.getElementById('results-list').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   try {
@@ -660,7 +942,8 @@ async function runSearch() {
     const total = data.estimatedTotalHits || (data.hits || []).length;
     searchCount.textContent = total ? `${total} results` : '';
   } catch (e) {
-    document.getElementById('results-list').innerHTML = '<div class="no-results"><strong>Search unavailable</strong>Please try again in a moment.</div>';
+    document.getElementById('results-list').innerHTML =
+      '<div class="no-results"><strong>Search unavailable</strong>Please try again in a moment.</div>';
   }
 }
 
@@ -690,13 +973,36 @@ searchClear.addEventListener('click', () => {
   searchInput.focus();
 });
 
-// ── FILTERS ───────────────────────────────────────────────────────────────────
+// ── FILTERS — multi-select source ─────────────────────────────────────────────
 document.getElementById('source-filters').addEventListener('click', e => {
   const pill = e.target.closest('.fpill');
   if (!pill || pill.classList.contains('disabled')) return;
-  document.querySelectorAll('#source-filters .fpill').forEach(p => p.classList.remove('active'));
-  pill.classList.add('active');
-  activeSource = pill.dataset.source || 'all';
+
+  const src    = pill.dataset.source;
+  const allPill = document.querySelector('#source-filters .fpill[data-source="all"]');
+
+  if (src === 'all') {
+    // Clear everything → show all
+    activeSources.clear();
+    document.querySelectorAll('#source-filters .fpill').forEach(p => p.classList.remove('active'));
+    allPill.classList.add('active');
+  } else {
+    // Toggle individual source (multi-select)
+    if (activeSources.has(src)) {
+      activeSources.delete(src);
+      pill.classList.remove('active');
+    } else {
+      activeSources.add(src);
+      pill.classList.add('active');
+    }
+    // "All Sources" pill: active only when nothing specific is selected
+    if (activeSources.size === 0) {
+      allPill.classList.add('active');
+    } else {
+      allPill.classList.remove('active');
+    }
+  }
+
   if (searchInput.value.trim()) runSearch();
 });
 
@@ -708,17 +1014,91 @@ document.getElementById('status-filters').addEventListener('click', e => {
   if (searchInput.value.trim()) runSearch();
 });
 
+// ── ABOUT BAR ─────────────────────────────────────────────────────────────────
+function dismissAbout() {
+  const bar = document.getElementById('about-bar');
+  const nav = document.getElementById('main-nav');
+  bar.style.transform  = 'translateY(-100%)';
+  bar.style.opacity    = '0';
+  nav.style.top        = '0';
+  setTimeout(() => bar.remove(), 340);
+}
+
+// ── FEEDBACK MODAL ────────────────────────────────────────────────────────────
+function openFeedback() {
+  // Reset form state on open
+  document.getElementById('feedback-form').style.display  = '';
+  document.getElementById('feedback-success').style.display = 'none';
+  const btn = document.getElementById('fb-submit');
+  btn.textContent = 'Send Feedback';
+  btn.disabled    = false;
+
+  document.getElementById('feedback-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFeedback() {
+  document.getElementById('feedback-modal').classList.remove('open');
+  // Restore scroll only if drawer isn't also open
+  if (!document.getElementById('drawer').classList.contains('open')) {
+    document.body.style.overflow = '';
+  }
+}
+
+// Close on backdrop click
+document.getElementById('feedback-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('feedback-modal')) closeFeedback();
+});
+
+// Form submission via Formspree
+document.getElementById('feedback-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('fb-submit');
+  btn.disabled    = true;
+  btn.textContent = 'Sending…';
+
+  const payload = {
+    access_key: 'a97fdf40-024d-4342-9253-376ed17b149f',
+    subject:    'AcqVault Feedback',
+    name:       document.getElementById('fb-name').value.trim()  || 'Anonymous',
+    email:      document.getElementById('fb-email').value.trim() || '',
+    message:    document.getElementById('fb-message').value.trim(),
+  };
+
+  try {
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      document.getElementById('feedback-form').style.display    = 'none';
+      document.getElementById('feedback-success').style.display = 'block';
+      // Clear fields
+      ['fb-name','fb-email','fb-message'].forEach(id => document.getElementById(id).value = '');
+      setTimeout(closeFeedback, 3200);
+    } else {
+      btn.textContent = 'Try again';
+      btn.disabled    = false;
+    }
+  } catch {
+    btn.textContent = 'Try again';
+    btn.disabled    = false;
+  }
+});
+
 // ── PARTICLES ─────────────────────────────────────────────────────────────────
 const canvas = document.getElementById('particles');
 const ctx    = canvas.getContext('2d');
-let pts = [];
-const N = 90;
+let pts      = [];
+const N      = 90;
 
 function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
 function initPts() {
   pts = [];
   for (let i = 0; i < N; i++) {
-    pts.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random()-.5)*.28, vy: (Math.random()-.5)*.28, r: Math.random()*1.4+.4 });
+    pts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28, r:Math.random()*1.4+.4 });
   }
 }
 function drawFrame() {
@@ -730,7 +1110,7 @@ function drawFrame() {
     ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
     ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fill();
   });
-  for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++) {
+  for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
     const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
     if(d<130){ ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.strokeStyle=`rgba(255,255,255,${.055*(1-d/130)})`; ctx.lineWidth=.5; ctx.stroke(); }
   }
@@ -740,8 +1120,15 @@ window.addEventListener('resize', () => { resizeCanvas(); initPts(); });
 resizeCanvas(); initPts(); drawFrame();
 
 // ── TYPING ANIMATION ──────────────────────────────────────────────────────────
-const QUERIES = [["sole source justification","47"],["FAR Companion 6.302-1 guidance","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["other than full and open competition","34"],["undefinitized contract action","12"]];
-let qi=0,ci=0,del=false;
+const QUERIES = [
+  ["sole source justification","47"],
+  ["RFO 6.302-1 only one source","23"],
+  ["simplified acquisition threshold","61"],
+  ["R-DFARS class deviation 2025","18"],
+  ["other than full and open competition","34"],
+  ["undefinitized contract action","12"]
+];
+let qi=0, ci=0, del=false;
 function tick() {
   const el=document.getElementById('btyping'), rc=document.getElementById('bcount');
   if(!el) return;
@@ -749,10 +1136,12 @@ function tick() {
   if(!del){ el.textContent=q.slice(0,ci+1); ci++; if(ci===q.length){del=true;rc.textContent=cnt+' results';setTimeout(tick,2200);return;} setTimeout(tick,52); }
   else { el.textContent=q.slice(0,ci-1); ci--; if(ci===0){del=false;rc.textContent='— results';qi=(qi+1)%QUERIES.length;setTimeout(tick,380);return;} setTimeout(tick,26); }
 }
-setTimeout(tick,900);
+setTimeout(tick, 900);
 
 // ── SCROLL FADE-IN ────────────────────────────────────────────────────────────
-const obs = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);} }); }, { threshold: 0.1 });
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 </script>
 </body>
