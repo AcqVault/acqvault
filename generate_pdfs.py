@@ -49,7 +49,7 @@ class AcqVaultPDF(FPDF):
     def header(self):
         self.set_font('Helvetica', '', 7)
         self.set_text_color(180, 180, 180)
-        self.cell(0, 6, f'AcqVault.com - AF Acquisition Research', align='L', new_x='LMARGIN', new_y='NEXT')
+        self.cell(0, 6, 'AcqVault.com - AF Acquisition Research', align='L', new_x='LMARGIN', new_y='NEXT')
         self.set_draw_color(220, 220, 220)
         self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
         self.ln(3)
@@ -87,19 +87,19 @@ def add_cover(pdf, source_name, doc_count, generated_date):
     pdf.multi_cell(0, 5, 'This document is compiled from official U.S. government acquisition regulation sources and indexed by AcqVault.com for the Air Force contracting community. Visit acqvault.com for the most current version.', align='C')
 
 def render_doc(pdf, doc):
-    usable_w = pdf.w - pdf.l_margin - pdf.r_margin
+    W = pdf.w - pdf.l_margin - pdf.r_margin
     title   = safe(doc.get('title', 'Untitled'))
     content = safe(doc.get('content', ''))
     status  = safe(doc.get('status', ''))
 
     pdf.set_font('Helvetica', 'B', 11)
     pdf.set_text_color(20, 20, 20)
-    pdf.multi_cell(usable_w, 7, title)
+    pdf.multi_cell(W, 7, title)
 
     if status:
         pdf.set_font('Helvetica', 'I', 8)
         pdf.set_text_color(150, 150, 150)
-        pdf.cell(0, 5, f'Status: {status}', new_x='LMARGIN', new_y='NEXT')
+        pdf.multi_cell(W, 5, f'Status: {status}')
 
     pdf.ln(3)
 
@@ -109,39 +109,44 @@ def render_doc(pdf, doc):
             if not s:
                 pdf.ln(2)
                 continue
-            indent = 0
-            if s.startswith('('):
-                ch = s[1:2]
-                if ch.islower():   indent = 8
-                elif ch.isdigit(): indent = 16
-                elif ch.lower() in 'ivxlcdm': indent = 24
-                elif ch.isupper(): indent = 32
-            indent = min(indent, int(usable_w * 0.4))
-            cell_w = usable_w - indent
+
+            # Always reset to left margin before each line
+            pdf.set_x(pdf.l_margin)
 
             if s.upper().startswith('PART ') and len(s) < 140:
                 pdf.set_font('Helvetica', 'B', 10)
                 pdf.set_text_color(10, 10, 10)
-                pdf.multi_cell(usable_w, 6, s)
+                pdf.multi_cell(W, 6, s)
             elif s.lower().startswith('subpart ') and len(s) < 140:
                 pdf.set_font('Helvetica', 'B', 9)
                 pdf.set_text_color(30, 30, 30)
-                pdf.multi_cell(usable_w, 6, s)
+                pdf.multi_cell(W, 6, s)
             elif s[:1].isdigit() and '.' in s[:8] and len(s) < 220:
                 pdf.set_font('Helvetica', 'B', 9)
                 pdf.set_text_color(40, 40, 40)
-                pdf.multi_cell(usable_w, 6, s)
+                pdf.multi_cell(W, 6, s)
             elif s == s.upper() and len(s) > 3 and len(s) < 80 and any(c.isalpha() for c in s):
                 pdf.set_font('Helvetica', 'B', 9)
                 pdf.set_text_color(40, 40, 40)
-                pdf.multi_cell(usable_w, 6, s)
-            else:
+                pdf.multi_cell(W, 6, s)
+            elif s.startswith('('):
+                ch = s[1:2]
+                if ch.islower():      indent = 6
+                elif ch.isdigit():    indent = 12
+                elif ch.lower() in 'ivxlcdm': indent = 18
+                elif ch.isupper():    indent = 24
+                else:                 indent = 0
                 pdf.set_font('Helvetica', '', 9)
                 pdf.set_text_color(70, 70, 70)
                 pdf.set_x(pdf.l_margin + indent)
-                pdf.multi_cell(cell_w, 5.5, s)
+                pdf.multi_cell(W - indent, 5.5, s)
+            else:
+                pdf.set_font('Helvetica', '', 9)
+                pdf.set_text_color(70, 70, 70)
+                pdf.multi_cell(W, 5.5, s)
 
     pdf.ln(6)
+    pdf.set_x(pdf.l_margin)
     pdf.set_draw_color(235, 235, 235)
     pdf.line(pdf.l_margin, pdf.get_y(), pdf.w - pdf.r_margin, pdf.get_y())
     pdf.ln(4)
@@ -156,6 +161,7 @@ def generate_pdf(source, source_name, docs):
         if part != current_part:
             pdf.add_page()
             current_part = part
+            pdf.set_x(pdf.l_margin)
             pdf.set_font('Helvetica', 'B', 13)
             pdf.set_text_color(10, 10, 10)
             pdf.cell(0, 10, f'PART {part}', new_x='LMARGIN', new_y='NEXT')
