@@ -1,0 +1,39 @@
+name: Generate Monthly PDFs
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  generate-pdfs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install fpdf2 requests
+
+      - name: Generate PDFs
+        run: python generate_pdfs.py
+
+      - name: Commit and push updated PDFs
+        run: |
+          git config user.name "AcqVault Bot"
+          git config user.email "action@github.com"
+          git add pdfs/
+          if git diff --staged --quiet; then
+            echo "No changes to PDFs -- skipping commit."
+          else
+            git commit -m "chore: regenerate PDFs for $(date +'%B %Y')"
+            git push
+          fi
