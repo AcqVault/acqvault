@@ -13,24 +13,19 @@ html { scroll-behavior: smooth; }
 body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
 /* ── ABOUT BAR ── */
-.about-bar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 350;
-  background: #f5f5f7; border-bottom: 0.5px solid rgba(0,0,0,0.08);
-  padding: 0 48px; height: 42px; display: flex; align-items: center;
-  transition: transform 0.32s cubic-bezier(0.16,1,0.3,1), opacity 0.32s;
-}
+.about-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 350; background: #0d0d0d; border-bottom: 0.5px solid rgba(255,255,255,0.09); padding: 0 48px; height: 42px; display: flex; align-items: center; transition: transform 0.32s cubic-bezier(0.16,1,0.3,1), opacity 0.32s; }
 .about-bar-inner { flex: 1; display: flex; align-items: center; gap: 10px; max-width: 960px; margin: 0 auto; min-width: 0; }
-.about-text { font-size: 12.5px; color: #555; letter-spacing: -0.01em; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.about-text strong { color: #0a0a0a; font-weight: 600; }
+.about-text { font-size: 12.5px; color: #777; letter-spacing: -0.01em; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.about-text strong { color: #ccc; font-weight: 600; }
 .about-feedback-btn { background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--accent); padding: 0; letter-spacing: -0.01em; transition: opacity 0.15s; flex-shrink: 0; }
 .about-feedback-btn:hover { opacity: 0.75; }
-.about-dismiss { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #bbb; font-size: 14px; padding: 4px 6px; transition: color 0.15s; line-height: 1; }
-.about-dismiss:hover { color: #666; }
+.about-dismiss { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #444; font-size: 14px; padding: 4px 6px; transition: color 0.15s; line-height: 1; }
+.about-dismiss:hover { color: #888; }
 
 /* ── FEEDBACK MODAL ── */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 700; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.22s; padding: 24px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 700; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.22s; padding: 24px; }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal-box { background: #fff; border-radius: 20px; width: 100%; max-width: 440px; padding: 30px 32px; box-shadow: 0 32px 80px rgba(0,0,0,0.4); transform: translateY(18px); transition: transform 0.24s cubic-bezier(0.16,1,0.3,1); color: #0a0a0a; }
+.modal-box { background: #fff; border-radius: 20px; width: 100%; max-width: 440px; padding: 30px 32px; box-shadow: 0 32px 80px rgba(0,0,0,0.5); transform: translateY(18px); transition: transform 0.24s cubic-bezier(0.16,1,0.3,1); color: #0a0a0a; }
 .modal-overlay.open .modal-box { transform: translateY(0); }
 .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .modal-header h3 { font-size: 17px; font-weight: 800; letter-spacing: -0.04em; }
@@ -51,17 +46,17 @@ body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow
 .feedback-success strong { font-size: 16px; font-weight: 800; letter-spacing: -0.04em; display: block; margin-bottom: 6px; }
 .feedback-success p { font-size: 13px; color: #888; }
 
-/* ── NAV — light ── */
-nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 52px; background: rgba(255,255,255,0.88); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border-bottom: 0.5px solid rgba(0,0,0,0.08); transition: top 0.32s cubic-bezier(0.16,1,0.3,1); }
-.nav-logo { font-size: 16px; font-weight: 800; letter-spacing: -0.05em; color: #0a0a0a; text-decoration: none; }
-.nav-logo span { color: #aaa; }
+/* ── NAV ── */
+nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 52px; background: rgba(0,0,0,0.82); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border-bottom: 0.5px solid rgba(255,255,255,0.07); transition: top 0.32s cubic-bezier(0.16,1,0.3,1); }
+.nav-logo { font-size: 16px; font-weight: 800; letter-spacing: -0.05em; color: #fff; text-decoration: none; }
+.nav-logo span { color: #555; }
 .nav-center { display: flex; gap: 28px; align-items: center; }
-.nav-center a { font-size: 13px; color: #555; text-decoration: none; letter-spacing: -0.02em; transition: color 0.15s; }
-.nav-center a:hover { color: #000; }
-.nav-feedback-btn { font-size: 13px; font-weight: 600; letter-spacing: -0.02em; background: none; border: 0.5px solid rgba(0,0,0,0.18); color: #555; padding: 5px 14px; border-radius: 980px; cursor: pointer; font-family: 'Inter', sans-serif; transition: border-color 0.15s, color 0.15s; }
-.nav-feedback-btn:hover { border-color: rgba(0,0,0,0.4); color: #000; }
-.nav-cta { font-size: 13px; font-weight: 600; letter-spacing: -0.02em; background: #000; color: #fff; padding: 7px 18px; border-radius: 980px; text-decoration: none; transition: background 0.15s; }
-.nav-cta:hover { background: #333; }
+.nav-center a { font-size: 13px; color: #888; text-decoration: none; letter-spacing: -0.02em; transition: color 0.15s; }
+.nav-center a:hover { color: #fff; }
+.nav-feedback-btn { font-size: 13px; font-weight: 600; letter-spacing: -0.02em; background: none; border: 0.5px solid rgba(255,255,255,0.18); color: #aaa; padding: 5px 14px; border-radius: 980px; cursor: pointer; font-family: 'Inter', sans-serif; transition: border-color 0.15s, color 0.15s; }
+.nav-feedback-btn:hover { border-color: rgba(255,255,255,0.45); color: #fff; }
+.nav-cta { font-size: 13px; font-weight: 600; letter-spacing: -0.02em; background: #fff; color: #000; padding: 7px 18px; border-radius: 980px; text-decoration: none; transition: background 0.15s; }
+.nav-cta:hover { background: #ddd; }
 
 /* ── HERO ── */
 .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 156px 24px 80px; text-align: center; overflow: hidden; background: #000; transition: min-height 0.5s cubic-bezier(0.16,1,0.3,1), padding 0.5s cubic-bezier(0.16,1,0.3,1); }
@@ -77,7 +72,7 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .hero-sub { font-size: 19px; font-weight: 400; color: #777; letter-spacing: -0.025em; line-height: 1.55; max-width: 500px; margin: 0 auto 40px; }
 .hero-actions { display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; }
 .btn-primary { font-size: 15px; font-weight: 600; letter-spacing: -0.025em; background: #fff; color: #000; padding: 13px 26px; border-radius: 980px; text-decoration: none; transition: background 0.15s; }
-.btn-primary:hover { background: #e8e8e8; }
+.btn-primary:hover { background: #e0e0e0; }
 .btn-ghost { font-size: 15px; font-weight: 600; letter-spacing: -0.025em; background: rgba(255,255,255,0.07); color: #fff; padding: 13px 26px; border-radius: 980px; border: 0.5px solid rgba(255,255,255,0.14); text-decoration: none; transition: background 0.15s; }
 .btn-ghost:hover { background: rgba(255,255,255,0.13); }
 
@@ -126,6 +121,8 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .b-ctag-rfo { background: #e8f0fe; color: #1a4aa8; }
 .b-ctag-rdfars { background: #e6f4ea; color: #1a6634; }
 .b-ctag-fc { background: #f0eeff; color: #3d2799; }
+.b-ctag-fmr { background: #fef3c7; color: #92400e; }
+.b-ctag-afi { background: #ffedd5; color: #9a3412; }
 .b-cbadge { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px; }
 .b-cbadge-open { background: #fff8e6; color: #7a4f00; }
 .b-cbadge-int { background: #fdecea; color: #7a1a1a; }
@@ -158,13 +155,14 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .rc-tag-rfo { background: #e8f0fe; color: #1a4aa8; }
 .rc-tag-r-dfars { background: #e6f4ea; color: #1a6634; }
 .rc-tag-far-companion { background: #f0eeff; color: #3d2799; }
+.rc-tag-fmr { background: #fef3c7; color: #92400e; }
+.rc-tag-afi-63-138 { background: #ffedd5; color: #9a3412; }
 .rc-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
 .rc-badge-open { background: #fff8e6; color: #7a4f00; }
 .rc-badge-interim, .rc-badge-class { background: #fdecea; color: #7a1a1a; }
 .rc-badge-proposed { background: #f0eeff; color: #3d2799; }
 .rc-badge-final { background: #e6f4ea; color: #1a6634; }
 .rc-badge-unknown { background: #f0f0f0; color: #888; }
-.rc-date { font-size: 11px; color: #bbb; margin-left: auto; letter-spacing: -0.01em; }
 .rc-title { font-size: 14px; font-weight: 700; letter-spacing: -0.03em; color: #0a0a0a; margin-bottom: 4px; line-height: 1.3; }
 .rc-ref { font-size: 11px; color: #bbb; margin-bottom: 6px; letter-spacing: -0.01em; }
 .rc-snippet { font-size: 13px; color: #666; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -195,6 +193,11 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .browse-results-title { font-size: 16px; font-weight: 700; letter-spacing: -0.04em; color: #0a0a0a; }
 .browse-results-count { font-size: 13px; color: #aaa; }
 #browse-results-list { display: flex; flex-direction: column; gap: 8px; }
+.browse-soon-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 0 16px; border-top: 0.5px solid #ebebeb; margin-top: 4px; }
+.browse-src-soon { font-size: 13px; font-weight: 500; letter-spacing: -0.01em; padding: 6px 16px; border-radius: 20px; border: 0.5px solid #e0e0e0; color: #bbb; background: transparent; cursor: not-allowed; font-family: 'Inter', sans-serif; }
+.fulltext-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #bbb; margin: 36px 0 16px; padding-top: 28px; border-top: 0.5px solid #ebebeb; }
+.fulltext-dl-btn-soon { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; padding: 12px; border-radius: 10px; border: none; background: #f0f0f0; color: #bbb; font-size: 13px; font-weight: 600; letter-spacing: -0.02em; cursor: not-allowed; font-family: 'Inter', sans-serif; margin-top: auto; }
+.fulltext-card.dim { opacity: 0.5; }
 
 /* ── FULL TEXT SECTION ── */
 #fulltext-section { display: none; background: #fff; min-height: 60vh; }
@@ -231,7 +234,7 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .drawer-meta { padding: 10px 18px; border-bottom: 0.5px solid #ebebeb; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; flex-shrink: 0; }
 .drawer-cite-bar { padding: 9px 18px; background: #f8f8fa; border-bottom: 0.5px solid #ebebeb; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .cite-label { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #aaa; white-space: nowrap; }
-.cite-text { flex: 1; font-size: 12px; font-weight: 600; color: #333; font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cite-text { flex: 1; font-size: 12px; font-weight: 600; color: #333; font-family: 'SF Mono','Menlo','Consolas',monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cite-copy-btn { font-size: 11px; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s; flex-shrink: 0; }
 .cite-copy-btn:hover { background: var(--accent-hover); }
 .cite-copy-btn.copied { background: #28c840; }
@@ -282,13 +285,15 @@ p.sec-sub-dark { color: #888; } p.sec-sub-light { color: #888; }
 .feat-title { font-size: 17px; font-weight: 800; letter-spacing: -0.04em; color: #000; margin-bottom: 10px; line-height: 1.2; }
 .feat-desc { font-size: 14px; color: #888; line-height: 1.6; letter-spacing: -0.01em; }
 .srcs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 64px; }
-.srcs-row2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px; }
-.src { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 30px 26px; }
+.srcs-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+.srcs-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #333; margin-top: 52px; margin-bottom: -2px; padding-bottom: 10px; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+.srcs-label:first-of-type { margin-top: 64px; }
+.src { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 28px 24px; }
 .src.dim { opacity: 0.38; }
 .src-phase { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #444; margin-bottom: 12px; }
-.src-name { font-size: 20px; font-weight: 800; letter-spacing: -0.05em; line-height: 1.15; color: #fff; margin-bottom: 10px; }
-.src-desc { font-size: 14px; color: #666; line-height: 1.55; letter-spacing: -0.01em; }
-.src-pill { display: inline-block; margin-top: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 20px; }
+.src-name { font-size: 18px; font-weight: 800; letter-spacing: -0.05em; line-height: 1.2; color: #fff; margin-bottom: 10px; }
+.src-desc { font-size: 13px; color: #666; line-height: 1.55; letter-spacing: -0.01em; }
+.src-pill { display: inline-block; margin-top: 18px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 20px; }
 .src-live { background: rgba(40,200,64,0.1); color: #28c840; }
 .src-soon { background: rgba(255,255,255,0.05); color: #444; }
 .callout { background: #f5f5f7; border-radius: 20px; padding: 60px; margin-top: 80px; text-align: center; }
@@ -341,7 +346,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
   h2.sec-head { font-size: 36px; }
   p.sec-sub { font-size: 16px; }
   .feats { grid-template-columns: 1fr; gap: 12px; margin-top: 40px; }
-  .srcs, .srcs-row2 { grid-template-columns: 1fr; gap: 12px; }
+  .srcs-3 { grid-template-columns: 1fr; gap: 12px; }
   .srcs { margin-top: 40px; }
   .callout { padding: 36px 24px; }
   .callout-head { font-size: 26px; }
@@ -413,8 +418,8 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
   <canvas id="particles"></canvas>
   <div class="hero-intro">
     <p class="hero-eyebrow">Air Force Acquisition Research</p>
-    <h1 class="hero-headline">The research library<br><em>the contracting</em><br><em>community</em> deserves.</h1>
-    <p class="hero-sub">AcqVault indexes the RFO, R-DFARS, FAR Companion, and DAF Contracting Compass — search the way you think, not the way regulations are filed.</p>
+    <h1 class="hero-headline">The research library<br><em>the acquisition</em><br><em>community</em> deserves.</h1>
+    <p class="hero-sub">AcqVault indexes the RFO, R-DFARS, FAR Companion, and more — search the way you think, not the way regulations are filed.</p>
     <div class="hero-actions">
       <a href="#" class="btn-primary" onclick="document.getElementById('search-input').focus(); return false;">Start searching</a>
       <a href="#features" class="btn-ghost">See how it works ↓</a>
@@ -456,6 +461,9 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
         <span class="b-fpill b-fpill-off">R-DFARS</span>
         <span class="b-fpill b-fpill-off">FAR Companion</span>
         <span class="b-fpill b-fpill-dim">DAF Compass</span>
+        <span class="b-fpill b-fpill-dim">DoD FMR</span>
+        <span class="b-fpill b-fpill-dim">AFI 63-138</span>
+        <span class="b-fpill b-fpill-dim">AFI 63-Series</span>
         <span class="b-div"></span>
         <span class="b-fpill b-fpill-off">Open for comment</span>
         <span class="b-fpill b-fpill-off">Interim</span>
@@ -480,6 +488,9 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
         <div class="fpill" data-source="r-dfars">R-DFARS</div>
         <div class="fpill" data-source="far-companion">FAR Companion</div>
         <div class="fpill disabled" title="Coming soon">DAF Compass</div>
+        <div class="fpill disabled" title="Coming soon">DoD FMR</div>
+        <div class="fpill disabled" title="Coming soon">AFI 63-138</div>
+        <div class="fpill disabled" title="Coming soon">AFI 63-Series</div>
       </div>
       <div class="filter-divider"></div>
       <span class="filter-label">Status</span>
@@ -505,11 +516,18 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
       <button class="browse-src-pill" data-bsource="r-dfars" onclick="setBrowseSource('r-dfars')">R-DFARS</button>
       <button class="browse-src-pill" data-bsource="far-companion" onclick="setBrowseSource('far-companion')">FAR Companion</button>
     </div>
+    <div class="browse-soon-bar">
+      <span class="filter-label" style="margin-right:4px;">Coming soon</span>
+      <span class="browse-src-soon">DAF Compass</span>
+      <span class="browse-src-soon">DoD FMR</span>
+      <span class="browse-src-soon">AFI 63-138</span>
+      <span class="browse-src-soon">AFI 63-Series</span>
+    </div>
     <div class="browse-parts-label">Select a part</div>
     <div class="parts-grid" id="parts-grid"></div>
     <div id="browse-results-area" style="display:none;">
       <div class="browse-results-header">
-        <div class="browse-results-title" id="browse-results-title">Part 19 — Small Business</div>
+        <div class="browse-results-title" id="browse-results-title">Part —</div>
         <div class="browse-results-count" id="browse-results-count"></div>
       </div>
       <div id="browse-results-list"></div>
@@ -530,10 +548,8 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
         <span class="fulltext-card-tag ft-tag-rfo">RFO</span>
         <div class="fulltext-card-name">Revolutionary FAR Overhaul</div>
         <div class="fulltext-card-meta">
-          <span>43 parts covered</span>
-          <span>Parts 1 – 53</span>
-          <span>Federal Register rules</span>
-          <span>Updated monthly</span>
+          <span>43 parts covered</span><span>Parts 1 – 53</span>
+          <span>Federal Register rules</span><span>Updated monthly</span>
         </div>
         <a class="fulltext-dl-btn" href="https://raw.githubusercontent.com/AcqVault/acqvault/main/pdfs/rfo.pdf" download="AcqVault-RFO.pdf" target="_blank" rel="noopener">↓ Download PDF</a>
       </div>
@@ -541,10 +557,8 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
         <span class="fulltext-card-tag ft-tag-rdfars">R-DFARS</span>
         <div class="fulltext-card-name">R-DFARS</div>
         <div class="fulltext-card-meta">
-          <span>46 parts covered</span>
-          <span>Parts 201 – 252</span>
-          <span>DoD deviation documents</span>
-          <span>Updated monthly</span>
+          <span>46 parts covered</span><span>Parts 201 – 252</span>
+          <span>DoD deviation documents</span><span>Updated monthly</span>
         </div>
         <a class="fulltext-dl-btn" href="https://raw.githubusercontent.com/AcqVault/acqvault/main/pdfs/r-dfars.pdf" download="AcqVault-R-DFARS.pdf" target="_blank" rel="noopener">↓ Download PDF</a>
       </div>
@@ -552,16 +566,53 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
         <span class="fulltext-card-tag ft-tag-fc">FAR Companion</span>
         <div class="fulltext-card-name">FAR Companion</div>
         <div class="fulltext-card-meta">
-          <span>27 parts covered</span>
-          <span>Parts 1 – 52</span>
-          <span>Version 2.0 — FAR Council</span>
-          <span>Updated monthly</span>
+          <span>27 parts covered</span><span>Parts 1 – 52</span>
+          <span>Version 2.0 — FAR Council</span><span>Updated monthly</span>
         </div>
         <a class="fulltext-dl-btn" href="https://raw.githubusercontent.com/AcqVault/acqvault/main/pdfs/far-companion.pdf" download="AcqVault-FAR-Companion.pdf" target="_blank" rel="noopener">↓ Download PDF</a>
       </div>
     </div>
     <div class="fulltext-note">
       <strong>How these are generated:</strong> A GitHub Actions workflow runs on the 1st of every month, fetches all documents from the live Meilisearch index, compiles them in sequential part order, and commits fresh PDFs to the repository. Each page carries an AcqVault.com watermark and footer. Files are served directly from GitHub — no server required.
+    </div>
+    <div class="fulltext-section-label">Coming soon</div>
+    <div class="fulltext-cards">
+      <div class="fulltext-card dim">
+        <span class="fulltext-card-tag" style="background:#f0f0f0;color:#bbb;">DAF Compass</span>
+        <div class="fulltext-card-name">DAF Contracting Compass</div>
+        <div class="fulltext-card-meta">
+          <span>DAF acquisition policy</span><span>Successor to DAFFARS</span>
+          <span>Manual export — CAC required</span><span>Pending ingestion</span>
+        </div>
+        <div class="fulltext-dl-btn-soon">Coming soon</div>
+      </div>
+      <div class="fulltext-card dim">
+        <span class="fulltext-card-tag" style="background:#fef3c7;color:#d4a000;">DoD FMR</span>
+        <div class="fulltext-card-name">DoD Financial Management Regulation</div>
+        <div class="fulltext-card-meta">
+          <span>14 volumes</span><span>DoD financial policy</span>
+          <span>comptroller.defense.gov</span><span>Pending ingestion</span>
+        </div>
+        <div class="fulltext-dl-btn-soon">Coming soon</div>
+      </div>
+      <div class="fulltext-card dim">
+        <span class="fulltext-card-tag" style="background:#ffedd5;color:#c2400c;">AFI 63-138</span>
+        <div class="fulltext-card-name">AFI 63-138</div>
+        <div class="fulltext-card-meta">
+          <span>Acquisition of Services</span><span>AF instruction</span>
+          <span>e-Publishing</span><span>Pending ingestion</span>
+        </div>
+        <div class="fulltext-dl-btn-soon">Coming soon</div>
+      </div>
+      <div class="fulltext-card dim">
+        <span class="fulltext-card-tag" style="background:#f0f0f0;color:#bbb;">AFI 63-Series</span>
+        <div class="fulltext-card-name">AFI 63-Series</div>
+        <div class="fulltext-card-meta">
+          <span>Program management regs</span><span>AF instruction series</span>
+          <span>e-Publishing</span><span>Pending ingestion</span>
+        </div>
+        <div class="fulltext-dl-btn-soon">Coming soon</div>
+      </div>
     </div>
   </div>
 </div>
@@ -573,11 +624,11 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
     <h2 class="sec-head fade-up">Acquisition research<br>without the friction.</h2>
     <p class="sec-sub sec-sub-dark fade-up">Navigating acquisition.gov tabs, Federal Register alerts, and scattered PDFs shouldn't be your job. Researching what they say should be.</p>
     <div class="feats">
-      <div class="feat fade-up"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, and DAF Contracting Compass simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div></div>
+      <div class="feat fade-up"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, DoD FMR, AFI 63-138, and more — simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div></div>
       <div class="feat fade-up d1"><div class="feat-icon">◎</div><div class="feat-title">Status at a glance</div><div class="feat-desc">Every document is tagged — Open for comment, Interim, Class Deviation, Proposed, or Final. Know the rule's standing before you cite it.</div></div>
       <div class="feat fade-up d2"><div class="feat-icon">↻</div><div class="feat-title">Always current</div><div class="feat-desc">Indexed monthly from the Federal Register API and acquisition.gov. No stale PDFs. No bookmarks that die mid-acquisition.</div></div>
       <div class="feat fade-up"><div class="feat-icon">⊘</div><div class="feat-title">No AI summaries</div><div class="feat-desc">You get the authoritative source text — not a model's interpretation of it. AcqVault is a research library, not a chatbot.</div></div>
-      <div class="feat fade-up d1"><div class="feat-icon">⊞</div><div class="feat-title">Multi-source filtering</div><div class="feat-desc">Select one or several sources simultaneously — RFO, R-DFARS, FAR Companion. Stack your filters and narrow by status too.</div></div>
+      <div class="feat fade-up d1"><div class="feat-icon">⊞</div><div class="feat-title">Multi-source filtering</div><div class="feat-desc">Select one or several sources simultaneously — RFO, R-DFARS, FAR Companion, and more. Stack your filters and narrow by status too.</div></div>
       <div class="feat fade-up d2"><div class="feat-icon">◈</div><div class="feat-title">Free &amp; open access</div><div class="feat-desc">No cost, no subscriptions. AcqVault is a community resource built for the AF acquisition workforce.</div></div>
     </div>
   </div>
@@ -589,17 +640,26 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
     <p class="eyebrow eyebrow-light fade-up">Data sources</p>
     <h2 class="sec-head fade-up">Authoritative sources.<br>Always current.</h2>
     <p class="sec-sub sec-sub-light fade-up">AcqVault pulls from official, primary sources — not summaries, not interpretations.</p>
-    <div class="srcs fade-up" style="transition-delay:0.1s;">
+
+    <p class="srcs-label fade-up" style="transition-delay:0.06s;">Live now</p>
+    <div class="srcs-3 fade-up" style="transition-delay:0.1s;">
       <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">Revolutionary FAR Overhaul</div><div class="src-desc">Proposed and interim rules from the Federal Register API — the live, official rulemaking record for FAR reform.</div><span class="src-pill src-live">● Live now</span></div>
       <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">R-DFARS</div><div class="src-desc">DoD deviation documents sourced directly from acquisition.gov — one document per FAR part, 46 parts covered.</div><span class="src-pill src-live">● Live now</span></div>
-    </div>
-    <div class="srcs-row2 fade-up" style="transition-delay:0.18s;">
       <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">FAR Companion</div><div class="src-desc">The FAR Council's non-regulatory practice guide, organized parallel to each FAR section. Version 2.0, covering 27 parts.</div><span class="src-pill src-live">● Live now</span></div>
-      <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">DAF Contracting Compass</div><div class="src-desc">DAF-specific acquisition policy and guidance — the successor to DAFFARS for the Air and Space Forces contracting community.</div><span class="src-pill src-soon">Coming soon</span></div>
     </div>
+
+    <p class="srcs-label fade-up" style="transition-delay:0.14s;">Coming soon</p>
+    <div class="srcs fade-up" style="transition-delay:0.18s;">
+      <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">DAF Contracting Compass</div><div class="src-desc">DAF-specific acquisition policy and guidance — the successor to DAFFARS for the Air and Space Forces acquisition community.</div><span class="src-pill src-soon">Coming soon</span></div>
+      <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">DoD Financial Management Regulation</div><div class="src-desc">The DoD FMR governs financial management policy across the department — 14 volumes covering everything from appropriations to payments.</div><span class="src-pill src-soon">Coming soon</span></div>
+      <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">AFI 63-138</div><div class="src-desc">Air Force Instruction 63-138, Acquisition of Services — the governing policy for services acquisition planning and execution across the AF.</div><span class="src-pill src-soon">Coming soon</span></div>
+      <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">AFI 63-Series</div><div class="src-desc">AF Program Management regulations — the 63-series governs life cycle management, program execution, and acquisition oversight across AF programs.</div><span class="src-pill src-soon">Coming soon</span></div>
+    </div>
+    </div>
+
     <div class="callout fade-up" style="transition-delay:0.15s;">
       <div class="callout-head">Built alongside the overhaul.<br>Updated as it evolves.</div>
-      <div class="callout-sub">The RFO is a living initiative. AcqVault re-indexes monthly so you're always searching the current version of the reform.</div>
+      <div class="callout-sub">The acquisition landscape is moving fast. AcqVault re-indexes monthly so you're always searching the current version of every source.</div>
       <a href="#" class="callout-btn" onclick="document.getElementById('search-input').focus();window.scrollTo({top:0,behavior:'smooth'});return false;">Start searching →</a>
     </div>
   </div>
@@ -608,7 +668,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
 <div class="cta-strip">
   <div class="fade-up">
     <h2 class="cta-head">Free. Open. Current.</h2>
-    <p class="cta-sub">No cost, no ads, no AI summaries. Just acquisition reform documents — searchable, organized, always up to date.</p>
+    <p class="cta-sub">No cost, no ads, no AI summaries. Just acquisition documents — searchable, organized, always up to date.</p>
     <a href="#" class="btn-primary" style="font-size:17px;padding:15px 34px;" onclick="document.getElementById('search-input').focus();window.scrollTo({top:0,behavior:'smooth'});return false;">Start searching</a>
     <p class="cta-meta">Free and open to all. No account required.</p>
   </div>
@@ -616,11 +676,10 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
 
 <footer>
   <div class="foot-logo">AcqVault<span>.com</span></div>
-  <div class="foot-copy">© 2025 AcqVault. All rights reserved.</div>
+  <div class="foot-copy">© 2026 AcqVault. All rights reserved.</div>
   <div class="foot-links">
     <a href="#">Privacy</a>
     <a href="#" onclick="openFeedback(); return false;">Feedback</a>
-    <a href="https://github.com/AcqVault/acqvault" target="_blank" rel="noopener">GitHub</a>
   </div>
 </footer>
 
@@ -666,10 +725,15 @@ const SOURCE_URLS = {
   'rfo':           'https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system',
   'r-dfars':       'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide',
   'far-companion': 'https://www.acquisition.gov/far-companion',
+  'fmr':           'https://comptroller.defense.gov/FMR/',
+  'afi-63-138':    'https://www.e-publishing.af.mil/',
 };
-const SOURCE_LABELS = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion' };
+const SOURCE_LABELS = {
+  'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion',
+  'fmr': 'DoD FMR', 'afi-63-138': 'AFI 63-138',
+};
 
-// Part lists per source
+// ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
 const PARTS_BY_SOURCE = {
   'rfo': [
     [1,'General'],[2,'Definitions'],[3,'Ethics'],[4,'Admin'],[5,'Publicizing'],
@@ -706,13 +770,13 @@ const PARTS_BY_SOURCE = {
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 const activeSources = new Set();
-let activeStatuses  = [];
-let activeDocId     = null;
-let currentHit      = null;
-let currentMode     = 'search';
-let browseSrc       = 'rfo';
+let activeStatuses   = [];
+let activeDocId      = null;
+let currentHit       = null;
+let currentMode      = 'search';
+let browseSrc        = 'rfo';
 let browseActivePart = null;
-let debounceTimer   = null;
+let debounceTimer    = null;
 
 // ── NAV OFFSET ────────────────────────────────────────────────────────────────
 function adjustNavForAboutBar() {
@@ -731,13 +795,10 @@ function setMode(mode) {
     document.getElementById('mode-' + m).classList.toggle('active', m === mode);
     hero.classList.toggle(m + '-active', m === mode && mode !== 'search');
   });
-  // search-active only when actually searching
   if (mode !== 'search') hero.classList.remove('search-active');
-
   document.getElementById('results-section').classList.toggle('visible', false);
   document.getElementById('browse-section').classList.toggle('visible', mode === 'browse');
   document.getElementById('fulltext-section').classList.toggle('visible', mode === 'fulltext');
-
   if (mode === 'browse') {
     hero.classList.add('browse-active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -772,53 +833,35 @@ function renderPartsGrid(source) {
 }
 
 function setBrowseSource(source) {
-  browseSrc = source;
-  browseActivePart = null;
-  document.querySelectorAll('.browse-src-pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.bsource === source);
-  });
+  browseSrc = source; browseActivePart = null;
+  document.querySelectorAll('.browse-src-pill').forEach(p => p.classList.toggle('active', p.dataset.bsource === source));
   renderPartsGrid(source);
 }
 
 async function selectPart(partNum, partLabel) {
   browseActivePart = partNum;
-  // Highlight selected tile
   document.querySelectorAll('.part-tile').forEach(t => t.classList.remove('active'));
   event.currentTarget.classList.add('active');
-
-  // Show loading
   const resultsArea = document.getElementById('browse-results-area');
   const resultsList = document.getElementById('browse-results-list');
   resultsArea.style.display = 'block';
   document.getElementById('browse-results-title').textContent = `Part ${partNum} — ${partLabel}`;
   document.getElementById('browse-results-count').textContent = '';
   resultsList.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-
-  // Scroll to results
   setTimeout(() => resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-
   try {
-    const filter = `source = "${browseSrc}" AND part = "${partNum}"`;
     const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MEILI_KEY}` },
-      body: JSON.stringify({ q: '', filter, limit: 40,
-        attributesToHighlight: ['title','content'],
-        highlightPreTag: '<mark>', highlightPostTag: '</mark>',
+      body: JSON.stringify({ q: '', filter: `source = "${browseSrc}" AND part = "${partNum}"`, limit: 40,
+        attributesToHighlight: ['title','content'], highlightPreTag: '<mark>', highlightPostTag: '</mark>',
         attributesToCrop: ['content'], cropLength: 180 })
     });
     const data = await res.json();
     const hits  = data.hits || [];
     const total = data.estimatedTotalHits || hits.length;
-
-    document.getElementById('browse-results-count').textContent =
-      `${total} document${total !== 1 ? 's' : ''}`;
-
-    if (!hits.length) {
-      resultsList.innerHTML = '<div class="no-results"><strong>No documents found</strong>This part may not be indexed for this source yet.</div>';
-      return;
-    }
-
+    document.getElementById('browse-results-count').textContent = `${total} document${total !== 1 ? 's' : ''}`;
+    if (!hits.length) { resultsList.innerHTML = '<div class="no-results"><strong>No documents found</strong>This part may not be indexed for this source yet.</div>'; return; }
     resultsList.innerHTML = hits.map(hit => {
       const hl = hit._formatted || hit;
       return `<div class="result-card" data-id="${hit.id}">
@@ -828,14 +871,9 @@ async function selectPart(partNum, partLabel) {
         <div class="rc-snippet">${hl.content || ''}</div>
       </div>`;
     }).join('');
-
     resultsList.querySelectorAll('.result-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const hit = hits.find(h => h.id === card.dataset.id);
-        if (hit) openDrawer(hit);
-      });
+      card.addEventListener('click', () => { const hit = hits.find(h => h.id === card.dataset.id); if (hit) openDrawer(hit); });
     });
-
   } catch (e) {
     resultsList.innerHTML = '<div class="no-results"><strong>Search unavailable</strong>Please try again in a moment.</div>';
   }
@@ -861,8 +899,7 @@ function copyInlineCite(btn, citation) {
   navigator.clipboard.writeText(citation).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = citation; ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
-    document.body.removeChild(ta);
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
   });
   const orig = btn.textContent;
   btn.textContent = '✓'; btn.classList.add('copied');
@@ -890,30 +927,25 @@ function formatContent(text, hit) {
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) { html += '<div class="dc-gap"></div>'; continue; }
-
     if (/^PART\s+\d+/i.test(line) && line.length < 140) {
       curSection = null; lastL1 = null; lastL2 = null; lastL3 = null;
       html += `<div class="dc-part">${esc(line)}</div>`;
     } else if (/^Subpart\s+[\d.]+/i.test(line) && line.length < 140) {
       lastL1 = null; lastL2 = null; lastL3 = null;
-      const m = line.match(/Subpart\s+([\d.]+)/i);
-      if (m) curSection = m[1];
+      const m = line.match(/Subpart\s+([\d.]+)/i); if (m) curSection = m[1];
       html += `<div class="dc-subpart">${esc(line)} ${citeBtnHTML(buildCite())}</div>`;
     } else if (/^\d{1,3}\.\d{3,6}(-\d+)?\s+[A-Z]/.test(line) && line.length < 220) {
       const m = line.match(/^(\d{1,3}\.\d{3,6}(?:-\d+)?)/);
       if (m) { curSection = m[1]; lastL1 = null; lastL2 = null; lastL3 = null; }
       html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite())}</div>`;
     } else if (/^\([a-z]\)\s/.test(line)) {
-      const m = line.match(/^\(([a-z])\)/);
-      if (m) { lastL1 = m[1]; lastL2 = null; lastL3 = null; }
+      const m = line.match(/^\(([a-z])\)/); if (m) { lastL1 = m[1]; lastL2 = null; lastL3 = null; }
       html += `<div class="dc-para dc-l1"><span class="dc-para-text">${esc(line)}</span>${citeBtnHTML(buildCite())}</div>`;
     } else if (/^\(\d+\)\s/.test(line)) {
-      const m = line.match(/^\((\d+)\)/);
-      if (m) { lastL2 = m[1]; lastL3 = null; }
+      const m = line.match(/^\((\d+)\)/); if (m) { lastL2 = m[1]; lastL3 = null; }
       html += `<div class="dc-para dc-l2"><span class="dc-para-text">${esc(line)}</span>${citeBtnHTML(buildCite())}</div>`;
     } else if (/^\([ivxlcdm]+\)\s/i.test(line)) {
-      const m = line.match(/^\(([ivxlcdm]+)\)/i);
-      if (m) lastL3 = m[1].toLowerCase();
+      const m = line.match(/^\(([ivxlcdm]+)\)/i); if (m) lastL3 = m[1].toLowerCase();
       html += `<div class="dc-para dc-l3"><span class="dc-para-text">${esc(line)}</span>${citeBtnHTML(buildCite())}</div>`;
     } else if (/^\([A-Z]\)\s/.test(line)) {
       html += `<div class="dc-para dc-l4"><span class="dc-para-text">${esc(line)}</span>${citeBtnHTML(buildCite())}</div>`;
@@ -931,21 +963,15 @@ function esc(s) {
 }
 
 // ── DRAWER FILTER ─────────────────────────────────────────────────────────────
-document.getElementById('drawer-filter-input').addEventListener('input', function() {
-  filterDrawerContent(this.value);
-});
+document.getElementById('drawer-filter-input').addEventListener('input', function() { filterDrawerContent(this.value); });
 
 function filterDrawerContent(q) {
-  const query = q.trim().toLowerCase();
-  const rows  = document.querySelectorAll('#drawer-content .dc-section, #drawer-content .dc-subpart, #drawer-content .dc-para, #drawer-content .dc-text, #drawer-content .dc-part');
+  const query  = q.trim().toLowerCase();
+  const rows   = document.querySelectorAll('#drawer-content .dc-section, #drawer-content .dc-subpart, #drawer-content .dc-para, #drawer-content .dc-text, #drawer-content .dc-part');
   const countEl = document.getElementById('drawer-filter-count');
   if (!query) { rows.forEach(el => el.style.display = ''); countEl.classList.remove('visible'); return; }
   let matches = 0;
-  rows.forEach(el => {
-    const vis = el.textContent.toLowerCase().includes(query);
-    el.style.display = vis ? '' : 'none';
-    if (vis) matches++;
-  });
+  rows.forEach(el => { const vis = el.textContent.toLowerCase().includes(query); el.style.display = vis ? '' : 'none'; if (vis) matches++; });
   countEl.textContent = `${matches} match${matches !== 1 ? 'es' : ''}`;
   countEl.classList.add('visible');
 }
@@ -959,14 +985,11 @@ function resetDrawerFilter() {
 // ── SEARCH ────────────────────────────────────────────────────────────────────
 async function search(query) {
   const filter = buildFilter(activeSources, activeStatuses);
-  const body   = { q: query, limit: 40,
-    attributesToHighlight: ['title','content'],
-    highlightPreTag: '<mark>', highlightPostTag: '</mark>',
-    attributesToCrop: ['content'], cropLength: 180 };
+  const body   = { q: query, limit: 40, attributesToHighlight: ['title','content'],
+    highlightPreTag: '<mark>', highlightPostTag: '</mark>', attributesToCrop: ['content'], cropLength: 180 };
   if (filter) body.filter = filter;
   const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MEILI_KEY}` },
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MEILI_KEY}` },
     body: JSON.stringify(body)
   });
   return res.json();
@@ -990,7 +1013,11 @@ function statusClass(status) {
   return 'rc-badge-unknown';
 }
 function badgeTag(status) { return `<span class="rc-badge ${statusClass(status)}">${status || 'Unknown'}</span>`; }
-function sourceTag(source) { return `<span class="rc-tag rc-tag-${source}">${SOURCE_LABELS[source] || source}</span>`; }
+function sourceTag(source) {
+  const label = SOURCE_LABELS[source] || source;
+  const cls   = source.replace(/[^a-z0-9]/gi,'-').toLowerCase();
+  return `<span class="rc-tag rc-tag-${cls}">${label}</span>`;
+}
 
 function renderResults(data, query) {
   const list  = document.getElementById('results-list');
@@ -1054,8 +1081,7 @@ function copyCitation(citation, btn) {
   }).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = citation; ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
-    document.body.removeChild(ta);
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
     btn.textContent = 'Copied!'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
   });
@@ -1067,13 +1093,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawe
 
 // ── URL ?doc= param ───────────────────────────────────────────────────────────
 (async function checkUrlDoc() {
-  const params = new URLSearchParams(window.location.search);
-  const docId  = params.get('doc');
+  const docId = new URLSearchParams(window.location.search).get('doc');
   if (!docId) return;
   try {
-    const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/documents/${docId}`, {
-      headers: { 'Authorization': `Bearer ${MEILI_KEY}` }
-    });
+    const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/documents/${docId}`, { headers: { 'Authorization': `Bearer ${MEILI_KEY}` } });
     if (res.ok) { const hit = await res.json(); openDrawer(hit); }
   } catch (e) {}
 })();
@@ -1102,8 +1125,7 @@ async function runSearch() {
 }
 
 function activateSearch() {
-  hero.classList.add('search-active');
-  hero.classList.remove('browse-active','fulltext-active');
+  hero.classList.add('search-active'); hero.classList.remove('browse-active','fulltext-active');
   resultsSection.classList.add('visible');
   document.getElementById('browse-section').classList.remove('visible');
   document.getElementById('fulltext-section').classList.remove('visible');
@@ -1111,11 +1133,8 @@ function activateSearch() {
 }
 
 function deactivateSearch() {
-  hero.classList.remove('search-active');
-  resultsSection.classList.remove('visible');
-  searchClear.classList.remove('visible');
-  searchCount.textContent = '';
-  closeDrawer();
+  hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
+  searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
 }
 
 searchInput.addEventListener('input', () => {
@@ -1125,11 +1144,11 @@ searchInput.addEventListener('input', () => {
 });
 searchClear.addEventListener('click', () => { searchInput.value = ''; deactivateSearch(); searchInput.focus(); });
 
-// ── FILTERS ────────────────────────────────────────────────────────────────────
+// ── FILTERS ───────────────────────────────────────────────────────────────────
 document.getElementById('source-filters').addEventListener('click', e => {
-  const pill = e.target.closest('.fpill');
+  const pill    = e.target.closest('.fpill');
   if (!pill || pill.classList.contains('disabled')) return;
-  const src = pill.dataset.source;
+  const src     = pill.dataset.source;
   const allPill = document.querySelector('#source-filters .fpill[data-source="all"]');
   if (src === 'all') {
     activeSources.clear();
@@ -1144,8 +1163,7 @@ document.getElementById('source-filters').addEventListener('click', e => {
 });
 
 document.getElementById('status-filters').addEventListener('click', e => {
-  const pill = e.target.closest('.fpill');
-  if (!pill) return;
+  const pill = e.target.closest('.fpill'); if (!pill) return;
   pill.classList.toggle('active');
   activeStatuses = [...document.querySelectorAll('#status-filters .fpill.active')].map(p => p.dataset.status);
   if (searchInput.value.trim()) runSearch();
@@ -1180,8 +1198,7 @@ document.getElementById('feedback-form').addEventListener('submit', async e => {
   btn.disabled = true; btn.textContent = 'Sending…';
   try {
     const res = await fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ access_key: 'a97fdf40-024d-4342-9253-376ed17b149f', subject: 'AcqVault Feedback',
         name: document.getElementById('fb-name').value.trim() || 'Anonymous',
         email: document.getElementById('fb-email').value.trim() || '',
@@ -1212,7 +1229,7 @@ window.addEventListener('resize', () => { resizeCanvas(); initPts(); });
 resizeCanvas(); initPts(); drawFrame();
 
 // ── TYPING ANIMATION ──────────────────────────────────────────────────────────
-const QUERIES=[["sole source justification","47"],["RFO 6.302-1 only one source","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["other than full and open competition","34"],["undefinitized contract action","12"]];
+const QUERIES=[["sole source justification","47"],["RFO 6.302-1 only one source","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["FMR volume 3 payments","34"],["AFI 63-138 services acquisition","12"],["other than full and open competition","34"],["undefinitized contract action","12"]];
 let qi=0,ci=0,del=false;
 function tick(){const el=document.getElementById('btyping'),rc=document.getElementById('bcount');if(!el)return;const[q,cnt]=QUERIES[qi];if(!del){el.textContent=q.slice(0,ci+1);ci++;if(ci===q.length){del=true;rc.textContent=cnt+' results';setTimeout(tick,2200);return;}setTimeout(tick,52);}else{el.textContent=q.slice(0,ci-1);ci--;if(ci===0){del=false;rc.textContent='— results';qi=(qi+1)%QUERIES.length;setTimeout(tick,380);return;}setTimeout(tick,26);}}
 setTimeout(tick,900);
