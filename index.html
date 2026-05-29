@@ -179,6 +179,7 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .rc-tag-rfo { background: #e8f0fe; color: #1a4aa8; }
 .rc-tag-r-dfars { background: #e6f4ea; color: #1a6634; }
 .rc-tag-far-companion { background: #f0eeff; color: #3d2799; }
+.rc-tag-compass { background: #fff4e0; color: #a05c00; }
 .rc-tag-fmr { background: #fef3c7; color: #92400e; }
 .rc-tag-afi-63-138 { background: #ffedd5; color: #9a3412; }
 .rc-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
@@ -575,7 +576,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
         <span class="b-fpill b-fpill-off">RFO</span>
         <span class="b-fpill b-fpill-off">R-DFARS</span>
         <span class="b-fpill b-fpill-off">FAR Companion</span>
-        <span class="b-fpill b-fpill-dim">DAF Compass</span>
+        <span class="b-fpill b-fpill-off">DAF Compass</span>
         <span class="b-fpill b-fpill-dim">DoD FMR</span>
         <span class="b-fpill b-fpill-dim">AFI 63-138</span>
         <span class="b-fpill b-fpill-dim">AFI 63-Series</span>
@@ -603,10 +604,10 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
           <button type="button" class="fpill" data-source="rfo" aria-pressed="false">RFO</button>
           <button type="button" class="fpill" data-source="r-dfars" aria-pressed="false">R-DFARS</button>
           <button type="button" class="fpill" data-source="far-companion" aria-pressed="false">FAR Companion</button>
+          <button type="button" class="fpill" data-source="compass" aria-pressed="false">DAF Compass</button>
         </div>
         <span class="filter-label filter-label-soft">Coming soon</span>
         <div class="filter-pill-row" aria-label="Sources coming soon">
-          <button type="button" class="fpill disabled" disabled title="Coming soon">DAF Compass</button>
           <button type="button" class="fpill disabled" disabled title="Coming soon">DoD FMR</button>
           <button type="button" class="fpill disabled" disabled title="Coming soon">AFI 63-138</button>
           <button type="button" class="fpill disabled" disabled title="Coming soon">AFI 63-Series</button>
@@ -636,10 +637,10 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
       <button type="button" class="browse-src-pill active" data-bsource="rfo" aria-pressed="true" onclick="setBrowseSource('rfo')">RFO</button>
       <button type="button" class="browse-src-pill" data-bsource="r-dfars" aria-pressed="false" onclick="setBrowseSource('r-dfars')">R-DFARS</button>
       <button type="button" class="browse-src-pill" data-bsource="far-companion" aria-pressed="false" onclick="setBrowseSource('far-companion')">FAR Companion</button>
+      <button type="button" class="browse-src-pill" data-bsource="compass" aria-pressed="false" onclick="setBrowseSource('compass')">DAF Compass</button>
     </div>
     <div class="browse-soon-bar">
       <span class="filter-label" style="margin-right:4px;">Coming soon</span>
-      <span class="browse-src-soon">DAF Compass</span>
       <span class="browse-src-soon">DoD FMR</span>
       <span class="browse-src-soon">AFI 63-138</span>
       <span class="browse-src-soon">AFI 63-Series</span>
@@ -699,11 +700,11 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
     <div class="fulltext-section-label">Coming soon</div>
     <div class="fulltext-cards">
       <div class="fulltext-card dim">
-        <span class="fulltext-card-tag" style="background:#f0f0f0;color:#bbb;">DAF Compass</span>
+        <span class="fulltext-card-tag" style="background:#fff4e0;color:#a05c00;">DAF Compass</span>
         <div class="fulltext-card-name">DAF Contracting Compass</div>
         <div class="fulltext-card-meta">
-          <span>DAF acquisition policy</span><span>Successor to DAFFARS</span>
-          <span>Manual export — CAC required</span><span>Pending ingestion</span>
+          <span>49 parts indexed</span><span>DAF acquisition policy</span>
+          <span>CAC-gated source</span><span>PDF generation pending</span>
         </div>
         <div class="fulltext-dl-btn-soon">Coming soon</div>
       </div>
@@ -771,7 +772,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
 
     <p class="srcs-label fade-up" style="transition-delay:0.14s;">Coming soon</p>
     <div class="srcs fade-up" style="transition-delay:0.18s;">
-      <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">DAF Contracting Compass</div><div class="src-desc">DAF-specific acquisition policy and guidance — the successor to DAFFARS for the Air and Space Forces acquisition community.</div><span class="src-pill src-soon">Coming soon</span></div>
+      <div class="src"><div class="src-phase">Phase 2 — Live</div><div class="src-name">DAF Contracting Compass</div><div class="src-desc">DAF-specific acquisition policy and guidance — the successor to DAFFARS for the Air and Space Forces acquisition community.</div><span class="src-pill src-live">● Live now</span></div>
       <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">DoD Financial Management Regulation</div><div class="src-desc">The DoD FMR governs financial management policy across the department — 14 volumes covering everything from appropriations to payments.</div><span class="src-pill src-soon">Coming soon</span></div>
       <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">AFI 63-138</div><div class="src-desc">Air Force Instruction 63-138, Acquisition of Services — the governing policy for services acquisition planning and execution across the AF.</div><span class="src-pill src-soon">Coming soon</span></div>
       <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">AFI 63-Series</div><div class="src-desc">AF Program Management regulations — the 63-series governs life cycle management, program execution, and acquisition oversight across AF programs.</div><span class="src-pill src-soon">Coming soon</span></div>
@@ -883,11 +884,13 @@ const SOURCE_URLS = {
   'rfo':           'https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system',
   'r-dfars':       'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide',
   'far-companion': 'https://www.acquisition.gov/far-companion',
+  'compass':       'https://usaf.dps.mil/sites/AFCC/AQCP/KnowledgeCenter/SitePages/DAF-Contracting-Compass',
   'fmr':           'https://comptroller.defense.gov/FMR/',
   'afi-63-138':    'https://www.e-publishing.af.mil/',
 };
 const SOURCE_LABELS = {
   'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion',
+  'compass': 'DAF Compass',
   'fmr': 'DoD FMR', 'afi-63-138': 'AFI 63-138',
 };
 
@@ -923,6 +926,19 @@ const PARTS_BY_SOURCE = {
     [14,'Sealed Bid'],[15,'Negotiation'],[16,'Types'],[17,'Special'],
     [19,'Small Bus'],[22,'Labor'],[25,'Foreign'],[27,'IP'],
     [31,'Cost Prin'],[32,'Financing'],[42,'Admin'],[49,'Termination'],[52,'Clauses']
+  ],
+  'compass': [
+    [1,'FAR System'],[2,'Definitions'],[3,'Ethics'],[4,'Admin'],[5,'Publicizing'],
+    [6,'Competition'],[7,'Planning'],[8,'Req Sources'],[9,'Contractor Qual'],
+    [10,'Market Research'],[11,'Describing Needs'],[12,'Commercial Items'],[13,'Simplified'],
+    [14,'Sealed Bid'],[15,'Negotiation'],[16,'Contract Types'],[17,'Special'],
+    [18,'Emergency'],[19,'Small Business'],[22,'Labor'],[23,'Environment'],
+    [25,'Foreign'],[26,'Socioeconomic'],[27,'IP'],[28,'Bonds'],[29,'Taxes'],
+    [30,'CAS'],[31,'Cost Principles'],[32,'Financing'],[33,'Disputes'],
+    [36,'Construction'],[37,'Services'],[39,'IT'],[42,'Admin & Audit'],
+    [43,'Modifications'],[44,'Subcontracting'],[45,'GFP'],[46,'Quality'],
+    [47,'Transport'],[49,'Termination'],[50,'Extraordinary'],[51,'Facilities'],
+    [52,'Clauses'],[53,'Forms']
   ]
 };
 
@@ -1549,7 +1565,7 @@ function openDrawer(hit) {
   copyBtn.onclick = () => copyCitation(citation, copyBtn);
   document.getElementById('drawer-content').innerHTML = formatContent(hit.content || '', hit);
   document.getElementById('drawer-meta').innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
-  document.getElementById('drawer-orig').href = SOURCE_URLS[hit.source] || '#';
+  document.getElementById('drawer-orig').href = hit.url || SOURCE_URLS[hit.source] || '#';
   const newTabUrl = new URL(window.location.href);
   newTabUrl.searchParams.set('view', 'reader');
   newTabUrl.searchParams.set('doc', hit.id);
