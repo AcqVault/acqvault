@@ -200,23 +200,168 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── BROWSE SECTION ── */
-#browse-section { display: none; background: #fff; min-height: 60vh; }
+#browse-section { display: none; background: #f5f5f7; min-height: 100vh; }
 #browse-section.visible { display: block; }
-.browse-inner { max-width: 980px; margin: 0 auto; padding: 28px 24px 80px; }
-.browse-source-bar { position: sticky; top: var(--top-chrome); z-index: 40; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 16px 0; border-bottom: 0.5px solid #ebebeb; margin-bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(18px) saturate(180%); -webkit-backdrop-filter: blur(18px) saturate(180%); }
-.browse-src-pill { font-size: 13px; font-weight: 700; letter-spacing: 0; padding: 7px 16px; border-radius: 20px; cursor: pointer; border: 0.5px solid #d7d7dc; color: #555b63; background: #fff; transition: all 0.15s; font-family: 'Inter', sans-serif; }
-.browse-src-pill:hover { border-color: #9ea3aa; color: #1f2328; background: #fafafa; }
+
+/* ── SOURCE BAR (sticky) ── */
+.browse-source-bar {
+  position: sticky; top: var(--top-chrome); z-index: 40;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 0.5px solid #e8e8e8;
+  padding: 0; display: flex; flex-direction: column;
+}
+.browse-source-bar-inner {
+  max-width: 1100px; margin: 0 auto; width: 100%;
+  padding: 14px 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.browse-source-bar-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #bbb; margin-right: 4px;
+}
+.browse-src-pill {
+  font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em;
+  padding: 6px 15px; border-radius: 20px; cursor: pointer;
+  border: 0.5px solid #e0e0e0; color: #666; background: #fff;
+  transition: all 0.12s; font-family: 'Inter', sans-serif;
+}
+.browse-src-pill:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,113,227,0.04); }
 .browse-src-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
-.browse-parts-label { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #6f747c; margin: 26px 0 12px; }
-.parts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-bottom: 32px; }
-.part-tile { border: 0.5px solid #dedee3; border-radius: 10px; padding: 12px 6px 10px; text-align: center; cursor: pointer; transition: border-color 0.12s, background 0.12s, box-shadow 0.12s, transform 0.12s; background: #fff; font-family: 'Inter', sans-serif; min-height: 66px; }
-.part-tile:hover { border-color: var(--accent); background: #f0f7ff; box-shadow: 0 6px 18px rgba(0,113,227,0.12); transform: translateY(-1px); }
-.part-tile.active { border-color: var(--accent); background: #f0f7ff; }
-.part-tile-num { font-size: 17px; font-weight: 700; color: #0a0a0a; display: block; letter-spacing: 0; line-height: 1; margin-bottom: 4px; }
-.part-tile.active .part-tile-num { color: var(--accent); }
-.part-tile-label { font-size: 9px; color: #656b74; display: block; line-height: 1.3; letter-spacing: 0; }
-.browse-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-top: 8px; border-top: 0.5px solid #ebebeb; }
-.browse-results-title { font-size: 16px; font-weight: 700; letter-spacing: 0; color: #0a0a0a; }
+.browse-src-soon { font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em; padding: 6px 15px; border-radius: 20px; border: 0.5px solid #f0f0f0; color: #ccc; background: #fafafa; cursor: not-allowed; font-family: 'Inter', sans-serif; }
+
+/* ── BROWSE LAYOUT ── */
+.browse-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  max-width: 1100px; margin: 0 auto;
+  min-height: calc(100vh - 140px);
+}
+
+/* ── LEFT: PART PICKER ── */
+.browse-parts-panel {
+  border-right: 0.5px solid #e8e8e8;
+  background: #fff;
+  padding: 20px 0;
+  position: sticky; top: calc(var(--top-chrome) + 53px);
+  max-height: calc(100vh - var(--top-chrome) - 53px);
+  overflow-y: auto;
+}
+.browse-parts-panel::-webkit-scrollbar { width: 3px; }
+.browse-parts-panel::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 3px; }
+.browse-parts-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #bbb; padding: 0 20px 10px;
+}
+.parts-grid {
+  display: flex; flex-direction: column; gap: 1px; padding: 0 8px;
+}
+.part-tile {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px; cursor: pointer;
+  border: none; background: transparent;
+  font-family: 'Inter', sans-serif; text-align: left;
+  transition: background 0.1s; width: 100%;
+}
+.part-tile:hover { background: #f5f5f7; }
+.part-tile.active { background: rgba(0,113,227,0.08); }
+.part-tile-num {
+  font-size: 11px; font-weight: 700; color: var(--accent);
+  min-width: 30px; flex-shrink: 0; letter-spacing: 0;
+}
+.part-tile-label {
+  font-size: 12.5px; color: #444; line-height: 1.3;
+  letter-spacing: -0.01em; font-weight: 400;
+}
+.part-tile.active .part-tile-label { color: var(--accent); font-weight: 600; }
+
+/* ── RIGHT: READER ── */
+.browse-reader {
+  background: #fff; padding: 0;
+  border-left: none;
+}
+.browse-reader-inner { max-width: 760px; margin: 0 auto; padding: 40px 40px 100px; }
+
+/* Reader header */
+.br-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid #0a0a0a; }
+.br-source-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; }
+.br-part-num { font-size: 13px; font-weight: 700; color: #aaa; letter-spacing: -0.01em; margin-bottom: 6px; }
+.br-part-title { font-size: 32px; font-weight: 800; letter-spacing: -0.05em; color: #0a0a0a; line-height: 1.1; margin-bottom: 10px; }
+.br-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: #aaa; letter-spacing: -0.01em; }
+.br-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: #ddd; }
+
+/* Table of contents */
+.br-toc {
+  background: #f8f8fa; border: 0.5px solid #ebebeb; border-radius: 14px;
+  padding: 20px 24px; margin-bottom: 40px;
+}
+.br-toc-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; margin-bottom: 14px; }
+.br-toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.br-toc-subpart { margin-top: 10px; }
+.br-toc-subpart-label {
+  font-size: 11px; font-weight: 700; letter-spacing: -0.01em; color: #888;
+  padding: 4px 0; display: block; text-transform: none;
+}
+.br-toc-link {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 4px 8px; border-radius: 6px; text-decoration: none;
+  transition: background 0.1s; cursor: pointer;
+}
+.br-toc-link:hover { background: #efefef; }
+.br-toc-link-num { font-size: 11px; font-weight: 700; color: var(--accent); min-width: 44px; flex-shrink: 0; }
+.br-toc-link-title { font-size: 12.5px; color: #555; letter-spacing: -0.01em; line-height: 1.35; }
+
+/* Sections */
+.br-section { margin-bottom: 40px; scroll-margin-top: 120px; }
+.br-section-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px; margin-bottom: 14px;
+}
+.br-section-title-block { flex: 1; }
+.br-subpart-heading {
+  font-size: 20px; font-weight: 800; letter-spacing: -0.04em; color: #0a0a0a;
+  margin: 36px 0 6px; padding-bottom: 8px; border-bottom: 1.5px solid #0a0a0a;
+  line-height: 1.2;
+}
+.br-section-num { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0; margin-bottom: 4px; }
+.br-section-heading { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: #0a0a0a; line-height: 1.3; }
+.br-cite-btn {
+  flex-shrink: 0; font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; background: #f2f2f2; border: none; border-radius: 6px;
+  padding: 5px 10px; cursor: pointer; color: #888; font-family: 'Inter', sans-serif;
+  transition: background 0.12s, color 0.12s; margin-top: 2px;
+}
+.br-cite-btn:hover { background: var(--accent); color: #fff; }
+.br-cite-btn.copied { background: #28c840; color: #fff; }
+.br-body { font-size: 14.5px; color: #333; line-height: 1.78; letter-spacing: -0.01em; }
+.br-body .br-p { margin-bottom: 8px; }
+.br-body .br-l1 { padding-left: 22px; margin-bottom: 5px; }
+.br-body .br-l2 { padding-left: 44px; margin-bottom: 4px; color: #444; }
+.br-body .br-l3 { padding-left: 66px; margin-bottom: 4px; color: #555; }
+.br-body .br-l4 { padding-left: 88px; margin-bottom: 4px; color: #666; }
+.br-divider { height: 0.5px; background: #f0f0f0; margin: 36px 0; }
+
+/* Empty/loading states */
+.browse-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; text-align: center; padding: 60px 24px; }
+.browse-empty-icon { font-size: 40px; margin-bottom: 18px; opacity: 0.3; }
+.browse-empty-title { font-size: 18px; font-weight: 700; color: #aaa; letter-spacing: -0.03em; margin-bottom: 8px; }
+.browse-empty-sub { font-size: 14px; color: #ccc; max-width: 320px; line-height: 1.5; }
+
+/* Back to top */
+.br-back-top { display: inline-flex; align-items: center; gap: 6px; margin-top: 40px; font-size: 13px; font-weight: 600; color: #aaa; cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; padding: 0; letter-spacing: -0.01em; transition: color 0.15s; }
+.br-back-top:hover { color: var(--accent); }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .browse-layout { grid-template-columns: 1fr; }
+  .browse-parts-panel { position: static; max-height: 220px; border-right: none; border-bottom: 0.5px solid #e8e8e8; }
+  .parts-grid { flex-direction: row; flex-wrap: wrap; }
+  .part-tile { width: auto; flex: none; }
+  .browse-reader-inner { padding: 24px 18px 80px; }
+  .br-part-title { font-size: 24px; }
+}
+
+.browse-results-header { display: none; }
 .browse-results-count { font-size: 13px; color: #aaa; }
 #browse-results-list { display: flex; flex-direction: column; gap: 8px; }
 .browse-soon-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 0 16px; border-bottom: 0.5px solid #ebebeb; }
@@ -558,7 +703,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
   <!-- MODE TOGGLE -->
   <div class="mode-toggle">
     <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
-    <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" onclick="setMode('browse')">⊞ Browse by Part</button>
+    <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" onclick="setMode('browse')">⊞ Browse by Regulation &amp; Part</button>
     <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ Full Text</button>
   </div>
   <div class="hero-source-strip" aria-label="Live sources">
@@ -642,30 +787,49 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
 
 <!-- BROWSE BY PART -->
 <div id="browse-section">
-  <div class="browse-inner">
-    <div class="browse-source-bar">
-      <span class="filter-label" style="margin-right:4px;">Live sources</span>
+
+  <!-- Sticky source bar -->
+  <div class="browse-source-bar">
+    <div class="browse-source-bar-inner">
+      <span class="browse-source-bar-label">Regulation</span>
       <button type="button" class="browse-src-pill active" data-bsource="rfo" aria-pressed="true" onclick="setBrowseSource('rfo')">RFO</button>
       <button type="button" class="browse-src-pill" data-bsource="r-dfars" aria-pressed="false" onclick="setBrowseSource('r-dfars')">R-DFARS</button>
       <button type="button" class="browse-src-pill" data-bsource="far-companion" aria-pressed="false" onclick="setBrowseSource('far-companion')">FAR Companion</button>
       <button type="button" class="browse-src-pill" data-bsource="compass" aria-pressed="false" onclick="setBrowseSource('compass')">DAF Compass</button>
-    </div>
-    <div class="browse-soon-bar">
-      <span class="filter-label" style="margin-right:4px;">Coming soon</span>
       <span class="browse-src-soon">DoD FMR</span>
       <span class="browse-src-soon">AFI 63-138</span>
       <span class="browse-src-soon">AFI 63-Series</span>
     </div>
-    <div class="browse-parts-label">Select a part</div>
-    <div class="parts-grid" id="parts-grid"></div>
-    <div id="browse-results-area" style="display:none;">
-      <div class="browse-results-header">
-        <div class="browse-results-title" id="browse-results-title">Part —</div>
-        <div class="browse-results-count" id="browse-results-count"></div>
-      </div>
-      <div id="browse-results-list"></div>
-    </div>
   </div>
+
+  <!-- Two-col layout: part picker + reader -->
+  <div class="browse-layout">
+
+    <!-- Left: part list -->
+    <div class="browse-parts-panel">
+      <div class="browse-parts-label">Select a Part</div>
+      <div class="parts-grid" id="parts-grid"></div>
+    </div>
+
+    <!-- Right: full part reader -->
+    <div class="browse-reader" id="browse-reader">
+      <div class="browse-reader-inner" id="browse-reader-inner">
+        <div class="browse-empty" id="browse-empty">
+          <div class="browse-empty-icon">⊞</div>
+          <div class="browse-empty-title">Select a part to read</div>
+          <div class="browse-empty-sub">Choose a regulation and part from the left panel. The full text loads here — table of contents, all sections, inline citations.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Hidden legacy IDs so old JS doesn't break -->
+  <div id="browse-results-area" style="display:none;"></div>
+  <div id="browse-results-list" style="display:none;"></div>
+  <div id="browse-results-title" style="display:none;"></div>
+  <div id="browse-results-count" style="display:none;"></div>
+
 </div>
 
 <!-- FULL TEXT -->
@@ -935,16 +1099,27 @@ const SOURCE_LABELS = {
 // ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
 const PARTS_BY_SOURCE = {
   'rfo': [
-    [1,'General'],[2,'Definitions'],[3,'Ethics'],[4,'Admin'],[5,'Publicizing'],
-    [6,'Competition'],[7,'Planning'],[8,'Req Sources'],[9,'Contractor Qual'],
-    [10,'Market Research'],[11,'Describing Needs'],[12,'Commercial Items'],[13,'Simplified'],
-    [14,'Sealed Bid'],[15,'Negotiation'],[16,'Contract Types'],[17,'Special'],
-    [18,'Emergency'],[19,'Small Business'],[22,'Labor'],[23,'Environment'],
-    [25,'Foreign'],[26,'Socioeconomic'],[27,'IP'],[28,'Bonds'],[29,'Taxes'],
-    [30,'CAS'],[31,'Cost Principles'],[32,'Financing'],[33,'Disputes'],
-    [36,'Construction'],[37,'Services'],[39,'IT'],[42,'Admin & Audit'],
-    [43,'Modifications'],[44,'Subcontracting'],[45,'GFP'],[46,'Quality'],
-    [47,'Transport'],[49,'Termination'],[51,'Facilities'],[52,'Clauses'],[53,'Forms']
+    [1,'Federal Acquisition Regulations System'],[2,'Definitions of Words and Terms'],
+    [3,'Improper Business Practices and Personal Conflicts of Interest'],
+    [4,'Administrative and Information Matters'],[5,'Publicizing Contract Actions'],
+    [6,'Competition Requirements'],[7,'Acquisition Planning'],
+    [8,'Required Sources of Supplies and Services'],[9,'Contractor Qualifications'],
+    [10,'Market Research'],[11,'Describing Agency Needs'],
+    [12,'Acquisition of Commercial Products and Services'],
+    [13,'Simplified Procedures for Noncommercial Acquisitions'],[14,'Sealed Bidding'],
+    [15,'Contracting by Negotiation'],[16,'Types of Contracts'],[17,'Special Contracting Methods'],
+    [18,'Emergency Acquisitions'],[19,'Small Business Programs'],[22,'Application of Labor Laws'],
+    [23,'Environment, Energy, and Water Efficiency'],[25,'Foreign Acquisition'],
+    [26,'Other Socioeconomic Programs'],[27,'Patents, Data, and Copyrights'],
+    [28,'Bonds and Insurance'],[29,'Taxes'],[30,'Cost Accounting Standards'],
+    [31,'Contract Cost Principles and Procedures'],[32,'Contract Financing'],
+    [33,'Protests, Disputes, and Appeals'],[36,'Construction and Architect-Engineer Contracts'],
+    [37,'Service Contracting'],[39,'Acquisition of Information Technology'],
+    [42,'Contract Administration and Audit Services'],[43,'Contract Modifications'],
+    [44,'Subcontracting Policies and Procedures'],[45,'Government Property'],
+    [46,'Quality Assurance'],[47,'Transportation'],[49,'Termination of Contracts'],
+    [51,'Use of Government Sources by Contractors'],[52,'Solicitation Provisions and Contract Clauses'],
+    [53,'Forms']
   ],
   'r-dfars': [
     [201,'Fed A-R Sys'],[202,'Definitions'],[203,'Ethics'],[204,'Admin'],[205,'Publicizing'],
@@ -1034,22 +1209,20 @@ function setMode(mode) {
   }
 }
 
-// ── BROWSE — PARTS GRID ───────────────────────────────────────────────────────
+// ── BROWSE — PART LIST + FULL READER ─────────────────────────────────────────
+
 function renderPartsGrid(source) {
   const grid  = document.getElementById('parts-grid');
   const parts = PARTS_BY_SOURCE[source] || [];
-  grid.innerHTML = parts.map(([num, label]) =>
-    `<button type="button" class="part-tile${browseActivePart === num && browseSrc === source ? ' active' : ''}"
-          data-part="${num}" data-label="${esc(label)}" aria-pressed="${browseActivePart === num && browseSrc === source ? 'true' : 'false'}">
+  grid.innerHTML = parts.map(([num, label]) => {
+    const active = browseActivePart === num && browseSrc === source;
+    return `<button type="button" class="part-tile${active ? ' active' : ''}"
+      data-part="${num}" data-label="${esc(label)}" aria-pressed="${active}"
+      onclick="selectPart(this,${num},this.dataset.label)">
       <span class="part-tile-num">${num}</span>
       <span class="part-tile-label">${esc(label)}</span>
-    </button>`
-  ).join('');
-  grid.querySelectorAll('.part-tile').forEach(tile => {
-    tile.addEventListener('click', () => selectPart(tile, Number(tile.dataset.part), tile.dataset.label));
-  });
-  document.getElementById('browse-results-area').style.display = 'none';
-  document.getElementById('browse-results-list').innerHTML = '';
+    </button>`;
+  }).join('');
 }
 
 function setBrowseSource(source) {
@@ -1060,6 +1233,121 @@ function setBrowseSource(source) {
     p.setAttribute('aria-pressed', String(active));
   });
   renderPartsGrid(source);
+  // Reset reader to empty state
+  document.getElementById('browse-reader-inner').innerHTML =
+    `<div class="browse-empty" id="browse-empty">
+      <div class="browse-empty-icon">⊞</div>
+      <div class="browse-empty-title">Select a part to read</div>
+      <div class="browse-empty-sub">Choose a part from the left panel to load the full text.</div>
+    </div>`;
+}
+
+// ── RENDER CONTENT LINE ───────────────────────────────────────────────────────
+// Converts an L{n}:text line (or plain text) into an HTML element with right indent
+function renderContentLine(line) {
+  const lm = line.match(/^L(\d):(.*)/);
+  if (lm) {
+    const level = parseInt(lm[1]);
+    const text  = esc(lm[2].trim());
+    if (!text) return '';
+    if (level === 0) return `<p class="br-p">${text}</p>`;
+    return `<p class="br-l${Math.min(level,4)}">${text}</p>`;
+  }
+  // Plain text
+  const t = line.trim();
+  if (!t) return '';
+  return `<p class="br-p">${esc(t)}</p>`;
+}
+
+// ── CITE A SECTION ────────────────────────────────────────────────────────────
+function brCopy(citation, btn) {
+  navigator.clipboard.writeText(citation).catch(() => {});
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Cite'; btn.classList.remove('copied'); }, 2000);
+}
+
+// ── BUILD FULL READER HTML FROM HITS ─────────────────────────────────────────
+function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
+  const srcLabel  = SOURCE_LABELS[source] || source.toUpperCase();
+  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff'}[source] || '#f0f0f0';
+  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799'}[source] || '#666';
+
+  // Build TOC from hits
+  const tocItems = hits.map(hit => {
+    const title = hit.title || '';
+    const secM  = title.match(/^(\d{1,3}[\d.]*(?:-\d+)*)\s+(.*)/);
+    const subM  = title.match(/^(Subpart\s+[\d.]+)\s*[-–]?\s*(.*)/i);
+    const anchor = `sec-${hit.id}`;
+    if (subM) return { type: 'subpart', num: subM[1], label: subM[2], anchor };
+    if (secM) return { type: 'section', num: secM[1], label: secM[2], anchor };
+    return { type: 'other', num: '', label: title, anchor };
+  });
+
+  const tocHTML = `<div class="br-toc">
+    <div class="br-toc-title">Contents</div>
+    <ul class="br-toc-list">
+      ${tocItems.map(item => {
+        if (item.type === 'subpart') {
+          return `<li class="br-toc-subpart"><span class="br-toc-subpart-label">${esc(item.num)} — ${esc(item.label)}</span></li>`;
+        }
+        return `<li><a class="br-toc-link" onclick="document.getElementById('${item.anchor}')?.scrollIntoView({behavior:'smooth',block:'start'});return false;" href="#">
+          <span class="br-toc-link-num">${esc(item.num || '—')}</span>
+          <span class="br-toc-link-title">${esc(item.label)}</span>
+        </a></li>`;
+      }).join('')}
+    </ul>
+  </div>`;
+
+  // Build sections
+  const sectionsHTML = hits.map((hit, i) => {
+    const title   = hit.title || 'Untitled';
+    const secM    = title.match(/^(\d{1,3}[\d.]*(?:-\d+)*)\s+(.*)/);
+    const subM    = title.match(/^(Subpart\s+[\d.]+)\s*[-–]?\s*(.*)/i);
+    const anchor  = `sec-${hit.id}`;
+    const citation = generateCitation(hit);
+    const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
+    const lines    = content.split('\n').filter(l => l.trim());
+    const bodyHTML = lines.map(renderContentLine).join('');
+
+    if (subM) {
+      return `<div id="${anchor}" class="br-section">
+        <div class="br-subpart-heading">${esc(subM[1])} — ${esc(subM[2])}</div>
+        <div class="br-body">${bodyHTML}</div>
+      </div>`;
+    }
+
+    return `<div id="${anchor}" class="br-section">
+      ${i > 0 ? '<div class="br-divider"></div>' : ''}
+      <div class="br-section-header">
+        <div class="br-section-title-block">
+          ${secM ? `<div class="br-section-num">${esc(secM[1])}</div>` : ''}
+          <div class="br-section-heading">${esc(secM ? secM[2] : title)}</div>
+        </div>
+        <button class="br-cite-btn" data-cite="${citation}" onclick="brCopy(this.dataset.cite,this)">Cite</button>
+      </div>
+      <div class="br-body">${bodyHTML}</div>
+    </div>`;
+  }).join('');
+
+  const date = hits[0]?.date || '';
+
+  return `
+    <div class="br-header">
+      <span class="br-source-badge" style="background:${tagStyle.split(';')[0].replace('background:','#').replace('#','')};color:${tagStyle.split(';color:')[1]}">${srcLabel}</span>
+      <div class="br-part-num">Part ${partNum}</div>
+      <div class="br-part-title">${esc(partLabel)}</div>
+      <div class="br-meta">
+        <span>${docCount} section${docCount !== 1 ? 's' : ''}</span>
+        ${date ? `<span class="br-meta-dot"></span><span>Issued ${esc(date)}</span>` : ''}
+        <span class="br-meta-dot"></span>
+        <span>${srcLabel}</span>
+      </div>
+    </div>
+    ${tocHTML}
+    ${sectionsHTML}
+    <button class="br-back-top" onclick="document.getElementById('browse-reader').scrollIntoView({behavior:'smooth',block:'start'})">↑ Back to top</button>
+  `;
 }
 
 function indexPartForSource(source, part) {
@@ -1076,48 +1364,47 @@ function displayPartForSource(source, part) {
 
 async function selectPart(tile, partNum, partLabel) {
   browseActivePart = partNum;
+  // Update active tile
   document.querySelectorAll('.part-tile').forEach(t => {
-    t.classList.remove('active');
-    t.setAttribute('aria-pressed', 'false');
+    const active = parseInt(t.dataset.part) === partNum;
+    t.classList.toggle('active', active);
+    t.setAttribute('aria-pressed', String(active));
   });
-  tile.classList.add('active');
-  tile.setAttribute('aria-pressed', 'true');
-  const resultsArea = document.getElementById('browse-results-area');
-  const resultsList = document.getElementById('browse-results-list');
-  resultsArea.style.display = 'block';
-  document.getElementById('browse-results-title').textContent = `Part ${partNum} — ${partLabel}`;
-  document.getElementById('browse-results-count').textContent = '';
-  resultsList.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  setTimeout(() => resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+  // Show loading state in reader
+  const reader = document.getElementById('browse-reader-inner');
+  reader.innerHTML = '<div class="browse-empty"><div class="spinner" style="margin:0 auto 16px;"></div><div class="browse-empty-sub">Loading Part ' + partNum + '…</div></div>';
+  document.getElementById('browse-reader').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
   try {
     const indexPart = indexPartForSource(browseSrc, partNum);
     const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MEILI_KEY}` },
-      body: JSON.stringify({ q: '', filter: `source = "${browseSrc}" AND part = "${indexPart}"`, limit: 40,
-        attributesToHighlight: ['title','content'], highlightPreTag: '<mark>', highlightPostTag: '</mark>',
-        attributesToCrop: ['content'], cropLength: 180 })
+      body: JSON.stringify({
+        q: '', limit: 60,
+        filter: `source = "${browseSrc}" AND part = "${indexPart}"`,
+        attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
+      })
     });
-    if (!res.ok) throw new Error('Browse search failed');
     const data = await res.json();
+    if (!res.ok) {
+      const errMsg = data?.message || data?.error || `HTTP ${res.status}`;
+      throw new Error(`Meilisearch: ${errMsg}`);
+    }
     const hits  = data.hits || [];
-    const total = data.estimatedTotalHits || hits.length;
-    document.getElementById('browse-results-count').textContent = `${total} document${total !== 1 ? 's' : ''}`;
-    if (!hits.length) { resultsList.innerHTML = '<div class="no-results"><strong>No documents found</strong>This part may not be indexed for this source yet.</div>'; return; }
-    resultsList.innerHTML = hits.map(hit => {
-      const hl = hit._formatted || hit;
-      return `<div class="result-card" data-id="${hit.id}">
-        <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
-        <div class="rc-title">${hl.title || hit.title || 'Untitled'}</div>
-        ${hit.filename ? `<div class="rc-ref">${hit.filename}</div>` : ''}
-        <div class="rc-snippet">${hl.content || ''}</div>
-      </div>`;
-    }).join('');
-    resultsList.querySelectorAll('.result-card').forEach(card => {
-      card.addEventListener('click', () => { const hit = hits.find(h => h.id === card.dataset.id); if (hit) openDrawer(hit); });
-    });
-  } catch (e) {
-    resultsList.innerHTML = '<div class="no-results"><strong>Search unavailable</strong>Please try again in a moment.</div>';
+    if (!hits.length) {
+      reader.innerHTML = '<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No content found</div><div class="browse-empty-sub">This part may not be indexed yet for this source.</div></div>';
+      return;
+    }
+    try {
+      reader.innerHTML = buildReaderHTML(hits, browseSrc, partNum, partLabel, hits.length);
+    } catch(buildErr) {
+      console.error('buildReaderHTML error:', buildErr);
+      reader.innerHTML = `<div class="browse-empty"><div class="browse-empty-icon">⚠</div><div class="browse-empty-title">Render error</div><div class="browse-empty-sub">${buildErr.message} — check console for details</div></div>`;
+    }
+  } catch(e) {
+    console.error('Browse error:', e); reader.innerHTML = `<div class="browse-empty"><div class="browse-empty-icon">⚠</div><div class="browse-empty-title">Unable to load</div><div class="browse-empty-sub">${e.message || e}</div></div>`;
   }
 }
 
@@ -1383,6 +1670,8 @@ function formatContent(text, hit) {
   }
   return html;
 }
+
+function cleanSnippet(t){return t?t.replace(/L\d:/g,"").replace(/\s+/g," ").trim():"";}
 
 function esc(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
