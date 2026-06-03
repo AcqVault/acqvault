@@ -1334,7 +1334,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
 
   return `
     <div class="br-header">
-      <span class="br-source-badge" style="background:${tagStyle.split(';')[0].replace('background:','#').replace('#','')};color:${tagStyle.split(';color:')[1]}">${srcLabel}</span>
+      <span class="br-source-badge" style="background:${tagBg};color:${tagClr}">${srcLabel}</span>
       <div class="br-part-num">Part ${partNum}</div>
       <div class="br-part-title">${esc(partLabel)}</div>
       <div class="br-meta">
