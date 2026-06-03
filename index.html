@@ -277,9 +277,9 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .drawer-dl dd { font-size: 13px; color: #333; letter-spacing: 0; line-height: 1.45; }
 .drawer-content { border-top: 0.5px solid #ebebeb; padding-top: 16px; margin-top: 4px; word-break: break-word; }
 .dc-part { font-size: 10.5px; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; color: #0a0a0a; margin: 22px 0 8px; padding-bottom: 7px; border-bottom: 1.5px solid #0a0a0a; }
+.dc-part:first-child { margin-top: 0; }
 .dc-toc-entry { color: #555; font-weight: 500; }
 .dc-toc-entry.dc-section { border-left: none; font-size: 12.5px; }
-.dc-part:first-child { margin-top: 0; }
 .dc-subpart { font-size: 13px; font-weight: 700; letter-spacing: 0; color: #111; margin: 14px 0 5px; border-left: 2.5px solid var(--accent); padding-left: 10px; display: flex; align-items: baseline; gap: 6px; }
 .dc-section { font-size: 13px; font-weight: 700; color: #222; margin: 10px 0 4px; letter-spacing: 0; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
 .dc-text { font-size: 13px; color: #3f444b; line-height: 1.78; margin: 3px 0; }
@@ -370,10 +370,10 @@ p.sec-sub { font-size: 19px; letter-spacing: 0; line-height: 1.55; max-width: 54
 p.sec-sub-dark { color: #555b63; } p.sec-sub-light { color: #b3b3b9; }
 .feats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 64px; }
 .feat { background: #fff; border: 0.5px solid #d7dbe2; border-radius: 14px; padding: 30px 26px; transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
-.feat-clickable { cursor: pointer; position: relative; }
+.feat-clickable { cursor: pointer; }
 .feat-clickable:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 16px rgba(0,113,227,0.10); transform: translateY(-2px); }
-.feat-clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 14px; }
-.feat-cta { display: inline-block; margin-top: 16px; font-size: 12px; font-weight: 700; letter-spacing: -0.01em; color: var(--accent); transition: gap 0.15s; }
+.feat-clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.feat-cta { display: inline-block; margin-top: 16px; font-size: 12px; font-weight: 700; letter-spacing: -0.01em; color: var(--accent); }
 .feat-clickable:hover .feat-cta { text-decoration: underline; }
 .feat-stat-num { font-size: 52px; font-weight: 800; letter-spacing: -0.06em; color: #000; line-height: 1; margin-bottom: 4px; }
 .feat-stat-label { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #aaa; }
@@ -757,19 +757,19 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
     <h2 class="sec-head fade-up">Acquisition research<br>without the friction.</h2>
     <p class="sec-sub sec-sub-dark fade-up">Navigating acquisition.gov tabs, Federal Register alerts, and scattered PDFs shouldn't be your job. Researching what they say should be.</p>
     <div class="feats">
-      <div class="feat feat-clickable fade-up" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);" title="Go to Search">
+      <div class="feat feat-clickable fade-up" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);">
         <div class="feat-icon">⌕</div>
         <div class="feat-title">Full-text search</div>
         <div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, DoD FMR, AFI 63-138, and more — simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div>
         <div class="feat-cta">Try it → Search</div>
       </div>
-      <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);" title="Browse by Part">
+      <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);">
         <div class="feat-icon">⊞</div>
         <div class="feat-title">Browse by Part</div>
         <div class="feat-desc">Navigate by FAR part number across all sources. Select a source, pick a part, and drill into every indexed section without typing a search query.</div>
         <div class="feat-cta">Try it → Browse by Part</div>
       </div>
-      <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);" title="Full Text PDFs">
+      <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);">
         <div class="feat-icon">↓</div>
         <div class="feat-title">Full text PDFs</div>
         <div class="feat-desc">Download pre-generated, AcqVault-watermarked PDFs of the full RFO, R-DFARS, and FAR Companion. Updated monthly from the live index.</div>
@@ -1156,52 +1156,8 @@ function formatContent(text, hit) {
   if (!text) return '<div class="dc-text" style="color:#bbb;font-style:italic;">No content available.</div>';
   const srcLabel = SOURCE_LABELS[hit.source] || (hit.source || 'Document').toUpperCase();
   const baseCite = generateCitation(hit);
-  const rawLines = text.split('\n');
+  const lines    = text.split('\n');
   let html = '', curSection = null, paragraphNodes = [];
-
-  // ── TWO-COLUMN MERGE SPLITTER ──────────────────────────────────────────────
-  // Detects lines like "1.102 Title text. 1.402-1 Other title." and splits them.
-  // Pattern: a section number, some text, a period, then ANOTHER section number.
-  function splitMergedLine(line) {
-    // Match: sectionNum text. sectionNum text (two section refs on same line)
-    const splitPattern = /^(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*\s+[^.]+?\.\s*)(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*.*)$/;
-    const m = line.match(splitPattern);
-    if (m) return [m[1].trim(), m[2].trim()];
-    // Also catch: "plain text fragment. 1.XXX Section title" (continuation + new section)
-    const fragPattern = /^([^.]+\.\s+)(\d{1,3}\.\d{1,6}(?:-\d+)?\s+[A-Z].*)$/;
-    const m2 = line.match(fragPattern);
-    if (m2 && !m2[1].match(/^\d{1,3}\.\d/)) return [m2[1].trim(), m2[2].trim()];
-    return null;
-  }
-
-  // Pre-process lines: split any merged two-column lines into separate lines
-  const lines = [];
-  for (const raw of rawLines) {
-    const line = raw.trim();
-    if (!line) { lines.push(''); continue; }
-    // Only try to split lines that look like section entries (contain a section number pattern)
-    if (/\d{1,3}\.\d{3,6}(?:-\d+)?/.test(line)) {
-      const split = splitMergedLine(line);
-      if (split) { lines.push(split[0]); lines.push(split[1]); continue; }
-    }
-    lines.push(line);
-  }
-
-  // ── TOC DETECTION ─────────────────────────────────────────────────────────
-  // A "TOC block" is a run of lines at the start of content that look like a
-  // table of contents: section number + short title, no body text. We detect
-  // it as lines where >60% of non-empty lines match section number patterns and
-  // lines are short (< 100 chars). TOC entries get no CITE button.
-  function looksLikeTocLine(line) {
-    return /^\d{1,3}\.\d{1,6}(?:-\d+)?\s+[A-Z]/.test(line) && line.length < 120;
-  }
-  // Scan first 30 non-empty lines to decide if this doc starts with a TOC
-  const firstLines = lines.filter(l => l.trim()).slice(0, 30);
-  const tocLineCount = firstLines.filter(looksLikeTocLine).length;
-  const inTocZone = tocLineCount >= firstLines.length * 0.5; // >50% TOC-style = TOC block
-
-  // Once we see body paragraphs (indented, long prose), we're past the TOC
-  let pastToc = false;
 
   function buildCite() {
     if (!curSection) return baseCite;
@@ -1348,46 +1304,70 @@ function formatContent(text, hit) {
     return valid ? tokens : null;
   }
 
-  // Whether a paragraph line looks like body prose (long, or starts with paragraph token)
-  function isBodyContent(line) {
-    if (leadingParagraphTokens(line)) return true; // (a)(1)(i) style = body
-    if (line.length > 120) return true;             // long lines = body prose
-    return false;
+  // ── TWO-COLUMN MERGE SPLITTER ─────────────────────────────────────────────
+  // Detects lines like "1.102 Title. 1.402-1 Other title." and splits them.
+  const splitMergedLine = (line) => {
+    const sp = /^(\d{1,3}\.\d{1,6}(?:-\d+)?\s+[^.]+?\.\s*)(\d{1,3}\.\d{1,6}(?:-\d+)?\s+[A-Z].*)$/;
+    const m = line.match(sp);
+    return m ? [m[1].trim(), m[2].trim()] : null;
+  };
+  const processedLines = [];
+  for (const raw of lines) {
+    const l = raw.trim();
+    if (l && /\d{1,3}\.\d{3,6}(?:-\d+)?/.test(l)) {
+      const split = splitMergedLine(l);
+      if (split) { processedLines.push(split[0], split[1]); continue; }
+    }
+    processedLines.push(l);
   }
 
-  for (const line of lines) {
+  // ── TOC ZONE DETECTION ────────────────────────────────────────────────────
+  const looksLikeTocLine = (l) => /^\d{1,3}\.\d{1,6}(?:-\d+)?\s+[A-Z]/.test(l) && l.length < 120;
+  const firstNonEmpty = processedLines.filter(l => l.trim()).slice(0, 30);
+  const tocCount = firstNonEmpty.filter(looksLikeTocLine).length;
+  const inTocZone = tocCount >= firstNonEmpty.length * 0.5;
+  let pastToc = false;
+
+  for (const raw of processedLines) {
+    const line = raw.trim();
     if (!line) { html += '<div class="dc-gap"></div>'; continue; }
 
-    // Mark when we exit the TOC zone
-    if (inTocZone && !pastToc && isBodyContent(line)) pastToc = true;
+    // ── STRUCTURED RFO LINES (L0:/L1:/L2: prefix from ingest_rfo.py) ────────
+    const lMatch = line.match(/^L(\d):(.*)/);
+    if (lMatch) {
+      const level   = parseInt(lMatch[1], 10);
+      const content = lMatch[2].trim();
+      if (!content) { html += '<div class="dc-gap"></div>'; continue; }
+      if (level === 0) {
+        html += `<div class="dc-text">${esc(content)}</div>`;
+      } else {
+        const tokM = content.match(/^\(([^)]+)\)/);
+        if (tokM) updateParagraphPath([tokM[1]]);
+        const cl = Math.min(level, 4);
+        html += `<div class="dc-para dc-l${cl}"><span class="dc-para-text">${esc(content)}</span>${citeBtnHTML(buildCite())}</div>`;
+      }
+      continue;
+    }
+
+    // Mark when we exit TOC zone
+    if (inTocZone && !pastToc && (leadingParagraphTokens(line) || line.length > 120)) pastToc = true;
     const isToc = inTocZone && !pastToc;
 
     if (/^PART\s+\d+/i.test(line) && line.length < 140) {
       curSection = null; resetParagraphPath();
-      // PART headers never in TOC, always show with cite
       html += `<div class="dc-part">${esc(line)} ${citeBtnHTML(baseCite)}</div>`;
     } else if (/^FC\s+/i.test(line) && line.length < 240) {
       const m = line.match(/^FC\s+(.+?)(?:\s+[A-Z][^.]*\.|$)/);
       if (m) { curSection = m[1].trim(); resetParagraphPath(); }
-      html += `<div class="dc-section">${esc(line)}${isToc ? '' : ' ' + citeBtnHTML(buildCite())}</div>`;
+      if (isToc) { html += `<div class="dc-section dc-toc-entry">${esc(line)}</div>`; } else { html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite())}</div>`; }
     } else if (/^Subpart\s+[\d.]+/i.test(line) && line.length < 140) {
       resetParagraphPath();
       const m = line.match(/Subpart\s+([\d.]+)/i); if (m) curSection = m[1];
-      // Subparts in TOC zone: render as TOC entry (no cite, styled as link-like)
-      if (isToc) {
-        html += `<div class="dc-subpart dc-toc-entry">${esc(line)}</div>`;
-      } else {
-        html += `<div class="dc-subpart">${esc(line)} ${citeBtnHTML(buildCite())}</div>`;
-      }
+      if (isToc) { html += `<div class="dc-subpart dc-toc-entry">${esc(line)}</div>`; } else { html += `<div class="dc-subpart">${esc(line)} ${citeBtnHTML(buildCite())}</div>`; }
     } else if (/^\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*[\s,.-]+/.test(line) && line.length < 240) {
       const m = line.match(/^(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*)/);
       if (m) { curSection = m[1]; resetParagraphPath(); }
-      if (isToc) {
-        // TOC entry — no cite button, styled subtly
-        html += `<div class="dc-section dc-toc-entry">${esc(line)}</div>`;
-      } else {
-        html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite())}</div>`;
-      }
+      html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite())}</div>`;
     } else if (leadingParagraphTokens(line)) {
       const tokens = leadingParagraphTokens(line);
       updateParagraphPath(tokens);
