@@ -1378,21 +1378,31 @@ async function selectPart(tile, partNum, partLabel) {
 
   try {
     const indexPart = indexPartForSource(browseSrc, partNum);
-    const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MEILI_KEY}` },
-      body: JSON.stringify({
-        q: '', limit: 60,
-        filter: `source = "${browseSrc}" AND part = "${indexPart}"`,
-        attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
-      })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      const errMsg = data?.message || data?.error || `HTTP ${res.status}`;
-      throw new Error(`Meilisearch: ${errMsg}`);
+    // Paginate to get ALL sections — some parts have 100+ sections
+    const allHits = [];
+    const pageSize = 200;
+    let offset = 0;
+    while (true) {
+      const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MEILI_KEY}` },
+        body: JSON.stringify({
+          q: '', limit: pageSize, offset,
+          filter: `source = "${browseSrc}" AND part = "${indexPart}"`,
+          attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        const errMsg = data?.message || data?.error || `HTTP ${res.status}`;
+        throw new Error(`Meilisearch: ${errMsg}`);
+      }
+      const page = data.hits || [];
+      allHits.push(...page);
+      if (page.length < pageSize) break;
+      offset += pageSize;
     }
-    const hits  = data.hits || [];
+    const hits = allHits;
     if (!hits.length) {
       reader.innerHTML = '<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No content found</div><div class="browse-empty-sub">This part may not be indexed yet for this source.</div></div>';
       return;
