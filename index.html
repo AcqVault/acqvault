@@ -136,7 +136,8 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .hero.search-active .hero-source-strip, .hero.browse-active .hero-source-strip, .hero.fulltext-active .hero-source-strip { position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; color: rgba(255,255,255,0.4); font-size: 12px; }
 
 /* ── RESULTS SECTION ── */
-#results-section { background: #fff; padding: 0; min-height: 0; }
+#results-section { display: none; background: #fff; }
+#results-section.visible { display: block; }
 #results-section.visible { display: block; }
 .results-inner { max-width: 1200px; margin: 0 auto; padding: 28px 32px 80px; }
 .filter-bar { background: #fff; border-bottom: 1px solid #eaeaef; padding: 12px 32px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; position: sticky; top: var(--top-chrome); z-index: 20; box-shadow: 0 1px 0 #eaeaef; }
@@ -185,7 +186,7 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── BROWSE SECTION ── */
-#browse-section { display: none; background: #fafafc; min-height: 0; }
+#browse-section { display: none; overflow: hidden; background: #fafafc; }
 #browse-section.visible { display: block; min-height: 100vh; background: #fafafc; }
 
 /* ── SOURCE BAR (sticky) ── */
@@ -335,7 +336,7 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .fulltext-card.dim { opacity: 0.5; }
 
 /* ── FULL TEXT SECTION ── */
-#fulltext-section { display: none; background: #fff; min-height: 0; }
+#fulltext-section { display: none; overflow: hidden; background: #fff; }
 #fulltext-section.visible { display: block; min-height: 60vh; }
 .fulltext-inner { max-width: 980px; margin: 0 auto; padding: 48px 24px 80px; }
 .fulltext-header { margin-bottom: 40px; }
@@ -967,6 +968,53 @@ footer { background: var(--dark-1); border-top: 1px solid var(--dark-border); pa
   </div>
 </div>
 
+<!-- QUICK LINKS -->
+<section class="sec sec-light" id="quick-links">
+  <div class="sec-inner">
+    <p class="eyebrow eyebrow-dark">Quick Access</p>
+    <h2 class="sec-head">The sites you open every day.</h2>
+    <p class="sec-sub sec-sub-dark">The most-used tools in the acquisition professional's daily workflow — one click away.</p>
+    <div class="quick-links-grid">
+      <a class="ql-card" href="https://www.acquisition.gov" target="_blank" rel="noopener">
+        <div class="ql-icon">⚖</div>
+        <div class="ql-name">Acquisition.gov</div>
+        <div class="ql-desc">FAR, DFARS, agency supplements, and acquisition policy — the authoritative regulatory source.</div>
+        <span class="ql-arrow">↗</span>
+      </a>
+      <a class="ql-card" href="https://sam.gov" target="_blank" rel="noopener">
+        <div class="ql-icon">🔍</div>
+        <div class="ql-name">SAM.gov</div>
+        <div class="ql-desc">Contract opportunities, solicitations, entity registrations, and federal award data.</div>
+        <span class="ql-arrow">↗</span>
+      </a>
+      <a class="ql-card" href="https://www.fpds.gov" target="_blank" rel="noopener">
+        <div class="ql-icon">📊</div>
+        <div class="ql-name">FPDS.gov</div>
+        <div class="ql-desc">Federal Procurement Data System — contract award data, reports, and spending analysis.</div>
+        <span class="ql-arrow">↗</span>
+      </a>
+      <a class="ql-card" href="https://www.gao.gov/legal/bid-protests" target="_blank" rel="noopener">
+        <div class="ql-icon">⚡</div>
+        <div class="ql-name">GAO Bid Protests</div>
+        <div class="ql-desc">Bid protest decisions and rulings — essential precedent for source selection and contract awards.</div>
+        <span class="ql-arrow">↗</span>
+      </a>
+      <a class="ql-card" href="https://piee.eb.mil" target="_blank" rel="noopener">
+        <div class="ql-icon">🔒</div>
+        <div class="ql-name">PIEE</div>
+        <div class="ql-desc">Procurement Integrated Enterprise Environment — CPARS, JAM, WAWF, and DoD contracting systems.</div>
+        <span class="ql-arrow">↗</span>
+      </a>
+      <a class="ql-card" href="https://www.dau.edu" target="_blank" rel="noopener">
+        <div class="ql-icon">🎓</div>
+        <div class="ql-name">DAU</div>
+        <div class="ql-desc">Defense Acquisition University — training, continuous learning, and acquisition knowledge resources.</div>
+        <span class="ql-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- FEATURES -->
 <section class="sec sec-white" id="features">
   <div class="sec-inner">
@@ -1007,53 +1055,6 @@ footer { background: var(--dark-1); border-top: 1px solid var(--dark-border); pa
         <div class="feat-stat-label">Cost to use</div>
         <div class="feat-desc" style="margin-top:10px;">No cost, no subscriptions, no account. AcqVault is a community resource built for the AF acquisition workforce. Open access, always.</div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- QUICK LINKS -->
-<section class="sec sec-light" id="quick-links">
-  <div class="sec-inner">
-    <p class="eyebrow eyebrow-dark fade-up">Quick Access</p>
-    <h2 class="sec-head fade-up">The sites you open every day.</h2>
-    <p class="sec-sub sec-sub-dark fade-up">The most-used tools in the acquisition professional's daily workflow — one click away.</p>
-    <div class="quick-links-grid fade-up">
-      <a class="ql-card" href="https://www.acquisition.gov" target="_blank" rel="noopener">
-        <div class="ql-icon">⚖</div>
-        <div class="ql-name">Acquisition.gov</div>
-        <div class="ql-desc">FAR, DFARS, agency supplements, and acquisition policy — the authoritative regulatory source.</div>
-        <span class="ql-arrow">↗</span>
-      </a>
-      <a class="ql-card" href="https://sam.gov" target="_blank" rel="noopener">
-        <div class="ql-icon">🔍</div>
-        <div class="ql-name">SAM.gov</div>
-        <div class="ql-desc">Contract opportunities, solicitations, entity registrations, and federal award data.</div>
-        <span class="ql-arrow">↗</span>
-      </a>
-      <a class="ql-card" href="https://www.fpds.gov" target="_blank" rel="noopener">
-        <div class="ql-icon">📊</div>
-        <div class="ql-name">FPDS.gov</div>
-        <div class="ql-desc">Federal Procurement Data System — contract award data, reports, and spending analysis.</div>
-        <span class="ql-arrow">↗</span>
-      </a>
-      <a class="ql-card" href="https://www.gao.gov/legal/bid-protests" target="_blank" rel="noopener">
-        <div class="ql-icon">⚡</div>
-        <div class="ql-name">GAO Bid Protests</div>
-        <div class="ql-desc">Bid protest decisions and rulings — essential precedent for source selection and contract awards.</div>
-        <span class="ql-arrow">↗</span>
-      </a>
-      <a class="ql-card" href="https://piee.eb.mil" target="_blank" rel="noopener">
-        <div class="ql-icon">🔒</div>
-        <div class="ql-name">PIEE</div>
-        <div class="ql-desc">Procurement Integrated Enterprise Environment — CPARS, JAM, WAWF, and DoD contracting systems.</div>
-        <span class="ql-arrow">↗</span>
-      </a>
-      <a class="ql-card" href="https://www.dau.edu" target="_blank" rel="noopener">
-        <div class="ql-icon">🎓</div>
-        <div class="ql-name">DAU</div>
-        <div class="ql-desc">Defense Acquisition University — training, continuous learning, and acquisition knowledge resources.</div>
-        <span class="ql-arrow">↗</span>
-      </a>
     </div>
   </div>
 </section>
