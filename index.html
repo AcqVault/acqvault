@@ -103,57 +103,33 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .search-clear.visible { display: block; }
 
 /* ── MODE TOGGLE ── */
-.mode-toggle { position: relative; z-index: 2; display: inline-flex; align-items: center; background: rgba(255,255,255,0.18); border: 0.5px solid rgba(255,255,255,0.28); border-radius: 980px; padding: 5px; gap: 4px; box-shadow: 0 12px 36px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08); }
-.mode-btn { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; padding: 9px 18px; border-radius: 980px; border: none; cursor: pointer; color: rgba(255,255,255,0.55); background: transparent; font-family: 'Inter', sans-serif; transition: background 0.18s, color 0.18s, box-shadow 0.18s; white-space: nowrap; }
+.mode-toggle {
+  position: relative; z-index: 2;
+  display: inline-flex; align-items: center;
+  background: rgba(20,20,30,0.85);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 980px; padding: 5px; gap: 3px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  margin-top: 12px;
+}
+.mode-btn {
+  font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em;
+  padding: 10px 22px; border-radius: 980px; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.5); background: transparent;
+  font-family: 'Inter', sans-serif; transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  white-space: nowrap;
+}
 .mode-btn.active { background: var(--accent); color: #fff; font-weight: 700; box-shadow: 0 4px 18px rgba(0,113,227,0.45), inset 0 1px 0 rgba(255,255,255,0.18); }
 .mode-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.10); }
 .hero-source-strip { position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; color: #c7c7ce; font-size: 12px; }
 .hero-source-strip span { color: #8f949b; }
-.hero-source-strip b { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: 980px; background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.16); color: #f5f5f7; font-weight: 700; }
+.hero-source-strip b { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: 980px; background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.16); color: #f5f5f7; font-weight: 700;  transition: all 0.15s; }
 .hero.search-active .hero-source-strip, .hero.browse-active .hero-source-strip, .hero.fulltext-active .hero-source-strip { display: none; }
-
-/* ── BROWSER MOCKUP ── */
-.browser-wrap { position: relative; z-index: 2; width: 100%; max-width: 720px; margin-top: 28px; transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.5s ease; overflow: hidden; }
-.hero.search-active .browser-wrap, .hero.browse-active .browser-wrap, .hero.fulltext-active .browser-wrap { opacity: 0; transform: translateY(16px); max-height: 0; pointer-events: none; }
-.browser { border-radius: 14px; overflow: hidden; border: 0.5px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.04), 0 48px 100px rgba(0,0,0,0.9); }
-.b-chrome { background: #161616; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
-.b-dots { display: flex; gap: 6px; }
-.b-dots span { width: 10px; height: 10px; border-radius: 50%; display: block; }
-.dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
-.b-url { flex: 1; background: #0e0e0e; border-radius: 6px; padding: 4px 0; font-size: 11px; color: #555; text-align: center; }
-.b-searchbar { background: #0c0c0c; padding: 9px 13px; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
-.b-input { flex: 1; background: #fff; border-radius: 7px; padding: 7px 11px 7px 30px; font-size: 12px; color: #333; letter-spacing: 0; position: relative; display: flex; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
-.b-cursor { display: inline-block; width: 1.5px; height: 11px; background: #aaa; margin-left: 1px; vertical-align: middle; animation: blink 1s step-end infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-.b-rcount { font-size: 11px; color: #555; white-space: nowrap; }
-.b-filters { background: #0f0f0f; padding: 7px 13px; display: flex; align-items: center; gap: 6px; border-bottom: 0.5px solid rgba(255,255,255,0.04); flex-wrap: wrap; }
-.b-fpill { font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
-.b-fpill-on { background: var(--accent); color: #fff; }
-.b-fpill-off { background: transparent; border: 0.5px solid #282828; color: #555; }
-.b-fpill-dim { background: transparent; border: 0.5px solid #1e1e1e; color: #333; }
-.b-div { width: 0.5px; height: 13px; background: #282828; margin: 0 2px; }
-.b-results { background: #f5f5f7; padding: 9px 10px; display: flex; flex-direction: column; gap: 5px; }
-.b-card { background: #fff; border: 0.5px solid #e8e8e8; border-radius: 8px; padding: 9px 11px; }
-.b-cmeta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-.b-ctag { font-size: 9px; font-weight: 800; letter-spacing: 0.03em; padding: 2px 6px; border-radius: 3px; }
-.b-ctag-rfo { background: #e8f0fe; color: #1a4aa8; }
-.b-ctag-rdfars { background: #e6f4ea; color: #1a6634; }
-.b-ctag-fc { background: #f0eeff; color: #3d2799; }
-.b-ctag-fmr { background: #fef3c7; color: #92400e; }
-.b-ctag-afi { background: #ffedd5; color: #9a3412; }
-.b-cbadge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
-.b-cbadge-open { background: #fff8e6; color: #7a4f00; }
-.b-cbadge-int { background: #fdecea; color: #7a1a1a; }
-.b-cbadge-fin { background: #e6f4ea; color: #1a6634; }
-.b-cdate { font-size: 9px; color: #bbb; margin-left: auto; }
-.b-ctitle { font-size: 11px; font-weight: 700; letter-spacing: 0; color: #0a0a0a; margin-bottom: 2px; line-height: 1.3; }
-.b-cref { font-size: 9px; color: #bbb; margin-bottom: 3px; }
-.b-csnip { font-size: 10px; color: #888; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── RESULTS SECTION ── */
 #results-section { display: none; background: #fff; min-height: 60vh; }
 #results-section.visible { display: block; }
-.results-inner { max-width: 980px; margin: 0 auto; padding: 28px 24px 80px; }
+.results-inner { max-width: 1200px; margin: 0 auto; padding: 28px 24px 80px; }
 .filter-bar { position: sticky; top: var(--top-chrome); z-index: 40; display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; padding: 16px 0; border-bottom: 0.5px solid #ebebeb; margin-bottom: 20px; background: rgba(255,255,255,0.94); backdrop-filter: blur(18px) saturate(180%); -webkit-backdrop-filter: blur(18px) saturate(180%); }
 .filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 30px; }
 .filter-group-wide { flex: 1 1 520px; }
@@ -213,7 +189,7 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
   padding: 0; display: flex; flex-direction: column;
 }
 .browse-source-bar-inner {
-  max-width: 1100px; margin: 0 auto; width: 100%;
+  max-width: 100%; margin: 0; width: 100%;
   padding: 14px 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .browse-source-bar-label {
@@ -233,8 +209,8 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 /* ── BROWSE LAYOUT ── */
 .browse-layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  max-width: 1100px; margin: 0 auto;
+  grid-template-columns: 300px 1fr;
+  max-width: 100%; margin: 0;
   min-height: calc(100vh - 140px);
 }
 
@@ -242,7 +218,7 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
 .browse-parts-panel {
   border-right: 0.5px solid #e8e8e8;
   background: #fff;
-  padding: 20px 0;
+  padding: 24px 0;
   position: sticky; top: calc(var(--top-chrome) + 53px);
   max-height: calc(100vh - var(--top-chrome) - 53px);
   overflow-y: auto;
@@ -280,21 +256,18 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
   background: #fff; padding: 0;
   border-left: none;
 }
-.browse-reader-inner { max-width: 760px; margin: 0 auto; padding: 40px 40px 100px; }
+.browse-reader-inner { max-width: 900px; margin: 0 auto; padding: 40px 48px 100px; }
 
 /* Reader header */
 .br-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid #0a0a0a; }
 .br-source-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; }
 .br-part-num { font-size: 13px; font-weight: 700; color: #aaa; letter-spacing: -0.01em; margin-bottom: 6px; }
-.br-part-title { font-size: 32px; font-weight: 800; letter-spacing: -0.05em; color: #0a0a0a; line-height: 1.1; margin-bottom: 10px; }
+.br-part-title { font-size: 36px; font-weight: 800; letter-spacing: -0.06em; color: #0a0a0a; line-height: 1.05; margin-bottom: 10px; }
 .br-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: #aaa; letter-spacing: -0.01em; }
 .br-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: #ddd; }
 
 /* Table of contents */
-.br-toc {
-  background: #f8f8fa; border: 0.5px solid #ebebeb; border-radius: 14px;
-  padding: 20px 24px; margin-bottom: 40px;
-}
+.br-toc { background: linear-gradient(135deg, #f8f8fb 0%, #f3f3f8 100%); border: 0.5px solid #e4e4ec; border-radius: 14px; padding: 20px 24px; margin-bottom: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
 .br-toc-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; margin-bottom: 14px; }
 .br-toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
 .br-toc-subpart { margin-top: 10px; }
@@ -318,11 +291,7 @@ nav { position: fixed; top: 42px; left: 0; right: 0; z-index: 300; display: flex
   gap: 12px; margin-bottom: 14px;
 }
 .br-section-title-block { flex: 1; }
-.br-subpart-heading {
-  font-size: 20px; font-weight: 800; letter-spacing: -0.04em; color: #0a0a0a;
-  margin: 36px 0 6px; padding-bottom: 8px; border-bottom: 1.5px solid #0a0a0a;
-  line-height: 1.2;
-}
+.br-subpart-heading { font-size: 21px; font-weight: 800; letter-spacing: -0.04em; color: #0a0a0a; margin: 40px 0 8px; padding: 12px 16px; background: #f8f8fb; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; line-height: 1.2; }
 .br-section-num { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0; margin-bottom: 4px; }
 .br-section-heading { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: #0a0a0a; line-height: 1.3; }
 .br-cite-btn {
@@ -586,7 +555,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
   .hero-headline { font-size: 38px; letter-spacing: 0; margin-bottom: 16px; }
   .hero-sub { font-size: 16px; margin-bottom: 28px; }
   .hero-actions { flex-direction: column; align-items: center; gap: 8px; margin-bottom: 32px; }
-  .browser-wrap { display: none; }
+  
   .search-bar { padding: 12px 14px; border-radius: 12px; }
   #search-input { font-size: 15px; }
   .mode-toggle { width: 100%; max-width: 335px; justify-content: space-between; }
@@ -644,6 +613,77 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
   .cta-head { font-size: 30px; }
   .fulltext-title { font-size: 26px; }
 }
+
+/* ── NEWS FEED ── */
+.news-feed-wrap {
+  width: 100%; max-width: 680px;
+  margin-top: 32px;
+  background: rgba(255,255,255,0.06);
+  border: 0.5px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.news-feed-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px; border-bottom: 0.5px solid rgba(255,255,255,0.1);
+}
+.news-feed-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: rgba(255,255,255,0.5);
+}
+.news-feed-live {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: #28c840;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #28c840;
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.news-feed-list { display: flex; flex-direction: column; }
+.news-feed-loading { padding: 18px; text-align: center; font-size: 13px; color: rgba(255,255,255,0.3); }
+.news-feed-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px 18px; border-bottom: 0.5px solid rgba(255,255,255,0.07);
+  cursor: pointer; transition: background 0.12s; text-decoration: none;
+}
+.news-feed-item:last-child { border-bottom: none; }
+.news-feed-item:hover { background: rgba(255,255,255,0.06); }
+.nfi-date {
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.35);
+  letter-spacing: 0.03em; white-space: nowrap; padding-top: 2px; min-width: 60px;
+}
+.nfi-body { flex: 1; min-width: 0; }
+.nfi-title {
+  font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88);
+  letter-spacing: -0.01em; line-height: 1.4; margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.nfi-meta { display: flex; gap: 8px; align-items: center; }
+.nfi-type {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 20px;
+}
+.nfi-type-proposed { background: rgba(255,200,50,0.15); color: #ffc832; }
+.nfi-type-interim   { background: rgba(0,113,227,0.2);   color: #60a5ff; }
+.nfi-type-final     { background: rgba(40,200,64,0.15);  color: #28c840; }
+.nfi-type-other     { background: rgba(255,255,255,0.08);color: rgba(255,255,255,0.4); }
+.nfi-doc { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: -0.01em; }
+.news-feed-footer {
+  padding: 10px 18px; border-top: 0.5px solid rgba(255,255,255,0.07);
+  text-align: center;
+}
+.news-feed-footer a {
+  font-size: 11px; font-weight: 600; color: rgba(0,113,227,0.8);
+  letter-spacing: -0.01em; text-decoration: none;
+}
+.news-feed-footer a:hover { color: #60a5ff; }
 </style>
 </head>
 <body>
@@ -697,10 +737,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
     <p class="hero-eyebrow">Air Force Acquisition Research</p>
     <h1 class="hero-headline">The research library <em>the acquisition community</em> deserves.</h1>
     <p class="hero-sub">AcqVault indexes the RFO, R-DFARS, FAR Companion, and more — search the way you think, not the way regulations are filed.</p>
-    <div class="hero-actions">
-      <a href="#" class="btn-primary" onclick="document.getElementById('search-input').focus(); return false;">Start searching</a>
-      <a href="#features" class="btn-ghost">See how it works ↓</a>
-    </div>
+    
   </div>
 
   <div class="search-container">
@@ -726,37 +763,13 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
     <b>DAF Compass</b>
   </div>
 
-  <div class="browser-wrap">
-    <div class="browser">
-      <div class="b-chrome">
-        <div class="b-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
-        <div class="b-url">acqvault.com</div>
-      </div>
-      <div class="b-searchbar">
-        <div class="b-input" style="position:relative;display:flex;align-items:center;">
-          <span style="position:absolute;left:10px;font-size:13px;color:#bbb;">⌕</span>
-          <span style="padding-left:22px;font-family:'Inter',sans-serif;font-size:12px;color:#333;letter-spacing:0;" id="btyping"></span><span class="b-cursor"></span>
-        </div>
-        <span class="b-rcount" id="bcount">— results</span>
-      </div>
-      <div class="b-filters">
-        <span class="b-fpill b-fpill-on">All</span>
-        <span class="b-fpill b-fpill-off">RFO</span>
-        <span class="b-fpill b-fpill-off">R-DFARS</span>
-        <span class="b-fpill b-fpill-off">FAR Companion</span>
-        <span class="b-fpill b-fpill-off">DAF Compass</span>
-        <span class="b-fpill b-fpill-dim">DoD FMR</span>
-        <span class="b-fpill b-fpill-dim">AFI 63-138</span>
-        <span class="b-fpill b-fpill-dim">AFI 63-Series</span>
-        <span class="b-div"></span>
-        <span class="b-fpill b-fpill-off">Open for comment</span>
-        <span class="b-fpill b-fpill-off">Interim</span>
-      </div>
-      <div class="b-results">
-        <div class="b-card"><div class="b-cmeta"><span class="b-ctag b-ctag-rfo">RFO</span><span class="b-cbadge b-cbadge-open">Open for comment</span><span class="b-cdate">Apr 14, 2025</span></div><div class="b-ctitle">Streamlined Sole Source Justification for Commercial Items</div><div class="b-cref">RFO 6.302-1</div><div class="b-csnip">Proposes reduced documentation burden for sole source awards under simplified acquisition threshold...</div></div>
-        <div class="b-card"><div class="b-cmeta"><span class="b-ctag b-ctag-fc">FAR Companion</span><span class="b-cbadge b-cbadge-fin" style="background:#e6f4ea;color:#1a6634;">Version 2.0</span><span class="b-cdate">Oct 30, 2025</span></div><div class="b-ctitle">FC 6.302-1 — Sole Source Practice Guidance</div><div class="b-cref">FAR Companion Part 6</div><div class="b-csnip">Practitioner guidance on exercising discretion for sole source determinations under the rewritten FAR...</div></div>
-        <div class="b-card"><div class="b-cmeta"><span class="b-ctag b-ctag-rdfars">R-DFARS</span><span class="b-cbadge b-cbadge-int">Interim rule</span><span class="b-cdate">Feb 28, 2025</span></div><div class="b-ctitle">Defense Unique Item Sole Source — Class Deviation</div><div class="b-cref">R-DFARS 206.302-1</div><div class="b-csnip">Class deviation authorizing streamlined J&amp;A for items with unique military specification requirements...</div></div>
-      </div>
+    <div class="news-feed-wrap fade-up" id="hero-news-feed">
+    <div class="news-feed-header">
+      <span class="news-feed-label">Latest RFO updates</span>
+      <span class="news-feed-live"><span class="live-dot"></span>Live</span>
+    </div>
+    <div class="news-feed-list" id="news-feed-list">
+      <div class="news-feed-loading">Loading latest updates…</div>
     </div>
   </div>
 </section>
@@ -994,9 +1007,7 @@ footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.07); paddi
 
     <div class="callout fade-up" style="transition-delay:0.15s;">
       <div class="callout-head">Built alongside the overhaul.<br>Updated as it evolves.</div>
-      <div class="callout-sub">The acquisition landscape is moving fast. AcqVault re-indexes monthly so you're always searching the current version of every source.</div>
-      <a href="#" class="callout-btn" onclick="document.getElementById('search-input').focus();window.scrollTo({top:0,behavior:'smooth'});return false;">Start searching →</a>
-    </div>
+      
   </div>
 </section>
 
@@ -2237,6 +2248,68 @@ setTimeout(tick,900);
 // ── SCROLL FADE-IN ────────────────────────────────────────────────────────────
 const obs = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);} }); }, { threshold: 0.1 });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// ── REGULATION NEWS FEED ──────────────────────────────────────────────────────
+async function loadNewsFeed() {
+  const el = document.getElementById('news-feed-list');
+  if (!el) return;
+  try {
+    // Fetch latest FAR-related documents from Federal Register API
+    const res = await fetch(
+      'https://www.federalregister.gov/api/v1/documents.json?conditions[agencies][]=defense-acquisition-regulations-system&conditions[agencies][]=office-of-the-under-secretary-of-defense-for-acquisition-and-sustainment&per_page=5&order=newest&fields[]=title&fields[]=publication_date&fields[]=type&fields[]=document_number&fields[]=html_url',
+      { mode: 'cors' }
+    );
+    if (!res.ok) throw new Error('FR API unavailable');
+    const data = await res.json();
+    const docs = data.results || [];
+    if (!docs.length) throw new Error('No results');
+
+    const typeLabel = (t) => {
+      if (!t) return { label: 'Notice', cls: 'nfi-type-other' };
+      const tl = t.toLowerCase();
+      if (tl.includes('proposed')) return { label: 'Proposed Rule', cls: 'nfi-type-proposed' };
+      if (tl.includes('interim') || tl.includes('rule')) return { label: 'Interim Rule', cls: 'nfi-type-interim' };
+      if (tl.includes('final')) return { label: 'Final Rule', cls: 'nfi-type-final' };
+      return { label: t, cls: 'nfi-type-other' };
+    };
+
+    const fmtDate = (d) => {
+      if (!d) return '';
+      const dt = new Date(d + 'T00:00:00');
+      return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+
+    el.innerHTML = docs.map(doc => {
+      const { label, cls } = typeLabel(doc.type);
+      return `<a class="news-feed-item" href="${doc.html_url || '#'}" target="_blank" rel="noopener">
+        <div class="nfi-date">${fmtDate(doc.publication_date)}</div>
+        <div class="nfi-body">
+          <div class="nfi-title">${esc(doc.title || 'Untitled')}</div>
+          <div class="nfi-meta">
+            <span class="nfi-type ${cls}">${label}</span>
+            <span class="nfi-doc">${esc(doc.document_number || '')}</span>
+          </div>
+        </div>
+      </a>`;
+    }).join('') + `<div class="news-feed-footer"><a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">View all on Federal Register →</a></div>`;
+  } catch(e) {
+    // Fallback: show curated static items
+    el.innerHTML = `
+      <a class="news-feed-item" href="https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system" target="_blank" rel="noopener">
+        <div class="nfi-date">Live</div>
+        <div class="nfi-body">
+          <div class="nfi-title">View latest FAR & DFARS updates</div>
+          <div class="nfi-meta"><span class="nfi-type nfi-type-other">Federal Register</span></div>
+        </div>
+      </a>
+      <div class="news-feed-footer"><a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">Open Federal Register →</a></div>
+    `;
+  }
+}
+
+// Load news feed on page load
+document.addEventListener('DOMContentLoaded', () => { loadNewsFeed(); });
+
 </script>
 </body>
 </html>
