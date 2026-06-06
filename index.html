@@ -724,7 +724,8 @@ body.work-mode #quick-links{margin-top:0;}
   background: rgba(0,102,204,0.02);
   font-size: 8.5px; color: var(--muted2); letter-spacing: 0.02em;
 }
-.st-loading { padding: 16px 14px; font-size: 11px; color: var(--muted2); }
+.st-loading { padding: 16px 14px; font-size: 11px; color: var(--muted2); text-align:center; line-height:1.45; }
+.st-error-num{font-size:18px;font-weight:700;letter-spacing:-0.03em;color:var(--ink2);line-height:1.15;}
 
 /* Hero content center col */
 .hero-center-col { position: relative; z-index: 2; }
@@ -789,11 +790,11 @@ body.work-mode #quick-links{margin-top:0;}
     <!-- LEFT TICKER: FY Obligations -->
     <aside class="side-ticker" aria-label="Federal spending data">
       <div class="st-header">
-        <div class="st-label"><span class="st-live-dot"></span>FY2026 Obligations</div>
+        <div class="st-label"><span class="st-live-dot"></span>FY2026 DAF Obligations</div>
       </div>
       <div class="st-body-obligations">
         <div class="st-big-num" id="st-obligations-num">—</div>
-        <div class="st-num-label">Total contract obligations</div>
+        <div class="st-num-label">DAF contract obligations</div>
       </div>
       <div class="st-divider"></div>
       <div class="st-stat-row">
@@ -838,14 +839,14 @@ body.work-mode #quick-links{margin-top:0;}
   </div>
     </div>
     <!-- RIGHT TICKER: DAF Awards -->
-    <aside class="side-ticker" aria-label="Recent DAF contract awards">
+    <aside class="side-ticker" aria-label="Top DAF contract awards">
       <div class="st-header">
-        <div class="st-label"><span class="st-live-dot"></span>Recent DAF Awards</div>
+        <div class="st-label"><span class="st-live-dot"></span>Top DAF Awards</div>
       </div>
       <div class="st-body-awards" id="st-awards-body">
         <div class="st-loading">Loading awards…</div>
       </div>
-      <div class="st-footer">USASpending.gov · FY2026</div>
+      <div class="st-footer">USASpending.gov · live</div>
     </aside>
   </div>
 </section>
@@ -2511,16 +2512,19 @@ async function loadNewsFeed() {
 
 // ── SIDE TICKERS ─────────────────────────────────────────────────────────────
 
-function stAnimateNum(el, target, prefix, suffix, decimals, duration) {
+function stAnimateNum(el, target, prefix, suffix, decimals, duration, formatter) {
   var start = performance.now();
   el.classList.add('live');
+  function render(val) {
+    return formatter ? formatter(val) : prefix + val.toFixed(decimals) + suffix;
+  }
   function step(now) {
     var p = Math.min((now - start) / duration, 1);
     var e = 1 - Math.pow(1 - p, 3);
     var val = e * target;
-    el.textContent = prefix + val.toFixed(decimals) + suffix;
+    el.textContent = render(val);
     if (p < 1) requestAnimationFrame(step);
-    else { el.textContent = prefix + target.toFixed(decimals) + suffix; el.classList.remove('live'); }
+    else { el.textContent = render(target); el.classList.remove('live'); }
   }
   requestAnimationFrame(step);
 }
@@ -2532,6 +2536,16 @@ function stFmtAmt(n) {
   if (n >= 1e6)  return '$' + (n/1e6).toFixed(1) + 'M';
   if (n >= 1e3)  return '$' + (n/1e3).toFixed(0) + 'K';
   return '$' + n.toFixed(0);
+}
+
+function stToday() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function stFiscalYearStart() {
+  var now = new Date();
+  var fyStartYear = now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1;
+  return fyStartYear + '-10-01';
 }
 
 function stFyStats() {
@@ -2552,26 +2566,36 @@ function stFyStats() {
 async function stFetchObligations() {
   var el = document.getElementById('st-obligations-num');
   if (!el) return;
+  var now = new Date();
+  var fyStartYear = now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1;
+  var fy = fyStartYear + 1;
+  var startDate = fyStartYear + '-10-01';
+  var endDate = now.toISOString().slice(0, 10);
   try {
-    var res = await fetch('https://api.usaspending.gov/api/v2/references/total_budgetary_resources/?fiscal_year=2026&fiscal_period=9');
-    if (!res.ok) throw new Error();
+    var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_over_time/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        group: 'fiscal_year',
+        spending_level: 'transactions',
+        filters: {
+          agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
+          award_type_codes: ['A','B','C','D'],
+          time_period: [{ start_date: startDate, end_date: endDate }]
+        }
+      })
+    });
+    if (!res.ok) throw new Error('USASpending obligations request failed');
     var d = await res.json();
-    var val = d && d.total_budgetary_resources ? d.total_budgetary_resources : null;
-    if (!val) throw new Error();
-    // val is in dollars
-    var trillions = val / 1e12;
-    stAnimateNum(el, trillions, '$', 'T', 2, 2000);
+    var row = (d.results || []).find(function(r) { return r.time_period && Number(r.time_period.fiscal_year) === fy; }) || (d.results || [])[0];
+    var val = row && (row.Contract_Obligations || row.aggregated_amount);
+    if (!Number.isFinite(Number(val))) throw new Error('No obligations returned');
+    stAnimateNum(el, Number(val), '$', '', 0, 1600, stFmtAmt);
   } catch(e) {
-    // Try spending totals endpoint
-    try {
-      var res2 = await fetch('https://api.usaspending.gov/api/v2/agency/breakdown/count/?fiscal_year=2025');
-      throw new Error('use fallback');
-    } catch(e2) {
-      el.textContent = 'Unavailable';
-      el.classList.remove('live');
-      var card = el.closest('.side-ticker');
-      if (card) card.classList.add('st-fallback');
-    }
+    el.innerHTML = '<span class="st-error-num">Data delayed</span>';
+    el.classList.remove('live');
+    var card = el.closest('.side-ticker');
+    if (card) card.classList.add('st-fallback');
   }
 }
 
@@ -2581,11 +2605,11 @@ async function stFetchDAFAwards() {
   try {
     var payload = {
       filters: {
-        agencies: [{ type: 'awarding', tier: 'toptier', name: 'Department of the Air Force' }],
+        agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
         award_type_codes: ['A','B','C','D'],
-        time_period: [{ start_date: '2025-10-01', end_date: '2026-06-06' }]
+        time_period: [{ start_date: stFiscalYearStart(), end_date: stToday() }]
       },
-      fields: ['Award Amount','Recipient Name','Award ID','Period of Performance Start Date','Awarding Sub Agency Name','generated_internal_id'],
+      fields: ['Award Amount','Recipient Name','Award ID','Start Date','End Date','Awarding Sub Agency','generated_internal_id'],
       sort: 'Award Amount', order: 'desc', limit: 12, page: 1
     };
     var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
@@ -2600,12 +2624,12 @@ async function stFetchDAFAwards() {
     stRenderAwards(awards.map(function(a) {
       var vendor = (a['Recipient Name'] || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|LTD|LP|CO\.?)\b/gi,'').trim();
       if (vendor.length > 22) vendor = vendor.slice(0,20) + '…';
-      var date = a['Period of Performance Start Date'] ? a['Period of Performance Start Date'].slice(0,7) : '';
+      var date = a['Start Date'] ? a['Start Date'].slice(0,7) : '';
       return { amt: stFmtAmt(a['Award Amount']), vendor: vendor, date: date };
     }));
   } catch(e) {
     body.closest('.side-ticker')?.classList.add('st-fallback');
-    body.innerHTML = '<div class="st-loading">Award feed unavailable.</div><div class="st-disclaimer">Live USASpending data could not be loaded.</div>';
+    body.innerHTML = '<div class="st-loading"><strong>Data delayed</strong><br>Retrying from USASpending.</div>';
   }
 }
 
