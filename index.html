@@ -123,7 +123,7 @@ nav.scrolled .nav-feedback-btn:hover{border-color:var(--ink3);color:var(--ink);}
 .hero.search-active .hero-intro,.hero.browse-active .hero-intro,.hero.fulltext-active .hero-intro{opacity:0;transform:translateY(-14px);max-height:0;overflow:hidden;pointer-events:none;transition:opacity 0.3s ease,transform 0.3s ease,max-height 0.4s ease;}
 
 .hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.75);border:1px solid rgba(0,102,204,0.22);border-radius:980px;padding:5px 14px 5px 10px;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;box-shadow:0 1px 6px rgba(0,102,204,0.08);}
-.hero-headline{font-size:clamp(42px,6.5vw,72px);font-weight:800;letter-spacing:-0.055em;color:var(--ink);line-height:1.02;margin-bottom:20px;}
+.hero-headline{font-size:clamp(42px,5.8vw,68px);font-weight:800;letter-spacing:-0.052em;color:var(--ink);line-height:1.02;margin-bottom:20px;}
 .hero-headline em{font-style:normal;color:var(--accent);-webkit-text-fill-color:var(--accent);}
 .hero-sub{font-size:18px;font-weight:400;color:var(--ink3);letter-spacing:-0.02em;line-height:1.6;max-width:460px;margin:0 auto;}
 
@@ -627,9 +627,9 @@ body.work-mode #quick-links{margin-top:0;}
   position: relative; z-index: 2;
   width: 100%; max-width: 1300px; margin: 0 auto;
   display: grid;
-  grid-template-columns: 220px 1fr 220px;
+  grid-template-columns: 250px minmax(0,1fr) 250px;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
   padding: 0 12px;
 }
 .side-ticker {
@@ -642,12 +642,12 @@ body.work-mode #quick-links{margin-top:0;}
   box-shadow: 0 2px 20px rgba(0,0,0,0.06);
 }
 .st-header {
-  padding: 10px 14px 8px;
+  padding: 11px 16px 9px;
   border-bottom: 1px solid rgba(0,102,204,0.1);
   background: rgba(0,102,204,0.04);
 }
 .st-label {
-  font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.095em;
   text-transform: uppercase; color: var(--accent);
   display: flex; align-items: center; gap: 5px;
 }
@@ -663,37 +663,45 @@ body.work-mode #quick-links{margin-top:0;}
 
 /* Left ticker — obligations big number */
 .st-body-obligations {
-  padding: 14px 14px 12px;
-  display: flex; flex-direction: column; gap: 3px;
+  padding: 16px 16px 14px;
+  display: flex; flex-direction: column; gap: 4px;
 }
 .st-big-num {
-  font-size: 38px; font-weight: 800; letter-spacing: -0.06em;
+  font-size: 44px; font-weight: 800; letter-spacing: -0.06em;
   color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums;
   font-family: 'Inter', monospace;
 }
 .st-big-num.live { color: var(--accent); }
 .st-num-label {
-  font-size: 9.5px; color: var(--muted2); font-weight: 500; margin-top: 2px;
+  font-size: 10.5px; color: var(--muted2); font-weight: 500; margin-top: 2px;
 }
-.st-divider { height: 1px; background: rgba(0,102,204,0.08); margin: 0 14px; }
+.st-divider { height: 1px; background: rgba(0,102,204,0.08); margin: 0 16px; }
 .st-stat-row {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 7px 14px;
+  padding: 8px 16px;
 }
 .st-stat-row:last-child { padding-bottom: 12px; }
-.st-stat-label { font-size: 9.5px; color: var(--muted2); font-weight: 500; }
-.st-stat-val   { font-size: 11px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+.st-stat-label { font-size: 10.5px; color: var(--muted2); font-weight: 500; }
+.st-stat-val   { font-size: 14px; font-weight: 750; color: var(--ink); letter-spacing: -0.02em; }
 .st-stat-val.green { color: #16a34a; }
 .st-stat-val.blue  { color: var(--accent); }
+
+
+.st-fy-graphic{padding:0 16px 14px;}
+.st-fy-track{position:relative;height:9px;border-radius:999px;background:rgba(0,102,204,0.1);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,102,204,0.08);}
+.st-fy-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#16a34a);border-radius:inherit;transition:width 0.8s cubic-bezier(0.16,1,0.3,1);}
+.st-fy-axis{display:flex;justify-content:space-between;margin-top:6px;font-size:8.5px;font-weight:600;color:var(--muted2);letter-spacing:0.04em;text-transform:uppercase;}
+.st-fy-caption{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:10px;line-height:1.35;color:var(--muted2);}
+.st-fy-caption strong{color:var(--ink2);font-weight:700;}
 
 /* Right ticker — scrolling DAF awards */
 .st-body-awards {
   display: flex; flex-direction: column; gap: 0;
-  max-height: 340px; overflow: hidden; position: relative;
+  max-height: 380px; overflow: hidden; position: relative;
 }
 .st-award-item {
-  display: flex; align-items: flex-start; gap: 8px;
-  padding: 8px 14px; border-bottom: 1px solid rgba(0,102,204,0.06);
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 16px; border-bottom: 1px solid rgba(0,102,204,0.06);
   animation: st-slide-in 0.3s cubic-bezier(0.16,1,0.3,1) both;
   flex-shrink: 0;
 }
@@ -707,19 +715,19 @@ body.work-mode #quick-links{margin-top:0;}
 }
 .st-award-info { flex: 1; min-width: 0; }
 .st-award-amt {
-  font-size: 12px; font-weight: 700; color: var(--ink);
+  font-size: 14px; font-weight: 750; color: var(--ink);
   letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 .st-award-vendor {
-  font-size: 9.5px; color: var(--muted); line-height: 1.3;
+  font-size: 10.5px; color: var(--muted); line-height: 1.35;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 185px;
 }
 .st-award-date { font-size: 8.5px; color: var(--muted2); margin-top: 1px; }
-.st-award-contract { font-size: 8px; color: var(--muted2); margin-top: 1px; font-family: 'SF Mono','Menlo',monospace; letter-spacing: 0.01em; }
+.st-award-contract { font-size: 9px; color: var(--muted2); margin-top: 2px; font-family: 'SF Mono','Menlo',monospace; letter-spacing: 0.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:185px; }
 .st-footer {
-  padding: 6px 14px;
+  padding: 7px 16px;
   border-top: 1px solid rgba(0,102,204,0.08);
   background: rgba(0,102,204,0.02);
   font-size: 8.5px; color: var(--muted2); letter-spacing: 0.02em;
@@ -731,9 +739,10 @@ body.work-mode #quick-links{margin-top:0;}
 .hero-center-col { position: relative; z-index: 2; }
 
 /* Responsive — hide tickers on small screens */
-@media (max-width: 1100px) {
-  .hero-inner { grid-template-columns: 180px 1fr 180px; gap: 16px; }
-  .st-big-num { font-size: 30px; }
+@media (max-width: 1180px) {
+  .hero-inner { grid-template-columns: 210px 1fr 210px; gap: 16px; }
+  .st-big-num { font-size: 34px; }
+  .st-award-vendor,.st-award-contract{max-width:145px;}
 }
 @media (max-width: 860px) {
   .hero-inner { grid-template-columns: 1fr; padding:0; }
@@ -795,6 +804,11 @@ body.work-mode #quick-links{margin-top:0;}
       <div class="st-body-obligations">
         <div class="st-big-num" id="st-obligations-num">—</div>
         <div class="st-num-label">DAF contract obligations</div>
+      </div>
+      <div class="st-fy-graphic" aria-label="Fiscal year spend progress">
+        <div class="st-fy-track"><div class="st-fy-fill" id="st-fy-fill"></div></div>
+        <div class="st-fy-axis"><span>Oct</span><span>Today</span><span>Sep</span></div>
+        <div class="st-fy-caption"><span><strong id="st-fy-spend-mini">—</strong> obligated</span><span id="st-fy-pace-mini">— elapsed</span></div>
       </div>
       <div class="st-divider"></div>
       <div class="st-stat-row">
@@ -2561,6 +2575,10 @@ function stFyStats() {
   var pctEl  = document.getElementById('st-fy-pct');
   if (daysEl) daysEl.textContent = daysLeft + ' days left';
   if (pctEl)  pctEl.textContent  = pct + '% complete';
+  var fillEl = document.getElementById('st-fy-fill');
+  var paceEl = document.getElementById('st-fy-pace-mini');
+  if (fillEl) fillEl.style.width = pct + '%';
+  if (paceEl) paceEl.textContent = pct + '% elapsed';
 }
 
 async function stFetchObligations() {
@@ -2591,11 +2609,15 @@ async function stFetchObligations() {
     var val = row && (row.Contract_Obligations || row.aggregated_amount);
     if (!Number.isFinite(Number(val))) throw new Error('No obligations returned');
     stAnimateNum(el, Number(val), '$', '', 0, 1600, stFmtAmt);
+    var mini = document.getElementById('st-fy-spend-mini');
+    if (mini) mini.textContent = stFmtAmt(Number(val));
   } catch(e) {
     el.innerHTML = '<span class="st-error-num">Data delayed</span>';
     el.classList.remove('live');
     var card = el.closest('.side-ticker');
     if (card) card.classList.add('st-fallback');
+    var mini = document.getElementById('st-fy-spend-mini');
+    if (mini) mini.textContent = 'Delayed';
   }
 }
 
@@ -2623,9 +2645,9 @@ async function stFetchDAFAwards() {
     if (!awards.length) throw new Error();
     stRenderAwards(awards.map(function(a) {
       var vendor = (a['Recipient Name'] || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|LTD|LP|CO\.?)\b/gi,'').trim();
-      if (vendor.length > 22) vendor = vendor.slice(0,20) + '…';
+      if (vendor.length > 28) vendor = vendor.slice(0,26) + '…';
       var date = a['Start Date'] ? a['Start Date'].slice(0,7) : '';
-      return { amt: stFmtAmt(a['Award Amount']), vendor: vendor, date: date };
+      return { amt: stFmtAmt(a['Award Amount']), vendor: vendor, id: a['Award ID'] || '', date: date };
     }));
   } catch(e) {
     body.closest('.side-ticker')?.classList.add('st-fallback');
