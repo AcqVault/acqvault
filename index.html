@@ -455,6 +455,12 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .feat-icon{width:40px;height:40px;background:var(--accent-soft);border:1px solid var(--accent-bdr);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:14px;color:var(--accent);}
 .feat-title{font-size:14.5px;font-weight:700;letter-spacing:-0.02em;color:var(--ink);margin-bottom:7px;}
 .feat-desc{font-size:13.5px;color:var(--muted);line-height:1.65;}
+.feat-stat-track{height:8px;border-radius:999px;background:rgba(0,102,204,0.1);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,102,204,0.08);margin:14px 0 10px;}
+.feat-stat-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#16a34a);}
+.feat-stat-fill.blue{background:linear-gradient(90deg,#60a5fa,var(--accent));}
+.feat-stat-fill.green{background:linear-gradient(90deg,#22c55e,#16a34a);}
+.feat-stat-fill.dark{background:linear-gradient(90deg,var(--ink3),var(--ink));}
+.feat-stat-meta{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:600;letter-spacing:0.03em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
 
 .srcs{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:48px;}
 .srcs-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
@@ -475,7 +481,7 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .callout-btn{display:inline-block;font-size:14px;font-weight:600;background:#fff;color:var(--ink);padding:12px 26px;border-radius:980px;text-decoration:none;transition:all 0.15s;}
 .callout-btn:hover{background:rgba(255,255,255,0.88);transform:translateY(-1px);}
 
-.cta-strip{background:var(--off);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);padding:72px 48px;text-align:center;}
+.cta-strip{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);border-top:1px solid rgba(0,102,204,0.08);border-bottom:1px solid rgba(0,102,204,0.08);padding:72px 48px;text-align:center;}
 .cta-head{font-size:clamp(28px,3.5vw,44px);font-weight:700;letter-spacing:-0.05em;line-height:1.07;margin-bottom:16px;color:var(--ink);}
 .cta-sub{font-size:17px;color:var(--muted);letter-spacing:-0.01em;margin-bottom:36px;}
 .cta-meta{font-size:12px;color:var(--muted2);margin-top:14px;}
@@ -992,8 +998,8 @@ body.work-mode #quick-links{margin-top:0;}
     <div class="quick-links-grid">
       <a class="ql-card fade-up" href="https://www.acquisition.gov" target="_blank" rel="noopener"><div class="ql-icon">⚖</div><div class="ql-name">Acquisition.gov</div><div class="ql-desc">FAR, DFARS, agency supplements, and acquisition policy — the authoritative regulatory source.</div><span class="ql-arrow">↗</span></a>
       <a class="ql-card fade-up d1" href="https://sam.gov" target="_blank" rel="noopener"><div class="ql-icon">🔍</div><div class="ql-name">SAM.gov</div><div class="ql-desc">Contract opportunities, solicitations, entity registrations, and federal award data.</div><span class="ql-arrow">↗</span></a>
-      <a class="ql-card fade-up d2" href="https://www.fpds.gov" target="_blank" rel="noopener"><div class="ql-icon">📊</div><div class="ql-name">FPDS.gov</div><div class="ql-desc">Federal Procurement Data System — contract award data, reports, and spending analysis.</div><span class="ql-arrow">↗</span></a>
-      <a class="ql-card fade-up" href="https://www.gao.gov/legal/bid-protests" target="_blank" rel="noopener"><div class="ql-icon">⚡</div><div class="ql-name">GAO Bid Protests</div><div class="ql-desc">Bid protest decisions and rulings — essential precedent for source selection and contract awards.</div><span class="ql-arrow">↗</span></a>
+      <a class="ql-card fade-up d2" href="https://kthq.org/index.html" target="_blank" rel="noopener"><div class="ql-icon">▦</div><div class="ql-name">KT HQ</div><div class="ql-desc">Knowledge tools, templates, and acquisition resources for contracting professionals.</div><span class="ql-arrow">↗</span></a>
+      <a class="ql-card fade-up" href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener"><div class="ql-icon">⚡</div><div class="ql-name">GAO Search Decisions</div><div class="ql-desc">Search bid protest decisions and dockets — the practical GAO entry point for contracting research.</div><span class="ql-arrow">↗</span></a>
       <a class="ql-card fade-up d1" href="https://piee.eb.mil" target="_blank" rel="noopener"><div class="ql-icon">🔒</div><div class="ql-name">PIEE</div><div class="ql-desc">Procurement Integrated Enterprise Environment — CPARS, JAM, WAWF, and DoD contracting systems.</div><span class="ql-arrow">↗</span></a>
       <a class="ql-card fade-up d2" href="https://www.dau.edu" target="_blank" rel="noopener"><div class="ql-icon">🎓</div><div class="ql-name">DAU</div><div class="ql-desc">Defense Acquisition University — training, continuous learning, and acquisition knowledge resources.</div><span class="ql-arrow">↗</span></a>
     </div>
@@ -1010,9 +1016,9 @@ body.work-mode #quick-links{margin-top:0;}
       <div class="feat feat-clickable fade-up" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, and DAF Contracting Compass simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div><div class="feat-cta">Try search →</div></div>
       <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);"><div class="feat-icon">⊞</div><div class="feat-title">Browse by Part</div><div class="feat-desc">Navigate by FAR part number across all sources. Select a source, pick a part, and read every indexed section with inline citations — no search query needed.</div><div class="feat-cta">Try browse →</div></div>
       <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);"><div class="feat-icon">↓</div><div class="feat-title">Full Text PDFs</div><div class="feat-desc">Download pre-generated, AcqVault-watermarked PDFs of the full RFO, R-DFARS, and FAR Companion. Updated monthly from the live index.</div><div class="feat-cta">Download PDFs →</div></div>
-      <div class="feat fade-up"><div class="feat-stat-num">401</div><div class="feat-stat-label">Documents indexed</div><div class="feat-desc" style="margin-top:10px;">RFO, R-DFARS, FAR Companion, and DAF Compass coverage. Updated monthly from official source material where available.</div></div>
-      <div class="feat fade-up d1"><div class="feat-stat-num">4</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-desc" style="margin-top:10px;">RFO, R-DFARS, FAR Companion, and DAF Compass are live now. DoD FMR, AFI 63-138, and AFI 63-Series are on deck.</div></div>
-      <div class="feat fade-up d2"><div class="feat-stat-num">$0</div><div class="feat-stat-label">Cost to use</div><div class="feat-desc" style="margin-top:10px;">No cost, no subscriptions, no account. AcqVault is a community resource built for the AF acquisition workforce. Open access, always.</div></div>
+      <div class="feat fade-up"><div class="feat-stat-num">401</div><div class="feat-stat-label">Documents indexed</div><div class="feat-stat-track"><div class="feat-stat-fill blue" style="width:78%;"></div></div><div class="feat-stat-meta"><span>Live index</span><span>Monthly refresh</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, and DAF Compass coverage. Updated monthly from official source material where available.</div></div>
+      <div class="feat fade-up d1"><div class="feat-stat-num">4</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-stat-track"><div class="feat-stat-fill green" style="width:57%;"></div></div><div class="feat-stat-meta"><span>4 live</span><span>3 queued</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, and DAF Compass are live now. DoD FMR, AFI 63-138, and AFI 63-Series are on deck.</div></div>
+      <div class="feat fade-up d2"><div class="feat-stat-num">$0</div><div class="feat-stat-label">Cost to use</div><div class="feat-stat-track"><div class="feat-stat-fill dark" style="width:100%;"></div></div><div class="feat-stat-meta"><span>Open access</span><span>No account</span></div><div class="feat-desc">No cost, no subscriptions, no account. AcqVault is a community resource built for the AF acquisition workforce. Open access, always.</div></div>
     </div>
   </div>
 </section>
