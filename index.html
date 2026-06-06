@@ -140,8 +140,9 @@ nav.scrolled .nav-feedback-btn:hover{border-color:var(--ink3);color:var(--ink);}
 .search-clear.visible{display:block;}
 
 /* Mode toggle */
-.mode-toggle{position:relative;z-index:2;display:inline-flex;align-items:center;background:rgba(255,255,255,0.6);border:1px solid rgba(0,102,204,0.18);border-radius:var(--r-lg);padding:4px;gap:3px;animation:hero-rise 0.85s 0.24s cubic-bezier(0.16,1,0.3,1) both;box-shadow:0 2px 12px rgba(0,66,153,0.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.mode-toggle{position:relative;z-index:2;display:inline-flex;align-items:center;background:rgba(255,255,255,0.6);border:1px solid rgba(0,102,204,0.18);border-radius:var(--r-lg);padding:4px;gap:3px;animation:hero-rise 0.85s 0.24s cubic-bezier(0.16,1,0.3,1) both;box-shadow:0 2px 12px rgba(0,66,153,0.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-width:100%;}
 .mode-btn{font-size:13px;font-weight:600;padding:9px 18px;border-radius:10px;border:1px solid transparent;cursor:pointer;color:var(--ink3);background:transparent;transition:all 0.18s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;letter-spacing:-0.01em;}
+.mode-btn-short{display:none;}
 .mode-btn.active{background:var(--accent);color:#fff;font-weight:700;box-shadow:0 2px 12px rgba(0,102,204,0.35);border-color:var(--accent);}
 .mode-btn:hover:not(.active){color:var(--accent);background:rgba(0,102,204,0.08);border-color:rgba(0,102,204,0.2);}
 
@@ -174,6 +175,7 @@ nav.scrolled .nav-feedback-btn:hover{border-color:var(--ink3);color:var(--ink);}
 .src-tile-soon-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--off2);color:var(--muted);margin-top:auto;}
 
 /* ── RESULTS SECTION ── */
+body.work-mode .source-tiles-section{display:none;}
 #results-section{display:none;background:var(--white);}
 #results-section.visible{display:block;}
 .results-inner{max-width:var(--max-w);margin:0 auto;padding:0 28px 80px;}
@@ -233,8 +235,8 @@ nav.scrolled .nav-feedback-btn:hover{border-color:var(--ink3);color:var(--ink);}
 /* ── BROWSE SECTION ── */
 #browse-section{display:none;background:var(--off);}
 #browse-section.visible{display:block;min-height:100vh;}
-.browse-source-bar{position:sticky;top:var(--top-chrome);z-index:40;background:rgba(246,248,250,0.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line2);}
-.browse-source-bar-inner{max-width:100%;padding:10px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.browse-source-bar{position:sticky;top:var(--top-chrome);z-index:40;background:rgba(246,248,250,0.98);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);box-shadow:0 1px 0 rgba(0,0,0,0.02);}
+.browse-source-bar-inner{max-width:var(--max-w);margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .browse-source-bar-label{font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted2);margin-right:4px;}
 .browse-src-pill{font-size:13px;font-weight:500;padding:6px 14px;border-radius:980px;cursor:pointer;border:1px solid var(--line);color:var(--muted);background:var(--white);transition:all 0.15s;}
 .browse-src-pill:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
@@ -511,32 +513,88 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
 #browse-results-list{display:flex;flex-direction:column;gap:8px;}
 .browse-soon-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 0 16px;border-bottom:1px solid var(--line2);}
 
+
+.mobile-only{display:none;}
+
+body.work-mode .hero{border-bottom:1px solid var(--line2);}
+body.work-mode #quick-links{margin-top:0;}
+
+.st-disclaimer{padding:6px 14px;border-top:1px solid rgba(0,102,204,0.08);font-size:8.5px;color:var(--muted2);background:rgba(255,255,255,0.55);}
+.st-fallback .st-live-dot{background:#f59e0b;animation:none;opacity:0.8;}
+.st-fallback .st-label{color:#92400e;}
+
 /* ── MOBILE ── */
 @media(max-width:768px){
-  .about-bar{padding:0 16px;}
-  nav{padding:0 16px;}
+  .about-bar{padding:0 40px 0 16px;min-height:0;}
+  .about-bar-inner{padding:7px 0;}
+  .about-text{font-size:11.5px;line-height:1.35;}
+  nav{padding:0 16px;height:50px;}
   .nav-center{display:none;}
-  .hero{padding:calc(var(--top-chrome) + 60px) 20px 60px;}
-  .hero.search-active,.hero.browse-active,.hero.fulltext-active{padding:calc(var(--top-chrome) + 16px) 20px 22px;}
-  .source-tiles-grid{grid-template-columns:1fr 1fr;}
-  .results-inner,.fulltext-inner{padding:0 16px 60px;}
-  .filter-bar{padding:10px 16px;margin:0 -16px;}
-  .filter-group,.filter-group-wide{flex:1 1 100%;}
-  .filter-label-soft{margin-left:0;padding-left:0;border-left:none;flex-basis:100%;margin-top:4px;}
+  .nav-right{gap:6px;}
+  .nav-feedback-btn{display:none;}
+  .nav-cta{padding:7px 13px;}
+  .hero{min-height:auto;padding:calc(var(--top-chrome) + 44px) 16px 48px;}
+  .hero.search-active,.hero.browse-active,.hero.fulltext-active{padding:calc(var(--top-chrome) + 14px) 16px 18px;}
+  .hero-content{max-width:100%;}
+  .hero-intro{margin-bottom:28px;}
+  .hero-eyebrow{font-size:10px;margin-bottom:18px;}
+  .hero-headline{font-size:clamp(36px,11vw,54px);letter-spacing:-0.045em;}
+  .hero-sub{font-size:15.5px;line-height:1.55;max-width:330px;}
+  .search-container{margin-bottom:12px;}
+  .search-bar{height:52px;border-radius:16px;padding:0 13px;gap:8px;}
+  #search-input{font-size:16px;min-width:0;}
+  .search-count{font-size:10.5px;max-width:70px;overflow:hidden;text-overflow:ellipsis;}
+  .mode-toggle{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;border-radius:14px;gap:2px;}
+  .mode-btn{display:flex;align-items:center;justify-content:center;min-height:42px;padding:8px 6px;font-size:12px;line-height:1.15;white-space:normal;text-align:center;border-radius:10px;}
+  .mode-btn-long{display:none;}
+  .mode-btn-short{display:inline;}
+  .hero-source-strip{gap:6px;font-size:10.5px;margin-top:12px;}
+  .hero-source-strip b{font-size:9.5px;padding:3px 7px;}
+  .source-tiles-section{padding:24px 16px;}
+  .source-tiles-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .src-tile{padding:16px 14px;min-height:132px;}
+  .results-inner,.fulltext-inner{padding:0 16px 56px;}
+  .filter-bar{padding:10px 16px;margin:0 -16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .filter-group,.filter-group-wide{flex:0 0 auto;flex-wrap:nowrap;}
+  .filter-pill-row{flex-wrap:nowrap;}
+  .filter-label{font-size:9px;}
+  .filter-label-soft{margin-left:0;padding-left:10px;border-left:1px solid var(--line2);flex-basis:auto;margin-top:0;}
+  .fpill{white-space:nowrap;padding:6px 11px;}
+  .result-meta{padding:14px 0 8px;}
+  .result-card{padding:14px 14px 14px 16px;}
+  .rc-title{font-size:14px;}
+  .rc-snippet{font-size:12.5px;}
   #drawer{width:100%;border-left:none;}
-  .sec{padding:60px 20px;}
+  .drawer-header{padding:12px 12px 10px;align-items:center;}
+  .drawer-title{font-size:13px;}
+  .drawer-newtab-btn{font-size:0;width:32px;padding:0;justify-content:center;}
+  .drawer-newtab-btn .newtab-icon{font-size:14px;}
+  .drawer-body{padding:14px 14px 96px;}
+  .drawer-footer{position:fixed;left:0;right:0;bottom:0;background:var(--white);padding:10px 14px calc(10px + env(safe-area-inset-bottom));}
+  .sec{padding:56px 20px;}
   h2.sec-head{font-size:28px;}
   .feats{grid-template-columns:1fr;gap:10px;margin-top:32px;}
   .srcs-3,.srcs{grid-template-columns:1fr;gap:10px;}
   .callout{padding:32px 20px;}
-  .cta-strip{padding:60px 20px;}
+  .cta-strip{padding:56px 20px;}
   .quick-links-grid{grid-template-columns:1fr 1fr;}
+  .browse-source-bar{top:var(--top-chrome);}
+  .browse-source-bar-inner{padding:9px 16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .browse-source-bar-label,.browse-src-pill,.browse-src-soon{white-space:nowrap;}
   .browse-layout{grid-template-columns:1fr;}
-  .browse-parts-panel{position:static;max-height:220px;border-right:none;border-bottom:1px solid var(--line2);}
-  .parts-grid{flex-direction:row;flex-wrap:wrap;}
-  .part-tile{width:auto;flex:none;}
+  .browse-parts-panel{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--line2);padding:12px 0;background:var(--off);}
+  .browse-parts-label{padding:0 16px 10px;}
+  .parts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 12px;}
+  .part-tile{width:100%;min-height:56px;align-items:flex-start;background:var(--white);border:1px solid var(--line2);}
+  .part-tile-num{min-width:22px;}
+  .part-tile-label{font-size:11.5px;}
   .browse-reader-inner{padding:24px 18px 80px;}
   .br-part-title{font-size:24px;}
+  .br-section-header{display:block;}
+  .br-cite-btn{margin-top:8px;}
+  .br-para-row{gap:8px;}
+  .br-para-cite{font-size:8px;padding:2px 5px;}
+  .fulltext-title{font-size:30px;}
   footer{padding:32px 0;}
   .foot-inner{flex-direction:column;text-align:center;gap:12px;}
   .foot-links{justify-content:center;}
@@ -551,7 +609,14 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
 @media(max-width:480px){
   .source-tiles-grid{grid-template-columns:1fr;}
   .quick-links-grid{grid-template-columns:1fr;}
-  .hero-headline{font-size:clamp(36px,9vw,50px);}
+  .parts-grid{grid-template-columns:1fr;}
+  .hero-headline{font-size:clamp(34px,12vw,48px);}
+  .mode-btn{font-size:11.5px;}
+  .fulltext-inner{padding-top:36px;}
+}
+@media(max-width:360px){
+  .mode-btn{font-size:10.5px;padding-left:4px;padding-right:4px;}
+  .search-count{display:none;}
 }
 
 
@@ -670,7 +735,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
   .st-big-num { font-size: 30px; }
 }
 @media (max-width: 860px) {
-  .hero-inner { grid-template-columns: 1fr; }
+  .hero-inner { grid-template-columns: 1fr; padding:0; }
   .side-ticker { display: none; }
 }
 
@@ -763,8 +828,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
     </div>
     <div class="mode-toggle">
       <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
-      <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" onclick="setMode('browse')">⊞ Browse by Regulation &amp; Part</button>
-      <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ Full Text</button>
+      <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" onclick="setMode('browse')">⊞ <span class="mode-btn-long">Browse by Regulation &amp; Part</span><span class="mode-btn-short">Browse</span></button>
+      <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
     </div>
     <div class="hero-source-strip" aria-label="Live sources">
       <span>Live now</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>DAF Compass</b>
@@ -808,11 +873,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
         <div class="src-tile-meta">27 parts · FAR Council practice guide</div>
         <div class="src-tile-action">Browse FAR Companion →</div>
       </div>
-      <div class="src-tile src-tile-cmp soon" tabindex="0" aria-disabled="true">
+      <div class="src-tile src-tile-cmp" onclick="setMode('browse');setBrowseSource('compass')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('compass');}">
         <div class="src-tile-badge">DAF Compass</div>
         <div class="src-tile-name">DAF Contracting Compass</div>
         <div class="src-tile-meta">49 parts indexed · DAF acquisition policy</div>
-        <div class="src-tile-soon-badge">Coming soon</div>
+        <div class="src-tile-action">Browse DAF Compass →</div>
       </div>
     </div>
   </div>
@@ -895,7 +960,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
     <div class="fulltext-note"><strong>How these are generated:</strong> A GitHub Actions workflow runs on the 1st of every month, fetches all documents from the live Meilisearch index, compiles them in sequential part order, and commits fresh PDFs to the repository. Each page carries an AcqVault.com watermark. Files are served directly from GitHub — no server required.</div>
     <div class="fulltext-section-label">Coming soon</div>
     <div class="fulltext-cards">
-      <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:var(--cmp-bg);color:var(--cmp-txt);">DAF Compass</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>49 parts indexed</span><span>DAF acquisition policy</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
+      <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:var(--cmp-bg);color:var(--cmp-txt);">DAF Compass</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>Indexed for search and browse</span><span>PDF export not yet available</span></div><div class="fulltext-dl-btn-soon">PDF coming soon</div></div>
       <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:#fefce8;color:#854d0e;">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>14 volumes</span><span>comptroller.defense.gov</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
       <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:#fff1f2;color:#9f1239;">AFI 63-138</span><div class="fulltext-card-name">AFI 63-138</div><div class="fulltext-card-meta"><span>Acquisition of Services</span><span>AF instruction</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
       <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:var(--off2);color:var(--muted2);">AFI 63-Series</span><div class="fulltext-card-name">AFI 63-Series</div><div class="fulltext-card-meta"><span>Program management regs</span><span>AF instruction series</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
@@ -930,8 +995,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
       <div class="feat feat-clickable fade-up" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, and DAF Contracting Compass simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div><div class="feat-cta">Try search →</div></div>
       <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);"><div class="feat-icon">⊞</div><div class="feat-title">Browse by Part</div><div class="feat-desc">Navigate by FAR part number across all sources. Select a source, pick a part, and read every indexed section with inline citations — no search query needed.</div><div class="feat-cta">Try browse →</div></div>
       <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);"><div class="feat-icon">↓</div><div class="feat-title">Full Text PDFs</div><div class="feat-desc">Download pre-generated, AcqVault-watermarked PDFs of the full RFO, R-DFARS, and FAR Companion. Updated monthly from the live index.</div><div class="feat-cta">Download PDFs →</div></div>
-      <div class="feat fade-up"><div class="feat-stat-num">401</div><div class="feat-stat-label">Documents indexed</div><div class="feat-desc" style="margin-top:10px;">RFO, R-DFARS, and FAR Companion — 43 parts covered. Updated monthly from the Federal Register API and acquisition.gov.</div></div>
-      <div class="feat fade-up d1"><div class="feat-stat-num">3</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-desc" style="margin-top:10px;">RFO, R-DFARS, and FAR Companion are live now. DAF Contracting Compass, DoD FMR, AFI 63-138, and AFI 63-Series are on deck.</div></div>
+      <div class="feat fade-up"><div class="feat-stat-num">401</div><div class="feat-stat-label">Documents indexed</div><div class="feat-desc" style="margin-top:10px;">RFO, R-DFARS, FAR Companion, and DAF Compass coverage. Updated monthly from official source material where available.</div></div>
+      <div class="feat fade-up d1"><div class="feat-stat-num">4</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-desc" style="margin-top:10px;">RFO, R-DFARS, FAR Companion, and DAF Compass are live now. DoD FMR, AFI 63-138, and AFI 63-Series are on deck.</div></div>
       <div class="feat fade-up d2"><div class="feat-stat-num">$0</div><div class="feat-stat-label">Cost to use</div><div class="feat-desc" style="margin-top:10px;">No cost, no subscriptions, no account. AcqVault is a community resource built for the AF acquisition workforce. Open access, always.</div></div>
     </div>
   </div>
@@ -948,10 +1013,10 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
       <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">Revolutionary FAR Overhaul</div><div class="src-desc">Proposed and interim rules from the Federal Register API — the live, official rulemaking record for FAR reform.</div><span class="src-pill src-live">● Live now</span></div>
       <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">R-DFARS</div><div class="src-desc">DoD deviation documents sourced directly from acquisition.gov — one document per FAR part, 46 parts covered.</div><span class="src-pill src-live">● Live now</span></div>
       <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">FAR Companion</div><div class="src-desc">The FAR Council's non-regulatory practice guide, organized parallel to each FAR section. Version 2.0, covering 27 parts.</div><span class="src-pill src-live">● Live now</span></div>
+      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">DAF Contracting Compass</div><div class="src-desc">DAF-specific acquisition policy and guidance for the Air and Space Forces acquisition community, indexed for search and browse.</div><span class="src-pill src-live">● Live now</span></div>
     </div>
-    <p class="srcs-label fade-up" style="transition-delay:0.14s;">Coming soon</p>
+    <p class="srcs-label fade-up" style="transition-delay:0.14s;">Next up</p>
     <div class="srcs fade-up" style="transition-delay:0.18s;">
-      <div class="src"><div class="src-phase">Phase 2 — Live</div><div class="src-name">DAF Contracting Compass</div><div class="src-desc">DAF-specific acquisition policy and guidance — the successor to DAFFARS for the Air and Space Forces acquisition community.</div><span class="src-pill src-live">● Live now</span></div>
       <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">DoD Financial Management Regulation</div><div class="src-desc">The DoD FMR governs financial management policy across the department — 14 volumes covering appropriations to payments.</div><span class="src-pill src-soon">Coming soon</span></div>
       <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">AFI 63-138</div><div class="src-desc">Air Force Instruction 63-138, Acquisition of Services — governing policy for services acquisition planning across the AF.</div><span class="src-pill src-soon">Coming soon</span></div>
       <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">AFI 63-Series</div><div class="src-desc">AF Program Management regulations — governing life cycle management, program execution, and acquisition oversight.</div><span class="src-pill src-soon">Coming soon</span></div>
@@ -1194,6 +1259,7 @@ window.addEventListener('resize', adjustNavForAboutBar);
 // ── MODE SWITCHING ────────────────────────────────────────────────────────────
 function setMode(mode) {
   currentMode = mode;
+  document.body.classList.toggle('work-mode', mode !== 'search' || Boolean(document.getElementById('search-input')?.value.trim()));
   const hero = document.getElementById('hero');
   ['search','browse','fulltext'].forEach(m => {
     const btn = document.getElementById('mode-' + m);
@@ -1208,12 +1274,12 @@ function setMode(mode) {
   if (mode === 'browse') {
     hero.classList.add('browse-active');
     renderPartsGrid(browseSrc);
-    // Scroll to just below the mode toggle — the browse section
+    // Move straight to the active browse workspace.
     setTimeout(() => {
       const browseEl = document.getElementById('browse-section');
       if (browseEl) {
-        const y = browseEl.getBoundingClientRect().top + window.scrollY - 10;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        const y = browseEl.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       }
     }, 60);
   }
@@ -1222,8 +1288,8 @@ function setMode(mode) {
     setTimeout(() => {
       const ftEl = document.getElementById('fulltext-section');
       if (ftEl) {
-        const y = ftEl.getBoundingClientRect().top + window.scrollY - 10;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        const y = ftEl.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       }
     }, 60);
   }
@@ -1237,6 +1303,12 @@ function setMode(mode) {
 }
 
 // ── BROWSE — PART LIST + FULL READER ─────────────────────────────────────────
+
+function getStickyOffset() {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--top-chrome');
+  const n = parseFloat(raw);
+  return Number.isFinite(n) ? n : 0;
+}
 
 function renderPartsGrid(source) {
   const grid  = document.getElementById('parts-grid');
@@ -1419,7 +1491,10 @@ async function selectPart(tile, partNum, partLabel) {
   // Show loading state in reader
   const reader = document.getElementById('browse-reader-inner');
   reader.innerHTML = '<div class="browse-empty"><div class="spinner" style="margin:0 auto 16px;"></div><div class="browse-empty-sub">Loading Part ' + partNum + '…</div></div>';
-  document.getElementById('browse-reader').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    const readerTop = document.getElementById('browse-reader').getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+    window.scrollTo({ top: Math.max(0, readerTop), behavior: 'smooth' });
+  }
 
   try {
     const indexPart = indexPartForSource(browseSrc, partNum);
@@ -2248,6 +2323,7 @@ async function runSearch(options = {}) {
 }
 
 function activateSearch({ scrollToTop = false } = {}) {
+  document.body.classList.add('work-mode');
   hero.classList.add('search-active'); hero.classList.remove('browse-active','fulltext-active');
   resultsSection.classList.add('visible');
   document.getElementById('browse-section').classList.remove('visible');
@@ -2257,6 +2333,7 @@ function activateSearch({ scrollToTop = false } = {}) {
 }
 
 function deactivateSearch() {
+  document.body.classList.remove('work-mode');
   hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
   searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
 }
@@ -2490,8 +2567,10 @@ async function stFetchObligations() {
       var res2 = await fetch('https://api.usaspending.gov/api/v2/agency/breakdown/count/?fiscal_year=2025');
       throw new Error('use fallback');
     } catch(e2) {
-      // Fallback — known FY2025 estimate
-      stAnimateNum(el, 4.82, '$', 'T', 2, 1800); // FY2026 YTD estimate through Q3
+      el.textContent = 'Unavailable';
+      el.classList.remove('live');
+      var card = el.closest('.side-ticker');
+      if (card) card.classList.add('st-fallback');
     }
   }
 }
@@ -2519,24 +2598,14 @@ async function stFetchDAFAwards() {
     var awards = (d.results || []).filter(function(a) { return a['Award Amount'] && a['Recipient Name']; });
     if (!awards.length) throw new Error();
     stRenderAwards(awards.map(function(a) {
-      var vendor = (a['Recipient Name'] || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|LTD|LP|CO\.?)/gi,'').trim();
+      var vendor = (a['Recipient Name'] || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|LTD|LP|CO\.?)\b/gi,'').trim();
       if (vendor.length > 22) vendor = vendor.slice(0,20) + '…';
       var date = a['Period of Performance Start Date'] ? a['Period of Performance Start Date'].slice(0,7) : '';
       return { amt: stFmtAmt(a['Award Amount']), vendor: vendor, date: date };
     }));
   } catch(e) {
-    stRenderAwards([
-      { amt: '$2.4B', vendor: 'Lockheed Martin',    date: '2025-11', id: 'FA8626-26-C-0012' },
-      { amt: '$1.8B', vendor: 'Boeing Defense',       date: '2025-11', id: 'FA8629-26-C-0041' },
-      { amt: '$940M', vendor: 'Raytheon Technologies',date: '2025-12', id: 'FA8650-26-C-0078' },
-      { amt: '$720M', vendor: 'Northrop Grumman',     date: '2026-01', id: 'FA8702-26-C-0033' },
-      { amt: '$510M', vendor: 'General Dynamics',     date: '2026-02', id: 'FA8522-26-C-0019' },
-      { amt: '$380M', vendor: 'L3Harris Technologies',date: '2026-02', id: 'FA8730-26-C-0055' },
-      { amt: '$290M', vendor: 'BAE Systems',          date: '2026-03', id: 'FA8726-26-C-0024' },
-      { amt: '$185M', vendor: 'Leidos',               date: '2026-03', id: 'FA8050-26-C-0011' },
-      { amt: '$142M', vendor: 'SAIC',                 date: '2026-04', id: 'FA8721-26-C-0067' },
-      { amt: '$98M',  vendor: 'Booz Allen Hamilton',  date: '2026-05', id: 'FA8101-26-C-0038' },
-    ]);
+    body.closest('.side-ticker')?.classList.add('st-fallback');
+    body.innerHTML = '<div class="st-loading">Award feed unavailable.</div><div class="st-disclaimer">Live USASpending data could not be loaded.</div>';
   }
 }
 
@@ -2561,6 +2630,7 @@ function stRenderAwards(awards) {
   // Auto-scroll the awards panel every 2.5s
   var idx = 0;
   var items = body.querySelectorAll('.st-award-item');
+  if (!items.length) return;
   var visCount = Math.floor(body.offsetHeight / 52) || 3;
   setInterval(function() {
     idx = (idx + 1) % items.length;
