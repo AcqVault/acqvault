@@ -157,17 +157,11 @@ nav.scrolled .nav-feedback-btn:hover{border-color:var(--ink3);color:var(--ink);}
 .source-tiles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
 .src-tile{background:var(--white);border:1px solid var(--line2);border-radius:var(--r-lg);padding:20px 18px;cursor:pointer;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;gap:7px;position:relative;overflow:hidden;}
 .src-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.src-tile-rfo::before{background:var(--rfo-solid);}
-.src-tile-dfars::before{background:var(--dfars-solid);}
-.src-tile-fc::before{background:var(--fc-solid);}
-.src-tile-cmp::before{background:var(--cmp-solid);opacity:0.5;}
+.src-tile-rfo::before,.src-tile-dfars::before,.src-tile-fc::before,.src-tile-cmp::before{background:var(--accent);opacity:0.85;}
 .src-tile:not(.soon):hover{border-color:var(--line);box-shadow:0 6px 24px rgba(0,0,0,0.07);transform:translateY(-3px);}
 .src-tile.soon{cursor:default;opacity:0.55;}
 .src-tile-badge{display:inline-flex;align-items:center;font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px;width:fit-content;}
-.src-tile-rfo .src-tile-badge{background:var(--rfo-bg);color:var(--rfo-txt);}
-.src-tile-dfars .src-tile-badge{background:var(--dfars-bg);color:var(--dfars-txt);}
-.src-tile-fc .src-tile-badge{background:var(--fc-bg);color:var(--fc-txt);}
-.src-tile-cmp .src-tile-badge{background:var(--cmp-bg);color:var(--cmp-txt);}
+.src-tile-rfo .src-tile-badge,.src-tile-dfars .src-tile-badge,.src-tile-fc .src-tile-badge,.src-tile-cmp .src-tile-badge{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-bdr);}
 .src-tile-name{font-size:14px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.25;}
 .src-tile-meta{font-size:11.5px;color:var(--muted2);margin-top:auto;}
 .src-tile-action{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;font-weight:600;color:var(--accent);opacity:0;transition:opacity 0.15s,transform 0.15s;transform:translateX(-4px);}
@@ -503,13 +497,14 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .quick-links-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:36px;}
 .ql-card{display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);border:1px solid rgba(0,102,204,0.12);border-radius:var(--r-xl);padding:22px 20px;text-decoration:none;transition:transform 0.2s cubic-bezier(0.16,1,0.3,1),box-shadow 0.2s,border-color 0.2s;background-color:var(--white);position:relative;overflow:hidden;min-height:164px;}
 .ql-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0.75;}
+.ql-card::after{content:attr(data-mark);position:absolute;right:18px;bottom:42px;width:62px;height:62px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;color:rgba(0,102,204,0.07);background:rgba(0,102,204,0.035);border:1px solid rgba(0,102,204,0.06);pointer-events:none;}
 .ql-card:hover{border-color:rgba(0,102,204,0.24);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,66,153,0.09);}
 .ql-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .ql-icon{width:38px;height:38px;border-radius:12px;background:rgba(0,102,204,0.07);border:1px solid rgba(0,102,204,0.13);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--accent);}
 .ql-chip{font-size:9px;font-weight:750;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);background:var(--off);border:1px solid var(--line2);border-radius:999px;padding:3px 7px;white-space:nowrap;}
 .ql-name{font-size:15px;font-weight:750;letter-spacing:-0.025em;color:var(--ink);}
-.ql-desc{font-size:12.5px;color:var(--muted);line-height:1.55;flex:1;}
-.ql-action{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid rgba(0,102,204,0.08);font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted2);}
+.ql-desc{font-size:12.5px;color:var(--muted);line-height:1.55;flex:1;position:relative;z-index:1;max-width:82%;}
+.ql-action{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid rgba(0,102,204,0.08);font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted2);position:relative;z-index:1;}
 .ql-arrow{font-size:13px;color:var(--accent);font-weight:800;opacity:0.8;transition:transform 0.15s;}
 .ql-card:hover .ql-arrow{transform:translate(2px,-2px);}
 
@@ -1029,12 +1024,12 @@ body.work-mode #quick-links{margin-top:0;}
     <h2 class="sec-head fade-up">The sites you open every day.</h2>
     <p class="sec-sub sec-sub-dark fade-up">The most-used tools in the acquisition professional's daily workflow — one click away.</p>
     <div class="quick-links-grid">
-      <a class="ql-card fade-up" href="https://www.acquisition.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚖</div><span class="ql-chip">Regs</span></div><div class="ql-name">Acquisition.gov</div><div class="ql-desc">FAR, DFARS, agency supplements, and acquisition policy — the authoritative regulatory source.</div><div class="ql-action"><span>Primary source</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up d1" href="https://sam.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⌕</div><span class="ql-chip">Awards</span></div><div class="ql-name">SAM.gov</div><div class="ql-desc">Contract opportunities, solicitations, entity registrations, and federal award data.</div><div class="ql-action"><span>Opportunities</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up d2" href="https://kthq.org/index.html" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">▦</div><span class="ql-chip">Tools</span></div><div class="ql-name">KT HQ</div><div class="ql-desc">Knowledge tools, templates, and acquisition resources for contracting professionals.</div><div class="ql-action"><span>Templates</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up" href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚡</div><span class="ql-chip">Protests</span></div><div class="ql-name">GAO Search Decisions</div><div class="ql-desc">Search bid protest decisions and dockets — the practical GAO entry point for contracting research.</div><div class="ql-action"><span>Dockets</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up d1" href="https://piee.eb.mil" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">🔒</div><span class="ql-chip">DoD</span></div><div class="ql-name">PIEE</div><div class="ql-desc">Procurement Integrated Enterprise Environment — CPARS, JAM, WAWF, and DoD contracting systems.</div><div class="ql-action"><span>Systems</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up d2" href="https://www.dau.edu" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">◆</div><span class="ql-chip">Learn</span></div><div class="ql-name">DAU</div><div class="ql-desc">Defense Acquisition University — training, continuous learning, and acquisition knowledge resources.</div><div class="ql-action"><span>Training</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up" data-mark="§" href="https://www.acquisition.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚖</div><span class="ql-chip">Regs</span></div><div class="ql-name">Acquisition.gov</div><div class="ql-desc">FAR, DFARS, agency supplements, and acquisition policy — the authoritative regulatory source.</div><div class="ql-action"><span>Primary source</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up d1" data-mark="⌕" href="https://sam.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⌕</div><span class="ql-chip">Awards</span></div><div class="ql-name">SAM.gov</div><div class="ql-desc">Contract opportunities, solicitations, entity registrations, and federal award data.</div><div class="ql-action"><span>Opportunities</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up d2" data-mark="▦" href="https://kthq.org/index.html" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">▦</div><span class="ql-chip">Tools</span></div><div class="ql-name">KT HQ</div><div class="ql-desc">Knowledge tools, templates, and acquisition resources for contracting professionals.</div><div class="ql-action"><span>Templates</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up" data-mark="⚖" href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚡</div><span class="ql-chip">Protests</span></div><div class="ql-name">GAO Search Decisions</div><div class="ql-desc">Search bid protest decisions and dockets — the practical GAO entry point for contracting research.</div><div class="ql-action"><span>Dockets</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up d1" data-mark="◆" href="https://piee.eb.mil" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">🔒</div><span class="ql-chip">DoD</span></div><div class="ql-name">PIEE</div><div class="ql-desc">Procurement Integrated Enterprise Environment — CPARS, JAM, WAWF, and DoD contracting systems.</div><div class="ql-action"><span>Systems</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up d2" data-mark="★" href="https://www.dau.edu" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">◆</div><span class="ql-chip">Learn</span></div><div class="ql-name">Warfighting Acquisition University</div><div class="ql-desc">DAU learning, training, and acquisition knowledge resources for the defense workforce.</div><div class="ql-action"><span>Training</span><span class="ql-arrow">↗</span></div></a>
     </div>
   </div>
 </section>
