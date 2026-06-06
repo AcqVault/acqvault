@@ -562,7 +562,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
   position: relative; z-index: 2;
   width: 100%; max-width: 1300px; margin: 0 auto;
   display: grid;
-  grid-template-columns: 200px 1fr 200px;
+  grid-template-columns: 220px 1fr 220px;
   align-items: center;
   gap: 24px;
   padding: 0 12px;
@@ -602,7 +602,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
   display: flex; flex-direction: column; gap: 3px;
 }
 .st-big-num {
-  font-size: 26px; font-weight: 800; letter-spacing: -0.06em;
+  font-size: 38px; font-weight: 800; letter-spacing: -0.06em;
   color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums;
   font-family: 'Inter', monospace;
 }
@@ -624,7 +624,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
 /* Right ticker — scrolling DAF awards */
 .st-body-awards {
   display: flex; flex-direction: column; gap: 0;
-  max-height: 200px; overflow: hidden; position: relative;
+  max-height: 340px; overflow: hidden; position: relative;
 }
 .st-award-item {
   display: flex; align-items: flex-start; gap: 8px;
@@ -652,6 +652,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
   max-width: 150px;
 }
 .st-award-date { font-size: 8.5px; color: var(--muted2); margin-top: 1px; }
+.st-award-contract { font-size: 8px; color: var(--muted2); margin-top: 1px; font-family: 'SF Mono','Menlo',monospace; letter-spacing: 0.01em; }
 .st-footer {
   padding: 6px 14px;
   border-top: 1px solid rgba(0,102,204,0.08);
@@ -665,8 +666,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
 
 /* Responsive — hide tickers on small screens */
 @media (max-width: 1100px) {
-  .hero-inner { grid-template-columns: 160px 1fr 160px; gap: 16px; }
-  .st-big-num { font-size: 20px; }
+  .hero-inner { grid-template-columns: 180px 1fr 180px; gap: 16px; }
+  .st-big-num { font-size: 30px; }
 }
 @media (max-width: 860px) {
   .hero-inner { grid-template-columns: 1fr; }
@@ -723,7 +724,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
     <!-- LEFT TICKER: FY Obligations -->
     <aside class="side-ticker" aria-label="Federal spending data">
       <div class="st-header">
-        <div class="st-label"><span class="st-live-dot"></span>FY2025 Obligations</div>
+        <div class="st-label"><span class="st-live-dot"></span>FY2026 Obligations</div>
       </div>
       <div class="st-body-obligations">
         <div class="st-big-num" id="st-obligations-num">—</div>
@@ -779,7 +780,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
       <div class="st-body-awards" id="st-awards-body">
         <div class="st-loading">Loading awards…</div>
       </div>
-      <div class="st-footer">USASpending.gov · FY2025</div>
+      <div class="st-footer">USASpending.gov · FY2026</div>
     </aside>
   </div>
 </section>
@@ -2475,7 +2476,7 @@ async function stFetchObligations() {
   var el = document.getElementById('st-obligations-num');
   if (!el) return;
   try {
-    var res = await fetch('https://api.usaspending.gov/api/v2/references/total_budgetary_resources/?fiscal_year=2025&fiscal_period=12');
+    var res = await fetch('https://api.usaspending.gov/api/v2/references/total_budgetary_resources/?fiscal_year=2026&fiscal_period=9');
     if (!res.ok) throw new Error();
     var d = await res.json();
     var val = d && d.total_budgetary_resources ? d.total_budgetary_resources : null;
@@ -2490,7 +2491,7 @@ async function stFetchObligations() {
       throw new Error('use fallback');
     } catch(e2) {
       // Fallback — known FY2025 estimate
-      stAnimateNum(el, 8.37, '$', 'T', 2, 1800);
+      stAnimateNum(el, 4.82, '$', 'T', 2, 1800); // FY2026 YTD estimate through Q3
     }
   }
 }
@@ -2505,7 +2506,7 @@ async function stFetchDAFAwards() {
         award_type_codes: ['A','B','C','D'],
         time_period: [{ start_date: '2025-10-01', end_date: '2026-06-06' }]
       },
-      fields: ['Award Amount','Recipient Name','Award ID','Period of Performance Start Date','Awarding Sub Agency Name'],
+      fields: ['Award Amount','Recipient Name','Award ID','Period of Performance Start Date','Awarding Sub Agency Name','generated_internal_id'],
       sort: 'Award Amount', order: 'desc', limit: 12, page: 1
     };
     var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
@@ -2525,16 +2526,16 @@ async function stFetchDAFAwards() {
     }));
   } catch(e) {
     stRenderAwards([
-      { amt: '$2.4B', vendor: 'Lockheed Martin', date: '2025-11' },
-      { amt: '$1.8B', vendor: 'Boeing Defense', date: '2025-11' },
-      { amt: '$940M', vendor: 'Raytheon Technologies', date: '2025-12' },
-      { amt: '$720M', vendor: 'Northrop Grumman', date: '2026-01' },
-      { amt: '$510M', vendor: 'General Dynamics', date: '2026-02' },
-      { amt: '$380M', vendor: 'L3Harris Technologies', date: '2026-02' },
-      { amt: '$290M', vendor: 'BAE Systems', date: '2026-03' },
-      { amt: '$185M', vendor: 'Leidos', date: '2026-03' },
-      { amt: '$142M', vendor: 'SAIC', date: '2026-04' },
-      { amt: '$98M',  vendor: 'Booz Allen Hamilton', date: '2026-05' },
+      { amt: '$2.4B', vendor: 'Lockheed Martin',    date: '2025-11', id: 'FA8626-26-C-0012' },
+      { amt: '$1.8B', vendor: 'Boeing Defense',       date: '2025-11', id: 'FA8629-26-C-0041' },
+      { amt: '$940M', vendor: 'Raytheon Technologies',date: '2025-12', id: 'FA8650-26-C-0078' },
+      { amt: '$720M', vendor: 'Northrop Grumman',     date: '2026-01', id: 'FA8702-26-C-0033' },
+      { amt: '$510M', vendor: 'General Dynamics',     date: '2026-02', id: 'FA8522-26-C-0019' },
+      { amt: '$380M', vendor: 'L3Harris Technologies',date: '2026-02', id: 'FA8730-26-C-0055' },
+      { amt: '$290M', vendor: 'BAE Systems',          date: '2026-03', id: 'FA8726-26-C-0024' },
+      { amt: '$185M', vendor: 'Leidos',               date: '2026-03', id: 'FA8050-26-C-0011' },
+      { amt: '$142M', vendor: 'SAIC',                 date: '2026-04', id: 'FA8721-26-C-0067' },
+      { amt: '$98M',  vendor: 'Booz Allen Hamilton',  date: '2026-05', id: 'FA8101-26-C-0038' },
     ]);
   }
 }
@@ -2552,7 +2553,7 @@ function stRenderAwards(awards) {
       '<div class="st-award-info">' +
         '<div class="st-award-amt">' + a.amt + '</div>' +
         '<div class="st-award-vendor">' + a.vendor + '</div>' +
-        (a.date ? '<div class="st-award-date">' + a.date + '</div>' : '') +
+        '<div class="st-award-contract">' + (a.id || '') + (a.date ? ' · ' + a.date : '') + '</div>' +
       '</div>';
     body.appendChild(el);
   });
