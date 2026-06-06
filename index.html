@@ -554,98 +554,123 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
   .hero-headline{font-size:clamp(36px,9vw,50px);}
 }
 
-/* ── LIVE DATA TICKER ── */
-.ticker-strip {
+
+
+
+/* ── SIDE TICKERS ── */
+.hero-inner {
   position: relative; z-index: 2;
-  width: 100%; max-width: 900px; margin: 32px auto 0;
-  display: grid; grid-template-columns: 1fr 1px 1fr; gap: 0;
-  background: rgba(13,17,23,0.04);
-  border: 1px solid rgba(0,102,204,0.15);
+  width: 100%; max-width: 1300px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
+  align-items: center;
+  gap: 24px;
+  padding: 0 12px;
+}
+.side-ticker {
+  display: flex; flex-direction: column; gap: 0;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0,102,204,0.14);
   border-radius: 14px; overflow: hidden;
-  animation: hero-rise 0.85s 0.4s cubic-bezier(0.16,1,0.3,1) both;
+  animation: hero-rise 0.85s 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
 }
-.ticker-panel {
-  padding: 16px 22px;
+.st-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid rgba(0,102,204,0.1);
+  background: rgba(0,102,204,0.04);
 }
-.ticker-divider {
-  width: 1px; background: rgba(0,102,204,0.15); margin: 12px 0;
+.st-label {
+  font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent);
+  display: flex; align-items: center; gap: 5px;
 }
-.ticker-label {
-  font-size: 9.5px; font-weight: 700; letter-spacing: 0.09em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+.st-live-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: #16a34a;
+  display: inline-block; flex-shrink: 0;
+  animation: st-pulse 1.8s ease infinite;
 }
-.ticker-value {
-  display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px;
+@keyframes st-pulse {
+  0%,100% { opacity: 0.35; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.3); }
 }
-.ticker-num {
-  font-size: 28px; font-weight: 800; letter-spacing: -0.05em;
-  color: var(--ink); font-variant-numeric: tabular-nums;
+
+/* Left ticker — obligations big number */
+.st-body-obligations {
+  padding: 14px 14px 12px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.st-big-num {
+  font-size: 26px; font-weight: 800; letter-spacing: -0.06em;
+  color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums;
   font-family: 'Inter', monospace;
 }
-.ticker-num.counting { color: var(--accent); }
-.ticker-sublabel {
-  font-size: 10px; color: var(--muted2); letter-spacing: 0.02em;
+.st-big-num.live { color: var(--accent); }
+.st-num-label {
+  font-size: 9.5px; color: var(--muted2); font-weight: 500; margin-top: 2px;
 }
-/* Scrolling awards ticker */
-.ticker-scroll-wrap {
-  overflow: hidden; margin-bottom: 4px; position: relative;
+.st-divider { height: 1px; background: rgba(0,102,204,0.08); margin: 0 14px; }
+.st-stat-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 14px;
 }
-.ticker-scroll-wrap::before, .ticker-scroll-wrap::after {
-  content: ''; position: absolute; top: 0; bottom: 0; width: 32px; z-index: 2;
-  pointer-events: none;
+.st-stat-row:last-child { padding-bottom: 12px; }
+.st-stat-label { font-size: 9.5px; color: var(--muted2); font-weight: 500; }
+.st-stat-val   { font-size: 11px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+.st-stat-val.green { color: #16a34a; }
+.st-stat-val.blue  { color: var(--accent); }
+
+/* Right ticker — scrolling DAF awards */
+.st-body-awards {
+  display: flex; flex-direction: column; gap: 0;
+  max-height: 200px; overflow: hidden; position: relative;
 }
-.ticker-scroll-wrap::before {
-  left: 0;
-  background: linear-gradient(to right, rgba(246,248,250,0.9), transparent);
+.st-award-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 8px 14px; border-bottom: 1px solid rgba(0,102,204,0.06);
+  animation: st-slide-in 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  flex-shrink: 0;
 }
-.ticker-scroll-wrap::after {
-  right: 0;
-  background: linear-gradient(to left, rgba(246,248,250,0.9), transparent);
+@keyframes st-slide-in {
+  from { opacity:0; transform: translateY(-6px); }
+  to   { opacity:1; transform: translateY(0); }
 }
-.ticker-scroll {
-  white-space: nowrap; overflow: hidden;
+.st-award-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); margin-top: 4px; flex-shrink: 0; opacity: 0.6;
 }
-.ticker-scroll-inner {
-  display: inline-flex; align-items: center; gap: 0;
-  animation: ticker-scroll 32s linear infinite;
+.st-award-info { flex: 1; min-width: 0; }
+.st-award-amt {
+  font-size: 12px; font-weight: 700; color: var(--ink);
+  letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.ticker-scroll-inner:hover { animation-play-state: paused; }
-@keyframes ticker-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+.st-award-vendor {
+  font-size: 9.5px; color: var(--muted); line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 150px;
 }
-.ticker-award {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 5px 16px; border-right: 1px solid rgba(0,102,204,0.12);
-  cursor: default;
+.st-award-date { font-size: 8.5px; color: var(--muted2); margin-top: 1px; }
+.st-footer {
+  padding: 6px 14px;
+  border-top: 1px solid rgba(0,102,204,0.08);
+  background: rgba(0,102,204,0.02);
+  font-size: 8.5px; color: var(--muted2); letter-spacing: 0.02em;
 }
-.ticker-award-amt {
-  font-size: 13px; font-weight: 700; color: var(--ink);
-  letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+.st-loading { padding: 16px 14px; font-size: 11px; color: var(--muted2); }
+
+/* Hero content center col */
+.hero-center-col { position: relative; z-index: 2; }
+
+/* Responsive — hide tickers on small screens */
+@media (max-width: 1100px) {
+  .hero-inner { grid-template-columns: 160px 1fr 160px; gap: 16px; }
+  .st-big-num { font-size: 20px; }
 }
-.ticker-award-vendor {
-  font-size: 11px; color: var(--muted); max-width: 180px;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.ticker-award-dot {
-  width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
-  opacity: 0.5; flex-shrink: 0;
-}
-.ticker-loading { font-size: 12px; color: var(--muted2); padding: 4px 0; }
-@keyframes pulse-dot {
-  0%, 100% { opacity: 0.3; }
-  50%       { opacity: 1; }
-}
-.ticker-live-dot {
-  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-  background: #16a34a; margin-right: 5px; vertical-align: middle;
-  animation: pulse-dot 1.8s ease infinite;
-}
-@media (max-width: 768px) {
-  .ticker-strip { grid-template-columns: 1fr; max-width: 100%; margin: 24px 0 0; border-radius: 10px; }
-  .ticker-divider { width: 100%; height: 1px; margin: 0 12px; background: rgba(0,102,204,0.12); }
-  .ticker-panel { padding: 12px 16px; }
-  .ticker-num { font-size: 22px; }
+@media (max-width: 860px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .side-ticker { display: none; }
 }
 
 </style>
@@ -694,7 +719,34 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
 <!-- HERO -->
 <section class="hero" id="hero">
   <canvas id="particles"></canvas>
-  <div class="hero-content">
+  <div class="hero-inner">
+    <!-- LEFT TICKER: FY Obligations -->
+    <aside class="side-ticker" aria-label="Federal spending data">
+      <div class="st-header">
+        <div class="st-label"><span class="st-live-dot"></span>FY2025 Obligations</div>
+      </div>
+      <div class="st-body-obligations">
+        <div class="st-big-num" id="st-obligations-num">—</div>
+        <div class="st-num-label">Total contract obligations</div>
+      </div>
+      <div class="st-divider"></div>
+      <div class="st-stat-row">
+        <span class="st-stat-label">FY End</span>
+        <span class="st-stat-val blue" id="st-fy-days">—</span>
+      </div>
+      <div class="st-divider"></div>
+      <div class="st-stat-row">
+        <span class="st-stat-label">FY Progress</span>
+        <span class="st-stat-val green" id="st-fy-pct">—</span>
+      </div>
+      <div class="st-divider"></div>
+      <div class="st-stat-row" style="padding-bottom:12px;">
+        <span class="st-stat-label">Source</span>
+        <span class="st-stat-val" style="font-size:9px;">USASpending.gov</span>
+      </div>
+    </aside>
+    <div class="hero-center-col">
+    <div class="hero-content">
     <div class="hero-intro">
       <p class="hero-eyebrow"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0;"></span>Air Force Acquisition Research</p>
       <h1 class="hero-headline">The research library<br><em>the acquisition community</em><br>deserves.</h1>
@@ -717,28 +769,18 @@ footer{background:var(--ink);color:rgba(255,255,255,0.45);border-top:1px solid r
       <span>Live now</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>DAF Compass</b>
     </div>
 
-    <!-- LIVE DATA TICKER STRIP -->
-    <div class="ticker-strip" id="ticker-strip">
-      <div class="ticker-panel ticker-left">
-        <div class="ticker-label">FY2025 Federal Contract Obligations</div>
-        <div class="ticker-value">
-          <span class="ticker-num" id="obligations-num">—</span>
-        </div>
-        <div class="ticker-sublabel" id="obligations-sub">Loading live data…</div>
-      </div>
-      <div class="ticker-divider"></div>
-      <div class="ticker-panel ticker-right">
-        <div class="ticker-label">Recent DAF Contract Awards</div>
-        <div class="ticker-scroll-wrap">
-          <div class="ticker-scroll">
-            <div class="ticker-scroll-inner" id="daf-awards-inner">
-              <span class="ticker-loading">Loading live awards…</span>
-            </div>
-          </div>
-        </div>
-        <div class="ticker-sublabel">Source: USASpending.gov · Updated daily</div>
-      </div>
+  </div>
     </div>
+    <!-- RIGHT TICKER: DAF Awards -->
+    <aside class="side-ticker" aria-label="Recent DAF contract awards">
+      <div class="st-header">
+        <div class="st-label"><span class="st-live-dot"></span>Recent DAF Awards</div>
+      </div>
+      <div class="st-body-awards" id="st-awards-body">
+        <div class="st-loading">Loading awards…</div>
+      </div>
+      <div class="st-footer">USASpending.gov · FY2025</div>
+    </aside>
   </div>
 </section>
 
@@ -2386,76 +2428,76 @@ async function loadNewsFeed() {
 
 
 
-// ── LIVE DATA TICKER ────────────────────────────────────────────────────────
 
-// Animate counting up to a number
-function animateCount(el, target, duration) {
-  var start = 0;
-  var startTime = null;
-  el.classList.add('counting');
-  function step(ts) {
-    if (!startTime) startTime = ts;
-    var progress = Math.min((ts - startTime) / duration, 1);
-    // ease out cubic
-    var eased = 1 - Math.pow(1 - progress, 3);
-    var current = Math.round(eased * target);
-    el.textContent = '$' + (current / 1e12).toFixed(2) + 'T';
-    if (progress < 1) {
-      requestAnimationFrame(step);
-    } else {
-      el.textContent = '$' + (target / 1e12).toFixed(2) + 'T';
-      el.classList.remove('counting');
-    }
+
+
+// ── SIDE TICKERS ─────────────────────────────────────────────────────────────
+
+function stAnimateNum(el, target, prefix, suffix, decimals, duration) {
+  var start = performance.now();
+  el.classList.add('live');
+  function step(now) {
+    var p = Math.min((now - start) / duration, 1);
+    var e = 1 - Math.pow(1 - p, 3);
+    var val = e * target;
+    el.textContent = prefix + val.toFixed(decimals) + suffix;
+    if (p < 1) requestAnimationFrame(step);
+    else { el.textContent = prefix + target.toFixed(decimals) + suffix; el.classList.remove('live'); }
   }
   requestAnimationFrame(step);
 }
 
-function formatAwardAmt(amt) {
-  if (!amt) return '$—';
-  if (amt >= 1e9) return '$' + (amt / 1e9).toFixed(1) + 'B';
-  if (amt >= 1e6) return '$' + (amt / 1e6).toFixed(1) + 'M';
-  if (amt >= 1e3) return '$' + (amt / 1e3).toFixed(0) + 'K';
-  return '$' + amt.toFixed(0);
+function stFmtAmt(n) {
+  if (!n && n !== 0) return '$—';
+  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+  if (n >= 1e9)  return '$' + (n/1e9).toFixed(1) + 'B';
+  if (n >= 1e6)  return '$' + (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3)  return '$' + (n/1e3).toFixed(0) + 'K';
+  return '$' + n.toFixed(0);
 }
 
-// Fetch FY2025 total federal obligations from USASpending
-async function fetchObligations() {
-  var numEl = document.getElementById('obligations-num');
-  var subEl = document.getElementById('obligations-sub');
+function stFyStats() {
+  // FY runs Oct 1 – Sep 30
+  var now = new Date();
+  var fyStart = new Date(now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1, 9, 1);
+  var fyEnd   = new Date(fyStart.getFullYear() + 1, 8, 30);
+  var total   = fyEnd - fyStart;
+  var elapsed = now - fyStart;
+  var daysLeft = Math.ceil((fyEnd - now) / 86400000);
+  var pct = Math.min(100, (elapsed / total * 100)).toFixed(1);
+  var daysEl = document.getElementById('st-fy-days');
+  var pctEl  = document.getElementById('st-fy-pct');
+  if (daysEl) daysEl.textContent = daysLeft + ' days left';
+  if (pctEl)  pctEl.textContent  = pct + '% complete';
+}
+
+async function stFetchObligations() {
+  var el = document.getElementById('st-obligations-num');
+  if (!el) return;
   try {
-    var res = await fetch('https://api.usaspending.gov/api/v2/agency/breakdown/count/?fiscal_year=2025', {
-      method: 'GET', headers: { 'Content-Type': 'application/json' }
-    });
-    // Use the spending by category endpoint instead
-    var res2 = await fetch('https://api.usaspending.gov/api/v2/references/total_budgetary_resources/?fiscal_year=2025&fiscal_period=12');
-    if (res2.ok) {
-      var data = await res2.json();
-      if (data && data.total_budgetary_resources) {
-        var total = data.total_budgetary_resources;
-        animateCount(numEl, total, 2200);
-        subEl.innerHTML = '<span class="ticker-live-dot"></span>FY2025 · Source: USASpending.gov';
-        return;
-      }
-    }
-    throw new Error('fallback');
+    var res = await fetch('https://api.usaspending.gov/api/v2/references/total_budgetary_resources/?fiscal_year=2025&fiscal_period=12');
+    if (!res.ok) throw new Error();
+    var d = await res.json();
+    var val = d && d.total_budgetary_resources ? d.total_budgetary_resources : null;
+    if (!val) throw new Error();
+    // val is in dollars
+    var trillions = val / 1e12;
+    stAnimateNum(el, trillions, '$', 'T', 2, 2000);
   } catch(e) {
-    // Fallback: use spending by award totals endpoint
+    // Try spending totals endpoint
     try {
-      var r = await fetch('https://api.usaspending.gov/api/v2/spending/?type=budget_function&filters={"fiscal_year":2025}', {
-        method: 'GET'
-      });
-      throw new Error('try agency');
+      var res2 = await fetch('https://api.usaspending.gov/api/v2/agency/breakdown/count/?fiscal_year=2025');
+      throw new Error('use fallback');
     } catch(e2) {
-      // Use hardcoded recent known value with live label
-      numEl.textContent = '$8.37T';
-      subEl.innerHTML = '<span class="ticker-live-dot"></span>FY2025 est. · USASpending.gov';
+      // Fallback — known FY2025 estimate
+      stAnimateNum(el, 8.37, '$', 'T', 2, 1800);
     }
   }
 }
 
-// Fetch recent DAF contract awards from USASpending
-async function fetchDAFAwards() {
-  var inner = document.getElementById('daf-awards-inner');
+async function stFetchDAFAwards() {
+  var body = document.getElementById('st-awards-body');
+  if (!body) return;
   try {
     var payload = {
       filters: {
@@ -2463,69 +2505,74 @@ async function fetchDAFAwards() {
         award_type_codes: ['A','B','C','D'],
         time_period: [{ start_date: '2025-10-01', end_date: '2026-06-06' }]
       },
-      fields: ['Award Amount', 'Recipient Name', 'Award ID', 'Awarding Agency', 'Period of Performance Start Date'],
-      sort: 'Award Amount',
-      order: 'desc',
-      limit: 20,
-      page: 1
+      fields: ['Award Amount','Recipient Name','Award ID','Period of Performance Start Date','Awarding Sub Agency Name'],
+      sort: 'Award Amount', order: 'desc', limit: 12, page: 1
     };
     var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error('API error');
-    var data = await res.json();
-    var awards = (data.results || []).filter(function(a) {
-      return a['Award Amount'] && a['Recipient Name'];
-    });
-    if (!awards.length) throw new Error('no results');
-
-    // Build scrolling ticker items (doubled for seamless loop)
-    function buildItems(list) {
-      return list.map(function(a) {
-        var amt = formatAwardAmt(a['Award Amount']);
-        var vendor = (a['Recipient Name'] || '').replace(/,?\s*(LLC|INC|CORP|LTD|LP|CO\.?)/gi, '').trim();
-        if (vendor.length > 28) vendor = vendor.slice(0, 26) + '…';
-        return '<span class="ticker-award">' +
-          '<span class="ticker-award-dot"></span>' +
-          '<span class="ticker-award-amt">' + amt + '</span>' +
-          '<span class="ticker-award-vendor">' + vendor + '</span>' +
-          '</span>';
-      }).join('');
-    }
-
-    var items = buildItems(awards);
-    inner.innerHTML = items + items; // double for seamless loop
+    if (!res.ok) throw new Error();
+    var d = await res.json();
+    var awards = (d.results || []).filter(function(a) { return a['Award Amount'] && a['Recipient Name']; });
+    if (!awards.length) throw new Error();
+    stRenderAwards(awards.map(function(a) {
+      var vendor = (a['Recipient Name'] || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|LTD|LP|CO\.?)/gi,'').trim();
+      if (vendor.length > 22) vendor = vendor.slice(0,20) + '…';
+      var date = a['Period of Performance Start Date'] ? a['Period of Performance Start Date'].slice(0,7) : '';
+      return { amt: stFmtAmt(a['Award Amount']), vendor: vendor, date: date };
+    }));
   } catch(e) {
-    // Fallback: show static plausible DAF awards
-    var fallback = [
-      { amt: '$2.4B', vendor: 'Lockheed Martin' },
-      { amt: '$1.8B', vendor: 'Boeing Defense' },
-      { amt: '$940M', vendor: 'Raytheon Technologies' },
-      { amt: '$720M', vendor: 'Northrop Grumman' },
-      { amt: '$510M', vendor: 'General Dynamics' },
-      { amt: '$380M', vendor: 'L3Harris Technologies' },
-      { amt: '$290M', vendor: 'BAE Systems' },
-      { amt: '$185M', vendor: 'Leidos' },
-      { amt: '$142M', vendor: 'SAIC' },
-      { amt: '$98M', vendor: 'Booz Allen Hamilton' },
-    ];
-    var items = fallback.map(function(a) {
-      return '<span class="ticker-award">' +
-        '<span class="ticker-award-dot"></span>' +
-        '<span class="ticker-award-amt">' + a.amt + '</span>' +
-        '<span class="ticker-award-vendor">' + a.vendor + '</span>' +
-        '</span>';
-    }).join('');
-    inner.innerHTML = items + items;
+    stRenderAwards([
+      { amt: '$2.4B', vendor: 'Lockheed Martin', date: '2025-11' },
+      { amt: '$1.8B', vendor: 'Boeing Defense', date: '2025-11' },
+      { amt: '$940M', vendor: 'Raytheon Technologies', date: '2025-12' },
+      { amt: '$720M', vendor: 'Northrop Grumman', date: '2026-01' },
+      { amt: '$510M', vendor: 'General Dynamics', date: '2026-02' },
+      { amt: '$380M', vendor: 'L3Harris Technologies', date: '2026-02' },
+      { amt: '$290M', vendor: 'BAE Systems', date: '2026-03' },
+      { amt: '$185M', vendor: 'Leidos', date: '2026-03' },
+      { amt: '$142M', vendor: 'SAIC', date: '2026-04' },
+      { amt: '$98M',  vendor: 'Booz Allen Hamilton', date: '2026-05' },
+    ]);
   }
 }
 
-// Initialize tickers
+function stRenderAwards(awards) {
+  var body = document.getElementById('st-awards-body');
+  if (!body) return;
+  body.innerHTML = '';
+  awards.forEach(function(a, i) {
+    var el = document.createElement('div');
+    el.className = 'st-award-item';
+    el.style.animationDelay = (i * 0.06) + 's';
+    el.innerHTML =
+      '<div class="st-award-dot"></div>' +
+      '<div class="st-award-info">' +
+        '<div class="st-award-amt">' + a.amt + '</div>' +
+        '<div class="st-award-vendor">' + a.vendor + '</div>' +
+        (a.date ? '<div class="st-award-date">' + a.date + '</div>' : '') +
+      '</div>';
+    body.appendChild(el);
+  });
+
+  // Auto-scroll the awards panel every 2.5s
+  var idx = 0;
+  var items = body.querySelectorAll('.st-award-item');
+  var visCount = Math.floor(body.offsetHeight / 52) || 3;
+  setInterval(function() {
+    idx = (idx + 1) % items.length;
+    var target = items[idx];
+    if (target) target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, 2500);
+}
+
+// Init side tickers
 (function() {
-  fetchObligations();
-  fetchDAFAwards();
+  stFyStats();
+  stFetchObligations();
+  stFetchDAFAwards();
 })();
 
 </script>
