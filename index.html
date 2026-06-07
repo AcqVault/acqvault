@@ -148,16 +148,18 @@ nav.scrolled .nav-feedback-btn:hover{border-color:var(--ink3);color:var(--ink);}
 .search-clear:hover{color:var(--ink);}
 .search-clear.visible{display:block;}
 
-/* Mode toggle */
-.mode-toggle{position:relative;z-index:2;display:inline-flex;align-items:center;background:rgba(255,255,255,0.6);border:1px solid rgba(0,102,204,0.18);border-radius:var(--r-lg);padding:4px;gap:3px;animation:hero-rise 0.85s 0.24s cubic-bezier(0.16,1,0.3,1) both;box-shadow:0 2px 12px rgba(0,66,153,0.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-width:100%;}
-.mode-btn{font-size:13px;font-weight:600;padding:9px 18px;border-radius:10px;border:1px solid transparent;cursor:pointer;color:var(--ink3);background:transparent;transition:all 0.18s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;letter-spacing:-0.01em;}
+/* Command dock */
+.hero-command-dock{position:relative;z-index:2;width:100%;max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.68);border:1px solid rgba(0,102,204,0.16);border-radius:18px;padding:6px;box-shadow:0 4px 22px rgba(0,66,153,0.09),0 1px 4px rgba(0,0,0,0.04);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);animation:hero-rise 0.85s 0.24s cubic-bezier(0.16,1,0.3,1) both;}
+.mode-toggle{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:4px;}
+.mode-btn{min-height:40px;font-size:13px;font-weight:650;padding:9px 14px;border-radius:13px;border:1px solid transparent;cursor:pointer;color:var(--ink3);background:transparent;transition:all 0.18s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;letter-spacing:-0.01em;}
 .mode-btn-short{display:none;}
-.mode-btn.active{background:var(--accent);color:#fff;font-weight:700;box-shadow:0 2px 12px rgba(0,102,204,0.35);border-color:var(--accent);}
-.mode-btn:hover:not(.active){color:var(--accent);background:rgba(0,102,204,0.08);border-color:rgba(0,102,204,0.2);}
-
-.hero-source-strip{position:relative;z-index:2;display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px;color:var(--muted2);font-size:11.5px;animation:hero-rise 0.85s 0.32s cubic-bezier(0.16,1,0.3,1) both;}
-.hero-source-strip span{color:var(--ink3);font-weight:500;}
-.hero-source-strip b{background:rgba(255,255,255,0.7);border:1px solid rgba(0,102,204,0.18);border-radius:6px;padding:3px 9px;font-size:10.5px;font-weight:600;color:var(--accent);letter-spacing:0.02em;}
+.mode-btn.active{background:var(--accent);color:#fff;font-weight:750;box-shadow:0 2px 12px rgba(0,102,204,0.3);border-color:var(--accent);}
+.mode-btn:hover:not(.active){color:var(--accent);background:rgba(0,102,204,0.07);border-color:rgba(0,102,204,0.14);}
+.hero-source-strip{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;padding:8px 8px 7px;border-top:1px solid rgba(0,102,204,0.09);color:var(--muted2);font-size:11.5px;}
+.hero-live-label{display:inline-flex;align-items:center;gap:6px;color:var(--ink3);font-weight:650;margin-right:2px;}
+.hero-live-dot{width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,0.12);}
+.hero-source-strip b{background:rgba(0,102,204,0.06);border:1px solid rgba(0,102,204,0.12);border-radius:999px;padding:3px 9px;font-size:10.5px;font-weight:700;color:var(--accent);letter-spacing:0.02em;}
+.hero-live-count{font-size:10px;font-weight:750;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);background:rgba(255,255,255,0.55);border:1px solid rgba(0,102,204,0.1);border-radius:999px;padding:3px 8px;margin-left:2px;}
 
 /* ── SOURCE TILES ── */
 .source-tiles-section{background:var(--off);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);padding:32px 28px;}
@@ -622,12 +624,14 @@ body.work-mode #quick-links{margin-top:0;}
   .search-bar{height:52px;border-radius:16px;padding:0 13px;gap:8px;}
   #search-input{font-size:16px;min-width:0;}
   .search-count{font-size:10.5px;max-width:70px;overflow:hidden;text-overflow:ellipsis;}
-  .mode-toggle{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;border-radius:14px;gap:2px;}
-  .mode-btn{display:flex;align-items:center;justify-content:center;min-height:42px;padding:8px 6px;font-size:12px;line-height:1.15;white-space:normal;text-align:center;border-radius:10px;}
+  .hero-command-dock{max-width:100%;padding:5px;border-radius:16px;gap:6px;}
+  .mode-toggle{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;}
+  .mode-btn{display:flex;align-items:center;justify-content:center;min-height:40px;padding:8px 6px;font-size:12px;line-height:1.15;white-space:normal;text-align:center;border-radius:11px;}
   .mode-btn-long{display:none;}
-  .mode-btn-short{display:inline;}
-  .hero-source-strip{gap:6px;font-size:10.5px;margin-top:12px;}
+  .mode-btn-short{display:inline;margin-left:3px;}
+  .hero-source-strip{gap:5px;font-size:10.5px;padding:7px 4px 6px;}
   .hero-source-strip b{font-size:9.5px;padding:3px 7px;}
+  .hero-live-count{display:none;}
   .source-tiles-section{padding:24px 16px;}
   .source-tiles-grid{grid-template-columns:1fr 1fr;gap:10px;}
   .src-tile{padding:16px 14px;min-height:178px;}
@@ -927,13 +931,15 @@ body.work-mode #quick-links{margin-top:0;}
         <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
       </div>
     </div>
-    <div class="mode-toggle">
-      <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
-      <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" onclick="setMode('browse')">⊞ <span class="mode-btn-long">Browse by Regulation &amp; Part</span><span class="mode-btn-short">Browse</span></button>
-      <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
-    </div>
-    <div class="hero-source-strip" aria-label="Live sources">
-      <span>Live now</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>DAF Compass</b>
+    <div class="hero-command-dock" aria-label="Search modes and live sources">
+      <div class="mode-toggle">
+        <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
+        <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" onclick="setMode('browse')">⊞ <span class="mode-btn-long">Browse by Regulation &amp; Part</span><span class="mode-btn-short">Browse</span></button>
+        <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
+      </div>
+      <div class="hero-source-strip" aria-label="Live sources">
+        <span class="hero-live-label"><span class="hero-live-dot"></span>Live sources</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>DAF Compass</b><span class="hero-live-count">4 live</span>
+      </div>
     </div>
 
   </div>
