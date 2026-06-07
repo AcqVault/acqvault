@@ -155,18 +155,28 @@ nav.scrolled .nav-feedback-btn:hover{border-color:var(--ink3);color:var(--ink);}
 .source-tiles-inner{max-width:var(--max-w);margin:0 auto;}
 .source-tiles-label{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px;}
 .source-tiles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-.src-tile{background:var(--white);border:1px solid var(--line2);border-radius:var(--r-lg);padding:20px 18px;cursor:pointer;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;gap:7px;position:relative;overflow:hidden;}
+.src-tile{background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);border:1px solid rgba(0,102,204,0.12);border-radius:var(--r-lg);padding:18px 18px 16px;cursor:pointer;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;min-height:184px;}
 .src-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .src-tile-rfo::before,.src-tile-dfars::before,.src-tile-fc::before,.src-tile-cmp::before{background:var(--accent);opacity:0.85;}
-.src-tile:not(.soon):hover{border-color:var(--line);box-shadow:0 6px 24px rgba(0,0,0,0.07);transform:translateY(-3px);}
+.src-tile:not(.soon):hover{border-color:rgba(0,102,204,0.24);box-shadow:0 10px 30px rgba(0,66,153,0.09);transform:translateY(-3px);}
 .src-tile.soon{cursor:default;opacity:0.55;}
 .src-tile-badge{display:inline-flex;align-items:center;font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px;width:fit-content;}
 .src-tile-rfo .src-tile-badge,.src-tile-dfars .src-tile-badge,.src-tile-fc .src-tile-badge,.src-tile-cmp .src-tile-badge{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-bdr);}
-.src-tile-name{font-size:14px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.25;}
+.src-tile-name{font-size:14px;font-weight:750;letter-spacing:-0.025em;color:var(--ink);line-height:1.25;}
 .src-tile-meta{font-size:11.5px;color:var(--muted2);margin-top:auto;}
-.src-tile-action{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;font-weight:600;color:var(--accent);opacity:0;transition:opacity 0.15s,transform 0.15s;transform:translateX(-4px);}
-.src-tile:not(.soon):hover .src-tile-action{opacity:1;transform:translateX(0);}
+.src-tile-action{display:flex;align-items:center;gap:4px;margin-top:auto;padding-top:10px;border-top:1px solid rgba(0,102,204,0.08);font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted2);opacity:0.9;transition:color 0.15s,transform 0.15s;}
+.src-tile:not(.soon):hover .src-tile-action{color:var(--accent);transform:translate(2px,-1px);}
 .src-tile-soon-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--off2);color:var(--muted);margin-top:auto;}
+
+.src-mini{height:44px;border-radius:12px;border:1px solid rgba(0,102,204,0.1);background:linear-gradient(160deg,#f8fbff 0%,#edf4fb 100%);display:flex;align-items:center;gap:9px;padding:0 12px;margin:2px 0 4px;overflow:hidden;}
+.src-mini-dark{background:linear-gradient(135deg,#0f253d 0%,#142f4d 100%);color:#eaf5ff;border-color:rgba(255,255,255,0.08);}
+.src-mini-mark{width:24px;height:24px;border-radius:8px;background:rgba(0,102,204,0.08);border:1px solid rgba(0,102,204,0.13);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--accent);flex-shrink:0;}
+.src-mini-dark .src-mini-mark{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.16);color:#b8ecff;}
+.src-mini-word{font-size:15px;font-weight:850;letter-spacing:-0.025em;color:var(--ink2);line-height:1;white-space:nowrap;}
+.src-mini-word small{display:block;font-size:8px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-top:3px;color:var(--muted2);}
+.src-mini-dark .src-mini-word{color:#b8ecff;text-transform:uppercase;}
+.src-mini-dark .src-mini-word small{color:rgba(234,245,255,0.68);}
+
 
 /* ── RESULTS SECTION ── */
 body.work-mode .source-tiles-section{display:none;}
@@ -608,7 +618,7 @@ body.work-mode #quick-links{margin-top:0;}
   .hero-source-strip b{font-size:9.5px;padding:3px 7px;}
   .source-tiles-section{padding:24px 16px;}
   .source-tiles-grid{grid-template-columns:1fr 1fr;gap:10px;}
-  .src-tile{padding:16px 14px;min-height:132px;}
+  .src-tile{padding:16px 14px;min-height:178px;}
   .results-inner,.fulltext-inner{padding:0 16px 56px;}
   .filter-bar{padding:10px 16px;margin:0 -16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
   .filter-group,.filter-group-wide{flex:0 0 auto;flex-wrap:nowrap;}
@@ -930,24 +940,28 @@ body.work-mode #quick-links{margin-top:0;}
         <div class="src-tile-badge">RFO</div>
         <div class="src-tile-name">Revolutionary FAR Overhaul</div>
         <div class="src-tile-meta">43 parts · 500+ sections · acquisition.gov</div>
+        <div class="src-mini src-mini-dark"><span class="src-mini-mark">R</span><span class="src-mini-word">RFO<small>Acquisition.gov</small></span></div>
         <div class="src-tile-action">Browse RFO →</div>
       </div>
       <div class="src-tile src-tile-dfars" onclick="setMode('browse');setBrowseSource('r-dfars')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('r-dfars');}">
         <div class="src-tile-badge">R-DFARS</div>
         <div class="src-tile-name">Defense FAR Supplement</div>
         <div class="src-tile-meta">46 parts · DoD deviations · acquisition.gov</div>
+        <div class="src-mini"><span class="src-mini-mark">D</span><span class="src-mini-word">R-DFARS<small>DoD deviation guide</small></span></div>
         <div class="src-tile-action">Browse R-DFARS →</div>
       </div>
       <div class="src-tile src-tile-fc" onclick="setMode('browse');setBrowseSource('far-companion')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('far-companion');}">
         <div class="src-tile-badge">FAR Companion</div>
         <div class="src-tile-name">FAR Companion v2.0</div>
         <div class="src-tile-meta">27 parts · FAR Council practice guide</div>
+        <div class="src-mini"><span class="src-mini-mark">FC</span><span class="src-mini-word">FAR Companion<small>Practice guide</small></span></div>
         <div class="src-tile-action">Browse FAR Companion →</div>
       </div>
       <div class="src-tile src-tile-cmp" onclick="setMode('browse');setBrowseSource('compass')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('compass');}">
         <div class="src-tile-badge">DAF Compass</div>
         <div class="src-tile-name">DAF Contracting Compass</div>
         <div class="src-tile-meta">49 parts indexed · DAF acquisition policy</div>
+        <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAF Compass<small>Contracting policy</small></span></div>
         <div class="src-tile-action">Browse DAF Compass →</div>
       </div>
     </div>
