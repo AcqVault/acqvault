@@ -512,6 +512,10 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .btn-primary:hover{background:var(--accent-h);transform:translateY(-1px);box-shadow:0 4px 18px rgba(0,102,204,0.38);}
 
 .sec-light{background:var(--off);}
+#features.sec-white{position:relative;overflow:hidden;background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 48%,#f6f8fa 100%);border-top:1px solid rgba(0,102,204,0.08);border-bottom:1px solid rgba(0,102,204,0.08);padding-top:48px;}
+#features.sec-white::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,66,153,0.055) 1px,transparent 1px),linear-gradient(90deg,rgba(0,66,153,0.055) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(180deg,transparent 0%,black 16%,black 86%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 16%,black 86%,transparent 100%);}
+#features.sec-white::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 58% 42% at 50% 0%,rgba(0,102,204,0.1),transparent 70%);}
+#features .sec-inner{position:relative;z-index:1;}
 .quick-links-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:36px;}
 .ql-card{display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);border:1px solid rgba(0,102,204,0.12);border-radius:var(--r-xl);padding:22px 20px;text-decoration:none;transition:transform 0.2s cubic-bezier(0.16,1,0.3,1),box-shadow 0.2s,border-color 0.2s;background-color:var(--white);position:relative;overflow:hidden;min-height:214px;}
 .ql-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0.75;}
@@ -655,6 +659,7 @@ body.work-mode #quick-links{margin-top:0;}
   .drawer-body{padding:14px 14px 96px;}
   .drawer-footer{position:fixed;left:0;right:0;bottom:0;background:var(--white);padding:10px 14px calc(10px + env(safe-area-inset-bottom));}
   .sec{padding:56px 20px;}
+  #features.sec-white{padding-top:40px;}
   h2.sec-head{font-size:28px;}
   .feats{grid-template-columns:1fr;gap:10px;margin-top:32px;}
   .srcs-3,.srcs{grid-template-columns:1fr;gap:10px;}
