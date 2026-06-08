@@ -963,7 +963,7 @@ body.work-mode #quick-links{margin-top:0;}
       <div class="st-body-awards" id="st-awards-body">
         <div class="st-loading">Loading awards…</div>
       </div>
-      <div class="st-footer">USASpending.gov · last 30 days</div>
+      <div class="st-footer" id="st-awards-footer">USASpending.gov · recent actions</div>
     </aside>
   </div>
 </section>
@@ -2949,48 +2949,75 @@ async function stFetchObligations() {
 
 async function stFetchDAFAwards() {
   var body = document.getElementById('st-awards-body');
+  var footer = document.getElementById('st-awards-footer');
   if (!body) return;
   try {
-    var end = new Date();
-    var start = new Date(end);
-    start.setDate(start.getDate() - 30);
-    var startDate = start.toISOString().slice(0,10);
-    var endDate = end.toISOString().slice(0,10);
-    var payload = {
-      filters: {
-        agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
-        award_type_codes: ['A','B','C','D'],
-        time_period: [{ start_date: startDate, end_date: endDate }]
-      },
-      fields: ['Award Amount','Recipient Name','Award ID','Start Date','Base Obligation Date','Awarding Agency','Awarding Sub Agency','Awarding Office Name','Awarding Office','generated_internal_id'],
-      sort: 'Base Obligation Date', order: 'desc', limit: 20, page: 1
-    };
-    var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error();
-    var d = await res.json();
-    var seen = new Set();
-    var awards = (d.results || []).filter(function(a) {
-      var id = a['Award ID'] || a.generated_internal_id || '';
-      if (!a['Award Amount'] || !a['Recipient Name'] || seen.has(id)) return false;
-      seen.add(id);
-      return true;
-    }).slice(0, 12);
+    var windows = [30, 90, 180, 365];
+    var awards = [];
+    var usedDays = 30;
+    for (var w = 0; w < windows.length; w++) {
+      usedDays = windows[w];
+      awards = await stFetchDAFTransactionWindow(usedDays);
+      if (awards.length >= 6 || w === windows.length - 1) break;
+    }
     if (!awards.length) throw new Error();
-    stRenderAwards(awards.map(function(a) {
+    var positiveAwards = awards.filter(function(a) { return Number(a['Transaction Amount']) > 0; });
+    if (positiveAwards.length >= 6) awards = positiveAwards;
+    if (footer) footer.textContent = 'USASpending.gov · ' + (usedDays === 30 ? 'last 30 days' : 'latest ' + usedDays + ' days');
+    stRenderAwards(awards.slice(0, 12).map(function(a) {
       var vendor = stCleanAwardText(a['Recipient Name'] || '', 30);
-      var org = stCleanAwardText(a['Awarding Office Name'] || a['Awarding Office'] || a['Awarding Sub Agency'] || a['Awarding Agency'] || 'Department of the Air Force', 36);
-      var date = (a['Base Obligation Date'] || a['Start Date'] || '').slice(0,10);
-      return { amt: stFmtAmt(a['Award Amount']), vendor: vendor, id: a['Award ID'] || '', date: date, org: org };
+      var org = stAwardOrgFromTransaction(a);
+      var date = (a['Action Date'] || '').slice(0,10);
+      var id = a['Award ID'] || '';
+      var mod = a.Mod && a.Mod !== '0' ? ' · ' + a.Mod : '';
+      return { amt: stFmtAmt(a['Transaction Amount'] || 0), vendor: vendor, id: id + mod, date: date, org: org };
     }));
   } catch(e) {
     body.closest('.side-ticker')?.classList.add('st-fallback');
     body.innerHTML = '<div class="st-loading"><strong>Recent awards delayed</strong><br>Retrying from USASpending.</div>';
   }
 }
+
+async function stFetchDAFTransactionWindow(days) {
+  var end = new Date();
+  var start = new Date(end);
+  start.setDate(start.getDate() - days);
+  var payload = {
+    filters: {
+      agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
+      award_type_codes: ['A','B','C','D'],
+      time_period: [{ start_date: start.toISOString().slice(0,10), end_date: end.toISOString().slice(0,10) }]
+    },
+    fields: ['Action Date','Award ID','Recipient Name','Transaction Amount','Awarding Agency','Awarding Sub Agency','generated_internal_id','Transaction Description','Mod'],
+    sort: 'Action Date', order: 'desc', limit: 30, page: 1
+  };
+  var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_transaction/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('USASpending transactions request failed');
+  var d = await res.json();
+  var seen = new Set();
+  return (d.results || []).filter(function(a) {
+    var id = [a['Award ID'], a.Mod, a['Action Date'], a['Transaction Amount']].join('|');
+    if (!a['Award ID'] || !a['Recipient Name'] || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+}
+
+function stAwardDoDAAC(awardId) {
+  var m = String(awardId || '').match(/^([A-Z0-9]{6})/i);
+  return m ? m[1].toUpperCase() : '';
+}
+
+function stAwardOrgFromTransaction(a) {
+  var dodaac = stAwardDoDAAC(a['Award ID']);
+  if (dodaac) return 'DoDAAC ' + dodaac;
+  return stCleanAwardText(a['Awarding Sub Agency'] || a['Awarding Agency'] || 'Awarding office pending', 36);
+}
+
 
 function stCleanAwardText(text, max) {
   var clean = String(text || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|CORPORATION|LTD|LP|CO\.?|COMPANY)\b/gi,'').replace(/\s+/g,' ').trim();
