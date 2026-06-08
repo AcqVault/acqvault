@@ -791,8 +791,8 @@ body.work-mode #quick-links{margin-top:0;}
   max-height: 380px; overflow: hidden; position: relative;
 }
 .st-award-item {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 10px 16px; border-bottom: 1px solid rgba(0,102,204,0.06);
+  display: flex; align-items: flex-start; gap: 9px;
+  padding: 9px 14px 10px; border-bottom: 1px solid rgba(0,102,204,0.06);
   animation: st-slide-in 0.3s cubic-bezier(0.16,1,0.3,1) both;
   flex-shrink: 0;
 }
@@ -805,18 +805,20 @@ body.work-mode #quick-links{margin-top:0;}
   background: var(--accent); margin-top: 4px; flex-shrink: 0; opacity: 0.6;
 }
 .st-award-info { flex: 1; min-width: 0; }
+.st-award-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
 .st-award-amt {
-  font-size: 14px; font-weight: 750; color: var(--ink);
-  letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+  font-size: 13px; font-weight: 780; color: var(--ink);
+  letter-spacing: -0.025em; font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+.st-award-date { font-size: 8.5px; color: var(--muted2); white-space:nowrap; }
 .st-award-vendor {
-  font-size: 10.5px; color: var(--muted); line-height: 1.35;
+  font-size: 10px; color: var(--muted); line-height: 1.25;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  max-width: 185px;
+  max-width: 185px; margin-top:2px;
 }
-.st-award-date { font-size: 8.5px; color: var(--muted2); margin-top: 1px; }
-.st-award-contract { font-size: 9px; color: var(--muted2); margin-top: 2px; font-family: 'SF Mono','Menlo',monospace; letter-spacing: 0.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:185px; }
+.st-award-contract { font-size: 8.4px; color: var(--muted2); margin-top: 2px; font-family: 'SF Mono','Menlo',monospace; letter-spacing: 0.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:185px; }
+.st-award-org{font-size:8.5px;color:var(--muted2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:185px;}
 .st-footer {
   padding: 7px 16px;
   border-top: 1px solid rgba(0,102,204,0.08);
@@ -956,12 +958,12 @@ body.work-mode #quick-links{margin-top:0;}
     <!-- RIGHT TICKER: DAF Awards -->
     <aside class="side-ticker" aria-label="Top DAF contract awards">
       <div class="st-header">
-        <div class="st-label"><span class="st-live-dot"></span>Top DAF Awards</div>
+        <div class="st-label"><span class="st-live-dot"></span>Recent DAF Awards</div>
       </div>
       <div class="st-body-awards" id="st-awards-body">
         <div class="st-loading">Loading awards…</div>
       </div>
-      <div class="st-footer">USASpending.gov · live</div>
+      <div class="st-footer">USASpending.gov · last 30 days</div>
     </aside>
   </div>
 </section>
@@ -2949,14 +2951,19 @@ async function stFetchDAFAwards() {
   var body = document.getElementById('st-awards-body');
   if (!body) return;
   try {
+    var end = new Date();
+    var start = new Date(end);
+    start.setDate(start.getDate() - 30);
+    var startDate = start.toISOString().slice(0,10);
+    var endDate = end.toISOString().slice(0,10);
     var payload = {
       filters: {
         agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
         award_type_codes: ['A','B','C','D'],
-        time_period: [{ start_date: stFiscalYearStart(), end_date: stToday() }]
+        time_period: [{ start_date: startDate, end_date: endDate }]
       },
-      fields: ['Award Amount','Recipient Name','Award ID','Start Date','End Date','Awarding Sub Agency','generated_internal_id'],
-      sort: 'Award Amount', order: 'desc', limit: 12, page: 1
+      fields: ['Award Amount','Recipient Name','Award ID','Start Date','Base Obligation Date','Awarding Agency','Awarding Sub Agency','Awarding Office Name','Awarding Office','generated_internal_id'],
+      sort: 'Base Obligation Date', order: 'desc', limit: 20, page: 1
     };
     var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
       method: 'POST',
@@ -2965,18 +2972,30 @@ async function stFetchDAFAwards() {
     });
     if (!res.ok) throw new Error();
     var d = await res.json();
-    var awards = (d.results || []).filter(function(a) { return a['Award Amount'] && a['Recipient Name']; });
+    var seen = new Set();
+    var awards = (d.results || []).filter(function(a) {
+      var id = a['Award ID'] || a.generated_internal_id || '';
+      if (!a['Award Amount'] || !a['Recipient Name'] || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }).slice(0, 12);
     if (!awards.length) throw new Error();
     stRenderAwards(awards.map(function(a) {
-      var vendor = (a['Recipient Name'] || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|LTD|LP|CO\.?)\b/gi,'').trim();
-      if (vendor.length > 28) vendor = vendor.slice(0,26) + '…';
-      var date = a['Start Date'] ? a['Start Date'].slice(0,7) : '';
-      return { amt: stFmtAmt(a['Award Amount']), vendor: vendor, id: a['Award ID'] || '', date: date };
+      var vendor = stCleanAwardText(a['Recipient Name'] || '', 30);
+      var org = stCleanAwardText(a['Awarding Office Name'] || a['Awarding Office'] || a['Awarding Sub Agency'] || a['Awarding Agency'] || 'Department of the Air Force', 36);
+      var date = (a['Base Obligation Date'] || a['Start Date'] || '').slice(0,10);
+      return { amt: stFmtAmt(a['Award Amount']), vendor: vendor, id: a['Award ID'] || '', date: date, org: org };
     }));
   } catch(e) {
     body.closest('.side-ticker')?.classList.add('st-fallback');
-    body.innerHTML = '<div class="st-loading"><strong>Data delayed</strong><br>Retrying from USASpending.</div>';
+    body.innerHTML = '<div class="st-loading"><strong>Recent awards delayed</strong><br>Retrying from USASpending.</div>';
   }
+}
+
+function stCleanAwardText(text, max) {
+  var clean = String(text || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|CORPORATION|LTD|LP|CO\.?|COMPANY)\b/gi,'').replace(/\s+/g,' ').trim();
+  if (clean.length > max) clean = clean.slice(0, Math.max(0, max - 1)) + '…';
+  return clean;
 }
 
 function stRenderAwards(awards) {
@@ -2990,9 +3009,10 @@ function stRenderAwards(awards) {
     el.innerHTML =
       '<div class="st-award-dot"></div>' +
       '<div class="st-award-info">' +
-        '<div class="st-award-amt">' + a.amt + '</div>' +
+        '<div class="st-award-top"><div class="st-award-amt">' + a.amt + '</div><div class="st-award-date">' + (a.date || '') + '</div></div>' +
         '<div class="st-award-vendor">' + a.vendor + '</div>' +
-        '<div class="st-award-contract">' + (a.id || '') + (a.date ? ' · ' + a.date : '') + '</div>' +
+        '<div class="st-award-contract">' + (a.id || 'Award ID pending') + '</div>' +
+        '<div class="st-award-org">' + (a.org || '') + '</div>' +
       '</div>';
     body.appendChild(el);
   });
@@ -3001,7 +3021,7 @@ function stRenderAwards(awards) {
   // it can pull the whole page back to the hero while someone is reading below.
   var idx = 0;
   var items = body.querySelectorAll('.st-award-item');
-  if (!items.length) return;
+  if (items.length < 2) return;
   setInterval(function() {
     idx = (idx + 1) % items.length;
     var target = items[idx];
