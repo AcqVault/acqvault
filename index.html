@@ -1459,7 +1459,7 @@ function renderContentLine(line, baseCitation) {
   if (lm) {
     const level   = parseInt(lm[1]);
     const content = lm[2].trim();
-    if (!content) return '';
+    if (!content || isBrowsePageNumberLine(content)) return '';
     const text    = esc(content);
     if (level === 0) return `<p class="br-p">${text}</p>`;
     // Extract paragraph token (a), (1), (i) etc for citation
@@ -1483,7 +1483,7 @@ function renderContentLine(line, baseCitation) {
     return `<div class="br-para-row br-l${Math.min(level,4)}">${citeBtn}<p class="br-para-text">${text}</p></div>`;
   }
   const t = line.trim();
-  if (!t) return '';
+  if (!t || isBrowsePageNumberLine(t)) return '';
   return `<p class="br-p">${esc(t)}</p>`;
 }
 
@@ -1493,6 +1493,17 @@ function brCopy(citation, btn) {
   btn.textContent = 'Copied!';
   btn.classList.add('copied');
   setTimeout(() => { btn.textContent = 'Cite'; btn.classList.remove('copied'); }, 2000);
+}
+
+function scrollBrowseReaderToTop() {
+  const reader = document.getElementById('browse-reader');
+  if (!reader) return;
+  const y = reader.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+  window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+}
+
+function isBrowsePageNumberLine(line) {
+  return /^\d{1,3}$/.test((line || '').trim());
 }
 
 // ── BUILD FULL READER HTML FROM HITS ─────────────────────────────────────────
@@ -1524,6 +1535,9 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     ? hits.filter(hit => parseBrowseTitle(hit, source).num)
     : hits;
   const displayCount = readerHits.length || docCount;
+  if (!readerHits.length) {
+    return `<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No indexed sections found</div><div class="browse-empty-sub">${esc(String(srcLabel))} Part ${esc(String(partNum))} is listed, but no section-level content is indexed yet.</div></div>`;
+  }
 
   // Build TOC from hits
   const tocItems = readerHits.map(hit => parseBrowseTitle(hit, source));
@@ -1550,7 +1564,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const anchor  = parsed.anchor;
     const citation = generateCitation(hit);
     const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
-    let lines = content.split('\n').filter(l => l.trim());
+    let lines = content.split('\n').filter(l => l.trim() && !isBrowsePageNumberLine(l));
     if ((source === 'far-companion' || hit.source === 'far-companion') && parsed.num) {
       const escapedNum = parsed.num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const fcHead = new RegExp('^FC\\s+' + escapedNum + '(?:\\s|$)', 'i');
@@ -1656,16 +1670,20 @@ async function selectPart(tile, partNum, partLabel) {
     const hits = allHits;
     if (!hits.length) {
       reader.innerHTML = '<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No content found</div><div class="browse-empty-sub">This part may not be indexed yet for this source.</div></div>';
+      requestAnimationFrame(scrollBrowseReaderToTop);
       return;
     }
     try {
       reader.innerHTML = buildReaderHTML(hits, browseSrc, partNum, partLabel, hits.length);
+      requestAnimationFrame(scrollBrowseReaderToTop);
     } catch(buildErr) {
       console.error('buildReaderHTML error:', buildErr);
       reader.innerHTML = `<div class="browse-empty"><div class="browse-empty-icon">⚠</div><div class="browse-empty-title">Render error</div><div class="browse-empty-sub">${buildErr.message} — check console for details</div></div>`;
+      requestAnimationFrame(scrollBrowseReaderToTop);
     }
   } catch(e) {
     console.error('Browse error:', e); reader.innerHTML = `<div class="browse-empty"><div class="browse-empty-icon">⚠</div><div class="browse-empty-title">Unable to load</div><div class="browse-empty-sub">${e.message || e}</div></div>`;
+    requestAnimationFrame(scrollBrowseReaderToTop);
   }
 }
 
