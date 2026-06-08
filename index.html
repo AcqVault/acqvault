@@ -296,7 +296,12 @@ body.work-mode .source-tiles-section{display:none;}
 .br-cite-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
 .br-cite-btn.copied{background:#16a34a;color:#fff;border-color:#16a34a;}
 .br-body{font-size:15px;color:var(--ink2);line-height:1.82;}
-.br-body .br-p{margin-bottom:8px;}
+.br-body .br-p{margin-bottom:12px;}
+.br-body .br-bullet,.br-body .br-numbered{display:flex;gap:9px;align-items:flex-start;margin:7px 0 7px 10px;line-height:1.65;}
+.br-body .br-bullet-marker,.br-body .br-num-marker{flex:0 0 auto;min-width:18px;color:var(--accent);font-weight:750;}
+.br-body .br-bullet-text,.br-body .br-num-text{flex:1;}
+.br-body .br-note-heading{font-size:13px;font-weight:750;letter-spacing:0.02em;text-transform:uppercase;color:var(--ink);margin:20px 0 8px;padding-top:12px;border-top:1px solid var(--line2);}
+.br-body .br-part-break{font-size:12px;font-weight:700;color:var(--muted2);margin:18px 0 8px;padding:8px 10px;border-radius:8px;background:var(--off);}
 .br-body .br-l1{padding-left:20px;margin-bottom:4px;}
 .br-body .br-l2{padding-left:40px;margin-bottom:4px;color:var(--ink3);}
 .br-body .br-l3{padding-left:60px;margin-bottom:3px;color:var(--muted);}
@@ -1454,6 +1459,15 @@ function setBrowseSource(source) {
 
 // ── RENDER CONTENT LINE ───────────────────────────────────────────────────────
 // Converts an L{n}:text line (or plain text) into an HTML element with right indent
+function isBrowseHeadingLine(line) {
+  return /^(Disclaimer|How to Navigate the FAR Companion|Organization Structure|Quick Navigation Tips|Citation System)$/i.test((line || '').trim());
+}
+
+function isBrowseBlockStart(line) {
+  const t = (line || '').trim();
+  return /^L\d:/.test(t) || /^[●○]\s+/.test(t) || /^\d+\.\s+/.test(t) || /^Part\s+\d+\s*[-–]/i.test(t) || isBrowseHeadingLine(t);
+}
+
 function renderContentLine(line, baseCitation) {
   const lm = line.match(/^L(\d):(.*)/);
   if (lm) {
@@ -1462,13 +1476,10 @@ function renderContentLine(line, baseCitation) {
     if (!content || isBrowsePageNumberLine(content)) return '';
     const text    = esc(content);
     if (level === 0) return `<p class="br-p">${text}</p>`;
-    // Extract paragraph token (a), (1), (i) etc for citation
     let cite = baseCitation || '';
     if (cite) {
       const tokM = content.match(/^\(([^)]+)\)/);
       if (tokM) {
-        // Insert paragraph token after the section number, before any " — Title" part
-        // e.g. "RFO 3.103 — Independent pricing" + "(a)" → "RFO 3.103(a) — Independent pricing"
         const dashIdx = cite.indexOf(' — ');
         if (dashIdx !== -1) {
           cite = cite.slice(0, dashIdx) + `(${tokM[1]})` + cite.slice(dashIdx);
@@ -1482,11 +1493,30 @@ function renderContentLine(line, baseCitation) {
       : '';
     return `<div class="br-para-row br-l${Math.min(level,4)}">${citeBtn}<p class="br-para-text">${text}</p></div>`;
   }
+
   const t = line.trim();
   if (!t || isBrowsePageNumberLine(t)) return '';
+
+  const bulletM = t.match(/^([●○])\s+(.*)/);
+  if (bulletM) {
+    return `<div class="br-bullet"><span class="br-bullet-marker">${esc(bulletM[1])}</span><span class="br-bullet-text">${esc(bulletM[2])}</span></div>`;
+  }
+
+  const numM = t.match(/^(\d+)\.\s+(.*)/);
+  if (numM) {
+    return `<div class="br-numbered"><span class="br-num-marker">${esc(numM[1])}.</span><span class="br-num-text">${esc(numM[2])}</span></div>`;
+  }
+
+  if (/^Part\s+\d+\s*[-–]/i.test(t)) {
+    return `<div class="br-part-break">${esc(t)}</div>`;
+  }
+
+  if (isBrowseHeadingLine(t)) {
+    return `<div class="br-note-heading">${esc(t)}</div>`;
+  }
+
   return `<p class="br-p">${esc(t)}</p>`;
 }
-
 // ── CITE A SECTION ────────────────────────────────────────────────────────────
 function brCopy(citation, btn) {
   navigator.clipboard.writeText(citation).catch(() => {});
@@ -1504,6 +1534,57 @@ function scrollBrowseReaderToTop() {
 
 function isBrowsePageNumberLine(line) {
   return /^\d{1,3}$/.test((line || '').trim());
+}
+
+function normalizeBrowseLines(rawLines, source, parsed, partNum) {
+  const blocks = [];
+  let current = null;
+
+  function flush() {
+    if (current && current.text.trim()) blocks.push(current.text.trim());
+    current = null;
+  }
+
+  rawLines.forEach((raw, idx) => {
+    const line = (raw || '').trim();
+    if (!line) { flush(); return; }
+    if (isBrowsePageNumberLine(line)) return;
+
+    if (source === 'far-companion' && parsed?.num) {
+      const escapedNum = parsed.num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const fcHead = new RegExp('^FC\\s+' + escapedNum + '(?:\\s|$)', 'i');
+      if (idx === 0 && fcHead.test(line)) return;
+    }
+
+    const partM = line.match(/^Part\s+(\d+)\s*[-–]/i);
+    if (source === 'far-companion' && partM && String(partM[1]) !== String(partNum)) {
+      flush();
+      return;
+    }
+
+    if (isBrowseBlockStart(line)) {
+      flush();
+      current = { text: line };
+      return;
+    }
+
+    if (!current) {
+      current = { text: line };
+      return;
+    }
+
+    const prior = current.text;
+    const isListBlock = /^[●○]\s+/.test(prior) || /^\d+\.\s+/.test(prior);
+    if (isListBlock && /[.;:]$/.test(prior) && /^[A-Z]/.test(line)) {
+      flush();
+      current = { text: line };
+      return;
+    }
+    const joiner = /[-–]$/.test(prior) ? '' : ' ';
+    current.text = prior.replace(/[-–]$/, '') + joiner + line;
+  });
+  flush();
+  return blocks;
 }
 
 // ── BUILD FULL READER HTML FROM HITS ─────────────────────────────────────────
@@ -1564,12 +1645,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const anchor  = parsed.anchor;
     const citation = generateCitation(hit);
     const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
-    let lines = content.split('\n').filter(l => l.trim() && !isBrowsePageNumberLine(l));
-    if ((source === 'far-companion' || hit.source === 'far-companion') && parsed.num) {
-      const escapedNum = parsed.num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const fcHead = new RegExp('^FC\\s+' + escapedNum + '(?:\\s|$)', 'i');
-      lines = lines.filter((l, idx) => idx !== 0 || !fcHead.test(l.trim()));
-    }
+    const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
     const bodyHTML = lines.map(l => renderContentLine(l, citation)).join('');
 
     if (parsed.type === 'subpart') {
