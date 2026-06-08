@@ -164,13 +164,12 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .source-tiles-label{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:750;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px;}
 .source-tiles-label::before{content:'';width:18px;height:2px;border-radius:2px;background:var(--accent);opacity:.65;}
 .source-tiles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-.src-tile{background:rgba(255,255,255,0.82);border:1px solid rgba(0,102,204,0.12);border-radius:14px;padding:18px 18px 15px;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s,background .18s;display:grid;grid-template-rows:auto 36px 42px 1fr;gap:10px;position:relative;overflow:hidden;min-height:198px;box-shadow:0 1px 2px rgba(13,17,23,0.03);}
+.src-tile{background:rgba(255,255,255,0.82);border:1px solid rgba(0,102,204,0.12);border-radius:14px;padding:18px 18px 15px;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s,background .18s;display:grid;grid-template-rows:auto 42px 1fr;gap:11px;position:relative;overflow:hidden;min-height:174px;box-shadow:0 1px 2px rgba(13,17,23,0.03);}
 .src-tile::before{content:'';position:absolute;left:0;top:18px;bottom:18px;width:3px;border-radius:0 3px 3px 0;background:var(--accent);opacity:.72;}
 .src-tile:not(.soon):hover{background:#fff;border-color:rgba(0,102,204,0.22);box-shadow:0 10px 28px rgba(0,66,153,0.08);transform:translateY(-2px);}
 .src-tile.soon{cursor:default;opacity:0.55;}
 .src-tile-badge{display:inline-flex;align-items:center;width:fit-content;font-size:9.5px;font-weight:750;letter-spacing:0.05em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:rgba(0,102,204,0.07);color:var(--accent);border:1px solid rgba(0,102,204,0.14);}
 .src-tile-name{font-size:15px;font-weight:760;letter-spacing:-0.025em;color:var(--ink);line-height:1.25;max-width:210px;align-self:start;}
-.src-tile-meta{font-size:12px;color:var(--muted);line-height:1.35;margin-top:0;align-self:start;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .src-tile-action{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:0;padding-top:10px;align-self:end;border-top:1px solid rgba(0,102,204,0.08);font-size:10.5px;font-weight:750;letter-spacing:0.055em;text-transform:uppercase;color:var(--muted2);transition:color 0.15s;}
 .src-tile-action::after{content:'';width:18px;height:18px;border-radius:999px;background:rgba(0,102,204,0.07);border:1px solid rgba(0,102,204,0.12);transition:background .15s,border-color .15s;}
 .src-tile:not(.soon):hover .src-tile-action{color:var(--accent);}
@@ -638,7 +637,7 @@ body.work-mode #quick-links{margin-top:0;}
   .hero-live-count{display:none;}
   .source-tiles-section{padding:24px 16px;}
   .source-tiles-grid{grid-template-columns:1fr 1fr;gap:10px;}
-  .src-tile{padding:16px 14px;min-height:190px;grid-template-rows:auto 38px 42px 1fr;}
+  .src-tile{padding:16px 14px;min-height:170px;grid-template-rows:auto 42px 1fr;}
   .results-inner,.fulltext-inner{padding:0 16px 56px;}
   .filter-bar{padding:10px 16px;margin:0 -16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
   .filter-group,.filter-group-wide{flex:0 0 auto;flex-wrap:nowrap;}
@@ -970,28 +969,24 @@ body.work-mode #quick-links{margin-top:0;}
       <div class="src-tile src-tile-rfo" onclick="setMode('browse');setBrowseSource('rfo')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('rfo');}">
         <div class="src-tile-badge">RFO</div>
         <div class="src-tile-name">Revolutionary FAR Overhaul</div>
-        <div class="src-tile-meta">43 parts · 500+ sections · acquisition.gov</div>
         <div class="src-mini src-mini-dark"><span class="src-mini-mark">R</span><span class="src-mini-word">RFO<small>Acquisition.gov</small></span></div>
         <div class="src-tile-action">Browse RFO →</div>
       </div>
       <div class="src-tile src-tile-dfars" onclick="setMode('browse');setBrowseSource('r-dfars')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('r-dfars');}">
         <div class="src-tile-badge">R-DFARS</div>
         <div class="src-tile-name">Defense FAR Supplement</div>
-        <div class="src-tile-meta">46 parts · DoD deviations · acquisition.gov</div>
         <div class="src-mini"><span class="src-mini-mark">D</span><span class="src-mini-word">R-DFARS<small>DoD deviation guide</small></span></div>
         <div class="src-tile-action">Browse R-DFARS →</div>
       </div>
       <div class="src-tile src-tile-fc" onclick="setMode('browse');setBrowseSource('far-companion')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('far-companion');}">
         <div class="src-tile-badge">FAR Companion</div>
         <div class="src-tile-name">FAR Companion v2.0</div>
-        <div class="src-tile-meta">27 parts · FAR Council practice guide</div>
         <div class="src-mini"><span class="src-mini-mark">FC</span><span class="src-mini-word">FAR Companion<small>Practice guide</small></span></div>
         <div class="src-tile-action">Browse FAR Companion →</div>
       </div>
       <div class="src-tile src-tile-cmp" onclick="setMode('browse');setBrowseSource('compass')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('compass');}">
         <div class="src-tile-badge">DAF Compass</div>
         <div class="src-tile-name">DAF Contracting Compass</div>
-        <div class="src-tile-meta">49 parts indexed · DAF acquisition policy</div>
         <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAF Compass<small>Contracting policy</small></span></div>
         <div class="src-tile-action">Browse DAF Compass →</div>
       </div>
@@ -2632,7 +2627,32 @@ const HERO_QUOTES = [
   { q: 'The standard you walk past is the standard you accept.', a: 'David Morrison' },
   { q: 'Great leaders do not create followers. They create more leaders.', a: 'Tom Peters' },
   { q: 'Discipline is choosing what you want most over what you want now.', a: 'Unknown' },
-  { q: 'The credit belongs to the one who is actually in the arena.', a: 'Theodore Roosevelt' }
+  { q: 'The credit belongs to the one who is actually in the arena.', a: 'Theodore Roosevelt' },
+  { q: 'Plans are worthless, but planning is everything.', a: 'Dwight D. Eisenhower' },
+  { q: 'What you do has far greater impact than what you say.', a: 'Stephen Covey' },
+  { q: 'Management is doing things right; leadership is doing the right things.', a: 'Peter Drucker' },
+  { q: 'The most effective way to do it is to do it.', a: 'Amelia Earhart' },
+  { q: 'Well done is better than well said.', a: 'Benjamin Franklin' },
+  { q: 'Action expresses priorities.', a: 'Mahatma Gandhi' },
+  { q: 'The secret of getting ahead is getting started.', a: 'Mark Twain' },
+  { q: 'It always seems impossible until it is done.', a: 'Nelson Mandela' },
+  { q: 'Success is not final, failure is not fatal: it is the courage to continue that counts.', a: 'Winston Churchill' },
+  { q: 'You do not rise to the level of your goals. You fall to the level of your systems.', a: 'James Clear' },
+  { q: 'A good plan violently executed now is better than a perfect plan next week.', a: 'George S. Patton' },
+  { q: 'Never confuse motion with action.', a: 'Benjamin Franklin' },
+  { q: 'Quality means doing it right when no one is looking.', a: 'Henry Ford' },
+  { q: 'The reward for work well done is the opportunity to do more.', a: 'Jonas Salk' },
+  { q: 'If everything is a priority, nothing is a priority.', a: 'Unknown' },
+  { q: 'Clarity is kindness.', a: 'Brene Brown' },
+  { q: 'Slow is smooth, and smooth is fast.', a: 'Military proverb' },
+  { q: 'Trust is built in drops and lost in buckets.', a: 'Kevin Plank' },
+  { q: 'The obstacle is the way.', a: 'Marcus Aurelius' },
+  { q: 'Be so good they cannot ignore you.', a: 'Steve Martin' },
+  { q: 'The main thing is to keep the main thing the main thing.', a: 'Stephen Covey' },
+  { q: 'Decisions are easy when values are clear.', a: 'Roy Disney' },
+  { q: 'Do the hard jobs first. The easy jobs will take care of themselves.', a: 'Dale Carnegie' },
+  { q: 'Make it simple, but significant.', a: 'Don Draper' },
+  { q: 'Excellence is not an act, but a habit.', a: 'Will Durant' }
 ];
 let heroQuoteIndex = 0;
 function setHeroQuote(quote, source) {
