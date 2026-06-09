@@ -1591,13 +1591,29 @@ body.work-mode #quick-links{margin-top:0;}
 })();
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const MEILI_HOST = 'https://getmeilimeilisearchv190-production-a931.up.railway.app';
-const MEILI_SEARCH_KEY = ''; // Configure a restricted search-only key or route search through a backend proxy.
-const INDEX      = 'acqvault';
+const SEARCH_API = '/api/search';
 const WEB3FORMS_ENDPOINT = ''; // Configure server-side; do not expose Web3Forms access keys in static HTML.
-function meiliHeaders(extra = {}) {
-  if (!MEILI_SEARCH_KEY) throw new Error('Search credentials are not configured. Use a restricted search-only key or a backend proxy.');
-  return { ...extra, 'Authorization': `Bearer ${MEILI_SEARCH_KEY}` };
+async function meiliSearch(body) {
+  const res = await fetch(SEARCH_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'search', body })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = data?.error || data?.message || `HTTP ${res.status}`;
+    throw new Error(`Search service: ${msg}`);
+  }
+  return data;
+}
+async function meiliDocument(id) {
+  const res = await fetch(SEARCH_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'document', id })
+  });
+  if (!res.ok) return null;
+  return res.json();
 }
 
 const SOURCE_URLS = {
@@ -2032,20 +2048,11 @@ async function selectPart(tile, partNum, partLabel) {
     const pageSize = 200;
     let offset = 0;
     while (true) {
-      const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-        method: 'POST',
-        headers: meiliHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({
-          q: '', limit: pageSize, offset,
-          filter: `source = "${browseSrc}" AND part = "${indexPart}"`,
-          attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
-        })
+      const data = await meiliSearch({
+        q: '', limit: pageSize, offset,
+        filter: `source = "${browseSrc}" AND part = "${indexPart}"`,
+        attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
       });
-      const data = await res.json();
-      if (!res.ok) {
-        const errMsg = data?.message || data?.error || `HTTP ${res.status}`;
-        throw new Error(`Meilisearch: ${errMsg}`);
-      }
       const page = data.hits || [];
       allHits.push(...page);
       if (page.length < pageSize) break;
@@ -2453,12 +2460,7 @@ async function search(query) {
   const body   = { q: query, limit: 40, attributesToHighlight: ['title','content'],
     highlightPreTag: '<mark>', highlightPostTag: '</mark>', attributesToCrop: ['content'], cropLength: 180 };
   if (filter) body.filter = filter;
-  const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-    method: 'POST', headers: meiliHeaders({ 'Content-Type': 'application/json' }),
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error('Search request failed');
-  return res.json();
+  return meiliSearch(body);
 }
 
 function buildFilter(sources, statuses) {
@@ -2505,13 +2507,9 @@ async function searchDocumentLookup(docId, lookup) {
   const body = { q: lookup.title || '', limit: 10 };
   const filter = buildLookupFilter(lookup);
   if (filter) body.filter = filter;
-  const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-    method: 'POST',
-    headers: meiliHeaders({ 'Content-Type': 'application/json' }),
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
+  let data;
+  try { data = await meiliSearch(body); }
+  catch (e) { return null; }
   return (data.hits || []).find(hit => String(hit.id) === String(docId)) || null;
 }
 
@@ -2523,23 +2521,13 @@ async function fetchDocumentById(docId, lookup = {}) {
   if (metadataHit) return metadataHit;
 
   try {
-    const fallback = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-      method: 'POST',
-      headers: meiliHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ q: '', filter: `id = "${meiliFilterValue(docId)}"`, limit: 1 })
-    });
-    if (fallback.ok) {
-      const data = await fallback.json();
-      const hit = (data.hits || []).find(item => String(item.id) === String(docId));
-      if (hit) return hit;
-    }
+    const data = await meiliSearch({ q: '', filter: `id = "${meiliFilterValue(docId)}"`, limit: 1 });
+    const hit = (data.hits || []).find(item => String(item.id) === String(docId));
+    if (hit) return hit;
   } catch (e) {}
 
   try {
-    const direct = await fetch(`${MEILI_HOST}/indexes/${INDEX}/documents/${encodeURIComponent(docId)}`, {
-      headers: meiliHeaders()
-    });
-    return direct.ok ? direct.json() : null;
+    return await meiliDocument(docId);
   } catch (e) {
     return null;
   }
@@ -2621,16 +2609,11 @@ async function loadFullPartInReader(hit) {
     const pageSize = 200;
     let offset = 0;
     while (true) {
-      const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-        method: 'POST',
-        headers: meiliHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({
-          q: '', limit: pageSize, offset,
-          filter: `source = "${hit.source}" AND part = "${indexPart}"`,
-          attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
-        })
+      const data = await meiliSearch({
+        q: '', limit: pageSize, offset,
+        filter: `source = "${hit.source}" AND part = "${indexPart}"`,
+        attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
       });
-      const data = await res.json();
       const page = data.hits || [];
       allHits.push(...page);
       if (page.length < pageSize) break;
@@ -2739,16 +2722,11 @@ async function loadFullPartInDrawer(hit) {
     const pageSize = 200;
     let offset = 0;
     while (true) {
-      const res = await fetch(`${MEILI_HOST}/indexes/${INDEX}/search`, {
-        method: 'POST',
-        headers: meiliHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({
-          q: '', limit: pageSize, offset,
-          filter: `source = "${hit.source}" AND part = "${indexPart}"`,
-          attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
-        })
+      const data = await meiliSearch({
+        q: '', limit: pageSize, offset,
+        filter: `source = "${hit.source}" AND part = "${indexPart}"`,
+        attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
       });
-      const data = await res.json();
       const page = data.hits || [];
       allHits.push(...page);
       if (page.length < pageSize) break;
