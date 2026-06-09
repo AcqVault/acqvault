@@ -39,6 +39,9 @@ module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', upstream.headers.get('content-type') || 'application/json');
     return res.send(text);
   } catch (error) {
-    return res.status(500).json({ error: 'Search request failed.' });
+    return res.status(500).json({
+      error: 'Search request failed.',
+      detail: error && error.message ? error.message : String(error)
+    });
   }
 };
