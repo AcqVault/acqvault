@@ -443,10 +443,12 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .hero-quote-refresh{border:none;background:rgba(255,255,255,0.65);border:1px solid rgba(0,102,204,0.14);border-radius:999px;padding:4px 9px;color:var(--accent);font-size:10.5px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;cursor:pointer;transition:background .15s,transform .15s;}
 .hero-quote-refresh:hover{background:#fff;transform:translateY(-1px);}
 .hero-quote-source{font-family:'SF Mono','Menlo','Consolas',monospace;font-size:10px;color:var(--muted2);}
-.hero-quote-modes{display:inline-flex;align-items:center;gap:3px;margin-bottom:12px;padding:3px;border:1px solid rgba(0,102,204,0.14);border-radius:999px;background:rgba(255,255,255,0.62);box-shadow:0 1px 8px rgba(0,66,153,0.04);}
-.hero-quote-mode{border:none;background:transparent;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:background .15s,color .15s,box-shadow .15s;}
-.hero-quote-mode.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(0,102,204,0.16);}
-.hero-quote-mode:hover:not(.active){background:var(--accent-soft);color:var(--accent);}
+.hero-quote-chooser{display:inline-flex;flex-direction:column;align-items:center;gap:7px;margin:0 auto 13px;padding:9px 10px;border:1px solid rgba(0,102,204,0.16);border-radius:14px;background:rgba(255,255,255,0.72);box-shadow:0 4px 18px rgba(0,66,153,0.07);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.hero-quote-choice-label{font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted2);}
+.hero-quote-modes{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid rgba(0,102,204,0.13);border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.5);}
+.hero-quote-mode{border:none;background:transparent;border-radius:999px;padding:6px 12px;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:background .15s,color .15s,box-shadow .15s,transform .15s;}
+.hero-quote-mode.active{background:var(--accent);color:#fff;box-shadow:0 3px 12px rgba(0,102,204,0.2);}
+.hero-quote-mode:hover:not(.active){background:var(--accent-soft);color:var(--accent);transform:translateY(-1px);}
 
 /* Search */
 .search-container{position:relative;z-index:2;width:100%;max-width:660px;margin:0 auto 16px;animation:hero-rise 0.85s 0.14s cubic-bezier(0.16,1,0.3,1) both;}
@@ -961,8 +963,8 @@ body.work-mode #quick-links{margin-top:0;}
   .hero-quote{max-width:340px;}
   .hero-quote-text{font-size:14.5px;line-height:1.5;}
   .hero-quote-meta{font-size:10.5px;gap:7px;}
-  .hero-quote-modes{margin-bottom:10px;}
-  .hero-quote-mode{font-size:9.5px;padding:4px 7px;}
+  .hero-quote-chooser{gap:6px;padding:8px 9px;margin-bottom:11px;}
+  .hero-quote-mode{font-size:9.5px;padding:5px 8px;}
   .search-container{margin-bottom:12px;}
   .search-bar{height:52px;border-radius:16px;padding:0 13px;gap:8px;}
   #search-input{font-size:16px;min-width:0;}
@@ -1260,12 +1262,15 @@ body.work-mode #quick-links{margin-top:0;}
       <p class="hero-eyebrow"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0;"></span>Air Force Acquisition Research</p>
       <h1 class="hero-headline">The research library<br><em>the acquisition community</em><br>deserves.</h1>
       <div class="hero-quote" aria-live="polite">
-        <div class="hero-quote-label" id="hero-quote-label">Leadership Signal</div>
-        <div class="hero-quote-modes" role="group" aria-label="Quote type">
-          <button type="button" class="hero-quote-mode active" data-quote-mode="quote" aria-pressed="true">Quote</button>
-          <button type="button" class="hero-quote-mode" data-quote-mode="affirmation" aria-pressed="false">Affirmation</button>
+        <div class="hero-quote-label" id="hero-quote-label">Disappointing Affirmation</div>
+        <div class="hero-quote-chooser">
+          <div class="hero-quote-choice-label">Choose your signal</div>
+          <div class="hero-quote-modes" role="group" aria-label="Choose a quote or affirmation">
+            <button type="button" class="hero-quote-mode" data-quote-mode="quote" aria-pressed="false">Quote</button>
+            <button type="button" class="hero-quote-mode active" data-quote-mode="affirmation" aria-pressed="true">Affirmation</button>
+          </div>
         </div>
-        <p class="hero-quote-text" id="hero-quote-text">Before you achieve, everyone will ask you why you’re working so hard. After you achieve, everyone will remind you how lucky you got.</p>
+        <p class="hero-quote-text" id="hero-quote-text">Some meetings could have been emails, but this one aspired to be a spreadsheet.</p>
         <div class="hero-quote-meta">
           <span class="hero-quote-author" id="hero-quote-author">AcqVault</span>
           <span class="hero-quote-source" id="hero-quote-source">curated</span>
@@ -3125,11 +3130,51 @@ const DISAPPOINTING_AFFIRMATIONS = [
   { q: 'The perfect answer may exist, but the suspense is doing excellent work.', a: 'Disappointing Affirmation' },
   { q: 'You can do hard things, and apparently also the same hard thing again.', a: 'Disappointing Affirmation' },
   { q: 'This too shall pass, possibly through three coordination rounds.', a: 'Disappointing Affirmation' },
-  { q: 'A small win is still a win, especially if nobody schedules a follow-up.', a: 'Disappointing Affirmation' }
+  { q: 'A small win is still a win, especially if nobody schedules a follow-up.', a: 'Disappointing Affirmation' },
+  { q: 'Your scope is growing, and it seems very comfortable here.', a: 'Disappointing Affirmation' },
+  { q: 'The good news is there is a process. The other news is also the process.', a: 'Disappointing Affirmation' },
+  { q: 'You are not procrastinating; you are allowing the requirement to mature.', a: 'Disappointing Affirmation' },
+  { q: 'Every shared drive contains at least one folder named final, and none of them are.', a: 'Disappointing Affirmation' },
+  { q: 'Your question is valid, even if the answer requires a governance body.', a: 'Disappointing Affirmation' },
+  { q: 'You have enough time, provided nothing else happens. Something else will happen.', a: 'Disappointing Affirmation' },
+  { q: 'The status is green because the slide needed a color.', a: 'Disappointing Affirmation' },
+  { q: 'Today you may confuse movement with progress, but at least there will be minutes.', a: 'Disappointing Affirmation' },
+  { q: 'Your draft has potential, which is what people say before comments arrive.', a: 'Disappointing Affirmation' },
+  { q: 'The file naming convention is aspirational, and so are we.', a: 'Disappointing Affirmation' },
+  { q: 'Your patience is a renewable resource, but procurement lead time is not.', a: 'Disappointing Affirmation' },
+  { q: 'If the answer feels obvious, there may be a clause hiding nearby.', a: 'Disappointing Affirmation' },
+  { q: 'You are making progress, even if the progress is discovering more work.', a: 'Disappointing Affirmation' },
+  { q: 'The agenda was ambitious. Reality submitted a nonconcurrence.', a: 'Disappointing Affirmation' },
+  { q: 'The email found you because hiding was not in the acquisition plan.', a: 'Disappointing Affirmation' },
+  { q: 'You are not lost; you are conducting market research on possible directions.', a: 'Disappointing Affirmation' },
+  { q: 'Sometimes the milestone is simply learning who owns the milestone.', a: 'Disappointing Affirmation' },
+  { q: 'A well-placed caveat can be the load-bearing wall of a briefing.', a: 'Disappointing Affirmation' },
+  { q: 'You may not have alignment, but you do have a recurring meeting.', a: 'Disappointing Affirmation' },
+  { q: 'The answer is in the policy, near several other answers with different vibes.', a: 'Disappointing Affirmation' },
+  { q: 'The week is young, and somehow already asking for a decision memo.', a: 'Disappointing Affirmation' },
+  { q: 'It is not a setback. It is a chance to update the tracker again.', a: 'Disappointing Affirmation' },
+  { q: 'You have done harder things, though few with this many attachments.', a: 'Disappointing Affirmation' },
+  { q: 'Today, may your suspense dates be real and your stakeholders reachable.', a: 'Disappointing Affirmation' },
+  { q: 'The approval chain is long, but so is your capacity for polite follow-up.', a: 'Disappointing Affirmation' },
+  { q: 'You are the right person for the job, according to whoever forwarded it.', a: 'Disappointing Affirmation' },
+  { q: 'The plan is coming together, mostly in the sense that it is now in one document.', a: 'Disappointing Affirmation' },
+  { q: 'Not all heroes wear capes. Some update version control and hope.', a: 'Disappointing Affirmation' },
+  { q: 'The system is down, which is a form of stakeholder feedback.', a: 'Disappointing Affirmation' },
+  { q: 'You cannot automate judgment, but you can automate a little suffering.', a: 'Disappointing Affirmation' },
+  { q: 'The final review is rarely final, but the optimism is charming.', a: 'Disappointing Affirmation' },
+  { q: 'You are closer than you were, unless the baseline moved.', a: 'Disappointing Affirmation' },
+  { q: 'Some risks are accepted. Others are scheduled for Thursday.', a: 'Disappointing Affirmation' },
+  { q: 'The day is manageable in theory, which is where many good things live.', a: 'Disappointing Affirmation' },
+  { q: 'There is no shame in asking for clarification, only in receiving three versions.', a: 'Disappointing Affirmation' },
+  { q: 'Your resilience is impressive. The workflow remains unconcerned.', a: 'Disappointing Affirmation' },
+  { q: 'One day this will be lessons learned. Today it is just learning.', a: 'Disappointing Affirmation' },
+  { q: 'The spreadsheet is not sentient, but it does appear to have preferences.', a: 'Disappointing Affirmation' },
+  { q: 'You can be both professional and mildly alarmed.', a: 'Disappointing Affirmation' },
+  { q: 'The suspense is due at close of business, a phrase doing a lot of emotional work.', a: 'Disappointing Affirmation' }
 ];
 let heroQuoteIndex = 0;
-let heroAffirmationIndex = 0;
-let heroQuoteMode = 'quote';
+let heroAffirmationIndex = -1;
+let heroQuoteMode = 'affirmation';
 function setHeroQuote(quote, source) {
   const textEl = document.getElementById('hero-quote-text');
   const authorEl = document.getElementById('hero-quote-author');
