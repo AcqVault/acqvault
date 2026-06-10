@@ -430,7 +430,8 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 @keyframes hero-rise{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
 .hero.search-active .hero-intro,.hero.browse-active .hero-intro,.hero.fulltext-active .hero-intro{opacity:0;transform:translateY(-14px);max-height:0;overflow:hidden;pointer-events:none;transition:opacity 0.3s ease,transform 0.3s ease,max-height 0.4s ease;}
 
-.hero-brand-lockup{display:block;width:min(270px,52vw);height:auto;margin:0 auto 22px;border-radius:18px;filter:drop-shadow(0 16px 34px rgba(13,17,23,0.12));}
+.hero-brand-title{font-size:clamp(52px,8vw,96px);font-weight:800;letter-spacing:-0.055em;color:var(--ink);line-height:0.95;margin:0 auto 18px;}
+.hero-brand-title .brand-v{color:var(--accent);-webkit-text-fill-color:var(--accent);}
 .hero-headline{font-size:clamp(42px,5.8vw,68px);font-weight:800;letter-spacing:-0.052em;color:var(--ink);line-height:1.02;margin-bottom:20px;}
 .hero-headline em{font-style:normal;color:var(--accent);-webkit-text-fill-color:var(--accent);}
 .hero-sub{font-size:18px;font-weight:400;color:var(--ink3);letter-spacing:-0.02em;line-height:1.6;max-width:460px;margin:0 auto;}
@@ -954,7 +955,7 @@ body.work-mode #quick-links{margin-top:0;}
   .hero.search-active,.hero.browse-active,.hero.fulltext-active{padding:calc(var(--top-chrome) + 14px) 16px 18px;}
   .hero-content{max-width:100%;}
   .hero-intro{margin-bottom:14px;}
-  .hero-brand-lockup{width:min(92px,32vw);margin-bottom:10px;border-radius:9px;}
+  .hero-brand-title{font-size:clamp(42px,13vw,58px);line-height:0.95;margin-bottom:12px;}
   .hero-headline{font-size:clamp(36px,11vw,54px);letter-spacing:-0.045em;line-height:0.98;}
   .hero-sub{font-size:15.5px;line-height:1.55;max-width:330px;}
   .hero-quote{max-width:340px;}
@@ -1256,7 +1257,7 @@ body.work-mode #quick-links{margin-top:0;}
     <div class="hero-center-col">
     <div class="hero-content">
     <div class="hero-intro">
-      <img class="hero-brand-lockup" src="assets/acqvault-logo-lockup.png" alt="AcqVault">
+      <div class="hero-brand-title" aria-label="AcqVault">Acq<span class="brand-v">V</span>ault</div>
       <h1 class="hero-headline">The research library<br><em>the acquisition community</em><br>deserves.</h1>
       <div class="hero-quote" aria-live="polite">
         <div class="hero-quote-chooser">
