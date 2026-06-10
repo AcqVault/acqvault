@@ -481,12 +481,12 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .source-tiles-label{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:750;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px;}
 .source-tiles-label::before{content:'';width:18px;height:2px;border-radius:2px;background:var(--accent);opacity:.65;}
 .source-tiles-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;}
-.src-tile{background:rgba(255,255,255,0.82);border:1px solid rgba(0,102,204,0.12);border-radius:14px;padding:18px 18px 15px;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s,background .18s;display:grid;grid-template-rows:auto auto minmax(58px,auto) auto;gap:12px;position:relative;overflow:hidden;min-height:198px;box-shadow:0 1px 2px rgba(13,17,23,0.03);}
+.src-tile{background:rgba(255,255,255,0.82);border:1px solid rgba(0,102,204,0.12);border-radius:14px;padding:18px 18px 15px;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s,background .18s;display:grid;grid-template-rows:34px 42px minmax(58px,auto) auto;gap:12px;position:relative;overflow:hidden;min-height:214px;box-shadow:0 1px 2px rgba(13,17,23,0.03);}
 .src-tile::before{content:'';position:absolute;left:0;top:18px;bottom:18px;width:3px;border-radius:0 3px 3px 0;background:var(--accent);opacity:.72;}
 .src-tile:not(.soon):hover{background:#fff;border-color:rgba(0,102,204,0.22);box-shadow:0 10px 28px rgba(0,66,153,0.08);transform:translateY(-2px);}
 .src-tile:focus-visible{outline:3px solid var(--accent-glow);outline-offset:3px;border-color:rgba(0,102,204,0.36);}
 .src-tile.soon{cursor:default;opacity:0.55;}
-.src-tile-badge{display:inline-flex;align-items:center;width:fit-content;max-width:100%;font-size:9.5px;font-weight:750;letter-spacing:0.05em;text-transform:uppercase;line-height:1.08;padding:4px 8px;border-radius:6px;background:rgba(0,102,204,0.07);color:var(--accent);border:1px solid rgba(0,102,204,0.14);}
+.src-tile-badge{display:inline-flex;align-items:center;align-self:start;width:fit-content;max-width:100%;min-height:28px;font-size:9.5px;font-weight:750;letter-spacing:0.05em;text-transform:uppercase;line-height:1.08;padding:4px 8px;border-radius:6px;background:rgba(0,102,204,0.07);color:var(--accent);border:1px solid rgba(0,102,204,0.14);}
 .src-tile-name{font-size:15px;font-weight:760;letter-spacing:-0.025em;color:var(--ink);line-height:1.25;max-width:100%;align-self:start;}
 .src-tile-action{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:0;padding-top:10px;align-self:end;border-top:1px solid rgba(0,102,204,0.08);font-size:10.5px;font-weight:750;line-height:1.2;letter-spacing:0.055em;text-transform:uppercase;color:var(--muted2);transition:color 0.15s;}
 .src-tile-action::after{content:'';width:18px;height:18px;border-radius:999px;background:rgba(0,102,204,0.07);border:1px solid rgba(0,102,204,0.12);transition:background .15s,border-color .15s;flex:0 0 18px;}
@@ -648,6 +648,17 @@ body.work-mode .source-tiles-section{display:none;}
 .br-para-cite.copied{background:#16a34a;color:#fff;border-color:#16a34a;opacity:1;}
 .br-back-top{display:inline-flex;align-items:center;gap:5px;margin-top:44px;font-size:13px;font-weight:600;color:var(--muted2);cursor:pointer;background:none;border:none;padding:0;transition:color 0.15s;}
 .br-back-top:hover{color:var(--accent);}
+.br-body .cm-heading{font-size:14px;font-weight:800;letter-spacing:0.025em;text-transform:uppercase;color:var(--ink);margin:26px 0 10px;padding-top:16px;border-top:1px solid var(--line2);}
+.br-body .cm-subheading{font-size:16px;font-weight:750;letter-spacing:-0.025em;color:var(--ink);margin:22px 0 8px;line-height:1.3;}
+.br-body .cm-step{display:flex;gap:12px;align-items:flex-start;margin:24px 0 10px;padding:13px 14px;border:1px solid rgba(0,102,204,0.14);border-left:3px solid var(--cm-solid);border-radius:10px;background:rgba(224,242,254,0.34);}
+.br-body .cm-step-num{flex:0 0 auto;font-size:10px;font-weight:850;letter-spacing:0.06em;text-transform:uppercase;color:var(--cm-txt);background:var(--cm-bg);border:1px solid rgba(8,145,178,0.18);border-radius:999px;padding:4px 8px;}
+.br-body .cm-step-text{font-size:15px;font-weight:750;letter-spacing:-0.02em;color:var(--ink);line-height:1.35;}
+.br-body .cm-table-line{font-family:'SF Mono','Menlo',monospace;font-size:12px;line-height:1.55;background:var(--off);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;margin:7px 0;white-space:pre-wrap;}
+.br-body .br-bullet.sub{margin-left:32px;font-size:14px;color:var(--ink3);}
+.br-figure{margin:26px 0 32px;border:1px solid var(--line2);border-radius:14px;background:var(--white);overflow:hidden;box-shadow:0 8px 28px rgba(0,66,153,0.06);}
+.br-figure img{display:block;width:100%;height:auto;background:#fff;}
+.br-figure figcaption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-top:1px solid var(--line2);font-size:12px;font-weight:650;color:var(--muted);}
+.br-figure figcaption span:first-child{color:var(--ink2);}
 
 /* ── FULL TEXT SECTION ── */
 #fulltext-section{display:none;background:var(--white);}
@@ -982,7 +993,7 @@ body.work-mode #quick-links{margin-top:0;}
   .hero-live-count{display:none;}
   .source-tiles-section{padding:24px 16px;}
   .source-tiles-grid{grid-template-columns:1fr 1fr;gap:10px;}
-  .src-tile{padding:16px 14px;min-height:170px;grid-template-rows:auto 42px 1fr;}
+  .src-tile{padding:16px 14px;min-height:200px;grid-template-rows:34px 42px minmax(58px,auto) auto;}
   .results-inner,.fulltext-inner{padding:0 16px 56px;}
   .filter-bar{padding:10px 16px;margin:0 -16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
   .filter-group,.filter-group-wide{flex:0 0 auto;flex-wrap:nowrap;}
@@ -1832,16 +1843,67 @@ function setBrowseSource(source) {
 
 // ── RENDER CONTENT LINE ───────────────────────────────────────────────────────
 // Converts an L{n}:text line (or plain text) into an HTML element with right indent
-function isBrowseHeadingLine(line) {
-  return /^(Disclaimer|How to Navigate the FAR Companion|Organization Structure|Quick Navigation Tips|Citation System)$/i.test((line || '').trim());
+function isCategoryGuide(source) {
+  return source === 'category-management';
 }
 
-function isBrowseBlockStart(line) {
+function isCategoryGuideHeadingLine(line) {
   const t = (line || '').trim();
-  return /^L\d:/.test(t) || /^[●○]\s+/.test(t) || /^\d+\.\s+/.test(t) || /^Part\s+\d+\s*[-–]/i.test(t) || isBrowseHeadingLine(t);
+  return /^(Pathway Steps|This Guide Promotes|This Guide is Not|The Vision|A Smarter Approach to Federal Acquisition|Navigating the Buying Process|Understanding the Continuum|Simple Procurements|Other-than-Simple Procurements|Navigating the Continuum|Buying Pathway|Decision Tool|Categories of Spend Examples|Category Management|Pathway Primer|Vehicles Table|Resources|Other Guidance|Pathway Pointers|Market Research and Pricing Data|Special Item Numbers \(SINs\)|Trainings|VA-Specific Federal Supply Schedule \(FSS\))$/i.test(t);
 }
 
-function renderContentLine(line, baseCitation) {
+function isCategoryGuideSubheadingLine(line) {
+  return /^(The Vision|Simple Procurements|Other-than-Simple Procurements|Buying Pathway|Decision Tool|Vehicles Table|Resources|Other Guidance|Pathway Pointers|Market Research and Pricing Data|Special Item Numbers \(SINs\)|Trainings|VA-Specific Federal Supply Schedule \(FSS\))$/i.test((line || '').trim());
+}
+
+function isBrowseHeadingLine(line, source) {
+  const t = (line || '').trim();
+  if (isCategoryGuide(source) && isCategoryGuideHeadingLine(t)) return true;
+  return /^(Disclaimer|How to Navigate the FAR Companion|Organization Structure|Quick Navigation Tips|Citation System)$/i.test(t);
+}
+
+function isBrowseBlockStart(line, source) {
+  const t = (line || '').trim();
+  return /^L\d:/.test(t) || /^[●○]\s+/.test(t) || /^(?:o|▪)\s+/.test(t) || /^Step\s+\d+:/i.test(t) || /^\d+\.\s+/.test(t) || /^Part\s+\d+\s*[-–]/i.test(t) || isBrowseHeadingLine(t, source);
+}
+
+function renderCategoryGuideFigure(fig) {
+  return `<figure class="br-figure">
+    <img src="${esc(fig.src)}" alt="${esc(fig.alt)}" loading="lazy">
+    <figcaption><span>${esc(fig.title)}</span><span>${esc(fig.meta)}</span></figcaption>
+  </figure>`;
+}
+
+function categoryGuideFigures(source, partNum) {
+  if (!isCategoryGuide(source)) return '';
+  const figures = {
+    '1': [
+      {
+        src: 'assets/category-management-continuum.png',
+        alt: 'Category Management Buying Guide continuum graphic showing simple through other-than-simple buying approaches.',
+        title: 'Navigating the Buying Process: Understanding the Continuum',
+        meta: 'Source graphic, p. 5'
+      }
+    ],
+    '2': [
+      {
+        src: 'assets/category-management-spend-examples-1.png',
+        alt: 'Category Management Buying Guide categories of spend examples table, page one.',
+        title: 'Categories of Spend Examples',
+        meta: 'Source table, p. 8'
+      },
+      {
+        src: 'assets/category-management-spend-examples-2.png',
+        alt: 'Category Management Buying Guide categories of spend examples table, page two.',
+        title: 'Categories of Spend Examples, Continued',
+        meta: 'Source table, p. 9'
+      }
+    ]
+  };
+  return (figures[String(partNum)] || []).map(renderCategoryGuideFigure).join('');
+}
+
+function renderContentLine(line, baseCitation, source) {
   const lm = line.match(/^L(\d):(.*)/);
   if (lm) {
     const level   = parseInt(lm[1]);
@@ -1870,6 +1932,27 @@ function renderContentLine(line, baseCitation) {
   const t = line.trim();
   if (!t || isBrowsePageNumberLine(t)) return '';
 
+  if (isCategoryGuide(source)) {
+    const stepM = t.match(/^Step\s+(\d+):\s*(.*)/i);
+    if (stepM) {
+      return `<div class="cm-step"><span class="cm-step-num">Step ${esc(stepM[1])}</span><span class="cm-step-text">${esc(stepM[2])}</span></div>`;
+    }
+
+    const subBulletM = t.match(/^(?:o|▪)\s+(.*)/);
+    if (subBulletM) {
+      return `<div class="br-bullet sub"><span class="br-bullet-marker">○</span><span class="br-bullet-text">${esc(subBulletM[1])}</span></div>`;
+    }
+
+    if (isCategoryGuideHeadingLine(t)) {
+      const cls = isCategoryGuideSubheadingLine(t) ? 'cm-subheading' : 'cm-heading';
+      return `<div class="${cls}">${esc(t)}</div>`;
+    }
+
+    if (/^(Types of Vehicles|Tier\s+[234]|N\/A\s+|MAS\s+|STARS\s+|Alliant\s+|BIC MAC\s+|Digital Market|Best-in-Class\s+)/i.test(t)) {
+      return `<div class="cm-table-line">${esc(t)}</div>`;
+    }
+  }
+
   const bulletM = t.match(/^([●○])\s+(.*)/);
   if (bulletM) {
     return `<div class="br-bullet"><span class="br-bullet-marker">${esc(bulletM[1])}</span><span class="br-bullet-text">${esc(bulletM[2])}</span></div>`;
@@ -1884,7 +1967,7 @@ function renderContentLine(line, baseCitation) {
     return `<div class="br-part-break">${esc(t)}</div>`;
   }
 
-  if (isBrowseHeadingLine(t)) {
+  if (isBrowseHeadingLine(t, source)) {
     return `<div class="br-note-heading">${esc(t)}</div>`;
   }
 
@@ -1912,6 +1995,7 @@ function isBrowsePageNumberLine(line) {
 function normalizeBrowseLines(rawLines, source, parsed, partNum) {
   const blocks = [];
   let current = null;
+  let skippingGuideGraphicText = false;
 
   function flush() {
     if (current && current.text.trim()) blocks.push(current.text.trim());
@@ -1922,6 +2006,25 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
     const line = (raw || '').trim();
     if (!line) { flush(); return; }
     if (isBrowsePageNumberLine(line)) return;
+
+    if (source === 'category-management') {
+      if (String(partNum) === '1' && /^Simple\s+Other than Simple$/i.test(line)) {
+        skippingGuideGraphicText = true;
+        return;
+      }
+      if (String(partNum) === '2' && /^Category\s+Simple Pathway\s+Other-than-Simple Pathway$/i.test(line)) {
+        skippingGuideGraphicText = true;
+        return;
+      }
+      if (skippingGuideGraphicText) {
+        if ((String(partNum) === '1' && /^Simple Procurements$/i.test(line)) ||
+            (String(partNum) === '2' && /^Category Management$/i.test(line))) {
+          skippingGuideGraphicText = false;
+        } else {
+          return;
+        }
+      }
+    }
 
     if (source === 'far-companion' && parsed?.num) {
       const escapedNum = parsed.num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -1935,7 +2038,12 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
       return;
     }
 
-    if (isBrowseBlockStart(line)) {
+    if (source === 'category-management' && parsed?.label && !current && !blocks.length) {
+      const duplicateLabel = parsed.label.replace(/^Part\s+\d+\s*[-–]\s*/i, '').trim();
+      if (duplicateLabel && line.toLowerCase() === duplicateLabel.toLowerCase()) return;
+    }
+
+    if (isBrowseBlockStart(line, source)) {
       flush();
       current = { text: line };
       return;
@@ -1947,7 +2055,12 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
     }
 
     const prior = current.text;
-    const isListBlock = /^[●○]\s+/.test(prior) || /^\d+\.\s+/.test(prior);
+    if (isBrowseHeadingLine(prior, source) || /^Step\s+\d+:/i.test(prior)) {
+      flush();
+      current = { text: line };
+      return;
+    }
+    const isListBlock = /^[●○]\s+/.test(prior) || /^(?:o|▪)\s+/.test(prior) || /^\d+\.\s+/.test(prior);
     if (isListBlock && /[.;:]$/.test(prior) && /^[A-Z]/.test(line)) {
       flush();
       current = { text: line };
@@ -2010,6 +2123,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       }).join('')}
     </ul>
   </div>`;
+  const figureHTML = categoryGuideFigures(source, partNum);
 
   // Build sections
   const sectionsHTML = readerHits.map((hit, i) => {
@@ -2019,7 +2133,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const citation = generateCitation(hit);
     const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
     const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
-    const bodyHTML = lines.map(l => renderContentLine(l, citation)).join('');
+    const bodyHTML = lines.map(l => renderContentLine(l, citation, source)).join('');
 
     if (parsed.type === 'subpart') {
       return `<div id="${anchor}" class="br-section">
@@ -2056,6 +2170,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       </div>
     </div>
     ${tocHTML}
+    ${figureHTML}
     ${sectionsHTML}
     <button class="br-back-top" onclick="document.getElementById('browse-reader').scrollIntoView({behavior:'smooth',block:'start'})">↑ Back to top</button>
   `;
