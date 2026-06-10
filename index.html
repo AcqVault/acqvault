@@ -463,7 +463,7 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .search-clear.visible{display:block;}
 
 /* Command dock */
-.hero-command-dock{position:relative;z-index:2;width:100%;max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.68);border:1px solid rgba(0,102,204,0.16);border-radius:18px;padding:6px;box-shadow:0 4px 22px rgba(0,66,153,0.09),0 1px 4px rgba(0,0,0,0.04);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);animation:hero-rise 0.85s 0.24s cubic-bezier(0.16,1,0.3,1) both;}
+.hero-command-dock{position:relative;z-index:320;width:100%;max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.68);border:1px solid rgba(0,102,204,0.16);border-radius:18px;padding:6px;box-shadow:0 4px 22px rgba(0,66,153,0.09),0 1px 4px rgba(0,0,0,0.04);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);animation:hero-rise 0.85s 0.24s cubic-bezier(0.16,1,0.3,1) both;}
 .mode-toggle{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:4px;}
 .mode-btn{min-height:40px;font-size:13px;font-weight:650;padding:9px 14px;border-radius:13px;border:1px solid transparent;cursor:pointer;color:var(--ink3);background:transparent;transition:all 0.18s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;letter-spacing:-0.01em;}
 .mode-btn-short{display:none;}
@@ -471,11 +471,12 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .mode-btn:hover:not(.active){color:var(--accent);background:rgba(0,102,204,0.07);border-color:rgba(0,102,204,0.14);}
 .browse-source-picker{position:relative;display:flex;min-width:0;}
 .browse-source-picker .mode-btn{width:100%;}
-.browse-source-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:260;min-width:286px;padding:8px;border:1px solid rgba(0,102,204,0.14);border-radius:14px;background:#fff;box-shadow:0 18px 45px rgba(15,37,61,0.16);display:none;}
+.browse-source-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:420;min-width:286px;padding:8px;border:1px solid rgba(0,102,204,0.14);border-radius:14px;background:#fff;box-shadow:0 18px 45px rgba(15,37,61,0.16);display:none;}
 .browse-source-menu.open{display:block;}
 .browse-source-menu button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;border:none;background:transparent;border-radius:10px;padding:10px 11px;cursor:pointer;text-align:left;color:var(--ink2);font-size:13px;font-weight:750;}
 .browse-source-menu button:hover{background:var(--accent-soft);color:var(--accent);}
-.browse-source-menu small{font-size:10px;font-weight:800;letter-spacing:0.055em;text-transform:uppercase;color:var(--muted2);}
+.browse-source-menu small{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:850;letter-spacing:0.055em;text-transform:uppercase;color:#15803d;background:#dcfce7;border:1px solid rgba(22,163,74,0.22);border-radius:999px;padding:3px 7px;}
+.browse-source-menu small::before{content:'';width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,0.13);}
 .hero-source-strip{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;padding:8px 8px 7px;border-top:1px solid rgba(0,102,204,0.09);color:var(--muted2);font-size:11.5px;}
 .hero-live-label{display:inline-flex;align-items:center;gap:6px;color:var(--ink3);font-weight:650;margin-right:2px;}
 .hero-live-dot{width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,0.12);}
@@ -1380,6 +1381,7 @@ body.work-mode #quick-links{margin-top:0;}
 </section>
 
 <!-- SOURCE TILES -->
+<template id="source-tiles-template">
 <div class="source-tiles-section" id="source-tiles-section">
   <div class="source-tiles-inner">
     <div class="source-tiles-label">Indexed Sources — click to browse</div>
@@ -1417,6 +1419,7 @@ body.work-mode #quick-links{margin-top:0;}
     </div>
   </div>
 </div>
+</template>
 
 <!-- SEARCH RESULTS -->
 <div id="results-section">
@@ -4314,6 +4317,11 @@ function stRenderAwards(awards) {
     const quicklinks = $('#quick-links');
     (quicklinks || features).insertAdjacentElement('afterend', toolkit);
     toolkit.insertAdjacentElement('afterend', dash);
+    const sourceTilesTpl = $('#source-tiles-template');
+    if (sourceTilesTpl) {
+      const sourceTiles = sourceTilesTpl.content.firstElementChild.cloneNode(true);
+      dash.insertAdjacentElement('afterend', sourceTiles);
+    }
 
     // reveal-on-scroll for the freshly injected .fade-up nodes
     const io = new IntersectionObserver((ents) => {
