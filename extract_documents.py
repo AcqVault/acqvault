@@ -7,6 +7,7 @@ a clean documents.json ready for Meilisearch bulk import.
 Sources handled:
   RFO/           — single PDF, chunked by detected FAR Part sections
   FAR Companion/ — single PDF, chunked by detected FC Part sections
+  Category Management/ — single PDF, chunked by buying guide category
   R-DFARS/       — 46 individual PDFs, one document per file
 
 Requirements:
@@ -47,6 +48,13 @@ SOURCES = {
         "source_key":  "far-companion",
         "mode":        "single",
         "chunk_regex": r"(?:^|\n)\s*(FC\s+\d+[\.\d]*\b[^\n]{0,80}|FAR Companion[^\n]{0,60})",
+    },
+    "category-management": {
+        "path":        BASE_DIR / "Category Management",
+        "label":       "Category Management Buying Guide",
+        "source_key":  "category-management",
+        "mode":        "single",
+        "chunk_regex": r"(?:^|\n)\s*((?:Overview|Buying Pathway|Facilities & Construction|Human Capital|Industrial Products and Services|Information Technology|Medical|Office Management|Professional Services|Security & Protection|Transportation & Logistics Services|Travel)\b[^\n]{0,80})",
     },
     "r-dfars": {
         "path":        BASE_DIR / "R-DFARS",

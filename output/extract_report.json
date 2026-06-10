@@ -380,5 +380,12 @@
     "chars": 73766,
     "docs": 1,
     "status": "ok"
+  },
+  {
+    "file": "category-management-buying-guide.pdf",
+    "source": "category-management",
+    "chars": 51453,
+    "docs": 12,
+    "status": "ok"
   }
 ]
