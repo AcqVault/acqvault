@@ -581,7 +581,7 @@ body.work-mode .source-tiles-section{display:none;}
 .src-tile-offline .src-tile-action{color:var(--muted2);}
 
 .browse-src-soon{font-size:13px;font-weight:500;padding:6px 14px;border-radius:980px;border:1px solid var(--line2);color:#c7c7cc;background:transparent;cursor:not-allowed;}
-.browse-layout{display:grid;grid-template-columns:272px 1fr;min-height:calc(100vh - 110px);}
+.browse-layout{display:grid;grid-template-columns:272px 1fr;min-height:calc(100vh - 110px);min-width:0;}
 .browse-parts-panel{border-right:1px solid var(--line2);background:var(--white);padding:18px 0;position:sticky;top:calc(var(--top-chrome) + 44px);max-height:calc(100vh - var(--top-chrome) - 44px);overflow-y:auto;}
 .browse-parts-panel::-webkit-scrollbar{width:3px;}
 .browse-parts-panel::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
@@ -593,8 +593,8 @@ body.work-mode .source-tiles-section{display:none;}
 .part-tile-num{font-size:11px;font-weight:700;color:var(--accent);min-width:28px;flex-shrink:0;font-variant-numeric:tabular-nums;}
 .part-tile-label{font-size:12px;color:var(--muted);line-height:1.3;}
 .part-tile.active .part-tile-label{color:var(--ink);font-weight:500;}
-.browse-reader{background:var(--white);}
-.browse-reader-inner{max-width:820px;margin:0 auto;padding:40px 48px 100px;}
+.browse-reader{background:var(--white);min-width:0;}
+.browse-reader-inner{max-width:820px;min-width:0;margin:0 auto;padding:40px 48px 100px;}
 .browse-reader::-webkit-scrollbar{width:4px;}
 .browse-reader::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
 
@@ -614,7 +614,7 @@ body.work-mode .source-tiles-section{display:none;}
 .br-toc-link:hover{background:rgba(0,0,0,0.04);}
 .br-toc-link-num{font-size:11px;font-weight:700;color:var(--accent);min-width:44px;flex-shrink:0;}
 .br-toc-link-title{font-size:12px;color:var(--muted);line-height:1.35;}
-.br-section{margin-bottom:44px;scroll-margin-top:120px;}
+.br-section{margin-bottom:44px;scroll-margin-top:120px;min-width:0;}
 .br-section-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
 .br-section-title-block{flex:1;}
 .br-subpart-heading{font-size:18px;font-weight:700;letter-spacing:-0.03em;color:var(--ink);margin:36px 0 8px;padding:11px 16px;background:var(--off);border-left:2px solid var(--accent);border-radius:0 var(--r-md) var(--r-md) 0;line-height:1.25;}
@@ -624,7 +624,7 @@ body.work-mode .source-tiles-section{display:none;}
 .br-cite-btn{flex-shrink:0;font-size:10px;font-weight:600;letter-spacing:0.03em;text-transform:uppercase;background:var(--off);border:1px solid var(--line);border-radius:var(--r-sm);padding:4px 9px;cursor:pointer;color:var(--muted2);transition:all 0.12s;margin-top:2px;}
 .br-cite-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
 .br-cite-btn.copied{background:#16a34a;color:#fff;border-color:#16a34a;}
-.br-body{font-size:15px;color:var(--ink2);line-height:1.82;}
+.br-body{font-size:15px;color:var(--ink2);line-height:1.82;min-width:0;}
 .br-body .br-p{margin-bottom:12px;}
 .br-body .br-bullet,.br-body .br-numbered{display:flex;gap:9px;align-items:flex-start;margin:7px 0 7px 10px;line-height:1.65;}
 .br-body .br-bullet-marker,.br-body .br-num-marker{flex:0 0 auto;min-width:18px;color:var(--accent);font-weight:750;}
@@ -655,6 +655,29 @@ body.work-mode .source-tiles-section{display:none;}
 .br-body .cm-step-text{font-size:15px;font-weight:750;letter-spacing:-0.02em;color:var(--ink);line-height:1.35;}
 .br-body .cm-table-line{font-family:'SF Mono','Menlo',monospace;font-size:12px;line-height:1.55;background:var(--off);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;margin:7px 0;white-space:pre-wrap;}
 .br-body .br-bullet.sub{margin-left:32px;font-size:14px;color:var(--ink3);}
+.br-body a.cm-link{color:var(--accent);font-weight:650;text-decoration:none;border-bottom:1px solid rgba(0,102,204,0.22);}
+.br-body a.cm-link:hover{color:var(--accent-h);border-bottom-color:currentColor;}
+.cm-native-visual{width:100%;max-width:100%;margin:24px 0 32px;border:1px solid var(--line2);border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 8px 28px rgba(0,66,153,0.05);}
+.cm-native-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-top:1px solid var(--line2);font-size:11.5px;font-weight:650;color:var(--muted);}
+.cm-native-caption strong{color:var(--ink2);}
+.cm-continuum{overflow-x:auto;}
+.cm-continuum-head{display:grid;grid-template-columns:1fr 1fr;background:linear-gradient(135deg,#10243d,#17375e);color:#fff;}
+.cm-continuum-head,.cm-continuum-grid{min-width:680px;}
+.cm-continuum-head div{padding:14px 16px;}
+.cm-continuum-head strong{display:block;font-size:15px;font-weight:800;letter-spacing:-0.015em;}
+.cm-continuum-head span{display:block;margin-top:3px;font-size:11.5px;line-height:1.4;color:rgba(255,255,255,0.78);}
+.cm-continuum-grid{display:grid;grid-template-columns:132px 1fr 1fr;}
+.cm-cont-row{display:contents;}
+.cm-cont-label,.cm-cont-cell{padding:13px 14px;border-top:1px solid var(--line2);font-size:13px;line-height:1.45;}
+.cm-cont-label{font-size:11px;font-weight:850;letter-spacing:0.065em;text-transform:uppercase;color:var(--muted);background:#f8fafc;}
+.cm-cont-cell{color:var(--ink2);}
+.cm-cont-cell strong{display:block;color:var(--ink);font-size:13.5px;margin-bottom:3px;}
+.cm-spend-wrap{width:100%;max-width:100%;overflow-x:auto;}
+.cm-spend-table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px;}
+.cm-spend-table th{background:#142f4d;color:#fff;text-align:left;font-size:12px;font-weight:800;letter-spacing:0.035em;text-transform:uppercase;padding:12px 14px;}
+.cm-spend-table td{vertical-align:top;padding:13px 14px;border-top:1px solid var(--line2);font-size:13px;line-height:1.45;color:var(--ink2);}
+.cm-spend-table td:first-child{width:22%;font-weight:800;color:var(--ink);background:#f8fafc;}
+.cm-spend-table tr:nth-child(even) td:not(:first-child){background:#fbfdff;}
 .br-figure{margin:26px 0 32px;border:1px solid var(--line2);border-radius:14px;background:var(--white);overflow:hidden;box-shadow:0 8px 28px rgba(0,66,153,0.06);}
 .br-figure img{display:block;width:100%;height:auto;background:#fff;}
 .br-figure figcaption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-top:1px solid var(--line2);font-size:12px;font-weight:650;color:var(--muted);}
@@ -1867,40 +1890,111 @@ function isBrowseBlockStart(line, source) {
   return /^L\d:/.test(t) || /^[●○]\s+/.test(t) || /^(?:o|▪)\s+/.test(t) || /^Step\s+\d+:/i.test(t) || /^\d+\.\s+/.test(t) || /^Part\s+\d+\s*[-–]/i.test(t) || isBrowseHeadingLine(t, source);
 }
 
-function renderCategoryGuideFigure(fig) {
-  return `<figure class="br-figure">
-    <img src="${esc(fig.src)}" alt="${esc(fig.alt)}" loading="lazy">
-    <figcaption><span>${esc(fig.title)}</span><span>${esc(fig.meta)}</span></figcaption>
-  </figure>`;
+const CATEGORY_LINKS = [
+  ['Market Research as a Service', 'https://www.gsa.gov/about-us/organization/federal-acquisition-service/customer-and-stakeholder-engagement/market-research-as-a-service'],
+  ['DLA Fedmall', 'https://www.fedmall.mil/'],
+  ['UNICOR.gov', 'https://www.unicor.gov/'],
+  ['AbilityOne.gov', 'https://www.abilityone.gov/'],
+  ['“Required use”', 'https://acquisitiongateway.gov/category-management/resources/4163?_a%5Eg_nid=376'],
+  ['D2D', 'https://d2d.gsa.gov/'],
+  ['Procurement Co-Pilot', 'https://acquisitiongateway.gov/procurementcopilot'],
+  ['GSA eLibrary', 'https://www.gsaelibrary.gsa.gov/'],
+  ['GSA Advantage', 'https://www.gsaadvantage.gov/'],
+  ['Acquisition Gateway - Facilities & Construction', 'https://www.acquisitiongateway.gov/category-management/resources/28?_a%5Eg_nid=355'],
+  ['Acquisition Gateway - Human Capital', 'https://www.acquisitiongateway.gov/Category-management/resources/579?_a%5Eg_nid=11662'],
+  ['Acquisition Gateway - Industrial Products & Services', 'https://www.acquisitiongateway.gov/category-management/resources/30?_a%5Eg_nid=391'],
+  ['Acquisition Gateway - Information Technology', 'https://www.acquisitiongateway.gov/category-management/resources/580?_a%5Eg_nid=530'],
+  ['Acquisition Gateway - Medical', 'https://www.acquisitiongateway.gov/category-management/resources/31?_a%5Eg_nid=239'],
+  ['Acquisition Gateway - Office Management', 'https://www.acquisitiongateway.gov/category-management/resources/32?_a%5Eg_nid=11830'],
+  ['Acquisition Gateway - Professional Services', 'https://www.acquisitiongateway.gov/category-management/resources/33?_a%5Eg_nid=398'],
+  ['Acquisition Gateway - Security & Protection', 'https://www.acquisitiongateway.gov/Category-management/resources/34?_a%5Eg_nid=11124'],
+  ['Acquisition Gateway - Transportation & Logistics Services', 'https://acquisitiongateway.gov/'],
+  ['Acquisition Gateway - Travel', 'https://www.acquisitiongateway.gov/category-management/resources/36?_a%5Eg_nid=36325'],
+  ['Acquisition Solutions Navigator', 'https://buy.gsa.gov/contracts/home'],
+  ['Civilian Services Acquisition Workshops (CSAW)', 'https://buy.gsa.gov/spba'],
+  ['Services Scope Review', 'https://www.gsa.gov/buy-through-us/products-services/professional-services/services-scope-review'],
+  ['Cloud Information Center', 'https://cic.gsa.gov/'],
+  ['GSA Global Supply', 'https://www.gsa.gov/buy-through-us/purchasing-programs/requisition-programs/gsa-global-supply'],
+  ['GSA MAS', 'https://www.gsa.gov/buy-through-us/purchasing-programs/multiple-award-schedule'],
+  ['OASIS+', 'https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus'],
+  ['8(a) STARS III', 'https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/8a-stars-iii'],
+  ['Alliant 2', 'https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-2'],
+  ['SEWP', 'https://www.sewp.nasa.gov/'],
+  ['NITAAC CIO-CS', 'https://nitaac.nih.gov/services/cio-cs'],
+  ['NITAAC CIO-SP3', 'https://nitaac.nih.gov/services/cio-sp3'],
+  ['VETS 2', 'https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/vets-2'],
+  ['FedRooms', 'https://www.gsa.gov/travel/plan-book/per-diem-rates/fedrooms'],
+  ['City Pair Program', 'https://www.gsa.gov/travel/plan-a-trip/transportation-airfare-rates-pov-rates-etc/airfare-rates-city-pair-program'],
+  ['Uber for Government', 'https://redeem.uber.com/public/optin/QJGUT4HH']
+].sort((a,b) => b[0].length - a[0].length);
+
+function categoryGuideText(text, source) {
+  let out = esc(text);
+  if (!isCategoryGuide(source)) return out;
+  CATEGORY_LINKS.forEach(([label, url]) => {
+    const needle = esc(label).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    out = out.replace(new RegExp(needle, 'g'), `<a class="cm-link" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)}</a>`);
+  });
+  out = out.replace(/\b(\d{3,6}[A-Z0-9]*)\b(?=\s+-)/g, (m) => `<a class="cm-link" href="https://www.gsaelibrary.gsa.gov/ElibMain/sinDetails.do?scheduleNumber=MAS&specialItemNumber=${encodeURIComponent(m)}&executeQuery=YES" target="_blank" rel="noopener">${m}</a>`);
+  return out;
 }
 
-function categoryGuideFigures(source, partNum) {
+function categoryGuideContinuumHTML() {
+  const rows = [
+    ['Requirements', '<strong>Commercial products and commercial services</strong> Includes COTS items and solutions that can be bought largely as-is.', '<strong>Non-commercial or mission-specific needs</strong> Includes products or services that require more tailoring, integration, or specialized delivery.'],
+    ['Value / Competition', '<strong>Micro-purchase to simplified procedures</strong> Use micro-purchase, simplified acquisition, and commercial simplified procedures where the requirement fits.', '<strong>Above simplified commercial lanes</strong> Use more formal procedures when value, risk, or complexity exceeds the simplified pathway.'],
+    ['Sources', '<strong>Required and priority sources first</strong> Check mandatory sources, existing government-wide contracts, BPAs, shared services, FSS, GWACs, IDIQs, and other pre-competed vehicles.', '<strong>Agency discretion and open market when needed</strong> Move beyond existing vehicles when they cannot meet the requirement.'],
+    ['Contracting Method', '<strong>Fast, structured buying lanes</strong> FAR 8.4 orders/BPAs, FAR 12.201-1 and 12.201-2, FAR 13, and other simplified/commercial procedures.', '<strong>Formal market procedures</strong> FAR 14/15 IFB/RFP, broad agency announcements, construction, architect-engineer, and other specialized pathways.'],
+    ['Approach', '<strong>Buy commercial capability as-is</strong> Prioritize speed, value, and adoption of existing market solutions.', '<strong>Plan for mission failure risk</strong> Build the capable team, evaluation strategy, and controls needed for complex or custom work.']
+  ];
+  return `<div class="cm-native-visual cm-continuum" aria-label="Simple to other-than-simple acquisition continuum">
+    <div class="cm-continuum-head">
+      <div><strong>Simple Pathway</strong><span>Speed, value, and adoption of commercial solutions as-is.</span></div>
+      <div><strong>Other-than-Simple Pathway</strong><span>More planning for capable teams, complexity, and mission-risk reduction.</span></div>
+    </div>
+    <div class="cm-continuum-grid">
+      ${rows.map(([label, simple, complex]) => `<div class="cm-cont-row"><div class="cm-cont-label">${label}</div><div class="cm-cont-cell">${simple}</div><div class="cm-cont-cell">${complex}</div></div>`).join('')}
+    </div>
+    <div class="cm-native-caption"><strong>Continuum summary</strong><span>Adapted from the Category Management Buying Guide, p. 5</span></div>
+  </div>`;
+}
+
+function categoryGuideSpendTableHTML() {
+  const rows = [
+    ['Facilities & Construction', 'Office furniture, building materials, commercial real estate leases, and common maintenance services such as janitorial work.', 'Specialized construction services for government facilities, building of military bases, or custom-designed infrastructure.'],
+    ['Human Capital', 'Talent acquisition, employer relocation, and professional development training.', 'Specialized government talent development, security clearances, and employee relations services specific to federal regulations.'],
+    ['Industrial Products and Services', 'Basic materials, hardware, tools, machinery, and repair or maintenance services for commercial equipment.', 'Specialized test and measurement supplies, equipment, and services for government-specific research and development projects.'],
+    ['Information Technology', 'Commercial off-the-shelf software licenses, computer hardware, and general IT consulting.', 'Highly customized software solutions for federal agencies, cybersecurity for classified networks, and specialized telecommunications.'],
+    ['Medical', 'Standard pharmaceuticals, healthcare services, and common medical equipment or supplies.', 'Specialized or customized pharmaceuticals, medical equipment, supplies, or services used exclusively by the military or certain federal agencies.'],
+    ['Office Management', 'Office supplies, office furniture, and basic office management services.', 'N/A'],
+    ['Professional Services', 'Financial services, legal services, management consulting, and marketing services.', 'Research and development projects for government use only, or advisory services for federal policy.'],
+    ['Security & Protection', 'Standard security systems, uniforms or protective apparel, and general security guard services.', 'Specialized weapons, integrated physical access control systems, and tactical communication services.'],
+    ['Transportation & Logistics Services', 'Package delivery, motor vehicles, and general transportation equipment.', 'Logistics support for military operations, specialized vehicles for federal agencies, or transportation of classified materials.'],
+    ['Travel', 'Lodging, passenger travel, and car rental services.', 'N/A']
+  ];
+  return `<div class="cm-native-visual">
+    <div class="cm-spend-wrap">
+      <table class="cm-spend-table">
+        <thead><tr><th>Category</th><th>Simple Pathway</th><th>Other-than-Simple Pathway</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="cm-native-caption"><strong>Categories of spend examples</strong><span>Adapted from the Category Management Buying Guide, pp. 8-9</span></div>
+  </div>`;
+}
+
+function categoryGuideVisualAfterLine(source, partNum, line, flags) {
   if (!isCategoryGuide(source)) return '';
-  const figures = {
-    '1': [
-      {
-        src: 'assets/category-management-continuum.png',
-        alt: 'Category Management Buying Guide continuum graphic showing simple through other-than-simple buying approaches.',
-        title: 'Navigating the Buying Process: Understanding the Continuum',
-        meta: 'Source graphic, p. 5'
-      }
-    ],
-    '2': [
-      {
-        src: 'assets/category-management-spend-examples-1.png',
-        alt: 'Category Management Buying Guide categories of spend examples table, page one.',
-        title: 'Categories of Spend Examples',
-        meta: 'Source table, p. 8'
-      },
-      {
-        src: 'assets/category-management-spend-examples-2.png',
-        alt: 'Category Management Buying Guide categories of spend examples table, page two.',
-        title: 'Categories of Spend Examples, Continued',
-        meta: 'Source table, p. 9'
-      }
-    ]
-  };
-  return (figures[String(partNum)] || []).map(renderCategoryGuideFigure).join('');
+  const t = (line || '').trim();
+  if (String(partNum) === '1' && !flags.continuum && /^The [“"]simple[”"].*continuum is a useful framework/i.test(t)) {
+    flags.continuum = true;
+    return categoryGuideContinuumHTML();
+  }
+  if (String(partNum) === '2' && !flags.spend && /^Categories of Spend Examples$/i.test(t)) {
+    flags.spend = true;
+    return categoryGuideSpendTableHTML();
+  }
+  return '';
 }
 
 function renderContentLine(line, baseCitation, source) {
@@ -1909,7 +2003,7 @@ function renderContentLine(line, baseCitation, source) {
     const level   = parseInt(lm[1]);
     const content = lm[2].trim();
     if (!content || isBrowsePageNumberLine(content)) return '';
-    const text    = esc(content);
+    const text    = categoryGuideText(content, source);
     if (level === 0) return `<p class="br-p">${text}</p>`;
     let cite = baseCitation || '';
     if (cite) {
@@ -1935,12 +2029,12 @@ function renderContentLine(line, baseCitation, source) {
   if (isCategoryGuide(source)) {
     const stepM = t.match(/^Step\s+(\d+):\s*(.*)/i);
     if (stepM) {
-      return `<div class="cm-step"><span class="cm-step-num">Step ${esc(stepM[1])}</span><span class="cm-step-text">${esc(stepM[2])}</span></div>`;
+      return `<div class="cm-step"><span class="cm-step-num">Step ${esc(stepM[1])}</span><span class="cm-step-text">${categoryGuideText(stepM[2], source)}</span></div>`;
     }
 
     const subBulletM = t.match(/^(?:o|▪)\s+(.*)/);
     if (subBulletM) {
-      return `<div class="br-bullet sub"><span class="br-bullet-marker">○</span><span class="br-bullet-text">${esc(subBulletM[1])}</span></div>`;
+      return `<div class="br-bullet sub"><span class="br-bullet-marker">○</span><span class="br-bullet-text">${categoryGuideText(subBulletM[1], source)}</span></div>`;
     }
 
     if (isCategoryGuideHeadingLine(t)) {
@@ -1949,18 +2043,18 @@ function renderContentLine(line, baseCitation, source) {
     }
 
     if (/^(Types of Vehicles|Tier\s+[234]|N\/A\s+|MAS\s+|STARS\s+|Alliant\s+|BIC MAC\s+|Digital Market|Best-in-Class\s+)/i.test(t)) {
-      return `<div class="cm-table-line">${esc(t)}</div>`;
+      return `<div class="cm-table-line">${categoryGuideText(t, source)}</div>`;
     }
   }
 
   const bulletM = t.match(/^([●○])\s+(.*)/);
   if (bulletM) {
-    return `<div class="br-bullet"><span class="br-bullet-marker">${esc(bulletM[1])}</span><span class="br-bullet-text">${esc(bulletM[2])}</span></div>`;
+    return `<div class="br-bullet"><span class="br-bullet-marker">${esc(bulletM[1])}</span><span class="br-bullet-text">${categoryGuideText(bulletM[2], source)}</span></div>`;
   }
 
   const numM = t.match(/^(\d+)\.\s+(.*)/);
   if (numM) {
-    return `<div class="br-numbered"><span class="br-num-marker">${esc(numM[1])}.</span><span class="br-num-text">${esc(numM[2])}</span></div>`;
+    return `<div class="br-numbered"><span class="br-num-marker">${esc(numM[1])}.</span><span class="br-num-text">${categoryGuideText(numM[2], source)}</span></div>`;
   }
 
   if (/^Part\s+\d+\s*[-–]/i.test(t)) {
@@ -1971,7 +2065,7 @@ function renderContentLine(line, baseCitation, source) {
     return `<div class="br-note-heading">${esc(t)}</div>`;
   }
 
-  return `<p class="br-p">${esc(t)}</p>`;
+  return `<p class="br-p">${categoryGuideText(t, source)}</p>`;
 }
 // ── CITE A SECTION ────────────────────────────────────────────────────────────
 function brCopy(citation, btn) {
@@ -2123,8 +2217,6 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       }).join('')}
     </ul>
   </div>`;
-  const figureHTML = categoryGuideFigures(source, partNum);
-
   // Build sections
   const sectionsHTML = readerHits.map((hit, i) => {
     const parsed = parseBrowseTitle(hit, source);
@@ -2133,7 +2225,8 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const citation = generateCitation(hit);
     const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
     const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
-    const bodyHTML = lines.map(l => renderContentLine(l, citation, source)).join('');
+    const visualFlags = {};
+    const bodyHTML = lines.map(l => renderContentLine(l, citation, source) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
 
     if (parsed.type === 'subpart') {
       return `<div id="${anchor}" class="br-section">
@@ -2170,7 +2263,6 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       </div>
     </div>
     ${tocHTML}
-    ${figureHTML}
     ${sectionsHTML}
     <button class="br-back-top" onclick="document.getElementById('browse-reader').scrollIntoView({behavior:'smooth',block:'start'})">↑ Back to top</button>
   `;
