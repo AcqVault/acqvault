@@ -3172,9 +3172,23 @@ const DISAPPOINTING_AFFIRMATIONS = [
   { q: 'You can be both professional and mildly alarmed.', a: 'Disappointing Affirmation' },
   { q: 'The suspense is due at close of business, a phrase doing a lot of emotional work.', a: 'Disappointing Affirmation' }
 ];
-let heroQuoteIndex = 0;
-let heroAffirmationIndex = -1;
+let lastHeroQuoteKey = '';
+let lastAffirmationKey = '';
 let heroQuoteMode = 'affirmation';
+function quoteKey(item) {
+  return String((item && (item.q || item.content)) || '');
+}
+function randomItem(items, lastKey) {
+  if (!items || !items.length) return null;
+  if (items.length === 1) return items[0];
+  let pick = items[Math.floor(Math.random() * items.length)];
+  let guard = 0;
+  while (quoteKey(pick) === lastKey && guard < 8) {
+    pick = items[Math.floor(Math.random() * items.length)];
+    guard++;
+  }
+  return pick;
+}
 function setHeroQuote(quote, source) {
   const textEl = document.getElementById('hero-quote-text');
   const authorEl = document.getElementById('hero-quote-author');
@@ -3189,12 +3203,14 @@ function setHeroQuote(quote, source) {
   if (refreshBtn) refreshBtn.textContent = heroQuoteMode === 'affirmation' ? 'New affirmation' : 'New quote';
 }
 function nextFallbackQuote() {
-  heroQuoteIndex = (heroQuoteIndex + 1) % HERO_QUOTES.length;
-  setHeroQuote(HERO_QUOTES[heroQuoteIndex], 'curated');
+  const quote = randomItem(HERO_QUOTES, lastHeroQuoteKey);
+  lastHeroQuoteKey = quoteKey(quote);
+  setHeroQuote(quote, 'curated');
 }
 function nextAffirmation() {
-  heroAffirmationIndex = (heroAffirmationIndex + 1) % DISAPPOINTING_AFFIRMATIONS.length;
-  setHeroQuote(DISAPPOINTING_AFFIRMATIONS[heroAffirmationIndex], 'original');
+  const affirmation = randomItem(DISAPPOINTING_AFFIRMATIONS, lastAffirmationKey);
+  lastAffirmationKey = quoteKey(affirmation);
+  setHeroQuote(affirmation, 'original');
 }
 async function loadHeroQuote() {
   if (heroQuoteMode === 'affirmation') {
@@ -3207,6 +3223,11 @@ async function loadHeroQuote() {
     const data = await res.json();
     const item = Array.isArray(data) ? data[0] : data;
     if (!item || !item.q) throw new Error('Unexpected quote response');
+    if (quoteKey(item) === lastHeroQuoteKey) {
+      nextFallbackQuote();
+      return;
+    }
+    lastHeroQuoteKey = quoteKey(item);
     setHeroQuote({ q: item.q, a: item.a || 'Unknown' }, 'ZenQuotes');
   } catch(e) {
     nextFallbackQuote();
