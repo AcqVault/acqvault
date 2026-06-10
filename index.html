@@ -404,7 +404,8 @@ nav{position:fixed;top:38px;left:0;right:0;z-index:300;display:flex;align-items:
 nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204,0.12);box-shadow:0 8px 28px rgba(13,17,23,0.06);}
 .nav-inner{max-width:var(--max-w);width:100%;height:40px;margin:0 auto;display:grid;grid-template-columns:minmax(150px,1fr) auto minmax(150px,1fr);align-items:center;gap:14px;background:rgba(255,255,255,0.62);border:1px solid rgba(0,102,204,0.13);border-radius:999px;padding:4px 5px 4px 14px;box-shadow:0 4px 22px rgba(0,66,153,0.08),0 1px 3px rgba(13,17,23,0.04);}
 .nav-logo{display:inline-flex;align-items:center;gap:0;justify-self:start;font-size:14px;font-weight:850;letter-spacing:-0.035em;color:var(--ink);text-decoration:none;transition:color 0.2s;}
-.nav-logo::before{content:'';width:20px;height:20px;border-radius:7px;margin-right:8px;background:linear-gradient(145deg,var(--accent),#5aa7ff);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.35),0 3px 9px rgba(0,102,204,0.22);}
+.nav-logo-mark{width:24px;height:24px;margin-right:8px;border-radius:7px;object-fit:cover;object-position:center;filter:drop-shadow(0 3px 8px rgba(0,66,153,0.22));}
+.nav-logo-v{color:var(--accent);}
 .nav-logo span{color:var(--muted2);transition:color 0.2s;}
 .nav-logo:hover{color:var(--accent);}
 .nav-center{justify-self:center;display:flex;gap:3px;align-items:center;background:rgba(246,248,250,0.72);border:1px solid rgba(0,102,204,0.08);border-radius:999px;padding:3px;}
@@ -430,6 +431,7 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 @keyframes hero-rise{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
 .hero.search-active .hero-intro,.hero.browse-active .hero-intro,.hero.fulltext-active .hero-intro{opacity:0;transform:translateY(-14px);max-height:0;overflow:hidden;pointer-events:none;transition:opacity 0.3s ease,transform 0.3s ease,max-height 0.4s ease;}
 
+.hero-brand-mark{display:block;width:72px;height:72px;margin:0 auto 16px;border-radius:18px;object-fit:cover;filter:drop-shadow(0 12px 28px rgba(13,17,23,0.18));}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.75);border:1px solid rgba(0,102,204,0.22);border-radius:980px;padding:5px 14px 5px 10px;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;box-shadow:0 1px 6px rgba(0,102,204,0.08);}
 .hero-headline{font-size:clamp(42px,5.8vw,68px);font-weight:800;letter-spacing:-0.052em;color:var(--ink);line-height:1.02;margin-bottom:20px;}
 .hero-headline em{font-style:normal;color:var(--accent);-webkit-text-fill-color:var(--accent);}
@@ -442,7 +444,7 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .hero-quote-author{font-weight:700;color:var(--ink2);}
 .hero-quote-refresh{border:none;background:rgba(255,255,255,0.65);border:1px solid rgba(0,102,204,0.14);border-radius:999px;padding:4px 9px;color:var(--accent);font-size:10.5px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;cursor:pointer;transition:background .15s,transform .15s;}
 .hero-quote-refresh:hover{background:#fff;transform:translateY(-1px);}
-.hero-quote-source{font-family:'SF Mono','Menlo','Consolas',monospace;font-size:10px;color:var(--muted2);}
+.hero-quote-source{display:none;}
 .hero-quote-chooser{display:inline-flex;flex-direction:column;align-items:center;gap:7px;margin:0 auto 13px;padding:9px 10px;border:1px solid rgba(0,102,204,0.16);border-radius:14px;background:rgba(255,255,255,0.72);box-shadow:0 4px 18px rgba(0,66,153,0.07);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
 .hero-quote-choice-label{font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted2);}
 .hero-quote-modes{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid rgba(0,102,204,0.13);border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.5);}
@@ -948,7 +950,7 @@ body.work-mode #quick-links{margin-top:0;}
   :root{--nav-height:54px;}
   .nav-inner{height:40px;grid-template-columns:1fr auto;gap:8px;padding:4px 5px 4px 10px;}
   .nav-logo{font-size:13px;}
-  .nav-logo::before{width:18px;height:18px;border-radius:6px;margin-right:7px;}
+  .nav-logo-mark{width:22px;height:22px;border-radius:6px;margin-right:7px;}
   .nav-center{display:none;}
   .nav-right{gap:6px;}
   .nav-feedback-btn{display:none;}
@@ -957,6 +959,7 @@ body.work-mode #quick-links{margin-top:0;}
   .hero.search-active,.hero.browse-active,.hero.fulltext-active{padding:calc(var(--top-chrome) + 14px) 16px 18px;}
   .hero-content{max-width:100%;}
   .hero-intro{margin-bottom:22px;}
+  .hero-brand-mark{display:none;}
   .hero-eyebrow{font-size:10px;margin-bottom:14px;}
   .hero-headline{font-size:clamp(36px,11vw,54px);letter-spacing:-0.045em;line-height:0.98;}
   .hero-sub{font-size:15.5px;line-height:1.55;max-width:330px;}
@@ -1209,7 +1212,7 @@ body.work-mode #quick-links{margin-top:0;}
 <!-- NAV -->
 <nav id="main-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo">AcqVault<span>.com</span></a>
+    <a href="/" class="nav-logo"><img class="nav-logo-mark" src="assets/acqvault-vault-icon.png" alt="" aria-hidden="true">Acq<span class="nav-logo-v">V</span>ault<span>.com</span></a>
     <div class="nav-center">
       <a href="#features">Features</a>
       <a href="#sources">Sources</a>
@@ -1259,20 +1262,21 @@ body.work-mode #quick-links{margin-top:0;}
     <div class="hero-center-col">
     <div class="hero-content">
     <div class="hero-intro">
+      <img class="hero-brand-mark" src="assets/acqvault-vault-icon.png" alt="" aria-hidden="true">
       <p class="hero-eyebrow"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0;"></span>Air Force Acquisition Research</p>
       <h1 class="hero-headline">The research library<br><em>the acquisition community</em><br>deserves.</h1>
       <div class="hero-quote" aria-live="polite">
-        <div class="hero-quote-label" id="hero-quote-label">Disappointing Affirmation</div>
+        <div class="hero-quote-label" id="hero-quote-label">Witty Affirmation</div>
         <div class="hero-quote-chooser">
-          <div class="hero-quote-choice-label">Choose your signal</div>
+          <div class="hero-quote-choice-label">Daily signal</div>
           <div class="hero-quote-modes" role="group" aria-label="Choose a quote or affirmation">
             <button type="button" class="hero-quote-mode" data-quote-mode="quote" aria-pressed="false">Quote</button>
-            <button type="button" class="hero-quote-mode active" data-quote-mode="affirmation" aria-pressed="true">Affirmation</button>
+            <button type="button" class="hero-quote-mode active" data-quote-mode="affirmation" aria-pressed="true">Witty</button>
           </div>
         </div>
         <p class="hero-quote-text" id="hero-quote-text">Some meetings could have been emails, but this one aspired to be a spreadsheet.</p>
         <div class="hero-quote-meta">
-          <span class="hero-quote-author" id="hero-quote-author">AcqVault</span>
+          <span class="hero-quote-author" id="hero-quote-author">AcqVault original</span>
           <span class="hero-quote-source" id="hero-quote-source">curated</span>
           <button type="button" class="hero-quote-refresh" id="hero-quote-refresh">New quote</button>
         </div>
@@ -3098,79 +3102,114 @@ const HERO_QUOTES = [
   { q: 'Readiness is built before it is needed.', a: 'Unknown' },
   { q: 'A leader absorbs confusion and returns clarity.', a: 'Unknown' }
 ];
-const DISAPPOINTING_AFFIRMATIONS = [
-  { q: 'You are doing your best, and unfortunately that is still due today.', a: 'Disappointing Affirmation' },
-  { q: 'Some meetings could have been emails, but this one aspired to be a spreadsheet.', a: 'Disappointing Affirmation' },
-  { q: 'Your inbox believes in you more than you believe in inbox zero.', a: 'Disappointing Affirmation' },
-  { q: 'Progress is progress, even when it arrives wearing a suspiciously familiar problem.', a: 'Disappointing Affirmation' },
-  { q: 'Not every fire is yours to put out, but somehow the smoke knows your name.', a: 'Disappointing Affirmation' },
-  { q: 'Today is full of opportunities to lower expectations with grace.', a: 'Disappointing Affirmation' },
-  { q: 'You cannot control everything. Conveniently, several systems have already proven that.', a: 'Disappointing Affirmation' },
-  { q: 'Every deadline is a chance to discover which assumptions were decorative.', a: 'Disappointing Affirmation' },
-  { q: 'You are not behind. You are participating in a dynamic schedule environment.', a: 'Disappointing Affirmation' },
-  { q: 'The requirement was unclear, but at least everyone is equally confident.', a: 'Disappointing Affirmation' },
-  { q: 'You have survived every confusing email thread so far, which is technically resilience.', a: 'Disappointing Affirmation' },
-  { q: 'Mistakes are how we learn. Documentation is how we remember who learned.', a: 'Disappointing Affirmation' },
-  { q: 'Your calendar is not a moral document, even if it is judging you.', a: 'Disappointing Affirmation' },
-  { q: 'A clean handoff is possible, and today we honor that possibility from afar.', a: 'Disappointing Affirmation' },
-  { q: 'Some action items are just hopes wearing bullet points.', a: 'Disappointing Affirmation' },
-  { q: 'The process may be broken, but it is broken consistently, and that is data.', a: 'Disappointing Affirmation' },
-  { q: 'You are enough. The attachment was not.', a: 'Disappointing Affirmation' },
-  { q: 'Clarity may arrive later, possibly after the decision.', a: 'Disappointing Affirmation' },
-  { q: 'If at first you do not succeed, check whether the requirement changed overnight.', a: 'Disappointing Affirmation' },
-  { q: 'Your best is valid, even when the portal times out.', a: 'Disappointing Affirmation' },
-  { q: 'The task expanded to fill the available anxiety.', a: 'Disappointing Affirmation' },
-  { q: 'You are one well-named file away from temporary peace.', a: 'Disappointing Affirmation' },
-  { q: 'Today may not be the day, but it is certainly a day.', a: 'Disappointing Affirmation' },
-  { q: 'The path forward is clear, except for the path and the forward part.', a: 'Disappointing Affirmation' },
-  { q: 'You cannot win them all, but you can rename the draft and try again.', a: 'Disappointing Affirmation' },
-  { q: 'Confidence is quiet. The spreadsheet with fourteen tabs is not.', a: 'Disappointing Affirmation' },
-  { q: 'You are allowed to grow at the speed of available staffing.', a: 'Disappointing Affirmation' },
-  { q: 'Today, let enough be enough, unless Legal has comments.', a: 'Disappointing Affirmation' },
-  { q: 'The perfect answer may exist, but the suspense is doing excellent work.', a: 'Disappointing Affirmation' },
-  { q: 'You can do hard things, and apparently also the same hard thing again.', a: 'Disappointing Affirmation' },
-  { q: 'This too shall pass, possibly through three coordination rounds.', a: 'Disappointing Affirmation' },
-  { q: 'A small win is still a win, especially if nobody schedules a follow-up.', a: 'Disappointing Affirmation' },
-  { q: 'Your scope is growing, and it seems very comfortable here.', a: 'Disappointing Affirmation' },
-  { q: 'The good news is there is a process. The other news is also the process.', a: 'Disappointing Affirmation' },
-  { q: 'You are not procrastinating; you are allowing the requirement to mature.', a: 'Disappointing Affirmation' },
-  { q: 'Every shared drive contains at least one folder named final, and none of them are.', a: 'Disappointing Affirmation' },
-  { q: 'Your question is valid, even if the answer requires a governance body.', a: 'Disappointing Affirmation' },
-  { q: 'You have enough time, provided nothing else happens. Something else will happen.', a: 'Disappointing Affirmation' },
-  { q: 'The status is green because the slide needed a color.', a: 'Disappointing Affirmation' },
-  { q: 'Today you may confuse movement with progress, but at least there will be minutes.', a: 'Disappointing Affirmation' },
-  { q: 'Your draft has potential, which is what people say before comments arrive.', a: 'Disappointing Affirmation' },
-  { q: 'The file naming convention is aspirational, and so are we.', a: 'Disappointing Affirmation' },
-  { q: 'Your patience is a renewable resource, but procurement lead time is not.', a: 'Disappointing Affirmation' },
-  { q: 'If the answer feels obvious, there may be a clause hiding nearby.', a: 'Disappointing Affirmation' },
-  { q: 'You are making progress, even if the progress is discovering more work.', a: 'Disappointing Affirmation' },
-  { q: 'The agenda was ambitious. Reality submitted a nonconcurrence.', a: 'Disappointing Affirmation' },
-  { q: 'The email found you because hiding was not in the acquisition plan.', a: 'Disappointing Affirmation' },
-  { q: 'You are not lost; you are conducting market research on possible directions.', a: 'Disappointing Affirmation' },
-  { q: 'Sometimes the milestone is simply learning who owns the milestone.', a: 'Disappointing Affirmation' },
-  { q: 'A well-placed caveat can be the load-bearing wall of a briefing.', a: 'Disappointing Affirmation' },
-  { q: 'You may not have alignment, but you do have a recurring meeting.', a: 'Disappointing Affirmation' },
-  { q: 'The answer is in the policy, near several other answers with different vibes.', a: 'Disappointing Affirmation' },
-  { q: 'The week is young, and somehow already asking for a decision memo.', a: 'Disappointing Affirmation' },
-  { q: 'It is not a setback. It is a chance to update the tracker again.', a: 'Disappointing Affirmation' },
-  { q: 'You have done harder things, though few with this many attachments.', a: 'Disappointing Affirmation' },
-  { q: 'Today, may your suspense dates be real and your stakeholders reachable.', a: 'Disappointing Affirmation' },
-  { q: 'The approval chain is long, but so is your capacity for polite follow-up.', a: 'Disappointing Affirmation' },
-  { q: 'You are the right person for the job, according to whoever forwarded it.', a: 'Disappointing Affirmation' },
-  { q: 'The plan is coming together, mostly in the sense that it is now in one document.', a: 'Disappointing Affirmation' },
-  { q: 'Not all heroes wear capes. Some update version control and hope.', a: 'Disappointing Affirmation' },
-  { q: 'The system is down, which is a form of stakeholder feedback.', a: 'Disappointing Affirmation' },
-  { q: 'You cannot automate judgment, but you can automate a little suffering.', a: 'Disappointing Affirmation' },
-  { q: 'The final review is rarely final, but the optimism is charming.', a: 'Disappointing Affirmation' },
-  { q: 'You are closer than you were, unless the baseline moved.', a: 'Disappointing Affirmation' },
-  { q: 'Some risks are accepted. Others are scheduled for Thursday.', a: 'Disappointing Affirmation' },
-  { q: 'The day is manageable in theory, which is where many good things live.', a: 'Disappointing Affirmation' },
-  { q: 'There is no shame in asking for clarification, only in receiving three versions.', a: 'Disappointing Affirmation' },
-  { q: 'Your resilience is impressive. The workflow remains unconcerned.', a: 'Disappointing Affirmation' },
-  { q: 'One day this will be lessons learned. Today it is just learning.', a: 'Disappointing Affirmation' },
-  { q: 'The spreadsheet is not sentient, but it does appear to have preferences.', a: 'Disappointing Affirmation' },
-  { q: 'You can be both professional and mildly alarmed.', a: 'Disappointing Affirmation' },
-  { q: 'The suspense is due at close of business, a phrase doing a lot of emotional work.', a: 'Disappointing Affirmation' }
+const WITTY_AFFIRMATIONS = [
+  { q: 'You are doing your best, and unfortunately that is still due today.', a: 'Witty Affirmation' },
+  { q: 'Some meetings could have been emails, but this one aspired to be a spreadsheet.', a: 'Witty Affirmation' },
+  { q: 'Your inbox believes in you more than you believe in inbox zero.', a: 'Witty Affirmation' },
+  { q: 'Progress is progress, even when it arrives wearing a suspiciously familiar problem.', a: 'Witty Affirmation' },
+  { q: 'Not every fire is yours to put out, but somehow the smoke knows your name.', a: 'Witty Affirmation' },
+  { q: 'Today is full of opportunities to lower expectations with grace.', a: 'Witty Affirmation' },
+  { q: 'You cannot control everything. Conveniently, several systems have already proven that.', a: 'Witty Affirmation' },
+  { q: 'Every deadline is a chance to discover which assumptions were decorative.', a: 'Witty Affirmation' },
+  { q: 'You are not behind. You are participating in a dynamic schedule environment.', a: 'Witty Affirmation' },
+  { q: 'The requirement was unclear, but at least everyone is equally confident.', a: 'Witty Affirmation' },
+  { q: 'You have survived every confusing email thread so far, which is technically resilience.', a: 'Witty Affirmation' },
+  { q: 'Mistakes are how we learn. Documentation is how we remember who learned.', a: 'Witty Affirmation' },
+  { q: 'Your calendar is not a moral document, even if it is judging you.', a: 'Witty Affirmation' },
+  { q: 'A clean handoff is possible, and today we honor that possibility from afar.', a: 'Witty Affirmation' },
+  { q: 'Some action items are just hopes wearing bullet points.', a: 'Witty Affirmation' },
+  { q: 'The process may be broken, but it is broken consistently, and that is data.', a: 'Witty Affirmation' },
+  { q: 'You are enough. The attachment was not.', a: 'Witty Affirmation' },
+  { q: 'Clarity may arrive later, possibly after the decision.', a: 'Witty Affirmation' },
+  { q: 'If at first you do not succeed, check whether the requirement changed overnight.', a: 'Witty Affirmation' },
+  { q: 'Your best is valid, even when the portal times out.', a: 'Witty Affirmation' },
+  { q: 'The task expanded to fill the available anxiety.', a: 'Witty Affirmation' },
+  { q: 'You are one well-named file away from temporary peace.', a: 'Witty Affirmation' },
+  { q: 'Today may not be the day, but it is certainly a day.', a: 'Witty Affirmation' },
+  { q: 'The path forward is clear, except for the path and the forward part.', a: 'Witty Affirmation' },
+  { q: 'You cannot win them all, but you can rename the draft and try again.', a: 'Witty Affirmation' },
+  { q: 'Confidence is quiet. The spreadsheet with fourteen tabs is not.', a: 'Witty Affirmation' },
+  { q: 'You are allowed to grow at the speed of available staffing.', a: 'Witty Affirmation' },
+  { q: 'Today, let enough be enough, unless Legal has comments.', a: 'Witty Affirmation' },
+  { q: 'The perfect answer may exist, but the suspense is doing excellent work.', a: 'Witty Affirmation' },
+  { q: 'You can do hard things, and apparently also the same hard thing again.', a: 'Witty Affirmation' },
+  { q: 'This too shall pass, possibly through three coordination rounds.', a: 'Witty Affirmation' },
+  { q: 'A small win is still a win, especially if nobody schedules a follow-up.', a: 'Witty Affirmation' },
+  { q: 'Your scope is growing, and it seems very comfortable here.', a: 'Witty Affirmation' },
+  { q: 'The good news is there is a process. The other news is also the process.', a: 'Witty Affirmation' },
+  { q: 'You are not procrastinating; you are allowing the requirement to mature.', a: 'Witty Affirmation' },
+  { q: 'Every shared drive contains at least one folder named final, and none of them are.', a: 'Witty Affirmation' },
+  { q: 'Your question is valid, even if the answer requires a governance body.', a: 'Witty Affirmation' },
+  { q: 'You have enough time, provided nothing else happens. Something else will happen.', a: 'Witty Affirmation' },
+  { q: 'The status is green because the slide needed a color.', a: 'Witty Affirmation' },
+  { q: 'Today you may confuse movement with progress, but at least there will be minutes.', a: 'Witty Affirmation' },
+  { q: 'Your draft has potential, which is what people say before comments arrive.', a: 'Witty Affirmation' },
+  { q: 'The file naming convention is aspirational, and so are we.', a: 'Witty Affirmation' },
+  { q: 'Your patience is a renewable resource, but procurement lead time is not.', a: 'Witty Affirmation' },
+  { q: 'If the answer feels obvious, there may be a clause hiding nearby.', a: 'Witty Affirmation' },
+  { q: 'You are making progress, even if the progress is discovering more work.', a: 'Witty Affirmation' },
+  { q: 'The agenda was ambitious. Reality submitted a nonconcurrence.', a: 'Witty Affirmation' },
+  { q: 'The email found you because hiding was not in the acquisition plan.', a: 'Witty Affirmation' },
+  { q: 'You are not lost; you are conducting market research on possible directions.', a: 'Witty Affirmation' },
+  { q: 'Sometimes the milestone is simply learning who owns the milestone.', a: 'Witty Affirmation' },
+  { q: 'A well-placed caveat can be the load-bearing wall of a briefing.', a: 'Witty Affirmation' },
+  { q: 'You may not have alignment, but you do have a recurring meeting.', a: 'Witty Affirmation' },
+  { q: 'The answer is in the policy, near several other answers with different vibes.', a: 'Witty Affirmation' },
+  { q: 'The week is young, and somehow already asking for a decision memo.', a: 'Witty Affirmation' },
+  { q: 'It is not a setback. It is a chance to update the tracker again.', a: 'Witty Affirmation' },
+  { q: 'You have done harder things, though few with this many attachments.', a: 'Witty Affirmation' },
+  { q: 'Today, may your suspense dates be real and your stakeholders reachable.', a: 'Witty Affirmation' },
+  { q: 'The approval chain is long, but so is your capacity for polite follow-up.', a: 'Witty Affirmation' },
+  { q: 'You are the right person for the job, according to whoever forwarded it.', a: 'Witty Affirmation' },
+  { q: 'The plan is coming together, mostly in the sense that it is now in one document.', a: 'Witty Affirmation' },
+  { q: 'Not all heroes wear capes. Some update version control and hope.', a: 'Witty Affirmation' },
+  { q: 'The system is down, which is a form of stakeholder feedback.', a: 'Witty Affirmation' },
+  { q: 'You cannot automate judgment, but you can automate a little suffering.', a: 'Witty Affirmation' },
+  { q: 'The final review is rarely final, but the optimism is charming.', a: 'Witty Affirmation' },
+  { q: 'You are closer than you were, unless the baseline moved.', a: 'Witty Affirmation' },
+  { q: 'Some risks are accepted. Others are scheduled for Thursday.', a: 'Witty Affirmation' },
+  { q: 'The day is manageable in theory, which is where many good things live.', a: 'Witty Affirmation' },
+  { q: 'There is no shame in asking for clarification, only in receiving three versions.', a: 'Witty Affirmation' },
+  { q: 'Your resilience is impressive. The workflow remains unconcerned.', a: 'Witty Affirmation' },
+  { q: 'One day this will be lessons learned. Today it is just learning.', a: 'Witty Affirmation' },
+  { q: 'The spreadsheet is not sentient, but it does appear to have preferences.', a: 'Witty Affirmation' },
+  { q: 'You can be both professional and mildly alarmed.', a: 'Witty Affirmation' },
+  { q: 'The suspense is due at close of business, a phrase doing a lot of emotional work.', a: 'Witty Affirmation' },
+  { q: 'You brought clarity to the call, and the call has decided to circle back.', a: 'Witty Affirmation' },
+  { q: 'Today is a great day to make a decision, or at least schedule its pre-brief.', a: 'Witty Affirmation' },
+  { q: 'The file is organized, which means the chaos has accepted supervision.', a: 'Witty Affirmation' },
+  { q: 'You are not overwhelmed. You are conducting full-spectrum task awareness.', a: 'Witty Affirmation' },
+  { q: 'A crisp question can do what three meetings only promised.', a: 'Witty Affirmation' },
+  { q: 'The tracker is not judging you. It is merely presenting evidence.', a: 'Witty Affirmation' },
+  { q: 'You have range: strategy, execution, and finding the attachment everyone missed.', a: 'Witty Affirmation' },
+  { q: 'Some answers are in the regulation. Others are in the inbox from someone named Dave.', a: 'Witty Affirmation' },
+  { q: 'The briefing is almost final, a status best understood as weather.', a: 'Witty Affirmation' },
+  { q: 'You are building momentum, even if momentum currently has review comments.', a: 'Witty Affirmation' },
+  { q: 'A good note today can save a future you from archaeological research.', a: 'Witty Affirmation' },
+  { q: 'You can be calm and still aggressively version-control the truth.', a: 'Witty Affirmation' },
+  { q: 'The requirement is evolving, which is a polite way of saying pack snacks.', a: 'Witty Affirmation' },
+  { q: 'Your professionalism remains intact, despite repeated exposure to Reply All.', a: 'Witty Affirmation' },
+  { q: 'The path is narrow, but so is the font on the acquisition plan.', a: 'Witty Affirmation' },
+  { q: 'The good idea survived coordination, which means it may be unusually sturdy.', a: 'Witty Affirmation' },
+  { q: 'You are one clear citation away from becoming briefly unstoppable.', a: 'Witty Affirmation' },
+  { q: 'The process has layers, and somehow you are the person with the map.', a: 'Witty Affirmation' },
+  { q: 'Every clean decision starts with someone bravely deleting an unnecessary paragraph.', a: 'Witty Affirmation' },
+  { q: 'You have not missed the obvious. The obvious was hiding behind local policy.', a: 'Witty Affirmation' },
+  { q: 'A concise email is a public service, and today you may be civic-minded.', a: 'Witty Affirmation' },
+  { q: 'The meeting had outcomes, which already puts it ahead of several historical precedents.', a: 'Witty Affirmation' },
+  { q: 'Your calm tone is doing important load-bearing work.', a: 'Witty Affirmation' },
+  { q: 'The question is simple. The answer brought friends.', a: 'Witty Affirmation' },
+  { q: 'Today, may your assumptions be documented before they become folklore.', a: 'Witty Affirmation' },
+  { q: 'You cannot control the portal, but you can outclass it emotionally.', a: 'Witty Affirmation' },
+  { q: 'The draft is improving, which is suspicious but welcome.', a: 'Witty Affirmation' },
+  { q: 'You are making progress at the exact speed of stakeholder availability.', a: 'Witty Affirmation' },
+  { q: 'Somewhere in this folder structure, hope has a file path.', a: 'Witty Affirmation' },
+  { q: 'You are not behind. The baseline is simply enjoying cardio.', a: 'Witty Affirmation' },
+  { q: 'The plan is defensible, which is better than decorative.', a: 'Witty Affirmation' },
+  { q: 'Your ability to find the right clause is becoming a personality trait.', a: 'Witty Affirmation' },
+  { q: 'The day has moving parts, and you have at least located several of them.', a: 'Witty Affirmation' },
+  { q: 'A little structure can make even a chaotic ask behave in public.', a: 'Witty Affirmation' },
+  { q: 'You are allowed to be proud of a clean table of contents.', a: 'Witty Affirmation' }
 ];
 let lastHeroQuoteKey = '';
 let lastAffirmationKey = '';
@@ -3197,10 +3236,10 @@ function setHeroQuote(quote, source) {
   const refreshBtn = document.getElementById('hero-quote-refresh');
   if (!textEl || !authorEl || !sourceEl || !quote) return;
   textEl.textContent = quote.q || quote.content || '';
-  authorEl.textContent = quote.a || quote.author || 'Unknown';
+  authorEl.textContent = heroQuoteMode === 'affirmation' ? 'AcqVault original' : (quote.a || quote.author || 'Unknown');
   sourceEl.textContent = source || 'curated';
-  if (labelEl) labelEl.textContent = heroQuoteMode === 'affirmation' ? 'Disappointing Affirmation' : 'Leadership Signal';
-  if (refreshBtn) refreshBtn.textContent = heroQuoteMode === 'affirmation' ? 'New affirmation' : 'New quote';
+  if (labelEl) labelEl.textContent = heroQuoteMode === 'affirmation' ? 'Witty Affirmation' : 'Leadership Signal';
+  if (refreshBtn) refreshBtn.textContent = heroQuoteMode === 'affirmation' ? 'New witty line' : 'New quote';
 }
 function nextFallbackQuote() {
   const quote = randomItem(HERO_QUOTES, lastHeroQuoteKey);
@@ -3208,7 +3247,7 @@ function nextFallbackQuote() {
   setHeroQuote(quote, 'curated');
 }
 function nextAffirmation() {
-  const affirmation = randomItem(DISAPPOINTING_AFFIRMATIONS, lastAffirmationKey);
+  const affirmation = randomItem(WITTY_AFFIRMATIONS, lastAffirmationKey);
   lastAffirmationKey = quoteKey(affirmation);
   setHeroQuote(affirmation, 'original');
 }
