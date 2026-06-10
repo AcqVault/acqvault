@@ -590,6 +590,11 @@ body.work-mode .source-tiles-section{display:none;}
 .part-tile{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-md);cursor:pointer;border:none;background:transparent;text-align:left;transition:all 0.12s;width:100%;}
 .part-tile:hover{background:var(--off);}
 .part-tile.active{background:var(--accent-soft);}
+.part-tile-parent{margin-top:4px;background:rgba(0,102,204,0.045);border:1px solid rgba(0,102,204,0.08);}
+.part-tile-parent:first-child{margin-top:0;}
+.part-tile-parent .part-tile-label{font-weight:760;color:var(--ink);}
+.part-tile-child{padding-left:20px;}
+.part-tile-child .part-tile-num{color:var(--muted2);}
 .part-tile-num{font-size:11px;font-weight:700;color:var(--accent);min-width:28px;flex-shrink:0;font-variant-numeric:tabular-nums;}
 .part-tile-label{font-size:12px;color:var(--muted);line-height:1.3;}
 .part-tile.active .part-tile-label{color:var(--ink);font-weight:500;}
@@ -1836,6 +1841,28 @@ function getStickyOffset() {
 function renderPartsGrid(source) {
   const grid  = document.getElementById('parts-grid');
   const parts = PARTS_BY_SOURCE[source] || [];
+  if (source === 'category-management') {
+    const active = (key) => browseActivePart === key && browseSrc === source;
+    const parent = (key, num, label) => `<button type="button" class="part-tile part-tile-parent${active(key) ? ' active' : ''}"
+      data-part="${key}" data-label="${esc(label)}" aria-pressed="${active(key)}"
+      onclick="selectCategoryGuidePart(this,'${key}',this.dataset.label)">
+      <span class="part-tile-num">${num}</span>
+      <span class="part-tile-label">${esc(label)}</span>
+    </button>`;
+    const child = ([num, label]) => `<button type="button" class="part-tile part-tile-child${active(num) ? ' active' : ''}"
+      data-part="${num}" data-label="${esc(label)}" aria-pressed="${active(num)}"
+      onclick="selectCategoryGuidePart(this,'${num}',this.dataset.label)">
+      <span class="part-tile-num">${num}</span>
+      <span class="part-tile-label">${esc(label)}</span>
+    </button>`;
+    grid.innerHTML = [
+      parent('1', 'I', 'Overview'),
+      child([2, 'Buying Pathway']),
+      parent('category-management', 'II', 'Category Management'),
+      ...parts.filter(([num]) => Number(num) >= 3).map(child)
+    ].join('');
+    return;
+  }
   grid.innerHTML = parts.map(([num, label]) => {
     const active = browseActivePart === num && browseSrc === source;
     return `<button type="button" class="part-tile${active ? ' active' : ''}"
@@ -2114,6 +2141,7 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
         if ((String(partNum) === '1' && /^Simple Procurements$/i.test(line)) ||
             (String(partNum) === '2' && /^Category Management$/i.test(line))) {
           skippingGuideGraphicText = false;
+          if (String(partNum) === '2') return;
         } else {
           return;
         }
@@ -2278,6 +2306,50 @@ function displayPartForSource(source, part) {
   const n = Number(part);
   if (source === 'r-dfars' && Number.isFinite(n) && n > 0 && n < 200) return String(n + 200);
   return String(part);
+}
+
+function buildCategoryManagementLanding() {
+  const categories = (PARTS_BY_SOURCE['category-management'] || []).filter(([num]) => Number(num) >= 3);
+  return `
+    <div class="br-header">
+      <span class="br-source-badge" style="background:#e0f2fe;color:#075985">Category Management Buying Guide</span>
+      <div class="br-part-num">Parent Section</div>
+      <div class="br-part-title">Category Management</div>
+      <div class="br-meta"><span>${categories.length} category pathways</span><span class="br-meta-dot"></span><span>Browse a category from the left panel</span></div>
+    </div>
+    <div class="br-section">
+      <div class="br-body">
+        <p class="br-p">The guide groups the category-specific pathway primers under this parent section. Choose a category in the left panel to review its vehicles table, resources, pathway pointers, market research notes, and SIN references.</p>
+        <div class="cm-native-visual">
+          <div class="cm-spend-wrap">
+            <table class="cm-spend-table">
+              <thead><tr><th>Category Pathway</th><th>What You’ll Find</th></tr></thead>
+              <tbody>
+                ${categories.map(([num, label]) => `<tr><td>${esc(label)}</td><td>Vehicles table, resources, pathway pointers, market research and pricing data, and special item numbers.</td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div class="cm-native-caption"><strong>Category Management section</strong><span>Parent grouping from the Category Management Buying Guide</span></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectCategoryGuidePart(tile, partKey, partLabel) {
+  if (/^\d+$/.test(String(partKey))) {
+    return selectPart(tile, Number(partKey), partLabel);
+  }
+  browseActivePart = partKey;
+  document.querySelectorAll('.part-tile').forEach(t => {
+    const active = t.dataset.part === partKey;
+    t.classList.toggle('active', active);
+    t.setAttribute('aria-pressed', String(active));
+  });
+  const reader = document.getElementById('browse-reader-inner');
+  if (partKey === 'category-management') {
+    reader.innerHTML = buildCategoryManagementLanding();
+    requestAnimationFrame(scrollBrowseReaderToTop);
+  }
 }
 
 async function selectPart(tile, partNum, partLabel) {
