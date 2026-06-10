@@ -469,6 +469,13 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .mode-btn-short{display:none;}
 .mode-btn.active{background:var(--accent);color:#fff;font-weight:750;box-shadow:0 2px 12px rgba(0,102,204,0.3);border-color:var(--accent);}
 .mode-btn:hover:not(.active){color:var(--accent);background:rgba(0,102,204,0.07);border-color:rgba(0,102,204,0.14);}
+.browse-source-picker{position:relative;display:flex;min-width:0;}
+.browse-source-picker .mode-btn{width:100%;}
+.browse-source-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:260;min-width:286px;padding:8px;border:1px solid rgba(0,102,204,0.14);border-radius:14px;background:#fff;box-shadow:0 18px 45px rgba(15,37,61,0.16);display:none;}
+.browse-source-menu.open{display:block;}
+.browse-source-menu button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;border:none;background:transparent;border-radius:10px;padding:10px 11px;cursor:pointer;text-align:left;color:var(--ink2);font-size:13px;font-weight:750;}
+.browse-source-menu button:hover{background:var(--accent-soft);color:var(--accent);}
+.browse-source-menu small{font-size:10px;font-weight:800;letter-spacing:0.055em;text-transform:uppercase;color:var(--muted2);}
 .hero-source-strip{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;padding:8px 8px 7px;border-top:1px solid rgba(0,102,204,0.09);color:var(--muted2);font-size:11.5px;}
 .hero-live-label{display:inline-flex;align-items:center;gap:6px;color:var(--ink3);font-weight:650;margin-right:2px;}
 .hero-live-dot{width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,0.12);}
@@ -683,6 +690,13 @@ body.work-mode .source-tiles-section{display:none;}
 .cm-spend-table td{vertical-align:top;padding:13px 14px;border-top:1px solid var(--line2);font-size:13px;line-height:1.45;color:var(--ink2);}
 .cm-spend-table td:first-child{width:22%;font-weight:800;color:var(--ink);background:#f8fafc;}
 .cm-spend-table tr:nth-child(even) td:not(:first-child){background:#fbfdff;}
+.cm-vehicle-table td:first-child{width:15%;font-weight:850;color:var(--cm-txt);background:#f0f9ff;}
+.cm-vehicle-table td:nth-child(2){width:31%;font-weight:760;color:var(--ink);}
+.cm-vehicle-table td:nth-child(4){width:12%;font-weight:760;color:var(--muted);}
+.cm-category-index{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:18px 0 26px;}
+.cm-category-index button{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line2);background:#fff;border-radius:10px;padding:12px 13px;text-align:left;cursor:pointer;color:var(--ink);font-size:13.5px;font-weight:760;transition:border-color .15s,background .15s,color .15s;}
+.cm-category-index button:hover{background:var(--accent-soft);border-color:rgba(0,102,204,0.2);color:var(--accent);}
+.cm-category-index span{font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2);}
 .br-figure{margin:26px 0 32px;border:1px solid var(--line2);border-radius:14px;background:var(--white);overflow:hidden;box-shadow:0 8px 28px rgba(0,66,153,0.06);}
 .br-figure img{display:block;width:100%;height:auto;background:#fff;}
 .br-figure figcaption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-top:1px solid var(--line2);font-size:12px;font-weight:650;color:var(--muted);}
@@ -1022,6 +1036,7 @@ body.work-mode #quick-links{margin-top:0;}
   .source-tiles-section{padding:24px 16px;}
   .source-tiles-grid{grid-template-columns:1fr 1fr;gap:10px;}
   .src-tile{padding:16px 14px;min-height:200px;grid-template-rows:34px 42px minmax(58px,auto) auto;}
+  .cm-category-index{grid-template-columns:1fr;}
   .results-inner,.fulltext-inner{padding:0 16px 56px;}
   .filter-bar{padding:10px 16px;margin:0 -16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
   .filter-group,.filter-group-wide{flex:0 0 auto;flex-wrap:nowrap;}
@@ -1333,7 +1348,15 @@ body.work-mode #quick-links{margin-top:0;}
     <div class="hero-command-dock" aria-label="Search modes and live sources">
       <div class="mode-toggle">
         <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
-        <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" onclick="setMode('browse')">⊞ <span class="mode-btn-long">Browse by Regulation &amp; Part</span><span class="mode-btn-short">Browse</span></button>
+        <div class="browse-source-picker">
+          <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="menu" aria-expanded="false" onclick="toggleBrowseSourceMenu(event)">⊞ <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
+          <div class="browse-source-menu" id="browse-source-menu" role="menu" aria-label="Browse by source or regulation">
+            <button type="button" role="menuitem" onclick="chooseBrowseSource('rfo')"><span>RFO</span><small>Live</small></button>
+            <button type="button" role="menuitem" onclick="chooseBrowseSource('r-dfars')"><span>R-DFARS</span><small>Live</small></button>
+            <button type="button" role="menuitem" onclick="chooseBrowseSource('far-companion')"><span>FAR Companion</span><small>Live</small></button>
+            <button type="button" role="menuitem" onclick="chooseBrowseSource('category-management')"><span>Category Management Buying Guide</span><small>Live</small></button>
+          </div>
+        </div>
         <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
       </div>
       <div class="hero-source-strip" aria-label="Live sources">
@@ -1772,6 +1795,36 @@ let browseSrc        = 'rfo';
 let browseActivePart = null;
 let debounceTimer    = null;
 
+function closeBrowseSourceMenu() {
+  const menu = document.getElementById('browse-source-menu');
+  const btn = document.getElementById('mode-browse');
+  if (menu) menu.classList.remove('open');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+function toggleBrowseSourceMenu(event) {
+  event?.stopPropagation();
+  const menu = document.getElementById('browse-source-menu');
+  const btn = document.getElementById('mode-browse');
+  if (!menu || !btn) return;
+  const open = !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+function chooseBrowseSource(source) {
+  closeBrowseSourceMenu();
+  setMode('browse');
+  setBrowseSource(source);
+}
+
+document.addEventListener('click', (event) => {
+  if (!event.target.closest?.('.browse-source-picker')) closeBrowseSourceMenu();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeBrowseSourceMenu();
+});
+
 // ── NAV OFFSET ────────────────────────────────────────────────────────────────
 function adjustNavForAboutBar() {
   const bar = document.getElementById('about-bar');
@@ -1786,6 +1839,7 @@ window.addEventListener('resize', adjustNavForAboutBar);
 
 // ── MODE SWITCHING ────────────────────────────────────────────────────────────
 function setMode(mode) {
+  closeBrowseSourceMenu();
   currentMode = mode;
   document.body.classList.toggle('work-mode', mode !== 'search' || Boolean(document.getElementById('search-input')?.value.trim()));
   const hero = document.getElementById('hero');
@@ -2010,6 +2064,117 @@ function categoryGuideSpendTableHTML() {
   </div>`;
 }
 
+const CATEGORY_VEHICLE_TABLES = {
+  '3': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Facilities Reduction Program (FRP)', 'N/A', 'USACE'],
+    ['Tier 3', 'Building Maintenance & Operations (BMO)', 'Building Maintenance and Operations Buyer’s Guide', 'GSA'],
+    ['Tier 3', 'OASIS+ Facilities Domain', 'OASIS+ Buyer’s Guide', 'GSA'],
+    ['Tier 3', 'Maintenance Repair Facility Supplies Generation 2 (MRFS2)', 'MRFS2 How To', 'GSA'],
+    ['Tier 3', 'GSA Global Supply', 'GSA Global Supply FAQs', 'GSA'],
+    ['Tier 2', 'GSA MAS - Facilities & Construction', 'Construction-Related Services MAS Ordering Guide (GSA 2024)', 'GSA']
+  ],
+  '4': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Human Capital and Training Solutions (HCaTS)', 'HCaTS Ordering Guide', 'GSA'],
+    ['Tier 3', 'USA Learning', 'N/A', 'OPM'],
+    ['Tier 2', 'GSA MAS - Human Capital', 'N/A', 'GSA']
+  ],
+  '5': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Maintenance Repair Facility Supplies Generation 2 (MRFS2)', 'Maintenance Repair Facility Supplies Generation 2', 'GSA'],
+    ['Tier 3', 'GSA Global Supply', 'GSA Global Supply', 'GSA'],
+    ['Tier 3', 'DLA eCAT', 'N/A', 'DLA'],
+    ['Tier 2', 'GSA MAS - Industrial Products & Services', 'MAS Desk Reference', 'GSA'],
+    ['Tier 2', 'VA Federal Supply Schedules', 'N/A', 'VA'],
+    ['Tier 2', 'DLA eProcurement', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Special Operational Equipment (SOE)', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Fire and Emergency Services Equipment (FESE)', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Troop Support Tier 2 Contracts', 'N/A', 'DLA'],
+    ['Tier 1', 'Treasury Tier 1 Precious Metals', 'N/A', 'Treasury']
+  ],
+  '6': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', '8(a) STARS III', 'Industry partners, master contract, and pricing', 'GSA'],
+    ['Tier 3', 'Alliant 2', 'Ordering guide, industry partners, and pricing list', 'GSA'],
+    ['Tier 3', 'Digital Market', 'Ordering guide, vendor list, awarded contracts, and pricing', 'Army'],
+    ['Tier 3', 'COMSATCOM', 'Complex Commercial SATCOM Solutions and contractor listing/pricing', 'GSA'],
+    ['Tier 3', 'EIS', 'GSA EIS Ordering Guide, Fair Opportunity Ordering Guide, Partner Guide, and Service Guide', 'GSA'],
+    ['Tier 3', 'MAS IT', 'MAS Ordering Guide and MAS Buyer Websites and Tools', 'GSA'],
+    ['Tier 3', 'SEWP', 'SEWP Tools Guide and vendor contracts/services', 'NASA'],
+    ['Tier 3', 'NITAAC CIO-CS', 'CIO-CS Ordering Guide and contract holders', 'NIH'],
+    ['Tier 3', 'NITAAC CIO-SP3 / CIO-SP3 SB', 'SP3 and SP3 SB ordering guides and contract holders', 'NIH'],
+    ['Tier 3', 'VETS 2', 'N/A', 'GSA'],
+    ['Tier 3', 'Wireless', 'Wireless Mobility Solutions website, guide, contractor listing, and pricing', 'GSA']
+  ],
+  '7': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Medical Surgical Prime Vendor Program (MSPV)', 'Customer Ordering Guide', 'DLA'],
+    ['Tier 3', 'VA Hearing Aids (HRA)', 'Registration & Ordering Guidance', 'VA'],
+    ['Tier 3', 'DOD/VA High-Tech Medical Equipment / Radiology', 'DMMonline and VA website', 'DLA / VA'],
+    ['Tier 3', 'Defense Logistics Agency Medical Electronic Catalog Program (ECAT)', 'Core ECAT User Customer Ordering Guide', 'DLA'],
+    ['Tier 3', 'DOD/VA Joint National Contracts for Generic Pharmaceuticals', 'VA Website', 'VA'],
+    ['Tier 2', 'GSA MAS - Medical', 'MAS Ordering Guide', 'GSA'],
+    ['Tier 2', 'MQS2NG Multiple-Award IDIQ', 'MQS2NG SharePoint Online', 'DHA'],
+    ['Tier 2', 'Pharmaceutical Prime Vendor: DoD / VA', 'Customer use guide and VA website', 'DLA / VA'],
+    ['Tier 2', 'VA Federal Supply Schedule medical schedules', 'Orders not requiring SOW, orders requiring SOW, and open market paths', 'VA'],
+    ['Tier 2', 'AbilityOne / UNICOR / Omnibus IV / Community Care resources', 'How to Buy Products, ordering procedures, and program resources', 'Multiple']
+  ],
+  '8': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Global Supply Requisition Channel - Furniture', 'Global Supply Furniture Training Video', 'GSA'],
+    ['Tier 3', 'Federal Strategic Sourcing Initiative for Office Supplies Fourth Generation (FSSI OS4)', 'FSSI Office Supplies Fourth Generation Buying Guide', 'GSA'],
+    ['Tier 2', 'GSA MAS - Office Management', 'MAS Office Administrative Services Ordering Guide (GSA 2024)', 'GSA'],
+    ['Tier 2', 'GSA MAS - Furniture and Furnishings', 'N/A', 'GSA']
+  ],
+  '9': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Identity Protection Services (IPS)', 'Data Breach Response and Identity Protection Services Ordering Procedures', 'GSA'],
+    ['Tier 3', 'OASIS+', 'OASIS+ Ordering Guide', 'GSA'],
+    ['Tier 2', 'MAS - Professional Services', 'N/A', 'GSA'],
+    ['Tier 2', 'MAS - Human Capital', 'N/A', 'GSA']
+  ],
+  '10': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Reduced Hazard Training Ammunition (RHTA) II', 'RHTA II Ordering Guide', 'DHS'],
+    ['Tier 3', 'Body Armor IV', 'Body Armor Ordering Guide', 'DHS'],
+    ['Tier 3', 'Tactical Communications Equipment and Services II (TacCom II)', 'N/A', 'DHS'],
+    ['Tier 2', 'GSA MAS - Security & Protection', 'N/A', 'GSA']
+  ],
+  '11': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Next Generation Delivery Service (NGDS)', 'NGDS Contracting Officer’s Ordering Guide', 'DLA'],
+    ['Tier 3', 'Direct Delivery Fuels', 'N/A', 'DLA'],
+    ['Tier 3', 'GSA Fleet Vehicle Purchasing', 'How to Buy Vehicles', 'GSA'],
+    ['Tier 3', 'GSA Fleet Vehicle Leasing', 'N/A', 'GSA']
+  ],
+  '12': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'City Pair Program (CPP)', 'N/A', 'GSA'],
+    ['Tier 3', 'Civilian Employee Relocation Resource Center (ERRC) / Employee Relocation Solutions', 'N/A', 'GSA'],
+    ['Tier 3', 'MAS 531110 Long Term Lodging / FedRooms / DoD Preferred', 'N/A', 'GSA'],
+    ['Tier 3', 'U.S. Government Rental Car Program', 'N/A', 'DoD'],
+    ['Tier 3', 'Emergency Lodging Services (ELS)', 'Guidance for Using ELS', 'GSA'],
+    ['Tier 2', 'E-Gov Travel Service (ETS2)', 'N/A', 'GSA'],
+    ['Tier 2', 'Travel Agent Services / Travel Consulting / Lodging Negotiation and Management', 'N/A', 'GSA'],
+    ['Tier 2', 'GO.gov / CHAMP / Long Term Lodging / Rideshare', 'N/A', 'GSA']
+  ]
+};
+
+function categoryGuideVehicleTableHTML(partNum) {
+  const rows = CATEGORY_VEHICLE_TABLES[String(partNum)] || [];
+  if (!rows.length) return '';
+  return `<div class="cm-native-visual">
+    <div class="cm-spend-wrap">
+      <table class="cm-spend-table cm-vehicle-table">
+        <thead><tr><th>Tier</th><th>Program</th><th>Ordering Guide</th><th>Agency Owner</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td>${esc(r[0])}</td><td>${categoryGuideText(r[1], 'category-management')}</td><td>${categoryGuideText(r[2], 'category-management')}</td><td>${esc(r[3])}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="cm-native-caption"><strong>Vehicles Table</strong><span>Adapted from the Category Management Buying Guide</span></div>
+  </div>`;
+}
+
 function categoryGuideVisualAfterLine(source, partNum, line, flags) {
   if (!isCategoryGuide(source)) return '';
   const t = (line || '').trim();
@@ -2020,6 +2185,10 @@ function categoryGuideVisualAfterLine(source, partNum, line, flags) {
   if (String(partNum) === '2' && !flags.spend && /^Categories of Spend Examples$/i.test(t)) {
     flags.spend = true;
     return categoryGuideSpendTableHTML();
+  }
+  if (Number(partNum) >= 3 && !flags.vehicles && /^Vehicles Table$/i.test(t)) {
+    flags.vehicles = true;
+    return categoryGuideVehicleTableHTML(partNum);
   }
   return '';
 }
@@ -2117,6 +2286,7 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
   const blocks = [];
   let current = null;
   let skippingGuideGraphicText = false;
+  let skippingGuideVehicleText = false;
 
   function flush() {
     if (current && current.text.trim()) blocks.push(current.text.trim());
@@ -2129,6 +2299,18 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
     if (isBrowsePageNumberLine(line)) return;
 
     if (source === 'category-management') {
+      if (Number(partNum) >= 3 && /^Types of Vehicles\b/i.test(line)) {
+        flush();
+        skippingGuideVehicleText = true;
+        return;
+      }
+      if (skippingGuideVehicleText) {
+        if (/^Resources$/i.test(line)) {
+          skippingGuideVehicleText = false;
+        } else {
+          return;
+        }
+      }
       if (String(partNum) === '1' && /^Simple\s+Other than Simple$/i.test(line)) {
         skippingGuideGraphicText = true;
         return;
@@ -2320,16 +2502,8 @@ function buildCategoryManagementLanding() {
     <div class="br-section">
       <div class="br-body">
         <p class="br-p">The guide groups the category-specific pathway primers under this parent section. Choose a category in the left panel to review its vehicles table, resources, pathway pointers, market research notes, and SIN references.</p>
-        <div class="cm-native-visual">
-          <div class="cm-spend-wrap">
-            <table class="cm-spend-table">
-              <thead><tr><th>Category Pathway</th><th>What You’ll Find</th></tr></thead>
-              <tbody>
-                ${categories.map(([num, label]) => `<tr><td>${esc(label)}</td><td>Vehicles table, resources, pathway pointers, market research and pricing data, and special item numbers.</td></tr>`).join('')}
-              </tbody>
-            </table>
-          </div>
-          <div class="cm-native-caption"><strong>Category Management section</strong><span>Parent grouping from the Category Management Buying Guide</span></div>
+        <div class="cm-category-index" aria-label="Category Management pathways">
+          ${categories.map(([num, label]) => `<button type="button" onclick="selectCategoryGuidePart(document.querySelector('.part-tile[data-part=&quot;${num}&quot;]'),'${num}','${esc(label)}')">${esc(label)}<span>Part ${num}</span></button>`).join('')}
         </div>
       </div>
     </div>`;
