@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 96" width="520" height="96" role="img">
+  <title>AcqVault</title>
+  <!-- Acq -->
+  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="800" font-size="62" fill="#111111" x="0" y="74">Acq</text>
+  <!-- Vault ring mark -->
+  <g transform="translate(128,4)">
+    <!-- outer ring -->
+    <circle cx="44" cy="44" r="44" stroke="#2563EB" stroke-width="7" fill="none"/>
+    <!-- inner ring -->
+    <circle cx="44" cy="44" r="33" stroke="#2563EB" stroke-width="1.5" fill="none"/>
+    <!-- 6 bolts -->
+    <circle cx="44" cy="1"  r="5.5" fill="#2563EB"/>
+    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(60,44,44)"/>
+    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(120,44,44)"/>
+    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(180,44,44)"/>
+    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(240,44,44)"/>
+    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(300,44,44)"/>
+    <!-- V -->
+    <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="800" font-size="50" fill="#2563EB" text-anchor="middle" x="44" y="62">V</text>
+  </g>
+  <!-- ault — right edge of ring: 128+44+44+3.5=219.5, +natural gap ~0.5 = 220 -->
+  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="800" font-size="62" fill="#111111" x="220" y="74">ault</text>
+</svg>
