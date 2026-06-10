@@ -443,6 +443,10 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .hero-quote-refresh{border:none;background:rgba(255,255,255,0.65);border:1px solid rgba(0,102,204,0.14);border-radius:999px;padding:4px 9px;color:var(--accent);font-size:10.5px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;cursor:pointer;transition:background .15s,transform .15s;}
 .hero-quote-refresh:hover{background:#fff;transform:translateY(-1px);}
 .hero-quote-source{font-family:'SF Mono','Menlo','Consolas',monospace;font-size:10px;color:var(--muted2);}
+.hero-quote-modes{display:inline-flex;align-items:center;gap:3px;margin-bottom:12px;padding:3px;border:1px solid rgba(0,102,204,0.14);border-radius:999px;background:rgba(255,255,255,0.62);box-shadow:0 1px 8px rgba(0,66,153,0.04);}
+.hero-quote-mode{border:none;background:transparent;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:background .15s,color .15s,box-shadow .15s;}
+.hero-quote-mode.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(0,102,204,0.16);}
+.hero-quote-mode:hover:not(.active){background:var(--accent-soft);color:var(--accent);}
 
 /* Search */
 .search-container{position:relative;z-index:2;width:100%;max-width:660px;margin:0 auto 16px;animation:hero-rise 0.85s 0.14s cubic-bezier(0.16,1,0.3,1) both;}
@@ -957,6 +961,8 @@ body.work-mode #quick-links{margin-top:0;}
   .hero-quote{max-width:340px;}
   .hero-quote-text{font-size:14.5px;line-height:1.5;}
   .hero-quote-meta{font-size:10.5px;gap:7px;}
+  .hero-quote-modes{margin-bottom:10px;}
+  .hero-quote-mode{font-size:9.5px;padding:4px 7px;}
   .search-container{margin-bottom:12px;}
   .search-bar{height:52px;border-radius:16px;padding:0 13px;gap:8px;}
   #search-input{font-size:16px;min-width:0;}
@@ -1254,7 +1260,11 @@ body.work-mode #quick-links{margin-top:0;}
       <p class="hero-eyebrow"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0;"></span>Air Force Acquisition Research</p>
       <h1 class="hero-headline">The research library<br><em>the acquisition community</em><br>deserves.</h1>
       <div class="hero-quote" aria-live="polite">
-        <div class="hero-quote-label">Leadership Signal</div>
+        <div class="hero-quote-label" id="hero-quote-label">Leadership Signal</div>
+        <div class="hero-quote-modes" role="group" aria-label="Quote type">
+          <button type="button" class="hero-quote-mode active" data-quote-mode="quote" aria-pressed="true">Quote</button>
+          <button type="button" class="hero-quote-mode" data-quote-mode="affirmation" aria-pressed="false">Affirmation</button>
+        </div>
         <p class="hero-quote-text" id="hero-quote-text">Before you achieve, everyone will ask you why you’re working so hard. After you achieve, everyone will remind you how lucky you got.</p>
         <div class="hero-quote-meta">
           <span class="hero-quote-author" id="hero-quote-author">AcqVault</span>
@@ -1304,13 +1314,13 @@ body.work-mode #quick-links{margin-top:0;}
     <div class="source-tiles-grid">
       <div class="src-tile src-tile-rfo" onclick="setMode('browse');setBrowseSource('rfo')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('rfo');}">
         <div class="src-tile-badge">RFO</div>
-        <div class="src-tile-name">Revolutionary FAR Overhaul</div>
+        <div class="src-tile-name">Revolutionary Overhaul</div>
         <div class="src-mini src-mini-dark"><span class="src-mini-mark">R</span><span class="src-mini-word">RFO<small>Acquisition.gov</small></span></div>
         <div class="src-tile-action">Browse RFO →</div>
       </div>
       <div class="src-tile src-tile-dfars" onclick="setMode('browse');setBrowseSource('r-dfars')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('r-dfars');}">
         <div class="src-tile-badge">R-DFARS</div>
-        <div class="src-tile-name">Defense FAR Supplement</div>
+        <div class="src-tile-name">R-DFARS</div>
         <div class="src-mini"><span class="src-mini-mark">D</span><span class="src-mini-word">R-DFARS<small>DoD deviation guide</small></span></div>
         <div class="src-tile-action">Browse R-DFARS →</div>
       </div>
@@ -1400,7 +1410,7 @@ body.work-mode #quick-links{margin-top:0;}
       <p class="fulltext-sub">Each document compiles all indexed content in sequential part order, with an AcqVault watermark. Updated monthly alongside the index.</p>
     </div>
     <div class="fulltext-cards">
-      <div class="fulltext-card"><span class="fulltext-card-tag ft-tag-rfo">RFO</span><div class="fulltext-card-name">Revolutionary FAR Overhaul</div><div class="fulltext-card-meta"><span>43 parts covered</span><span>Parts 1–53</span><span>Federal Register rules</span><span>Updated monthly</span></div><a class="fulltext-dl-btn" href="https://raw.githubusercontent.com/AcqVault/acqvault/main/pdfs/rfo.pdf" download="AcqVault-RFO.pdf" target="_blank" rel="noopener">↓ Download PDF</a></div>
+      <div class="fulltext-card"><span class="fulltext-card-tag ft-tag-rfo">RFO</span><div class="fulltext-card-name">Revolutionary Overhaul</div><div class="fulltext-card-meta"><span>43 parts covered</span><span>Parts 1–53</span><span>Federal Register rules</span><span>Updated monthly</span></div><a class="fulltext-dl-btn" href="https://raw.githubusercontent.com/AcqVault/acqvault/main/pdfs/rfo.pdf" download="AcqVault-RFO.pdf" target="_blank" rel="noopener">↓ Download PDF</a></div>
       <div class="fulltext-card"><span class="fulltext-card-tag ft-tag-rdfars">R-DFARS</span><div class="fulltext-card-name">R-DFARS</div><div class="fulltext-card-meta"><span>46 parts covered</span><span>Parts 201–252</span><span>DoD deviation documents</span><span>Updated monthly</span></div><a class="fulltext-dl-btn" href="https://raw.githubusercontent.com/AcqVault/acqvault/main/pdfs/r-dfars.pdf" download="AcqVault-R-DFARS.pdf" target="_blank" rel="noopener">↓ Download PDF</a></div>
       <div class="fulltext-card"><span class="fulltext-card-tag ft-tag-fc">FAR Companion</span><div class="fulltext-card-name">FAR Companion</div><div class="fulltext-card-meta"><span>27 parts covered</span><span>Parts 1–52</span><span>Version 2.0 — FAR Council</span><span>Updated monthly</span></div><a class="fulltext-dl-btn" href="https://raw.githubusercontent.com/AcqVault/acqvault/main/pdfs/far-companion.pdf" download="AcqVault-FAR-Companion.pdf" target="_blank" rel="noopener">↓ Download PDF</a></div>
     </div>
@@ -1422,7 +1432,7 @@ body.work-mode #quick-links{margin-top:0;}
     <h2 class="sec-head fade-up">The sites you open every day.</h2>
     <p class="sec-sub sec-sub-dark fade-up">The most-used tools in the acquisition professional's daily workflow — one click away.</p>
     <div class="quick-links-grid">
-      <a class="ql-card fade-up" href="https://www.acquisition.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚖</div><span class="ql-chip">Regs</span></div><div class="ql-name">Acquisition.gov</div><div class="ql-desc">FAR, DFARS, agency supplements, and acquisition policy — the authoritative regulatory source.</div><div class="ql-brand ql-brand-dark ql-brand-acq"><span class="ql-seal"></span><span class="ql-wordmark">Acquisition.gov</span></div><div class="ql-action"><span>Primary source</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up" href="https://www.acquisition.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚖</div><span class="ql-chip">Regs</span></div><div class="ql-name">Acquisition.gov</div><div class="ql-desc">RFO, R-DFARS, FAR Companion, and acquisition policy — the authoritative regulatory source.</div><div class="ql-brand ql-brand-dark ql-brand-acq"><span class="ql-seal"></span><span class="ql-wordmark">Acquisition.gov</span></div><div class="ql-action"><span>Primary source</span><span class="ql-arrow">↗</span></div></a>
       <a class="ql-card fade-up d1" href="https://sam.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⌕</div><span class="ql-chip">Awards</span></div><div class="ql-name">SAM.gov</div><div class="ql-desc">Contract opportunities, solicitations, entity registrations, and federal award data.</div><div class="ql-brand ql-brand-lightblue ql-brand-sam"><span class="bars"><span></span><span></span><span></span></span><span class="ql-wordmark">SAM<b>.</b>gov</span></div><div class="ql-action"><span>Opportunities</span><span class="ql-arrow">↗</span></div></a>
       <a class="ql-card fade-up d2" href="https://kthq.org/index.html" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">▦</div><span class="ql-chip">Tools</span></div><div class="ql-name">KT HQ</div><div class="ql-desc">Knowledge tools, templates, and acquisition resources for contracting professionals.</div><div class="ql-brand ql-brand-dark ql-brand-kthq"><span class="ql-wordmark">KTHQ<small>ContractingHQ</small></span></div><div class="ql-action"><span>Templates</span><span class="ql-arrow">↗</span></div></a>
       <a class="ql-card fade-up" href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚡</div><span class="ql-chip">Protests</span></div><div class="ql-name">GAO Search Decisions</div><div class="ql-desc">Search bid protest decisions and dockets — the practical GAO entry point for contracting research.</div><div class="ql-brand ql-brand-dark ql-brand-gao"><span class="ql-wordmark">GAO<small>U.S. Government Accountability Office</small></span></div><div class="ql-action"><span>Dockets</span><span class="ql-arrow">↗</span></div></a>
@@ -1440,7 +1450,7 @@ body.work-mode #quick-links{margin-top:0;}
     <p class="sec-sub sec-sub-dark fade-up">Navigating acquisition.gov tabs, Federal Register alerts, and scattered PDFs shouldn't be your job. Researching what they say should be.</p>
     <div class="feats">
       <div class="feat feat-clickable fade-up" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-demo"><div class="feat-demo-search"><span class="feat-demo-dot"></span><span class="feat-demo-line"></span><span class="feat-demo-line short"></span></div></div><div class="feat-desc">Search across the RFO, R-DFARS, and FAR Companion simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div><div class="feat-cta">Try search →</div></div>
-      <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);"><div class="feat-icon">⊞</div><div class="feat-title">Browse by Part</div><div class="feat-demo"><div class="feat-demo-grid"><span class="feat-demo-cell">1</span><span class="feat-demo-cell">6</span><span class="feat-demo-cell">15</span><span class="feat-demo-cell">52</span></div></div><div class="feat-desc">Navigate by FAR part number across all sources. Select a source, pick a part, and read every indexed section with inline citations — no search query needed.</div><div class="feat-cta">Try browse →</div></div>
+      <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);"><div class="feat-icon">⊞</div><div class="feat-title">Browse by Part</div><div class="feat-demo"><div class="feat-demo-grid"><span class="feat-demo-cell">1</span><span class="feat-demo-cell">6</span><span class="feat-demo-cell">15</span><span class="feat-demo-cell">52</span></div></div><div class="feat-desc">Navigate by acquisition part number across all sources. Select a source, pick a part, and read every indexed section with inline citations — no search query needed.</div><div class="feat-cta">Try browse →</div></div>
       <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);"><div class="feat-icon">↓</div><div class="feat-title">Full Text PDFs</div><div class="feat-demo"><div class="feat-demo-pdf"><span class="feat-demo-doc"></span><span class="feat-demo-bars"><span class="feat-demo-line"></span><span class="feat-demo-line short"></span><span class="feat-demo-line"></span></span></div></div><div class="feat-desc">Download pre-generated, AcqVault-watermarked PDFs of the full RFO, R-DFARS, and FAR Companion. Updated monthly from the live index.</div><div class="feat-cta">Download PDFs →</div></div>
       <div class="feat fade-up"><div class="feat-stat-num">3</div><div class="feat-stat-label">Sources indexed</div><div class="feat-stat-track"><div class="feat-stat-fill blue" style="width:78%;"></div></div><div class="feat-stat-meta"><span>Live index</span><span>Monthly refresh</span></div><div class="feat-desc">RFO, R-DFARS, and FAR Companion coverage. Updated monthly from official source material where available.</div></div>
       <div class="feat fade-up d1"><div class="feat-stat-num">3</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-stat-track"><div class="feat-stat-fill green" style="width:57%;"></div></div><div class="feat-stat-meta"><span>3 live</span><span>4 queued</span></div><div class="feat-desc">RFO, R-DFARS, and FAR Companion are live now. DAF Contracting Compass is offline while indexing is rebuilt; DoD FMR, AFI 63-138, and AFI 63-Series are on deck.</div></div>
@@ -1457,9 +1467,9 @@ body.work-mode #quick-links{margin-top:0;}
     <p class="sec-sub sec-sub-light fade-up">AcqVault pulls from official, primary sources — not summaries, not interpretations.</p>
     <p class="srcs-label fade-up" style="transition-delay:0.06s;">Live now</p>
     <div class="srcs-3 fade-up" style="transition-delay:0.1s;">
-      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">Revolutionary FAR Overhaul</div><div class="src-desc">Proposed and interim rules from the Federal Register API — the live, official rulemaking record for FAR reform.</div><span class="src-pill src-live">● Live now</span></div>
-      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">R-DFARS</div><div class="src-desc">DoD deviation documents sourced directly from acquisition.gov — one document per FAR part, 46 parts covered.</div><span class="src-pill src-live">● Live now</span></div>
-      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">FAR Companion</div><div class="src-desc">The FAR Council's non-regulatory practice guide, organized parallel to each FAR section. Version 2.0, covering 27 parts.</div><span class="src-pill src-live">● Live now</span></div>
+      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">Revolutionary Overhaul</div><div class="src-desc">Proposed and interim rules from the Federal Register API — the live, official rulemaking record for the RFO.</div><span class="src-pill src-live">● Live now</span></div>
+      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">R-DFARS</div><div class="src-desc">DoD deviation documents sourced directly from acquisition.gov — one document per R-DFARS part, 46 parts covered.</div><span class="src-pill src-live">● Live now</span></div>
+      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">FAR Companion</div><div class="src-desc">The FAR Companion practice guide, organized in parallel with the RFO structure. Version 2.0, covering 27 parts.</div><span class="src-pill src-live">● Live now</span></div>
     </div>
     <p class="srcs-label fade-up" style="transition-delay:0.14s;">Next up</p>
     <div class="srcs fade-up" style="transition-delay:0.18s;">
@@ -2969,7 +2979,7 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 }
 
 // ── TYPING ANIMATION ──────────────────────────────────────────────────────────
-const QUERIES=[["sole source justification","47"],["RFO 6.302-1 only one source","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["FMR volume 3 payments","34"],["AFI 63-138 services acquisition","12"],["other than full and open competition","34"],["undefinitized contract action","12"]];
+const QUERIES=[["sole source justification","47"],["RFO 6.302-1 only one source","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["DoD FMR volume 3 payments","34"],["AFI 63-138 services acquisition","12"],["other than full and open competition","34"],["undefinitized contract action","12"]];
 let qi=0,ci=0,del=false;
 function tick(){const el=document.getElementById('btyping'),rc=document.getElementById('bcount');if(!el)return;const[q,cnt]=QUERIES[qi];if(!del){el.textContent=q.slice(0,ci+1);ci++;if(ci===q.length){del=true;rc.textContent=cnt+' results';setTimeout(tick,2200);return;}setTimeout(tick,52);}else{el.textContent=q.slice(0,ci-1);ci--;if(ci===0){del=false;rc.textContent='— results';qi=(qi+1)%QUERIES.length;setTimeout(tick,380);return;}setTimeout(tick,26);}}
 setTimeout(tick,900);
@@ -2983,7 +2993,7 @@ async function loadNewsFeed() {
   const el = document.getElementById('news-feed-list');
   if (!el) return;
   try {
-    // Fetch latest FAR-related documents from Federal Register API
+    // Fetch latest RFO-related documents from Federal Register API
     const res = await fetch(
       'https://www.federalregister.gov/api/v1/documents.json?conditions[agencies][]=defense-acquisition-regulations-system&conditions[agencies][]=office-of-the-under-secretary-of-defense-for-acquisition-and-sustainment&per_page=5&order=newest&fields[]=title&fields[]=publication_date&fields[]=type&fields[]=document_number&fields[]=html_url',
       { mode: 'cors' }
@@ -3027,7 +3037,7 @@ async function loadNewsFeed() {
       <a class="news-feed-item" href="https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system" target="_blank" rel="noopener">
         <div class="nfi-date">Live</div>
         <div class="nfi-body">
-          <div class="nfi-title">View latest FAR & DFARS updates</div>
+          <div class="nfi-title">View latest RFO / R-DFARS updates</div>
           <div class="nfi-meta"><span class="nfi-type nfi-type-other">Federal Register</span></div>
         </div>
       </a>
@@ -3054,92 +3064,98 @@ const HERO_QUOTES = [
   { q: 'Plans are worthless, but planning is everything.', a: 'Dwight D. Eisenhower' },
   { q: 'What you do has far greater impact than what you say.', a: 'Stephen Covey' },
   { q: 'Management is doing things right; leadership is doing the right things.', a: 'Peter Drucker' },
-  { q: 'The most effective way to do it is to do it.', a: 'Amelia Earhart' },
   { q: 'Well done is better than well said.', a: 'Benjamin Franklin' },
   { q: 'Action expresses priorities.', a: 'Mahatma Gandhi' },
-  { q: 'The secret of getting ahead is getting started.', a: 'Mark Twain' },
   { q: 'It always seems impossible until it is done.', a: 'Nelson Mandela' },
-  { q: 'Success is not final, failure is not fatal: it is the courage to continue that counts.', a: 'Winston Churchill' },
   { q: 'You do not rise to the level of your goals. You fall to the level of your systems.', a: 'James Clear' },
-  { q: 'A good plan violently executed now is better than a perfect plan next week.', a: 'George S. Patton' },
   { q: 'Never confuse motion with action.', a: 'Benjamin Franklin' },
-  { q: 'Quality means doing it right when no one is looking.', a: 'Henry Ford' },
-  { q: 'The reward for work well done is the opportunity to do more.', a: 'Jonas Salk' },
   { q: 'If everything is a priority, nothing is a priority.', a: 'Unknown' },
-  { q: 'Clarity is kindness.', a: 'Brene Brown' },
   { q: 'Slow is smooth, and smooth is fast.', a: 'Military proverb' },
   { q: 'Trust is built in drops and lost in buckets.', a: 'Kevin Plank' },
   { q: 'The obstacle is the way.', a: 'Marcus Aurelius' },
-  { q: 'Be so good they cannot ignore you.', a: 'Steve Martin' },
   { q: 'The main thing is to keep the main thing the main thing.', a: 'Stephen Covey' },
   { q: 'Decisions are easy when values are clear.', a: 'Roy Disney' },
-  { q: 'Do the hard jobs first. The easy jobs will take care of themselves.', a: 'Dale Carnegie' },
-  { q: 'Make it simple, but significant.', a: 'Don Draper' },
   { q: 'Excellence is not an act, but a habit.', a: 'Will Durant' },
-  { q: 'Leadership is practiced not so much in words as in attitude and in actions.', a: 'Harold S. Geneen' },
-  { q: 'The art of leadership is saying no, not saying yes.', a: 'Tony Blair' },
-  { q: 'Example is not the main thing in influencing others. It is the only thing.', a: 'Albert Schweitzer' },
   { q: 'Do what you can, with what you have, where you are.', a: 'Theodore Roosevelt' },
   { q: 'The best way out is always through.', a: 'Robert Frost' },
-  { q: 'Energy and persistence conquer all things.', a: 'Benjamin Franklin' },
-  { q: 'The future depends on what you do today.', a: 'Mahatma Gandhi' },
-  { q: 'Small deeds done are better than great deeds planned.', a: 'Peter Marshall' },
   { q: 'Luck is what happens when preparation meets opportunity.', a: 'Seneca' },
-  { q: 'If you want to go fast, go alone. If you want to go far, go together.', a: 'African proverb' },
-  { q: 'A leader is one who knows the way, goes the way, and shows the way.', a: 'John C. Maxwell' },
-  { q: 'The function of leadership is to produce more leaders, not more followers.', a: 'Ralph Nader' },
-  { q: 'Innovation distinguishes between a leader and a follower.', a: 'Steve Jobs' },
   { q: 'The price of greatness is responsibility.', a: 'Winston Churchill' },
-  { q: 'Courage is grace under pressure.', a: 'Ernest Hemingway' },
   { q: 'A goal without a plan is just a wish.', a: 'Antoine de Saint-Exupery' },
-  { q: 'The way to get started is to quit talking and begin doing.', a: 'Walt Disney' },
-  { q: 'Simplicity is the ultimate sophistication.', a: 'Leonardo da Vinci' },
-  { q: 'Perfection is not attainable, but if we chase perfection we can catch excellence.', a: 'Vince Lombardi' },
   { q: 'Pressure is a privilege.', a: 'Billie Jean King' },
-  { q: 'The harder the conflict, the greater the triumph.', a: 'George Washington' },
-  { q: 'An ounce of performance is worth pounds of promises.', a: 'Mae West' },
-  { q: 'You miss one hundred percent of the shots you do not take.', a: 'Wayne Gretzky' },
-  { q: 'What gets measured gets managed.', a: 'Peter Drucker' },
-  { q: 'The essence of strategy is choosing what not to do.', a: 'Michael Porter' },
-  { q: 'Fall in love with the problem, not the solution.', a: 'Uri Levine' },
-  { q: 'The best leaders are lifelong learners.', a: 'Unknown' },
-  { q: 'Hard choices, easy life. Easy choices, hard life.', a: 'Jerzy Gregorek' },
-  { q: 'Consistency compounds.', a: 'Unknown' },
   { q: 'Own the outcome, not just the task.', a: 'Unknown' },
   { q: 'Prepared people make difficult work look simple.', a: 'Unknown' },
   { q: 'The meeting is not the work. The work is the work.', a: 'Unknown' },
   { q: 'A calm mind is a strategic advantage.', a: 'Unknown' },
   { q: 'Speed matters, but direction matters more.', a: 'Unknown' },
   { q: 'Competence is quiet. It does not need a parade.', a: 'Unknown' },
-  { q: 'Raise the standard, then build the system to meet it.', a: 'Unknown' },
   { q: 'If the mission matters, the details matter.', a: 'Unknown' },
-  { q: 'Strong teams make the right thing easy to do.', a: 'Unknown' },
-  { q: 'The best time to fix the process is before the deadline.', a: 'Unknown' },
-  { q: 'Professionalism is how you act when no one is grading you.', a: 'Unknown' },
   { q: 'A clear requirement is a gift to everyone downstream.', a: 'Unknown' },
-  { q: 'Do not mistake urgency for importance.', a: 'Unknown' },
-  { q: 'The work you document today saves the team tomorrow.', a: 'Unknown' },
   { q: 'Readiness is built before it is needed.', a: 'Unknown' },
-  { q: 'Good judgment is usually built one hard lesson at a time.', a: 'Unknown' },
-  { q: 'A leader absorbs confusion and returns clarity.', a: 'Unknown' },
-  { q: 'The best teams argue honestly and execute together.', a: 'Unknown' },
-  { q: 'If it matters every month, build a system for it.', a: 'Unknown' }
+  { q: 'A leader absorbs confusion and returns clarity.', a: 'Unknown' }
+];
+const DISAPPOINTING_AFFIRMATIONS = [
+  { q: 'You are doing your best, and unfortunately that is still due today.', a: 'Disappointing Affirmation' },
+  { q: 'Some meetings could have been emails, but this one aspired to be a spreadsheet.', a: 'Disappointing Affirmation' },
+  { q: 'Your inbox believes in you more than you believe in inbox zero.', a: 'Disappointing Affirmation' },
+  { q: 'Progress is progress, even when it arrives wearing a suspiciously familiar problem.', a: 'Disappointing Affirmation' },
+  { q: 'Not every fire is yours to put out, but somehow the smoke knows your name.', a: 'Disappointing Affirmation' },
+  { q: 'Today is full of opportunities to lower expectations with grace.', a: 'Disappointing Affirmation' },
+  { q: 'You cannot control everything. Conveniently, several systems have already proven that.', a: 'Disappointing Affirmation' },
+  { q: 'Every deadline is a chance to discover which assumptions were decorative.', a: 'Disappointing Affirmation' },
+  { q: 'You are not behind. You are participating in a dynamic schedule environment.', a: 'Disappointing Affirmation' },
+  { q: 'The requirement was unclear, but at least everyone is equally confident.', a: 'Disappointing Affirmation' },
+  { q: 'You have survived every confusing email thread so far, which is technically resilience.', a: 'Disappointing Affirmation' },
+  { q: 'Mistakes are how we learn. Documentation is how we remember who learned.', a: 'Disappointing Affirmation' },
+  { q: 'Your calendar is not a moral document, even if it is judging you.', a: 'Disappointing Affirmation' },
+  { q: 'A clean handoff is possible, and today we honor that possibility from afar.', a: 'Disappointing Affirmation' },
+  { q: 'Some action items are just hopes wearing bullet points.', a: 'Disappointing Affirmation' },
+  { q: 'The process may be broken, but it is broken consistently, and that is data.', a: 'Disappointing Affirmation' },
+  { q: 'You are enough. The attachment was not.', a: 'Disappointing Affirmation' },
+  { q: 'Clarity may arrive later, possibly after the decision.', a: 'Disappointing Affirmation' },
+  { q: 'If at first you do not succeed, check whether the requirement changed overnight.', a: 'Disappointing Affirmation' },
+  { q: 'Your best is valid, even when the portal times out.', a: 'Disappointing Affirmation' },
+  { q: 'The task expanded to fill the available anxiety.', a: 'Disappointing Affirmation' },
+  { q: 'You are one well-named file away from temporary peace.', a: 'Disappointing Affirmation' },
+  { q: 'Today may not be the day, but it is certainly a day.', a: 'Disappointing Affirmation' },
+  { q: 'The path forward is clear, except for the path and the forward part.', a: 'Disappointing Affirmation' },
+  { q: 'You cannot win them all, but you can rename the draft and try again.', a: 'Disappointing Affirmation' },
+  { q: 'Confidence is quiet. The spreadsheet with fourteen tabs is not.', a: 'Disappointing Affirmation' },
+  { q: 'You are allowed to grow at the speed of available staffing.', a: 'Disappointing Affirmation' },
+  { q: 'Today, let enough be enough, unless Legal has comments.', a: 'Disappointing Affirmation' },
+  { q: 'The perfect answer may exist, but the suspense is doing excellent work.', a: 'Disappointing Affirmation' },
+  { q: 'You can do hard things, and apparently also the same hard thing again.', a: 'Disappointing Affirmation' },
+  { q: 'This too shall pass, possibly through three coordination rounds.', a: 'Disappointing Affirmation' },
+  { q: 'A small win is still a win, especially if nobody schedules a follow-up.', a: 'Disappointing Affirmation' }
 ];
 let heroQuoteIndex = 0;
+let heroAffirmationIndex = 0;
+let heroQuoteMode = 'quote';
 function setHeroQuote(quote, source) {
   const textEl = document.getElementById('hero-quote-text');
   const authorEl = document.getElementById('hero-quote-author');
   const sourceEl = document.getElementById('hero-quote-source');
+  const labelEl = document.getElementById('hero-quote-label');
+  const refreshBtn = document.getElementById('hero-quote-refresh');
   if (!textEl || !authorEl || !sourceEl || !quote) return;
   textEl.textContent = quote.q || quote.content || '';
   authorEl.textContent = quote.a || quote.author || 'Unknown';
   sourceEl.textContent = source || 'curated';
+  if (labelEl) labelEl.textContent = heroQuoteMode === 'affirmation' ? 'Disappointing Affirmation' : 'Leadership Signal';
+  if (refreshBtn) refreshBtn.textContent = heroQuoteMode === 'affirmation' ? 'New affirmation' : 'New quote';
 }
 function nextFallbackQuote() {
   heroQuoteIndex = (heroQuoteIndex + 1) % HERO_QUOTES.length;
   setHeroQuote(HERO_QUOTES[heroQuoteIndex], 'curated');
 }
+function nextAffirmation() {
+  heroAffirmationIndex = (heroAffirmationIndex + 1) % DISAPPOINTING_AFFIRMATIONS.length;
+  setHeroQuote(DISAPPOINTING_AFFIRMATIONS[heroAffirmationIndex], 'original');
+}
 async function loadHeroQuote() {
+  if (heroQuoteMode === 'affirmation') {
+    nextAffirmation();
+    return;
+  }
   try {
     const res = await fetch('https://zenquotes.io/api/random');
     if (!res.ok) throw new Error('Quote API unavailable');
@@ -3151,7 +3167,19 @@ async function loadHeroQuote() {
     nextFallbackQuote();
   }
 }
+function setHeroQuoteMode(mode) {
+  heroQuoteMode = mode === 'affirmation' ? 'affirmation' : 'quote';
+  document.querySelectorAll('.hero-quote-mode').forEach(btn => {
+    const active = btn.dataset.quoteMode === heroQuoteMode;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+  loadHeroQuote();
+}
 (function initHeroQuote() {
+  document.querySelectorAll('.hero-quote-mode').forEach(btn => {
+    btn.addEventListener('click', () => setHeroQuoteMode(btn.dataset.quoteMode));
+  });
   const btn = document.getElementById('hero-quote-refresh');
   if (btn) btn.addEventListener('click', loadHeroQuote);
   loadHeroQuote();
@@ -3419,13 +3447,13 @@ function stRenderAwards(awards) {
 
   // Acronym glossary: TERM -> [expansion, optional note]
   const ACRONYMS = {
-    FAR: ['Federal Acquisition Regulation', 'Being replaced by the RFO'],
-    DFARS: ['Defense Federal Acquisition Regulation Supplement', 'Superseded by the R-DFARS'],
-    'R-DFARS': ['Revolutionary DFARS', 'DoD deviation set replacing the DFARS'],
-    PGI: ['Procedures, Guidance, and Information', 'Companion to the DFARS'],
+    FAR: ['Legacy Federal Acquisition Regulation', 'Use the RFO for current AcqVault research'],
+    DFARS: ['Legacy Defense acquisition supplement', 'Use R-DFARS for current AcqVault research'],
+    'R-DFARS': ['R-DFARS', 'DoD deviation set replacing legacy DFARS material'],
+    PGI: ['Procedures, Guidance, and Information', 'Legacy companion guidance'],
     DAF: ['Department of the Air Force'],
     DoD: ['Department of Defense'],
-    RFO: ['Revolutionary FAR Overhaul', 'The overhauled FAR — EO 14275'],
+    RFO: ['Revolutionary Overhaul', 'The overhauled FAR — EO 14275'],
     SAT: ['Simplified Acquisition Threshold', '$350,000 since Oct 2025 (RFO 2.101)'],
     MPT: ['Micro-Purchase Threshold', '$15,000 since Oct 2025 (RFO 2.101)'],
     SAP: ['Simplified Acquisition Procedures', 'RFO Part 13'],
@@ -3468,7 +3496,7 @@ function stRenderAwards(awards) {
     CLIN: ['Contract Line Item Number', 'FAR 4.1003'],
     SLIN: ['Subline Item Number'],
     ACRN: ['Accounting Classification Reference Number'],
-    UCA: ['Undefinitized Contract Action', 'DFARS 217.74'],
+    UCA: ['Undefinitized Contract Action', 'R-DFARS / legacy DFARS coverage'],
     ECP: ['Engineering Change Proposal'],
     EVM: ['Earned Value Management', 'FAR 34.2'],
     EVMS: ['Earned Value Management System'],
@@ -3569,7 +3597,7 @@ function stRenderAwards(awards) {
               </div>
               <div class="thr-scope-note" id="thr-scope-note"></div>
               <div class="thr-list" id="thr-list"></div>
-              <div class="thr-foot">Per the FY2025 inflation adjustment (FAR Case 2024-001 / FAC 2025-06, effective Oct 1, 2025) carried into the RFO; DoD deviations live in the R-DFARS. Always verify against the live regulation &amp; any class deviations before acting. The RFO may revise these.</div>
+              <div class="thr-foot">Per the FY2025 inflation adjustment effective Oct. 1, 2025 and carried into the RFO; DoD deviations live in the R-DFARS. Always verify against the live regulation &amp; any class deviations before acting. The RFO may revise these.</div>
             </div>
           </div>
           <div class="tk-col">
@@ -3594,7 +3622,7 @@ function stRenderAwards(awards) {
                 <div class="tk-card-icon">\u2726</div>
                 <div class="tk-card-titles">
                   <div class="tk-card-title">What\u2019s new</div>
-                  <div class="tk-card-sub">Latest FAR / DFARS rulemaking</div>
+                  <div class="tk-card-sub">Latest RFO / R-DFARS rulemaking</div>
                 </div>
               </div>
               <div class="wn-meta" id="wn-meta">
@@ -3889,7 +3917,7 @@ function stRenderAwards(awards) {
       if (badge) { badge.textContent = '\u2014'; badge.classList.add('zero'); }
       list.innerHTML = `<a class="wn-item" href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">
         <div class="wn-date"><b>\u2192</b>FR</div>
-        <div class="wn-body"><div class="wn-title">Open the latest FAR &amp; DFARS rules on the Federal Register</div>
+        <div class="wn-body"><div class="wn-title">Open the latest RFO / R-DFARS rules on the Federal Register</div>
         <div class="wn-tags"><span class="wn-type wn-type-other">Federal Register</span></div></div></a>`;
     } finally {
       // stamp this visit AFTER computing "new" against the previous one
