@@ -6,6 +6,21 @@
 <title>AcqVault — AF Acquisition Research</title>
 <link rel="icon" href="assets/acqvault-favicon-blue.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/acqvault-favicon-blue.svg">
+<meta name="description" content="AcqVault — free full-text search across the Revolutionary FAR Overhaul (RFO), R-DFARS deviations, FAR Companion, and Category Management guidance. Built for the Air Force acquisition community.">
+<link rel="canonical" href="https://acqvault.com/">
+<meta name="theme-color" content="#eef2f7">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://acqvault.com/">
+<meta property="og:site_name" content="AcqVault">
+<meta property="og:title" content="AcqVault — AF Acquisition Research">
+<meta property="og:description" content="Full-text search across the RFO, R-DFARS, FAR Companion, and Category Management guidance. Built for the acquisition community.">
+<meta property="og:image" content="https://acqvault.com/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AcqVault — AF Acquisition Research">
+<meta name="twitter:description" content="Full-text search across the RFO, R-DFARS, FAR Companion, and Category Management guidance.">
+<meta name="twitter:image" content="https://acqvault.com/assets/og-card.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style id="acqvault-widgets-css">
@@ -574,7 +589,7 @@ body.work-mode .source-tiles-section{display:none;}
 /* Result cards with source-color left borders */
 .result-card{background:var(--white);border-radius:var(--r-md);padding:16px 18px 16px 20px;cursor:pointer;border:1px solid transparent;border-left:3px solid transparent;transition:all 0.15s cubic-bezier(0.16,1,0.3,1);animation:card-in 0.3s cubic-bezier(0.16,1,0.3,1) both;}
 @keyframes card-in{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
-.result-card:hover{background:var(--off);border-color:var(--line2);}
+.result-card:hover{background:#fff;border-color:var(--line2);box-shadow:0 0 0 1px rgba(16,24,40,0.02),0 1px 2px rgba(16,24,40,0.05),0 10px 20px -10px rgba(16,24,40,0.14);transform:translateY(-1px);}
 .result-card.active{background:rgba(0,102,204,0.04);border-color:rgba(0,102,204,0.18);border-left-color:var(--accent);}
 .result-card[data-source="rfo"]:hover,.result-card[data-source="rfo"].active{border-left-color:var(--rfo-solid);}
 .result-card[data-source="r-dfars"]:hover,.result-card[data-source="r-dfars"].active{border-left-color:var(--dfars-solid);}
@@ -1278,6 +1293,36 @@ body.work-mode #quick-links{margin-top:0;}
 }
 
 </style>
+<style id="acqvault-polish-css">
+/* ═══════════════════════════════════════
+   POLISH PASS — selection, ⌘K hint, trust line, skeleton loaders
+   ═══════════════════════════════════════ */
+::selection{background:rgba(0,102,204,0.16);color:var(--ink);}
+::-moz-selection{background:rgba(0,102,204,0.16);color:var(--ink);}
+
+/* ⌘K keyboard hint chip */
+.kbd-hint{display:inline-flex;align-items:center;gap:3px;flex-shrink:0;opacity:0.85;transition:opacity 0.15s;}
+.kbd-hint kbd{font-family:'SF Mono','Menlo',monospace;font-size:10.5px;font-weight:600;color:var(--muted);background:var(--off);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:2px 5px;line-height:1.2;min-width:18px;text-align:center;}
+.search-bar:focus-within .kbd-hint{opacity:0;pointer-events:none;}
+.search-bar:has(#search-input:not(:placeholder-shown)) .kbd-hint{display:none;}
+@media (hover:none),(max-width:760px){.kbd-hint{display:none;}}
+
+/* Trust line under search bar */
+.hero-trust{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:8px;margin:-6px auto 14px;font-size:11.5px;font-weight:550;color:var(--muted);letter-spacing:0.01em;font-variant-numeric:tabular-nums;animation:hero-rise 0.85s 0.2s cubic-bezier(0.16,1,0.3,1) both;white-space:nowrap;}
+.hero-trust b{color:var(--ink3);font-weight:700;}
+.hero-trust .ht-sep{color:var(--line);}
+@media (max-width:760px){.hero-trust{font-size:10.5px;gap:6px;margin-bottom:10px;}}
+
+/* Search result skeleton loaders */
+.skel-card{padding:16px 18px 16px 20px;border-radius:var(--r-md);border:1px solid transparent;border-left:3px solid var(--line2);}
+.skel-line{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--off2) 25%,#f3f5f8 37%,var(--off2) 63%);background-size:400% 100%;animation:skel-shimmer 1.2s ease infinite;}
+.skel-tag{width:92px;height:8px;margin-bottom:11px;}
+.skel-title{width:62%;height:13px;margin-bottom:11px;}
+.skel-snippet{width:96%;margin-bottom:7px;}
+.skel-snippet.short{width:74%;margin-bottom:0;}
+@keyframes skel-shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
+@media (prefers-reduced-motion:reduce){.skel-line{animation:none;}}
+</style>
 </head>
 <body>
 
@@ -1379,10 +1424,12 @@ body.work-mode #quick-links{margin-top:0;}
       <div class="search-bar">
         <span class="search-icon">⌕</span>
         <input type="text" id="search-input" placeholder="Search regulations, parts, guidance…" autocomplete="off" spellcheck="false" />
+        <span class="kbd-hint" aria-hidden="true"><kbd id="kbd-meta">⌘</kbd><kbd>K</kbd></span>
         <span class="search-count" id="search-count"></span>
         <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
       </div>
     </div>
+    <div class="hero-trust" id="hero-trust"><b id="ht-docs">2,900+</b>&nbsp;documents<span class="ht-sep">·</span><b id="ht-sources">4</b>&nbsp;sources<span class="ht-sep">·</span><span id="ht-updated">Updated monthly</span></div>
     <div class="hero-command-dock" aria-label="Search modes and live sources">
       <div class="mode-toggle">
         <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
@@ -3107,7 +3154,7 @@ function renderResults(data, query) {
   if (!hits.length) { list.innerHTML = '<div class="no-results"><strong>No results found</strong>Try a different search term or adjust your filters.</div>'; return; }
   list.innerHTML = hits.map(hit => {
     const hl = hit._formatted || hit;
-    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${hit.id}">
+    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${hit.id}" data-source="${esc(hit.source || '')}">
       <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
       <div class="rc-title">${hl.title || hit.title || 'Untitled'}</div>
       ${hit.filename ? `<div class="rc-ref">${hit.filename}</div>` : ''}
@@ -3366,7 +3413,7 @@ async function runSearch(options = {}) {
   if (!q) { deactivateSearch(); return; }
   if (currentMode !== 'search') setMode('search');
   activateSearch({ scrollToTop: !preserveScroll });
-  document.getElementById('results-list').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  document.getElementById('results-list').innerHTML = Array.from({ length: 4 }, () => '<div class="skel-card"><div class="skel-line skel-tag"></div><div class="skel-line skel-title"></div><div class="skel-line skel-snippet"></div><div class="skel-line skel-snippet short"></div></div>').join('');
   try {
     const data = await search(q);
     renderResults(data, q);
@@ -4779,6 +4826,93 @@ function stRenderAwards(awards) {
   else boot();
 })();
 
+</script>
+<script>
+/* ═══════════════════════════════════════
+   POLISH PASS — ⌘K / "/" shortcut + live trust-line stats
+   ═══════════════════════════════════════ */
+(function () {
+  const input = document.getElementById('search-input');
+  if (!input) return;
+  const isMac = /Mac|iP(hone|ad|od)/.test(navigator.platform || '');
+  const metaKbd = document.getElementById('kbd-meta');
+  if (metaKbd && !isMac) metaKbd.textContent = 'Ctrl';
+
+  function focusSearch() {
+    if (document.body.classList.contains('reader-mode')) {
+      const r = document.getElementById('reader-search-input');
+      if (r) { r.focus(); r.select(); return; }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    input.focus({ preventScroll: true });
+    input.select();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      focusSearch();
+      return;
+    }
+    if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      const el = document.activeElement;
+      const typing = el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+      if (!typing) { e.preventDefault(); focusSearch(); }
+    }
+  });
+})();
+
+(function () {
+  const docsEl = document.getElementById('ht-docs');
+  const srcEl  = document.getElementById('ht-sources');
+  const updEl  = document.getElementById('ht-updated');
+  if (!docsEl) return;
+  const CACHE_KEY = 'acqvault:truststats:v1';
+
+  try {
+    const c = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+    if (c && Date.now() - c.t < 3600000) { apply(c.v); return; }
+  } catch (e) {}
+  load();
+
+  async function query(body) {
+    const res = await fetch('/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'search', body })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+    return data;
+  }
+
+  async function load() {
+    let stats = null;
+    try {
+      // Preferred: also pull newest doc for the "Updated" date (needs indexed_at in sortableAttributes)
+      stats = await query({ q: '', limit: 1, facets: ['source'], sort: ['indexed_at:desc'] });
+    } catch (e) {
+      try { stats = await query({ q: '', limit: 0, facets: ['source'] }); }
+      catch (e2) { return; } // keep static fallback text
+    }
+    const v = {
+      total:   stats.estimatedTotalHits || 0,
+      sources: stats.facetDistribution && stats.facetDistribution.source ? Object.keys(stats.facetDistribution.source).length : null,
+      updated: (stats.hits && stats.hits[0] && stats.hits[0].indexed_at) || null
+    };
+    try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), v: v })); } catch (e) {}
+    apply(v);
+  }
+
+  function apply(v) {
+    if (v.total) docsEl.textContent = Number(v.total).toLocaleString();
+    if (v.sources) srcEl.textContent = v.sources;
+    if (v.updated) {
+      const d = new Date(v.updated);
+      if (!isNaN(d)) updEl.textContent = 'Updated ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+  }
+})();
 </script>
 </body>
 </html>
