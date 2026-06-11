@@ -318,6 +318,41 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   .dash-stat-num { font-size: 25px; }
 }
 
+
+/* ── WORDMARK STREAK ANIMATION ── */
+.acqvault-wordmark {
+  background: linear-gradient(
+    90deg,
+    var(--ink) 0%,
+    var(--ink) 20%,
+    #60a5fa 35%,
+    #ffffff 50%,
+    #60a5fa 65%,
+    var(--ink) 80%,
+    var(--ink) 100%
+  );
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: wm-sweep 4.8s cubic-bezier(0.4,0,0.2,1) 0.6s 1 forwards;
+}
+@keyframes wm-sweep {
+  0%   { background-position: 150% 0; }
+  55%  { background-position: -20% 0; }
+  100% { background-position: -20% 0; }
+}
+/* Arc reactor pulse in sync with streak arriving */
+@keyframes arc-pulse {
+  0%,40%  { filter: drop-shadow(0 0 2px #0ea5e9) drop-shadow(0 0 4px #0066CC); }
+  50%     { filter: drop-shadow(0 0 8px #38bdf8) drop-shadow(0 0 16px #0ea5e9) drop-shadow(0 0 28px #0066CC); }
+  65%,100%{ filter: drop-shadow(0 0 2px #0ea5e9) drop-shadow(0 0 4px #0066CC); }
+}
+.hero-brand-title svg {
+  animation: arc-pulse 4.8s cubic-bezier(0.4,0,0.2,1) 0.6s 1 forwards;
+}
+
 </style>
 <style>
 /* ═══════════════════════════════════════
@@ -432,7 +467,7 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 @keyframes hero-rise{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
 .hero.search-active .hero-intro,.hero.browse-active .hero-intro,.hero.fulltext-active .hero-intro{opacity:0;transform:translateY(-14px);max-height:0;overflow:hidden;pointer-events:none;transition:opacity 0.3s ease,transform 0.3s ease,max-height 0.4s ease;}
 
-.hero-brand-title{width:100%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;}
+.hero-brand-title{width:100%;margin:0 auto 0;display:flex;align-items:center;justify-content:center;line-height:1.02;}
 
 .hero-headline{font-size:clamp(42px,5.8vw,68px);font-weight:800;letter-spacing:-0.052em;color:var(--ink);line-height:1.02;margin-bottom:20px;}
 .hero-headline em{font-style:normal;color:var(--accent);-webkit-text-fill-color:var(--accent);}
@@ -1015,7 +1050,7 @@ body.work-mode #quick-links{margin-top:0;}
   .hero.search-active,.hero.browse-active,.hero.fulltext-active{padding:calc(var(--top-chrome) + 14px) 16px 18px;}
   .hero-content{max-width:100%;}
   .hero-intro{margin-bottom:14px;padding-top:10px;}
-  .hero-brand-title{margin-bottom:2px;}
+  .hero-brand-title{width:100%;margin:0 auto 0;display:flex;align-items:center;justify-content:center;line-height:1.02;}
   
   .hero-headline{font-size:clamp(36px,11vw,54px);letter-spacing:-0.045em;line-height:0.98;}
   .hero-sub{font-size:15.5px;line-height:1.55;max-width:330px;}
@@ -1272,7 +1307,7 @@ body.work-mode #quick-links{margin-top:0;}
 <!-- NAV -->
 <nav id="main-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo" aria-label="AcqVault"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28" role="img" aria-label="AcqVault" style="display:block;"><circle cx="50" cy="50" r="45" stroke="#0066CC" stroke-width="5" fill="none"/><circle cx="50" cy="50" r="30" stroke="#0066CC" stroke-width="1.5" fill="none"/><circle cx="50" cy="6" r="3.5" fill="#0066CC"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(60,50,50)"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(120,50,50)"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(180,50,50)"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(240,50,50)"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(300,50,50)"/><text font-family="Inter,system-ui,sans-serif" font-weight="800" font-size="44" fill="#0066CC" text-anchor="middle" x="50" y="65">V</text></svg></a>
+    <a href="/" class="nav-logo" aria-label="AcqVault"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="30" height="30" role="img" aria-label="AcqVault" style="display:block;flex-shrink:0;"><defs>  <radialGradient id="nhub" cx="50%" cy="45%" r="55%">    <stop offset="0%" stop-color="#ffffff"/>    <stop offset="25%" stop-color="#7dd3fc"/>    <stop offset="55%" stop-color="#0ea5e9"/>    <stop offset="100%" stop-color="#0066CC"/>  </radialGradient>  <radialGradient id="narcglow" cx="50%" cy="50%" r="50%">    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>    <stop offset="100%" stop-color="#0066CC" stop-opacity="0"/>  </radialGradient>  <radialGradient id="nbody" cx="40%" cy="35%" r="70%">    <stop offset="0%" stop-color="#3a3f4a"/>    <stop offset="100%" stop-color="#1a1d24"/>  </radialGradient></defs><rect x="4" y="4" width="92" height="92" rx="12" fill="url(#nbody)" stroke="#555" stroke-width="1.5"/><rect x="10" y="10" width="80" height="80" rx="9" fill="none" stroke="#444" stroke-width="1"/><rect x="88" y="26" width="12" height="16" rx="3" fill="#3a3f4a" stroke="#555" stroke-width="1"/><rect x="90" y="29" width="8" height="4" rx="1.5" fill="#606570"/><rect x="90" y="35" width="8" height="4" rx="1.5" fill="#606570"/><rect x="88" y="56" width="12" height="16" rx="3" fill="#3a3f4a" stroke="#555" stroke-width="1"/><rect x="90" y="59" width="8" height="4" rx="1.5" fill="#606570"/><rect x="90" y="65" width="8" height="4" rx="1.5" fill="#606570"/><circle cx="47" cy="50" r="33" fill="#252830" stroke="#555" stroke-width="1.5"/><circle cx="47" cy="50" r="26" fill="none" stroke="#606570" stroke-width="1"/><line x1="47" y1="24" x2="47" y2="37" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="47" y1="76" x2="47" y2="63" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="21" y1="50" x2="34" y2="50" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="73" y1="50" x2="60" y2="50" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="28" y1="31" x2="37" y2="40" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="66" y1="31" x2="57" y2="40" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="28" y1="69" x2="37" y2="60" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="66" y1="69" x2="57" y2="60" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><circle cx="47" cy="50" r="15" fill="url(#narcglow)" opacity="0.6"/><circle cx="47" cy="50" r="11" fill="#0a0e1a" stroke="#0ea5e9" stroke-width="1.5"/><circle cx="47" cy="50" r="8" fill="url(#nhub)"/><circle cx="47" cy="50" r="4" fill="#e0f2fe" opacity="0.9"/><circle cx="45.5" cy="48.5" r="1.5" fill="white" opacity="0.9"/></svg></a>
     <div class="nav-center">
       <a href="#features">Features</a>
       <a href="#sources">Sources</a>
@@ -1322,7 +1357,7 @@ body.work-mode #quick-links{margin-top:0;}
     <div class="hero-center-col">
     <div class="hero-content">
     <div class="hero-intro">
-      <div class="hero-brand-title" aria-label="AcqVault"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 415 100" role="img" aria-label="AcqVault" style="display:block;width:min(460px,76vw);height:auto;"><text font-family="Inter,system-ui,sans-serif" font-weight="700" font-size="76" fill="#0d1117" x="0" y="82">Acq</text><g transform="translate(155,0)"><circle cx="50" cy="50" r="45" stroke="#0066CC" stroke-width="5" fill="none"/><circle cx="50" cy="50" r="30" stroke="#0066CC" stroke-width="1.5" fill="none"/><circle cx="50" cy="6" r="3.5" fill="#0066CC"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(60,50,50)"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(120,50,50)"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(180,50,50)"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(240,50,50)"/><circle cx="50" cy="6" r="3.5" fill="#0066CC" transform="rotate(300,50,50)"/><text font-family="Inter,system-ui,sans-serif" font-weight="800" font-size="44" fill="#0066CC" text-anchor="middle" x="50" y="65">V</text></g><text font-family="Inter,system-ui,sans-serif" font-weight="700" font-size="76" fill="#0d1117" x="258" y="82">ault</text></svg></div>
+      <div class="hero-brand-title" aria-label="AcqVault"><div style="display:inline-flex;align-items:center;gap:10px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="56" height="56" role="img" aria-label="AcqVault safe" style="display:block;flex-shrink:0;"><defs>  <radialGradient id="hubglow" cx="50%" cy="45%" r="55%">    <stop offset="0%" stop-color="#ffffff"/>    <stop offset="25%" stop-color="#7dd3fc"/>    <stop offset="55%" stop-color="#0ea5e9"/>    <stop offset="100%" stop-color="#0066CC"/>  </radialGradient>  <radialGradient id="arcglow" cx="50%" cy="50%" r="50%">    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9"/>    <stop offset="100%" stop-color="#0066CC" stop-opacity="0"/>  </radialGradient>  <radialGradient id="bodygrad" cx="40%" cy="35%" r="70%">    <stop offset="0%" stop-color="#3a3f4a"/>    <stop offset="100%" stop-color="#1a1d24"/>  </radialGradient>  <radialGradient id="dialgrad" cx="40%" cy="35%" r="70%">    <stop offset="0%" stop-color="#4a5060"/>    <stop offset="100%" stop-color="#252830"/>  </radialGradient>  <filter id="arcreactor" x="-80%" y="-80%" width="260%" height="260%">    <feGaussianBlur stdDeviation="3.5" result="blur"/>    <feComposite in="SourceGraphic" in2="blur" operator="over"/>  </filter>  <filter id="outerglow" x="-50%" y="-50%" width="200%" height="200%">    <feGaussianBlur stdDeviation="2" result="blur"/>    <feComposite in="SourceGraphic" in2="blur" operator="over"/>  </filter></defs><!-- safe body --><rect x="4" y="4" width="92" height="92" rx="12" fill="url(#bodygrad)" stroke="#555" stroke-width="1.5"/><!-- recessed inner panel --><rect x="10" y="10" width="80" height="80" rx="9" fill="none" stroke="#444" stroke-width="1"/><!-- feet --><rect x="18" y="94" width="14" height="7" rx="3" fill="#252830"/><rect x="68" y="94" width="14" height="7" rx="3" fill="#252830"/><!-- hinge bars on right --><rect x="88" y="22" width="12" height="18" rx="3" fill="#3a3f4a" stroke="#555" stroke-width="1"/><rect x="90" y="25" width="8" height="5" rx="1.5" fill="#606570"/><rect x="90" y="31" width="8" height="5" rx="1.5" fill="#606570"/><rect x="88" y="58" width="12" height="18" rx="3" fill="#3a3f4a" stroke="#555" stroke-width="1"/><rect x="90" y="61" width="8" height="5" rx="1.5" fill="#606570"/><rect x="90" y="67" width="8" height="5" rx="1.5" fill="#606570"/><!-- dial outer ring --><circle cx="47" cy="50" r="33" fill="url(#dialgrad)" stroke="#555" stroke-width="1.5"/><!-- dial inner wheel ring --><circle cx="47" cy="50" r="26" fill="none" stroke="#606570" stroke-width="1"/><!-- 8 spokes --><line x1="47" y1="24" x2="47" y2="37" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="47" y1="76" x2="47" y2="63" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="21" y1="50" x2="34" y2="50" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="73" y1="50" x2="60" y2="50" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="28" y1="31" x2="37" y2="40" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="66" y1="31" x2="57" y2="40" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="28" y1="69" x2="37" y2="60" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="66" y1="69" x2="57" y2="60" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><!-- arc reactor outer glow ring --><circle cx="47" cy="50" r="16" fill="url(#arcglow)" filter="url(#outerglow)"/><!-- hub bezel --><circle cx="47" cy="50" r="11" fill="#0a0e1a" stroke="#0ea5e9" stroke-width="1.5"/><!-- arc reactor core --><circle cx="47" cy="50" r="8" fill="url(#hubglow)" filter="url(#arcreactor)"/><!-- inner bright core --><circle cx="47" cy="50" r="4" fill="#e0f2fe" opacity="0.9"/><!-- specular highlight --><circle cx="45.5" cy="48.5" r="1.8" fill="white" opacity="0.95"/></svg><span class="acqvault-wordmark" style="font-family:Inter,system-ui,sans-serif;font-weight:800;font-size:clamp(42px,5.8vw,68px);letter-spacing:-0.052em;color:var(--ink);line-height:1.02;position:relative;display:inline-block;">AcqVault<span class="wm-streak" aria-hidden="true"></span></span></div></div>
       <h1 class="hero-headline">The research library<br><em>the acquisition community</em><br>deserves.</h1>
       <div class="hero-quote" aria-live="polite">
         <div class="hero-quote-chooser">
