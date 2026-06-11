@@ -1,23 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 344 96" width="344" height="96" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 548 112" width="548" height="112" role="img">
   <title>AcqVault</title>
-  <!-- Acq -->
-  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="68" fill="#111111" x="0" y="76">Acq</text>
-  <!-- Vault ring mark -->
-  <g transform="translate(128,4)">
-    <!-- outer ring -->
-    <circle cx="44" cy="44" r="44" stroke="#2563EB" stroke-width="7" fill="none"/>
-    <!-- inner ring -->
-    <circle cx="44" cy="44" r="33" stroke="#2563EB" stroke-width="1.5" fill="none"/>
-    <!-- 6 bolts -->
-    <circle cx="44" cy="1"  r="5.5" fill="#2563EB"/>
-    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(60,44,44)"/>
-    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(120,44,44)"/>
-    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(180,44,44)"/>
-    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(240,44,44)"/>
-    <circle cx="44" cy="1"  r="5.5" fill="#2563EB" transform="rotate(300,44,44)"/>
-    <!-- V -->
-    <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="54" fill="#2563EB" text-anchor="middle" x="44" y="64">V</text>
+  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="78" fill="#111827" x="0" y="84">Acq</text>
+  <g transform="translate(170,6)">
+    <circle cx="50" cy="50" r="47" stroke="#2563EB" stroke-width="8" fill="none"/>
+    <circle cx="50" cy="50" r="34" stroke="#2563EB" stroke-width="2" fill="none"/>
+    <circle cx="50" cy="4" r="5.4" fill="#2563EB"/>
+    <circle cx="50" cy="4" r="5.4" fill="#2563EB" transform="rotate(60,50,50)"/>
+    <circle cx="50" cy="4" r="5.4" fill="#2563EB" transform="rotate(120,50,50)"/>
+    <circle cx="50" cy="4" r="5.4" fill="#2563EB" transform="rotate(180,50,50)"/>
+    <circle cx="50" cy="4" r="5.4" fill="#2563EB" transform="rotate(240,50,50)"/>
+    <circle cx="50" cy="4" r="5.4" fill="#2563EB" transform="rotate(300,50,50)"/>
+    <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="58" fill="#2563EB" text-anchor="middle" x="50" y="69">V</text>
   </g>
-  <!-- ault — right edge of ring: 128+44+44+3.5=219.5, +natural gap ~0.5 = 220 -->
-  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="68" fill="#111111" x="220" y="76">ault</text>
+  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="78" fill="#111827" x="282" y="84">Vault</text>
 </svg>

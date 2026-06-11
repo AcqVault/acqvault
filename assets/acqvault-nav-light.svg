@@ -1,17 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 32" width="192" height="32" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 40" width="192" height="40" role="img">
   <title>AcqVault</title>
-  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="800" font-size="22" fill="#111111" x="0" y="27">Acq</text>
-  <g transform="translate(46,0)">
-    <circle cx="15" cy="14" r="14" stroke="#2563EB" stroke-width="2.6" fill="none"/>
-    <circle cx="15" cy="14" r="10" stroke="#2563EB" stroke-width="0.8" fill="none"/>
-    <circle cx="15" cy="1"  r="1.6" fill="#2563EB"/>
-    <circle cx="15" cy="1"  r="1.6" fill="#2563EB" transform="rotate(60,15,14)"/>
-    <circle cx="15" cy="1"  r="1.6" fill="#2563EB" transform="rotate(120,15,14)"/>
-    <circle cx="15" cy="1"  r="1.6" fill="#2563EB" transform="rotate(180,15,14)"/>
-    <circle cx="15" cy="1"  r="1.6" fill="#2563EB" transform="rotate(240,15,14)"/>
-    <circle cx="15" cy="1"  r="1.6" fill="#2563EB" transform="rotate(300,15,14)"/>
-    <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="800" font-size="16" fill="#2563EB" text-anchor="middle" x="15" y="20">V</text>
+  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="28" fill="#111827" x="0" y="30">Acq</text>
+  <g transform="translate(60,2)">
+    <circle cx="18" cy="18" r="16.8" stroke="#2563EB" stroke-width="2.9" fill="none"/>
+    <circle cx="18" cy="18" r="12.2" stroke="#2563EB" stroke-width="0.75" fill="none"/>
+    <circle cx="18" cy="1.6" r="1.9" fill="#2563EB"/>
+    <circle cx="18" cy="1.6" r="1.9" fill="#2563EB" transform="rotate(60,18,18)"/>
+    <circle cx="18" cy="1.6" r="1.9" fill="#2563EB" transform="rotate(120,18,18)"/>
+    <circle cx="18" cy="1.6" r="1.9" fill="#2563EB" transform="rotate(180,18,18)"/>
+    <circle cx="18" cy="1.6" r="1.9" fill="#2563EB" transform="rotate(240,18,18)"/>
+    <circle cx="18" cy="1.6" r="1.9" fill="#2563EB" transform="rotate(300,18,18)"/>
+    <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="20" fill="#2563EB" text-anchor="middle" x="18" y="25">V</text>
   </g>
-  <!-- ring right edge: 46+15+14+1.3=76.3, +natural gap ~2 = 78 -->
-  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="800" font-size="22" fill="#111111" x="78" y="27">ault</text>
+  <text font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="28" fill="#111827" x="100" y="30">Vault</text>
 </svg>
