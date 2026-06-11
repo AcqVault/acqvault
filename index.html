@@ -666,18 +666,23 @@ body.work-mode .source-tiles-section{display:none;}
 .br-header{margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--line2);}
 
 /* ── PART SEARCH BAR ─────────────────────────────────────────────── */
-.br-part-search{display:flex;align-items:center;gap:9px;background:var(--white);border:1.5px solid rgba(0,102,204,0.18);border-radius:12px;padding:0 14px;height:44px;margin-bottom:24px;transition:border-color .15s,box-shadow .15s;}
+.br-part-search{display:flex;align-items:center;gap:9px;background:var(--white);border:1.5px solid rgba(0,102,204,0.18);border-radius:12px;padding:0 10px 0 14px;height:44px;margin-bottom:24px;transition:border-color .15s,box-shadow .15s;}
 .br-part-search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
 .br-part-search-icon{font-size:15px;color:var(--muted2);flex-shrink:0;line-height:1;}
 .br-part-search-input{flex:1;background:transparent;border:none;outline:none;font-size:14px;color:var(--ink);font-family:inherit;min-width:0;}
 .br-part-search-input::placeholder{color:var(--muted2);}
 .br-part-search-count{font-size:11px;color:var(--muted2);white-space:nowrap;font-variant-numeric:tabular-nums;flex-shrink:0;}
+.br-part-search-nav{display:none;align-items:center;gap:3px;flex-shrink:0;}
+.br-part-search-nav.visible{display:flex;}
+.br-part-search-step{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:1px solid rgba(0,102,204,0.16);border-radius:999px;background:rgba(0,102,204,0.06);color:var(--accent);font-size:13px;font-weight:800;line-height:1;cursor:pointer;transition:background .15s,border-color .15s,color .15s,transform .15s;}
+.br-part-search-step:hover:not(:disabled){background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px);}
+.br-part-search-step:disabled{opacity:.35;cursor:not-allowed;transform:none;}
 .br-part-search-clear{background:transparent;border:none;cursor:pointer;color:var(--muted2);font-size:14px;padding:0;line-height:1;display:none;transition:color .15s;}
 .br-part-search-clear:hover{color:var(--ink);}
 .br-part-search-clear.visible{display:block;}
 .br-section.ps-hidden{display:none;}
-.br-section.ps-match .br-section-heading mark,
-.br-section.ps-match .br-body mark{background:rgba(0,102,204,0.14);color:var(--ink);border-radius:2px;padding:0 1px;}
+.br-part-mark{background:rgba(0,102,204,0.16);color:var(--ink);border-radius:3px;padding:0 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone;transition:background .15s,color .15s,box-shadow .15s;}
+.br-part-mark.active{background:var(--accent);color:#fff;box-shadow:0 0 0 2px rgba(0,102,204,0.18);}
 .br-no-match{text-align:center;padding:48px 0;color:var(--muted);font-size:14px;}
 .br-no-match strong{display:block;font-size:18px;font-weight:700;color:var(--ink3);letter-spacing:-0.02em;margin-bottom:6px;}
 .br-source-badge{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:3px 9px;border-radius:4px;margin-bottom:12px;}
@@ -2577,6 +2582,10 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       <span class="br-part-search-icon" aria-hidden="true">⌕</span>
       <input class="br-part-search-input" id="br-part-search-input" type="text" placeholder="Search within Part ${partNum}…" autocomplete="off" spellcheck="false" aria-label="Search within this part">
       <span class="br-part-search-count" id="br-part-search-count"></span>
+      <span class="br-part-search-nav" id="br-part-search-nav" aria-label="Part search matches">
+        <button type="button" class="br-part-search-step" id="br-part-search-prev" aria-label="Previous match">↑</button>
+        <button type="button" class="br-part-search-step" id="br-part-search-next" aria-label="Next match">↓</button>
+      </span>
       <button type="button" class="br-part-search-clear" id="br-part-search-clear" aria-label="Clear part search">✕</button>
     </div>
     ${tocHTML}
@@ -4920,14 +4929,22 @@ function stRenderAwards(awards) {
   const SEARCH_ID  = 'br-part-search-input';
   const CLEAR_ID   = 'br-part-search-clear';
   const COUNT_ID   = 'br-part-search-count';
+  const NAV_ID     = 'br-part-search-nav';
+  const PREV_ID    = 'br-part-search-prev';
+  const NEXT_ID    = 'br-part-search-next';
   const READER_ID  = 'browse-reader-inner';
 
   let attached = false;
+  let activeIndex = -1;
+  let marks = [];
 
   function attach() {
     const inp   = document.getElementById(SEARCH_ID);
     const clr   = document.getElementById(CLEAR_ID);
     const count = document.getElementById(COUNT_ID);
+    const nav   = document.getElementById(NAV_ID);
+    const prev  = document.getElementById(PREV_ID);
+    const next  = document.getElementById(NEXT_ID);
     if (!inp || attached) return;
     attached = true;
 
@@ -4935,15 +4952,88 @@ function stRenderAwards(awards) {
     clr.addEventListener('click', () => { inp.value = ''; filter(''); clr.classList.remove('visible'); inp.focus(); });
     inp.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        // Jump to first visible match
-        const first = document.querySelector(`#${READER_ID} .br-section.ps-match`);
-        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        e.preventDefault();
+        if (marks.length) activate(e.shiftKey ? activeIndex - 1 : activeIndex + 1);
       }
     });
+    if (prev) prev.addEventListener('click', () => { activate(activeIndex - 1); inp.focus(); });
+    if (next) next.addEventListener('click', () => { activate(activeIndex + 1); inp.focus(); });
+
+    function escapeRegExp(value) {
+      return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function clearMarks(reader) {
+      reader.querySelectorAll('.br-part-mark').forEach(mark => {
+        mark.replaceWith(document.createTextNode(mark.textContent || ''));
+      });
+      reader.normalize();
+      marks = [];
+      activeIndex = -1;
+    }
+
+    function highlightNode(node, regex) {
+      const text = node.nodeValue;
+      regex.lastIndex = 0;
+      if (!text || !regex.test(text)) return 0;
+      regex.lastIndex = 0;
+
+      const frag = document.createDocumentFragment();
+      let lastIndex = 0;
+      let count = 0;
+      text.replace(regex, (match, offset) => {
+        if (offset > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+        const mark = document.createElement('mark');
+        mark.className = 'br-part-mark';
+        mark.textContent = match;
+        frag.appendChild(mark);
+        marks.push(mark);
+        count++;
+        lastIndex = offset + match.length;
+        return match;
+      });
+      if (lastIndex < text.length) frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+      node.replaceWith(frag);
+      return count;
+    }
+
+    function highlightSection(section, regex) {
+      const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const parent = node.parentElement;
+          if (!parent) return NodeFilter.FILTER_REJECT;
+          if (parent.closest('button,input,textarea,select,script,style,mark')) return NodeFilter.FILTER_REJECT;
+          if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      return nodes.reduce((total, node) => total + highlightNode(node, regex), 0);
+    }
+
+    function updateNav() {
+      const hasMatches = marks.length > 0;
+      if (nav) nav.classList.toggle('visible', hasMatches);
+      if (prev) prev.disabled = !hasMatches;
+      if (next) next.disabled = !hasMatches;
+      if (!hasMatches && count) count.textContent = inp.value.trim() ? 'No matches' : '';
+    }
+
+    function activate(index) {
+      if (!marks.length) return;
+      activeIndex = (index + marks.length) % marks.length;
+      marks.forEach(mark => mark.classList.remove('active'));
+      const current = marks[activeIndex];
+      current.classList.add('active');
+      if (count) count.textContent = `${activeIndex + 1} of ${marks.length}`;
+      current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
     function filter(q) {
       const reader = document.getElementById(READER_ID);
       if (!reader) return;
+      clearMarks(reader);
       const sections = Array.from(reader.querySelectorAll('.br-section'));
       const noMatch  = reader.querySelector('.br-no-match');
       if (noMatch) noMatch.remove();
@@ -4951,26 +5041,29 @@ function stRenderAwards(awards) {
       if (!q.trim()) {
         sections.forEach(s => { s.classList.remove('ps-hidden', 'ps-match'); });
         if (count) count.textContent = '';
+        updateNav();
         return;
       }
 
-      const term = q.trim().toLowerCase();
-      let matches = 0;
+      const term = q.trim();
+      const regex = new RegExp(escapeRegExp(term), 'gi');
+      let matchingSections = 0;
       sections.forEach(s => {
-        const text = s.textContent.toLowerCase();
-        if (text.includes(term)) {
+        const sectionMatches = highlightSection(s, regex);
+        if (sectionMatches) {
           s.classList.remove('ps-hidden');
           s.classList.add('ps-match');
-          matches++;
+          matchingSections++;
         } else {
           s.classList.add('ps-hidden');
           s.classList.remove('ps-match');
         }
       });
 
-      if (count) count.textContent = matches ? `${matches} match${matches !== 1 ? 'es' : ''}` : 'No matches';
+      updateNav();
+      if (marks.length) activate(0);
 
-      if (!matches) {
+      if (!matchingSections) {
         const msg = document.createElement('div');
         msg.className = 'br-no-match';
         msg.innerHTML = `<strong>No sections match "${q}"</strong>Try a broader term or clear to see all sections.`;
