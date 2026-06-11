@@ -666,7 +666,7 @@ body.work-mode .source-tiles-section{display:none;}
 .br-header{margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--line2);}
 
 /* ── PART SEARCH BAR ─────────────────────────────────────────────── */
-.br-part-search{display:flex;align-items:center;gap:9px;background:var(--white);border:1.5px solid rgba(0,102,204,0.18);border-radius:12px;padding:0 10px 0 14px;height:44px;margin-bottom:24px;transition:border-color .15s,box-shadow .15s;}
+.br-part-search{position:sticky;top:calc(var(--top-chrome) + 56px);z-index:35;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,0.96);border:1.5px solid rgba(0,102,204,0.18);border-radius:12px;padding:0 10px 0 14px;height:44px;margin-bottom:24px;box-shadow:0 8px 24px rgba(0,66,153,0.08);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);transition:border-color .15s,box-shadow .15s;}
 .br-part-search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
 .br-part-search-icon{font-size:15px;color:var(--muted2);flex-shrink:0;line-height:1;}
 .br-part-search-input{flex:1;background:transparent;border:none;outline:none;font-size:14px;color:var(--ink);font-family:inherit;min-width:0;}
@@ -1331,6 +1331,7 @@ body.work-mode #quick-links{margin-top:0;}
 .hero-trust b{color:var(--ink3);font-weight:700;}
 .hero-trust .ht-sep{color:var(--line);}
 @media (max-width:760px){.hero-trust{font-size:10.5px;gap:6px;margin-bottom:10px;}}
+@media (max-width:768px){.br-part-search{top:calc(var(--top-chrome) + 50px);margin-left:-2px;margin-right:-2px;}}
 
 /* Skeleton loaders */
 .skel-card{padding:16px 18px 16px 20px;border-radius:var(--r-md);border:1px solid transparent;border-left:3px solid var(--line2);}
@@ -5017,7 +5018,12 @@ function stRenderAwards(awards) {
       if (nav) nav.classList.toggle('visible', hasMatches);
       if (prev) prev.disabled = !hasMatches;
       if (next) next.disabled = !hasMatches;
-      if (!hasMatches && count) count.textContent = inp.value.trim() ? 'No matches' : '';
+      if (count) {
+        if (!inp.value.trim()) count.textContent = '';
+        else if (!hasMatches) count.textContent = 'No matches';
+        else if (activeIndex >= 0) count.textContent = `${activeIndex + 1} of ${marks.length}`;
+        else count.textContent = `${marks.length} match${marks.length !== 1 ? 'es' : ''}`;
+      }
     }
 
     function activate(index) {
@@ -5037,38 +5043,23 @@ function stRenderAwards(awards) {
       const sections = Array.from(reader.querySelectorAll('.br-section'));
       const noMatch  = reader.querySelector('.br-no-match');
       if (noMatch) noMatch.remove();
+      sections.forEach(s => { s.classList.remove('ps-hidden', 'ps-match'); });
 
       if (!q.trim()) {
-        sections.forEach(s => { s.classList.remove('ps-hidden', 'ps-match'); });
-        if (count) count.textContent = '';
         updateNav();
         return;
       }
 
       const term = q.trim();
       const regex = new RegExp(escapeRegExp(term), 'gi');
-      let matchingSections = 0;
       sections.forEach(s => {
         const sectionMatches = highlightSection(s, regex);
         if (sectionMatches) {
-          s.classList.remove('ps-hidden');
           s.classList.add('ps-match');
-          matchingSections++;
-        } else {
-          s.classList.add('ps-hidden');
-          s.classList.remove('ps-match');
         }
       });
 
       updateNav();
-      if (marks.length) activate(0);
-
-      if (!matchingSections) {
-        const msg = document.createElement('div');
-        msg.className = 'br-no-match';
-        msg.innerHTML = `<strong>No sections match "${q}"</strong>Try a broader term or clear to see all sections.`;
-        reader.appendChild(msg);
-      }
     }
   }
 
