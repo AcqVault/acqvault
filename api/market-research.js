@@ -74,6 +74,12 @@ function scoreOpportunity(item, terms) {
   }, 0);
 }
 
+function matchesAllTerms(item, terms) {
+  if (!terms.length) return true;
+  const haystack = opportunityHaystack(item);
+  return terms.every(term => hasWord(haystack, term));
+}
+
 function compactOpportunity(item) {
   const org = item.fullParentPathName || [item.department, item.subTier, item.office].filter(Boolean).join(' · ');
   const award = item.award || item.data?.award || null;
@@ -188,14 +194,14 @@ module.exports = async function handler(req, res) {
 
     let responses = await Promise.all(makeRequests(base.query));
     let opportunities = mergeResponses(responses);
-    if (queryTerms(base.query).length) opportunities = opportunities.filter(item => item._score > 0);
+    if (queryTerms(base.query).length) opportunities = opportunities.filter(item => matchesAllTerms(item, queryTerms(base.query)));
     opportunities = opportunities.slice(0, limit);
     if (!opportunities.length && queryTerms(base.query).length > 1) {
       const terms = queryTerms(base.query);
       const termLimit = Math.max(perRequestLimit, Math.ceil(limit / Math.max(1, terms.length)));
       responses = await Promise.all(terms.flatMap(term => makeRequests(term, termLimit)));
       opportunities = mergeResponses(responses)
-        .filter(item => item._score > 0)
+        .filter(item => matchesAllTerms(item, terms))
         .slice(0, limit);
     }
     opportunities = opportunities.map(({ _score, ...item }) => item);
