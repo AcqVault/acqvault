@@ -28,7 +28,7 @@ function buildDateRanges(days) {
   let remaining = totalDays;
   let cursorEnd = new Date(end);
   while (remaining > 0) {
-    const span = Math.min(remaining, 365);
+    const span = Math.min(remaining, 364);
     const cursorStart = new Date(cursorEnd);
     cursorStart.setDate(cursorEnd.getDate() - span);
     ranges.push({ postedFrom: mmddyyyy(cursorStart), postedTo: mmddyyyy(cursorEnd) });
@@ -37,6 +37,37 @@ function buildDateRanges(days) {
     remaining -= span;
   }
   return ranges;
+}
+
+function queryTerms(query) {
+  return String(query || '')
+    .toLowerCase()
+    .split(/\s+/)
+    .map(term => term.replace(/[^a-z0-9-]/g, ''))
+    .filter(term => term.length > 2);
+}
+
+function opportunityHaystack(item) {
+  return [
+    item.title,
+    item.solicitationNumber,
+    item.organization,
+    item.naicsCode,
+    item.classificationCode,
+    item.setAside,
+    item.type
+  ].filter(Boolean).join(' ').toLowerCase();
+}
+
+function scoreOpportunity(item, terms) {
+  if (!terms.length) return 1;
+  const title = String(item.title || '').toLowerCase();
+  const haystack = opportunityHaystack(item);
+  return terms.reduce((score, term) => {
+    if (title.includes(term)) return score + 3;
+    if (haystack.includes(term)) return score + 1;
+    return score;
+  }, 0);
 }
 
 function compactOpportunity(item) {
@@ -86,6 +117,15 @@ async function fetchSam(params, apiKey) {
   return data;
 }
 
+async function fetchSamSafe(params, apiKey) {
+  try {
+    return await fetchSam(params, apiKey);
+  } catch (error) {
+    if (error.status === 400) return { totalRecords: 0, opportunitiesData: [] };
+    throw error;
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -119,22 +159,40 @@ module.exports = async function handler(req, res) {
     const types = noticeTypes.length && !noticeTypes.includes('all') ? noticeTypes : [''];
     const requestCount = Math.max(1, types.length * ranges.length);
     const perRequestLimit = requestCount > 1 ? Math.ceil(limit / requestCount) : limit;
-    const requests = [];
-    for (const range of ranges) {
-      for (const ptype of types) requests.push(fetchSam({ ...base, ...range, ptype, limit: perRequestLimit }, apiKey));
+    const makeRequests = (query, limitOverride = perRequestLimit) => {
+      const requests = [];
+      for (const range of ranges) {
+        for (const ptype of types) requests.push(fetchSamSafe({ ...base, ...range, query, ptype, limit: limitOverride }, apiKey));
+      }
+      return requests;
+    };
+    const mergeResponses = (responses) => {
+      const terms = queryTerms(base.query);
+      const seen = new Set();
+      return responses
+        .flatMap(data => data.opportunitiesData || [])
+        .map(compactOpportunity)
+        .map(item => ({ ...item, _score: scoreOpportunity(item, terms) }))
+        .filter(item => {
+          const key = item.id || `${item.title}-${item.postedDate}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .sort((a, b) => b._score - a._score || String(b.postedDate || '').localeCompare(String(a.postedDate || '')));
+    };
+
+    let responses = await Promise.all(makeRequests(base.query));
+    let opportunities = mergeResponses(responses).slice(0, limit);
+    if (!opportunities.length && queryTerms(base.query).length > 1) {
+      const terms = queryTerms(base.query);
+      const termLimit = Math.max(perRequestLimit, Math.ceil(limit / Math.max(1, terms.length)));
+      responses = await Promise.all(terms.flatMap(term => makeRequests(term, termLimit)));
+      opportunities = mergeResponses(responses)
+        .filter(item => item._score > 0)
+        .slice(0, limit);
     }
-    const responses = await Promise.all(requests);
-    const seen = new Set();
-    const opportunities = responses
-      .flatMap(data => data.opportunitiesData || [])
-      .map(compactOpportunity)
-      .filter(item => {
-        const key = item.id || `${item.title}-${item.postedDate}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      })
-      .slice(0, limit);
+    opportunities = opportunities.map(({ _score, ...item }) => item);
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900');
     return res.status(200).json({
