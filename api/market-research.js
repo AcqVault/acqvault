@@ -94,9 +94,11 @@ module.exports = async function handler(req, res) {
 
   const apiKey = process.env.SAM_API_KEY;
   if (!apiKey) {
-    return res.status(501).json({
-      error: 'SAM.gov market research is not configured.',
-      detail: 'Set SAM_API_KEY in Vercel to enable in-site SAM.gov opportunity results.'
+    return res.status(200).json({
+      configured: false,
+      totalRecords: 0,
+      opportunities: [],
+      message: 'Set SAM_API_KEY in Vercel to enable in-site SAM.gov opportunity results.'
     });
   }
 
@@ -136,6 +138,7 @@ module.exports = async function handler(req, res) {
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900');
     return res.status(200).json({
+      configured: true,
       totalRecords: responses.reduce((sum, data) => sum + (Number(data.totalRecords) || 0), 0),
       opportunities,
       query: base.query,
