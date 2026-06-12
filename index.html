@@ -32,6 +32,7 @@
 
 /* keep new sections out of the fullscreen reader */
 body.reader-mode #toolkit,
+body.reader-mode #market-research,
 body.reader-mode #spending-dashboard { display: none !important; }
 
 /* shared section intro spacing tweak */
@@ -884,7 +885,7 @@ body.reader-mode{background:var(--white);overflow:auto;}
 body.reader-mode .about-bar,body.reader-mode nav,body.reader-mode .hero,
 body.reader-mode .source-tiles-section,body.reader-mode #results-section,
 body.reader-mode #browse-section,body.reader-mode #fulltext-section,
-body.reader-mode #features,body.reader-mode #sources,body.reader-mode #quick-links,
+body.reader-mode #features,body.reader-mode #sources,body.reader-mode #quick-links,body.reader-mode #market-research,
 body.reader-mode .cta-strip,body.reader-mode footer,
 body.reader-mode #drawer,body.reader-mode #drawer-backdrop{display:none !important;}
 body.reader-mode #reader-page{display:block;}
@@ -927,7 +928,7 @@ body.reader-mode #reader-page{display:block;}
 
 /* ── HOMEPAGE SECTIONS ── */
 .sec{padding:88px 48px;scroll-margin-top:calc(var(--top-chrome) + 26px);}
-#toolkit,#features,#sources,#quick-links,#spending-dashboard{scroll-margin-top:calc(var(--top-chrome) + 26px);}
+#toolkit,#market-research,#features,#sources,#quick-links,#spending-dashboard{scroll-margin-top:calc(var(--top-chrome) + 26px);}
 .sec-white{background:var(--white);}
 .sec-off{background:var(--off);}
 .sec-dark{background:var(--ink);color:#fff;}
@@ -1044,6 +1045,46 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .ql-arrow{font-size:13px;color:var(--accent);font-weight:800;opacity:0.8;transition:transform 0.15s;}
 .ql-card:hover .ql-arrow{transform:translate(2px,-2px);}
 
+.market-section{position:relative;overflow:hidden;background:linear-gradient(160deg,#f7fbff 0%,#eef4fb 48%,#f8fafc 100%);border-top:1px solid rgba(0,102,204,0.08);border-bottom:1px solid rgba(0,102,204,0.08);}
+.market-section::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,66,153,0.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,66,153,0.045) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(180deg,transparent 0%,black 18%,black 88%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 18%,black 88%,transparent 100%);}
+.market-section .sec-inner{position:relative;z-index:1;}
+.market-shell{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:18px;margin-top:42px;align-items:start;}
+.market-panel{min-width:0;background:rgba(255,255,255,0.76);border:1px solid rgba(0,102,204,0.13);border-radius:20px;box-shadow:0 1px 0 rgba(255,255,255,0.9) inset,0 18px 48px rgba(15,23,42,0.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+.market-search-panel{padding:24px;}
+.market-kicker{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.market-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(0,102,204,0.13);background:#fff;border-radius:999px;padding:6px 10px;font-size:10px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted2);}
+.market-chip.live{color:#047857;background:#ecfdf5;border-color:#bbf7d0;}
+.market-chip.live::before{content:'';width:6px;height:6px;border-radius:50%;background:#16a34a;}
+.market-query{display:flex;align-items:center;gap:10px;min-height:58px;border:1px solid rgba(0,102,204,0.16);border-radius:17px;background:#fff;padding:0 12px 0 18px;box-shadow:0 10px 28px rgba(0,66,153,0.06);}
+.market-query span{color:var(--accent);font-size:17px;}
+.market-query input{flex:1;border:none;outline:none;background:transparent;font-size:16px;color:var(--ink);min-width:0;}
+.market-query input::placeholder{color:#8a97a8;}
+.market-btn{border:none;border-radius:13px;background:var(--accent);color:#fff;font-size:12px;font-weight:800;padding:12px 16px;box-shadow:0 8px 20px rgba(0,102,204,0.22);cursor:pointer;}
+.market-filter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+.market-field{min-width:0;border:1px solid rgba(0,102,204,0.1);background:rgba(248,251,255,0.86);border-radius:14px;padding:10px 12px;}
+.market-label{display:block;font-size:9px;font-weight:850;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+.market-field input,.market-field select{width:100%;border:none;outline:none;background:transparent;color:var(--ink2);font-size:13px;font-weight:650;}
+.market-path{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px;}
+.market-step{min-width:0;background:rgba(255,255,255,0.72);border:1px solid rgba(0,102,204,0.1);border-radius:14px;padding:14px;min-height:122px;}
+.market-step-num{width:24px;height:24px;border-radius:8px;background:var(--accent-soft);border:1px solid var(--accent-bdr);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:11px;font-weight:850;margin-bottom:10px;}
+.market-step-title{font-size:13px;font-weight:800;letter-spacing:-0.02em;color:var(--ink);margin-bottom:5px;}
+.market-step-text{font-size:12px;line-height:1.55;color:var(--muted);}
+.market-output{padding:0;overflow:hidden;}
+.market-output-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(0,102,204,0.08);}
+.market-output-title{font-size:14px;font-weight:850;color:var(--ink);letter-spacing:-0.02em;}
+.market-output-sub{font-size:11px;color:var(--muted2);margin-top:2px;}
+.market-status{font-size:10px;font-weight:850;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);background:rgba(0,102,204,0.07);border:1px solid rgba(0,102,204,0.12);border-radius:999px;padding:5px 9px;white-space:nowrap;}
+.market-result-list{display:flex;flex-direction:column;}
+.market-result{display:grid;grid-template-columns:86px minmax(0,1fr);gap:14px;padding:16px 20px;border-bottom:1px solid rgba(0,102,204,0.07);}
+.market-result:last-child{border-bottom:none;}
+.market-result-metric{font-size:22px;font-weight:850;letter-spacing:-0.05em;color:var(--accent);line-height:1;}
+.market-result-label{font-size:9px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);margin-top:4px;}
+.market-result-title{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:5px;}
+.market-result-text{font-size:12.5px;line-height:1.55;color:var(--muted);}
+.market-actions{display:flex;gap:8px;flex-wrap:wrap;padding:16px 20px;background:rgba(248,251,255,0.72);border-top:1px solid rgba(0,102,204,0.08);}
+.market-action{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,102,204,0.14);border-radius:999px;background:#fff;color:var(--ink2);text-decoration:none;font-size:11px;font-weight:800;padding:8px 11px;}
+.market-action.primary{background:var(--ink);border-color:var(--ink);color:#fff;}
+
 footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);color:var(--muted);border-top:1px solid rgba(0,102,204,0.08);padding:40px 0;}
 .foot-inner{max-width:var(--max-w);margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
 .foot-logo{display:inline-flex;align-items:center;}
@@ -1087,8 +1128,8 @@ footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);co
 /* Consistent homepage section rhythm */
 .sec{padding:72px 48px;scroll-margin-top:calc(var(--top-chrome) + 26px);}
 .source-tiles-section{padding-top:26px;padding-bottom:26px;}
-#quick-links,#toolkit,#spending-dashboard,#features,#sources{border-top:1px solid rgba(0,102,204,0.08);}
-#quick-links + #toolkit,#toolkit + #spending-dashboard,#spending-dashboard + #features,#features + #sources{margin-top:0;}
+#quick-links,#market-research,#toolkit,#spending-dashboard,#features,#sources{border-top:1px solid rgba(0,102,204,0.08);}
+#quick-links + #market-research,#market-research + #toolkit,#toolkit + #spending-dashboard,#spending-dashboard + #features,#features + #sources{margin-top:0;}
 #spending-dashboard.sec-off{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 48%,#f6f8fa 100%);border-top:1px solid rgba(0,102,204,0.08);border-bottom:1px solid rgba(0,102,204,0.08);color:var(--ink);}
 #spending-dashboard .eyebrow-light{color:var(--accent);}
 #spending-dashboard h2.sec-head{color:var(--ink);}
@@ -1179,6 +1220,16 @@ body.work-mode #quick-links{margin-top:0;}
   .callout{padding:32px 20px;}
   .cta-strip{padding:56px 20px;}
   .quick-links-grid{grid-template-columns:1fr 1fr;}
+  .market-shell{grid-template-columns:minmax(0,1fr);gap:14px;margin-top:30px;}
+  .market-search-panel{padding:18px;}
+  .market-query{min-height:54px;border-radius:15px;padding-left:14px;}
+  .market-query input{font-size:14px;}
+  .market-btn{padding:10px 12px;font-size:11px;white-space:nowrap;}
+  .market-filter-grid{grid-template-columns:1fr 1fr;}
+  .market-path{grid-template-columns:1fr 1fr;}
+  .market-step{min-height:0;padding:13px;}
+  .market-result{grid-template-columns:72px minmax(0,1fr);padding:15px 16px;}
+  .market-actions{padding:14px 16px;}
   .browse-source-bar{top:var(--top-chrome);}
   .browse-source-bar-inner{padding:9px 16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
   .browse-source-bar-label,.browse-src-pill,.browse-src-soon{white-space:nowrap;}
@@ -1210,6 +1261,13 @@ body.work-mode #quick-links{margin-top:0;}
 @media(max-width:480px){
   .source-tiles-grid{grid-template-columns:1fr;}
   .quick-links-grid{grid-template-columns:1fr;}
+  .market-filter-grid,.market-path{grid-template-columns:1fr;}
+  .market-query{align-items:stretch;flex-wrap:wrap;height:auto;padding:12px;}
+  .market-query span{display:flex;align-items:center;}
+  .market-query input{min-height:34px;flex:1 1 calc(100% - 34px);}
+  .market-btn{width:100%;min-height:42px;}
+  .market-result{grid-template-columns:1fr;gap:8px;}
+  .market-result-metric{font-size:28px;}
   .parts-grid{grid-template-columns:1fr;}
   .hero-headline{font-size:clamp(34px,12vw,48px);}
   .mode-btn{font-size:11.5px;}
@@ -1446,6 +1504,7 @@ body.work-mode #quick-links{margin-top:0;}
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="AcqVault"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="30" height="30" role="img" aria-label="AcqVault" style="display:block;flex-shrink:0;"><defs>  <radialGradient id="nhub" cx="50%" cy="45%" r="55%">    <stop offset="0%" stop-color="#ffffff"/>    <stop offset="25%" stop-color="#7dd3fc"/>    <stop offset="55%" stop-color="#0ea5e9"/>    <stop offset="100%" stop-color="#0066CC"/>  </radialGradient>  <radialGradient id="narcglow" cx="50%" cy="50%" r="50%">    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>    <stop offset="100%" stop-color="#0066CC" stop-opacity="0"/>  </radialGradient>  <radialGradient id="nbody" cx="40%" cy="35%" r="70%">    <stop offset="0%" stop-color="#3a3f4a"/>    <stop offset="100%" stop-color="#1a1d24"/>  </radialGradient></defs><rect x="4" y="4" width="92" height="92" rx="12" fill="url(#nbody)" stroke="#555" stroke-width="1.5"/><rect x="10" y="10" width="80" height="80" rx="9" fill="none" stroke="#444" stroke-width="1"/><rect x="88" y="26" width="12" height="16" rx="3" fill="#3a3f4a" stroke="#555" stroke-width="1"/><rect x="90" y="29" width="8" height="4" rx="1.5" fill="#606570"/><rect x="90" y="35" width="8" height="4" rx="1.5" fill="#606570"/><rect x="88" y="56" width="12" height="16" rx="3" fill="#3a3f4a" stroke="#555" stroke-width="1"/><rect x="90" y="59" width="8" height="4" rx="1.5" fill="#606570"/><rect x="90" y="65" width="8" height="4" rx="1.5" fill="#606570"/><circle cx="47" cy="50" r="33" fill="#252830" stroke="#555" stroke-width="1.5"/><circle cx="47" cy="50" r="26" fill="none" stroke="#606570" stroke-width="1"/><line x1="47" y1="24" x2="47" y2="37" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="47" y1="76" x2="47" y2="63" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="21" y1="50" x2="34" y2="50" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="73" y1="50" x2="60" y2="50" stroke="#707580" stroke-width="4" stroke-linecap="round"/><line x1="28" y1="31" x2="37" y2="40" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="66" y1="31" x2="57" y2="40" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="28" y1="69" x2="37" y2="60" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><line x1="66" y1="69" x2="57" y2="60" stroke="#707580" stroke-width="3.5" stroke-linecap="round"/><circle cx="47" cy="50" r="15" fill="url(#narcglow)" opacity="0.6"/><circle cx="47" cy="50" r="11" fill="#0a0e1a" stroke="#0ea5e9" stroke-width="1.5"/><circle cx="47" cy="50" r="8" fill="url(#nhub)"/><circle cx="47" cy="50" r="4" fill="#e0f2fe" opacity="0.9"/><circle cx="45.5" cy="48.5" r="1.5" fill="white" opacity="0.9"/></svg></a>
     <div class="nav-center">
+      <a href="#market-research">Market Research</a>
       <a href="#features">Features</a>
       <a href="#sources">Sources</a>
       <a href="#quick-links">Quick Links</a>
@@ -1703,6 +1762,64 @@ body.work-mode #quick-links{margin-top:0;}
       <a class="ql-card fade-up" href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚡</div><span class="ql-chip">Protests</span></div><div class="ql-name">GAO Search Decisions</div><div class="ql-desc">Search bid protest decisions and dockets — the practical GAO entry point for contracting research.</div><div class="ql-brand ql-brand-dark ql-brand-gao"><span class="ql-wordmark">GAO<small>U.S. Government Accountability Office</small></span></div><div class="ql-action"><span>Dockets</span><span class="ql-arrow">↗</span></div></a>
       <a class="ql-card fade-up d1" href="https://piee.eb.mil" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">🔒</div><span class="ql-chip">DoD</span></div><div class="ql-name">PIEE</div><div class="ql-desc">Procurement Integrated Enterprise Environment — CPARS, JAM, WAWF, and DoD contracting systems.</div><div class="ql-brand ql-brand-piee"><span class="ql-mini-seal"></span><span class="ql-wordmark">PIEE<small>Procurement Integrated Enterprise Environment</small></span></div><div class="ql-action"><span>Systems</span><span class="ql-arrow">↗</span></div></a>
       <a class="ql-card fade-up d2" href="https://www.dau.edu" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">◆</div><span class="ql-chip">Learn</span></div><div class="ql-name">Warfighting Acquisition University</div><div class="ql-desc">DAU learning, training, and acquisition knowledge resources for the defense workforce.</div><div class="ql-brand ql-brand-wau"><span class="ql-wau-mark"></span><span class="ql-wordmark">Warfighting<br><b>Acquisition</b><br>University</span></div><div class="ql-action"><span>Training</span><span class="ql-arrow">↗</span></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET RESEARCH -->
+<section class="sec market-section" id="market-research">
+  <div class="sec-inner">
+    <p class="eyebrow eyebrow-dark fade-up">Market research</p>
+    <h2 class="sec-head fade-up">From requirement idea<br>to market signal.</h2>
+    <p class="sec-sub sec-sub-dark fade-up">A dedicated acquisition research workspace for SAM.gov discovery, comparable notices, likely NAICS and PSC codes, and the notes that turn a search into a defensible file.</p>
+    <div class="market-shell">
+      <div class="market-panel market-search-panel fade-up">
+        <div class="market-kicker">
+          <span class="market-chip live">SAM.gov ready</span>
+          <span class="market-chip">Sources sought</span>
+          <span class="market-chip">Awards</span>
+          <span class="market-chip">Set-asides</span>
+        </div>
+        <div class="market-query">
+          <span>⌕</span>
+          <input type="text" value="facility support services" aria-label="Market research query" />
+          <button class="market-btn" type="button" id="market-snapshot-btn">Build snapshot</button>
+        </div>
+        <div class="market-filter-grid">
+          <label class="market-field"><span class="market-label">NAICS</span><input type="text" value="561210" aria-label="NAICS code" /></label>
+          <label class="market-field"><span class="market-label">PSC</span><input type="text" value="R706" aria-label="PSC code" /></label>
+          <label class="market-field"><span class="market-label">Agency</span><input type="text" value="Department of the Air Force" aria-label="Agency" /></label>
+          <label class="market-field"><span class="market-label">Notice type</span><select aria-label="Notice type"><option>Sources sought</option><option>Solicitation</option><option>Award notice</option><option>Special notice</option></select></label>
+          <label class="market-field"><span class="market-label">Window</span><select aria-label="Search window"><option>Last 12 months</option><option>Last 90 days</option><option>Last 3 years</option></select></label>
+          <label class="market-field"><span class="market-label">Set-aside</span><select aria-label="Set-aside"><option>Any</option><option>Small business</option><option>8(a)</option><option>SDVOSB</option><option>WOSB</option></select></label>
+        </div>
+        <div class="market-path">
+          <div class="market-step"><div class="market-step-num">1</div><div class="market-step-title">Find the market</div><div class="market-step-text">Search SAM.gov notices and awards by keyword, agency, NAICS, PSC, place of performance, and date.</div></div>
+          <div class="market-step"><div class="market-step-num">2</div><div class="market-step-title">Spot patterns</div><div class="market-step-text">Surface repeated offices, vendors, set-asides, contract types, and response timelines.</div></div>
+          <div class="market-step"><div class="market-step-num">3</div><div class="market-step-title">Compare language</div><div class="market-step-text">Collect common requirement phrasing, attachments, evaluation factors, and industry questions.</div></div>
+          <div class="market-step"><div class="market-step-num">4</div><div class="market-step-title">Brief the file</div><div class="market-step-text">Turn the search trail into a concise market research note with links back to source records.</div></div>
+        </div>
+      </div>
+      <div class="market-panel market-output fade-up d1">
+        <div class="market-output-head">
+          <div>
+            <div class="market-output-title">Research snapshot</div>
+            <div class="market-output-sub">A focused SAM.gov handoff today; live in-page results can come next</div>
+          </div>
+          <span class="market-status">SAM handoff</span>
+        </div>
+        <div class="market-result-list">
+          <div class="market-result"><div><div class="market-result-metric">SAM</div><div class="market-result-label">Search</div></div><div><div class="market-result-title">Comparable opportunities</div><div class="market-result-text">Open a focused SAM.gov opportunity search using the keyword, agency, NAICS, PSC, notice type, and set-aside filters.</div></div></div>
+          <div class="market-result"><div><div class="market-result-metric">AWD</div><div class="market-result-label">Awards</div></div><div><div class="market-result-title">Likely incumbents and vendors</div><div class="market-result-text">The next backend phase can summarize recent awardees, contract values, award dates, and office history for similar work.</div></div></div>
+          <div class="market-result"><div><div class="market-result-metric">PSC</div><div class="market-result-label">Codes</div></div><div><div class="market-result-title">NAICS / PSC candidates</div><div class="market-result-text">Use the code fields to tune the search trail and preserve the classification logic behind the research.</div></div></div>
+          <div class="market-result"><div><div class="market-result-metric">SB</div><div class="market-result-label">Signal</div></div><div><div class="market-result-title">Set-aside pattern</div><div class="market-result-text">Track whether comparable work appears unrestricted, small business, 8(a), WOSB, or SDVOSB.</div></div></div>
+        </div>
+        <div class="market-actions">
+          <a class="market-action primary" href="https://sam.gov/search/" target="_blank" rel="noopener">Open SAM.gov</a>
+          <a class="market-action" href="https://www.gsa.gov/about-us/organization/federal-acquisition-service/customer-and-stakeholder-engagement/market-research-as-a-service" target="_blank" rel="noopener">GSA MRAS</a>
+          <a class="market-action" href="https://www.acquisition.gov/far/part-10" target="_blank" rel="noopener">FAR Part 10</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -4709,9 +4826,10 @@ function stRenderAwards(awards) {
         <div class="dash-foot"><span class="dash-live-dot"></span><span>Source: USASpending.gov \u00B7 Department of the Air Force \u00B7 contract actions (award types A\u2013D)</span></div>
       </div>`;
 
-    // Toolkit sits right after Quick Access; spending follows the toolkit.
+    // Toolkit sits after Market Research; spending follows the toolkit.
     const quicklinks = $('#quick-links');
-    (quicklinks || features).insertAdjacentElement('afterend', toolkit);
+    const marketResearch = $('#market-research');
+    (marketResearch || quicklinks || features).insertAdjacentElement('afterend', toolkit);
     toolkit.insertAdjacentElement('afterend', dash);
     const sourceTilesTpl = $('#source-tiles-template');
     if (sourceTilesTpl) {
@@ -4723,14 +4841,16 @@ function stRenderAwards(awards) {
     const io = new IntersectionObserver((ents) => {
       ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    [toolkit, dash].forEach((sec) => sec.querySelectorAll('.fade-up').forEach((el) => io.observe(el)));
+    [marketResearch, toolkit, dash].filter(Boolean).forEach((sec) => sec.querySelectorAll('.fade-up').forEach((el) => io.observe(el)));
 
     // add nav link
     const navCenter = $('nav .nav-center');
     if (navCenter) {
       const a = document.createElement('a');
       a.href = '#toolkit'; a.textContent = 'Toolkit';
-      navCenter.insertBefore(a, navCenter.firstChild);
+      const marketLink = navCenter.querySelector('a[href="#market-research"]');
+      if (marketLink) marketLink.insertAdjacentElement('afterend', a);
+      else navCenter.insertBefore(a, navCenter.firstChild);
     }
     initHomeNavPolish();
   }
@@ -4759,6 +4879,14 @@ function stRenderAwards(awards) {
       if (visible?.target?.id) setActive(visible.target.id);
     }, { rootMargin: '-38% 0px -52% 0px', threshold: [0.01, 0.18, 0.35] });
     observed.forEach(section => io.observe(section));
+    if (location.hash) {
+      const target = document.getElementById(location.hash.slice(1));
+      if (target) setTimeout(() => {
+        const y = target.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 26;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'auto' });
+        setActive(target.id);
+      }, 80);
+    }
   }
 
   /* ════════════════════════════════════════════════════════════
@@ -5150,6 +5278,27 @@ function stRenderAwards(awards) {
     io.observe(sec);
   }
 
+  function initMarketResearch() {
+    const section = $('#market-research'); if (!section) return;
+    const query = section.querySelector('.market-query input');
+    const btn = $('#market-snapshot-btn');
+    const fields = Array.from(section.querySelectorAll('.market-field input, .market-field select'));
+    function openSamSearch() {
+      const terms = [query?.value, ...fields.map((field) => field.value)]
+        .map((value) => String(value || '').trim())
+        .filter(Boolean)
+        .join(' ');
+      const url = new URL('https://sam.gov/search/');
+      url.searchParams.set('index', 'opp');
+      if (terms) url.searchParams.set('keywords', terms);
+      window.open(url.toString(), '_blank', 'noopener');
+    }
+    btn?.addEventListener('click', openSamSearch);
+    query?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') openSamSearch();
+    });
+  }
+
   /* ════════════════════════════════════════════════════════════
      BOOT
      ════════════════════════════════════════════════════════════ */
@@ -5158,6 +5307,7 @@ function stRenderAwards(awards) {
     initThresholds();
     initAcroLookup();
     initAcroTooltips();
+    initMarketResearch();
     initDashboard();
     loadWhatsNew();
   }
