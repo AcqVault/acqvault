@@ -1048,7 +1048,7 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .market-section{position:relative;overflow:hidden;background:linear-gradient(160deg,#f7fbff 0%,#eef4fb 48%,#f8fafc 100%);border-top:1px solid rgba(0,102,204,0.08);border-bottom:1px solid rgba(0,102,204,0.08);}
 .market-section::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,66,153,0.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,66,153,0.045) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(180deg,transparent 0%,black 18%,black 88%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 18%,black 88%,transparent 100%);}
 .market-section .sec-inner{position:relative;z-index:1;}
-.market-shell{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:18px;margin-top:42px;align-items:start;}
+.market-shell{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:42px;align-items:start;}
 .market-panel{min-width:0;background:rgba(255,255,255,0.76);border:1px solid rgba(0,102,204,0.13);border-radius:20px;box-shadow:0 1px 0 rgba(255,255,255,0.9) inset,0 18px 48px rgba(15,23,42,0.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
 .market-search-panel{padding:24px;}
 .market-kicker{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
@@ -1084,6 +1084,34 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .market-actions{display:flex;gap:8px;flex-wrap:wrap;padding:16px 20px;background:rgba(248,251,255,0.72);border-top:1px solid rgba(0,102,204,0.08);}
 .market-action{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,102,204,0.14);border-radius:999px;background:#fff;color:var(--ink2);text-decoration:none;font-size:11px;font-weight:800;padding:8px 11px;}
 .market-action.primary{background:var(--ink);border-color:var(--ink);color:#fff;}
+.market-filter-grid.market-filter-grid-wide{grid-template-columns:1fr 1fr 1.2fr;}
+.market-selectable{border:1px solid rgba(0,102,204,0.1);background:rgba(248,251,255,0.86);border-radius:14px;padding:10px 12px;margin-top:12px;}
+.market-selectable-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px;}
+.market-selectable-hint{font-size:11px;color:var(--muted2);}
+.market-pill-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.market-pill{border:1px solid rgba(0,102,204,0.16);background:#fff;color:var(--ink2);border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800;cursor:pointer;transition:all .15s;}
+.market-pill:hover{border-color:rgba(0,102,204,0.3);box-shadow:0 5px 14px rgba(0,66,153,0.07);}
+.market-pill.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 8px 18px rgba(0,102,204,0.18);}
+.market-resource-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid rgba(0,102,204,0.08);}
+.market-resource-note{font-size:12px;line-height:1.5;color:var(--muted);max-width:520px;}
+.market-results-panel{margin-top:18px;padding:0;overflow:hidden;}
+.market-results-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(0,102,204,0.08);}
+.market-results-title{font-size:14px;font-weight:850;color:var(--ink);letter-spacing:-0.02em;}
+.market-results-sub{font-size:11px;color:var(--muted2);margin-top:2px;}
+.market-results-count{font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:rgba(0,102,204,0.07);border:1px solid rgba(0,102,204,0.12);border-radius:999px;padding:5px 9px;white-space:nowrap;}
+.market-results-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:18px 20px 20px;}
+.market-opp-card{display:flex;flex-direction:column;gap:10px;min-width:0;border:1px solid rgba(0,102,204,0.12);background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);border-radius:16px;padding:16px;text-decoration:none;color:inherit;transition:transform .16s,box-shadow .16s,border-color .16s;}
+.market-opp-card:hover{transform:translateY(-2px);border-color:rgba(0,102,204,0.25);box-shadow:0 10px 28px rgba(0,66,153,0.08);}
+.market-opp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.market-opp-type{font-size:9px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:rgba(0,102,204,0.07);border:1px solid rgba(0,102,204,0.12);border-radius:999px;padding:5px 8px;}
+.market-opp-date{font-size:11px;font-weight:700;color:var(--muted2);white-space:nowrap;}
+.market-opp-title{font-size:15px;font-weight:850;line-height:1.25;letter-spacing:-.025em;color:var(--ink);}
+.market-opp-meta{display:flex;gap:7px;flex-wrap:wrap;}
+.market-opp-meta span{font-size:10px;font-weight:750;color:var(--muted);background:var(--off);border:1px solid var(--line2);border-radius:999px;padding:4px 7px;}
+.market-opp-org{font-size:12px;line-height:1.45;color:var(--muted);}
+.market-empty{padding:30px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.55;}
+.market-empty strong{display:block;color:var(--ink);font-size:16px;margin-bottom:6px;}
+.market-loading{padding:30px 20px;color:var(--muted);font-size:13px;text-align:center;}
 
 footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);color:var(--muted);border-top:1px solid rgba(0,102,204,0.08);padding:40px 0;}
 .foot-inner{max-width:var(--max-w);margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
@@ -1261,7 +1289,7 @@ body.work-mode #quick-links{margin-top:0;}
 @media(max-width:480px){
   .source-tiles-grid{grid-template-columns:1fr;}
   .quick-links-grid{grid-template-columns:1fr;}
-  .market-filter-grid,.market-path{grid-template-columns:1fr;}
+  .market-filter-grid,.market-filter-grid.market-filter-grid-wide,.market-path,.market-results-list{grid-template-columns:1fr;}
   .market-query{align-items:stretch;flex-wrap:wrap;height:auto;padding:12px;}
   .market-query span{display:flex;align-items:center;}
   .market-query input{min-height:34px;flex:1 1 calc(100% - 34px);}
@@ -1771,27 +1799,50 @@ body.work-mode #quick-links{margin-top:0;}
   <div class="sec-inner">
     <p class="eyebrow eyebrow-dark fade-up">Market research</p>
     <h2 class="sec-head fade-up">From requirement idea<br>to market signal.</h2>
-    <p class="sec-sub sec-sub-dark fade-up">A dedicated acquisition research workspace for SAM.gov discovery, comparable notices, likely NAICS and PSC codes, and the notes that turn a search into a defensible file.</p>
+    <p class="sec-sub sec-sub-dark fade-up">A dedicated acquisition research workspace for SAM.gov discovery, comparable notices, likely NAICS and PSC codes, and the source links that turn a search into a defensible file.</p>
     <div class="market-shell">
       <div class="market-panel market-search-panel fade-up">
         <div class="market-kicker">
-          <span class="market-chip live">SAM.gov ready</span>
-          <span class="market-chip">Sources sought</span>
+          <span class="market-chip live">In-site SAM.gov search</span>
+          <span class="market-chip">Opportunities</span>
           <span class="market-chip">Awards</span>
           <span class="market-chip">Set-asides</span>
         </div>
         <div class="market-query">
           <span>⌕</span>
-          <input type="text" value="facility support services" aria-label="Market research query" />
-          <button class="market-btn" type="button" id="market-snapshot-btn">Build snapshot</button>
+          <input type="text" value="base support" aria-label="Market research query" id="market-query-input" />
+          <button class="market-btn" type="button" id="market-snapshot-btn">Search market</button>
         </div>
-        <div class="market-filter-grid">
-          <label class="market-field"><span class="market-label">NAICS</span><input type="text" value="561210" aria-label="NAICS code" /></label>
-          <label class="market-field"><span class="market-label">PSC</span><input type="text" value="R706" aria-label="PSC code" /></label>
-          <label class="market-field"><span class="market-label">Agency</span><input type="text" value="Department of the Air Force" aria-label="Agency" /></label>
-          <label class="market-field"><span class="market-label">Notice type</span><select aria-label="Notice type"><option>Sources sought</option><option>Solicitation</option><option>Award notice</option><option>Special notice</option></select></label>
-          <label class="market-field"><span class="market-label">Window</span><select aria-label="Search window"><option>Last 12 months</option><option>Last 90 days</option><option>Last 3 years</option></select></label>
-          <label class="market-field"><span class="market-label">Set-aside</span><select aria-label="Set-aside"><option>Any</option><option>Small business</option><option>8(a)</option><option>SDVOSB</option><option>WOSB</option></select></label>
+        <div class="market-filter-grid market-filter-grid-wide">
+          <label class="market-field"><span class="market-label">NAICS</span><input type="text" value="" placeholder="optional" aria-label="NAICS code" id="market-naics-input" /></label>
+          <label class="market-field"><span class="market-label">PSC</span><input type="text" value="" placeholder="optional" aria-label="PSC code" id="market-psc-input" /></label>
+          <label class="market-field"><span class="market-label">Agency</span><input type="text" value="Department of the Air Force" aria-label="Agency" id="market-agency-input" /></label>
+          <label class="market-field"><span class="market-label">Window</span><select aria-label="Search window" id="market-window-select"><option value="365">Last 12 months</option><option value="90">Last 90 days</option><option value="1095">Last 3 years</option></select></label>
+          <label class="market-field"><span class="market-label">Set-aside</span><select aria-label="Set-aside" id="market-setaside-select"><option value="">Any</option><option value="SBA">Small business</option><option value="8A">8(a)</option><option value="SDVOSBC">SDVOSB</option><option value="WOSB">WOSB</option></select></label>
+          <label class="market-field"><span class="market-label">Results</span><select aria-label="Result limit" id="market-limit-select"><option value="12">12 opportunities</option><option value="24">24 opportunities</option><option value="48">48 opportunities</option></select></label>
+        </div>
+        <div class="market-selectable">
+          <div class="market-selectable-head">
+            <span class="market-label">Notice type</span>
+            <span class="market-selectable-hint">Selectable filters. All is selected by default for the broadest market view.</span>
+          </div>
+          <div class="market-pill-row" id="market-notice-types" role="group" aria-label="Notice type filters">
+            <button type="button" class="market-pill active" data-type="all" aria-pressed="true">All</button>
+            <button type="button" class="market-pill" data-type="r" aria-pressed="false">Sources sought</button>
+            <button type="button" class="market-pill" data-type="o" aria-pressed="false">Solicitation</button>
+            <button type="button" class="market-pill" data-type="k" aria-pressed="false">Combined synopsis</button>
+            <button type="button" class="market-pill" data-type="p" aria-pressed="false">Pre-solicitation</button>
+            <button type="button" class="market-pill" data-type="a" aria-pressed="false">Award</button>
+            <button type="button" class="market-pill" data-type="s" aria-pressed="false">Special notice</button>
+          </div>
+        </div>
+        <div class="market-resource-row">
+          <div class="market-resource-note">Use the in-site results for discovery, then jump to the official record or source guidance when you need the authoritative file.</div>
+          <div class="market-actions">
+            <a class="market-action primary" href="https://sam.gov/search/" target="_blank" rel="noopener">Open SAM.gov</a>
+            <a class="market-action" href="https://www.gsa.gov/about-us/organization/federal-acquisition-service/customer-and-stakeholder-engagement/market-research-as-a-service" target="_blank" rel="noopener">GSA MRAS</a>
+            <a class="market-action" href="https://www.acquisition.gov/far/part-10" target="_blank" rel="noopener">FAR Part 10</a>
+          </div>
         </div>
         <div class="market-path">
           <div class="market-step"><div class="market-step-num">1</div><div class="market-step-title">Find the market</div><div class="market-step-text">Search SAM.gov notices and awards by keyword, agency, NAICS, PSC, place of performance, and date.</div></div>
@@ -1799,25 +1850,17 @@ body.work-mode #quick-links{margin-top:0;}
           <div class="market-step"><div class="market-step-num">3</div><div class="market-step-title">Compare language</div><div class="market-step-text">Collect common requirement phrasing, attachments, evaluation factors, and industry questions.</div></div>
           <div class="market-step"><div class="market-step-num">4</div><div class="market-step-title">Brief the file</div><div class="market-step-text">Turn the search trail into a concise market research note with links back to source records.</div></div>
         </div>
-      </div>
-      <div class="market-panel market-output fade-up d1">
-        <div class="market-output-head">
+        <div class="market-panel market-results-panel" aria-live="polite">
+          <div class="market-results-head">
           <div>
-            <div class="market-output-title">Research snapshot</div>
-            <div class="market-output-sub">A focused SAM.gov handoff today; live in-page results can come next</div>
+              <div class="market-results-title">Opportunity results</div>
+              <div class="market-results-sub" id="market-results-sub">Run a search to review official SAM.gov opportunities inside AcqVault.</div>
           </div>
-          <span class="market-status">SAM handoff</span>
+            <span class="market-results-count" id="market-results-count">Ready</span>
         </div>
-        <div class="market-result-list">
-          <div class="market-result"><div><div class="market-result-metric">SAM</div><div class="market-result-label">Search</div></div><div><div class="market-result-title">Comparable opportunities</div><div class="market-result-text">Open a focused SAM.gov opportunity search using the keyword, agency, NAICS, PSC, notice type, and set-aside filters.</div></div></div>
-          <div class="market-result"><div><div class="market-result-metric">AWD</div><div class="market-result-label">Awards</div></div><div><div class="market-result-title">Likely incumbents and vendors</div><div class="market-result-text">The next backend phase can summarize recent awardees, contract values, award dates, and office history for similar work.</div></div></div>
-          <div class="market-result"><div><div class="market-result-metric">PSC</div><div class="market-result-label">Codes</div></div><div><div class="market-result-title">NAICS / PSC candidates</div><div class="market-result-text">Use the code fields to tune the search trail and preserve the classification logic behind the research.</div></div></div>
-          <div class="market-result"><div><div class="market-result-metric">SB</div><div class="market-result-label">Signal</div></div><div><div class="market-result-title">Set-aside pattern</div><div class="market-result-text">Track whether comparable work appears unrestricted, small business, 8(a), WOSB, or SDVOSB.</div></div></div>
-        </div>
-        <div class="market-actions">
-          <a class="market-action primary" href="https://sam.gov/search/" target="_blank" rel="noopener">Open SAM.gov</a>
-          <a class="market-action" href="https://www.gsa.gov/about-us/organization/federal-acquisition-service/customer-and-stakeholder-engagement/market-research-as-a-service" target="_blank" rel="noopener">GSA MRAS</a>
-          <a class="market-action" href="https://www.acquisition.gov/far/part-10" target="_blank" rel="noopener">FAR Part 10</a>
+          <div class="market-results-list" id="market-results-list">
+            <div class="market-empty"><strong>Ready for market research.</strong> Keep Notice type on All for broad discovery, or select one or more types to narrow the result set.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -5280,22 +5323,95 @@ function stRenderAwards(awards) {
 
   function initMarketResearch() {
     const section = $('#market-research'); if (!section) return;
-    const query = section.querySelector('.market-query input');
+    const query = $('#market-query-input');
     const btn = $('#market-snapshot-btn');
-    const fields = Array.from(section.querySelectorAll('.market-field input, .market-field select'));
-    function openSamSearch() {
-      const terms = [query?.value, ...fields.map((field) => field.value)]
-        .map((value) => String(value || '').trim())
-        .filter(Boolean)
-        .join(' ');
-      const url = new URL('https://sam.gov/search/');
-      url.searchParams.set('index', 'opp');
-      if (terms) url.searchParams.set('keywords', terms);
-      window.open(url.toString(), '_blank', 'noopener');
+    const list = $('#market-results-list');
+    const count = $('#market-results-count');
+    const sub = $('#market-results-sub');
+    const noticeWrap = $('#market-notice-types');
+    const escAttr = (s) => esc(s).replace(/'/g, '&#39;');
+    function selectedTypes() {
+      const active = Array.from(noticeWrap?.querySelectorAll('.market-pill.active') || []).map(btn => btn.dataset.type);
+      return active.length ? active : ['all'];
     }
-    btn?.addEventListener('click', openSamSearch);
+    function setResultsState(label, message) {
+      if (count) count.textContent = label;
+      if (list) list.innerHTML = `<div class="market-empty"><strong>${esc(label)}</strong>${esc(message)}</div>`;
+    }
+    function renderOpportunities(data) {
+      const opps = data.opportunities || [];
+      if (count) count.textContent = opps.length ? `${opps.length} shown` : 'No matches';
+      if (sub) sub.textContent = data.totalRecords ? `${Number(data.totalRecords).toLocaleString()} SAM.gov records matched the current filters.` : 'No SAM.gov records matched the current filters.';
+      if (!opps.length) {
+        setResultsState('No matches', 'Try fewer filters, leave Notice type on All, or remove NAICS/PSC to broaden the market view.');
+        return;
+      }
+      list.innerHTML = opps.map(item => {
+        const meta = [item.solicitationNumber, item.naicsCode ? `NAICS ${item.naicsCode}` : '', item.classificationCode ? `PSC ${item.classificationCode}` : '', item.setAside].filter(Boolean);
+        return `<a class="market-opp-card" href="${escAttr(item.uiLink || 'https://sam.gov/search/?index=opp')}" target="_blank" rel="noopener">
+          <div class="market-opp-top"><span class="market-opp-type">${esc(item.type || 'Opportunity')}</span><span class="market-opp-date">${esc(item.postedDate || '')}</span></div>
+          <div class="market-opp-title">${esc(item.title)}</div>
+          <div class="market-opp-org">${esc(item.organization || 'SAM.gov opportunity')}</div>
+          <div class="market-opp-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>
+        </a>`;
+      }).join('');
+    }
+    async function runMarketSearch() {
+      if (!list) return;
+      if (count) count.textContent = 'Searching';
+      if (sub) sub.textContent = 'Searching SAM.gov through AcqVault...';
+      list.innerHTML = '<div class="market-loading">Searching official SAM.gov opportunities...</div>';
+      btn?.setAttribute('disabled', 'disabled');
+      try {
+        const response = await fetch('/api/market-research', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: query?.value || '',
+            naics: $('#market-naics-input')?.value || '',
+            psc: $('#market-psc-input')?.value || '',
+            agency: $('#market-agency-input')?.value || '',
+            windowDays: $('#market-window-select')?.value || '365',
+            setAside: $('#market-setaside-select')?.value || '',
+            limit: $('#market-limit-select')?.value || '12',
+            noticeTypes: selectedTypes()
+          })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.detail || data.error || 'Market research search failed.');
+        renderOpportunities(data);
+      } catch (error) {
+        if (count) count.textContent = 'Unavailable';
+        if (sub) sub.textContent = 'In-site SAM.gov search needs the server-side SAM_API_KEY configured.';
+        setResultsState('Search unavailable', error.message || 'The market research service could not be reached.');
+      } finally {
+        btn?.removeAttribute('disabled');
+      }
+    }
+    noticeWrap?.addEventListener('click', (event) => {
+      const pill = event.target.closest('.market-pill');
+      if (!pill) return;
+      const all = noticeWrap.querySelector('[data-type="all"]');
+      if (pill.dataset.type === 'all') {
+        noticeWrap.querySelectorAll('.market-pill').forEach(item => {
+          const active = item === pill;
+          item.classList.toggle('active', active);
+          item.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+        return;
+      }
+      pill.classList.toggle('active');
+      pill.setAttribute('aria-pressed', pill.classList.contains('active') ? 'true' : 'false');
+      all?.classList.remove('active');
+      all?.setAttribute('aria-pressed', 'false');
+      if (!noticeWrap.querySelector('.market-pill.active')) {
+        all?.classList.add('active');
+        all?.setAttribute('aria-pressed', 'true');
+      }
+    });
+    btn?.addEventListener('click', runMarketSearch);
     query?.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') openSamSearch();
+      if (event.key === 'Enter') runMarketSearch();
     });
   }
 
