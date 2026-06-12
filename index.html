@@ -970,9 +970,19 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .feat-demo-bars{flex:1;display:flex;flex-direction:column;gap:7px;}
 
 .srcs{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:48px;}
-.srcs-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
 .srcs-label{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:44px;padding-bottom:10px;border-bottom:0.5px solid rgba(255,255,255,0.08);}
 .srcs-label:first-of-type{margin-top:48px;}
+.source-status-panel{margin-top:34px;border:1px solid rgba(255,255,255,0.1);border-radius:16px;background:rgba(255,255,255,0.055);overflow:hidden;}
+.source-status-row{display:grid;grid-template-columns:112px minmax(0,1fr);gap:18px;padding:18px 20px;border-top:1px solid rgba(255,255,255,0.08);}
+.source-status-row:first-child{border-top:none;}
+.source-status-label{font-size:10px;font-weight:850;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.48);padding-top:5px;}
+.source-status-main{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;}
+.source-status-chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.82);font-size:11px;font-weight:720;line-height:1;padding:7px 10px;}
+.source-status-chip.live{background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.26);color:#bbf7d0;}
+.source-status-chip.offline{background:rgba(148,163,184,0.12);border-color:rgba(148,163,184,0.2);color:rgba(226,232,240,0.72);}
+.source-status-chip.soon{background:rgba(255,255,255,0.045);color:rgba(226,232,240,0.66);}
+.source-status-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8;}
+.source-status-note{font-size:13px;line-height:1.6;color:rgba(226,232,240,0.7);max-width:760px;}
 .src{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-xl);padding:22px;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);}
 .src:hover{border-color:rgba(255,255,255,0.16);background:rgba(255,255,255,0.06);transform:translateY(-2px);}
 .src.dim{opacity:0.5;}.src.dim:hover{transform:none;}
@@ -1051,6 +1061,14 @@ footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);co
 #sources h2.sec-head{color:var(--ink);}
 #sources p.sec-sub-light{color:var(--muted);}
 #sources .srcs-label{color:var(--muted2);border-bottom-color:rgba(0,102,204,0.1);}
+#sources .source-status-panel{background:rgba(255,255,255,0.62);border-color:rgba(0,102,204,0.12);box-shadow:0 14px 36px rgba(15,23,42,0.04);}
+#sources .source-status-row{border-top-color:rgba(0,102,204,0.08);}
+#sources .source-status-label{color:var(--muted2);}
+#sources .source-status-chip{background:#fff;border-color:var(--line2);color:var(--ink3);}
+#sources .source-status-chip.live{background:#ecfdf5;border-color:#bbf7d0;color:#047857;}
+#sources .source-status-chip.offline{background:var(--off);border-color:var(--line2);color:var(--muted2);}
+#sources .source-status-chip.soon{background:#f8fafc;border-color:var(--line2);color:var(--muted2);}
+#sources .source-status-note{color:var(--muted);}
 #sources .src{background:rgba(255,255,255,0.72);border-color:rgba(0,102,204,0.12);box-shadow:0 1px 10px rgba(0,66,153,0.03);}
 #sources .src:hover{background:var(--white);border-color:rgba(0,102,204,0.22);box-shadow:0 8px 28px rgba(0,66,153,0.08);}
 #sources .src-phase{color:var(--muted2);}
@@ -1159,7 +1177,9 @@ body.work-mode #quick-links{margin-top:0;}
   #features.sec-white{padding-top:40px;}
   h2.sec-head{font-size:28px;}
   .feats{grid-template-columns:1fr;gap:10px;margin-top:32px;}
-  .srcs-3,.srcs{grid-template-columns:1fr;gap:10px;}
+  .srcs{grid-template-columns:1fr;gap:10px;}
+  .source-status-row{grid-template-columns:1fr;gap:10px;padding:16px;}
+  .source-status-label{padding-top:0;}
   .callout{padding:32px 20px;}
   .cta-strip{padding:56px 20px;}
   .quick-links-grid{grid-template-columns:1fr 1fr;}
@@ -1345,18 +1365,6 @@ body.work-mode #quick-links{margin-top:0;}
 ::selection{background:rgba(0,102,204,0.16);color:var(--ink);}
 ::-moz-selection{background:rgba(0,102,204,0.16);color:var(--ink);}
 
-/* ⌘K chip */
-.kbd-hint{display:inline-flex;align-items:center;gap:3px;flex-shrink:0;opacity:0.85;transition:opacity .15s;}
-.kbd-hint kbd{font-family:'SF Mono','Menlo',monospace;font-size:10.5px;font-weight:600;color:var(--muted);background:var(--off);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:2px 5px;line-height:1.2;min-width:18px;text-align:center;}
-.search-bar:focus-within .kbd-hint{opacity:0;pointer-events:none;}
-.search-bar:has(#search-input:not(:placeholder-shown)) .kbd-hint{display:none;}
-@media (hover:none),(max-width:760px){.kbd-hint{display:none;}}
-
-/* Trust line */
-.hero-trust{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:8px;margin:-6px auto 14px;font-size:11.5px;font-weight:550;color:var(--muted);letter-spacing:.01em;font-variant-numeric:tabular-nums;animation:hero-rise 0.85s 0.2s cubic-bezier(0.16,1,0.3,1) both;white-space:nowrap;}
-.hero-trust b{color:var(--ink3);font-weight:700;}
-.hero-trust .ht-sep{color:var(--line);}
-@media (max-width:760px){.hero-trust{font-size:10.5px;gap:6px;margin-bottom:10px;}}
 @media (max-width:768px){.br-part-search{top:calc(var(--top-chrome) + 50px);margin-left:-2px;margin-right:-2px;}.br-part-search.compact{left:14px;right:14px;max-width:none;margin:0;}}
 
 /* Product polish */
@@ -1512,12 +1520,10 @@ body.work-mode #quick-links{margin-top:0;}
       <div class="search-bar">
         <span class="search-icon">⌕</span>
         <input type="text" id="search-input" placeholder="Search regulations, parts, guidance…" autocomplete="off" spellcheck="false" />
-        <span class="kbd-hint" aria-hidden="true"><kbd id="kbd-meta">⌘</kbd><kbd>K</kbd></span>
         <span class="search-count" id="search-count"></span>
         <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
       </div>
     </div>
-    <div class="hero-trust" id="hero-trust"><b id="ht-docs">2,900+</b>&nbsp;documents<span class="ht-sep">·</span><b id="ht-sources">5</b>&nbsp;sources<span class="ht-sep">·</span><span id="ht-updated">Updated monthly</span></div>
     <div class="hero-command-dock" aria-label="Search modes and live sources">
       <div class="mode-toggle">
         <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
@@ -1725,22 +1731,34 @@ body.work-mode #quick-links{margin-top:0;}
 <!-- SOURCES -->
 <section class="sec sec-dark" id="sources">
   <div class="sec-inner">
-    <p class="eyebrow eyebrow-light fade-up">Data sources</p>
-    <h2 class="sec-head fade-up">Authoritative sources.<br>Always current.</h2>
-    <p class="sec-sub sec-sub-light fade-up">AcqVault pulls from official, primary sources — not summaries, not interpretations.</p>
-    <p class="srcs-label fade-up" style="transition-delay:0.06s;">Live now</p>
-    <div class="srcs-3 fade-up" style="transition-delay:0.1s;">
-      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">Revolutionary Overhaul</div><div class="src-desc">Proposed and interim rules from the Federal Register API — the live, official rulemaking record for the RFO.</div><span class="src-pill src-live">● Live now</span></div>
-      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">R-DFARS</div><div class="src-desc">DoD deviation documents sourced directly from acquisition.gov — one document per R-DFARS part, 46 parts covered.</div><span class="src-pill src-live">● Live now</span></div>
-      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">FAR Companion</div><div class="src-desc">The FAR Companion practice guide, organized in parallel with the RFO structure. Version 2.0, covering 27 parts.</div><span class="src-pill src-live">● Live now</span></div>
-      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">Category Management Buying Guide</div><div class="src-desc">FAR Council beta guide for navigating the buying process and category management pathways, organized into 12 browseable sections.</div><span class="src-pill src-live">● Live now</span></div>
-      <div class="src"><div class="src-phase">Phase 1 — Live</div><div class="src-name">DAFI 63-138</div><div class="src-desc">Department of the Air Force Instruction 63-138, Acquisition of Services, organized by chapter and top-level section.</div><span class="src-pill src-live">● Live now</span></div>
-    </div>
-    <p class="srcs-label fade-up" style="transition-delay:0.14s;">Next up</p>
-    <div class="srcs fade-up" style="transition-delay:0.18s;">
-      <div class="src dim"><div class="src-phase">Offline — Indexing paused</div><div class="src-name">DAF Contracting Compass</div><div class="src-desc">DAF-specific acquisition policy and guidance will return after the source data is indexed cleanly.</div><span class="src-pill src-soon">Offline</span></div>
-      <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">DoD Financial Management Regulation</div><div class="src-desc">The DoD FMR governs financial management policy across the department — 14 volumes covering appropriations to payments.</div><span class="src-pill src-soon">Coming soon</span></div>
-      <div class="src dim"><div class="src-phase">Phase 2 — Coming soon</div><div class="src-name">AFI 63-Series</div><div class="src-desc">AF Program Management regulations — governing life cycle management, program execution, and acquisition oversight.</div><span class="src-pill src-soon">Coming soon</span></div>
+    <p class="eyebrow eyebrow-light fade-up">Source coverage</p>
+    <h2 class="sec-head fade-up">Official sources.<br>Clear status.</h2>
+    <p class="sec-sub sec-sub-light fade-up">A compact view of what is searchable today, what is paused, and what is queued next.</p>
+    <div class="source-status-panel fade-up" style="transition-delay:0.1s;">
+      <div class="source-status-row">
+        <div class="source-status-label">Live</div>
+        <div class="source-status-main">
+          <span class="source-status-chip live">RFO</span>
+          <span class="source-status-chip live">R-DFARS</span>
+          <span class="source-status-chip live">FAR Companion</span>
+          <span class="source-status-chip live">Category Management Buying Guide</span>
+          <span class="source-status-chip live">DAFI 63-138</span>
+        </div>
+      </div>
+      <div class="source-status-row">
+        <div class="source-status-label">Paused</div>
+        <div class="source-status-main">
+          <span class="source-status-chip offline">DAF Contracting Compass</span>
+          <span class="source-status-note">Held offline until its source indexing can be rebuilt cleanly.</span>
+        </div>
+      </div>
+      <div class="source-status-row">
+        <div class="source-status-label">Queued</div>
+        <div class="source-status-main">
+          <span class="source-status-chip soon">DoD FMR</span>
+          <span class="source-status-chip soon">AFI 63-Series</span>
+        </div>
+      </div>
     </div>
     <div class="callout fade-up" style="transition-delay:0.15s;">
       <div class="callout-head">Built alongside the overhaul.<br>Updated as it evolves.</div>
@@ -5151,46 +5169,6 @@ function stRenderAwards(awards) {
       e.preventDefault(); focusSearch();
     }
   });
-})();
-
-/* ══ POLISH — live trust-line stats ══════════════════════════ */
-(function () {
-  const docsEl = document.getElementById('ht-docs');
-  const srcEl  = document.getElementById('ht-sources');
-  const updEl  = document.getElementById('ht-updated');
-  if (!docsEl) return;
-  const CACHE_KEY = 'acqvault:truststats:v1';
-  try {
-    const c = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
-    if (c && Date.now() - c.t < 3600000) { apply(c.v); return; }
-  } catch (e) {}
-  load();
-  async function query(body) {
-    const res = await fetch('/api/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'search', body }) });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
-    return data;
-  }
-  async function load() {
-    let stats = null;
-    try { stats = await query({ q: '', limit: 1, facets: ['source'], sort: ['indexed_at:desc'] }); }
-    catch (e) { try { stats = await query({ q: '', limit: 0, facets: ['source'] }); } catch (e2) { return; } }
-    const v = {
-      total:   stats.estimatedTotalHits || 0,
-      sources: stats.facetDistribution && stats.facetDistribution.source ? Object.keys(stats.facetDistribution.source).length : null,
-      updated: (stats.hits && stats.hits[0] && stats.hits[0].indexed_at) || null
-    };
-    try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), v })); } catch (e) {}
-    apply(v);
-  }
-  function apply(v) {
-    if (v.total) docsEl.textContent = Number(v.total).toLocaleString();
-    if (v.sources) srcEl.textContent = v.sources;
-    if (v.updated) {
-      const d = new Date(v.updated);
-      if (!isNaN(d)) updEl.textContent = 'Updated ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    }
-  }
 })();
 
 /* ══ PART SEARCH — filter sections within Browse view ════════ */
