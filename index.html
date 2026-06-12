@@ -725,6 +725,16 @@ body.work-mode .source-tiles-section{display:none;}
 .br-body .br-l2{padding-left:40px;margin-bottom:4px;color:var(--ink3);}
 .br-body .br-l3{padding-left:60px;margin-bottom:3px;color:var(--muted);}
 .br-body .br-l4{padding-left:80px;margin-bottom:3px;color:var(--muted);}
+.br-body .br-dafi-row{display:grid;grid-template-columns:minmax(62px,max-content) minmax(0,1fr);gap:12px;align-items:start;margin:9px 0;line-height:1.68;}
+.br-body .br-dafi-l0{margin:2px 0 16px;padding-bottom:14px;border-bottom:1px solid var(--line2);}
+.br-body .br-dafi-l1{margin-top:12px;}
+.br-body .br-dafi-l2{margin-left:26px;color:var(--ink3);}
+.br-body .br-dafi-l3{margin-left:52px;color:var(--muted);}
+.br-body .br-dafi-l4{margin-left:78px;color:var(--muted);}
+.br-body .br-dafi-num{font-family:'SF Mono','Menlo',monospace;font-size:11px;font-weight:750;line-height:1.35;color:#9f1239;background:#fff1f2;border:1px solid rgba(190,18,60,0.14);border-radius:6px;padding:4px 6px;text-align:center;white-space:nowrap;}
+.br-body .br-dafi-text{margin:0;min-width:0;}
+.br-body .br-dafi-l0 .br-dafi-num{background:rgba(0,102,204,0.08);border-color:rgba(0,102,204,0.15);color:var(--accent);}
+.br-body .br-dafi-l0 .br-dafi-text{font-weight:520;color:var(--ink);}
 .br-divider{height:1px;background:var(--line2);margin:32px 0;}
 .browse-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;text-align:center;padding:60px 24px;}
 .browse-empty-icon{font-size:32px;margin-bottom:16px;opacity:0.18;}
@@ -2132,8 +2142,17 @@ function isBrowseHeadingLine(line, source) {
   return /^(Disclaimer|How to Navigate the FAR Companion|Organization Structure|Quick Navigation Tips|Citation System)$/i.test(t);
 }
 
+function isDafiSource(source) {
+  return source === 'afi-63-138';
+}
+
+function dafiParagraphMatch(line) {
+  return String(line || '').trim().match(/^(\d+\.\d+(?:\.\d+)*)\.\s+(.+)/);
+}
+
 function isBrowseBlockStart(line, source) {
   const t = (line || '').trim();
+  if (isDafiSource(source) && dafiParagraphMatch(t)) return true;
   return /^L\d:/.test(t) || /^[●○]\s+/.test(t) || /^(?:o|▪)\s+/.test(t) || /^Step\s+\d+:/i.test(t) || /^\d+\.\s+/.test(t) || /^Part\s+\d+\s*[-–]/i.test(t) || isBrowseHeadingLine(t, source);
 }
 
@@ -2387,6 +2406,14 @@ function renderContentLine(line, baseCitation, source) {
 
   const t = line.trim();
   if (!t || isBrowsePageNumberLine(t)) return '';
+
+  const dafiM = isDafiSource(source) ? dafiParagraphMatch(t) : null;
+  if (dafiM) {
+    const num = dafiM[1];
+    const text = dafiM[2];
+    const level = Math.max(0, Math.min(4, num.split('.').length - 2));
+    return `<div class="br-dafi-row br-dafi-l${level}"><span class="br-dafi-num">${esc(num)}</span><p class="br-dafi-text">${esc(text)}</p></div>`;
+  }
 
   if (isCategoryGuide(source)) {
     const stepM = t.match(/^Step\s+(\d+):\s*(.*)/i);
