@@ -412,7 +412,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--top-chrome) + 26px);}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--white);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 a{color:inherit;text-decoration:none;}
 button,input,textarea{font-family:inherit;}
@@ -462,6 +462,7 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(0,102,204
 .nav-center{justify-self:center;display:flex;gap:3px;align-items:center;background:rgba(246,248,250,0.72);border:1px solid rgba(0,102,204,0.08);border-radius:999px;padding:3px;}
 .nav-center a{font-size:12px;font-weight:650;color:var(--muted);padding:6px 11px;border-radius:999px;transition:color 0.15s,background 0.15s,box-shadow 0.15s;white-space:nowrap;}
 .nav-center a:hover{color:var(--accent);background:#fff;box-shadow:0 1px 5px rgba(0,66,153,0.08);}
+.nav-center a.active{color:var(--accent);background:rgba(0,102,204,0.08);box-shadow:0 1px 5px rgba(0,66,153,0.08);}
 .nav-right{justify-self:end;display:flex;align-items:center;gap:7px;}
 .nav-feedback-btn{font-size:12px;font-weight:650;background:rgba(246,248,250,0.82);border:1px solid rgba(0,102,204,0.12);color:var(--muted);padding:7px 13px;border-radius:999px;cursor:pointer;transition:all 0.15s;}
 .nav-feedback-btn:hover{background:#fff;border-color:rgba(0,102,204,0.24);color:var(--accent);transform:translateY(-1px);}
@@ -925,7 +926,8 @@ body.reader-mode #reader-page{display:block;}
 .reader-content.is-filtered .dc-text{scroll-margin-top:80px;}
 
 /* ── HOMEPAGE SECTIONS ── */
-.sec{padding:88px 48px;}
+.sec{padding:88px 48px;scroll-margin-top:calc(var(--top-chrome) + 26px);}
+#toolkit,#features,#sources,#quick-links,#spending-dashboard{scroll-margin-top:calc(var(--top-chrome) + 26px);}
 .sec-white{background:var(--white);}
 .sec-off{background:var(--off);}
 .sec-dark{background:var(--ink);color:#fff;}
@@ -992,18 +994,14 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .src-pill{display:inline-block;margin-top:16px;font-size:10px;font-weight:700;letter-spacing:0.04em;padding:3px 10px;border-radius:980px;}
 .src-live{background:rgba(22,163,74,0.14);color:#4ade80;border:0.5px solid rgba(74,222,128,0.2);}
 .src-soon{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.28);border:0.5px solid rgba(255,255,255,0.1);}
-.callout{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-2xl);padding:48px;margin-top:56px;text-align:center;}
+.callout{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-2xl);padding:40px 48px;margin-top:40px;text-align:center;}
 .callout-head{font-size:30px;font-weight:700;letter-spacing:-0.04em;color:#fff;margin-bottom:10px;line-height:1.1;}
-.callout-sub{font-size:16px;color:rgba(255,255,255,0.44);margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.55;}
-.callout-btn{display:inline-block;font-size:14px;font-weight:600;background:#fff;color:var(--ink);padding:12px 26px;border-radius:980px;text-decoration:none;transition:all 0.15s;}
-.callout-btn:hover{background:rgba(255,255,255,0.88);transform:translateY(-1px);}
+.callout-sub{font-size:16px;color:rgba(255,255,255,0.44);max-width:520px;margin-left:auto;margin-right:auto;line-height:1.55;}
 
-.cta-strip{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);border-top:1px solid rgba(0,102,204,0.08);border-bottom:1px solid rgba(0,102,204,0.08);padding:72px 48px;text-align:center;}
+.cta-strip{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);border-top:1px solid rgba(0,102,204,0.08);border-bottom:1px solid rgba(0,102,204,0.08);padding:54px 48px;text-align:center;}
 .cta-head{font-size:clamp(28px,3.5vw,44px);font-weight:700;letter-spacing:-0.05em;line-height:1.07;margin-bottom:16px;color:var(--ink);}
-.cta-sub{font-size:17px;color:var(--muted);letter-spacing:-0.01em;margin-bottom:36px;}
-.cta-meta{font-size:12px;color:var(--muted2);margin-top:14px;}
-.btn-primary{font-size:15px;font-weight:600;background:var(--accent);color:#fff;padding:13px 26px;border-radius:980px;text-decoration:none;transition:all 0.15s;display:inline-block;box-shadow:0 2px 12px rgba(0,102,204,0.28);}
-.btn-primary:hover{background:var(--accent-h);transform:translateY(-1px);box-shadow:0 4px 18px rgba(0,102,204,0.38);}
+.cta-sub{font-size:17px;color:var(--muted);letter-spacing:-0.01em;margin:0 auto;max-width:620px;line-height:1.6;}
+.cta-meta{font-size:12px;color:var(--muted2);margin-top:16px;}
 
 .sec-light{background:var(--off);}
 #features.sec-white{position:relative;overflow:hidden;background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 48%,#f6f8fa 100%);border-top:1px solid rgba(0,102,204,0.08);border-bottom:1px solid rgba(0,102,204,0.08);padding-top:48px;}
@@ -1061,7 +1059,7 @@ footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);co
 #sources h2.sec-head{color:var(--ink);}
 #sources p.sec-sub-light{color:var(--muted);}
 #sources .srcs-label{color:var(--muted2);border-bottom-color:rgba(0,102,204,0.1);}
-#sources .source-status-panel{background:rgba(255,255,255,0.62);border-color:rgba(0,102,204,0.12);box-shadow:0 14px 36px rgba(15,23,42,0.04);}
+#sources .source-status-panel{background:linear-gradient(180deg,rgba(255,255,255,0.78),rgba(248,251,255,0.66));border-color:rgba(0,102,204,0.14);box-shadow:0 1px 0 rgba(255,255,255,0.86) inset,0 14px 36px rgba(15,23,42,0.05);}
 #sources .source-status-row{border-top-color:rgba(0,102,204,0.08);}
 #sources .source-status-label{color:var(--muted2);}
 #sources .source-status-chip{background:#fff;border-color:var(--line2);color:var(--ink3);}
@@ -1080,8 +1078,6 @@ footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);co
 #sources .callout{background:rgba(255,255,255,0.72);border-color:rgba(0,102,204,0.12);box-shadow:0 10px 34px rgba(0,66,153,0.06);}
 #sources .callout-head{color:var(--ink);}
 #sources .callout-sub{color:var(--muted);}
-#sources .callout-btn{background:var(--accent);color:#fff;box-shadow:0 2px 12px rgba(0,102,204,0.25);}
-#sources .callout-btn:hover{background:var(--accent-h);color:#fff;}
 
 .fade-up{opacity:0;transform:translateY(18px);transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1),transform 0.6s cubic-bezier(0.16,1,0.3,1);}
 .fade-up.in{opacity:1;transform:translateY(0);}
@@ -1089,7 +1085,7 @@ footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);co
 .fade-up.d2{transition-delay:0.14s;}
 
 /* Consistent homepage section rhythm */
-.sec{padding:72px 48px;}
+.sec{padding:72px 48px;scroll-margin-top:calc(var(--top-chrome) + 26px);}
 .source-tiles-section{padding-top:26px;padding-bottom:26px;}
 #quick-links,#toolkit,#spending-dashboard,#features,#sources{border-top:1px solid rgba(0,102,204,0.08);}
 #quick-links + #toolkit,#toolkit + #spending-dashboard,#spending-dashboard + #features,#features + #sources{margin-top:0;}
@@ -1763,7 +1759,6 @@ body.work-mode #quick-links{margin-top:0;}
     <div class="callout fade-up" style="transition-delay:0.15s;">
       <div class="callout-head">Built alongside the overhaul.<br>Updated as it evolves.</div>
       <div class="callout-sub">The RFO is a living initiative. AcqVault re-indexes monthly so you're always searching the current version of the reform.</div>
-      <a href="#" class="callout-btn" onclick="document.getElementById('search-input').focus();window.scrollTo({top:0,behavior:'smooth'});return false;">Start searching →</a>
     </div>
   </div>
 </section>
@@ -1772,7 +1767,6 @@ body.work-mode #quick-links{margin-top:0;}
   <div class="fade-up">
     <h2 class="cta-head">Free. Open. Current.</h2>
     <p class="cta-sub">No cost, no ads, no AI summaries. Just acquisition documents — searchable, organized, always up to date.</p>
-    <a href="#" class="btn-primary" style="font-size:16px;padding:14px 32px;" onclick="document.getElementById('search-input').focus();window.scrollTo({top:0,behavior:'smooth'});return false;">Start searching</a>
     <p class="cta-meta">Free and open to the acquisition community. No account required.</p>
   </div>
 </div>
@@ -4737,6 +4731,33 @@ function stRenderAwards(awards) {
       a.href = '#toolkit'; a.textContent = 'Toolkit';
       navCenter.insertBefore(a, navCenter.firstChild);
     }
+    initHomeNavPolish();
+  }
+
+  function initHomeNavPolish() {
+    const links = Array.from(document.querySelectorAll('nav .nav-center a[href^="#"]'));
+    if (!links.length) return;
+    function setActive(id) {
+      links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + id));
+    }
+    links.forEach(link => {
+      link.addEventListener('click', (event) => {
+        const id = link.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (!target) return;
+        event.preventDefault();
+        const y = target.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 26;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        history.replaceState(null, '', '#' + id);
+        setActive(id);
+      });
+    });
+    const observed = links.map(link => document.getElementById(link.getAttribute('href').slice(1))).filter(Boolean);
+    const io = new IntersectionObserver((entries) => {
+      const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target?.id) setActive(visible.target.id);
+    }, { rootMargin: '-38% 0px -52% 0px', threshold: [0.01, 0.18, 0.35] });
+    observed.forEach(section => io.observe(section));
   }
 
   /* ════════════════════════════════════════════════════════════
