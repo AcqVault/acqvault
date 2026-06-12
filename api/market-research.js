@@ -59,13 +59,17 @@ function opportunityHaystack(item) {
   ].filter(Boolean).join(' ').toLowerCase();
 }
 
+function hasWord(text, term) {
+  return new RegExp(`(^|[^a-z0-9])${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`, 'i').test(String(text || ''));
+}
+
 function scoreOpportunity(item, terms) {
   if (!terms.length) return 1;
   const title = String(item.title || '').toLowerCase();
   const haystack = opportunityHaystack(item);
   return terms.reduce((score, term) => {
-    if (title.includes(term)) return score + 3;
-    if (haystack.includes(term)) return score + 1;
+    if (hasWord(title, term)) return score + 3;
+    if (hasWord(haystack, term)) return score + 1;
     return score;
   }, 0);
 }
@@ -183,7 +187,9 @@ module.exports = async function handler(req, res) {
     };
 
     let responses = await Promise.all(makeRequests(base.query));
-    let opportunities = mergeResponses(responses).slice(0, limit);
+    let opportunities = mergeResponses(responses);
+    if (queryTerms(base.query).length) opportunities = opportunities.filter(item => item._score > 0);
+    opportunities = opportunities.slice(0, limit);
     if (!opportunities.length && queryTerms(base.query).length > 1) {
       const terms = queryTerms(base.query);
       const termLimit = Math.max(perRequestLimit, Math.ceil(limit / Math.max(1, terms.length)));
