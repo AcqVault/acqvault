@@ -781,6 +781,17 @@ body.work-mode .source-tiles-section{display:none;}
 .cm-vehicle-table td:first-child{width:15%;font-weight:850;color:var(--cm-txt);background:#f0f9ff;}
 .cm-vehicle-table td:nth-child(2){width:31%;font-weight:760;color:var(--ink);}
 .cm-vehicle-table td:nth-child(4){width:12%;font-weight:760;color:var(--muted);}
+.dafi-native-table{margin:24px 0 28px;border:1px solid rgba(190,18,60,0.14);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 10px 28px rgba(15,23,42,0.04);}
+.dafi-native-title{display:flex;align-items:center;gap:8px;padding:13px 15px;background:#fff1f2;border-bottom:1px solid rgba(190,18,60,0.12);font-size:13px;font-weight:850;color:#9f1239;line-height:1.25;}
+.dafi-native-title span{font-family:'SF Mono','Menlo',monospace;font-size:10px;font-weight:850;letter-spacing:0.04em;text-transform:uppercase;background:#fff;border:1px solid rgba(190,18,60,0.16);border-radius:999px;padding:3px 7px;}
+.dafi-table-wrap{overflow-x:auto;}
+.dafi-table{width:100%;min-width:760px;border-collapse:separate;border-spacing:0;}
+.dafi-table th{background:#142f4d;color:#fff;text-align:left;font-size:11px;font-weight:850;letter-spacing:0.035em;text-transform:uppercase;line-height:1.25;padding:11px 12px;vertical-align:bottom;}
+.dafi-table td{vertical-align:top;padding:12px;border-top:1px solid var(--line2);font-size:12.5px;line-height:1.45;color:var(--ink2);white-space:pre-line;}
+.dafi-table td:first-child{font-weight:850;color:var(--ink);background:#fff7f8;white-space:normal;}
+.dafi-table tr:nth-child(even) td:not(:first-child){background:#fbfdff;}
+.dafi-table-notes{border-top:1px solid var(--line2);padding:12px 15px;background:#fbfdff;color:var(--muted2);font-size:12px;line-height:1.5;}
+.dafi-table-notes strong{display:block;color:var(--ink);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:5px;}
 .cm-category-index{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:18px 0 26px;}
 .cm-category-index button{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line2);background:#fff;border-radius:10px;padding:12px 13px;text-align:left;cursor:pointer;color:var(--ink);font-size:13.5px;font-weight:760;transition:border-color .15s,background .15s,color .15s;}
 .cm-category-index button:hover{background:var(--accent-soft);border-color:rgba(0,102,204,0.2);color:var(--accent);}
@@ -2378,6 +2389,94 @@ function categoryGuideVisualAfterLine(source, partNum, line, flags) {
   return '';
 }
 
+const DAFI_TABLES = {
+  '2.1': {
+    title: 'United States Air Force (USAF) SADAs by S-CAT',
+    headers: ['S-CAT Level', 'Threshold', 'MAJCOM/FOA/DRU Structure w/ Signed SMA', 'Secretariat & Air Staff Structure w/ Signed SMA', 'Systems PEO/TEO Structure'],
+    rows: [
+      ['S-CAT I', 'Est. total value:\n> $1B or\n> $300M in any one year', 'AFPEO/CM\nDelegable no lower than GO/SES', 'As designated by USD(A&S), SAF/AQ, or AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than GO/SES'],
+      ['S-CAT II', 'Est. total value:\n> $250M but < $1B', 'AFPEO/CM\nDelegable no lower than GO/SES', 'AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than GO/SES'],
+      ['S-CAT III', 'Est. total value:\n> $100M but < $250M', 'AFPEO/CM\nDelegable no lower than GO/SES', 'AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than Senior Materiel Leader (SML) or O-6/GS-15 equivalent'],
+      ['S-CAT IV', 'Est. total value:\n> $10M but < $100M', 'MAJCOM/FOA/DRU CC/CD/CV/CA\nDelegable to Wing/Directorate CC/CV or O-6/GS-15 equivalent', 'SAF/MG or AFPEO/CM\nDelegable to no lower than the 2-letter principal or deputy', 'S-PEO/TEO or Deputy PEO/TEO\nDelegable to no lower than Materiel Leader (ML) or O-5/GS-14 equivalent'],
+      ['S-CAT V', 'Est. total value:\n> SAT but < $10M', 'MAJCOM/FOA/DRU CC/CD/CV/CA\nDelegable to Squadron/Division CC or O-4/GS-13 equivalent. >SAT but < $5M may be delegated to an AWF functional per DoDI 5000.66.', 'SAF/MG or AFPEO/CM\nDelegable to no lower than 3-letter GO/SES', 'S-PEO/TEO or Deputy PEO/TEO\nDelegable no lower than ML or O-5/GS-14 equivalent']
+    ],
+    notes: 'Special Interest Items are designated by USD(A&S) or designee. Delegations beyond the table require waiver. Delegations must be documented in writing and maintained by the parent organization.'
+  },
+  '2.2': {
+    title: 'United States Space Force (USSF) SADAs by S-CAT',
+    headers: ['S-CAT Level', 'Threshold', 'FLDCOM Structure w/ Signed SMA', 'Space Staff Structure w/ Signed SMA', 'Systems PEO/TEO Structure'],
+    rows: [
+      ['S-CAT I', 'Est. total value:\n> $1B or\n> $300M in any one year', 'AFPEO/CM\nDelegable no lower than GO/SES', 'As designated by USD(A&S), SAF/SQ, or AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than GO/SES'],
+      ['S-CAT II', 'Est. total value:\n> $250M but < $1B', 'AFPEO/CM\nDelegable no lower than GO/SES', 'AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than GO/SES'],
+      ['S-CAT III', 'Est. total value:\n> $100M but < $250M', 'AFPEO/CM\nDelegable no lower than GO/SES', 'AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than SML or O-6/GS-15 equivalent'],
+      ['S-CAT IV', 'Est. total value:\n> $10M but < $100M', 'FLDCOM CC/CD/CV/CA\nDelegable to HQ Director, Delta CC, SBD CC/CV, SML/ML, or O-6/GS-15 equivalent', 'SF/DS or AFPEO/CM\nDelegable to no lower than the 2-letter principal or deputy', 'S-PEO/TEO or Deputy PEO/TEO\nDelegable to no lower than ML or O-5/GS-14 equivalent'],
+      ['S-CAT V', 'Est. total value:\n> SAT but < $10M', 'FLDCOM CC/CD/CV/CA\nDelegable to Squadron/Division CC or O-4/GS-13 equivalent. >SAT but < $5M may be delegated to an AWF functional per DoDI 5000.66.', 'SF/DS or AFPEO/CM\nDelegable to no lower than 3-letter principal or deputy', 'S-PEO/TEO or Deputy PEO/TEO\nDelegable no lower than ML or O-5/GS-14 equivalent']
+    ],
+    notes: 'Special Interest Items are designated by USD(A&S) or designee. For acquisitions supporting multiple FLDCOMs or Space Staff organizations, the executing organization SADA is the decision authority.'
+  },
+  '2.3': {
+    title: 'Certification Levels for PMs/SALs',
+    headers: ['S-CAT', 'Role', 'Program Value', 'Certification / Credential'],
+    rows: [
+      ['S-CAT I*', 'Program Manager', 'Est. > $1B or > $300M in any one year', 'DAWIA PM Advanced Certification'],
+      ['S-CAT II', 'Program Manager', 'Est. total value:\n> $250M but < $1B', 'DAWIA PM Practitioner Certification'],
+      ['S-CAT III', 'Program Manager', 'Est. total value:\n> $100M but < $250M', 'DAWIA PM Practitioner Certification'],
+      ['S-CAT IV', 'Services Acquisition Lead', 'Est. total value:\n> $10M but < $100M', 'DAU Services Acquisition Team Member Credential'],
+      ['S-CAT V', 'Services Acquisition Lead', 'Est. total value:\n> SAT but < $10M', 'DAU Services Acquisition Team Member Credential']
+    ],
+    notes: 'PM billets must be coded as Program Manager acquisition positions. SADAs may appoint DAWIA-certified PMs to S-CAT IV/V based on risk, complexity, and availability. SALs should achieve the credential within six months.'
+  },
+  '3.1': {
+    title: 'USAF Requirements Approval Authority',
+    headers: ['Services Category', 'Requirement Value', 'MAJCOM/DRU/FOA Structure', 'Secretariat & Air Staff Structure', 'System PEO/TEO Structure'],
+    rows: [
+      ['Special Interest', 'All dollar values', 'As designated by USD(A&S), SAF/AQ, or AFPEO/CM', 'As designated by USD(A&S), SAF/AQ, or AFPEO/CM', 'As designated by USD(A&S), SAF/AQ, or AFPEO/CM'],
+      ['S-CAT I', 'Est. total value:\n> $1B or\n> $300M in any one year', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG', 'S-PEO/TEO (delegable)'],
+      ['S-CAT II', 'Est. total value:\n> $250M but < $1B', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG', 'S-PEO/TEO (delegable)'],
+      ['S-CAT III', 'Est. total value:\n> $100M but < $250M', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG', 'S-PEO/TEO (delegable)'],
+      ['S-CAT IV', 'Est. total value:\n> $10M but < $100M', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG (delegable)', 'S-PEO/TEO or Deputy (delegable)'],
+      ['S-CAT V', 'Est. total value:\n> SAT but < $10M', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG (delegable)', 'S-PEO/TEO or Deputy (delegable)']
+    ],
+    notes: 'All requirements greater than or equal to the SAT require an approved RAD signed by the RAA indicated by dollar threshold or as delegated.'
+  },
+  '3.2': {
+    title: 'USSF Requirements Approval Authority',
+    headers: ['Services Category', 'Requirement Value', 'FLDCOM Structure', 'Space Staff Structure', 'System PEO/TEO Structure'],
+    rows: [
+      ['Special Interest', 'All dollar values', 'As designated by USD(A&S), SAF/SQ, or AFPEO/CM', 'As designated by USD(A&S), SAF/SQ, or AFPEO/CM', 'As designated by USD(A&S), SAF/SQ, or AFPEO/CM'],
+      ['S-CAT I', 'Est. total value:\n> $1B or\n> $300M in any one year', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS', 'S-PEO/TEO (delegable)'],
+      ['S-CAT II', 'Est. total value:\n> $250M but < $1B', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS', 'S-PEO/TEO (delegable)'],
+      ['S-CAT III', 'Est. total value:\n> $100M but < $250M', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS', 'S-PEO/TEO (delegable)'],
+      ['S-CAT IV', 'Est. total value:\n> $10M but < $100M', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS (delegable)', 'S-PEO/TEO or Deputy (delegable)'],
+      ['S-CAT V', 'Est. total value:\n> SAT but < $10M', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS (delegable)', 'S-PEO/TEO or Deputy (delegable)']
+    ],
+    notes: 'IT and Enterprise Data Management requirements must be coordinated with the Chief Technology and Innovation Officer before approval per the CSO delegation memo.'
+  }
+};
+
+function dafiTableKey(line) {
+  const t = String(line || '').trim();
+  if (/^Table\s+2\.1\.\s+United States Air Force/i.test(t)) return '2.1';
+  if (/^Table\s+2\.2\.\s+United States Space Force/i.test(t)) return '2.2';
+  if (/^Table\s+2\.3\.\s+Certification Levels/i.test(t)) return '2.3';
+  if (/^Table\s+3\.1\.\s+USAF Requirements/i.test(t)) return '3.1';
+  if (/^Table\s+3\.2\.\s+USSF Requirements/i.test(t)) return '3.2';
+  return '';
+}
+
+function dafiNativeTableHTML(key) {
+  const t = DAFI_TABLES[key];
+  if (!t) return '';
+  return `<div class="dafi-native-table">
+    <div class="dafi-native-title"><span>Table ${esc(key)}</span>${esc(t.title)}</div>
+    <div class="dafi-table-wrap"><table class="dafi-table">
+      <thead><tr>${t.headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
+      <tbody>${t.rows.map(row => `<tr>${row.map(cell => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table></div>
+    ${t.notes ? `<div class="dafi-table-notes"><strong>Notes</strong>${esc(t.notes)}</div>` : ''}
+  </div>`;
+}
+
 function renderContentLine(line, baseCitation, source) {
   const lm = line.match(/^L(\d):(.*)/);
   if (lm) {
@@ -2408,6 +2507,8 @@ function renderContentLine(line, baseCitation, source) {
   if (!t || isBrowsePageNumberLine(t)) return '';
 
   const dafiM = isDafiSource(source) ? dafiParagraphMatch(t) : null;
+  const tableKey = isDafiSource(source) ? dafiTableKey(t) : '';
+  if (tableKey) return dafiNativeTableHTML(tableKey);
   if (dafiM) {
     const num = dafiM[1];
     const text = dafiM[2];
@@ -2480,6 +2581,7 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
   let current = null;
   let skippingGuideGraphicText = false;
   let skippingGuideVehicleText = false;
+  let skippingDafiTableText = false;
 
   function flush() {
     if (current && current.text.trim()) blocks.push(current.text.trim());
@@ -2490,6 +2592,23 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
     const line = (raw || '').trim();
     if (!line) { flush(); return; }
     if (isBrowsePageNumberLine(line)) return;
+
+    if (isDafiSource(source)) {
+      const tableKey = dafiTableKey(line);
+      if (tableKey) {
+        flush();
+        blocks.push(line);
+        skippingDafiTableText = true;
+        return;
+      }
+      if (skippingDafiTableText) {
+        if (dafiParagraphMatch(line)) {
+          skippingDafiTableText = false;
+        } else {
+          return;
+        }
+      }
+    }
 
     if (source === 'category-management') {
       if (Number(partNum) >= 3 && /^Types of Vehicles\b/i.test(line)) {
@@ -4317,7 +4436,12 @@ function stRenderAwards(awards) {
     SOW: ['Statement of Work'],
     SOO: ['Statement of Objectives'],
     QASP: ['Quality Assurance Surveillance Plan'],
+    QAPC: ['Quality Assurance Program Coordinator', 'DAFI 63-138'],
     COR: ['Contracting Officer\u2019s Representative'],
+    'C-COR': ['Chief Contracting Officer\u2019s Representative', 'DAFI 63-138'],
+    CO: ['Contracting Officer'],
+    CORT: ['Contracting Officer\u2019s Representative Tracking'],
+    CPAR: ['Contract Performance Assessment Report'],
     PCO: ['Procuring Contracting Officer'],
     ACO: ['Administrative Contracting Officer'],
     TCO: ['Termination Contracting Officer'],
@@ -4358,8 +4482,23 @@ function stRenderAwards(awards) {
     OCI: ['Organizational Conflict of Interest', 'FAR 9.5'],
     DCAA: ['Defense Contract Audit Agency'],
     DCMA: ['Defense Contract Management Agency'],
+    DAFFARS: ['Department of the Air Force Federal Acquisition Regulation Supplement'],
+    DAFI: ['Department of the Air Force Instruction'],
+    DAWIA: ['Defense Acquisition Workforce Improvement Act'],
     DLA: ['Defense Logistics Agency'],
     DAU: ['Defense Acquisition University'],
+    DoDI: ['Department of Defense Instruction'],
+    DRU: ['Direct Reporting Unit'],
+    DS: ['Director of Staff'],
+    ESIS: ['Early Strategy and Issues Session'],
+    FFRDC: ['Federally Funded Research and Development Center'],
+    FLDCOM: ['Field Command'],
+    FM: ['Financial Management'],
+    FOA: ['Field Operating Agency'],
+    FS: ['Fiscal Service'],
+    FSM: ['Functional Services Manager'],
+    'GO/SES': ['General Officer / Senior Executive Service'],
+    HAF: ['Headquarters Air Force', 'Secretariat, Air Staff, and Space Staff'],
     GAO: ['Government Accountability Office', 'Bid protest forum'],
     ODC: ['Other Direct Costs'],
     'G&A': ['General and Administrative expense'],
@@ -4395,9 +4534,53 @@ function stRenderAwards(awards) {
     LRIP: ['Low-Rate Initial Production'],
     FRP: ['Full-Rate Production'],
     AoA: ['Analysis of Alternatives'],
+    AER: ['Annual Execution Review', 'DAFI 63-138'],
+    AFI: ['Air Force Instruction'],
+    AFIMSC: ['Air Force Installation and Mission Support Center'],
+    AFPD: ['Air Force Policy Directive'],
+    ANG: ['Air National Guard'],
+    AP: ['Acquisition Plan'],
+    ASP: ['Acquisition Strategy Panel'],
     PEO: ['Program Executive Officer'],
     MDA: ['Milestone Decision Authority'],
+    MFT: ['Multi-Functional Team', 'DAFI 63-138'],
+    MIPR: ['Military Interdepartmental Purchase Request'],
+    ML: ['Materiel Leader'],
+    MOA: ['Memorandum of Agreement'],
+    MP: ['Mandatory Procedure'],
+    OAC: ['Operating Agency Codes'],
+    OCSO: ['Office of the Chief of Space Operations'],
+    OSD: ['Office of the Secretary of Defense'],
+    RAA: ['Requirements Approval Authority', 'DAFI 63-138'],
+    RAD: ['Requirements Approval Document', 'DAFI 63-138'],
+    SA: ['Services Advocate', 'DAFI 63-138'],
+    SADA: ['Services Acquisition Decision Authority', 'DAFI 63-138'],
+    SAE: ['Service Acquisition Executive', 'DAFI 63-138'],
+    SAL: ['Services Acquisition Lead', 'DAFI 63-138'],
+    SAW: ['Services Acquisition Workshop'],
+    SB: ['Small Business'],
+    'S-CAT': ['Services Category', 'DAFI 63-138'],
+    SDO: ['Services Designated Official', 'Former term for SADA'],
+    SMA: ['Services Management Agreement', 'DAFI 63-138'],
+    SME: ['Subject Matter Expert'],
+    SML: ['Senior Materiel Leader'],
+    SMT: ['Strategic Management Tool'],
+    'S-PEO': ['Systems Program Executive Officer', 'DAFI 63-138'],
+    SPM: ['Surveillance and Performance Monitoring Module', 'PIEE module'],
+    SRR: ['Services Requirements Review'],
+    SRRB: ['Services Requirements Review Board'],
+    SS: ['Services Summary'],
+    SSM: ['Senior Services Manager'],
+    TEO: ['Technology Executive Officer'],
+    USecAF: ['Under Secretary of the Air Force'],
+    USSF: ['United States Space Force'],
+    VCSAF: ['Vice Chief of Staff of the Air Force'],
+    VCSO: ['Vice Chief of Space Operations'],
     'SAF/AQ': ['Asst. Secretary of the AF for Acquisition, Technology & Logistics'],
+    'SAF/AA': ['Administrative Assistant to the Secretary of the Air Force'],
+    'SAF/MG': ['Deputy Under Secretary of the Air Force (Management)'],
+    'SAF/SQ': ['Assistant Secretary of the Air Force (Space Acquisition and Integration)'],
+    'SF/DS': ['Space Force Director of Staff'],
     AFMC: ['Air Force Materiel Command'],
     AFLCMC: ['Air Force Life Cycle Management Center'],
     AFICC: ['Air Force Installation Contracting Center'],
