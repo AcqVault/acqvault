@@ -8,6 +8,7 @@ Sources handled:
   RFO/           — single PDF, chunked by detected FAR Part sections
   FAR Companion/ — single PDF, chunked by detected FC Part sections
   Category Management/ — single PDF, chunked by buying guide category
+  DAFI 63-138/   — single PDF, chunked by DAFI chapter sections
   R-DFARS/       — 46 individual PDFs, one document per file
 
 Requirements:
@@ -55,6 +56,12 @@ SOURCES = {
         "source_key":  "category-management",
         "mode":        "single",
         "chunk_regex": r"(?:^|\n)\s*((?:Overview|Buying Pathway|Facilities & Construction|Human Capital|Industrial Products and Services|Information Technology|Medical|Office Management|Professional Services|Security & Protection|Transportation & Logistics Services|Travel)\b[^\n]{0,80})",
+    },
+    "afi-63-138": {
+        "path":        BASE_DIR / "DAFI 63-138",
+        "label":       "DAFI 63-138 Acquisition of Services",
+        "source_key":  "afi-63-138",
+        "mode":        "dafi",
     },
     "r-dfars": {
         "path":        BASE_DIR / "R-DFARS",
@@ -128,6 +135,125 @@ def clean_text(text):
     text = re.sub(r"\n{3,}", "\n\n", text)
     text = re.sub(r"[ \t]{2,}", " ", text)
     return text.strip()
+
+
+def clean_dafi_text(text):
+    """Remove DAFI PDF headers/footers while preserving paragraph line breaks."""
+    lines = []
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            lines.append("")
+            continue
+        if re.match(r"^\d+\s+DAFI63-138\s+2\s+JANUARY\s+2024$", line, re.I):
+            continue
+        if re.match(r"^DAFI63-138\s+2\s+JANUARY\s+2024\s+\d+$", line, re.I):
+            continue
+        lines.append(line)
+    return clean_text("\n".join(lines))
+
+
+def process_dafi_source(cfg):
+    """Handle DAFI 63-138 by top-level instruction sections."""
+    section_titles = {
+        "1.1": "Purpose",
+        "1.2": "Applicability",
+        "1.3": "Waivers",
+        "2.1": "Overview",
+        "2.2": "Service Acquisition Executive (SAE)",
+        "2.3": "DAF Senior Services Manager (SSM)",
+        "2.4": "AF Program Executive Officer for Combat and Mission Support (AFPEO/CM)",
+        "2.5": "Services Acquisition Decision Authority (SADA)",
+        "2.6": "Services Advocate (SA)",
+        "2.7": "The Systems Program Executive Officer/Technology Executive Officer (S-PEO/TEO)",
+        "2.8": "MAJCOM/FLDCOM/DRU/FOA Commander, Deputy Commander, Vice Commander, or Executive Director",
+        "2.9": "Requirements Approval Authority (RAA)",
+        "2.10": "Multi-Functional Team (MFT)",
+        "2.11": "Program Manager (PM)/Services Acquisition Lead (SAL)",
+        "2.12": "Contracting Officer (CO)",
+        "2.13": "Contracting Officer's Representative (COR)",
+        "2.14": "Chief Contracting Officer's Representative (C-COR)",
+        "2.15": "COR Supervisor",
+        "2.16": "Quality Assurance Program Coordinator (QAPC)",
+        "3.1": "Overview",
+        "3.2": "Requirement Identification",
+        "3.3": "Requirement Review and Documentation",
+        "3.4": "Other RAD Considerations",
+        "3.5": "Acquisitions with Different Execution and Funding Organizations",
+        "3.6": "Amended Requirements",
+        "4.1": "Overview",
+        "4.2": "Acquisition Planning (Steps 1 and 2)",
+        "4.3": "Market and Enterprise Research (Step 3)",
+        "4.4": "Early Strategy and Issues Session (ESIS)",
+        "4.5": "Requirements Definition (Step 4)",
+        "4.6": "Acquisition Strategy (Step 5)",
+        "4.7": "Execute Acquisition Strategy (Step 6)",
+        "4.8": "Post-Award Performance Management (Step 7)",
+        "5.1": "Governance Assessment",
+        "5.2": "Applicable to Secretariat, Air Staff, and Space Staff",
+        "5.3": "Applicable to MAJCOMs, FLDCOMs, FOAs, and DRUs",
+        "5.4": "Applicable to Systems PEOs/TEOs",
+        "5.5": "Annual Summary",
+        "6.1": "Overview",
+        "6.2": "Quality Assurance Surveillance Plan (QASP)",
+        "6.3": "Actions to Address Substandard Services and Contractual Non-Conformities",
+    }
+    docs = []
+    report = []
+    pdfs = sorted(cfg["path"].glob("*.pdf"))
+
+    if not pdfs:
+        print(f"  ⚠  No PDFs found in {cfg['path']}")
+        return docs, report
+
+    for pdf_path in pdfs:
+        print(f"  → Extracting: {pdf_path.name}")
+        try:
+            text = extract_text_from_pdf(pdf_path)
+            body_match = re.search(r"(?:^|\n)Chapter\s+1\s*\n", text, re.I)
+            body = text[body_match.start():] if body_match else text
+            body = clean_dafi_text(body)
+            print(f"     {len(body):,} body characters extracted")
+
+            section_re = re.compile(r"(?m)^(?P<num>[1-6]\.\d+)\.\s+(?P<title>[^\n]{3,160})$")
+            matches = list(section_re.finditer(body))
+            for idx, match in enumerate(matches):
+                start = match.start()
+                end = matches[idx + 1].start() if idx + 1 < len(matches) else len(body)
+                chunk = clean_dafi_text(body[start:end])
+                if len(chunk) < MIN_CHUNK_CHARS:
+                    continue
+
+                section_num = match.group("num")
+                part_num = section_num.split(".", 1)[0]
+                title_text = section_titles.get(section_num, match.group("title").strip().rstrip("."))
+                docs.append({
+                    "id":           make_id(cfg["source_key"], "section", section_num),
+                    "source":       cfg["source_key"],
+                    "source_label": cfg["label"],
+                    "part":         part_num,
+                    "title":        f"{section_num} {title_text}",
+                    "content":      chunk,
+                    "filename":     pdf_path.name,
+                    "status":       "Current",
+                    "date":         "2024-01-02",
+                    "url":          "https://www.e-publishing.af.mil/",
+                    "indexed_at":   datetime.now(timezone.utc).isoformat(),
+                })
+
+            print(f"     {len(docs)} sections produced")
+            report.append({
+                "file":   pdf_path.name,
+                "source": cfg["source_key"],
+                "chars":  len(body),
+                "docs":   len(docs),
+                "status": "ok",
+            })
+        except Exception as e:
+            print(f"  ✗  Error: {e}")
+            report.append({"file": pdf_path.name, "source": cfg["source_key"], "status": f"error: {e}"})
+
+    return docs, report
 
 
 def chunk_single_pdf(text, chunk_regex, source_key, label, filename, pdf_path):
@@ -302,6 +428,8 @@ def main():
 
         if cfg["mode"] == "single":
             docs, report = process_single_source(cfg)
+        elif cfg["mode"] == "dafi":
+            docs, report = process_dafi_source(cfg)
         else:
             docs, report = process_multi_source(cfg)
 

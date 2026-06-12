@@ -387,5 +387,12 @@
     "chars": 51453,
     "docs": 12,
     "status": "ok"
+  },
+  {
+    "file": "dafi63-138.pdf",
+    "source": "afi-63-138",
+    "chars": 96775,
+    "docs": 41,
+    "status": "ok"
   }
 ]

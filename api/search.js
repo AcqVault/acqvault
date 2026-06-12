@@ -1,14 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const LOCAL_SOURCE = 'category-management';
+const LOCAL_SOURCES = new Set(['category-management', 'afi-63-138']);
 let localDocsCache = null;
 
 function loadLocalDocs() {
   if (localDocsCache) return localDocsCache;
   const docsPath = path.join(process.cwd(), 'output', 'documents.json');
   const docs = JSON.parse(fs.readFileSync(docsPath, 'utf8'));
-  localDocsCache = docs.filter(doc => doc && doc.source === LOCAL_SOURCE);
+  localDocsCache = docs.filter(doc => doc && LOCAL_SOURCES.has(doc.source));
   return localDocsCache;
 }
 
@@ -23,12 +23,12 @@ function parseValueFilters(filter, field) {
 
 function filterIncludesLocal(filter) {
   const sources = parseSourceFilters(filter);
-  return !sources.length || sources.includes(LOCAL_SOURCE);
+  return !sources.length || sources.some(source => LOCAL_SOURCES.has(source));
 }
 
 function stripLocalFromFilter(filter) {
   if (!filterIncludesLocal(filter)) return filter || null;
-  const sources = parseSourceFilters(filter).filter(source => source !== LOCAL_SOURCE);
+  const sources = parseSourceFilters(filter).filter(source => !LOCAL_SOURCES.has(source));
   let next = String(filter || '');
 
   if (sources.length) {
@@ -82,9 +82,11 @@ function localSearch(body = {}) {
     return { hits: [], estimatedTotalHits: 0 };
   }
 
+  const sources = parseSourceFilters(filter);
   const parts = parseValueFilters(filter, 'part');
   const statuses = parseValueFilters(filter, 'status');
   let hits = loadLocalDocs().filter(doc => {
+    if (sources.length && !sources.includes(String(doc.source || ''))) return false;
     if (parts.length && !parts.includes(String(doc.part || ''))) return false;
     if (statuses.length && !statuses.includes(String(doc.status || ''))) return false;
     return localMatchesQuery(doc, body.q);
@@ -140,31 +142,33 @@ module.exports = async function handler(req, res) {
   const key = process.env.MEILI_SEARCH_KEY;
   const index = process.env.MEILI_INDEX || 'acqvault';
 
-  if (!host || !key) {
-    return res.status(500).json({ error: 'Search service is not configured.' });
-  }
-
   try {
     const { action, body, id } = req.body || {};
-    const base = host.replace(/\/$/, '');
-    const headers = { Authorization: `Bearer ${key}` };
+    const remoteConfig = () => ({
+      base: host.replace(/\/$/, ''),
+      headers: { Authorization: `Bearer ${key}` }
+    });
 
     if (action === 'search') {
       const requestBody = body || {};
       const sourceFilters = parseSourceFilters(requestBody.filter);
       const wantsLocal = filterIncludesLocal(requestBody.filter);
       const meiliFilter = stripLocalFromFilter(requestBody.filter);
-      const wantsMeili = sourceFilters.length ? sourceFilters.some(source => source !== LOCAL_SOURCE) : true;
+      const wantsMeili = sourceFilters.length ? sourceFilters.some(source => !LOCAL_SOURCES.has(source)) : true;
       const local = wantsLocal ? localSearch(requestBody) : { hits: [], estimatedTotalHits: 0 };
 
       if (!wantsMeili) {
         res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
         return res.status(200).json(local);
       }
+      if (!host || !key) {
+        return res.status(500).json({ error: 'Search service is not configured.' });
+      }
 
       const meiliBody = { ...requestBody };
       if (meiliFilter) meiliBody.filter = meiliFilter;
       else delete meiliBody.filter;
+      const { base, headers } = remoteConfig();
       const remote = await fetchMeiliSearch(base, index, headers, meiliBody);
       const mergedHits = [...(remote.hits || []), ...(local.hits || [])];
       res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
@@ -177,12 +181,16 @@ module.exports = async function handler(req, res) {
 
     if (action === 'document') {
       if (!id) return res.status(400).json({ error: 'Missing document id.' });
-      const local = String(id).startsWith(`${LOCAL_SOURCE}-`) ? localDocument(id) : null;
+      const local = localDocument(id);
       if (local) {
         res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
         return res.status(200).json(local);
       }
+      if (!host || !key) {
+        return res.status(500).json({ error: 'Search service is not configured.' });
+      }
 
+      const { base, headers } = remoteConfig();
       const upstream = await fetch(`${base}/indexes/${encodeURIComponent(index)}/documents/${encodeURIComponent(id)}`, {
         headers
       });
