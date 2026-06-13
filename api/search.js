@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const LOCAL_SOURCES = new Set(['category-management', 'afi-63-138']);
+const LOCAL_SOURCES = new Set(['category-management', 'afi-63-138', 'compass']);
 let localDocsCache = null;
 
 function loadLocalDocs() {

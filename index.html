@@ -871,6 +871,13 @@ body.work-mode .source-tiles-section{display:none;}
 .dc-cite-btn{display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;padding:1px 6px;border-radius:4px;margin-left:4px;background:var(--white);border:1px solid var(--line);color:var(--muted2);cursor:pointer;transition:all 0.12s;vertical-align:middle;flex-shrink:0;white-space:nowrap;line-height:1.6;}
 .dc-cite-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
 .dc-cite-btn.copied{border-color:#16a34a;color:#16a34a;}
+.dc-link{color:var(--accent);font-weight:650;text-decoration:none;border-bottom:1px solid rgba(0,102,204,0.2);}
+.dc-link:hover{border-bottom-color:var(--accent);}
+.dc-resource{display:flex;align-items:flex-start;gap:9px;margin:7px 0;padding:10px 12px;border:1px solid rgba(0,102,204,0.1);border-radius:10px;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);}
+.dc-resource::before{content:'↗';display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:900;flex:0 0 auto;margin-top:1px;}
+.dc-resource-text{min-width:0;font-size:13px;line-height:1.55;color:var(--ink2);}
+.dc-resource-note{color:var(--muted);}
+.dc-image-ref::before{content:'▧';}
 .drawer-full-section{margin-bottom:6px;}
 .drawer-full-section+.drawer-full-section{border-top:1px solid var(--line2);padding-top:14px;margin-top:6px;}
 .drawer-footer{padding:12px 18px;border-top:1px solid var(--line2);flex-shrink:0;}
@@ -1622,12 +1629,13 @@ body.work-mode #quick-links{margin-top:0;}
             <button type="button" role="menuitem" onclick="chooseBrowseSource('far-companion')"><span>FAR Companion</span><small>Live</small></button>
             <button type="button" role="menuitem" onclick="chooseBrowseSource('category-management')"><span>Category Management Buying Guide</span><small>Live</small></button>
             <button type="button" role="menuitem" onclick="chooseBrowseSource('afi-63-138')"><span>DAFI 63-138</span><small>Live</small></button>
+            <button type="button" role="menuitem" onclick="chooseBrowseSource('compass')"><span>DAF Contracting Compass</span><small>Live</small></button>
           </div>
         </div>
         <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
       </div>
       <div class="hero-source-strip" aria-label="Live sources">
-        <span class="hero-live-label"><span class="hero-live-dot"></span>Live sources</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>Category Management Buying Guide</b><b>DAFI 63-138</b><span class="hero-live-count">5 live</span><span class="hero-live-paused">Compass offline</span>
+        <span class="hero-live-label"><span class="hero-live-dot"></span>Live sources</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>Category Management Buying Guide</b><b>DAFI 63-138</b><b>DAF Contracting Compass</b><span class="hero-live-count">6 live</span>
       </div>
     </div>
 
@@ -1682,11 +1690,11 @@ body.work-mode #quick-links{margin-top:0;}
         <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAFI 63-138<small>Acquisition of Services</small></span></div>
         <div class="src-tile-action">Browse DAFI 63-138 →</div>
       </div>
-      <div class="src-tile src-tile-cmp src-tile-offline" role="button" tabindex="-1" aria-disabled="true">
-        <div class="src-tile-badge">Offline</div>
+      <div class="src-tile src-tile-cmp" onclick="setMode('browse');setBrowseSource('compass')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('compass');}">
+        <div class="src-tile-badge">DAF Compass</div>
         <div class="src-tile-name">DAF Contracting Compass</div>
-        <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAF Contracting Compass<small>Indexing paused</small></span></div>
-        <div class="src-tile-action">Offline until source indexing is ready</div>
+        <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAF Contracting Compass<small>Policy hub</small></span></div>
+        <div class="src-tile-action">Browse DAF Contracting Compass →</div>
       </div>
     </div>
   </div>
@@ -1706,7 +1714,7 @@ body.work-mode #quick-links{margin-top:0;}
           <button type="button" class="fpill" data-source="far-companion" aria-pressed="false">FAR Companion</button>
           <button type="button" class="fpill" data-source="category-management" aria-pressed="false">Category Management Buying Guide</button>
           <button type="button" class="fpill" data-source="afi-63-138" aria-pressed="false">DAFI 63-138</button>
-          <button type="button" class="fpill disabled" data-source="compass" aria-pressed="false" disabled>DAF Contracting Compass · Offline</button>
+          <button type="button" class="fpill" data-source="compass" aria-pressed="false">DAF Contracting Compass</button>
         </div>
         <span class="filter-label filter-label-soft">Coming soon</span>
         <div class="filter-pill-row">
@@ -1730,7 +1738,7 @@ body.work-mode #quick-links{margin-top:0;}
       <button type="button" class="browse-src-pill" data-bsource="far-companion" aria-pressed="false" onclick="setBrowseSource('far-companion')">FAR Companion</button>
       <button type="button" class="browse-src-pill" data-bsource="category-management" aria-pressed="false" onclick="setBrowseSource('category-management')">Category Management Buying Guide</button>
       <button type="button" class="browse-src-pill" data-bsource="afi-63-138" aria-pressed="false" onclick="setBrowseSource('afi-63-138')">DAFI 63-138</button>
-      <button type="button" class="browse-src-pill disabled" data-bsource="compass" aria-pressed="false" disabled>DAF Contracting Compass · Offline</button>
+      <button type="button" class="browse-src-pill" data-bsource="compass" aria-pressed="false" onclick="setBrowseSource('compass')">DAF Contracting Compass</button>
       <span class="browse-src-soon">DoD FMR</span>
       <span class="browse-src-soon">AFI 63-Series</span>
     </div>
@@ -1772,9 +1780,9 @@ body.work-mode #quick-links{margin-top:0;}
       <div class="fulltext-card"><span class="fulltext-card-tag" style="background:#fff1f2;color:#9f1239;">DAFI 63-138</span><div class="fulltext-card-name">Acquisition of Services</div><div class="fulltext-card-meta"><span>41 sections covered</span><span>6 chapters</span><span>Department of the Air Force</span><span>January 2, 2024</span></div><a class="fulltext-dl-btn" href="https://raw.githubusercontent.com/AcqVault/acqvault/main/pdfs/dafi63-138.pdf" download="AcqVault-DAFI-63-138.pdf" target="_blank" rel="noopener">↓ Download PDF</a></div>
     </div>
     <div class="fulltext-note"><strong>How these are generated:</strong> A GitHub Actions workflow runs on the 1st of every month, fetches all documents from the live Meilisearch index, compiles them in sequential part order, and commits fresh PDFs to the repository. Each page carries an AcqVault.com watermark. Files are served directly from GitHub — no server required.</div>
-    <div class="fulltext-section-label">Coming soon</div>
+    <div class="fulltext-section-label">Browse-only sources</div>
     <div class="fulltext-cards">
-      <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:var(--off2);color:var(--muted2);">Offline</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>Indexing paused</span><span>PDF export unavailable</span></div><div class="fulltext-dl-btn-soon">Offline</div></div>
+      <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--cmp-bg);color:var(--cmp-txt);">DAF Compass</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>48 parts covered</span><span>SharePoint source pages</span><span>Links and visual references preserved</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('compass')">Browse source</button></div>
       <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:#fefce8;color:#854d0e;">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>14 volumes</span><span>comptroller.defense.gov</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
       <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:var(--off2);color:var(--muted2);">AFI 63-Series</span><div class="fulltext-card-name">AFI 63-Series</div><div class="fulltext-card-meta"><span>Program management regs</span><span>AF instruction series</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
     </div>
@@ -1878,11 +1886,11 @@ body.work-mode #quick-links{margin-top:0;}
     <h2 class="sec-head fade-up">Acquisition research<br>without the friction.</h2>
     <p class="sec-sub sec-sub-dark fade-up">Navigating acquisition.gov tabs, Federal Register alerts, and scattered PDFs shouldn't be your job. Researching what they say should be.</p>
     <div class="feats">
-      <div class="feat feat-clickable fade-up" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-demo"><div class="feat-demo-search"><span class="feat-demo-dot"></span><span class="feat-demo-line"></span><span class="feat-demo-line short"></span></div></div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, Category Management Buying Guide, and DAFI 63-138 simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div><div class="feat-cta">Try search →</div></div>
+      <div class="feat feat-clickable fade-up" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-demo"><div class="feat-demo-search"><span class="feat-demo-dot"></span><span class="feat-demo-line"></span><span class="feat-demo-line short"></span></div></div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div><div class="feat-cta">Try search →</div></div>
       <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);"><div class="feat-icon">⊞</div><div class="feat-title">Browse by Part</div><div class="feat-demo"><div class="feat-demo-grid"><span class="feat-demo-cell">1</span><span class="feat-demo-cell">6</span><span class="feat-demo-cell">15</span><span class="feat-demo-cell">52</span></div></div><div class="feat-desc">Navigate by acquisition part number across all sources. Select a source, pick a part, and read every indexed section with inline citations — no search query needed.</div><div class="feat-cta">Try browse →</div></div>
       <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);"><div class="feat-icon">↓</div><div class="feat-title">Full Text PDFs</div><div class="feat-demo"><div class="feat-demo-pdf"><span class="feat-demo-doc"></span><span class="feat-demo-bars"><span class="feat-demo-line"></span><span class="feat-demo-line short"></span><span class="feat-demo-line"></span></span></div></div><div class="feat-desc">Download PDFs for the full RFO, R-DFARS, FAR Companion, Category Management Buying Guide, and DAFI 63-138. Updated monthly from the live index where available.</div><div class="feat-cta">Download PDFs →</div></div>
-      <div class="feat fade-up"><div class="feat-stat-num">5</div><div class="feat-stat-label">Sources indexed</div><div class="feat-stat-track"><div class="feat-stat-fill blue" style="width:86%;"></div></div><div class="feat-stat-meta"><span>Live index</span><span>Monthly refresh</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, Category Management Buying Guide, and DAFI 63-138 coverage. Updated monthly from official source material where available.</div></div>
-      <div class="feat fade-up d1"><div class="feat-stat-num">5</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-stat-track"><div class="feat-stat-fill green" style="width:71%;"></div></div><div class="feat-stat-meta"><span>5 live</span><span>3 queued</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, Category Management Buying Guide, and DAFI 63-138 are live now. DAF Contracting Compass is offline while indexing is rebuilt; DoD FMR and AFI 63-Series are on deck.</div></div>
+      <div class="feat fade-up"><div class="feat-stat-num">6</div><div class="feat-stat-label">Sources indexed</div><div class="feat-stat-track"><div class="feat-stat-fill blue" style="width:92%;"></div></div><div class="feat-stat-meta"><span>Live index</span><span>Monthly refresh</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass coverage. Updated from official source material where available.</div></div>
+      <div class="feat fade-up d1"><div class="feat-stat-num">6</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-stat-track"><div class="feat-stat-fill green" style="width:86%;"></div></div><div class="feat-stat-meta"><span>6 live</span><span>2 queued</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass are live now. DoD FMR and AFI 63-Series are on deck.</div></div>
       <div class="feat fade-up d2"><div class="feat-stat-num">$0</div><div class="feat-stat-label">Cost to use</div><div class="feat-stat-track"><div class="feat-stat-fill dark" style="width:100%;"></div></div><div class="feat-stat-meta"><span>Open access</span><span>No account</span></div><div class="feat-desc">No cost, no subscriptions, no account. AcqVault is a community resource built for the AF acquisition workforce. Open access, always.</div></div>
     </div>
   </div>
@@ -1893,7 +1901,7 @@ body.work-mode #quick-links{margin-top:0;}
   <div class="sec-inner">
     <p class="eyebrow eyebrow-light fade-up">Source coverage</p>
     <h2 class="sec-head fade-up">Official sources.<br>Clear status.</h2>
-    <p class="sec-sub sec-sub-light fade-up">A compact view of what is searchable today, what is paused, and what is queued next.</p>
+    <p class="sec-sub sec-sub-light fade-up">A compact view of what is searchable today and what is queued next.</p>
     <div class="source-status-panel fade-up" style="transition-delay:0.1s;">
       <div class="source-status-row">
         <div class="source-status-label">Live</div>
@@ -1903,13 +1911,7 @@ body.work-mode #quick-links{margin-top:0;}
           <span class="source-status-chip live">FAR Companion</span>
           <span class="source-status-chip live">Category Management Buying Guide</span>
           <span class="source-status-chip live">DAFI 63-138</span>
-        </div>
-      </div>
-      <div class="source-status-row">
-        <div class="source-status-label">Paused</div>
-        <div class="source-status-main">
-          <span class="source-status-chip offline">DAF Contracting Compass</span>
-          <span class="source-status-note">Held offline until its source indexing can be rebuilt cleanly.</span>
+          <span class="source-status-chip live">DAF Contracting Compass</span>
         </div>
       </div>
       <div class="source-status-row">
@@ -2085,10 +2087,11 @@ const SOURCE_URLS = {
   'category-management': 'https://www.acquisition.gov/far-overhaul',
   'fmr':           'https://comptroller.defense.gov/FMR/',
   'afi-63-138':    'https://www.e-publishing.af.mil/',
+  'compass':        'https://usaf.dps.mil/sites/AFCC/AQCP/KnowledgeCenter/SitePages/DAF-Contracting-Compass.aspx',
 };
 const SOURCE_LABELS = {
   'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management Buying Guide',
-  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138',
+  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'compass': 'DAF Contracting Compass',
 };
 
 // ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
@@ -2145,6 +2148,33 @@ const PARTS_BY_SOURCE = {
     [1,'Overview and Applicability'],[2,'Roles and Responsibilities'],
     [3,'Requirements Approval Process'],[4,'Services Acquisition Process'],
     [5,'Governance Assessment'],[6,'Quality Oversight']
+  ],
+  'compass': [
+    [1,'Federal Acquisition Regulations System'],[2,'Definitions'],
+    [3,'Improper Business Practices and Personal Conflicts of Interest'],
+    [4,'Administrative and Information Matters'],[5,'Publicizing Contract Actions'],
+    [6,'Competition Requirements'],[7,'Acquisition Planning'],
+    [8,'Required Sources of Supplies and Services'],[9,'Contractor Qualifications'],
+    [10,'Market Research'],[11,'Describing Agency Needs'],
+    [12,'Acquisition of Commercial Products and Commercial Services'],
+    [13,'Simplified Acquisition Procedures'],[14,'Sealed Bidding'],
+    [15,'Contracting by Negotiation'],[16,'Types of Contracts'],
+    [17,'Special Contracting Methods'],[18,'Emergency Acquisitions'],
+    [19,'Small Business Programs'],[22,'Application of Labor Laws'],
+    [23,'Environment, Sustainable Acquisition, and Material Safety'],
+    [24,'Protection of Privacy and Freedom of Information'],[25,'Foreign Acquisition'],
+    [26,'Other Socioeconomic Programs'],[27,'Patents, Data, and Copyrights'],
+    [28,'Bonds and Insurance'],[29,'Taxes'],[30,'Cost Accounting Standards Administration'],
+    [31,'Contract Cost Principles and Procedures'],[32,'Contract Financing'],
+    [33,'Protests, Disputes, and Appeals'],[34,'Major System Acquisition'],
+    [35,'Research and Development Contracting'],[36,'Construction and Architect-Engineer Contracts'],
+    [37,'Service Contracting'],[39,'Acquisition of Information Technology'],
+    [40,'Information Security and Supply Chain Security'],[41,'Acquisition of Utility Services'],
+    [42,'Contract Administration and Audit Services'],[43,'Contract Modifications'],
+    [44,'Subcontracting Policies and Procedures'],[45,'Government Property'],
+    [46,'Quality Assurance'],[47,'Transportation'],[48,'Value Engineering'],
+    [49,'Termination of Contracts'],[50,'Extraordinary Contractual Actions and the Safety Act'],
+    [53,'Forms']
   ]
 };
 
@@ -2888,8 +2918,8 @@ function parseBrowseTitle(hit, source) {
 
 function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
   const srcLabel  = SOURCE_LABELS[source] || source.toUpperCase();
-  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff','category-management':'#e0f2fe','afi-63-138':'#fff1f2'}[source] || '#f0f0f0';
-  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799','category-management':'#075985','afi-63-138':'#9f1239'}[source] || '#666';
+  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff','category-management':'#e0f2fe','afi-63-138':'#fff1f2','compass':'#f0f9ff'}[source] || '#f0f0f0';
+  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799','category-management':'#075985','afi-63-138':'#9f1239','compass':'#075985'}[source] || '#666';
   const readerHits = source === 'far-companion'
     ? hits.filter(hit => parseBrowseTitle(hit, source).num)
     : hits;
@@ -2924,7 +2954,9 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
     const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
     const visualFlags = {};
-    const bodyHTML = lines.map(l => renderContentLine(l, citation, source) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
+    const bodyHTML = source === 'compass'
+      ? formatCompassContent(content, hit, citation)
+      : lines.map(l => renderContentLine(l, citation, source) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
 
     if (parsed.type === 'subpart') {
       return `<div id="${anchor}" class="br-section">
@@ -3176,6 +3208,8 @@ function formatContent(text, hit) {
   const lines    = text.split('\n');
   let html = '', curSection = null, paragraphNodes = [];
 
+  if (hit?.source === 'compass') return formatCompassContent(text, hit, baseCite);
+
   function buildCite() {
     if (!curSection) return baseCite;
     // Build section number with paragraph tokens appended: 3.103(a)(1)
@@ -3405,6 +3439,45 @@ function formatContent(text, hit) {
   return html;
 }
 
+function formatInlineLinks(text) {
+  const raw = String(text || '');
+  let out = '', last = 0;
+  const re = /\[([^\]]+)\]\((https?:\/\/[^\s)]+(?:\)[^\s)]*)?|mailto:[^\s)]+)\)/g;
+  let m;
+  while ((m = re.exec(raw))) {
+    out += esc(raw.slice(last, m.index));
+    const label = esc(m[1]);
+    const url = esc(m[2]);
+    out += `<a class="dc-link" href="${url}" target="_blank" rel="noopener">${label}</a>`;
+    last = m.index + m[0].length;
+  }
+  out += esc(raw.slice(last));
+  return out;
+}
+
+function formatCompassContent(text, hit, baseCite) {
+  const lines = String(text || '').split('\n');
+  let html = '';
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { html += '<div class="dc-gap"></div>'; continue; }
+    if (/^##\s+/.test(line)) {
+      html += `<div class="dc-section">${formatInlineLinks(line.replace(/^##\s+/, ''))} ${citeBtnHTML(baseCite)}</div>`;
+    } else if (/^###\s+/.test(line)) {
+      html += `<div class="dc-subpart">${formatInlineLinks(line.replace(/^###\s+/, ''))}</div>`;
+    } else if (/^-\s+/.test(line)) {
+      const body = line.replace(/^-\s+/, '');
+      const isImage = /Images and visual references/i.test(text.slice(Math.max(0, text.indexOf(raw) - 120), text.indexOf(raw) + 20));
+      html += `<div class="dc-resource${isImage ? ' dc-image-ref' : ''}"><div class="dc-resource-text">${formatInlineLinks(body)}</div></div>`;
+    } else if (/^•\s*/.test(line)) {
+      html += `<div class="dc-para dc-l1"><span class="dc-para-text">${formatInlineLinks(line)}</span></div>`;
+    } else {
+      html += `<div class="dc-text">${formatInlineLinks(line)}</div>`;
+    }
+  }
+  return html;
+}
+
 function cleanSnippet(t){return t?t.replace(/L\d:/g,"").replace(/\s+/g," ").trim():"";}
 
 function esc(s) {
@@ -3465,7 +3538,7 @@ async function search(query) {
 
 function buildFilter(sources, statuses) {
   const parts = [];
-  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138'];
+  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'compass'];
   const selectedSources = sources.size > 0 ? [...sources].filter(s => liveSources.includes(s)) : liveSources;
   if (selectedSources.length) parts.push('(' + selectedSources.map(s => `source = "${s}"`).join(' OR ') + ')');
   if (statuses.length)  parts.push('(' + statuses.map(s => `status = "${s}"`).join(' OR ') + ')');
