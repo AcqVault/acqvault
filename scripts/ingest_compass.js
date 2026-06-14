@@ -18,6 +18,7 @@ function decodeHtml(value) {
     .replace(/&#44;/g, ',')
     .replace(/&#40;/g, '(')
     .replace(/&#41;/g, ')')
+    .replace(/&#160;/g, ' ')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
@@ -82,6 +83,22 @@ function parseWebparts(canvas) {
     .filter(Boolean);
 }
 
+function extractTextControls(canvas) {
+  const decoded = decodeHtml(canvas || '');
+  return [...decoded.matchAll(/<div data-sp-canvascontrol=""[\s\S]*?controlType":4[\s\S]*?contentVersion":5}">([\s\S]*?)(?=<div data-sp-canvascontrol=""|$)/g)]
+    .map(match => stripTags(match[1]))
+    .map(text => text
+      .replace(/&#160;/g, ' ')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim())
+    .filter(Boolean)
+    .filter(text => text.length > 28)
+    .filter(text => !/^DATE\s+SECTION\s+FROM\s+TO\s+LINK/i.test(text))
+    .filter(text => !/^See all process changes/i.test(text))
+    .filter(text => !/^Click on the tabs below/i.test(text));
+}
+
 function itemIndexes(plain) {
   return [...new Set(Object.keys(plain || {})
     .map(key => (key.match(/^items\[(\d+)\]\./) || [])[1])
@@ -103,6 +120,32 @@ function addUnique(arr, seen, value) {
   arr.push(clean);
 }
 
+function guidanceLinesFromText(text) {
+  const normalized = String(text || '')
+    .replace(/&#160;/g, ' ')
+    .replace(/\s+-\s*/g, '\n- ')
+    .replace(/\s+•\s*/g, '\n• ')
+    .replace(/\s{2,}/g, ' ')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean);
+  return normalized;
+}
+
+function guidanceTitleFromText(text, fallback) {
+  const first = guidanceLinesFromText(text)[0] || fallback || 'Compass guidance';
+  if (first.length <= 86 && (/^[A-Z0-9\s,;:()'"/&.-]+$/.test(first) || first.endsWith('?'))) {
+    return first.replace(/\s+/g, ' ');
+  }
+  return fallback || 'Compass guidance';
+}
+
+function isSubstantiveImage(label, url) {
+  const text = `${label || ''} ${url || ''}`.toLowerCase();
+  if (/contracting-compass-long|abstract|background|seal|shield|logo|war-u|image\.url/.test(text)) return false;
+  return /table|matrix|chart|process|flow|checklist|template|form|timeline|guide|map|search|tool|market|pricing|source|selection|decision|comparison|faq|training|documentation|results|reporting/.test(text);
+}
+
 function mdLink(label, url, note = '') {
   const cleanLabel = stripTags(label).replace(/\s+/g, ' ').trim();
   if (!cleanLabel) return '';
@@ -121,6 +164,7 @@ function extractPage(page) {
   const part = parsePart(title, page.FileRef);
   const sourceUrl = absUrl(page.FileRef);
   const webparts = parseWebparts(page.CanvasContent1);
+  const textControls = extractTextControls(page.CanvasContent1);
 
   const sections = [];
   const intro = [];
@@ -209,7 +253,7 @@ function extractPage(page) {
       const img = absUrl(val, baseUrl);
       if (!img || !/\.(png|jpe?g|gif|webp)(\?|$)/i.test(img)) continue;
       const label = stripTags(props.fileName || plain.title || props.title || key);
-      if (label && !/encodedImage/i.test(label)) visuals.push(`- [${escMd(label)}](${img})`);
+      if (label && !/encodedImage/i.test(label) && isSubstantiveImage(label, img)) visuals.push(`- [${escMd(label)}](${img})`);
     }
   }
 
@@ -219,6 +263,13 @@ function extractPage(page) {
   };
 
   const headingCounts = {};
+  for (const text of textControls) {
+    const titleText = guidanceTitleFromText(text, 'Compass guidance');
+    const lines = guidanceLinesFromText(text);
+    if (lines.length > 1 && lines[0] === titleText) lines.shift();
+    guidanceGroups.push({ title: titleText, lines });
+  }
+
   for (const group of guidanceGroups) {
     let heading = group.title || 'Guidance';
     const key = heading.toLowerCase();

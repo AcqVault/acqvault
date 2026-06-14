@@ -3504,7 +3504,7 @@ function formatCompassContent(text, hit, baseCite) {
     if (/^##\s+/.test(line)) {
       const heading = line.replace(/^##\s+/, '').trim();
       inVisuals = /Images and visual references/i.test(heading);
-      const isSupport = /Supporting resources|Templates and document libraries|Points of contact/i.test(heading);
+      const isSupport = /Supporting resources|Templates and document libraries|Points of contact|Images and visual references/i.test(heading);
       if (isSupport) {
         if (!supportOpen) {
           html += closeSupport();
@@ -3519,7 +3519,11 @@ function formatCompassContent(text, hit, baseCite) {
     } else if (/^###\s+/.test(line)) {
       html += `<div class="dc-subpart">${formatInlineLinks(line.replace(/^###\s+/, ''))}</div>`;
     } else if (/^-\s+/.test(line)) {
-      html += compassResourceHTML(line, inVisuals);
+      if (!supportOpen && !inVisuals && !compassLinkParts(line)) {
+        html += `<div class="br-bullet"><span class="br-bullet-marker">•</span><span class="br-bullet-text">${formatInlineLinks(line.replace(/^-\s+/, ''))}</span></div>`;
+      } else {
+        html += compassResourceHTML(line, inVisuals);
+      }
     } else if (/^•\s*/.test(line)) {
       html += closeSupport();
       html += `<div class="dc-compass-callout">${formatInlineLinks(line.replace(/^•\s*/, ''))}</div>`;
