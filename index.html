@@ -878,6 +878,23 @@ body.work-mode .source-tiles-section{display:none;}
 .dc-resource-text{min-width:0;font-size:13px;line-height:1.55;color:var(--ink2);}
 .dc-resource-note{color:var(--muted);}
 .dc-image-ref::before{content:'▧';}
+.dc-compass-support{margin:18px 0;border:1px solid rgba(0,102,204,0.12);border-radius:12px;background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);overflow:hidden;}
+.dc-compass-support summary{list-style:none;cursor:pointer;padding:13px 15px;font-size:12px;font-weight:850;letter-spacing:.055em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.dc-compass-support summary::-webkit-details-marker{display:none;}
+.dc-compass-support summary::after{content:'+';font-size:18px;line-height:1;color:var(--muted2);}
+.dc-compass-support[open] summary{border-bottom:1px solid rgba(0,102,204,0.1);}
+.dc-compass-support[open] summary::after{content:'-';}
+.dc-compass-support-body{padding:10px 14px 14px;}
+.dc-compass-kicker{font-size:10px;font-weight:850;letter-spacing:.07em;text-transform:uppercase;color:var(--muted2);margin:14px 0 7px;}
+.dc-compass-visual{margin:16px 0 22px;border:1px solid var(--line2);border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 10px 28px rgba(0,66,153,.055);}
+.dc-compass-visual img{display:block;width:100%;max-height:420px;object-fit:contain;background:#f8fafc;}
+.dc-compass-visual figcaption{padding:10px 12px;font-size:12px;font-weight:700;color:var(--ink2);border-top:1px solid var(--line2);display:flex;justify-content:space-between;gap:12px;align-items:center;}
+.dc-compass-visual figcaption a{font-size:11px;color:var(--accent);text-decoration:none;font-weight:800;}
+.dc-compass-visual.image-unavailable{background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);}
+.dc-compass-visual.image-unavailable img{display:none;}
+.dc-compass-visual.image-unavailable figcaption{border-top:none;}
+.dc-compass-visual.image-unavailable figcaption::before{content:'Visual reference';font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2);margin-right:auto;}
+.dc-compass-callout{margin:12px 0 18px;padding:14px 15px;border-left:3px solid var(--cmp-solid);border-radius:10px;background:rgba(240,249,255,.88);color:var(--ink2);font-size:15px;line-height:1.68;}
 .drawer-full-section{margin-bottom:6px;}
 .drawer-full-section+.drawer-full-section{border-top:1px solid var(--line2);padding-top:14px;margin-top:6px;}
 .drawer-footer{padding:12px 18px;border-top:1px solid var(--line2);flex-shrink:0;}
@@ -3455,26 +3472,66 @@ function formatInlineLinks(text) {
   return out;
 }
 
+function compassLinkParts(text) {
+  const m = String(text || '').match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+(?:\)[^\s)]*)?|mailto:[^\s)]+)\)(?:\s+—\s+([\s\S]+))?/);
+  return m ? { label: m[1], url: m[2], note: m[3] || '' } : null;
+}
+
+function compassResourceHTML(line, isImage = false) {
+  const body = String(line || '').replace(/^-\s+/, '');
+  const link = compassLinkParts(body);
+  if (isImage && link?.url) {
+    return `<figure class="dc-compass-visual"><img src="${esc(link.url)}" alt="${esc(link.label)}" loading="lazy" onerror="this.closest('figure')?.classList.add('image-unavailable')"><figcaption><span>${esc(link.label)}</span><a href="${esc(link.url)}" target="_blank" rel="noopener">Open image</a></figcaption></figure>`;
+  }
+  const note = link?.note ? ` <span class="dc-resource-note">— ${formatInlineLinks(link.note)}</span>` : '';
+  const content = link ? `${formatInlineLinks(`[${link.label}](${link.url})`)}${note}` : formatInlineLinks(body);
+  return `<div class="dc-resource"><div class="dc-resource-text">${content}</div></div>`;
+}
+
 function formatCompassContent(text, hit, baseCite) {
   const lines = String(text || '').split('\n');
   let html = '';
+  let supportOpen = false;
+  let inVisuals = false;
+  const closeSupport = () => {
+    if (!supportOpen) return '';
+    supportOpen = false;
+    return '</div></details>';
+  };
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) { html += '<div class="dc-gap"></div>'; continue; }
     if (/^##\s+/.test(line)) {
-      html += `<div class="dc-section">${formatInlineLinks(line.replace(/^##\s+/, ''))} ${citeBtnHTML(baseCite)}</div>`;
+      const heading = line.replace(/^##\s+/, '').trim();
+      inVisuals = /Images and visual references/i.test(heading);
+      const isSupport = /Supporting resources|Templates and document libraries|Points of contact/i.test(heading);
+      if (isSupport) {
+        if (!supportOpen) {
+          html += closeSupport();
+          html += `<details class="dc-compass-support"><summary>Supporting resources</summary><div class="dc-compass-support-body">`;
+          supportOpen = true;
+        }
+        html += `<div class="dc-compass-kicker">${formatInlineLinks(heading)}</div>`;
+      } else {
+        html += closeSupport();
+        html += `<div class="dc-section">${formatInlineLinks(heading)} ${citeBtnHTML(baseCite)}</div>`;
+      }
     } else if (/^###\s+/.test(line)) {
       html += `<div class="dc-subpart">${formatInlineLinks(line.replace(/^###\s+/, ''))}</div>`;
     } else if (/^-\s+/.test(line)) {
-      const body = line.replace(/^-\s+/, '');
-      const isImage = /Images and visual references/i.test(text.slice(Math.max(0, text.indexOf(raw) - 120), text.indexOf(raw) + 20));
-      html += `<div class="dc-resource${isImage ? ' dc-image-ref' : ''}"><div class="dc-resource-text">${formatInlineLinks(body)}</div></div>`;
+      html += compassResourceHTML(line, inVisuals);
     } else if (/^•\s*/.test(line)) {
-      html += `<div class="dc-para dc-l1"><span class="dc-para-text">${formatInlineLinks(line)}</span></div>`;
+      html += closeSupport();
+      html += `<div class="dc-compass-callout">${formatInlineLinks(line.replace(/^•\s*/, ''))}</div>`;
     } else {
+      if (!supportOpen && line.length > 80 && !/^Source page:/i.test(line)) {
+        html += `<div class="dc-text">${formatInlineLinks(line)}</div>`;
+        continue;
+      }
       html += `<div class="dc-text">${formatInlineLinks(line)}</div>`;
     }
   }
+  html += closeSupport();
   return html;
 }
 

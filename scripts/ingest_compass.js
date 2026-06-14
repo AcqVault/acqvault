@@ -125,13 +125,14 @@ function extractPage(page) {
   const sections = [];
   const intro = [];
   const quickActions = [];
+  const guidanceGroups = [];
   const resourceGroups = [];
   const lists = [];
   const pocs = [];
   const visuals = [];
   const seenLine = new Set();
 
-  addUnique(intro, seenLine, `Source page: [Open DAF Contracting Compass Part ${part || ''}](${sourceUrl})`);
+  addUnique(intro, seenLine, `[Open original DAF Contracting Compass page](${sourceUrl})`);
 
   for (const wp of webparts) {
     const spc = wp.serverProcessedContent || {};
@@ -150,9 +151,9 @@ function extractPage(page) {
       const body = htmlText.slice(1).join('\n').split('\n').map(normalizeHeading).filter(Boolean);
       if (heading && body.some(line => line.toLowerCase() !== heading.toLowerCase())) {
         const lines = body.map(line => line.startsWith('•') ? line : line);
-        resourceGroups.push({ title: heading, lines });
+        guidanceGroups.push({ title: heading, lines });
       } else if (heading && !/^(saf\/aqc poc|poc)$/i.test(heading)) {
-        resourceGroups.push({ title: heading, lines: [] });
+        guidanceGroups.push({ title: heading, lines: [] });
       }
       continue;
     }
@@ -217,11 +218,28 @@ function extractPage(page) {
     if (clean.length) sections.push(`## ${heading}\n${clean.join('\n')}`);
   };
 
-  pushSection('Compass page', intro);
-  pushSection('Quick actions', quickActions);
-  for (const group of resourceGroups) pushSection(group.title || 'Resources', group.lines);
-  pushSection('Lists, templates, and document libraries', lists);
-  pushSection('Points of contact', pocs);
+  const headingCounts = {};
+  for (const group of guidanceGroups) {
+    let heading = group.title || 'Guidance';
+    const key = heading.toLowerCase();
+    headingCounts[key] = (headingCounts[key] || 0) + 1;
+    if (/^what is it\??$/i.test(heading)) {
+      const body = group.lines.join(' ').toLowerCase();
+      if (body.includes('tactical market research')) heading = 'Tactical market research';
+      else if (body.includes('continuously throughout')) heading = 'Strategic market research';
+      else if (headingCounts[key] > 1) heading = `What it means (${headingCounts[key]})`;
+    } else if (headingCounts[key] > 1) {
+      heading = `${heading} (${headingCounts[key]})`;
+    }
+    pushSection(heading, group.lines);
+  }
+  const supportLines = intro.concat(quickActions);
+  for (const group of resourceGroups) {
+    supportLines.push(`### ${group.title || 'Resources'}`, ...group.lines);
+  }
+  if (lists.length) supportLines.push('### Templates and document libraries', ...lists);
+  if (pocs.length) supportLines.push('### Points of contact', ...pocs);
+  pushSection('Supporting resources', supportLines);
   pushSection('Images and visual references', visuals.slice(0, 12));
 
   return {
