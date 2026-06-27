@@ -165,9 +165,14 @@ module.exports = async function handler(req, res) {
         return res.status(500).json({ error: 'Search service is not configured.' });
       }
 
-      const meiliBody = { ...requestBody };
+      // Whitelist only known search fields before forwarding upstream — never
+      // pass through arbitrary client-supplied keys to MeiliSearch.
+      const ALLOWED = ['q', 'limit', 'offset', 'attributesToHighlight', 'highlightPreTag',
+        'highlightPostTag', 'attributesToCrop', 'cropLength', 'attributesToRetrieve'];
+      const meiliBody = {};
+      for (const k of ALLOWED) if (requestBody[k] !== undefined) meiliBody[k] = requestBody[k];
+      meiliBody.limit = Math.min(Number(requestBody.limit) || 40, 100);
       if (meiliFilter) meiliBody.filter = meiliFilter;
-      else delete meiliBody.filter;
       const { base, headers } = remoteConfig();
       const remote = await fetchMeiliSearch(base, index, headers, meiliBody);
       const mergedHits = [...(remote.hits || []), ...(local.hits || [])];
@@ -203,9 +208,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(400).json({ error: 'Unsupported search action.' });
   } catch (error) {
-    return res.status(error.status || 500).json({
-      error: 'Search request failed.',
-      detail: error && error.message ? error.message : String(error)
-    });
+    console.error('search error:', error && error.message ? error.message : error);
+    return res.status(error.status || 500).json({ error: 'Search request failed.' });
   }
 };

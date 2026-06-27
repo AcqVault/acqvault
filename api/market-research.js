@@ -197,9 +197,15 @@ module.exports = async function handler(req, res) {
     if (queryTerms(base.query).length) opportunities = opportunities.filter(item => matchesAllTerms(item, queryTerms(base.query)));
     opportunities = opportunities.slice(0, limit);
     if (!opportunities.length && queryTerms(base.query).length > 1) {
-      const terms = queryTerms(base.query);
+      // Bounded per-term fallback: at most 3 terms against the most-recent range
+      // only, to cap upstream SAM.gov request amplification (quota protection).
+      const terms = queryTerms(base.query).slice(0, 3);
+      const recentRange = ranges.slice(0, 1);
       const termLimit = Math.max(perRequestLimit, Math.ceil(limit / Math.max(1, terms.length)));
-      responses = await Promise.all(terms.flatMap(term => makeRequests(term, termLimit)));
+      const fbRequests = terms.flatMap(term =>
+        recentRange.flatMap(range => types.map(ptype =>
+          fetchSamSafe({ ...base, ...range, query: term, ptype, limit: termLimit }, apiKey))));
+      responses = await Promise.all(fbRequests);
       opportunities = mergeResponses(responses)
         .filter(item => matchesAllTerms(item, terms))
         .slice(0, limit);
@@ -216,9 +222,7 @@ module.exports = async function handler(req, res) {
       postedTo: ranges[0]?.postedTo
     });
   } catch (error) {
-    return res.status(error.status || 500).json({
-      error: 'Market research request failed.',
-      detail: error && error.message ? error.message : String(error)
-    });
+    console.error('market-research error:', error && error.message ? error.message : error);
+    return res.status(error.status || 500).json({ error: 'Market research request failed.' });
   }
 };

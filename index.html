@@ -3542,7 +3542,12 @@ function formatCompassContent(text, hit, baseCite) {
 function cleanSnippet(t){return t?t.replace(/L\d:/g,"").replace(/\s+/g," ").trim():"";}
 
 function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+// Safely render search highlights: escape ALL html, then restore only <mark> tags.
+// Neutralizes any html in indexed content (stored XSS) while preserving highlighting.
+function markOnly(s) {
+  return esc(s).replace(/&lt;mark&gt;/g, '<mark>').replace(/&lt;\/mark&gt;/g, '</mark>');
 }
 
 // ── DRAWER FILTER ─────────────────────────────────────────────────────────────
@@ -3699,11 +3704,11 @@ function renderResults(data, query) {
   if (!hits.length) { list.innerHTML = '<div class="no-results"><strong>No results found</strong>Try a different search term or adjust your filters.</div>'; return; }
   list.innerHTML = hits.map(hit => {
     const hl = hit._formatted || hit;
-    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${hit.id}" data-source="${esc(hit.source || '')}">
+    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}">
       <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
-      <div class="rc-title">${hl.title || hit.title || 'Untitled'}</div>
-      ${hit.filename ? `<div class="rc-ref">${hit.filename}</div>` : ''}
-      <div class="rc-snippet">${hl.content || ''}</div>
+      <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
+      ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
+      <div class="rc-snippet">${markOnly(hl.content || '')}</div>
     </div>`;
   }).join('');
   list.querySelectorAll('.result-card').forEach(card => {
