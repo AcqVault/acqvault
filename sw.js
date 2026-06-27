@@ -1,6 +1,6 @@
 /* AcqVault service worker — offline shell + corpus, leaves live data network-only.
    Bump CACHE on any change here, or when the cached corpus must refresh. */
-const CACHE = 'acqvault-v2';
+const CACHE = 'acqvault-v3';
 const SHELL = [
   '/',
   '/assets/fonts/inter-latin.woff2',
@@ -37,14 +37,21 @@ self.addEventListener('fetch', (event) => {
   // local corpus for search when offline, so we never serve stale API responses.
   if (url.pathname.startsWith('/api/')) return;
 
-  // Navigations — network-first so a deploy's fresh HTML (with current ?v assets)
-  // always wins; fall back to the cached shell only when offline.
+  // Navigations — network-first, but race the network against a 3s timeout before
+  // falling back to the cached shell. A slow-but-online phone then waits for FRESH
+  // HTML (so it never gets pinned to a stale '/' that points at old ?v assets);
+  // a truly offline client still gets the cached shell.
   if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req)
-        .then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put('/', copy)); return res; })
-        .catch(() => caches.match('/'))
-    );
+    event.respondWith(new Promise((resolve) => {
+      let settled = false;
+      const finish = (r) => { if (!settled && r) { settled = true; resolve(r); } };
+      const timer = setTimeout(() => caches.match('/').then(finish), 3000);
+      fetch(req).then((res) => {
+        clearTimeout(timer);
+        caches.open(CACHE).then((c) => c.put('/', res.clone()));   // always refresh cached shell
+        finish(res);
+      }).catch(() => { clearTimeout(timer); caches.match('/').then((c) => finish(c || Response.error())); });
+    }));
     return;
   }
 

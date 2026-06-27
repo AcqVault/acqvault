@@ -254,9 +254,13 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;
 }
 .dash-panel-wide { margin-top: 12px; }
-/* PSC categories: two columns of bars so 6 rows stay compact on wide screens */
-#dash-psc { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
-@media (max-width: 720px) { #dash-psc { grid-template-columns: 1fr; } }
+/* PSC categories: two columns of bars so 6 rows stay compact on wide screens.
+   minmax(0,1fr) + min-width:0 lets tracks shrink below content width — grid items
+   default to min-width:auto, which otherwise overflows the viewport on mobile. */
+#dash-psc { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 6px 28px; }
+@media (max-width: 720px) { #dash-psc { grid-template-columns: minmax(0,1fr); } }
+.dash-cols, #dash-psc { min-width: 0; }
+.dash-cols > .dash-panel, #dash-psc > .dash-bar-row { min-width: 0; }
 .dash-panel {
   background: linear-gradient(180deg,#fff 0%,#fbfdff 100%);
   border: 1px solid rgba(21,95,191,0.12);
