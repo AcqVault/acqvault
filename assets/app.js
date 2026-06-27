@@ -2856,3 +2856,88 @@ function stRenderAwards(awards) {
   stFetchDAFAwards();
 })();
 
+// ── MEANINGFUL MOTION: nav sliding pill + scrollspy, market path, feature stats ─
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 1) Nav: a single pill that glides under the hovered / active link (Apple-style).
+  var navCenter = document.getElementById('nav-center');
+  if (navCenter) {
+    var pill = navCenter.querySelector('.nav-pill');
+    var links = Array.prototype.slice.call(navCenter.querySelectorAll('a'));
+    var hashLinks = links.filter(function (l) { return (l.getAttribute('href') || '').charAt(0) === '#'; });
+    var activeLink = links[0];
+    function movePill(el, instant) {
+      if (!pill || !el || !el.offsetWidth) return;
+      if (instant) pill.style.transition = 'none';
+      pill.style.width = el.offsetWidth + 'px';
+      pill.style.transform = 'translateX(' + el.offsetLeft + 'px)';
+      navCenter.classList.add('pill-ready');
+      if (instant) { void pill.offsetWidth; pill.style.transition = ''; }
+    }
+    links.forEach(function (l) { l.addEventListener('mouseenter', function () { movePill(l); }); });
+    navCenter.addEventListener('mouseleave', function () { movePill(activeLink); });
+    window.addEventListener('resize', function () { movePill(activeLink, true); }, { passive: true });
+    function initSpy() {
+      movePill(activeLink, true);
+      hashLinks.forEach(function (l) {
+        var sec = document.querySelector(l.getAttribute('href'));
+        if (!sec) return;
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              activeLink = l;
+              links.forEach(function (x) { x.classList.toggle('active', x === l); });
+              if (!navCenter.matches(':hover')) movePill(l);
+            }
+          });
+        }, { rootMargin: '-45% 0px -50% 0px' }).observe(sec);
+      });
+    }
+    // Sections include JS-injected ones (market-research) — wait for them.
+    window.addEventListener('load', function () { setTimeout(initSpy, 400); });
+  }
+
+  // 2) Market-research path: steps illuminate 1→2→3→4 as it scrolls in (shows the flow).
+  var path = document.querySelector('.market-path');
+  if (path) {
+    var steps = Array.prototype.slice.call(path.querySelectorAll('.market-step'));
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        steps.forEach(function (s, i) { setTimeout(function () { s.classList.add('lit'); }, reduce ? 0 : i * 200); });
+        obs.disconnect();
+      });
+    }, { threshold: 0.4 }).observe(path);
+  }
+
+  // 3) Feature stats: bars grow + numbers count up when the section scrolls in.
+  function countUp(el) {
+    var m = String(el.textContent || '').trim().match(/^(\D*)(\d[\d,]*)(.*)$/);
+    if (!m) return;
+    var pre = m[1], target = parseInt(m[2].replace(/,/g, ''), 10), suf = m[3];
+    if (reduce || !target) { return; }
+    var start = performance.now(), dur = 950;
+    (function step(t) {
+      var p = Math.min(1, (t - start) / dur);
+      var v = Math.round((1 - Math.pow(1 - p, 3)) * target);
+      el.textContent = pre + v.toLocaleString() + suf;
+      if (p < 1) requestAnimationFrame(step);
+    })(start);
+  }
+  var featSection = document.getElementById('features');
+  if (featSection) {
+    var fills = Array.prototype.slice.call(featSection.querySelectorAll('.feat-stat-fill'));
+    fills.forEach(function (f) { f.dataset.w = f.style.width || '100%'; if (!reduce) f.style.width = '0'; });
+    var nums = Array.prototype.slice.call(featSection.querySelectorAll('.feat-stat-num'));
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        fills.forEach(function (f, i) { setTimeout(function () { f.style.width = f.dataset.w; }, reduce ? 0 : 140 + i * 90); });
+        nums.forEach(function (n) { countUp(n); });
+        obs.disconnect();
+      });
+    }, { threshold: 0.3 }).observe(featSection);
+  }
+})();
+
