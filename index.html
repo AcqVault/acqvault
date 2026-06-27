@@ -3,24 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AcqVault — AF Acquisition Research</title>
+<title>Revolutionary FAR Overhaul &amp; R-DFARS Deviations Search | AcqVault</title>
 <link rel="icon" href="assets/acqvault-favicon-blue.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/acqvault-favicon-blue.svg">
 <meta name="description" content="AcqVault — free full-text search across the Revolutionary FAR Overhaul (RFO), R-DFARS deviations, FAR Companion, and Category Management guidance. Built for the Air Force acquisition community.">
-<link rel="canonical" href="https://acqvault.com/">
+<link rel="canonical" href="https://www.acqvault.com/">
 <meta name="theme-color" content="#eef2f7">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://acqvault.com/">
+<meta property="og:url" content="https://www.acqvault.com/">
 <meta property="og:site_name" content="AcqVault">
 <meta property="og:title" content="AcqVault — AF Acquisition Research">
 <meta property="og:description" content="Full-text search across the RFO, R-DFARS, FAR Companion, and Category Management guidance. Built for the acquisition community.">
-<meta property="og:image" content="https://acqvault.com/assets/og-card.png">
+<meta property="og:image" content="https://www.acqvault.com/assets/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AcqVault — AF Acquisition Research">
 <meta name="twitter:description" content="Full-text search across the RFO, R-DFARS, FAR Companion, and Category Management guidance.">
-<meta name="twitter:image" content="https://acqvault.com/assets/og-card.png">
+<meta name="twitter:image" content="https://www.acqvault.com/assets/og-card.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebSite","url":"https://www.acqvault.com/","name":"AcqVault","description":"Free full-text search across the Revolutionary FAR Overhaul (RFO), R-DFARS deviations, FAR Companion, and Category Management guidance.","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.acqvault.com/?q={search_term_string}"},"query-input":"required name=search_term_string"}},
+{"@type":"Organization","name":"AcqVault","url":"https://www.acqvault.com/","logo":"https://www.acqvault.com/assets/acqvault-favicon-blue.svg"}
+]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -5598,6 +5604,12 @@ function stRenderAwards(awards) {
     initMarketResearch();
     initDashboard();
     loadWhatsNew();
+    // Deep-link / sitelinks search box: ?q=<term> runs a search on load.
+    try {
+      const q = new URLSearchParams(location.search).get('q');
+      const si = document.getElementById('search-input');
+      if (q && si && typeof runSearch === 'function') { si.value = q; runSearch(); }
+    } catch (e) {}
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
