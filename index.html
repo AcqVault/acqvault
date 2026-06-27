@@ -418,6 +418,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 a{color:inherit;text-decoration:none;}
 button,input,textarea{font-family:inherit;}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+.skip-link{position:absolute;left:8px;top:-60px;z-index:2000;background:var(--accent);color:#fff;padding:10px 16px;border-radius:8px;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:14px;text-decoration:none;transition:top .15s ease;}
+.skip-link:focus{top:8px;}
 
 /* ── ABOUT BAR ── */
 .about-bar{position:fixed;top:0;left:0;right:0;z-index:400;background:var(--ink);border-bottom:0.5px solid rgba(255,255,255,0.08);padding:0 24px;min-height:38px;display:flex;align-items:center;transition:transform 0.3s ease,opacity 0.3s ease;}
@@ -594,6 +596,7 @@ body.work-mode .source-tiles-section{display:none;}
 @keyframes card-in{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 .result-card:hover{background:#fff;border-color:var(--line2);box-shadow:0 0 0 1px rgba(16,24,40,0.02),0 1px 2px rgba(16,24,40,0.05),0 10px 20px -10px rgba(16,24,40,0.14);transform:translateY(-1px);}
 .result-card.active{background:rgba(0,102,204,0.04);border-color:rgba(0,102,204,0.18);border-left-color:var(--accent);}
+.result-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .result-card[data-source="rfo"]:hover,.result-card[data-source="rfo"].active{border-left-color:var(--rfo-solid);}
 .result-card[data-source="r-dfars"]:hover,.result-card[data-source="r-dfars"].active{border-left-color:var(--dfars-solid);}
 .result-card[data-source="far-companion"]:hover,.result-card[data-source="far-companion"].active{border-left-color:var(--fc-solid);}
@@ -1532,6 +1535,8 @@ body.work-mode #quick-links{margin-top:0;}
 </head>
 <body>
 
+<a href="#search-input" class="skip-link" onclick="setTimeout(function(){var s=document.getElementById('search-input');if(s)s.focus();},0);">Skip to search</a>
+
 <!-- ABOUT BAR -->
 <div class="about-bar" id="about-bar">
   <div class="about-bar-inner">
@@ -1740,8 +1745,8 @@ body.work-mode #quick-links{margin-top:0;}
         </div>
       </div>
     </div>
-    <div class="result-meta"><div class="result-count-label" id="result-count-label"></div></div>
-    <div id="results-list" class="results-list"></div>
+    <div class="result-meta"><div class="result-count-label" id="result-count-label" role="status" aria-live="polite" aria-atomic="true"></div></div>
+    <div id="results-list" class="results-list" aria-label="Search results"></div>
   </div>
 </div>
 
@@ -1903,9 +1908,9 @@ body.work-mode #quick-links{margin-top:0;}
     <h2 class="sec-head fade-up">Acquisition research<br>without the friction.</h2>
     <p class="sec-sub sec-sub-dark fade-up">Navigating acquisition.gov tabs, Federal Register alerts, and scattered PDFs shouldn't be your job. Researching what they say should be.</p>
     <div class="feats">
-      <div class="feat feat-clickable fade-up" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-demo"><div class="feat-demo-search"><span class="feat-demo-dot"></span><span class="feat-demo-line"></span><span class="feat-demo-line short"></span></div></div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div><div class="feat-cta">Try search →</div></div>
-      <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);"><div class="feat-icon">⊞</div><div class="feat-title">Browse by Part</div><div class="feat-demo"><div class="feat-demo-grid"><span class="feat-demo-cell">1</span><span class="feat-demo-cell">6</span><span class="feat-demo-cell">15</span><span class="feat-demo-cell">52</span></div></div><div class="feat-desc">Navigate by acquisition part number across all sources. Select a source, pick a part, and read every indexed section with inline citations — no search query needed.</div><div class="feat-cta">Try browse →</div></div>
-      <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);"><div class="feat-icon">↓</div><div class="feat-title">Full Text PDFs</div><div class="feat-demo"><div class="feat-demo-pdf"><span class="feat-demo-doc"></span><span class="feat-demo-bars"><span class="feat-demo-line"></span><span class="feat-demo-line short"></span><span class="feat-demo-line"></span></span></div></div><div class="feat-desc">Download PDFs for the full RFO, R-DFARS, FAR Companion, Category Management Buying Guide, and DAFI 63-138. Updated monthly from the live index where available.</div><div class="feat-cta">Download PDFs →</div></div>
+      <div class="feat feat-clickable fade-up" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-demo"><div class="feat-demo-search"><span class="feat-demo-dot"></span><span class="feat-demo-line"></span><span class="feat-demo-line short"></span></div></div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div><div class="feat-cta">Try search →</div></div>
+      <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);"><div class="feat-icon">⊞</div><div class="feat-title">Browse by Part</div><div class="feat-demo"><div class="feat-demo-grid"><span class="feat-demo-cell">1</span><span class="feat-demo-cell">6</span><span class="feat-demo-cell">15</span><span class="feat-demo-cell">52</span></div></div><div class="feat-desc">Navigate by acquisition part number across all sources. Select a source, pick a part, and read every indexed section with inline citations — no search query needed.</div><div class="feat-cta">Try browse →</div></div>
+      <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);"><div class="feat-icon">↓</div><div class="feat-title">Full Text PDFs</div><div class="feat-demo"><div class="feat-demo-pdf"><span class="feat-demo-doc"></span><span class="feat-demo-bars"><span class="feat-demo-line"></span><span class="feat-demo-line short"></span><span class="feat-demo-line"></span></span></div></div><div class="feat-desc">Download PDFs for the full RFO, R-DFARS, FAR Companion, Category Management Buying Guide, and DAFI 63-138. Updated monthly from the live index where available.</div><div class="feat-cta">Download PDFs →</div></div>
       <div class="feat fade-up"><div class="feat-stat-num">6</div><div class="feat-stat-label">Sources indexed</div><div class="feat-stat-track"><div class="feat-stat-fill blue" style="width:92%;"></div></div><div class="feat-stat-meta"><span>Live index</span><span>Monthly refresh</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass coverage. Updated from official source material where available.</div></div>
       <div class="feat fade-up d1"><div class="feat-stat-num">6</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-stat-track"><div class="feat-stat-fill green" style="width:86%;"></div></div><div class="feat-stat-meta"><span>6 live</span><span>2 queued</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass are live now. DoD FMR and AFI 63-Series are on deck.</div></div>
       <div class="feat fade-up d2"><div class="feat-stat-num">$0</div><div class="feat-stat-label">Cost to use</div><div class="feat-stat-track"><div class="feat-stat-fill dark" style="width:100%;"></div></div><div class="feat-stat-meta"><span>Open access</span><span>No account</span></div><div class="feat-desc">No cost, no subscriptions, no account. AcqVault is a community resource built for the AF acquisition workforce. Open access, always.</div></div>
@@ -3705,7 +3710,7 @@ function renderResults(data, query) {
   if (!hits.length) { list.innerHTML = '<div class="no-results"><strong>No results found</strong>Try a different search term or adjust your filters.</div>'; return; }
   list.innerHTML = hits.map(hit => {
     const hl = hit._formatted || hit;
-    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}">
+    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}" role="button" tabindex="0" aria-label="Open: ${esc(hit.title || 'document')}">
       <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
       <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
       ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
@@ -3713,7 +3718,9 @@ function renderResults(data, query) {
     </div>`;
   }).join('');
   list.querySelectorAll('.result-card').forEach(card => {
-    card.addEventListener('click', () => { const hit = hits.find(h => h.id === card.dataset.id); if (hit) openDrawer(hit); });
+    const open = () => { const hit = hits.find(h => h.id === card.dataset.id); if (hit) openDrawer(hit); };
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
   });
 }
 
@@ -3998,6 +4005,7 @@ searchInput.addEventListener('input', () => {
   if (!searchInput.value.trim()) { deactivateSearch(); return; }
   debounceTimer = setTimeout(runSearch, 300);
 });
+searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(debounceTimer); if (searchInput.value.trim()) runSearch(); } });
 searchClear.addEventListener('click', () => { searchInput.value = ''; deactivateSearch(); searchInput.focus(); });
 
 // ── FILTERS ───────────────────────────────────────────────────────────────────
