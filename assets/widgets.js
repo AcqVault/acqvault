@@ -309,7 +309,7 @@
       </div>`;
 
     const dash = document.createElement('section');
-    dash.className = 'sec sec-off';
+    dash.className = 'sec sec-dark';
     dash.id = 'spending-dashboard';
     dash.innerHTML = `
       <div class="sec-inner">
