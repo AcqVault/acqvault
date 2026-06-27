@@ -163,11 +163,37 @@ async function meiliDocument(id) {
 // ── PWA: register service worker + warm the offline corpus cache ───────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('/sw.js').catch(function () {});
+    navigator.serviceWorker.register('/sw.js').then(function (reg) {
+      function maybeToast() { if (reg.waiting && navigator.serviceWorker.controller) showUpdateToast(reg); }
+      maybeToast();
+      reg.addEventListener('updatefound', function () {
+        var nw = reg.installing; if (!nw) return;
+        nw.addEventListener('statechange', function () {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) showUpdateToast(reg);
+        });
+      });
+    }).catch(function () {});
+    // Reload only when the user taps Refresh (not on a first-visit clients.claim).
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (!acqUserUpdate || acqSwReloaded) return; acqSwReloaded = true; window.location.reload();
+    });
     // Warm the corpus into the SW cache after first paint so search works offline
     // next time — a plain fetch (SW caches it); online search still uses the server.
     setTimeout(function () { fetch(CORPUS_URL).catch(function () {}); }, 1800);
   });
+}
+var acqUserUpdate = false, acqSwReloaded = false;
+function showUpdateToast(reg) {
+  if (document.getElementById('update-toast')) return;
+  var t = document.createElement('div');
+  t.id = 'update-toast'; t.className = 'update-toast'; t.setAttribute('role', 'status');
+  t.innerHTML = '<span>A new version of AcqVault is ready.</span><button type="button">Refresh</button>';
+  t.querySelector('button').addEventListener('click', function () {
+    acqUserUpdate = true;
+    if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+  });
+  document.body.appendChild(t);
+  requestAnimationFrame(function () { t.classList.add('show'); });
 }
 // Offline indicator — search keeps working from the cached corpus; live data won't.
 (function () {
