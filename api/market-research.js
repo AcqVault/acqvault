@@ -1,3 +1,5 @@
+const { enforce } = require('./_ratelimit');
+
 const NOTICE_TYPE_LABELS = {
   p: 'Pre-solicitation',
   r: 'Sources sought',
@@ -141,6 +143,7 @@ module.exports = async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  if (enforce(req, res, { max: 20 })) return;
 
   const apiKey = process.env.SAM_API_KEY;
   if (!apiKey) {

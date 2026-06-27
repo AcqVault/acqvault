@@ -2340,7 +2340,7 @@ const AFFIRMATIONS = [
 ];
 let lastHeroQuoteKey = '';
 let lastAffirmationKey = '';
-let heroQuoteMode = 'affirmation';
+let heroQuoteMode = 'quote';
 let affirmationQueue = [];
 let fallbackQuoteQueue = [];
 
