@@ -2508,10 +2508,38 @@ function stAnimateNum(el, target, prefix, suffix, decimals, duration, formatter)
 function stFmtAmt(n) {
   if (!n && n !== 0) return '$—';
   if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
-  if (n >= 1e9)  return '$' + (n/1e9).toFixed(1) + 'B';
+  if (n >= 1e9)  return '$' + (n/1e9).toFixed(2) + 'B';
   if (n >= 1e6)  return '$' + (n/1e6).toFixed(1) + 'M';
   if (n >= 1e3)  return '$' + (n/1e3).toFixed(0) + 'K';
   return '$' + n.toFixed(0);
+}
+
+// Compact micro-SVG sparkline of cumulative FY obligations (the "it's tracking live" signal)
+function stRenderSpark(values) {
+  var el = document.getElementById('st-spark');
+  if (!el) return;
+  if (!values || values.length < 3) { el.style.display = 'none'; return; }
+  var w = 132, h = 32, pad = 2.5;
+  var max = Math.max.apply(null, values), min = Math.min.apply(null, values);
+  var range = (max - min) || 1;
+  var xy = values.map(function(v, i) {
+    var x = pad + (i / (values.length - 1)) * (w - 2 * pad);
+    var y = h - pad - ((v - min) / range) * (h - 2 * pad);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  });
+  var line = xy.join(' ');
+  var lastX = (pad + (w - 2 * pad)).toFixed(1);
+  var lastY = (h - pad - ((values[values.length - 1] - min) / range) * (h - 2 * pad)).toFixed(1);
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pulse = reduce ? '' : '<animate attributeName="r" values="2.4;3.4;2.4" dur="1.8s" repeatCount="indefinite"/>';
+  el.innerHTML =
+    '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" preserveAspectRatio="none" aria-hidden="true">' +
+    '<defs><linearGradient id="st-spark-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>' +
+    '<polygon fill="url(#st-spark-fill)" points="' + pad + ',' + (h - pad) + ' ' + line + ' ' + (w - pad) + ',' + (h - pad) + '"/>' +
+    '<polyline fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" points="' + line + '"/>' +
+    '<circle cx="' + lastX + '" cy="' + lastY + '" r="2.6" fill="var(--accent)">' + pulse + '</circle>' +
+    '</svg>';
+  el.style.display = 'block';
 }
 
 function stToday() {
@@ -2556,7 +2584,7 @@ async function stFetchObligations() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        group: 'fiscal_year',
+        group: 'month',
         spending_level: 'transactions',
         filters: {
           agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
@@ -2567,12 +2595,34 @@ async function stFetchObligations() {
     });
     if (!res.ok) throw new Error('USASpending obligations request failed');
     var d = await res.json();
-    var row = (d.results || []).find(function(r) { return r.time_period && Number(r.time_period.fiscal_year) === fy; }) || (d.results || [])[0];
-    var val = row && (row.Contract_Obligations || row.aggregated_amount);
-    if (!Number.isFinite(Number(val))) throw new Error('No obligations returned');
-    stAnimateNum(el, Number(val), '$', '', 0, 1600, stFmtAmt);
+    // USASpending 'month' is the FISCAL period (1=Oct … 12=Sep), already chronological.
+    var rows = (d.results || []).filter(function(r) { return r.time_period && Number(r.time_period.fiscal_year) === fy; });
+    rows.forEach(function(r) {
+      r._fm = Number(r.time_period.month);
+      r._amt = Number(r.Contract_Obligations || r.aggregated_amount) || 0;
+    });
+    rows.sort(function(a, b) { return a._fm - b._fm; });
+    // Drop trailing empty months — USASpending transaction data lags ~2–3 months.
+    while (rows.length && rows[rows.length - 1]._amt <= 0) rows.pop();
+    if (!rows.length) throw new Error('No obligations returned');
+    // Cumulative running total → a clean rising line; last point = FY-to-date total.
+    var cumulative = [], running = 0;
+    rows.forEach(function(r) { running += r._amt; cumulative.push(running); });
+    var val = running;
+    if (!Number.isFinite(val) || val <= 0) throw new Error('No obligations returned');
+    stAnimateNum(el, val, '$', '', 0, 1600, stFmtAmt);
     var mini = document.getElementById('st-fy-spend-mini');
-    if (mini) mini.textContent = stFmtAmt(Number(val));
+    if (mini) mini.textContent = stFmtAmt(val);
+    stRenderSpark(cumulative);
+    // "As of" the latest month with data — the trust signal (fiscal period → calendar month).
+    var fm = rows[rows.length - 1]._fm;
+    var calMonth = ((fm + 8) % 12) + 1;
+    var calYear = (fm <= 3) ? (fy - 1) : fy;
+    var asof = new Date(calYear, calMonth - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    var asofEl = document.getElementById('st-asof');
+    if (asofEl) asofEl.textContent = ' · as of ' + asof;
+    var heroAsof = document.getElementById('hero-asof');
+    if (heroAsof) heroAsof.textContent = 'as of ' + asof;
   } catch(e) {
     el.innerHTML = '<span class="st-error-num">Data delayed</span>';
     el.classList.remove('live');

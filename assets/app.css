@@ -1782,6 +1782,9 @@ body.work-mode #quick-links{margin-top:0;}
 .fcard-oblig{top:6px;right:-26px;width:200px;}
 .fcard-oblig .st-big-num{font-size:30px;letter-spacing:-0.04em;margin-top:4px;line-height:1;font-family:'Inter',sans-serif;}
 .fcard-oblig .st-num-label{font-size:10.5px;margin-top:2px;}
+.st-asof{color:var(--muted);font-weight:600;}
+.st-spark{display:none;margin-top:9px;line-height:0;}
+.st-spark svg{display:block;width:100%;overflow:visible;}
 .fcard-oblig .st-fy-graphic{padding:0;margin-top:10px;}
 .fcard-oblig .st-fy-track{height:7px;}
 .fcard-oblig .st-fy-caption{margin-top:7px;font-size:9.5px;}
