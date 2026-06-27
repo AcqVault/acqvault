@@ -27,11 +27,22 @@
 (function() {
   var els = document.querySelectorAll('.fade-up');
   if (!els.length) return;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var io = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      if (e.isIntersecting) {
+        if (!reduceMotion && e.target.parentElement) {
+          // cascade siblings within the same group for a "page assembling" feel
+          var sibs = Array.prototype.filter.call(e.target.parentElement.children, function(c){ return c.classList && c.classList.contains('fade-up'); });
+          var idx = sibs.indexOf(e.target);
+          if (idx > 0 && !e.target.classList.contains('d1') && !e.target.classList.contains('d2')) {
+            e.target.style.transitionDelay = (Math.min(idx, 8) * 55) + 'ms';
+          }
+        }
+        e.target.classList.add('in'); io.unobserve(e.target);
+      }
     });
-  }, { threshold: 0.01, rootMargin: '0px 0px 20% 0px' });
+  }, { threshold: 0.01, rootMargin: '0px 0px -8% 0px' });
   els.forEach(function(el) { io.observe(el); });
 })();
 
@@ -2102,8 +2113,8 @@ function tick(){const el=document.getElementById('btyping'),rc=document.getEleme
 setTimeout(tick,900);
 
 // ── SCROLL FADE-IN ────────────────────────────────────────────────────────────
-const obs = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);} }); }, { threshold: 0.1 });
-document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+// (Handled by the staggered reveal observer at the top of this file; this
+//  duplicate is intentionally disabled so it doesn't race the cascade delays.)
 
 // ── REGULATION NEWS FEED ──────────────────────────────────────────────────────
 async function loadNewsFeed() {

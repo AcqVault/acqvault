@@ -653,6 +653,7 @@
 
   function animateNum(el, target, fmt) {
     if (!el) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = fmt(target); return; }
     const start = performance.now(); const dur = 900; const from = 0;
     function step(t) {
       const p = Math.min(1, (t - start) / dur);
