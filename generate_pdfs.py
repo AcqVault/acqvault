@@ -1,37 +1,25 @@
 import os
-import requests
+import json
 from datetime import datetime
 from fpdf import FPDF
 
-MEILI_HOST = os.environ.get('MEILI_HOST')
-MEILI_KEY  = os.environ.get('MEILI_KEY')
-INDEX      = os.environ.get('MEILI_INDEX', 'acqvault')
-
-if not MEILI_HOST or not MEILI_KEY:
-    raise SystemExit(
-        'Missing MEILI_HOST / MEILI_KEY environment variables. '
-        'Set them locally or as GitHub Actions secrets — do not hardcode credentials.'
-    )
+# Source corpus: the same in-memory dataset the live site searches — read
+# straight from output/documents.json. No external search service / credentials.
+DOCS_PATH  = os.path.join('output', 'documents.json')
 SOURCES    = {'rfo': 'Revolutionary FAR Overhaul', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion'}
 OUTPUT_DIR = 'pdfs'
 
+_all_docs = None
+def load_all_docs():
+    global _all_docs
+    if _all_docs is None:
+        with open(DOCS_PATH, encoding='utf-8') as f:
+            _all_docs = [d for d in json.load(f) if d]
+    return _all_docs
+
 def fetch_all_docs(source):
-    docs, offset = [], 0
-    print(f'  Fetching {source}...', end='', flush=True)
-    while True:
-        res = requests.post(
-            f'{MEILI_HOST}/indexes/{INDEX}/search',
-            headers={'Authorization': f'Bearer {MEILI_KEY}', 'Content-Type': 'application/json'},
-            json={'q': '', 'filter': f'source = "{source}"', 'limit': 1000, 'offset': offset},
-            timeout=30,
-        )
-        hits = res.json().get('hits', [])
-        docs.extend(hits)
-        print('.', end='', flush=True)
-        if len(hits) < 1000:
-            break
-        offset += 1000
-    print(f' {len(docs)} docs')
+    docs = [d for d in load_all_docs() if d.get('source') == source]
+    print(f'  {source}: {len(docs)} docs')
     return docs
 
 def sort_docs(docs):
