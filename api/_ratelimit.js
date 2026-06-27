@@ -1,14 +1,15 @@
-// Lightweight in-memory rate limiter for the keyed /api/* proxies.
+// Rate limiter for the keyed /api/* proxies.
 // Underscore prefix => not routed as its own endpoint (same convention as _seo.js).
 //
-// NOTE: Vercel serverless instances are per-instance and ephemeral, so this is a
-// best-effort, per-warm-instance limiter — it blunts naive rapid-fire abuse (and
-// protects the SAM.gov key quota on market-research) but is NOT a distributed
-// guarantee. For hard limits across instances, front it with Vercel KV / Upstash
-// or a Cloudflare rate rule.
+// Uses Upstash Redis (REST) when UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN
+// are set — a shared store, so limits are enforced ACROSS Vercel's ephemeral
+// serverless instances (real protection, incl. the SAM.gov key quota).
+// If those env vars are absent it falls back to a best-effort in-memory,
+// per-instance limiter (weak on Vercel — basically a no-op against distributed
+// abuse — but keeps the API working before Upstash is configured).
+// No dependency: talks to Upstash's REST API with fetch.
 
 const WINDOW_MS = 60_000;
-const hits = new Map(); // ip -> number[] (request timestamps within the window)
 
 function clientIp(req) {
   const xff = (req.headers && (req.headers['x-forwarded-for'] || req.headers['x-real-ip'])) || '';
@@ -16,21 +17,18 @@ function clientIp(req) {
   return first || (req.socket && req.socket.remoteAddress) || 'unknown';
 }
 
-// Fixed-window-ish sliding limiter. Returns { limited, retryAfter (seconds) }.
-function rateLimit(req, { max = 30, windowMs = WINDOW_MS } = {}) {
+// ── In-memory fallback (per-instance; weak on Vercel) ─────────────────────────
+const hits = new Map();
+function inMemoryLimit(req, max, windowMs) {
   const ip = clientIp(req);
   const now = Date.now();
   let arr = hits.get(ip);
   if (!arr) { arr = []; hits.set(ip, arr); }
   while (arr.length && arr[0] <= now - windowMs) arr.shift();
-
   if (arr.length >= max) {
-    const retryAfter = Math.max(1, Math.ceil((arr[0] + windowMs - now) / 1000));
-    return { limited: true, retryAfter };
+    return { limited: true, retryAfter: Math.max(1, Math.ceil((arr[0] + windowMs - now) / 1000)) };
   }
   arr.push(now);
-
-  // Bound memory: periodically sweep stale IPs.
   if (hits.size > 5000) {
     for (const [k, v] of hits) {
       while (v.length && v[0] <= now - windowMs) v.shift();
@@ -40,9 +38,46 @@ function rateLimit(req, { max = 30, windowMs = WINDOW_MS } = {}) {
   return { limited: false };
 }
 
-// Convenience: enforce and write the 429 response. Returns true if it handled (blocked).
-function enforce(req, res, opts) {
-  const r = rateLimit(req, opts);
+// ── Upstash Redis (shared; enforced across instances) ─────────────────────────
+const U_URL = process.env.UPSTASH_REDIS_REST_URL;
+const U_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const useRedis = !!(U_URL && U_TOKEN);
+
+// Fixed-window counter: key = rl:<ip>:<windowBucket>; INCR + EXPIRE in one pipeline.
+// Fails OPEN on any error/timeout so a Redis blip never takes the API down.
+async function redisLimit(req, max, windowMs) {
+  const ip = clientIp(req);
+  const windowSec = Math.ceil(windowMs / 1000);
+  const bucket = Math.floor(Date.now() / windowMs);
+  const key = `rl:${ip}:${bucket}`;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 800);
+  try {
+    const res = await fetch(`${U_URL}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${U_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify([['INCR', key], ['EXPIRE', key, String(windowSec)]]),
+      signal: ctrl.signal
+    });
+    if (!res.ok) return { limited: false };
+    const data = await res.json();
+    const count = Array.isArray(data) ? Number(data[0] && data[0].result) : NaN;
+    if (!Number.isFinite(count)) return { limited: false };
+    if (count > max) {
+      const retryAfter = Math.ceil((windowMs - (Date.now() % windowMs)) / 1000);
+      return { limited: true, retryAfter: Math.max(1, retryAfter) };
+    }
+    return { limited: false };
+  } catch (_e) {
+    return { limited: false }; // fail open
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Enforce and, if over the limit, write the 429. Returns true if it blocked.
+async function enforce(req, res, { max = 30, windowMs = WINDOW_MS } = {}) {
+  const r = useRedis ? await redisLimit(req, max, windowMs) : inMemoryLimit(req, max, windowMs);
   if (r.limited) {
     res.setHeader('Retry-After', String(r.retryAfter));
     res.status(429).json({ error: 'Too many requests. Please slow down and try again shortly.' });
@@ -51,4 +86,4 @@ function enforce(req, res, opts) {
   return false;
 }
 
-module.exports = { rateLimit, enforce, clientIp };
+module.exports = { enforce, clientIp, usingRedis: () => useRedis };

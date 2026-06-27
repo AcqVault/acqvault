@@ -140,7 +140,7 @@ module.exports = async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  if (enforce(req, res, { max: 40 })) return;
+  if (await enforce(req, res, { max: 40 })) return;
 
   try {
     const { action, body, id } = req.body || {};
