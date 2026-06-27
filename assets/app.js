@@ -49,28 +49,135 @@
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 const SEARCH_API = '/api/search';
 const WEB3FORMS_ENDPOINT = ''; // Configure server-side; do not expose Web3Forms access keys in static HTML.
-async function meiliSearch(body) {
-  const res = await fetch(SEARCH_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'search', body })
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const msg = data?.error || data?.message || `HTTP ${res.status}`;
-    throw new Error(`Search service: ${msg}`);
+// ── CLIENT-SIDE SEARCH (offline-capable) ──────────────────────────────────────
+// Mirrors api/search.js scoring EXACTLY so local and server results are identical.
+// Once the corpus is cached, search runs on-device — instant, no per-search network,
+// and fully usable offline (planes, SCIFs, locked-down .mil networks). It's also the
+// access path for the CAC-gated Compass text the official site won't serve.
+const CORPUS_URL = '/output/documents.json';
+let ACQ_INDEX = null;            // [{ doc, titleLc, contentLc }]
+let acqCorpusPromise = null;
+function acqQueryTerms(q){ return String(q||'').toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>=2); }
+function acqValueFilters(filter, field){ const re=new RegExp(field+'\\s*=\\s*"([^"]+)"','g'); return [...String(filter||'').matchAll(re)].map(m=>m[1]); }
+function acqScore(entry, terms, phrase){
+  if(!terms.length) return 1;
+  let score=0, titleHits=0;
+  for(const term of terms){
+    const inTitle=entry.titleLc.includes(term), inContent=entry.contentLc.includes(term);
+    if(!inTitle && !inContent) return 0;
+    if(inTitle){ score+=20; titleHits++; }
+    if(inContent) score+=2;
   }
-  return data;
+  if(titleHits===terms.length) score+=15;
+  if(phrase && terms.length>1){
+    if(entry.titleLc.includes(phrase)) score+=100;
+    else if(entry.contentLc.includes(phrase)) score+=25;
+  }
+  return score;
+}
+function acqPartNum(doc){ const m=String(doc.part||'').match(/\d+/); return m?parseInt(m[0],10):9999; }
+function acqCrop(content, query, cropLength){
+  const text=String(content||'').replace(/\s+/g,' ').trim();
+  const limit=Number(cropLength)||180;
+  const q=String(query||'').trim().toLowerCase();
+  if(!q) return text.slice(0,limit*2);
+  const first=q.split(/\s+/).find(Boolean);
+  const idx=first?text.toLowerCase().indexOf(first):-1;
+  if(idx===-1) return text.slice(0,limit*2);
+  const start=Math.max(0,idx-Math.floor(limit/2));
+  const end=Math.min(text.length,start+limit*2);
+  return (start>0?'…':'')+text.slice(start,end)+(end<text.length?'…':'');
+}
+function acqHighlight(text, query){
+  let out=String(text||'');
+  const terms=[...new Set(String(query||'').toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>2))];
+  for(const term of terms){ const esc=term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); out=out.replace(new RegExp('('+esc+')','ig'),'<mark>$1</mark>'); }
+  return out;
+}
+function acqLoadCorpus(){
+  if(ACQ_INDEX) return Promise.resolve(ACQ_INDEX);
+  if(acqCorpusPromise) return acqCorpusPromise;
+  acqCorpusPromise = fetch(CORPUS_URL)
+    .then(r => { if(!r.ok) throw new Error('corpus HTTP '+r.status); return r.json(); })
+    .then(docs => { ACQ_INDEX = docs.filter(Boolean).map(doc => ({ doc, titleLc:String(doc.title||'').toLowerCase(), contentLc:String(doc.content||'').toLowerCase() })); return ACQ_INDEX; })
+    .catch(e => { acqCorpusPromise = null; throw e; });
+  return acqCorpusPromise;
+}
+function acqLocalSearch(body){
+  const filter=body.filter||'';
+  const sources=acqValueFilters(filter,'source'), parts=acqValueFilters(filter,'part'), statuses=acqValueFilters(filter,'status');
+  const terms=acqQueryTerms(body.q), phrase=terms.join(' ');
+  let entries=ACQ_INDEX.filter(({doc})=>{
+    if(sources.length && !sources.includes(String(doc.source||''))) return false;
+    if(parts.length && !parts.includes(String(doc.part||''))) return false;
+    if(statuses.length && !statuses.includes(String(doc.status||''))) return false;
+    return true;
+  });
+  if(terms.length){
+    entries=entries.map(e=>({e,s:acqScore(e,terms,phrase)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.e);
+  } else {
+    entries=entries.sort((a,b)=>acqPartNum(a.doc)-acqPartNum(b.doc)||String(a.doc.title||'').localeCompare(String(b.doc.title||'')));
+  }
+  const total=entries.length, offset=Number(body.offset)||0, limit=Math.min(Number(body.limit)||20,100);
+  const hits=entries.slice(offset,offset+limit).map(({doc})=>({ ...doc, _formatted:{ title:acqHighlight(doc.title,body.q), content:acqHighlight(acqCrop(doc.content,body.q,body.cropLength),body.q) } }));
+  return { hits, estimatedTotalHits:total, offset, limit, processingTimeMs:0, query:body.q||'' };
+}
+
+async function meiliSearch(body) {
+  // Prefer the on-device corpus once it's loaded: instant, and works with no network.
+  if (ACQ_INDEX) return acqLocalSearch(body);
+  try {
+    const res = await fetch(SEARCH_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'search', body })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const msg = data?.error || data?.message || `HTTP ${res.status}`;
+      throw new Error(`Search service: ${msg}`);
+    }
+    return data;
+  } catch (err) {
+    // Offline / API unreachable — fall back to the local corpus.
+    try { await acqLoadCorpus(); return acqLocalSearch(body); }
+    catch (_) { throw err; }
+  }
 }
 async function meiliDocument(id) {
-  const res = await fetch(SEARCH_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'document', id })
-  });
-  if (!res.ok) return null;
-  return res.json();
+  if (ACQ_INDEX) { const e = ACQ_INDEX.find(x => String(x.doc.id) === String(id)); return e ? e.doc : null; }
+  try {
+    const res = await fetch(SEARCH_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'document', id })
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (err) {
+    try { await acqLoadCorpus(); const e = ACQ_INDEX.find(x => String(x.doc.id) === String(id)); return e ? e.doc : null; }
+    catch (_) { return null; }
+  }
 }
+
+// ── PWA: register service worker + warm the offline corpus cache ───────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+    // Warm the corpus into the SW cache after first paint so search works offline
+    // next time — a plain fetch (SW caches it); online search still uses the server.
+    setTimeout(function () { fetch(CORPUS_URL).catch(function () {}); }, 1800);
+  });
+}
+// Offline indicator — search keeps working from the cached corpus; live data won't.
+(function () {
+  var bar = document.getElementById('offline-bar');
+  if (!bar) return;
+  function sync() { bar.hidden = navigator.onLine; }
+  window.addEventListener('online', sync);
+  window.addEventListener('offline', sync);
+  sync();
+})();
 
 const SOURCE_URLS = {
   'rfo':           'https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system',

@@ -5,10 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Revolutionary FAR Overhaul &amp; R-DFARS Deviations Search | AcqVault</title>
 <link rel="icon" href="assets/acqvault-favicon-blue.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/acqvault-favicon-blue.svg">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
 <meta name="description" content="AcqVault — free full-text search across the Revolutionary FAR Overhaul (RFO), R-DFARS deviations, FAR Companion, and Category Management guidance. Built for the Air Force acquisition community.">
 <link rel="canonical" href="https://www.acqvault.com/">
-<meta name="theme-color" content="#eef2f7">
+<meta name="theme-color" content="#155FBF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AcqVault">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.acqvault.com/">
 <meta property="og:site_name" content="AcqVault">
@@ -28,11 +32,13 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=9">
+<link rel="stylesheet" href="/assets/app.css?v=10">
 </head>
 <body>
 
 <a href="#search-input" class="skip-link" onclick="setTimeout(function(){var s=document.getElementById('search-input');if(s)s.focus();},0);">Skip to search</a>
+
+<div class="offline-bar" id="offline-bar" role="status" aria-live="polite" hidden><b>Offline</b> — full-text search still works. Live spending &amp; SAM.gov data returns when you reconnect.</div>
 
 <!-- ABOUT BAR -->
 <div class="about-bar" id="about-bar">
@@ -571,7 +577,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=7"></script>
+<script defer src="/assets/app.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=6"></script>
 <script defer src="/assets/polish.js?v=2"></script>
 </body>
