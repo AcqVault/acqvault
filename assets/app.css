@@ -1855,8 +1855,9 @@ body.work-mode #quick-links{margin-top:0;}
   .fcard:hover{animation-play-state:running;}
 }
 @media (max-width:600px){
-  .about-extra{display:none;}                  /* concise greeting + eyebrow on phones */
-  .hero-eyebrow{font-size:10px;max-width:100%;}
+  /* Full tagline stays readable — wrap it, don't clip it (the bar grows; JS shifts content down). */
+  .about-text{font-size:11.5px;line-height:1.45;}
+  .hero-eyebrow{font-size:10px;max-width:100%;flex-wrap:wrap;white-space:normal;row-gap:2px;}
   .search-bar input{flex:1;min-width:0;}
   .search-go{flex-shrink:0;}
 }
