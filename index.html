@@ -89,7 +89,7 @@
     <!-- ░░ LEFT COLUMN — content + search ░░ -->
     <div class="hero-left hero-content">
       <div class="hero-intro">
-        <span class="hero-eyebrow"><span class="hero-eyebrow-dot st-live-dot"></span>FY2026 DAF obligations tracked live<span class="hero-eyebrow-sep">—</span>updated today</span>
+        <span class="hero-eyebrow"><span class="hero-eyebrow-dot st-live-dot"></span>FY2026 DAF obligations tracked live<span class="hero-eyebrow-sep">—</span><span id="hero-asof">live data</span></span>
         <h1 class="hero-headline">Search the entire<br><em>acquisition</em> <span class="hl-ink">rulebook.</span></h1>
         <p class="hero-sub">Full-text search across the <strong>Revolutionary FAR Overhaul</strong>, R-DFARS deviations and DAF acquisition guidance. No login — answers in milliseconds.</p>
       </div>
@@ -156,7 +156,8 @@
       <aside class="fcard fcard-oblig side-ticker" aria-label="Federal spending data">
         <div class="fcard-lbl"><span class="fcard-trend" aria-hidden="true">▲</span>FY26 DAF obligations</div>
         <div class="st-big-num" id="st-obligations-num">—</div>
-        <div class="st-num-label">DAF contract obligations</div>
+        <div class="st-num-label">DAF contract obligations<span class="st-asof" id="st-asof"></span></div>
+        <div class="st-spark" id="st-spark" aria-hidden="true"></div>
         <div class="st-fy-graphic" aria-label="Fiscal year spend progress">
           <div class="st-fy-track"><div class="st-fy-fill" id="st-fy-fill"></div></div>
           <div class="st-fy-caption"><span><strong id="st-fy-spend-mini">—</strong> obligated</span><span id="st-fy-pace-mini">— elapsed</span></div>
