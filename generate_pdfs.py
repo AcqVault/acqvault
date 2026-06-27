@@ -3,9 +3,15 @@ import requests
 from datetime import datetime
 from fpdf import FPDF
 
-MEILI_HOST = 'https://getmeilimeilisearchv190-production-a931.up.railway.app'
-MEILI_KEY  = 'f68d1b50a6aa870ed16adce86770732894bb7c543b88f64385c2a321b7e8be73'
-INDEX      = 'acqvault'
+MEILI_HOST = os.environ.get('MEILI_HOST')
+MEILI_KEY  = os.environ.get('MEILI_KEY')
+INDEX      = os.environ.get('MEILI_INDEX', 'acqvault')
+
+if not MEILI_HOST or not MEILI_KEY:
+    raise SystemExit(
+        'Missing MEILI_HOST / MEILI_KEY environment variables. '
+        'Set them locally or as GitHub Actions secrets — do not hardcode credentials.'
+    )
 SOURCES    = {'rfo': 'Revolutionary FAR Overhaul', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion'}
 OUTPUT_DIR = 'pdfs'
 

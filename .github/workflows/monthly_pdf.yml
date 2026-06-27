@@ -21,9 +21,13 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install fpdf2 requests
+        run: pip install 'fpdf2~=2.8' 'requests~=2.32'
 
       - name: Generate PDFs
+        env:
+          MEILI_HOST: ${{ secrets.MEILI_HOST }}
+          MEILI_KEY: ${{ secrets.MEILI_KEY }}
+          MEILI_INDEX: ${{ secrets.MEILI_INDEX }}
         run: python generate_pdfs.py
 
       - name: Commit and push updated PDFs
