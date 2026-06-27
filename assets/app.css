@@ -226,7 +226,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .dash-window button {
   border: none; background: none; cursor: pointer;
   font-size: 11.5px; font-weight: 650; color: var(--muted);
-  padding: 7px 14px; border-radius: 999px; transition: color .15s, background .15s, box-shadow .15s;
+  padding: 7px 14px; min-height: 44px; border-radius: 999px; transition: color .15s, background .15s, box-shadow .15s;
 }
 .dash-window button.active { background: var(--accent); color: #fff; box-shadow: 0 2px 10px rgba(21,95,191,0.18); }
 .dash-window button:hover:not(.active) { color: var(--accent); background: var(--accent-soft); }
@@ -412,6 +412,10 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   --shadow-sm: 0 1px 2px rgba(13,17,23,.04), 0 4px 12px -2px rgba(13,17,23,.06);
   --shadow-md: 0 2px 4px rgba(13,17,23,.05), 0 12px 28px -6px rgba(13,17,23,.10);
   --shadow-lg: 0 4px 10px rgba(13,17,23,.06), 0 24px 48px -12px rgba(13,17,23,.16);
+  /* Motion system */
+  --ease-out: cubic-bezier(0.16,1,0.3,1);
+  --ease-spring: cubic-bezier(0.34,1.4,0.64,1);
+  --dur-1:.16s; --dur-2:.32s; --dur-3:.55s;
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -879,6 +883,13 @@ body.work-mode .source-tiles-section{display:none;}
 .dc-cite-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
 .dc-cite-btn.copied{border-color:#16a34a;color:#16a34a;}
 .dc-link{color:var(--accent);font-weight:650;text-decoration:none;border-bottom:1px solid rgba(21,95,191,0.2);}
+/* CAC-gated DAF Compass references — marked text, not dead links */
+.dc-cac{color:var(--ink2);font-weight:600;border-bottom:1px dotted var(--line);}
+.dc-cac-tag{display:inline-block;margin-left:5px;font-size:9px;font-weight:800;letter-spacing:.05em;color:var(--muted);background:var(--off);border:1px solid var(--line2);border-radius:4px;padding:1px 4px;vertical-align:1px;}
+.dc-compass-visual.image-cac{box-shadow:none;background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);}
+.dc-compass-visual.image-cac figcaption{border-top:none;}
+.dc-compass-visual.image-cac figcaption::before{content:'Visual reference';font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2);margin-right:auto;}
+.dc-cac-note{font-size:11px;font-weight:600;color:var(--muted);}
 .dc-link:hover{border-bottom-color:var(--accent);}
 .dc-resource{display:flex;align-items:flex-start;gap:9px;margin:7px 0;padding:10px 12px;border:1px solid rgba(21,95,191,0.1);border-radius:10px;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);}
 .dc-resource::before{content:'↗';display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:900;flex:0 0 auto;margin-top:1px;}
@@ -1015,6 +1026,7 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .source-status-chip.live{background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.26);color:#bbf7d0;}
 .source-status-chip.offline{background:rgba(148,163,184,0.12);border-color:rgba(148,163,184,0.2);color:rgba(226,232,240,0.72);}
 .source-status-chip.soon{background:rgba(255,255,255,0.045);color:rgba(226,232,240,0.66);}
+.source-status-chip.archived{background:rgba(79,182,232,0.12);border-color:rgba(79,182,232,0.26);color:#bce3f5;}
 .source-status-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8;}
 .source-status-note{font-size:13px;line-height:1.6;color:rgba(226,232,240,0.7);max-width:760px;}
 .src{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-xl);padding:22px;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);}
@@ -1174,6 +1186,7 @@ footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);co
 #sources .source-status-chip.live{background:#ecfdf5;border-color:#bbf7d0;color:#047857;}
 #sources .source-status-chip.offline{background:var(--off);border-color:var(--line2);color:var(--muted2);}
 #sources .source-status-chip.soon{background:#f8fafc;border-color:var(--line2);color:var(--muted2);}
+#sources .source-status-chip.archived{background:#eff6fb;border-color:#cfe6f5;color:#0e3f80;}
 #sources .source-status-note{color:var(--muted);}
 #sources .src{background:rgba(255,255,255,0.72);border-color:rgba(21,95,191,0.12);box-shadow:0 1px 10px rgba(14,63,128,0.03);}
 #sources .src:hover{background:var(--white);border-color:rgba(21,95,191,0.22);box-shadow:0 8px 28px rgba(14,63,128,0.08);}
@@ -1187,10 +1200,12 @@ footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);co
 #sources .callout-head{color:var(--ink);}
 #sources .callout-sub{color:var(--muted);}
 
-.fade-up{opacity:0;transform:translateY(8px);transition:opacity 0.32s ease,transform 0.32s ease;}
+.fade-up{opacity:0;transform:translateY(18px);transition:opacity var(--dur-3) var(--ease-out),transform var(--dur-3) var(--ease-out);}
 .fade-up.in{opacity:1;transform:translateY(0);}
 .fade-up.d1{transition-delay:0.04s;}
 .fade-up.d2{transition-delay:0.08s;}
+/* Tactile press feedback — every interactive control depresses */
+.search-go:active,.cta-btn:active,.trychip:active,.hero-trychip:active,.mode-btn:active,.src-tile:active,.ql-card:active,.tk-card:active,.nav-cta:active,.market-btn:active,.dash-window button:active{transform:translateY(1px) scale(.985);transition:transform .1s var(--ease-out);}
 
 /* Consistent homepage section rhythm */
 .source-tiles-section{padding-top:var(--sec-pad-y-tight);padding-bottom:var(--sec-pad-y-tight);}
@@ -1208,8 +1223,8 @@ footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);co
 #spending-dashboard .dash-stat,#spending-dashboard .dash-panel{background:linear-gradient(180deg,rgba(255,255,255,0.06) 0%,rgba(255,255,255,0.025) 100%);border:1px solid rgba(255,255,255,0.10);box-shadow:0 1px 0 rgba(255,255,255,0.06) inset,0 18px 40px -20px rgba(0,0,0,0.6);backdrop-filter:blur(6px);}
 #spending-dashboard .dash-stat-num{color:#fff;}
 #spending-dashboard .dash-stat-num.accent{color:var(--cyan);}
-#spending-dashboard .dash-stat-label,#spending-dashboard .dash-panel-title{color:rgba(255,255,255,0.55);}
-#spending-dashboard .dash-stat-foot,#spending-dashboard .dash-bar-sub,#spending-dashboard .dash-panel-title span,#spending-dashboard .dash-foot{color:rgba(255,255,255,0.45);}
+#spending-dashboard .dash-stat-label,#spending-dashboard .dash-panel-title{color:rgba(255,255,255,0.66);}
+#spending-dashboard .dash-stat-foot,#spending-dashboard .dash-bar-sub,#spending-dashboard .dash-panel-title span,#spending-dashboard .dash-foot{color:rgba(255,255,255,0.62);}
 #spending-dashboard .dash-bar-name{color:rgba(255,255,255,0.82);}
 #spending-dashboard .dash-bar-val{color:#fff;}
 #spending-dashboard .dash-bar-track,#spending-dashboard .dash-mix-bar{background:rgba(255,255,255,0.10);}
@@ -1552,7 +1567,7 @@ body.work-mode #quick-links{margin-top:0;}
 .skel-snippet{width:96%;margin-bottom:7px;}
 .skel-snippet.short{width:74%;margin-bottom:0;}
 @keyframes skel-shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
-@media (prefers-reduced-motion:reduce){.skel-line,.acqvault-wordmark,.hero-brand-title svg{animation:none!important;}.hero-brand-title svg{filter:none!important;}.fade-up{opacity:1!important;transform:none!important;transition:none!important;}.hero-intro{animation:none!important;}}
+@media (prefers-reduced-motion:reduce){.skel-line,.acqvault-wordmark,.hero-brand-title svg{animation:none!important;}.hero-brand-title svg{filter:none!important;}.fade-up{opacity:1!important;transform:none!important;transition:none!important;transition-delay:0s!important;}.hero-intro{animation:none!important;}.dash-bar-fill,.st-fy-fill{transition:none!important;}}
 
 /* ═══════════════════════════════════════════════════════════════
    KINETIC LIGHT — animated aurora hero, rotating vault dial,

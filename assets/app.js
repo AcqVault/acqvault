@@ -27,11 +27,22 @@
 (function() {
   var els = document.querySelectorAll('.fade-up');
   if (!els.length) return;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var io = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      if (e.isIntersecting) {
+        if (!reduceMotion && e.target.parentElement) {
+          // cascade siblings within the same group for a "page assembling" feel
+          var sibs = Array.prototype.filter.call(e.target.parentElement.children, function(c){ return c.classList && c.classList.contains('fade-up'); });
+          var idx = sibs.indexOf(e.target);
+          if (idx > 0 && !e.target.classList.contains('d1') && !e.target.classList.contains('d2')) {
+            e.target.style.transitionDelay = (Math.min(idx, 8) * 55) + 'ms';
+          }
+        }
+        e.target.classList.add('in'); io.unobserve(e.target);
+      }
     });
-  }, { threshold: 0.01, rootMargin: '0px 0px 20% 0px' });
+  }, { threshold: 0.01, rootMargin: '0px 0px -8% 0px' });
   els.forEach(function(el) { io.observe(el); });
 })();
 
@@ -1429,7 +1440,13 @@ function formatInlineLinks(text) {
     out += esc(raw.slice(last, m.index));
     const label = esc(m[1]);
     const url = esc(m[2]);
-    out += `<a class="dc-link" href="${url}" target="_blank" rel="noopener">${label}</a>`;
+    if (/dps\.mil/i.test(m[2])) {
+      // CAC-gated DAF SharePoint — never reachable for public/offline users; render as
+      // marked text instead of a dead outbound link.
+      out += `<span class="dc-cac" title="On the CAC-gated DAF Contracting Compass (gov network + CAC required)">${label}<span class="dc-cac-tag">CAC</span></span>`;
+    } else {
+      out += `<a class="dc-link" href="${url}" target="_blank" rel="noopener">${label}</a>`;
+    }
     last = m.index + m[0].length;
   }
   out += esc(raw.slice(last));
@@ -1445,6 +1462,11 @@ function compassResourceHTML(line, isImage = false) {
   const body = String(line || '').replace(/^-\s+/, '');
   const link = compassLinkParts(body);
   if (isImage && link?.url) {
+    if (/dps\.mil/i.test(link.url)) {
+      // CAC-gated SharePoint image — embedding it shows a broken image to public/offline
+      // users. Render a labeled placeholder instead.
+      return `<figure class="dc-compass-visual image-cac"><figcaption><span>${esc(link.label)}</span><span class="dc-cac-note">Visual on the CAC-gated DAF site</span></figcaption></figure>`;
+    }
     return `<figure class="dc-compass-visual"><img src="${esc(link.url)}" alt="${esc(link.label)}" loading="lazy" onerror="this.closest('figure')?.classList.add('image-unavailable')"><figcaption><span>${esc(link.label)}</span><a href="${esc(link.url)}" target="_blank" rel="noopener">Open image</a></figcaption></figure>`;
   }
   const note = link?.note ? ` <span class="dc-resource-note">— ${formatInlineLinks(link.note)}</span>` : '';
@@ -1699,7 +1721,8 @@ function renderReaderPage(hit) {
   document.getElementById('reader-part').textContent = hit.part ? `Part ${displayPartForSource(hit.source, hit.part)}` : '—';
 
   const original = document.getElementById('reader-original');
-  const sourceUrl = SOURCE_URLS[hit.source] || '';
+  // Compass official source is CAC-gated — don't send users to a 403 wall.
+  const sourceUrl = hit.source === 'compass' ? '' : (SOURCE_URLS[hit.source] || '');
   original.href = sourceUrl || '#';
   original.style.display = sourceUrl ? '' : 'none';
 
@@ -1830,7 +1853,9 @@ function openDrawer(hit) {
   copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied');
   copyBtn.onclick = () => copyCitation(citation, copyBtn);
   document.getElementById('drawer-meta').innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
-  document.getElementById('drawer-orig').href = hit.url || SOURCE_URLS[hit.source] || '#';
+  const drawerOrig = document.getElementById('drawer-orig');
+  if (hit.source === 'compass') { drawerOrig.style.display = 'none'; }
+  else { drawerOrig.style.display = ''; drawerOrig.href = hit.url || SOURCE_URLS[hit.source] || '#'; }
   const newTabUrl = new URL(window.location.href);
   newTabUrl.searchParams.set('view', 'reader');
   newTabUrl.searchParams.set('doc', hit.id);
@@ -2102,8 +2127,8 @@ function tick(){const el=document.getElementById('btyping'),rc=document.getEleme
 setTimeout(tick,900);
 
 // ── SCROLL FADE-IN ────────────────────────────────────────────────────────────
-const obs = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);} }); }, { threshold: 0.1 });
-document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+// (Handled by the staggered reveal observer at the top of this file; this
+//  duplicate is intentionally disabled so it doesn't race the cascade delays.)
 
 // ── REGULATION NEWS FEED ──────────────────────────────────────────────────────
 async function loadNewsFeed() {

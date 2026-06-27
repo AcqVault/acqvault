@@ -28,7 +28,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=7">
+<link rel="stylesheet" href="/assets/app.css?v=8">
 </head>
 <body>
 
@@ -124,7 +124,7 @@
               <button type="button" role="menuitem" onclick="chooseBrowseSource('far-companion')"><span>FAR Companion</span><small>Live</small></button>
               <button type="button" role="menuitem" onclick="chooseBrowseSource('category-management')"><span>Category Management Buying Guide</span><small>Live</small></button>
               <button type="button" role="menuitem" onclick="chooseBrowseSource('afi-63-138')"><span>DAFI 63-138</span><small>Live</small></button>
-              <button type="button" role="menuitem" onclick="chooseBrowseSource('compass')"><span>DAF Contracting Compass</span><small>Live</small></button>
+              <button type="button" role="menuitem" onclick="chooseBrowseSource('compass')"><span>DAF Contracting Compass</span><small>In-app</small></button>
             </div>
           </div>
           <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
@@ -240,7 +240,7 @@
       <div class="src-tile src-tile-cmp" onclick="setMode('browse');setBrowseSource('compass')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('compass');}">
         <div class="src-tile-badge">DAF Compass</div>
         <div class="src-tile-name">DAF Contracting Compass</div>
-        <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAF Contracting Compass<small>Policy hub</small></span></div>
+        <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAF Contracting Compass<small>In-app archive</small></span></div>
         <div class="src-tile-action">Browse DAF Contracting Compass →</div>
       </div>
     </div>
@@ -329,7 +329,7 @@
     <div class="fulltext-note"><strong>How these are generated:</strong> A GitHub Actions workflow runs on the 1st of every month, fetches all documents from the live Meilisearch index, compiles them in sequential part order, and commits fresh PDFs to the repository. Each page carries an AcqVault.com watermark. Files are served directly from GitHub — no server required.</div>
     <div class="fulltext-section-label">Browse-only sources</div>
     <div class="fulltext-cards">
-      <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--cmp-bg);color:var(--cmp-txt);">DAF Compass</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>48 parts covered</span><span>SharePoint source pages</span><span>Links and visual references preserved</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('compass')">Browse source</button></div>
+      <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--cmp-bg);color:var(--cmp-txt);">DAF Compass</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>48 parts covered</span><span>In-app archive · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('compass')">Browse in-app</button></div>
       <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:#fefce8;color:#854d0e;">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>14 volumes</span><span>comptroller.defense.gov</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
       <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:var(--off2);color:var(--muted2);">AFI 63-Series</span><div class="fulltext-card-name">AFI 63-Series</div><div class="fulltext-card-meta"><span>Program management regs</span><span>AF instruction series</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
     </div>
@@ -458,7 +458,7 @@
           <span class="source-status-chip live">FAR Companion</span>
           <span class="source-status-chip live">Category Management Buying Guide</span>
           <span class="source-status-chip live">DAFI 63-138</span>
-          <span class="source-status-chip live">DAF Contracting Compass</span>
+          <span class="source-status-chip archived">DAF Contracting Compass</span>
         </div>
       </div>
       <div class="source-status-row">
@@ -566,8 +566,8 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=5"></script>
-<script defer src="/assets/widgets.js?v=4"></script>
+<script defer src="/assets/app.js?v=6"></script>
+<script defer src="/assets/widgets.js?v=5"></script>
 <script defer src="/assets/polish.js?v=2"></script>
 </body>
 </html>
