@@ -24,6 +24,18 @@
   });
 })();
 
+/* ══ KINETIC LIGHT — example-query chips ═════════════════════
+   Fills the real #search-input with an example and triggers the
+   existing search pipeline (input event → debounced runSearch). */
+window.runExampleQuery = function (q) {
+  var input = document.getElementById('search-input');
+  if (!input) return;
+  if (typeof setMode === 'function') { try { setMode('search'); } catch (e) {} }
+  input.value = q;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.focus();
+};
+
 /* ══ KINETIC LIGHT — typewriter placeholder ══════════════════
    Cycles example queries through the hero search placeholder.
    Only runs while the field is empty AND unfocused, so it never
