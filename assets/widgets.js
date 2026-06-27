@@ -757,14 +757,20 @@
 
       // largest actions
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      largeBox.innerHTML = rows.slice(0, 6).map((r) => {
+      const largest = rows.slice(0, 6);
+      const actMax = largest.length ? (Math.max(...largest.map((r) => Number(r['Transaction Amount'] || 0))) || 1) : 1;
+      largeBox.innerHTML = largest.map((r) => {
         const dt = (r['Action Date'] || '').slice(0, 10);
         const dd = dt ? months[Number(dt.slice(5, 7)) - 1] + ' ' + Number(dt.slice(8, 10)) : '';
         return `<div class="dash-bar-row" style="margin-bottom:11px">
           <div class="dash-bar-top"><div class="dash-bar-name">${esc(cleanName(r['Recipient Name']))}</div><div class="dash-bar-val">${fmtUSD(r['Transaction Amount'])}</div></div>
-          <div class="dash-bar-name" style="font-size:10.5px;color:rgba(255,255,255,0.42);max-width:100%">${esc(r['Award ID'] || '')}${dd ? ' \u00B7 ' + dd : ''}</div>
+          <div class="dash-bar-track"><div class="dash-bar-fill" style="width:0"></div></div>
+          <div class="dash-bar-sub">${esc(r['Award ID'] || '')}${dd ? ' \u00B7 ' + dd : ''}</div>
         </div>`;
       }).join('');
+      requestAnimationFrame(() => {
+        largeBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (Number(largest[i]['Transaction Amount'] || 0) / actMax) * 100) + '%'; });
+      });
     } catch (e) {
       if (token !== dashReqToken) return;
       const msg = '<div class="dash-loading dash-skeleton">Live spending data is briefly unavailable \u2014 USASpending may be rate-limiting. It\u2019ll refresh shortly.</div>';
