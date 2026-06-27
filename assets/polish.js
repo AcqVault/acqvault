@@ -24,6 +24,62 @@
   });
 })();
 
+/* ══ KINETIC LIGHT — typewriter placeholder ══════════════════
+   Cycles example queries through the hero search placeholder.
+   Only runs while the field is empty AND unfocused, so it never
+   interferes with typing. Stilled under reduced-motion. */
+(function () {
+  const input = document.getElementById('search-input');
+  if (!input) return;
+  const STATIC = input.getAttribute('placeholder') || 'Search regulations, parts, guidance…';
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const PHRASES = [
+    'commercial item determination threshold',
+    'micro-purchase threshold',
+    'R-DFARS 252.204 class deviation',
+    'sole source justification',
+    'commercial solutions opening',
+    'simplified acquisition procedures',
+    'other than full and open competition'
+  ];
+  const PREFIX = 'Try: ';
+  let pi = 0, ci = 0, deleting = false, timer = null, running = false;
+
+  function idle() { return document.activeElement !== input && !input.value; }
+
+  function step() {
+    if (!idle()) { stop(); return; }
+    const phrase = PHRASES[pi];
+    if (!deleting) {
+      ci++;
+      input.placeholder = PREFIX + phrase.slice(0, ci);
+      if (ci >= phrase.length) { deleting = true; timer = setTimeout(step, 2000); return; }
+      timer = setTimeout(step, 55);
+    } else {
+      ci--;
+      input.placeholder = PREFIX + phrase.slice(0, ci);
+      if (ci <= 0) { deleting = false; pi = (pi + 1) % PHRASES.length; timer = setTimeout(step, 420); return; }
+      timer = setTimeout(step, 28);
+    }
+  }
+  function start() {
+    if (running || !idle()) return;
+    running = true; ci = 0; deleting = false;
+    timer = setTimeout(step, 600);
+  }
+  function stop() {
+    running = false;
+    if (timer) { clearTimeout(timer); timer = null; }
+    input.placeholder = STATIC;
+  }
+  input.addEventListener('focus', stop);
+  input.addEventListener('input', stop);
+  input.addEventListener('blur', () => { setTimeout(() => { if (idle()) start(); }, 400); });
+  // Kick off after the hero settles
+  setTimeout(start, 1400);
+})();
+
 /* ══ PART SEARCH — filter sections within Browse view ════════ */
 (function () {
   // Initialise whenever a part finishes rendering

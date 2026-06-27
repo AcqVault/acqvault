@@ -316,27 +316,33 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 
 /* ── WORDMARK STREAK ANIMATION ── */
 .acqvault-wordmark {
+  /* Kinetic Light: living gradient wordmark — brand blue → cyan with a slow shimmer */
   background: linear-gradient(
-    90deg,
+    100deg,
     var(--ink) 0%,
-    var(--ink) 20%,
-    #60a5fa 35%,
-    #ffffff 50%,
-    #60a5fa 65%,
-    var(--ink) 80%,
+    var(--ink) 8%,
+    #0066CC 30%,
+    #1f8fe0 48%,
+    #38bdf8 62%,
+    #0066CC 78%,
+    var(--ink) 96%,
     var(--ink) 100%
   );
-  background-size: 300% 100%;
+  background-size: 220% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: wm-sweep 4.8s cubic-bezier(0.4,0,0.2,1) 0.6s 1 forwards;
+  animation: wm-intro 4.4s cubic-bezier(0.4,0,0.2,1) 0.5s 1 forwards,
+             wm-shimmer 9s ease-in-out 5s infinite;
 }
-@keyframes wm-sweep {
+@keyframes wm-intro {
   0%   { background-position: 150% 0; }
-  55%  { background-position: -20% 0; }
-  100% { background-position: -20% 0; }
+  100% { background-position: 40% 0; }
+}
+@keyframes wm-shimmer {
+  0%,100% { background-position: 40% 0; }
+  50%     { background-position: 12% 0; }
 }
 /* Arc reactor pulse in sync with streak arriving */
 @keyframes arc-pulse {
@@ -1507,3 +1513,72 @@ body.work-mode #quick-links{margin-top:0;}
 .skel-snippet.short{width:74%;margin-bottom:0;}
 @keyframes skel-shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
 @media (prefers-reduced-motion:reduce){.skel-line,.acqvault-wordmark,.hero-brand-title svg{animation:none!important;}.hero-brand-title svg{filter:none!important;}.fade-up{opacity:1!important;transform:none!important;transition:none!important;}.hero-intro{animation:none!important;}}
+
+/* ═══════════════════════════════════════════════════════════════
+   KINETIC LIGHT — animated aurora hero, rotating vault dial,
+   glassy floating data cards, search glow halo, pulsing live dots.
+   Light/airy but ALIVE. All motion stilled under reduced-motion.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ---- Aurora / mesh-gradient background ---- */
+.hero-aurora{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.aurora-blob{position:absolute;border-radius:50%;filter:blur(72px);mix-blend-mode:multiply;will-change:transform;}
+.aurora-1{width:780px;height:780px;left:-160px;top:-260px;opacity:.58;
+  background:radial-gradient(circle,#9cc7ff 0%,rgba(156,199,255,0) 70%);
+  animation:aurora-drift-a 22s ease-in-out infinite alternate;}
+.aurora-2{width:680px;height:680px;right:-180px;top:-120px;opacity:.5;
+  background:radial-gradient(circle,#7dd3fc 0%,rgba(125,211,252,0) 70%);
+  animation:aurora-drift-b 26s ease-in-out infinite alternate;}
+.aurora-3{width:760px;height:760px;left:34%;bottom:-380px;opacity:.46;
+  background:radial-gradient(circle,#bfe0ff 0%,rgba(191,224,255,0) 70%);
+  animation:aurora-drift-c 30s ease-in-out infinite alternate;}
+@keyframes aurora-drift-a{0%{transform:translate(0,0) scale(1)}100%{transform:translate(70px,46px) scale(1.1)}}
+@keyframes aurora-drift-b{0%{transform:translate(0,0) scale(1.02)}100%{transform:translate(-60px,40px) scale(1.12)}}
+@keyframes aurora-drift-c{0%{transform:translate(0,0) scale(1)}100%{transform:translate(50px,-40px) scale(1.08)}}
+/* keep the canvas particle layer subtle over the brighter aurora */
+#particles{opacity:0.05;mix-blend-mode:overlay;}
+
+/* ---- Rotating glowing dial ring around the vault wordmark logo ---- */
+.vault-mark{position:relative;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.vault-dial-ring{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,rgba(56,189,248,0) 0deg,rgba(56,189,248,0) 180deg,var(--cyan) 285deg,#7dd3fc 335deg,rgba(56,189,248,0) 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2.5px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2.5px));
+  filter:drop-shadow(0 0 4px rgba(56,189,248,.8));opacity:.95;
+  animation:vault-spin 7s linear infinite;}
+@keyframes vault-spin{to{transform:rotate(360deg)}}
+
+/* ---- Search bar: animated focus-glow halo ---- */
+.search-container{isolation:isolate;}
+.search-glow{position:absolute;inset:-4px;border-radius:calc(var(--r-xl) + 4px);z-index:0;opacity:0;
+  background:linear-gradient(100deg,var(--accent),var(--cyan),#7dd3fc,var(--accent));
+  background-size:300% 100%;filter:blur(13px);transition:opacity .35s ease;pointer-events:none;}
+.search-bar{position:relative;z-index:1;}
+.search-container:focus-within .search-glow{opacity:.6;animation:search-glow-move 6s linear infinite;}
+@keyframes search-glow-move{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+
+/* ---- Live dots: gentle pulsing halo ---- */
+.hero-live-dot,.st-live-dot{animation:kl-livepulse 2.2s ease-in-out infinite;}
+@keyframes kl-livepulse{0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,.45)}50%{box-shadow:0 0 0 5px rgba(22,163,74,0)}}
+
+/* ---- Floating glassy data cards (side tickers) ---- */
+.side-ticker{border:1px solid rgba(255,255,255,0.85);
+  box-shadow:0 1px 0 rgba(255,255,255,0.9) inset,0 26px 50px -24px rgba(10,79,158,0.42),0 2px 8px rgba(13,17,23,0.05);
+  animation:hero-rise 0.85s 0.3s cubic-bezier(0.16,1,0.3,1) both, kl-float-l 8s ease-in-out 1.1s infinite;}
+.hero-inner > .side-ticker:last-child{animation:hero-rise 0.85s 0.3s cubic-bezier(0.16,1,0.3,1) both, kl-float-r 8.6s ease-in-out 1.4s infinite;}
+@keyframes kl-float-l{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes kl-float-r{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+.side-ticker:hover{animation-play-state:paused;}
+
+/* ---- Typewriter placeholder caret (cosmetic; JS drives the text) ---- */
+.search-bar.kl-typing #search-input::placeholder{color:var(--muted2);}
+
+/* ---- Reduced-motion: still everything Kinetic Light adds ---- */
+@media (prefers-reduced-motion:reduce){
+  .aurora-blob{animation:none!important;}
+  .vault-dial-ring{animation:none!important;}
+  .search-container:focus-within .search-glow{animation:none!important;}
+  .hero-live-dot,.st-live-dot{animation:none!important;}
+  .side-ticker,.hero-inner > .side-ticker:last-child{animation:hero-rise 0.85s 0.3s cubic-bezier(0.16,1,0.3,1) both!important;}
+  .acqvault-wordmark{animation:none!important;}
+}
