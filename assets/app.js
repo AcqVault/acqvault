@@ -1823,7 +1823,9 @@ function renderResults(data, query) {
   if (!hits.length) { list.innerHTML = '<div class="no-results"><strong>No results found</strong>Try a different search term or adjust your filters.</div>'; return; }
   list.innerHTML = hits.map(hit => {
     const hl = hit._formatted || hit;
+    const pinned = !!(window.AcqSaved && AcqSaved.isPinned(hit.id));
     return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}" role="button" tabindex="0" aria-label="Open: ${esc(hit.title || 'document')}">
+      <button class="rc-pin${pinned ? ' is-pinned' : ''}" type="button" data-pin-id="${esc(hit.id)}" data-pin-title="${esc(hit.title || '')}" data-pin-source="${esc(hit.source || '')}" data-pin-part="${esc(hit.part || '')}" data-pin-file="${esc(hit.filename || '')}" data-pin-url="${esc(hit.url || '')}" data-pin-anchor="${esc(hit.anchor || '')}" data-pin-indexed="${esc(hit.indexed_at || '')}" data-pin-status="${esc(hit.status || '')}" aria-pressed="${pinned ? 'true' : 'false'}" aria-label="${pinned ? 'Remove saved clause' : 'Save this clause'}" title="${pinned ? 'Saved — click to remove' : 'Save this clause'}">★</button>
       <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
       <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
       ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
@@ -2006,6 +2008,7 @@ function openDrawer(hit) {
   document.querySelectorAll('.result-card').forEach(c => c.classList.toggle('active', c.dataset.id === hit.id));
   // Load full part then scroll to this section
   loadFullPartInDrawer(hit);
+  document.dispatchEvent(new CustomEvent('acqvault:draweropen', { detail: hit }));
 }
 
 async function loadFullPartInDrawer(hit) {
@@ -2122,6 +2125,7 @@ async function runSearch(options = {}) {
   try {
     const data = await search(q);
     renderResults(data, q);
+    document.dispatchEvent(new CustomEvent('acqvault:searched', { detail: { q: q } }));
     const total = data.estimatedTotalHits || (data.hits || []).length;
     searchCount.textContent = total ? `${total} results` : '';
   } catch (e) {
