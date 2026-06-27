@@ -712,11 +712,37 @@
     return (d.results || []).filter((r) => r['Recipient Name'] && Number(r['Transaction Amount']) > 0);
   }
 
+  // FLIP: swap a ranked-bar panel's HTML and animate rows that moved/appeared.
+  function flipUpdate(container, newHTML) {
+    if (!container) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const olds = {};
+    container.querySelectorAll('.dash-bar-row[data-key]').forEach((r) => { olds[r.dataset.key] = r.getBoundingClientRect().top; });
+    container.innerHTML = newHTML;
+    if (reduce) return;
+    container.querySelectorAll('.dash-bar-row[data-key]').forEach((r) => {
+      const old = olds[r.dataset.key];
+      if (old !== undefined) {                       // persisted — slide from old rank to new
+        const dy = old - r.getBoundingClientRect().top;
+        if (dy) {
+          r.style.transition = 'none'; r.style.transform = 'translateY(' + dy + 'px)';
+          requestAnimationFrame(() => requestAnimationFrame(() => { r.style.transition = 'transform .5s var(--ease-out)'; r.style.transform = ''; }));
+        }
+      } else {                                        // new entrant — fade/slide in
+        r.style.transition = 'none'; r.style.opacity = '0'; r.style.transform = 'translateY(7px)';
+        requestAnimationFrame(() => requestAnimationFrame(() => { r.style.transition = 'opacity .4s ease, transform .4s var(--ease-out)'; r.style.opacity = ''; r.style.transform = ''; }));
+      }
+    });
+  }
+
   async function loadDashWindow(days) {
     const token = ++dashReqToken;            // race guard for rapid clicks
     const recipBox = $('#dash-recipients'); const largeBox = $('#dash-largest');
-    if (recipBox) recipBox.innerHTML = '<div class="dash-loading dash-skeleton">Loading\u2026</div>';
-    if (largeBox) largeBox.innerHTML = '<div class="dash-loading dash-skeleton">Loading\u2026</div>';
+    // Only skeleton on first load \u2014 on window switches keep the old bars visible so
+    // the update FLIP-animates instead of flashing a reload.
+    const skel = '<div class="dash-loading dash-skeleton">Loading\u2026</div>';
+    if (recipBox && !recipBox.querySelector('.dash-bar-row')) recipBox.innerHTML = skel;
+    if (largeBox && !largeBox.querySelector('.dash-bar-row')) largeBox.innerHTML = skel;
     try {
       // USASpending transaction data lags ~2\u20133 months; expand window until we have data.
       const ladder = [90, 180, 365, 1095].filter((d) => d >= days);
@@ -747,11 +773,11 @@
       });
       const top = Object.entries(byRecip).sort((a, b) => b[1] - a[1]).slice(0, 6);
       const topMax = top.length ? top[0][1] : 1;
-      recipBox.innerHTML = top.map(([name, amt]) =>
-        `<div class="dash-bar-row">
+      flipUpdate(recipBox, top.map(([name, amt]) =>
+        `<div class="dash-bar-row" data-key="r:${esc(name)}">
           <div class="dash-bar-top"><div class="dash-bar-name">${esc(name)}</div><div class="dash-bar-val">${fmtUSD(amt)}</div></div>
           <div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" style="width:0"></div></div>
-        </div>`).join('');
+        </div>`).join(''));
       requestAnimationFrame(() => {
         recipBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (top[i][1] / topMax) * 100) + '%'; });
       });
@@ -760,15 +786,16 @@
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const largest = rows.slice(0, 6);
       const actMax = largest.length ? (Math.max(...largest.map((r) => Number(r['Transaction Amount'] || 0))) || 1) : 1;
-      largeBox.innerHTML = largest.map((r) => {
+      flipUpdate(largeBox, largest.map((r) => {
         const dt = (r['Action Date'] || '').slice(0, 10);
         const dd = dt ? months[Number(dt.slice(5, 7)) - 1] + ' ' + Number(dt.slice(8, 10)) : '';
-        return `<div class="dash-bar-row" style="margin-bottom:11px">
+        const key = (r['Award ID'] || cleanName(r['Recipient Name'])) + ':' + (r['Transaction Amount'] || '');
+        return `<div class="dash-bar-row" data-key="l:${esc(key)}" style="margin-bottom:11px">
           <div class="dash-bar-top"><div class="dash-bar-name">${esc(cleanName(r['Recipient Name']))}</div><div class="dash-bar-val">${fmtUSD(r['Transaction Amount'])}</div></div>
           <div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" style="width:0"></div></div>
           <div class="dash-bar-sub">${esc(r['Award ID'] || '')}${dd ? ' \u00B7 ' + dd : ''}</div>
         </div>`;
-      }).join('');
+      }).join(''));
       requestAnimationFrame(() => {
         largeBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (Number(largest[i]['Transaction Amount'] || 0) / actMax) * 100) + '%'; });
       });

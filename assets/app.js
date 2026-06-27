@@ -2925,6 +2925,18 @@ function stRenderAwards(awards) {
       if (p < 1) requestAnimationFrame(step);
     })(start);
   }
+
+  // 4) Pointer-following sheen on grid cards (updates --mx/--my on the hovered card).
+  if (!reduce) {
+    document.addEventListener('pointermove', function (e) {
+      var card = e.target.closest && e.target.closest('.ql-card, .src-tile, .feat, .tk-card');
+      if (!card) return;
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    }, { passive: true });
+  }
+
   var featSection = document.getElementById('features');
   if (featSection) {
     var fills = Array.prototype.slice.call(featSection.querySelectorAll('.feat-stat-fill'));
