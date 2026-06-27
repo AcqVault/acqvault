@@ -318,11 +318,11 @@
             <p class="eyebrow eyebrow-light fade-up">Live spending</p>
             <h2 class="sec-head fade-up">Where the Air Force<br>is putting its money.</h2>
           </div>
-          <div class="dash-window fade-up" id="dash-window" role="tablist" aria-label="Time window">
-            <button data-days="90">90d</button>
-            <button data-days="180">180d</button>
-            <button data-days="365" class="active">1y</button>
-            <button data-days="1095">3y</button>
+          <div class="dash-window fade-up" id="dash-window" role="group" aria-label="Spending time window">
+            <button type="button" data-days="90" aria-pressed="false">90d</button>
+            <button type="button" data-days="180" aria-pressed="false">180d</button>
+            <button type="button" data-days="365" class="active" aria-pressed="true">1y</button>
+            <button type="button" data-days="1095" aria-pressed="false">3y</button>
           </div>
         </div>
         <div class="dash-grid fade-up" id="dash-grid">
@@ -334,11 +334,11 @@
         <div class="dash-cols">
           <div class="dash-panel fade-up">
             <div class="dash-panel-title">Top recipients <span id="dash-recip-window">last 12 months</span></div>
-            <div id="dash-recipients"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
+            <div id="dash-recipients" aria-live="polite"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
           </div>
           <div class="dash-panel fade-up d1">
             <div class="dash-panel-title">Largest recent actions <span id="dash-largest-window">last 12 months</span></div>
-            <div id="dash-largest"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
+            <div id="dash-largest" aria-live="polite"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
           </div>
         </div>
         <div class="dash-foot"><span class="dash-live-dot"></span><span>Source: USASpending.gov \u00B7 Department of the Air Force \u00B7 contract actions (award types A\u2013D)</span></div>
@@ -750,7 +750,7 @@
       recipBox.innerHTML = top.map(([name, amt]) =>
         `<div class="dash-bar-row">
           <div class="dash-bar-top"><div class="dash-bar-name">${esc(name)}</div><div class="dash-bar-val">${fmtUSD(amt)}</div></div>
-          <div class="dash-bar-track"><div class="dash-bar-fill" style="width:0"></div></div>
+          <div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" style="width:0"></div></div>
         </div>`).join('');
       requestAnimationFrame(() => {
         recipBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (top[i][1] / topMax) * 100) + '%'; });
@@ -765,7 +765,7 @@
         const dd = dt ? months[Number(dt.slice(5, 7)) - 1] + ' ' + Number(dt.slice(8, 10)) : '';
         return `<div class="dash-bar-row" style="margin-bottom:11px">
           <div class="dash-bar-top"><div class="dash-bar-name">${esc(cleanName(r['Recipient Name']))}</div><div class="dash-bar-val">${fmtUSD(r['Transaction Amount'])}</div></div>
-          <div class="dash-bar-track"><div class="dash-bar-fill" style="width:0"></div></div>
+          <div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" style="width:0"></div></div>
           <div class="dash-bar-sub">${esc(r['Award ID'] || '')}${dd ? ' \u00B7 ' + dd : ''}</div>
         </div>`;
       }).join('');
@@ -794,7 +794,7 @@
     const win = $('#dash-window'); if (!win) return;
     win.addEventListener('click', (e) => {
       const b = e.target.closest('button[data-days]'); if (!b) return;
-      win.querySelectorAll('button').forEach((x) => x.classList.toggle('active', x === b));
+      win.querySelectorAll('button').forEach((x) => { const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-pressed', on ? 'true' : 'false'); });
       dashDays = Number(b.dataset.days);
       loadDashWindow(dashDays);
     });
