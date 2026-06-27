@@ -1788,6 +1788,35 @@ document.getElementById('reader-search-clear').addEventListener('click', functio
 });
 
 // ── DRAWER ────────────────────────────────────────────────────────────────────
+// Focus management for dialogs (reader drawer, feedback modal): move focus in,
+// trap Tab inside, restore focus to the trigger on close (WCAG 2.4.3 / 1.3.2).
+let _focusTrapHandler = null, _focusReturnEl = null;
+function _focusable(container) {
+  return Array.prototype.slice.call(container.querySelectorAll(
+    'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'
+  )).filter(el => el.offsetParent !== null);
+}
+function trapFocus(container) {
+  releaseFocus();
+  _focusReturnEl = document.activeElement;
+  const items = _focusable(container);
+  (items[0] || container).focus();
+  _focusTrapHandler = function (e) {
+    if (e.key !== 'Tab') return;
+    const f = _focusable(container);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  document.addEventListener('keydown', _focusTrapHandler, true);
+}
+function releaseFocus() {
+  if (_focusTrapHandler) { document.removeEventListener('keydown', _focusTrapHandler, true); _focusTrapHandler = null; }
+  if (_focusReturnEl && typeof _focusReturnEl.focus === 'function') { try { _focusReturnEl.focus(); } catch (_) {} }
+  _focusReturnEl = null;
+}
+
 function openDrawer(hit) {
   activeDocId = hit.id; currentHit = hit;
   cacheDocumentForNewTab(hit);
@@ -1815,6 +1844,7 @@ function openDrawer(hit) {
   drawer.setAttribute('aria-hidden', 'false');
   document.getElementById('drawer-backdrop').classList.add('visible');
   document.body.style.overflow = 'hidden';
+  trapFocus(drawer);
   document.querySelectorAll('.result-card').forEach(c => c.classList.toggle('active', c.dataset.id === hit.id));
   // Load full part then scroll to this section
   loadFullPartInDrawer(hit);
@@ -1870,6 +1900,7 @@ function closeDrawer() {
   document.body.style.overflow = '';
   document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
   resetDrawerFilter();
+  releaseFocus();
 }
 
 function copyCitation(citation, btn) {
@@ -2007,12 +2038,14 @@ function openFeedback() {
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+  trapFocus(modal);
 }
 function closeFeedback() {
   const modal = document.getElementById('feedback-modal');
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
   if (!document.getElementById('drawer').classList.contains('open')) document.body.style.overflow = '';
+  releaseFocus();
 }
 document.getElementById('feedback-modal').addEventListener('click', e => { if (e.target === document.getElementById('feedback-modal')) closeFeedback(); });
 document.getElementById('feedback-form').addEventListener('submit', async e => {
