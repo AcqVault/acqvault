@@ -883,6 +883,13 @@ body.work-mode .source-tiles-section{display:none;}
 .dc-cite-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
 .dc-cite-btn.copied{border-color:#16a34a;color:#16a34a;}
 .dc-link{color:var(--accent);font-weight:650;text-decoration:none;border-bottom:1px solid rgba(21,95,191,0.2);}
+/* CAC-gated DAF Compass references — marked text, not dead links */
+.dc-cac{color:var(--ink2);font-weight:600;border-bottom:1px dotted var(--line);}
+.dc-cac-tag{display:inline-block;margin-left:5px;font-size:9px;font-weight:800;letter-spacing:.05em;color:var(--muted);background:var(--off);border:1px solid var(--line2);border-radius:4px;padding:1px 4px;vertical-align:1px;}
+.dc-compass-visual.image-cac{box-shadow:none;background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);}
+.dc-compass-visual.image-cac figcaption{border-top:none;}
+.dc-compass-visual.image-cac figcaption::before{content:'Visual reference';font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2);margin-right:auto;}
+.dc-cac-note{font-size:11px;font-weight:600;color:var(--muted);}
 .dc-link:hover{border-bottom-color:var(--accent);}
 .dc-resource{display:flex;align-items:flex-start;gap:9px;margin:7px 0;padding:10px 12px;border:1px solid rgba(21,95,191,0.1);border-radius:10px;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);}
 .dc-resource::before{content:'↗';display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:900;flex:0 0 auto;margin-top:1px;}

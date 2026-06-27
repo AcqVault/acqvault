@@ -153,7 +153,11 @@ function renderPartPage(source, part) {
 
   const sections = docs.map(d => {
     const anchor = esc(d.anchor || d.id);
-    const src = d.url ? `<p class="srcref">Source: <a href="${esc(d.url)}" rel="noopener nofollow">${esc(d.url)}</a></p>` : '';
+    const src = d.url
+      ? (/dps\.mil/i.test(d.url)
+          ? `<p class="srcref">Reproduced from the DAF Contracting Compass (the official DAF source is CAC-gated).</p>`
+          : `<p class="srcref">Source: <a href="${esc(d.url)}" rel="noopener nofollow">${esc(d.url)}</a></p>`)
+      : '';
     return `<section class="sec" id="${anchor}">
 <h2><a href="#${anchor}">${esc(d.title)}</a></h2>
 ${src}
