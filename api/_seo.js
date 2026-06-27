@@ -241,8 +241,52 @@ ${tr}
   return shell({ title, description, canonical, jsonld, body });
 }
 
+const RFO_FAQ = [
+  ['Is the Revolutionary FAR Overhaul the same as the FAR?',
+   'Yes — it is the Federal Acquisition Regulation, overhauled. Under Executive Order 14275, "Restoring Common Sense to Federal Procurement," agencies use the revised FAR text published on the Revolutionary FAR Overhaul web page in lieu of the text codified at 48 CFR.'],
+  ['What is R-DFARS?',
+   'R-DFARS refers to the DoD class deviations that implement the FAR overhaul for the Department of Defense — the deviation-based replacement for the legacy DFARS material. There are 46 such deviations; see the R-DFARS Deviations Index for each one’s effective date and DARS tracking number.'],
+  ['When did the FAR overhaul take effect?',
+   'For DoD, the class deviations took effect on February 1, February 17, and March 16, 2026, depending on the FAR part. Each signed deviation lists its own effective date.'],
+  ['Where is the official Revolutionary FAR Overhaul text?',
+   'The authoritative text is published by the government at acquisition.gov/far-overhaul, and the signed DoD class deviations are the controlling implementation for the Department of Defense.'],
+  ['Is AcqVault an official source?',
+   'No. AcqVault is an unofficial research aid that makes these materials full-text searchable. Always verify against the signed DoD class deviations and acquisition.gov before relying on any result in a contract file.']
+];
+
+function renderExplainerPage() {
+  const canonical = `${SITE}/what-is-the-rfo`;
+  const title = 'What is the Revolutionary FAR Overhaul (RFO)? | AcqVault';
+  const description = esc('A plain-English explainer of the Revolutionary FAR Overhaul (RFO): what it is, the executive order behind it, how DoD implements it through R-DFARS class deviations, and when it took effect.');
+
+  const faqHtml = RFO_FAQ.map(([q, a]) =>
+    `<section class="sec"><h2>${esc(q)}</h2><p>${esc(a)}</p></section>`).join('\n');
+
+  const jsonld = { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'Article', headline: 'What is the Revolutionary FAR Overhaul?', description, mainEntityOfPage: canonical,
+      isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE } },
+    { '@type': 'FAQPage', mainEntity: RFO_FAQ.map(([q, a]) => ({
+      '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }
+  ]};
+
+  const body = `<nav class="crumbs"><a href="/">AcqVault</a> › What is the RFO?</nav>
+<h1>What is the Revolutionary FAR Overhaul?</h1>
+<p class="lede">The <strong>Revolutionary FAR Overhaul (RFO)</strong> is a restructuring of the Federal Acquisition Regulation directed by <strong>Executive Order 14275</strong>, "Restoring Common Sense to Federal Procurement." Agencies use the overhauled FAR text — published on the government’s Revolutionary FAR Overhaul web page — <em>in lieu of</em> the text codified at 48 CFR.</p>
+<section class="sec"><h2>How the Department of Defense implements it</h2>
+<p>DoD puts the overhaul into effect through signed <strong>class deviations</strong> — the materials AcqVault indexes as <strong>R-DFARS</strong>. There are <strong>46 deviations</strong>, each with its own effective date and DARS tracking number. See the <a href="/deviations">R-DFARS Deviations Index</a> for the full list, or <a href="/r-dfars">browse R-DFARS by part</a>.</p></section>
+<section class="sec"><h2>When it took effect</h2>
+<p>For DoD, the class deviations became effective on <strong>February 1</strong>, <strong>February 17</strong>, and <strong>March 16, 2026</strong>, depending on the FAR part.</p></section>
+<section class="sec"><h2>Where to read it — and search it</h2>
+<p>The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov/far-overhaul</a>. AcqVault makes the <a href="/rfo">Revolutionary FAR Overhaul</a>, R-DFARS deviations, the <a href="/far-companion">FAR Companion</a>, and DAF guidance full-text searchable — <a href="/">start a search</a>.</p></section>
+<h2 style="margin-top:32px">Frequently asked questions</h2>
+${faqHtml}`;
+
+  return shell({ title, description, canonical, jsonld, body });
+}
+
 function renderSitemap() {
   const urls = [`${SITE}/`];
+  urls.push(`${SITE}/what-is-the-rfo`);
   if (loadDeviations().length) urls.push(`${SITE}/deviations`);
   for (const source of SOURCE_KEYS) {
     const { parts } = partsForSource(source);
@@ -257,4 +301,4 @@ ${body}
 </urlset>`;
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderSitemap, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderSitemap, SITE };
