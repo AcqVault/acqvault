@@ -1028,6 +1028,8 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .source-status-chip.soon{background:rgba(255,255,255,0.045);color:rgba(226,232,240,0.66);}
 .source-status-chip.archived{background:rgba(79,182,232,0.12);border-color:rgba(79,182,232,0.26);color:#bce3f5;}
 .source-status-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8;}
+.offline-bar{position:fixed;left:0;right:0;bottom:0;z-index:3000;background:var(--navy-900);color:#dbe7f5;font-size:12.5px;font-weight:600;letter-spacing:-0.01em;text-align:center;padding:9px 16px;box-shadow:0 -4px 18px rgba(0,0,0,0.2);}
+.offline-bar b{color:var(--cyan);font-weight:800;}
 .source-status-note{font-size:13px;line-height:1.6;color:rgba(226,232,240,0.7);max-width:760px;}
 .src{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-xl);padding:22px;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);}
 .src:hover{border-color:rgba(255,255,255,0.16);background:rgba(255,255,255,0.06);transform:translateY(-2px);}
