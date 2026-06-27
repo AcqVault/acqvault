@@ -29,6 +29,14 @@ function loadDocs() {
   return docsCache;
 }
 
+let devsCache = null;
+function loadDeviations() {
+  if (devsCache) return devsCache;
+  try { devsCache = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'output', 'deviations.json'), 'utf8')); }
+  catch (e) { devsCache = []; }
+  return devsCache;
+}
+
 function esc(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -94,7 +102,13 @@ section.sec h2 a{color:inherit;text-decoration:none}
 .parts a:hover{text-decoration:underline}
 footer{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;font-size:13px;color:var(--muted)}
 footer a{color:var(--accent)}
-@media(max-width:560px){.parts{columns:1}}`;
+table.devtable{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+table.devtable th,table.devtable td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.devtable th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:2px solid var(--line)}
+table.devtable tr:hover td{background:#f6f8fa}
+table.devtable td a{color:var(--accent);text-decoration:none}table.devtable td a:hover{text-decoration:underline}
+table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:nowrap}
+@media(max-width:560px){.parts{columns:1}table.devtable{font-size:12.5px}table.devtable th,table.devtable td{padding:7px 6px}}`;
 
 function shell({ title, description, canonical, jsonld, body }) {
   return `<!DOCTYPE html>
@@ -182,16 +196,54 @@ function renderHubPage(source) {
     isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
   };
 
+  const devLink = source === 'r-dfars'
+    ? `<p class="lede" style="margin-top:-12px"><strong><a href="/deviations">→ R-DFARS Deviations Index</a></strong> — every deviation with effective date &amp; DARS tracking number.</p>`
+    : '';
   const body = `<nav class="crumbs"><a href="/">AcqVault</a> › ${esc(meta.name)}</nav>
 <h1>${esc(meta.name)}</h1>
 <p class="lede">${esc(meta.desc)} Browse all ${parts.length} parts below, or <a href="/">search the full text</a>.</p>
+${devLink}
 <div class="parts">${links}</div>`;
+
+  return shell({ title, description, canonical, jsonld, body });
+}
+
+function renderDeviationsPage() {
+  const rows = loadDeviations();
+  if (!rows.length) return null;
+  const canonical = `${SITE}/deviations`;
+  const title = `R-DFARS Deviations Index — DoD class deviations for the FAR Overhaul | AcqVault`;
+  const description = esc(`All ${rows.length} DoD R-DFARS class deviations implementing the Revolutionary FAR Overhaul — DFARS part, effective date, DARS tracking number, and full text.`);
+
+  const tr = rows.map(r => `<tr>
+<td><a href="/r-dfars/part-${esc(r.rfo_part)}">Part ${esc(r.rfo_part)}</a></td>
+<td>${r.dfars_part ? 'DFARS ' + esc(r.dfars_part) : '—'}</td>
+<td>${esc(r.effective || '—')}</td>
+<td class="mono">${esc(r.dars || '—')}</td>
+<td>${r.pdf_url ? `<a href="${esc(r.pdf_url)}" rel="noopener nofollow">Signed memo&nbsp;↗</a> · ` : ''}<a href="/r-dfars/part-${esc(r.rfo_part)}">Full text</a></td>
+</tr>`).join('\n');
+
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: 'R-DFARS Deviations Index', description: description, url: canonical,
+    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
+  };
+
+  const body = `<nav class="crumbs"><a href="/">AcqVault</a> › <a href="/r-dfars">R-DFARS Deviations</a> › Index</nav>
+<h1>R-DFARS Deviations Index</h1>
+<p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul (${rows.length} parts), with its DFARS part, effective date, and DARS tracking number. Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
+<table class="devtable">
+<thead><tr><th>FAR / RFO Part</th><th>DFARS Part</th><th>Effective</th><th>DARS Tracking #</th><th>Read</th></tr></thead>
+<tbody>
+${tr}
+</tbody></table>`;
 
   return shell({ title, description, canonical, jsonld, body });
 }
 
 function renderSitemap() {
   const urls = [`${SITE}/`];
+  if (loadDeviations().length) urls.push(`${SITE}/deviations`);
   for (const source of SOURCE_KEYS) {
     const { parts } = partsForSource(source);
     if (!parts.length) continue;
@@ -205,4 +257,4 @@ ${body}
 </urlset>`;
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderSitemap, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderSitemap, SITE };

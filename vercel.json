@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/deviations", "destination": "/api/deviations" },
     { "source": "/:source(rfo|r-dfars|far-companion|compass|afi-63-138|category-management)", "destination": "/api/hub?source=:source" },
     { "source": "/:source(rfo|r-dfars|far-companion|compass|afi-63-138|category-management)/part-:part", "destination": "/api/page?source=:source&part=:part" }
   ],
