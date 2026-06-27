@@ -341,6 +341,10 @@
             <div id="dash-largest" aria-live="polite"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
           </div>
         </div>
+        <div class="dash-panel dash-panel-wide fade-up">
+          <div class="dash-panel-title">What the Air Force buys <span id="dash-psc-window">last 12 months</span></div>
+          <div id="dash-psc" aria-live="polite"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
+        </div>
         <div class="dash-foot"><span class="dash-live-dot"></span><span>Source: USASpending.gov \u00B7 Department of the Air Force \u00B7 contract actions (award types A\u2013D)</span></div>
       </div>`;
 
@@ -711,6 +715,27 @@
     const d = await res.json();
     return (d.results || []).filter((r) => r['Recipient Name'] && Number(r['Transaction Amount']) > 0);
   }
+  // "What the Air Force buys" — top product/service categories (PSC) for the window.
+  async function fetchPsc(days) {
+    const end = new Date(); const start = new Date(end); start.setDate(start.getDate() - days);
+    const res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_category/psc/', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filters: {
+          agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
+          award_type_codes: ['A', 'B', 'C', 'D'],
+          time_period: [{ start_date: start.toISOString().slice(0, 10), end_date: end.toISOString().slice(0, 10) }]
+        },
+        limit: 6, page: 1
+      })
+    });
+    if (!res.ok) throw new Error('http ' + res.status);
+    const d = await res.json();
+    return (d.results || []).filter((r) => Number(r.amount) > 0);
+  }
+  function titleCasePsc(s) {
+    return String(s || '').toLowerCase().replace(/\b([a-z])/g, (m, c) => c.toUpperCase());
+  }
 
   // FLIP: swap a ranked-bar panel's HTML and animate rows that moved/appeared.
   function flipUpdate(container, newHTML) {
@@ -756,7 +781,7 @@
         await new Promise((r) => setTimeout(r, 250));
       }
       const lbl = winLabel(usedDays) + (expanded ? ' \u00B7 latest available' : '');
-      ['#dash-recip-window', '#dash-largest-window', '#dash-count-foot', '#dash-sum-foot'].forEach((s) => { const el = $(s); if (el) el.textContent = lbl; });
+      ['#dash-recip-window', '#dash-largest-window', '#dash-psc-window', '#dash-count-foot', '#dash-sum-foot'].forEach((s) => { const el = $(s); if (el) el.textContent = lbl; });
       if (!rows.length) throw new Error('empty');
 
       const total = rows.reduce((s, r) => s + Number(r['Transaction Amount'] || 0), 0);
@@ -799,6 +824,23 @@
       requestAnimationFrame(() => {
         largeBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (Number(largest[i]['Transaction Amount'] || 0) / actMax) * 100) + '%'; });
       });
+
+      // "What the Air Force buys" — top PSC categories (separate call; don't block the bars above).
+      const pscBox = $('#dash-psc');
+      if (pscBox) {
+        fetchPsc(usedDays).then((psc) => {
+          if (token !== dashReqToken || !psc.length) { if (!psc || !psc.length) pscBox.innerHTML = '<div class="dash-loading dash-skeleton">No category data for this window.</div>'; return; }
+          const pscMax = psc[0].amount || 1;
+          flipUpdate(pscBox, psc.map((r) =>
+            `<div class="dash-bar-row" data-key="p:${esc(r.code || r.name)}">
+              <div class="dash-bar-top"><div class="dash-bar-name">${esc(titleCasePsc(r.name))}</div><div class="dash-bar-val">${fmtUSD(r.amount)}</div></div>
+              <div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" style="width:0"></div></div>
+            </div>`).join(''));
+          requestAnimationFrame(() => {
+            pscBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (psc[i].amount / pscMax) * 100) + '%'; });
+          });
+        }).catch(() => { if (pscBox.querySelector('.dash-loading')) pscBox.innerHTML = '<div class="dash-loading dash-skeleton">Category data briefly unavailable.</div>'; });
+      }
     } catch (e) {
       if (token !== dashReqToken) return;
       const msg = '<div class="dash-loading dash-skeleton">Live spending data is briefly unavailable \u2014 USASpending may be rate-limiting. It\u2019ll refresh shortly.</div>';

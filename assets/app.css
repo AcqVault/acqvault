@@ -253,6 +253,10 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .dash-cols {
   display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;
 }
+.dash-panel-wide { margin-top: 12px; }
+/* PSC categories: two columns of bars so 6 rows stay compact on wide screens */
+#dash-psc { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
+@media (max-width: 720px) { #dash-psc { grid-template-columns: 1fr; } }
 .dash-panel {
   background: linear-gradient(180deg,#fff 0%,#fbfdff 100%);
   border: 1px solid rgba(21,95,191,0.12);
@@ -1033,6 +1037,10 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .source-status-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8;}
 .offline-bar{position:fixed;left:0;right:0;bottom:0;z-index:3000;background:var(--navy-900);color:#dbe7f5;font-size:12.5px;font-weight:600;letter-spacing:-0.01em;text-align:center;padding:9px 16px;box-shadow:0 -4px 18px rgba(0,0,0,0.2);}
 .offline-bar b{color:var(--cyan);font-weight:800;}
+.update-toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);z-index:3200;display:flex;align-items:center;gap:14px;background:var(--navy-900);color:#eaf1fb;font-size:13px;font-weight:600;padding:11px 12px 11px 18px;border-radius:999px;box-shadow:0 16px 40px -10px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.06);opacity:0;transition:transform .45s var(--ease-out),opacity .35s ease;max-width:calc(100vw - 32px);}
+.update-toast.show{transform:translate(-50%,0);opacity:1;}
+.update-toast button{flex-shrink:0;background:var(--accent);color:#fff;border:none;font-weight:700;font-size:12.5px;padding:8px 16px;border-radius:999px;cursor:pointer;transition:background .15s,transform .15s;}
+.update-toast button:hover{background:var(--accent-h);transform:translateY(-1px);}
 .source-status-note{font-size:13px;line-height:1.6;color:rgba(226,232,240,0.7);max-width:760px;}
 .src{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-xl);padding:22px;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);}
 .src:hover{border-color:rgba(255,255,255,0.16);background:rgba(255,255,255,0.06);transform:translateY(-2px);}
