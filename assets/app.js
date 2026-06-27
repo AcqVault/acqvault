@@ -1,0 +1,2643 @@
+
+// ── NAV SCROLL + ABOUT BAR HEIGHT ────────────────────────────────────────────
+(function() {
+  var nav = document.getElementById('main-nav');
+  var aboutBar = document.getElementById('about-bar');
+
+  function updateLayout() {
+    var barH = aboutBar && !aboutBar.classList.contains('hidden') ? aboutBar.offsetHeight : 0;
+    document.documentElement.style.setProperty('--nav-top', barH + 'px');
+    nav.style.top = barH + 'px';
+  }
+
+  function updateNav() {
+    nav.classList.toggle('scrolled', window.scrollY > 30);
+  }
+
+  window.addEventListener('scroll', function() {
+    updateNav();
+  }, { passive: true });
+
+  window.addEventListener('resize', updateLayout, { passive: true });
+  updateLayout();
+  updateNav();
+})();
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────────────
+(function() {
+  var els = document.querySelectorAll('.fade-up');
+  if (!els.length) return;
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(function(el) { io.observe(el); });
+})();
+
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const SEARCH_API = '/api/search';
+const WEB3FORMS_ENDPOINT = ''; // Configure server-side; do not expose Web3Forms access keys in static HTML.
+async function meiliSearch(body) {
+  const res = await fetch(SEARCH_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'search', body })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = data?.error || data?.message || `HTTP ${res.status}`;
+    throw new Error(`Search service: ${msg}`);
+  }
+  return data;
+}
+async function meiliDocument(id) {
+  const res = await fetch(SEARCH_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'document', id })
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+const SOURCE_URLS = {
+  'rfo':           'https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system',
+  'r-dfars':       'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide',
+  'far-companion': 'https://www.acquisition.gov/far-companion',
+  'category-management': 'https://www.acquisition.gov/far-overhaul',
+  'fmr':           'https://comptroller.defense.gov/FMR/',
+  'afi-63-138':    'https://www.e-publishing.af.mil/',
+  'compass':        'https://usaf.dps.mil/sites/AFCC/AQCP/KnowledgeCenter/SitePages/DAF-Contracting-Compass.aspx',
+};
+const SOURCE_LABELS = {
+  'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management Buying Guide',
+  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'compass': 'DAF Contracting Compass',
+};
+
+// ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
+const PARTS_BY_SOURCE = {
+  'rfo': [
+    [1,'Federal Acquisition Regulations System'],[2,'Definitions of Words and Terms'],
+    [3,'Improper Business Practices and Personal Conflicts of Interest'],
+    [4,'Administrative and Information Matters'],[5,'Publicizing Contract Actions'],
+    [6,'Competition Requirements'],[7,'Acquisition Planning'],
+    [8,'Required Sources of Supplies and Services'],[9,'Contractor Qualifications'],
+    [10,'Market Research'],[11,'Describing Agency Needs'],
+    [12,'Acquisition of Commercial Products and Services'],
+    [13,'Simplified Procedures for Noncommercial Acquisitions'],[14,'Sealed Bidding'],
+    [15,'Contracting by Negotiation'],[16,'Types of Contracts'],[17,'Special Contracting Methods'],
+    [18,'Emergency Acquisitions'],[19,'Small Business Programs'],[22,'Application of Labor Laws'],
+    [23,'Environment, Energy, and Water Efficiency'],[25,'Foreign Acquisition'],
+    [26,'Other Socioeconomic Programs'],[27,'Patents, Data, and Copyrights'],
+    [28,'Bonds and Insurance'],[29,'Taxes'],[30,'Cost Accounting Standards'],
+    [31,'Contract Cost Principles and Procedures'],[32,'Contract Financing'],
+    [33,'Protests, Disputes, and Appeals'],[36,'Construction and Architect-Engineer Contracts'],
+    [37,'Service Contracting'],[39,'Acquisition of Information Technology'],
+    [42,'Contract Administration and Audit Services'],[43,'Contract Modifications'],
+    [44,'Subcontracting Policies and Procedures'],[45,'Government Property'],
+    [46,'Quality Assurance'],[47,'Transportation'],[49,'Termination of Contracts'],
+    [51,'Use of Government Sources by Contractors'],[52,'Solicitation Provisions and Contract Clauses'],
+    [53,'Forms']
+  ],
+  'r-dfars': [
+    [201,'Fed A-R Sys'],[202,'Definitions'],[203,'Ethics'],[204,'Admin'],[205,'Publicizing'],
+    [206,'Competition'],[207,'Planning'],[208,'Sources'],[209,'Contractor Qual'],
+    [210,'Market Res'],[211,'Describing'],[212,'Commercial'],[213,'Simplified'],
+    [214,'Sealed Bid'],[215,'Negotiation'],[216,'Types'],[217,'Special'],
+    [219,'Small Bus'],[222,'Labor'],[223,'Environment'],[225,'Foreign'],
+    [226,'Socioeconomic'],[227,'IP'],[228,'Bonds'],[229,'Taxes'],[231,'Cost Prin'],
+    [232,'Financing'],[233,'Disputes'],[236,'Construction'],[237,'Services'],
+    [239,'IT'],[242,'Admin'],[243,'Modifications'],[244,'Subcontracting'],
+    [245,'GFP'],[246,'Quality'],[247,'Transport'],[249,'Termination'],[252,'Clauses']
+  ],
+  'far-companion': [
+    [1,'General'],[2,'Definitions'],[3,'Ethics'],[4,'Admin'],[5,'Publicizing'],
+    [6,'Competition'],[7,'Planning'],[8,'Sources'],[9,'Contractor Qual'],
+    [10,'Market Res'],[11,'Describing'],[12,'Commercial'],[13,'Simplified'],
+    [14,'Sealed Bid'],[15,'Negotiation'],[16,'Types'],[17,'Special'],
+    [19,'Small Bus'],[22,'Labor'],[25,'Foreign'],[27,'IP'],
+    [31,'Cost Prin'],[32,'Financing'],[42,'Admin'],[49,'Termination'],[52,'Clauses']
+  ],
+  'category-management': [
+    [1,'Overview'],[2,'Buying Pathway'],[3,'Facilities & Construction'],[4,'Human Capital'],
+    [5,'Industrial Products and Services'],[6,'Information Technology'],[7,'Medical'],
+    [8,'Office Management'],[9,'Professional Services'],[10,'Security & Protection'],
+    [11,'Transportation & Logistics Services'],[12,'Travel']
+  ],
+  'afi-63-138': [
+    [1,'Overview and Applicability'],[2,'Roles and Responsibilities'],
+    [3,'Requirements Approval Process'],[4,'Services Acquisition Process'],
+    [5,'Governance Assessment'],[6,'Quality Oversight']
+  ],
+  'compass': [
+    [1,'Federal Acquisition Regulations System'],[2,'Definitions'],
+    [3,'Improper Business Practices and Personal Conflicts of Interest'],
+    [4,'Administrative and Information Matters'],[5,'Publicizing Contract Actions'],
+    [6,'Competition Requirements'],[7,'Acquisition Planning'],
+    [8,'Required Sources of Supplies and Services'],[9,'Contractor Qualifications'],
+    [10,'Market Research'],[11,'Describing Agency Needs'],
+    [12,'Acquisition of Commercial Products and Commercial Services'],
+    [13,'Simplified Acquisition Procedures'],[14,'Sealed Bidding'],
+    [15,'Contracting by Negotiation'],[16,'Types of Contracts'],
+    [17,'Special Contracting Methods'],[18,'Emergency Acquisitions'],
+    [19,'Small Business Programs'],[22,'Application of Labor Laws'],
+    [23,'Environment, Sustainable Acquisition, and Material Safety'],
+    [24,'Protection of Privacy and Freedom of Information'],[25,'Foreign Acquisition'],
+    [26,'Other Socioeconomic Programs'],[27,'Patents, Data, and Copyrights'],
+    [28,'Bonds and Insurance'],[29,'Taxes'],[30,'Cost Accounting Standards Administration'],
+    [31,'Contract Cost Principles and Procedures'],[32,'Contract Financing'],
+    [33,'Protests, Disputes, and Appeals'],[34,'Major System Acquisition'],
+    [35,'Research and Development Contracting'],[36,'Construction and Architect-Engineer Contracts'],
+    [37,'Service Contracting'],[39,'Acquisition of Information Technology'],
+    [40,'Information Security and Supply Chain Security'],[41,'Acquisition of Utility Services'],
+    [42,'Contract Administration and Audit Services'],[43,'Contract Modifications'],
+    [44,'Subcontracting Policies and Procedures'],[45,'Government Property'],
+    [46,'Quality Assurance'],[47,'Transportation'],[48,'Value Engineering'],
+    [49,'Termination of Contracts'],[50,'Extraordinary Contractual Actions and the Safety Act'],
+    [53,'Forms']
+  ]
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const activeSources = new Set();
+let activeStatuses   = [];
+let activeDocId      = null;
+let currentHit       = null;
+let currentMode      = 'search';
+let browseSrc        = 'rfo';
+let browseActivePart = null;
+let debounceTimer    = null;
+
+function closeBrowseSourceMenu() {
+  const menu = document.getElementById('browse-source-menu');
+  const btn = document.getElementById('mode-browse');
+  if (menu) menu.classList.remove('open');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+function toggleBrowseSourceMenu(event) {
+  event?.stopPropagation();
+  const menu = document.getElementById('browse-source-menu');
+  const btn = document.getElementById('mode-browse');
+  if (!menu || !btn) return;
+  const open = !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+function chooseBrowseSource(source) {
+  closeBrowseSourceMenu();
+  setMode('browse');
+  setBrowseSource(source);
+}
+
+document.addEventListener('click', (event) => {
+  if (!event.target.closest?.('.browse-source-picker')) closeBrowseSourceMenu();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeBrowseSourceMenu();
+});
+
+// ── NAV OFFSET ────────────────────────────────────────────────────────────────
+function adjustNavForAboutBar() {
+  const bar = document.getElementById('about-bar');
+  const nav = document.getElementById('main-nav');
+  if (!nav) return;
+  const aboutHeight = bar ? bar.offsetHeight : 0;
+  nav.style.top = aboutHeight + 'px';
+  document.documentElement.style.setProperty('--top-chrome', `${aboutHeight + nav.offsetHeight}px`);
+}
+adjustNavForAboutBar();
+window.addEventListener('resize', adjustNavForAboutBar);
+
+// ── MODE SWITCHING ────────────────────────────────────────────────────────────
+function setMode(mode) {
+  closeBrowseSourceMenu();
+  currentMode = mode;
+  document.body.classList.toggle('work-mode', mode !== 'search' || Boolean(document.getElementById('search-input')?.value.trim()));
+  const hero = document.getElementById('hero');
+  ['search','browse','fulltext'].forEach(m => {
+    const btn = document.getElementById('mode-' + m);
+    btn.classList.toggle('active', m === mode);
+    btn.setAttribute('aria-pressed', String(m === mode));
+    hero.classList.toggle(m + '-active', m === mode && mode !== 'search');
+  });
+  if (mode !== 'search') hero.classList.remove('search-active');
+  document.getElementById('results-section').classList.toggle('visible', false);
+  document.getElementById('browse-section').classList.toggle('visible', mode === 'browse');
+  document.getElementById('fulltext-section').classList.toggle('visible', mode === 'fulltext');
+  if (mode === 'browse') {
+    hero.classList.add('browse-active');
+    renderPartsGrid(browseSrc);
+    // Move straight to the active browse workspace.
+    setTimeout(() => {
+      const browseEl = document.getElementById('browse-section');
+      if (browseEl) {
+        const y = browseEl.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }, 60);
+  }
+  if (mode === 'fulltext') {
+    hero.classList.add('fulltext-active');
+    setTimeout(() => {
+      const ftEl = document.getElementById('fulltext-section');
+      if (ftEl) {
+        const y = ftEl.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }, 60);
+  }
+  if (mode === 'search') {
+    hero.classList.remove('browse-active','fulltext-active');
+    if (document.getElementById('search-input').value.trim()) {
+      hero.classList.add('search-active');
+      document.getElementById('results-section').classList.add('visible');
+    }
+  }
+}
+
+// ── BROWSE — PART LIST + FULL READER ─────────────────────────────────────────
+
+function getStickyOffset() {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--top-chrome');
+  const n = parseFloat(raw);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function renderPartsGrid(source) {
+  const grid  = document.getElementById('parts-grid');
+  const parts = PARTS_BY_SOURCE[source] || [];
+  if (source === 'category-management') {
+    const active = (key) => browseActivePart === key && browseSrc === source;
+    const parent = (key, num, label) => `<button type="button" class="part-tile part-tile-parent${active(key) ? ' active' : ''}"
+      data-part="${key}" data-label="${esc(label)}" aria-pressed="${active(key)}"
+      onclick="selectCategoryGuidePart(this,'${key}',this.dataset.label)">
+      <span class="part-tile-num">${num}</span>
+      <span class="part-tile-label">${esc(label)}</span>
+    </button>`;
+    const child = ([num, label]) => `<button type="button" class="part-tile part-tile-child${active(num) ? ' active' : ''}"
+      data-part="${num}" data-label="${esc(label)}" aria-pressed="${active(num)}"
+      onclick="selectCategoryGuidePart(this,'${num}',this.dataset.label)">
+      <span class="part-tile-num">${num}</span>
+      <span class="part-tile-label">${esc(label)}</span>
+    </button>`;
+    grid.innerHTML = [
+      parent('1', 'I', 'Overview'),
+      child([2, 'Buying Pathway']),
+      parent('category-management', 'II', 'Category Management'),
+      ...parts.filter(([num]) => Number(num) >= 3).map(child)
+    ].join('');
+    return;
+  }
+  grid.innerHTML = parts.map(([num, label]) => {
+    const active = browseActivePart === num && browseSrc === source;
+    return `<button type="button" class="part-tile${active ? ' active' : ''}"
+      data-part="${num}" data-label="${esc(label)}" aria-pressed="${active}"
+      onclick="selectPart(this,${num},this.dataset.label)">
+      <span class="part-tile-num">${num}</span>
+      <span class="part-tile-label">${esc(label)}</span>
+    </button>`;
+  }).join('');
+}
+
+function setBrowseSource(source) {
+  browseSrc = source; browseActivePart = null;
+  document.querySelectorAll('.browse-src-pill').forEach(p => {
+    const active = p.dataset.bsource === source;
+    p.classList.toggle('active', active);
+    p.setAttribute('aria-pressed', String(active));
+  });
+  renderPartsGrid(source);
+  // Reset reader to empty state
+  document.getElementById('browse-reader-inner').innerHTML =
+    `<div class="browse-empty" id="browse-empty">
+      <div class="browse-empty-icon">⊞</div>
+      <div class="browse-empty-title">Select a part to read</div>
+      <div class="browse-empty-sub">Choose a part from the left panel to load the full text.</div>
+    </div>`;
+}
+
+// ── RENDER CONTENT LINE ───────────────────────────────────────────────────────
+// Converts an L{n}:text line (or plain text) into an HTML element with right indent
+function isCategoryGuide(source) {
+  return source === 'category-management';
+}
+
+function isCategoryGuideHeadingLine(line) {
+  const t = (line || '').trim();
+  return /^(Pathway Steps|This Guide Promotes|This Guide is Not|The Vision|A Smarter Approach to Federal Acquisition|Navigating the Buying Process|Understanding the Continuum|Simple Procurements|Other-than-Simple Procurements|Navigating the Continuum|Buying Pathway|Decision Tool|Categories of Spend Examples|Category Management|Pathway Primer|Vehicles Table|Resources|Other Guidance|Pathway Pointers|Market Research and Pricing Data|Special Item Numbers \(SINs\)|Trainings|VA-Specific Federal Supply Schedule \(FSS\))$/i.test(t);
+}
+
+function isCategoryGuideSubheadingLine(line) {
+  return /^(The Vision|Simple Procurements|Other-than-Simple Procurements|Buying Pathway|Decision Tool|Vehicles Table|Resources|Other Guidance|Pathway Pointers|Market Research and Pricing Data|Special Item Numbers \(SINs\)|Trainings|VA-Specific Federal Supply Schedule \(FSS\))$/i.test((line || '').trim());
+}
+
+function isBrowseHeadingLine(line, source) {
+  const t = (line || '').trim();
+  if (isCategoryGuide(source) && isCategoryGuideHeadingLine(t)) return true;
+  return /^(Disclaimer|How to Navigate the FAR Companion|Organization Structure|Quick Navigation Tips|Citation System)$/i.test(t);
+}
+
+function isDafiSource(source) {
+  return source === 'afi-63-138';
+}
+
+function dafiParagraphMatch(line) {
+  return String(line || '').trim().match(/^(\d+\.\d+(?:\.\d+)*)\.\s+(.+)/);
+}
+
+function isBrowseBlockStart(line, source) {
+  const t = (line || '').trim();
+  if (isDafiSource(source) && dafiParagraphMatch(t)) return true;
+  return /^L\d:/.test(t) || /^[●○]\s+/.test(t) || /^(?:o|▪)\s+/.test(t) || /^Step\s+\d+:/i.test(t) || /^\d+\.\s+/.test(t) || /^Part\s+\d+\s*[-–]/i.test(t) || isBrowseHeadingLine(t, source);
+}
+
+const CATEGORY_LINKS = [
+  ['Market Research as a Service', 'https://www.gsa.gov/about-us/organization/federal-acquisition-service/customer-and-stakeholder-engagement/market-research-as-a-service'],
+  ['DLA Fedmall', 'https://www.fedmall.mil/'],
+  ['UNICOR.gov', 'https://www.unicor.gov/'],
+  ['AbilityOne.gov', 'https://www.abilityone.gov/'],
+  ['“Required use”', 'https://acquisitiongateway.gov/category-management/resources/4163?_a%5Eg_nid=376'],
+  ['D2D', 'https://d2d.gsa.gov/'],
+  ['Procurement Co-Pilot', 'https://acquisitiongateway.gov/procurementcopilot'],
+  ['GSA eLibrary', 'https://www.gsaelibrary.gsa.gov/'],
+  ['GSA Advantage', 'https://www.gsaadvantage.gov/'],
+  ['Acquisition Gateway - Facilities & Construction', 'https://www.acquisitiongateway.gov/category-management/resources/28?_a%5Eg_nid=355'],
+  ['Acquisition Gateway - Human Capital', 'https://www.acquisitiongateway.gov/Category-management/resources/579?_a%5Eg_nid=11662'],
+  ['Acquisition Gateway - Industrial Products & Services', 'https://www.acquisitiongateway.gov/category-management/resources/30?_a%5Eg_nid=391'],
+  ['Acquisition Gateway - Information Technology', 'https://www.acquisitiongateway.gov/category-management/resources/580?_a%5Eg_nid=530'],
+  ['Acquisition Gateway - Medical', 'https://www.acquisitiongateway.gov/category-management/resources/31?_a%5Eg_nid=239'],
+  ['Acquisition Gateway - Office Management', 'https://www.acquisitiongateway.gov/category-management/resources/32?_a%5Eg_nid=11830'],
+  ['Acquisition Gateway - Professional Services', 'https://www.acquisitiongateway.gov/category-management/resources/33?_a%5Eg_nid=398'],
+  ['Acquisition Gateway - Security & Protection', 'https://www.acquisitiongateway.gov/Category-management/resources/34?_a%5Eg_nid=11124'],
+  ['Acquisition Gateway - Transportation & Logistics Services', 'https://acquisitiongateway.gov/'],
+  ['Acquisition Gateway - Travel', 'https://www.acquisitiongateway.gov/category-management/resources/36?_a%5Eg_nid=36325'],
+  ['Acquisition Solutions Navigator', 'https://buy.gsa.gov/contracts/home'],
+  ['Civilian Services Acquisition Workshops (CSAW)', 'https://buy.gsa.gov/spba'],
+  ['Services Scope Review', 'https://www.gsa.gov/buy-through-us/products-services/professional-services/services-scope-review'],
+  ['Cloud Information Center', 'https://cic.gsa.gov/'],
+  ['GSA Global Supply', 'https://www.gsa.gov/buy-through-us/purchasing-programs/requisition-programs/gsa-global-supply'],
+  ['GSA MAS', 'https://www.gsa.gov/buy-through-us/purchasing-programs/multiple-award-schedule'],
+  ['OASIS+', 'https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus'],
+  ['8(a) STARS III', 'https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/8a-stars-iii'],
+  ['Alliant 2', 'https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-2'],
+  ['SEWP', 'https://www.sewp.nasa.gov/'],
+  ['NITAAC CIO-CS', 'https://nitaac.nih.gov/services/cio-cs'],
+  ['NITAAC CIO-SP3', 'https://nitaac.nih.gov/services/cio-sp3'],
+  ['VETS 2', 'https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/vets-2'],
+  ['FedRooms', 'https://www.gsa.gov/travel/plan-book/per-diem-rates/fedrooms'],
+  ['City Pair Program', 'https://www.gsa.gov/travel/plan-a-trip/transportation-airfare-rates-pov-rates-etc/airfare-rates-city-pair-program'],
+  ['Uber for Government', 'https://redeem.uber.com/public/optin/QJGUT4HH']
+].sort((a,b) => b[0].length - a[0].length);
+
+function categoryGuideText(text, source) {
+  let out = esc(text);
+  if (!isCategoryGuide(source)) return out;
+  CATEGORY_LINKS.forEach(([label, url]) => {
+    const needle = esc(label).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    out = out.replace(new RegExp(needle, 'g'), `<a class="cm-link" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)}</a>`);
+  });
+  out = out.replace(/\b(\d{3,6}[A-Z0-9]*)\b(?=\s+-)/g, (m) => `<a class="cm-link" href="https://www.gsaelibrary.gsa.gov/ElibMain/sinDetails.do?scheduleNumber=MAS&specialItemNumber=${encodeURIComponent(m)}&executeQuery=YES" target="_blank" rel="noopener">${m}</a>`);
+  return out;
+}
+
+function categoryGuideContinuumHTML() {
+  const rows = [
+    ['Requirements', '<strong>Commercial products and commercial services</strong> Includes COTS items and solutions that can be bought largely as-is.', '<strong>Non-commercial or mission-specific needs</strong> Includes products or services that require more tailoring, integration, or specialized delivery.'],
+    ['Value / Competition', '<strong>Micro-purchase to simplified procedures</strong> Use micro-purchase, simplified acquisition, and commercial simplified procedures where the requirement fits.', '<strong>Above simplified commercial lanes</strong> Use more formal procedures when value, risk, or complexity exceeds the simplified pathway.'],
+    ['Sources', '<strong>Required and priority sources first</strong> Check mandatory sources, existing government-wide contracts, BPAs, shared services, FSS, GWACs, IDIQs, and other pre-competed vehicles.', '<strong>Agency discretion and open market when needed</strong> Move beyond existing vehicles when they cannot meet the requirement.'],
+    ['Contracting Method', '<strong>Fast, structured buying lanes</strong> FAR 8.4 orders/BPAs, FAR 12.201-1 and 12.201-2, FAR 13, and other simplified/commercial procedures.', '<strong>Formal market procedures</strong> FAR 14/15 IFB/RFP, broad agency announcements, construction, architect-engineer, and other specialized pathways.'],
+    ['Approach', '<strong>Buy commercial capability as-is</strong> Prioritize speed, value, and adoption of existing market solutions.', '<strong>Plan for mission failure risk</strong> Build the capable team, evaluation strategy, and controls needed for complex or custom work.']
+  ];
+  return `<div class="cm-native-visual cm-continuum" aria-label="Simple to other-than-simple acquisition continuum">
+    <div class="cm-continuum-head">
+      <div><strong>Simple Pathway</strong><span>Speed, value, and adoption of commercial solutions as-is.</span></div>
+      <div><strong>Other-than-Simple Pathway</strong><span>More planning for capable teams, complexity, and mission-risk reduction.</span></div>
+    </div>
+    <div class="cm-continuum-grid">
+      ${rows.map(([label, simple, complex]) => `<div class="cm-cont-row"><div class="cm-cont-label">${label}</div><div class="cm-cont-cell">${simple}</div><div class="cm-cont-cell">${complex}</div></div>`).join('')}
+    </div>
+    <div class="cm-native-caption"><strong>Continuum summary</strong><span>Adapted from the Category Management Buying Guide, p. 5</span></div>
+  </div>`;
+}
+
+function categoryGuideSpendTableHTML() {
+  const rows = [
+    ['Facilities & Construction', 'Office furniture, building materials, commercial real estate leases, and common maintenance services such as janitorial work.', 'Specialized construction services for government facilities, building of military bases, or custom-designed infrastructure.'],
+    ['Human Capital', 'Talent acquisition, employer relocation, and professional development training.', 'Specialized government talent development, security clearances, and employee relations services specific to federal regulations.'],
+    ['Industrial Products and Services', 'Basic materials, hardware, tools, machinery, and repair or maintenance services for commercial equipment.', 'Specialized test and measurement supplies, equipment, and services for government-specific research and development projects.'],
+    ['Information Technology', 'Commercial off-the-shelf software licenses, computer hardware, and general IT consulting.', 'Highly customized software solutions for federal agencies, cybersecurity for classified networks, and specialized telecommunications.'],
+    ['Medical', 'Standard pharmaceuticals, healthcare services, and common medical equipment or supplies.', 'Specialized or customized pharmaceuticals, medical equipment, supplies, or services used exclusively by the military or certain federal agencies.'],
+    ['Office Management', 'Office supplies, office furniture, and basic office management services.', 'N/A'],
+    ['Professional Services', 'Financial services, legal services, management consulting, and marketing services.', 'Research and development projects for government use only, or advisory services for federal policy.'],
+    ['Security & Protection', 'Standard security systems, uniforms or protective apparel, and general security guard services.', 'Specialized weapons, integrated physical access control systems, and tactical communication services.'],
+    ['Transportation & Logistics Services', 'Package delivery, motor vehicles, and general transportation equipment.', 'Logistics support for military operations, specialized vehicles for federal agencies, or transportation of classified materials.'],
+    ['Travel', 'Lodging, passenger travel, and car rental services.', 'N/A']
+  ];
+  return `<div class="cm-native-visual">
+    <div class="cm-spend-wrap">
+      <table class="cm-spend-table">
+        <thead><tr><th>Category</th><th>Simple Pathway</th><th>Other-than-Simple Pathway</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="cm-native-caption"><strong>Categories of spend examples</strong><span>Adapted from the Category Management Buying Guide, pp. 8-9</span></div>
+  </div>`;
+}
+
+const CATEGORY_VEHICLE_TABLES = {
+  '3': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Facilities Reduction Program (FRP)', 'N/A', 'USACE'],
+    ['Tier 3', 'Building Maintenance & Operations (BMO)', 'Building Maintenance and Operations Buyer’s Guide', 'GSA'],
+    ['Tier 3', 'OASIS+ Facilities Domain', 'OASIS+ Buyer’s Guide', 'GSA'],
+    ['Tier 3', 'Maintenance Repair Facility Supplies Generation 2 (MRFS2)', 'MRFS2 How To', 'GSA'],
+    ['Tier 3', 'GSA Global Supply', 'GSA Global Supply FAQs', 'GSA'],
+    ['Tier 2', 'GSA MAS - Facilities & Construction', 'Construction-Related Services MAS Ordering Guide (GSA 2024)', 'GSA']
+  ],
+  '4': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Human Capital and Training Solutions (HCaTS)', 'HCaTS Ordering Guide', 'GSA'],
+    ['Tier 3', 'USA Learning', 'N/A', 'OPM'],
+    ['Tier 2', 'GSA MAS - Human Capital', 'N/A', 'GSA']
+  ],
+  '5': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Maintenance Repair Facility Supplies Generation 2 (MRFS2)', 'Maintenance Repair Facility Supplies Generation 2', 'GSA'],
+    ['Tier 3', 'GSA Global Supply', 'GSA Global Supply', 'GSA'],
+    ['Tier 3', 'DLA eCAT', 'N/A', 'DLA'],
+    ['Tier 2', 'GSA MAS - Industrial Products & Services', 'MAS Desk Reference', 'GSA'],
+    ['Tier 2', 'VA Federal Supply Schedules', 'N/A', 'VA'],
+    ['Tier 2', 'DLA eProcurement', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Special Operational Equipment (SOE)', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Fire and Emergency Services Equipment (FESE)', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Troop Support Tier 2 Contracts', 'N/A', 'DLA'],
+    ['Tier 1', 'Treasury Tier 1 Precious Metals', 'N/A', 'Treasury']
+  ],
+  '6': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', '8(a) STARS III', 'Industry partners, master contract, and pricing', 'GSA'],
+    ['Tier 3', 'Alliant 2', 'Ordering guide, industry partners, and pricing list', 'GSA'],
+    ['Tier 3', 'Digital Market', 'Ordering guide, vendor list, awarded contracts, and pricing', 'Army'],
+    ['Tier 3', 'COMSATCOM', 'Complex Commercial SATCOM Solutions and contractor listing/pricing', 'GSA'],
+    ['Tier 3', 'EIS', 'GSA EIS Ordering Guide, Fair Opportunity Ordering Guide, Partner Guide, and Service Guide', 'GSA'],
+    ['Tier 3', 'MAS IT', 'MAS Ordering Guide and MAS Buyer Websites and Tools', 'GSA'],
+    ['Tier 3', 'SEWP', 'SEWP Tools Guide and vendor contracts/services', 'NASA'],
+    ['Tier 3', 'NITAAC CIO-CS', 'CIO-CS Ordering Guide and contract holders', 'NIH'],
+    ['Tier 3', 'NITAAC CIO-SP3 / CIO-SP3 SB', 'SP3 and SP3 SB ordering guides and contract holders', 'NIH'],
+    ['Tier 3', 'VETS 2', 'N/A', 'GSA'],
+    ['Tier 3', 'Wireless', 'Wireless Mobility Solutions website, guide, contractor listing, and pricing', 'GSA']
+  ],
+  '7': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Medical Surgical Prime Vendor Program (MSPV)', 'Customer Ordering Guide', 'DLA'],
+    ['Tier 3', 'VA Hearing Aids (HRA)', 'Registration & Ordering Guidance', 'VA'],
+    ['Tier 3', 'DOD/VA High-Tech Medical Equipment / Radiology', 'DMMonline and VA website', 'DLA / VA'],
+    ['Tier 3', 'Defense Logistics Agency Medical Electronic Catalog Program (ECAT)', 'Core ECAT User Customer Ordering Guide', 'DLA'],
+    ['Tier 3', 'DOD/VA Joint National Contracts for Generic Pharmaceuticals', 'VA Website', 'VA'],
+    ['Tier 2', 'GSA MAS - Medical', 'MAS Ordering Guide', 'GSA'],
+    ['Tier 2', 'MQS2NG Multiple-Award IDIQ', 'MQS2NG SharePoint Online', 'DHA'],
+    ['Tier 2', 'Pharmaceutical Prime Vendor: DoD / VA', 'Customer use guide and VA website', 'DLA / VA'],
+    ['Tier 2', 'VA Federal Supply Schedule medical schedules', 'Orders not requiring SOW, orders requiring SOW, and open market paths', 'VA'],
+    ['Tier 2', 'AbilityOne / UNICOR / Omnibus IV / Community Care resources', 'How to Buy Products, ordering procedures, and program resources', 'Multiple']
+  ],
+  '8': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Global Supply Requisition Channel - Furniture', 'Global Supply Furniture Training Video', 'GSA'],
+    ['Tier 3', 'Federal Strategic Sourcing Initiative for Office Supplies Fourth Generation (FSSI OS4)', 'FSSI Office Supplies Fourth Generation Buying Guide', 'GSA'],
+    ['Tier 2', 'GSA MAS - Office Management', 'MAS Office Administrative Services Ordering Guide (GSA 2024)', 'GSA'],
+    ['Tier 2', 'GSA MAS - Furniture and Furnishings', 'N/A', 'GSA']
+  ],
+  '9': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Identity Protection Services (IPS)', 'Data Breach Response and Identity Protection Services Ordering Procedures', 'GSA'],
+    ['Tier 3', 'OASIS+', 'OASIS+ Ordering Guide', 'GSA'],
+    ['Tier 2', 'MAS - Professional Services', 'N/A', 'GSA'],
+    ['Tier 2', 'MAS - Human Capital', 'N/A', 'GSA']
+  ],
+  '10': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Reduced Hazard Training Ammunition (RHTA) II', 'RHTA II Ordering Guide', 'DHS'],
+    ['Tier 3', 'Body Armor IV', 'Body Armor Ordering Guide', 'DHS'],
+    ['Tier 3', 'Tactical Communications Equipment and Services II (TacCom II)', 'N/A', 'DHS'],
+    ['Tier 2', 'GSA MAS - Security & Protection', 'N/A', 'GSA']
+  ],
+  '11': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Next Generation Delivery Service (NGDS)', 'NGDS Contracting Officer’s Ordering Guide', 'DLA'],
+    ['Tier 3', 'Direct Delivery Fuels', 'N/A', 'DLA'],
+    ['Tier 3', 'GSA Fleet Vehicle Purchasing', 'How to Buy Vehicles', 'GSA'],
+    ['Tier 3', 'GSA Fleet Vehicle Leasing', 'N/A', 'GSA']
+  ],
+  '12': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'City Pair Program (CPP)', 'N/A', 'GSA'],
+    ['Tier 3', 'Civilian Employee Relocation Resource Center (ERRC) / Employee Relocation Solutions', 'N/A', 'GSA'],
+    ['Tier 3', 'MAS 531110 Long Term Lodging / FedRooms / DoD Preferred', 'N/A', 'GSA'],
+    ['Tier 3', 'U.S. Government Rental Car Program', 'N/A', 'DoD'],
+    ['Tier 3', 'Emergency Lodging Services (ELS)', 'Guidance for Using ELS', 'GSA'],
+    ['Tier 2', 'E-Gov Travel Service (ETS2)', 'N/A', 'GSA'],
+    ['Tier 2', 'Travel Agent Services / Travel Consulting / Lodging Negotiation and Management', 'N/A', 'GSA'],
+    ['Tier 2', 'GO.gov / CHAMP / Long Term Lodging / Rideshare', 'N/A', 'GSA']
+  ]
+};
+
+function categoryGuideVehicleTableHTML(partNum) {
+  const rows = CATEGORY_VEHICLE_TABLES[String(partNum)] || [];
+  if (!rows.length) return '';
+  return `<div class="cm-native-visual">
+    <div class="cm-spend-wrap">
+      <table class="cm-spend-table cm-vehicle-table">
+        <thead><tr><th>Tier</th><th>Program</th><th>Ordering Guide</th><th>Agency Owner</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td>${esc(r[0])}</td><td>${categoryGuideText(r[1], 'category-management')}</td><td>${categoryGuideText(r[2], 'category-management')}</td><td>${esc(r[3])}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="cm-native-caption"><strong>Vehicles Table</strong><span>Adapted from the Category Management Buying Guide</span></div>
+  </div>`;
+}
+
+function categoryGuideVisualAfterLine(source, partNum, line, flags) {
+  if (!isCategoryGuide(source)) return '';
+  const t = (line || '').trim();
+  if (String(partNum) === '1' && !flags.continuum && /^The [“"]simple[”"].*continuum is a useful framework/i.test(t)) {
+    flags.continuum = true;
+    return categoryGuideContinuumHTML();
+  }
+  if (String(partNum) === '2' && !flags.spend && /^Categories of Spend Examples$/i.test(t)) {
+    flags.spend = true;
+    return categoryGuideSpendTableHTML();
+  }
+  if (Number(partNum) >= 3 && !flags.vehicles && /^Vehicles Table$/i.test(t)) {
+    flags.vehicles = true;
+    return categoryGuideVehicleTableHTML(partNum);
+  }
+  return '';
+}
+
+const DAFI_TABLES = {
+  '2.1': {
+    title: 'United States Air Force (USAF) SADAs by S-CAT',
+    headers: ['S-CAT Level', 'Threshold', 'MAJCOM/FOA/DRU Structure w/ Signed SMA', 'Secretariat & Air Staff Structure w/ Signed SMA', 'Systems PEO/TEO Structure'],
+    rows: [
+      ['S-CAT I', 'Est. total value:\n> $1B or\n> $300M in any one year', 'AFPEO/CM\nDelegable no lower than GO/SES', 'As designated by USD(A&S), SAF/AQ, or AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than GO/SES'],
+      ['S-CAT II', 'Est. total value:\n> $250M but < $1B', 'AFPEO/CM\nDelegable no lower than GO/SES', 'AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than GO/SES'],
+      ['S-CAT III', 'Est. total value:\n> $100M but < $250M', 'AFPEO/CM\nDelegable no lower than GO/SES', 'AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than Senior Materiel Leader (SML) or O-6/GS-15 equivalent'],
+      ['S-CAT IV', 'Est. total value:\n> $10M but < $100M', 'MAJCOM/FOA/DRU CC/CD/CV/CA\nDelegable to Wing/Directorate CC/CV or O-6/GS-15 equivalent', 'SAF/MG or AFPEO/CM\nDelegable to no lower than the 2-letter principal or deputy', 'S-PEO/TEO or Deputy PEO/TEO\nDelegable to no lower than Materiel Leader (ML) or O-5/GS-14 equivalent'],
+      ['S-CAT V', 'Est. total value:\n> SAT but < $10M', 'MAJCOM/FOA/DRU CC/CD/CV/CA\nDelegable to Squadron/Division CC or O-4/GS-13 equivalent. >SAT but < $5M may be delegated to an AWF functional per DoDI 5000.66.', 'SAF/MG or AFPEO/CM\nDelegable to no lower than 3-letter GO/SES', 'S-PEO/TEO or Deputy PEO/TEO\nDelegable no lower than ML or O-5/GS-14 equivalent']
+    ],
+    notes: 'Special Interest Items are designated by USD(A&S) or designee. Delegations beyond the table require waiver. Delegations must be documented in writing and maintained by the parent organization.'
+  },
+  '2.2': {
+    title: 'United States Space Force (USSF) SADAs by S-CAT',
+    headers: ['S-CAT Level', 'Threshold', 'FLDCOM Structure w/ Signed SMA', 'Space Staff Structure w/ Signed SMA', 'Systems PEO/TEO Structure'],
+    rows: [
+      ['S-CAT I', 'Est. total value:\n> $1B or\n> $300M in any one year', 'AFPEO/CM\nDelegable no lower than GO/SES', 'As designated by USD(A&S), SAF/SQ, or AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than GO/SES'],
+      ['S-CAT II', 'Est. total value:\n> $250M but < $1B', 'AFPEO/CM\nDelegable no lower than GO/SES', 'AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than GO/SES'],
+      ['S-CAT III', 'Est. total value:\n> $100M but < $250M', 'AFPEO/CM\nDelegable no lower than GO/SES', 'AFPEO/CM\nDelegable no lower than GO/SES', 'S-PEO/TEO\nDelegable no lower than SML or O-6/GS-15 equivalent'],
+      ['S-CAT IV', 'Est. total value:\n> $10M but < $100M', 'FLDCOM CC/CD/CV/CA\nDelegable to HQ Director, Delta CC, SBD CC/CV, SML/ML, or O-6/GS-15 equivalent', 'SF/DS or AFPEO/CM\nDelegable to no lower than the 2-letter principal or deputy', 'S-PEO/TEO or Deputy PEO/TEO\nDelegable to no lower than ML or O-5/GS-14 equivalent'],
+      ['S-CAT V', 'Est. total value:\n> SAT but < $10M', 'FLDCOM CC/CD/CV/CA\nDelegable to Squadron/Division CC or O-4/GS-13 equivalent. >SAT but < $5M may be delegated to an AWF functional per DoDI 5000.66.', 'SF/DS or AFPEO/CM\nDelegable to no lower than 3-letter principal or deputy', 'S-PEO/TEO or Deputy PEO/TEO\nDelegable no lower than ML or O-5/GS-14 equivalent']
+    ],
+    notes: 'Special Interest Items are designated by USD(A&S) or designee. For acquisitions supporting multiple FLDCOMs or Space Staff organizations, the executing organization SADA is the decision authority.'
+  },
+  '2.3': {
+    title: 'Certification Levels for PMs/SALs',
+    headers: ['S-CAT', 'Role', 'Program Value', 'Certification / Credential'],
+    rows: [
+      ['S-CAT I*', 'Program Manager', 'Est. > $1B or > $300M in any one year', 'DAWIA PM Advanced Certification'],
+      ['S-CAT II', 'Program Manager', 'Est. total value:\n> $250M but < $1B', 'DAWIA PM Practitioner Certification'],
+      ['S-CAT III', 'Program Manager', 'Est. total value:\n> $100M but < $250M', 'DAWIA PM Practitioner Certification'],
+      ['S-CAT IV', 'Services Acquisition Lead', 'Est. total value:\n> $10M but < $100M', 'DAU Services Acquisition Team Member Credential'],
+      ['S-CAT V', 'Services Acquisition Lead', 'Est. total value:\n> SAT but < $10M', 'DAU Services Acquisition Team Member Credential']
+    ],
+    notes: 'PM billets must be coded as Program Manager acquisition positions. SADAs may appoint DAWIA-certified PMs to S-CAT IV/V based on risk, complexity, and availability. SALs should achieve the credential within six months.'
+  },
+  '3.1': {
+    title: 'USAF Requirements Approval Authority',
+    headers: ['Services Category', 'Requirement Value', 'MAJCOM/DRU/FOA Structure', 'Secretariat & Air Staff Structure', 'System PEO/TEO Structure'],
+    rows: [
+      ['Special Interest', 'All dollar values', 'As designated by USD(A&S), SAF/AQ, or AFPEO/CM', 'As designated by USD(A&S), SAF/AQ, or AFPEO/CM', 'As designated by USD(A&S), SAF/AQ, or AFPEO/CM'],
+      ['S-CAT I', 'Est. total value:\n> $1B or\n> $300M in any one year', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG', 'S-PEO/TEO (delegable)'],
+      ['S-CAT II', 'Est. total value:\n> $250M but < $1B', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG', 'S-PEO/TEO (delegable)'],
+      ['S-CAT III', 'Est. total value:\n> $100M but < $250M', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG', 'S-PEO/TEO (delegable)'],
+      ['S-CAT IV', 'Est. total value:\n> $10M but < $100M', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG (delegable)', 'S-PEO/TEO or Deputy (delegable)'],
+      ['S-CAT V', 'Est. total value:\n> SAT but < $10M', 'MAJCOM/DRU/FOA CC/CD/CV/CA (delegable)', 'SAF/MG (delegable)', 'S-PEO/TEO or Deputy (delegable)']
+    ],
+    notes: 'All requirements greater than or equal to the SAT require an approved RAD signed by the RAA indicated by dollar threshold or as delegated.'
+  },
+  '3.2': {
+    title: 'USSF Requirements Approval Authority',
+    headers: ['Services Category', 'Requirement Value', 'FLDCOM Structure', 'Space Staff Structure', 'System PEO/TEO Structure'],
+    rows: [
+      ['Special Interest', 'All dollar values', 'As designated by USD(A&S), SAF/SQ, or AFPEO/CM', 'As designated by USD(A&S), SAF/SQ, or AFPEO/CM', 'As designated by USD(A&S), SAF/SQ, or AFPEO/CM'],
+      ['S-CAT I', 'Est. total value:\n> $1B or\n> $300M in any one year', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS', 'S-PEO/TEO (delegable)'],
+      ['S-CAT II', 'Est. total value:\n> $250M but < $1B', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS', 'S-PEO/TEO (delegable)'],
+      ['S-CAT III', 'Est. total value:\n> $100M but < $250M', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS', 'S-PEO/TEO (delegable)'],
+      ['S-CAT IV', 'Est. total value:\n> $10M but < $100M', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS (delegable)', 'S-PEO/TEO or Deputy (delegable)'],
+      ['S-CAT V', 'Est. total value:\n> SAT but < $10M', 'FLDCOM CC/CD/CV/CA (delegable)', 'SF/DS (delegable)', 'S-PEO/TEO or Deputy (delegable)']
+    ],
+    notes: 'IT and Enterprise Data Management requirements must be coordinated with the Chief Technology and Innovation Officer before approval per the CSO delegation memo.'
+  }
+};
+
+function dafiTableKey(line) {
+  const t = String(line || '').trim();
+  if (/^Table\s+2\.1\.\s+United States Air Force/i.test(t)) return '2.1';
+  if (/^Table\s+2\.2\.\s+United States Space Force/i.test(t)) return '2.2';
+  if (/^Table\s+2\.3\.\s+Certification Levels/i.test(t)) return '2.3';
+  if (/^Table\s+3\.1\.\s+USAF Requirements/i.test(t)) return '3.1';
+  if (/^Table\s+3\.2\.\s+USSF Requirements/i.test(t)) return '3.2';
+  return '';
+}
+
+function dafiNativeTableHTML(key) {
+  const t = DAFI_TABLES[key];
+  if (!t) return '';
+  return `<div class="dafi-native-table">
+    <div class="dafi-native-title"><span>Table ${esc(key)}</span>${esc(t.title)}</div>
+    <div class="dafi-table-wrap"><table class="dafi-table">
+      <thead><tr>${t.headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
+      <tbody>${t.rows.map(row => `<tr>${row.map(cell => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table></div>
+    ${t.notes ? `<div class="dafi-table-notes"><strong>Notes</strong>${esc(t.notes)}</div>` : ''}
+  </div>`;
+}
+
+function renderContentLine(line, baseCitation, source) {
+  const lm = line.match(/^L(\d):(.*)/);
+  if (lm) {
+    const level   = parseInt(lm[1]);
+    const content = lm[2].trim();
+    if (!content || isBrowsePageNumberLine(content)) return '';
+    const text    = categoryGuideText(content, source);
+    if (level === 0) return `<p class="br-p">${text}</p>`;
+    let cite = baseCitation || '';
+    if (cite) {
+      const tokM = content.match(/^\(([^)]+)\)/);
+      if (tokM) {
+        const dashIdx = cite.indexOf(' — ');
+        if (dashIdx !== -1) {
+          cite = cite.slice(0, dashIdx) + `(${tokM[1]})` + cite.slice(dashIdx);
+        } else {
+          cite = cite + `(${tokM[1]})`;
+        }
+      }
+    }
+    const citeBtn = cite
+      ? `<button class="br-para-cite" data-cite="${esc(cite)}" onclick="brCopy(this.dataset.cite,this)" title="Copy citation">CITE</button>`
+      : '';
+    return `<div class="br-para-row br-l${Math.min(level,4)}">${citeBtn}<p class="br-para-text">${text}</p></div>`;
+  }
+
+  const t = line.trim();
+  if (!t || isBrowsePageNumberLine(t)) return '';
+
+  const dafiM = isDafiSource(source) ? dafiParagraphMatch(t) : null;
+  const tableKey = isDafiSource(source) ? dafiTableKey(t) : '';
+  if (tableKey) return dafiNativeTableHTML(tableKey);
+  if (dafiM) {
+    const num = dafiM[1];
+    const text = dafiM[2];
+    const level = Math.max(0, Math.min(4, num.split('.').length - 2));
+    return `<div class="br-dafi-row br-dafi-l${level}"><span class="br-dafi-num">${esc(num)}</span><p class="br-dafi-text">${esc(text)}</p></div>`;
+  }
+
+  if (isCategoryGuide(source)) {
+    const stepM = t.match(/^Step\s+(\d+):\s*(.*)/i);
+    if (stepM) {
+      return `<div class="cm-step"><span class="cm-step-num">Step ${esc(stepM[1])}</span><span class="cm-step-text">${categoryGuideText(stepM[2], source)}</span></div>`;
+    }
+
+    const subBulletM = t.match(/^(?:o|▪)\s+(.*)/);
+    if (subBulletM) {
+      return `<div class="br-bullet sub"><span class="br-bullet-marker">○</span><span class="br-bullet-text">${categoryGuideText(subBulletM[1], source)}</span></div>`;
+    }
+
+    if (isCategoryGuideHeadingLine(t)) {
+      const cls = isCategoryGuideSubheadingLine(t) ? 'cm-subheading' : 'cm-heading';
+      return `<div class="${cls}">${esc(t)}</div>`;
+    }
+
+    if (/^(Types of Vehicles|Tier\s+[234]|N\/A\s+|MAS\s+|STARS\s+|Alliant\s+|BIC MAC\s+|Digital Market|Best-in-Class\s+)/i.test(t)) {
+      return `<div class="cm-table-line">${categoryGuideText(t, source)}</div>`;
+    }
+  }
+
+  const bulletM = t.match(/^([●○])\s+(.*)/);
+  if (bulletM) {
+    return `<div class="br-bullet"><span class="br-bullet-marker">${esc(bulletM[1])}</span><span class="br-bullet-text">${categoryGuideText(bulletM[2], source)}</span></div>`;
+  }
+
+  const numM = t.match(/^(\d+)\.\s+(.*)/);
+  if (numM) {
+    return `<div class="br-numbered"><span class="br-num-marker">${esc(numM[1])}.</span><span class="br-num-text">${categoryGuideText(numM[2], source)}</span></div>`;
+  }
+
+  if (/^Part\s+\d+\s*[-–]/i.test(t)) {
+    return `<div class="br-part-break">${esc(t)}</div>`;
+  }
+
+  if (isBrowseHeadingLine(t, source)) {
+    return `<div class="br-note-heading">${esc(t)}</div>`;
+  }
+
+  return `<p class="br-p">${categoryGuideText(t, source)}</p>`;
+}
+// ── CITE A SECTION ────────────────────────────────────────────────────────────
+function brCopy(citation, btn) {
+  navigator.clipboard.writeText(citation).catch(() => {});
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Cite'; btn.classList.remove('copied'); }, 2000);
+}
+
+function scrollBrowseReaderToTop() {
+  const reader = document.getElementById('browse-reader');
+  if (!reader) return;
+  const y = reader.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+  window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+}
+
+function isBrowsePageNumberLine(line) {
+  return /^\d{1,3}$/.test((line || '').trim());
+}
+
+function normalizeBrowseLines(rawLines, source, parsed, partNum) {
+  const blocks = [];
+  let current = null;
+  let skippingGuideGraphicText = false;
+  let skippingGuideVehicleText = false;
+  let skippingDafiTableText = false;
+
+  function flush() {
+    if (current && current.text.trim()) blocks.push(current.text.trim());
+    current = null;
+  }
+
+  rawLines.forEach((raw, idx) => {
+    const line = (raw || '').trim();
+    if (!line) { flush(); return; }
+    if (isBrowsePageNumberLine(line)) return;
+
+    if (isDafiSource(source)) {
+      const tableKey = dafiTableKey(line);
+      if (tableKey) {
+        flush();
+        blocks.push(line);
+        skippingDafiTableText = true;
+        return;
+      }
+      if (skippingDafiTableText) {
+        if (dafiParagraphMatch(line)) {
+          skippingDafiTableText = false;
+        } else {
+          return;
+        }
+      }
+    }
+
+    if (source === 'category-management') {
+      if (Number(partNum) >= 3 && /^Types of Vehicles\b/i.test(line)) {
+        flush();
+        skippingGuideVehicleText = true;
+        return;
+      }
+      if (skippingGuideVehicleText) {
+        if (/^Resources$/i.test(line)) {
+          skippingGuideVehicleText = false;
+        } else {
+          return;
+        }
+      }
+      if (String(partNum) === '1' && /^Simple\s+Other than Simple$/i.test(line)) {
+        skippingGuideGraphicText = true;
+        return;
+      }
+      if (String(partNum) === '2' && /^Category\s+Simple Pathway\s+Other-than-Simple Pathway$/i.test(line)) {
+        skippingGuideGraphicText = true;
+        return;
+      }
+      if (skippingGuideGraphicText) {
+        if ((String(partNum) === '1' && /^Simple Procurements$/i.test(line)) ||
+            (String(partNum) === '2' && /^Category Management$/i.test(line))) {
+          skippingGuideGraphicText = false;
+          if (String(partNum) === '2') return;
+        } else {
+          return;
+        }
+      }
+    }
+
+    if (source === 'far-companion' && parsed?.num) {
+      const escapedNum = parsed.num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const fcHead = new RegExp('^FC\\s+' + escapedNum + '(?:\\s|$)', 'i');
+      if (idx === 0 && fcHead.test(line)) return;
+    }
+
+    const partM = line.match(/^Part\s+(\d+)\s*[-–]/i);
+    if (source === 'far-companion' && partM && String(partM[1]) !== String(partNum)) {
+      flush();
+      return;
+    }
+
+    if (source === 'category-management' && parsed?.label && !current && !blocks.length) {
+      const duplicateLabel = parsed.label.replace(/^Part\s+\d+\s*[-–]\s*/i, '').trim();
+      if (duplicateLabel && line.toLowerCase() === duplicateLabel.toLowerCase()) return;
+    }
+
+    if (isBrowseBlockStart(line, source)) {
+      flush();
+      current = { text: line };
+      return;
+    }
+
+    if (!current) {
+      current = { text: line };
+      return;
+    }
+
+    const prior = current.text;
+    if (isBrowseHeadingLine(prior, source) || /^Step\s+\d+:/i.test(prior)) {
+      flush();
+      current = { text: line };
+      return;
+    }
+    const isListBlock = /^[●○]\s+/.test(prior) || /^(?:o|▪)\s+/.test(prior) || /^\d+\.\s+/.test(prior);
+    if (isListBlock && /[.;:]$/.test(prior) && /^[A-Z]/.test(line)) {
+      flush();
+      current = { text: line };
+      return;
+    }
+    const joiner = /[-–]$/.test(prior) ? '' : ' ';
+    current.text = prior.replace(/[-–]$/, '') + joiner + line;
+  });
+  flush();
+  return blocks;
+}
+
+// ── BUILD FULL READER HTML FROM HITS ─────────────────────────────────────────
+function parseBrowseTitle(hit, source) {
+  const title = hit.title || '';
+  const anchor = `sec-${hit.id}`;
+  const subM = title.match(/^(Subpart\s+[\d.]+)\s*[-–]?\s*(.*)/i);
+  if (subM) return { type: 'subpart', num: subM[1], label: subM[2] || '', anchor };
+
+  if (source === 'far-companion' || hit.source === 'far-companion') {
+    const fcM = title.match(/^FC\s+(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*)\s+(.+)/i);
+    if (fcM) return { type: 'section', num: fcM[1], label: fcM[2], anchor };
+  }
+
+  const secM = title.match(/^(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*)\s+(.+)/);
+  if (secM) return { type: 'section', num: secM[1], label: secM[2], anchor };
+
+  const looseM = title.match(/^(\d{1,3}[\d.]*(?:-\d+)*)\s+(.+)/);
+  if (looseM) return { type: 'section', num: looseM[1], label: looseM[2], anchor };
+
+  return { type: 'other', num: '', label: title, anchor };
+}
+
+function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
+  const srcLabel  = SOURCE_LABELS[source] || source.toUpperCase();
+  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff','category-management':'#e0f2fe','afi-63-138':'#fff1f2','compass':'#f0f9ff'}[source] || '#f0f0f0';
+  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799','category-management':'#075985','afi-63-138':'#9f1239','compass':'#075985'}[source] || '#666';
+  const readerHits = source === 'far-companion'
+    ? hits.filter(hit => parseBrowseTitle(hit, source).num)
+    : hits;
+  const displayCount = readerHits.length || docCount;
+  if (!readerHits.length) {
+    return `<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No indexed sections found</div><div class="browse-empty-sub">${esc(String(srcLabel))} Part ${esc(String(partNum))} is listed, but no section-level content is indexed yet.</div></div>`;
+  }
+
+  // Build TOC from hits
+  const tocItems = readerHits.map(hit => parseBrowseTitle(hit, source));
+
+  const tocHTML = `<div class="br-toc">
+    <div class="br-toc-title">Contents</div>
+    <ul class="br-toc-list">
+      ${tocItems.map(item => {
+        if (item.type === 'subpart') {
+          return `<li class="br-toc-subpart"><span class="br-toc-subpart-label">${esc(item.num)} — ${esc(item.label)}</span></li>`;
+        }
+        return `<li><a class="br-toc-link" onclick="document.getElementById('${item.anchor}')?.scrollIntoView({behavior:'smooth',block:'start'});return false;" href="#">
+          <span class="br-toc-link-num">${esc(item.num || '—')}</span>
+          <span class="br-toc-link-title">${esc(item.label)}</span>
+        </a></li>`;
+      }).join('')}
+    </ul>
+  </div>`;
+  // Build sections
+  const sectionsHTML = readerHits.map((hit, i) => {
+    const parsed = parseBrowseTitle(hit, source);
+    const title   = hit.title || 'Untitled';
+    const anchor  = parsed.anchor;
+    const citation = generateCitation(hit);
+    const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
+    const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
+    const visualFlags = {};
+    const bodyHTML = source === 'compass'
+      ? formatCompassContent(content, hit, citation)
+      : lines.map(l => renderContentLine(l, citation, source) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
+
+    if (parsed.type === 'subpart') {
+      return `<div id="${anchor}" class="br-section">
+        <div class="br-subpart-heading">${esc(parsed.num)}${parsed.label ? ` — ${esc(parsed.label)}` : ''}</div>
+        <div class="br-body">${bodyHTML}</div>
+      </div>`;
+    }
+
+    return `<div id="${anchor}" class="br-section">
+      ${i > 0 ? '<div class="br-divider"></div>' : ''}
+      <div class="br-section-header">
+        <div class="br-section-title-block">
+          ${parsed.num ? `<div class="br-section-num">${esc(parsed.num)}</div>` : ''}
+          <div class="br-section-heading">${esc(parsed.label || title)}</div>
+        </div>
+        <button class="br-cite-btn" data-cite="${esc(citation)}" onclick="brCopy(this.dataset.cite,this)">Cite</button>
+      </div>
+      <div class="br-body">${bodyHTML}</div>
+    </div>`;
+  }).join('');
+
+  const date = readerHits[0]?.date || hits[0]?.date || '';
+
+  return `
+    <div class="br-header">
+      <span class="br-source-badge" style="background:${tagBg};color:${tagClr}">${srcLabel}</span>
+      <div class="br-part-num">Part ${partNum}</div>
+      <div class="br-part-title">${esc(partLabel)}</div>
+      <div class="br-meta">
+        <span>${displayCount} section${displayCount !== 1 ? 's' : ''}</span>
+        ${date ? `<span class="br-meta-dot"></span><span>Issued ${esc(date)}</span>` : ''}
+        <span class="br-meta-dot"></span>
+        <span>${srcLabel}</span>
+      </div>
+    </div>
+    <div class="br-part-search" id="br-part-search" role="search" aria-label="Search within this part">
+      <span class="br-part-search-icon" aria-hidden="true">⌕</span>
+      <input class="br-part-search-input" id="br-part-search-input" type="text" placeholder="Search within Part ${partNum}…" autocomplete="off" spellcheck="false" aria-label="Search within this part">
+      <span class="br-part-search-count" id="br-part-search-count"></span>
+      <span class="br-part-search-nav" id="br-part-search-nav" aria-label="Part search matches">
+        <button type="button" class="br-part-search-step" id="br-part-search-prev" aria-label="Previous match">↑</button>
+        <button type="button" class="br-part-search-step" id="br-part-search-next" aria-label="Next match">↓</button>
+      </span>
+      <button type="button" class="br-part-search-clear" id="br-part-search-clear" aria-label="Clear part search">✕</button>
+    </div>
+    ${tocHTML}
+    ${sectionsHTML}
+    <button class="br-back-top" onclick="document.getElementById('browse-reader').scrollIntoView({behavior:'smooth',block:'start'})">↑ Back to top</button>
+  `;
+}
+
+function indexPartForSource(source, part) {
+  const n = Number(part);
+  if (source === 'r-dfars' && Number.isFinite(n) && n >= 200) return String(n - 200);
+  return String(part);
+}
+
+function displayPartForSource(source, part) {
+  const n = Number(part);
+  if (source === 'r-dfars' && Number.isFinite(n) && n > 0 && n < 200) return String(n + 200);
+  return String(part);
+}
+
+function buildCategoryManagementLanding() {
+  const categories = (PARTS_BY_SOURCE['category-management'] || []).filter(([num]) => Number(num) >= 3);
+  return `
+    <div class="br-header">
+      <span class="br-source-badge" style="background:#e0f2fe;color:#075985">Category Management Buying Guide</span>
+      <div class="br-part-num">Parent Section</div>
+      <div class="br-part-title">Category Management</div>
+      <div class="br-meta"><span>${categories.length} category pathways</span><span class="br-meta-dot"></span><span>Browse a category from the left panel</span></div>
+    </div>
+    <div class="br-section">
+      <div class="br-body">
+        <p class="br-p">The guide groups the category-specific pathway primers under this parent section. Choose a category in the left panel to review its vehicles table, resources, pathway pointers, market research notes, and SIN references.</p>
+        <div class="cm-category-index" aria-label="Category Management pathways">
+          ${categories.map(([num, label]) => `<button type="button" onclick="selectCategoryGuidePart(document.querySelector('.part-tile[data-part=&quot;${num}&quot;]'),'${num}','${esc(label)}')">${esc(label)}<span>Part ${num}</span></button>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectCategoryGuidePart(tile, partKey, partLabel) {
+  if (/^\d+$/.test(String(partKey))) {
+    return selectPart(tile, Number(partKey), partLabel);
+  }
+  browseActivePart = partKey;
+  document.querySelectorAll('.part-tile').forEach(t => {
+    const active = t.dataset.part === partKey;
+    t.classList.toggle('active', active);
+    t.setAttribute('aria-pressed', String(active));
+  });
+  const reader = document.getElementById('browse-reader-inner');
+  if (partKey === 'category-management') {
+    reader.innerHTML = buildCategoryManagementLanding();
+    requestAnimationFrame(scrollBrowseReaderToTop);
+  }
+}
+
+async function selectPart(tile, partNum, partLabel) {
+  browseActivePart = partNum;
+  // Update active tile
+  document.querySelectorAll('.part-tile').forEach(t => {
+    const active = parseInt(t.dataset.part) === partNum;
+    t.classList.toggle('active', active);
+    t.setAttribute('aria-pressed', String(active));
+  });
+
+  // Show loading state in reader
+  const reader = document.getElementById('browse-reader-inner');
+  reader.innerHTML = '<div class="browse-empty"><div class="spinner" style="margin:0 auto 16px;"></div><div class="browse-empty-sub">Loading Part ' + partNum + '…</div></div>';
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    const readerTop = document.getElementById('browse-reader').getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+    window.scrollTo({ top: Math.max(0, readerTop), behavior: 'smooth' });
+  }
+
+  try {
+    const indexPart = indexPartForSource(browseSrc, partNum);
+    // Paginate to get ALL sections — some parts have 100+ sections
+    const allHits = [];
+    const pageSize = 200;
+    let offset = 0;
+    while (true) {
+      const data = await meiliSearch({
+        q: '', limit: pageSize, offset,
+        filter: `source = "${browseSrc}" AND part = "${indexPart}"`,
+        attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
+      });
+      const page = data.hits || [];
+      allHits.push(...page);
+      if (page.length < pageSize) break;
+      offset += pageSize;
+    }
+    const hits = allHits;
+    if (!hits.length) {
+      reader.innerHTML = '<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No content found</div><div class="browse-empty-sub">This part may not be indexed yet for this source.</div></div>';
+      requestAnimationFrame(scrollBrowseReaderToTop);
+      return;
+    }
+    try {
+      reader.innerHTML = buildReaderHTML(hits, browseSrc, partNum, partLabel, hits.length);
+      requestAnimationFrame(scrollBrowseReaderToTop);
+    } catch(buildErr) {
+      console.error('buildReaderHTML error:', buildErr);
+      reader.innerHTML = `<div class="browse-empty"><div class="browse-empty-icon">⚠</div><div class="browse-empty-title">Render error</div><div class="browse-empty-sub">${buildErr.message} — check console for details</div></div>`;
+      requestAnimationFrame(scrollBrowseReaderToTop);
+    }
+  } catch(e) {
+    console.error('Browse error:', e); reader.innerHTML = `<div class="browse-empty"><div class="browse-empty-icon">⚠</div><div class="browse-empty-title">Unable to load</div><div class="browse-empty-sub">${e.message || e}</div></div>`;
+    requestAnimationFrame(scrollBrowseReaderToTop);
+  }
+}
+
+// ── CITATION ──────────────────────────────────────────────────────────────────
+function generateCitation(hit) {
+  const label = SOURCE_LABELS[hit.source] || (hit.source || 'Document').toUpperCase();
+  const title  = hit.title || '';
+
+  // Extract the section title (text after the section number)
+  // e.g. "3.101-2 Solicitation and acceptance of gratuities" → "Solicitation and acceptance of gratuities"
+  function sectionTitle(t) {
+    // Strip leading section number to get just the title text
+    const m = t.match(/^[\d.]+(?:-\d+)?(?:\([^)]+\))*\s+(.*)/);
+    return m ? m[1].replace(/\.$/, '').trim() : '';
+  }
+
+  // Subpart: "Subpart X.X - Title"
+  const subM = title.match(/^Subpart\s+([\d.]+)\s*[-–]?\s*(.*)/i);
+  if (subM) {
+    const subTitle = subM[2].replace(/\.$/, '').trim();
+    return subTitle
+      ? `${label} Subpart ${subM[1]} — ${subTitle}`
+      : `${label} Subpart ${subM[1]}`;
+  }
+
+  // FAR Companion: "FC X.XXX Title"
+  const fcM = title.match(/^FC\s+([\d.]+(?:-\d+)?)\s+(.*)/);
+  if (fcM && hit.source === 'far-companion') {
+    const fcTitle = fcM[2].replace(/\.$/, '').trim();
+    return fcTitle
+      ? `${label} ${fcM[1]} — ${fcTitle}`
+      : `${label} ${fcM[1]}`;
+  }
+
+  // Section/subsection: "X.XXX Title" or "X.XXX-X Title"
+  const secM = title.match(/^(\d{1,3}\.\d{1,6}(?:-\d+)?)\s+(.*)/);
+  if (secM) {
+    const secNum   = secM[1];
+    const secTitle = secM[2].replace(/\.$/, '').trim();
+
+    // Determine level label per FAR 1.105-2
+    // Part = digits left of decimal only (rarely stored this way)
+    // Subpart = X.X or X.XX (no section digits)
+    // Section = X.XXX (3+ digits right of decimal, no dash)
+    // Subsection = X.XXX-X (has dash)
+    const parts = secNum.split('.');
+    const rightOfDecimal = parts[1] || '';
+    const hasDash = secNum.includes('-');
+
+    let levelLabel = '';
+    if (!hasDash && rightOfDecimal.length <= 2) {
+      levelLabel = 'Subpart ';
+    }
+    // Sections and subsections: no prefix per FAR convention
+
+    return secTitle
+      ? `${label} ${levelLabel}${secNum} — ${secTitle}`
+      : `${label} ${levelLabel}${secNum}`;
+  }
+
+  // Part-level: "Part X — Title" stored as title
+  const partM = title.match(/^Part\s+(\d+)\s*[-–]?\s*(.*)/i);
+  if (partM) {
+    const partTitle = partM[2].replace(/\.$/, '').trim();
+    return partTitle
+      ? `${label} Part ${partM[1]} — ${partTitle}`
+      : `${label} Part ${partM[1]}`;
+  }
+
+  // Filename fallback
+  const fileMatch = (hit.filename || '').match(/\b(\d{1,3}\.\d{3,6}(?:-\d+)?)\b/);
+  if (fileMatch) return `${label} ${fileMatch[1]}`;
+  if (hit.part) return `${label} Part ${displayPartForSource(hit.source, hit.part)}`;
+  return label;
+}
+
+function citeBtnHTML(cite) {
+  const s = cite.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  return `<button class="dc-cite-btn" onclick="copyInlineCite(this,'${s}')" aria-label="Copy citation">cite</button>`;
+}
+
+function copyInlineCite(btn, citation) {
+  navigator.clipboard.writeText(citation).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = citation; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  });
+  const orig = btn.textContent;
+  btn.textContent = '✓'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+}
+window.copyInlineCite = copyInlineCite;
+
+// ── CONTENT FORMATTER ─────────────────────────────────────────────────────────
+function formatContent(text, hit) {
+  if (!text) return '<div class="dc-text" style="color:#bbb;font-style:italic;">No content available.</div>';
+  const srcLabel = SOURCE_LABELS[hit.source] || (hit.source || 'Document').toUpperCase();
+  const baseCite = generateCitation(hit);
+  const lines    = text.split('\n');
+  let html = '', curSection = null, paragraphNodes = [];
+
+  if (hit?.source === 'compass') return formatCompassContent(text, hit, baseCite);
+
+  function buildCite() {
+    if (!curSection) return baseCite;
+    // Build section number with paragraph tokens appended: 3.103(a)(1)
+    let num = curSection;
+    paragraphNodes.forEach(node => { num += `(${node.token})`; });
+    // Extract the section title from baseCite if it contains " — Title"
+    const dashIdx = baseCite.indexOf(' — ');
+    const sectionTitle = dashIdx !== -1 ? baseCite.slice(dashIdx) : '';
+    return `${srcLabel} ${num}${sectionTitle}`;
+  }
+
+  function resetParagraphPath() { paragraphNodes = []; }
+
+  function tokenKind(token) {
+    if (/^S-\d+$/i.test(token)) return 'number';
+    if (/^\d+$/.test(token)) return 'number';
+    if (/^[A-Z]$/.test(token)) return 'upper';
+    if (/^[a-z]$/.test(token)) return 'lower';
+    if (/^[ivxlcdm]+$/i.test(token)) return 'roman';
+    return 'other';
+  }
+
+  function isRomanToken(token) { return /^[ivxlcdm]+$/i.test(token); }
+  function isLowerAlpha(token) { return /^[a-z]$/.test(token); }
+
+  function nextLowerAlpha(token) {
+    return /^[a-y]$/.test(token) ? String.fromCharCode(token.charCodeAt(0) + 1) : '';
+  }
+
+  function romanToInt(value) {
+    const map = { i: 1, v: 5, x: 10, l: 50, c: 100, d: 500, m: 1000 };
+    let total = 0, prev = 0;
+    [...value.toLowerCase()].reverse().forEach(ch => {
+      const n = map[ch] || 0;
+      if (n < prev) total -= n;
+      else { total += n; prev = n; }
+    });
+    return total;
+  }
+
+  function intToRoman(num) {
+    const pairs = [['m',1000],['cm',900],['d',500],['cd',400],['c',100],['xc',90],['l',50],['xl',40],['x',10],['ix',9],['v',5],['iv',4],['i',1]];
+    let out = '';
+    pairs.forEach(([sym, val]) => { while (num >= val) { out += sym; num -= val; } });
+    return out;
+  }
+
+  function nextRoman(token) {
+    const n = romanToInt(token);
+    return n ? intToRoman(n + 1) : '';
+  }
+
+  function setParagraphNodes(tokens, kinds) {
+    paragraphNodes = tokens.map((token, i) => ({
+      token: kinds[i] === 'roman' ? token.toLowerCase() : token,
+      kind: kinds[i],
+      level: i + 1
+    }));
+  }
+
+  function replaceAtLevel(token, kind, level) {
+    const cleanToken = kind === 'roman' ? token.toLowerCase() : token;
+    paragraphNodes = paragraphNodes.filter(node => node.level < level);
+    paragraphNodes.push({ token: cleanToken, kind, level });
+  }
+
+  function lastNodeOfKind(kind) {
+    for (let i = paragraphNodes.length - 1; i >= 0; i--) {
+      if (paragraphNodes[i].kind === kind) return paragraphNodes[i];
+    }
+    return null;
+  }
+
+  function inferMultiTokenKind(token, index) {
+    if (index === 0 && isLowerAlpha(token)) return 'lower';
+    if (/^S-\d+$/i.test(token) || /^\d+$/.test(token)) return 'number';
+    if (/^[A-Z]$/.test(token)) return 'upper';
+    if (isRomanToken(token)) return 'roman';
+    return tokenKind(token);
+  }
+
+  function shouldTreatSingleAsRoman(token) {
+    if (!isRomanToken(token) || !paragraphNodes.length) return false;
+    const value = token.toLowerCase();
+    const last = paragraphNodes[paragraphNodes.length - 1];
+    if (last.kind === 'roman') return nextRoman(last.token) === value;
+    if (last.kind === 'number') return true;
+    if (paragraphNodes.length === 1 && last.kind === 'lower') return nextLowerAlpha(last.token) !== value;
+    return false;
+  }
+
+  function updateParagraphPath(tokens) {
+    if (tokens.length > 1) {
+      setParagraphNodes(tokens, tokens.map(inferMultiTokenKind));
+      return;
+    }
+    const token = tokens[0];
+    if (isLowerAlpha(token) && !shouldTreatSingleAsRoman(token)) {
+      setParagraphNodes([token], ['lower']);
+      return;
+    }
+    const kind = /^[A-Z]$/.test(token) ? 'upper' : isRomanToken(token) ? 'roman' : tokenKind(token);
+    const last = paragraphNodes[paragraphNodes.length - 1];
+    if (kind === 'number') {
+      let level = 1;
+      if (last) {
+        if (last.kind === 'number') level = last.level;
+        else if (last.kind === 'lower' || last.kind === 'upper') level = last.level + 1;
+        else {
+          const numberNode = lastNodeOfKind('number');
+          level = numberNode ? numberNode.level : last.level + 1;
+        }
+      }
+      replaceAtLevel(token, 'number', level);
+      return;
+    }
+    if (kind === 'roman') {
+      const value = token.toLowerCase();
+      let level = 1;
+      if (last) {
+        if (last.kind === 'roman') level = last.level;
+        else if (last.kind === 'number' || last.kind === 'lower') level = last.level + 1;
+        else {
+          const romanNode = lastNodeOfKind('roman');
+          level = romanNode && last.level > romanNode.level ? romanNode.level : last.level + 1;
+        }
+      }
+      replaceAtLevel(value, 'roman', level);
+      return;
+    }
+    if (kind === 'upper') {
+      const upperNode = lastNodeOfKind('upper');
+      let level = last ? last.level + 1 : 1;
+      if (last && last.kind === 'upper') level = last.level;
+      else if (upperNode && last && last.level > upperNode.level) level = upperNode.level;
+      replaceAtLevel(token, 'upper', level);
+      return;
+    }
+    setParagraphNodes(tokens, tokens.map(tokenKind));
+  }
+
+  function leadingParagraphTokens(line) {
+    const m = line.match(/^((?:\([A-Za-z0-9-]+\)\s*)+)/);
+    if (!m) return null;
+    const tokens = [...m[1].matchAll(/\(([^)]+)\)/g)].map(match => match[1]);
+    const valid = tokens.every(token => /^S-\d+$/i.test(token) || /^\d+$/.test(token) || /^[a-z]$/.test(token) || /^[A-Z]$/.test(token) || /^[ivxlcdm]+$/i.test(token));
+    return valid ? tokens : null;
+  }
+
+  // ── TWO-COLUMN MERGE SPLITTER ─────────────────────────────────────────────
+  // Detects lines like "1.102 Title. 1.402-1 Other title." and splits them.
+  const splitMergedLine = (line) => {
+    const sp = /^(\d{1,3}\.\d{1,6}(?:-\d+)?\s+[^.]+?\.\s*)(\d{1,3}\.\d{1,6}(?:-\d+)?\s+[A-Z].*)$/;
+    const m = line.match(sp);
+    return m ? [m[1].trim(), m[2].trim()] : null;
+  };
+  const processedLines = [];
+  for (const raw of lines) {
+    const l = raw.trim();
+    if (l && /\d{1,3}\.\d{3,6}(?:-\d+)?/.test(l)) {
+      const split = splitMergedLine(l);
+      if (split) { processedLines.push(split[0], split[1]); continue; }
+    }
+    processedLines.push(l);
+  }
+
+  // ── TOC ZONE DETECTION ────────────────────────────────────────────────────
+  const looksLikeTocLine = (l) => /^\d{1,3}\.\d{1,6}(?:-\d+)?\s+[A-Z]/.test(l) && l.length < 120;
+  const firstNonEmpty = processedLines.filter(l => l.trim()).slice(0, 30);
+  const tocCount = firstNonEmpty.filter(looksLikeTocLine).length;
+  const inTocZone = tocCount >= firstNonEmpty.length * 0.5;
+  let pastToc = false;
+
+  for (const raw of processedLines) {
+    const line = raw.trim();
+    if (!line) { html += '<div class="dc-gap"></div>'; continue; }
+
+    // ── STRUCTURED RFO LINES (L0:/L1:/L2: prefix from ingest_rfo.py) ────────
+    const lMatch = line.match(/^L(\d):(.*)/);
+    if (lMatch) {
+      const level   = parseInt(lMatch[1], 10);
+      const content = lMatch[2].trim();
+      if (!content) { html += '<div class="dc-gap"></div>'; continue; }
+      if (level === 0) {
+        html += `<div class="dc-text">${esc(content)}</div>`;
+      } else {
+        const tokM = content.match(/^\(([^)]+)\)/);
+        if (tokM) updateParagraphPath([tokM[1]]);
+        const cl = Math.min(level, 4);
+        html += `<div class="dc-para dc-l${cl}"><span class="dc-para-text">${esc(content)}</span>${citeBtnHTML(buildCite())}</div>`;
+      }
+      continue;
+    }
+
+    // Mark when we exit TOC zone
+    if (inTocZone && !pastToc && (leadingParagraphTokens(line) || line.length > 120)) pastToc = true;
+    const isToc = inTocZone && !pastToc;
+
+    if (/^PART\s+\d+/i.test(line) && line.length < 140) {
+      curSection = null; resetParagraphPath();
+      html += `<div class="dc-part">${esc(line)} ${citeBtnHTML(baseCite)}</div>`;
+    } else if (/^FC\s+/i.test(line) && line.length < 240) {
+      const m = line.match(/^FC\s+(.+?)(?:\s+[A-Z][^.]*\.|$)/);
+      if (m) { curSection = m[1].trim(); resetParagraphPath(); }
+      if (isToc) { html += `<div class="dc-section dc-toc-entry">${esc(line)}</div>`; } else { html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite())}</div>`; }
+    } else if (/^Subpart\s+[\d.]+/i.test(line) && line.length < 140) {
+      resetParagraphPath();
+      const m = line.match(/Subpart\s+([\d.]+)/i); if (m) curSection = m[1];
+      if (isToc) { html += `<div class="dc-subpart dc-toc-entry">${esc(line)}</div>`; } else { html += `<div class="dc-subpart">${esc(line)} ${citeBtnHTML(buildCite())}</div>`; }
+    } else if (/^\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*[\s,.-]+/.test(line) && line.length < 240) {
+      const m = line.match(/^(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*)/);
+      if (m) { curSection = m[1]; resetParagraphPath(); }
+      html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite())}</div>`;
+    } else if (leadingParagraphTokens(line)) {
+      const tokens = leadingParagraphTokens(line);
+      updateParagraphPath(tokens);
+      const level = Math.min(paragraphNodes.length || 1, 4);
+      html += `<div class="dc-para dc-l${level}"><span class="dc-para-text">${esc(line)}</span>${citeBtnHTML(buildCite())}</div>`;
+    } else if (/^●\s+/.test(line)) {
+      html += `<div class="dc-para dc-l1"><span class="dc-para-text">${esc(line)}</span></div>`;
+    } else if (line === line.toUpperCase() && line.length > 3 && line.length < 80 && /[A-Z]{3}/.test(line)) {
+      html += `<div class="dc-section">${esc(line)}</div>`;
+    } else {
+      html += `<div class="dc-text">${esc(line)}</div>`;
+    }
+  }
+  return html;
+}
+
+function formatInlineLinks(text) {
+  const raw = String(text || '');
+  let out = '', last = 0;
+  const re = /\[([^\]]+)\]\((https?:\/\/[^\s)]+(?:\)[^\s)]*)?|mailto:[^\s)]+)\)/g;
+  let m;
+  while ((m = re.exec(raw))) {
+    out += esc(raw.slice(last, m.index));
+    const label = esc(m[1]);
+    const url = esc(m[2]);
+    out += `<a class="dc-link" href="${url}" target="_blank" rel="noopener">${label}</a>`;
+    last = m.index + m[0].length;
+  }
+  out += esc(raw.slice(last));
+  return out;
+}
+
+function compassLinkParts(text) {
+  const m = String(text || '').match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+(?:\)[^\s)]*)?|mailto:[^\s)]+)\)(?:\s+—\s+([\s\S]+))?/);
+  return m ? { label: m[1], url: m[2], note: m[3] || '' } : null;
+}
+
+function compassResourceHTML(line, isImage = false) {
+  const body = String(line || '').replace(/^-\s+/, '');
+  const link = compassLinkParts(body);
+  if (isImage && link?.url) {
+    return `<figure class="dc-compass-visual"><img src="${esc(link.url)}" alt="${esc(link.label)}" loading="lazy" onerror="this.closest('figure')?.classList.add('image-unavailable')"><figcaption><span>${esc(link.label)}</span><a href="${esc(link.url)}" target="_blank" rel="noopener">Open image</a></figcaption></figure>`;
+  }
+  const note = link?.note ? ` <span class="dc-resource-note">— ${formatInlineLinks(link.note)}</span>` : '';
+  const content = link ? `${formatInlineLinks(`[${link.label}](${link.url})`)}${note}` : formatInlineLinks(body);
+  return `<div class="dc-resource"><div class="dc-resource-text">${content}</div></div>`;
+}
+
+function formatCompassContent(text, hit, baseCite) {
+  const lines = String(text || '').split('\n');
+  let html = '';
+  let supportOpen = false;
+  let inVisuals = false;
+  const closeSupport = () => {
+    if (!supportOpen) return '';
+    supportOpen = false;
+    return '</div></details>';
+  };
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { html += '<div class="dc-gap"></div>'; continue; }
+    if (/^##\s+/.test(line)) {
+      const heading = line.replace(/^##\s+/, '').trim();
+      inVisuals = /Images and visual references/i.test(heading);
+      const isSupport = /Supporting resources|Templates and document libraries|Points of contact|Images and visual references/i.test(heading);
+      if (isSupport) {
+        if (!supportOpen) {
+          html += closeSupport();
+          html += `<details class="dc-compass-support"><summary>Supporting resources</summary><div class="dc-compass-support-body">`;
+          supportOpen = true;
+        }
+        html += `<div class="dc-compass-kicker">${formatInlineLinks(heading)}</div>`;
+      } else {
+        html += closeSupport();
+        html += `<div class="dc-section">${formatInlineLinks(heading)} ${citeBtnHTML(baseCite)}</div>`;
+      }
+    } else if (/^###\s+/.test(line)) {
+      html += `<div class="dc-subpart">${formatInlineLinks(line.replace(/^###\s+/, ''))}</div>`;
+    } else if (/^-\s+/.test(line)) {
+      if (!supportOpen && !inVisuals && !compassLinkParts(line)) {
+        html += `<div class="br-bullet"><span class="br-bullet-marker">•</span><span class="br-bullet-text">${formatInlineLinks(line.replace(/^-\s+/, ''))}</span></div>`;
+      } else {
+        html += compassResourceHTML(line, inVisuals);
+      }
+    } else if (/^•\s*/.test(line)) {
+      html += closeSupport();
+      html += `<div class="dc-compass-callout">${formatInlineLinks(line.replace(/^•\s*/, ''))}</div>`;
+    } else {
+      if (!supportOpen && line.length > 80 && !/^Source page:/i.test(line)) {
+        html += `<div class="dc-text">${formatInlineLinks(line)}</div>`;
+        continue;
+      }
+      html += `<div class="dc-text">${formatInlineLinks(line)}</div>`;
+    }
+  }
+  html += closeSupport();
+  return html;
+}
+
+function cleanSnippet(t){return t?t.replace(/L\d:/g,"").replace(/\s+/g," ").trim():"";}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+// Safely render search highlights: escape ALL html, then restore only <mark> tags.
+// Neutralizes any html in indexed content (stored XSS) while preserving highlighting.
+function markOnly(s) {
+  return esc(s).replace(/&lt;mark&gt;/g, '<mark>').replace(/&lt;\/mark&gt;/g, '</mark>');
+}
+
+// ── DRAWER FILTER ─────────────────────────────────────────────────────────────
+document.getElementById('drawer-filter-input').addEventListener('input', function() { filterDrawerContent(this.value); });
+
+function contentFilterRows(rootSelector) {
+  return document.querySelectorAll(`${rootSelector} .dc-section, ${rootSelector} .dc-subpart, ${rootSelector} .dc-para, ${rootSelector} .dc-text, ${rootSelector} .dc-part`);
+}
+
+function filterContentRows(rootSelector, q, countEl) {
+  const query  = q.trim().toLowerCase();
+  const rows   = contentFilterRows(rootSelector);
+  const root   = document.querySelector(rootSelector);
+  if (!query) {
+    rows.forEach(el => el.style.display = '');
+    if (root) root.classList.remove('is-filtered');
+    if (countEl) countEl.classList.remove('visible');
+    return 0;
+  }
+  let matches = 0;
+  let firstMatch = null;
+  rows.forEach(el => {
+    const vis = el.textContent.toLowerCase().includes(query);
+    el.style.display = vis ? '' : 'none';
+    if (vis) { matches++; if (!firstMatch) firstMatch = el; }
+  });
+  if (root) root.classList.add('is-filtered');
+  if (countEl) {
+    countEl.textContent = `${matches} match${matches !== 1 ? 'es' : ''}`;
+    countEl.classList.add('visible');
+  }
+  return { matches, firstMatch };
+}
+
+function filterDrawerContent(q) {
+  filterContentRows('#drawer-content', q, document.getElementById('drawer-filter-count'));
+}
+
+function resetDrawerFilter() {
+  document.getElementById('drawer-filter-input').value = '';
+  document.getElementById('drawer-filter-count').classList.remove('visible');
+  document.getElementById('drawer-content').classList.remove('is-filtered');
+  contentFilterRows('#drawer-content').forEach(el => el.style.display = '');
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+async function search(query) {
+  const filter = buildFilter(activeSources, activeStatuses);
+  const body   = { q: query, limit: 40, attributesToHighlight: ['title','content'],
+    highlightPreTag: '<mark>', highlightPostTag: '</mark>', attributesToCrop: ['content'], cropLength: 180 };
+  if (filter) body.filter = filter;
+  return meiliSearch(body);
+}
+
+function buildFilter(sources, statuses) {
+  const parts = [];
+  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'compass'];
+  const selectedSources = sources.size > 0 ? [...sources].filter(s => liveSources.includes(s)) : liveSources;
+  if (selectedSources.length) parts.push('(' + selectedSources.map(s => `source = "${s}"`).join(' OR ') + ')');
+  if (statuses.length)  parts.push('(' + statuses.map(s => `status = "${s}"`).join(' OR ') + ')');
+  return parts.join(' AND ') || null;
+}
+
+function meiliFilterValue(value) {
+  return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function docCacheKey(docId) {
+  return `acqvault:doc:${docId}`;
+}
+
+function cacheDocumentForNewTab(hit) {
+  if (!hit || !hit.id) return;
+  try {
+    localStorage.setItem(docCacheKey(hit.id), JSON.stringify(hit));
+  } catch (e) {}
+}
+
+function readCachedDocument(docId) {
+  try {
+    const raw = localStorage.getItem(docCacheKey(docId));
+    if (!raw) return null;
+    const hit = JSON.parse(raw);
+    return hit && String(hit.id) === String(docId) ? hit : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function buildLookupFilter(lookup) {
+  const parts = [];
+  if (lookup.source) parts.push(`source = "${meiliFilterValue(lookup.source)}"`);
+  if (lookup.part) parts.push(`part = "${meiliFilterValue(indexPartForSource(lookup.source, lookup.part))}"`);
+  return parts.join(' AND ') || null;
+}
+
+async function searchDocumentLookup(docId, lookup) {
+  const body = { q: lookup.title || '', limit: 10 };
+  const filter = buildLookupFilter(lookup);
+  if (filter) body.filter = filter;
+  let data;
+  try { data = await meiliSearch(body); }
+  catch (e) { return null; }
+  return (data.hits || []).find(hit => String(hit.id) === String(docId)) || null;
+}
+
+async function fetchDocumentById(docId, lookup = {}) {
+  const cached = readCachedDocument(docId);
+  if (cached) return cached;
+
+  const metadataHit = await searchDocumentLookup(docId, lookup);
+  if (metadataHit) return metadataHit;
+
+  try {
+    const data = await meiliSearch({ q: '', filter: `id = "${meiliFilterValue(docId)}"`, limit: 1 });
+    const hit = (data.hits || []).find(item => String(item.id) === String(docId));
+    if (hit) return hit;
+  } catch (e) {}
+
+  try {
+    return await meiliDocument(docId);
+  } catch (e) {
+    return null;
+  }
+}
+
+// ── RENDER HELPERS ────────────────────────────────────────────────────────────
+function statusClass(status) {
+  const s = (status || '').toLowerCase();
+  if (s.includes('open'))     return 'rc-badge-open';
+  if (s.includes('interim'))  return 'rc-badge-interim';
+  if (s.includes('class'))    return 'rc-badge-class';
+  if (s.includes('proposed')) return 'rc-badge-proposed';
+  if (s.includes('final'))    return 'rc-badge-final';
+  return 'rc-badge-unknown';
+}
+function badgeTag(status) {
+  if (!status || String(status).trim().toLowerCase() === 'unknown') return '';
+  return `<span class="rc-badge ${statusClass(status)}">${esc(status)}</span>`;
+}
+function sourceTag(source) {
+  const safeSource = source || 'unknown';
+  const label = SOURCE_LABELS[safeSource] || safeSource;
+  const cls   = safeSource.replace(/[^a-z0-9]/gi,'-').toLowerCase();
+  return `<span class="rc-tag rc-tag-${cls}">${esc(label)}</span>`;
+}
+
+function renderResults(data, query) {
+  const list  = document.getElementById('results-list');
+  const label = document.getElementById('result-count-label');
+  const hits  = data.hits || [];
+  const total = data.estimatedTotalHits || hits.length;
+  label.innerHTML = `<strong>${total.toLocaleString()}</strong> result${total !== 1 ? 's' : ''} for "<em>${esc(query)}</em>"`;
+  if (!hits.length) { list.innerHTML = '<div class="no-results"><strong>No results found</strong>Try a different search term or adjust your filters.</div>'; return; }
+  list.innerHTML = hits.map(hit => {
+    const hl = hit._formatted || hit;
+    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}" role="button" tabindex="0" aria-label="Open: ${esc(hit.title || 'document')}">
+      <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
+      <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
+      ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
+      <div class="rc-snippet">${markOnly(hl.content || '')}</div>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.result-card').forEach(card => {
+    const open = () => { const hit = hits.find(h => h.id === card.dataset.id); if (hit) openDrawer(hit); };
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  });
+}
+
+// ── READER PAGE ───────────────────────────────────────────────────────────────
+function renderReaderPage(hit) {
+  cacheDocumentForNewTab(hit);
+  document.body.classList.add('reader-mode');
+  document.body.style.overflow = '';
+  document.title = `${hit.title || 'Document'} — AcqVault`;
+
+  const citation = generateCitation(hit);
+  document.getElementById('reader-title').textContent = hit.title || 'Document';
+  document.getElementById('reader-meta').innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
+  document.getElementById('reader-cite').textContent = citation;
+  document.getElementById('reader-aside-cite').textContent = citation;
+  document.getElementById('reader-file').textContent = hit.filename || '';
+  document.getElementById('reader-source').textContent = SOURCE_LABELS[hit.source] || hit.source || '—';
+  document.getElementById('reader-part').textContent = hit.part ? `Part ${displayPartForSource(hit.source, hit.part)}` : '—';
+
+  const original = document.getElementById('reader-original');
+  const sourceUrl = SOURCE_URLS[hit.source] || '';
+  original.href = sourceUrl || '#';
+  original.style.display = sourceUrl ? '' : 'none';
+
+  // Load full part, then scroll to the specific section
+  loadFullPartInReader(hit);
+}
+
+async function loadFullPartInReader(hit) {
+  const contentEl = document.getElementById('reader-content');
+  contentEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const indexPart = indexPartForSource(hit.source, hit.part);
+    const allHits = [];
+    const pageSize = 200;
+    let offset = 0;
+    while (true) {
+      const data = await meiliSearch({
+        q: '', limit: pageSize, offset,
+        filter: `source = "${hit.source}" AND part = "${indexPart}"`,
+        attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
+      });
+      const page = data.hits || [];
+      allHits.push(...page);
+      if (page.length < pageSize) break;
+      offset += pageSize;
+    }
+    if (!allHits.length) {
+      contentEl.innerHTML = formatContent(hit.content || '', hit);
+      return;
+    }
+    // Render all sections with anchors
+    let html = '';
+    allHits.forEach(h => {
+      html += `<div id="reader-sec-${h.id}" class="reader-full-section">`;
+      html += formatContent(h.content || '', h);
+      html += '</div>';
+    });
+    contentEl.innerHTML = html;
+    resetReaderSearch();
+    // Scroll to the clicked section after render
+    const target = document.getElementById(`reader-sec-${hit.id}`);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  } catch(e) {
+    contentEl.innerHTML = formatContent(hit.content || '', hit);
+    resetReaderSearch();
+  }
+}
+
+function filterReaderContent(q) {
+  const countEl = document.getElementById('reader-search-count');
+  const clearBtn = document.getElementById('reader-search-clear');
+  const result = filterContentRows('#reader-content', q, countEl);
+  clearBtn.classList.toggle('visible', Boolean(q.trim()));
+  if (q.trim() && result.firstMatch) {
+    result.firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function resetReaderSearch() {
+  const input = document.getElementById('reader-search-input');
+  const countEl = document.getElementById('reader-search-count');
+  const clearBtn = document.getElementById('reader-search-clear');
+  if (input) input.value = '';
+  if (countEl) countEl.classList.remove('visible');
+  if (clearBtn) clearBtn.classList.remove('visible');
+  const content = document.getElementById('reader-content');
+  if (content) content.classList.remove('is-filtered');
+  contentFilterRows('#reader-content').forEach(el => el.style.display = '');
+}
+
+function renderReaderError() {
+  document.body.classList.add('reader-mode');
+  document.body.style.overflow = '';
+  document.getElementById('reader-page').innerHTML = `
+    <div class="reader-empty">
+      <strong>Document unavailable</strong>
+      This reader link could not load the selected source text. Try opening the result from search again.
+      <div style="margin-top:24px;"><a class="reader-action" href="/">Return to search</a></div>
+    </div>`;
+}
+
+document.getElementById('reader-search-input').addEventListener('input', function() { filterReaderContent(this.value); });
+document.getElementById('reader-search-clear').addEventListener('click', function() {
+  resetReaderSearch();
+  document.getElementById('reader-search-input').focus();
+});
+
+// ── DRAWER ────────────────────────────────────────────────────────────────────
+function openDrawer(hit) {
+  activeDocId = hit.id; currentHit = hit;
+  cacheDocumentForNewTab(hit);
+  document.getElementById('drawer-title').textContent  = hit.title || 'Document';
+  document.getElementById('drawer-source').textContent = SOURCE_LABELS[hit.source] || hit.source;
+  document.getElementById('drawer-part').textContent   = hit.part ? `Part ${displayPartForSource(hit.source, hit.part)}` : '—';
+  document.getElementById('drawer-file').textContent   = hit.filename || '—';
+  const citation = generateCitation(hit);
+  document.getElementById('cite-text').textContent = citation;
+  const copyBtn = document.getElementById('cite-copy-btn');
+  copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied');
+  copyBtn.onclick = () => copyCitation(citation, copyBtn);
+  document.getElementById('drawer-meta').innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
+  document.getElementById('drawer-orig').href = hit.url || SOURCE_URLS[hit.source] || '#';
+  const newTabUrl = new URL(window.location.href);
+  newTabUrl.searchParams.set('view', 'reader');
+  newTabUrl.searchParams.set('doc', hit.id);
+  if (hit.source) newTabUrl.searchParams.set('source', hit.source);
+  if (hit.part) newTabUrl.searchParams.set('part', hit.part);
+  if (hit.title) newTabUrl.searchParams.set('title', hit.title);
+  document.getElementById('drawer-newtab').href = newTabUrl.toString();
+  resetDrawerFilter();
+  const drawer = document.getElementById('drawer');
+  drawer.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
+  document.getElementById('drawer-backdrop').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+  document.querySelectorAll('.result-card').forEach(c => c.classList.toggle('active', c.dataset.id === hit.id));
+  // Load full part then scroll to this section
+  loadFullPartInDrawer(hit);
+}
+
+async function loadFullPartInDrawer(hit) {
+  const contentEl = document.getElementById('drawer-content');
+  contentEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const indexPart = indexPartForSource(hit.source, hit.part);
+    const allHits = [];
+    const pageSize = 200;
+    let offset = 0;
+    while (true) {
+      const data = await meiliSearch({
+        q: '', limit: pageSize, offset,
+        filter: `source = "${hit.source}" AND part = "${indexPart}"`,
+        attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
+      });
+      const page = data.hits || [];
+      allHits.push(...page);
+      if (page.length < pageSize) break;
+      offset += pageSize;
+    }
+    if (!allHits.length) {
+      contentEl.innerHTML = formatContent(hit.content || '', hit);
+      return;
+    }
+    // Render all sections using formatContent, separated by section headers
+    let html = '';
+    allHits.forEach(h => {
+      const anchor = `drawer-sec-${h.id}`;
+      html += `<div id="${anchor}" class="drawer-full-section">`;
+      html += formatContent(h.content || '', h);
+      html += `</div>`;
+    });
+    contentEl.innerHTML = html;
+    // Scroll to the clicked section
+    const target = document.getElementById(`drawer-sec-${hit.id}`);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  } catch(e) {
+    // Fallback: just show the single section
+    contentEl.innerHTML = formatContent(hit.content || '', hit);
+  }
+}
+
+function closeDrawer() {
+  activeDocId = null; currentHit = null;
+  const drawer = document.getElementById('drawer');
+  drawer.classList.remove('open');
+  drawer.setAttribute('aria-hidden', 'true');
+  document.getElementById('drawer-backdrop').classList.remove('visible');
+  document.body.style.overflow = '';
+  document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
+  resetDrawerFilter();
+}
+
+function copyCitation(citation, btn) {
+  navigator.clipboard.writeText(citation).then(() => {
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = citation; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+  });
+}
+
+document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeFeedback(); } });
+
+// ── URL ?doc= param ───────────────────────────────────────────────────────────
+(async function checkUrlDoc() {
+  const params = new URLSearchParams(window.location.search);
+  const docId = params.get('doc');
+  if (!docId) return;
+  const readerMode = params.get('view') === 'reader';
+  if (readerMode) {
+    document.body.classList.add('reader-mode');
+    document.body.style.overflow = '';
+  }
+  try {
+    const hit = await fetchDocumentById(docId, {
+      source: params.get('source'),
+      part: params.get('part'),
+      title: params.get('title')
+    });
+    if (hit) {
+      if (readerMode) renderReaderPage(hit);
+      else openDrawer(hit);
+    } else if (readerMode) {
+      renderReaderError();
+    }
+  } catch (e) {
+    if (readerMode) renderReaderError();
+  }
+})();
+
+// ── SEARCH INPUT & LIFECYCLE ──────────────────────────────────────────────────
+const hero           = document.getElementById('hero');
+const resultsSection = document.getElementById('results-section');
+const searchInput    = document.getElementById('search-input');
+const searchCount    = document.getElementById('search-count');
+const searchClear    = document.getElementById('search-clear');
+
+async function runSearch(options = {}) {
+  const preserveScroll = Boolean(options.preserveScroll);
+  const q = searchInput.value.trim();
+  if (!q) { deactivateSearch(); return; }
+  if (currentMode !== 'search') setMode('search');
+  activateSearch({ scrollToTop: !preserveScroll });
+  document.getElementById('results-list').innerHTML = Array.from({ length: 4 }, () => '<div class="skel-card"><div class="skel-line skel-tag"></div><div class="skel-line skel-title"></div><div class="skel-line skel-snippet"></div><div class="skel-line skel-snippet short"></div></div>').join('');
+  try {
+    const data = await search(q);
+    renderResults(data, q);
+    const total = data.estimatedTotalHits || (data.hits || []).length;
+    searchCount.textContent = total ? `${total} results` : '';
+  } catch (e) {
+    const msg = e && e.message ? e.message : 'Please try again.';
+    document.getElementById('results-list').innerHTML = '<div class="no-results"><strong>Search unavailable</strong>' + esc(msg) + '</div>';
+    searchCount.textContent = '';
+  }
+}
+
+function activateSearch({ scrollToTop = false } = {}) {
+  document.body.classList.add('work-mode');
+  hero.classList.add('search-active'); hero.classList.remove('browse-active','fulltext-active');
+  resultsSection.classList.add('visible');
+  document.getElementById('browse-section').classList.remove('visible');
+  document.getElementById('fulltext-section').classList.remove('visible');
+  searchClear.classList.add('visible');
+  if (scrollToTop) requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+function deactivateSearch() {
+  document.body.classList.remove('work-mode');
+  hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
+  searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
+}
+
+searchInput.addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  if (!searchInput.value.trim()) { deactivateSearch(); return; }
+  debounceTimer = setTimeout(runSearch, 300);
+});
+searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(debounceTimer); if (searchInput.value.trim()) runSearch(); } });
+searchClear.addEventListener('click', () => { searchInput.value = ''; deactivateSearch(); searchInput.focus(); });
+
+// ── FILTERS ───────────────────────────────────────────────────────────────────
+document.getElementById('source-filters').addEventListener('click', e => {
+  const pill    = e.target.closest('.fpill');
+  if (!pill || pill.classList.contains('disabled')) return;
+  const src     = pill.dataset.source;
+  const allPill = document.querySelector('#source-filters .fpill[data-source="all"]');
+  if (src === 'all') {
+    activeSources.clear();
+    document.querySelectorAll('#source-filters .fpill').forEach(p => p.classList.remove('active'));
+    allPill.classList.add('active');
+  } else {
+    if (activeSources.has(src)) { activeSources.delete(src); pill.classList.remove('active'); }
+    else { activeSources.add(src); pill.classList.add('active'); }
+    allPill.classList.toggle('active', activeSources.size === 0);
+  }
+  document.querySelectorAll('#source-filters .fpill').forEach(p => p.setAttribute('aria-pressed', String(p.classList.contains('active'))));
+  if (searchInput.value.trim()) runSearch({ preserveScroll: true });
+});
+
+// Status filters removed
+
+// ── ABOUT BAR ─────────────────────────────────────────────────────────────────
+function dismissAbout() {
+  const bar = document.getElementById('about-bar');
+  const nav = document.getElementById('main-nav');
+  bar.style.transform = 'translateY(-100%)'; bar.style.opacity = '0';
+  nav.style.top = '0';
+  document.documentElement.style.setProperty('--top-chrome', `${nav.offsetHeight}px`);
+  setTimeout(() => bar.remove(), 340);
+}
+
+// ── FEEDBACK MODAL ────────────────────────────────────────────────────────────
+function openFeedback() {
+  document.getElementById('feedback-form').style.display = '';
+  document.getElementById('feedback-success').style.display = 'none';
+  const btn = document.getElementById('fb-submit');
+  btn.textContent = 'Send Feedback'; btn.disabled = false;
+  const modal = document.getElementById('feedback-modal');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeFeedback() {
+  const modal = document.getElementById('feedback-modal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  if (!document.getElementById('drawer').classList.contains('open')) document.body.style.overflow = '';
+}
+document.getElementById('feedback-modal').addEventListener('click', e => { if (e.target === document.getElementById('feedback-modal')) closeFeedback(); });
+document.getElementById('feedback-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('fb-submit');
+  if (!WEB3FORMS_ENDPOINT) {
+    btn.textContent = 'Feedback offline';
+    btn.disabled = true;
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const res = await fetch(WEB3FORMS_ENDPOINT, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        subject: 'AcqVault Feedback',
+        name: document.getElementById('fb-name').value.trim() || 'Anonymous',
+        email: document.getElementById('fb-email').value.trim() || '',
+        message: document.getElementById('fb-message').value.trim()
+      })
+    });
+    if (res.ok) {
+      document.getElementById('feedback-form').style.display = 'none';
+      document.getElementById('feedback-success').style.display = 'block';
+      ['fb-name','fb-email','fb-message'].forEach(id => document.getElementById(id).value = '');
+      setTimeout(closeFeedback, 3200);
+    } else { btn.textContent = 'Try again'; btn.disabled = false; }
+  } catch { btn.textContent = 'Try again'; btn.disabled = false; }
+});
+
+// ── PARTICLES ─────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('particles');
+const ctx    = canvas.getContext('2d');
+let pts = [];
+function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+function initPts() { pts = []; for (let i = 0; i < 90; i++) pts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28, r:Math.random()*1.4+.4 }); }
+function drawFrame() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pts.forEach(p => { p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>canvas.width)p.vx*=-1; if(p.y<0||p.y>canvas.height)p.vy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fill(); });
+  for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(255,255,255,${.055*(1-d/130)})`;ctx.lineWidth=.5;ctx.stroke();}}
+  requestAnimationFrame(drawFrame);
+}
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  canvas.style.display = 'none';
+} else {
+  window.addEventListener('resize', () => { resizeCanvas(); initPts(); });
+  resizeCanvas(); initPts(); drawFrame();
+}
+
+// ── TYPING ANIMATION ──────────────────────────────────────────────────────────
+const QUERIES=[["sole source justification","47"],["RFO 6.302-1 only one source","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["DoD FMR volume 3 payments","34"],["DAFI 63-138 services acquisition","12"],["other than full and open competition","34"],["undefinitized contract action","12"]];
+let qi=0,ci=0,del=false;
+function tick(){const el=document.getElementById('btyping'),rc=document.getElementById('bcount');if(!el)return;const[q,cnt]=QUERIES[qi];if(!del){el.textContent=q.slice(0,ci+1);ci++;if(ci===q.length){del=true;rc.textContent=cnt+' results';setTimeout(tick,2200);return;}setTimeout(tick,52);}else{el.textContent=q.slice(0,ci-1);ci--;if(ci===0){del=false;rc.textContent='— results';qi=(qi+1)%QUERIES.length;setTimeout(tick,380);return;}setTimeout(tick,26);}}
+setTimeout(tick,900);
+
+// ── SCROLL FADE-IN ────────────────────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);} }); }, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// ── REGULATION NEWS FEED ──────────────────────────────────────────────────────
+async function loadNewsFeed() {
+  const el = document.getElementById('news-feed-list');
+  if (!el) return;
+  try {
+    // Fetch latest RFO-related documents from Federal Register API
+    const res = await fetch(
+      'https://www.federalregister.gov/api/v1/documents.json?conditions[agencies][]=defense-acquisition-regulations-system&conditions[agencies][]=office-of-the-under-secretary-of-defense-for-acquisition-and-sustainment&per_page=5&order=newest&fields[]=title&fields[]=publication_date&fields[]=type&fields[]=document_number&fields[]=html_url',
+      { mode: 'cors' }
+    );
+    if (!res.ok) throw new Error('FR API unavailable');
+    const data = await res.json();
+    const docs = data.results || [];
+    if (!docs.length) throw new Error('No results');
+
+    const typeLabel = (t) => {
+      if (!t) return { label: 'Notice', cls: 'nfi-type-other' };
+      const tl = t.toLowerCase();
+      if (tl.includes('proposed')) return { label: 'Proposed Rule', cls: 'nfi-type-proposed' };
+      if (tl.includes('interim') || tl.includes('rule')) return { label: 'Interim Rule', cls: 'nfi-type-interim' };
+      if (tl.includes('final')) return { label: 'Final Rule', cls: 'nfi-type-final' };
+      return { label: t, cls: 'nfi-type-other' };
+    };
+
+    const fmtDate = (d) => {
+      if (!d) return '';
+      const dt = new Date(d + 'T00:00:00');
+      return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+
+    el.innerHTML = docs.map(doc => {
+      const { label, cls } = typeLabel(doc.type);
+      return `<a class="news-feed-item" href="${doc.html_url || '#'}" target="_blank" rel="noopener">
+        <div class="nfi-date">${fmtDate(doc.publication_date)}</div>
+        <div class="nfi-body">
+          <div class="nfi-title">${esc(doc.title || 'Untitled')}</div>
+          <div class="nfi-meta">
+            <span class="nfi-type ${cls}">${label}</span>
+            <span class="nfi-doc">${esc(doc.document_number || '')}</span>
+          </div>
+        </div>
+      </a>`;
+    }).join('') + `<div class="news-feed-footer"><a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">View all on Federal Register →</a></div>`;
+  } catch(e) {
+    // Fallback: show curated static items
+    el.innerHTML = `
+      <a class="news-feed-item" href="https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system" target="_blank" rel="noopener">
+        <div class="nfi-date">Live</div>
+        <div class="nfi-body">
+          <div class="nfi-title">View latest RFO / R-DFARS updates</div>
+          <div class="nfi-meta"><span class="nfi-type nfi-type-other">Federal Register</span></div>
+        </div>
+      </a>
+      <div class="news-feed-footer"><a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">Open Federal Register →</a></div>
+    `;
+  }
+}
+
+
+
+
+
+
+
+
+
+// ── HERO LEADERSHIP QUOTE ────────────────────────────────────────────────────
+const HERO_QUOTES = [
+  { q: 'Before you achieve, everyone will ask you why you are working so hard. After you achieve, everyone will remind you how lucky you got.', a: 'AcqVault' },
+  { q: 'The standard you walk past is the standard you accept.', a: 'David Morrison' },
+  { q: 'Great leaders do not create followers. They create more leaders.', a: 'Tom Peters' },
+  { q: 'Discipline is choosing what you want most over what you want now.', a: 'Unknown' },
+  { q: 'The credit belongs to the one who is actually in the arena.', a: 'Theodore Roosevelt' },
+  { q: 'Plans are worthless, but planning is everything.', a: 'Dwight D. Eisenhower' },
+  { q: 'What you do has far greater impact than what you say.', a: 'Stephen Covey' },
+  { q: 'Management is doing things right; leadership is doing the right things.', a: 'Peter Drucker' },
+  { q: 'Well done is better than well said.', a: 'Benjamin Franklin' },
+  { q: 'Action expresses priorities.', a: 'Mahatma Gandhi' },
+  { q: 'It always seems impossible until it is done.', a: 'Nelson Mandela' },
+  { q: 'You do not rise to the level of your goals. You fall to the level of your systems.', a: 'James Clear' },
+  { q: 'Never confuse motion with action.', a: 'Benjamin Franklin' },
+  { q: 'If everything is a priority, nothing is a priority.', a: 'Unknown' },
+  { q: 'Slow is smooth, and smooth is fast.', a: 'Military proverb' },
+  { q: 'Trust is built in drops and lost in buckets.', a: 'Kevin Plank' },
+  { q: 'The obstacle is the way.', a: 'Marcus Aurelius' },
+  { q: 'The main thing is to keep the main thing the main thing.', a: 'Stephen Covey' },
+  { q: 'Decisions are easy when values are clear.', a: 'Roy Disney' },
+  { q: 'Excellence is not an act, but a habit.', a: 'Will Durant' },
+  { q: 'Do what you can, with what you have, where you are.', a: 'Theodore Roosevelt' },
+  { q: 'The best way out is always through.', a: 'Robert Frost' },
+  { q: 'Luck is what happens when preparation meets opportunity.', a: 'Seneca' },
+  { q: 'The price of greatness is responsibility.', a: 'Winston Churchill' },
+  { q: 'A goal without a plan is just a wish.', a: 'Antoine de Saint-Exupery' },
+  { q: 'Pressure is a privilege.', a: 'Billie Jean King' },
+  { q: 'Own the outcome, not just the task.', a: 'Unknown' },
+  { q: 'Prepared people make difficult work look simple.', a: 'Unknown' },
+  { q: 'The meeting is not the work. The work is the work.', a: 'Unknown' },
+  { q: 'A calm mind is a strategic advantage.', a: 'Unknown' },
+  { q: 'Speed matters, but direction matters more.', a: 'Unknown' },
+  { q: 'Competence is quiet. It does not need a parade.', a: 'Unknown' },
+  { q: 'If the mission matters, the details matter.', a: 'Unknown' },
+  { q: 'A clear requirement is a gift to everyone downstream.', a: 'Unknown' },
+  { q: 'Readiness is built before it is needed.', a: 'Unknown' },
+  { q: 'A leader absorbs confusion and returns clarity.', a: 'Unknown' }
+];
+const AFFIRMATIONS = [
+  { q: 'You are doing your best, and the acquisition package has chosen not to notice.', a: 'Affirmation' },
+  { q: 'The requirement is clear enough to proceed and vague enough to return later with consequences.', a: 'Affirmation' },
+  { q: 'Today, may your suspense be real and your stakeholder be findable.', a: 'Affirmation' },
+  { q: 'The contract file is not complete, but it has developed confidence.', a: 'Affirmation' },
+  { q: 'You are one attachment away from temporary peace, which is how the system keeps you humble.', a: 'Affirmation' },
+  { q: 'The meeting could have been an email, but the email wanted witnesses.', a: 'Affirmation' },
+  { q: 'Your market research is defensible, even if it was assembled under emotional procurement conditions.', a: 'Affirmation' },
+  { q: 'The acquisition strategy is alive, and it has started requesting snacks.', a: 'Affirmation' },
+  { q: 'You can do hard things, including explaining for the third time that urgent is not a funding source.', a: 'Affirmation' },
+  { q: 'The procurement package has entered its comments era.', a: 'Affirmation' },
+  { q: 'A clean requirement is possible. We honor that possibility from a safe distance.', a: 'Affirmation' },
+  { q: 'You are not behind. The baseline simply left without filing a travel voucher.', a: 'Affirmation' },
+  { q: 'The clause matrix is not judging you. It is just disappointed in several rows.', a: 'Affirmation' },
+  { q: 'Today is full of opportunities to lower acquisition risk and personal expectations.', a: 'Affirmation' },
+  { q: 'The plan is defensible, which is sometimes the most romantic thing a plan can be.', a: 'Affirmation' },
+  { q: 'Some risks are accepted. Others are pretending to be assumptions.', a: 'Affirmation' },
+  { q: 'Your draft has potential, which is what reviewers say before becoming weather.', a: 'Affirmation' },
+  { q: 'The source selection plan is calm on paper, where many brave things live.', a: 'Affirmation' },
+  { q: 'The requirement owner is aligned, pending whatever they say in the next meeting.', a: 'Affirmation' },
+  { q: 'You are not overthinking. You are pre-answering the question Legal will ask at 4:47.', a: 'Affirmation' },
+  { q: 'The contract action is moving, although in the way furniture moves during an office reorg.', a: 'Affirmation' },
+  { q: 'The spreadsheet has hidden rows because the truth wanted privacy.', a: 'Affirmation' },
+  { q: 'You are one clean citation away from sounding like this was always the plan.', a: 'Affirmation' },
+  { q: 'The approval chain is long, but your follow-up language remains professionally restrained.', a: 'Affirmation' },
+  { q: 'A good note to file is just future-you begging for mercy in complete sentences.', a: 'Affirmation' },
+  { q: 'The acquisition timeline is compressed because optimism got access to PowerPoint.', a: 'Affirmation' },
+  { q: 'Your independent government estimate is independent in spirit and estimated in self-defense.', a: 'Affirmation' },
+  { q: 'The portal timing out is not personal. It treats everyone with the same quiet contempt.', a: 'Affirmation' },
+  { q: 'This too shall pass, likely through two more coordination rounds.', a: 'Affirmation' },
+  { q: 'The program office has a vision, and today you are converting it into paperwork with margins.', a: 'Affirmation' },
+  { q: 'The answer is in the FAR, surrounded by several answers having a jurisdictional disagreement.', a: 'Affirmation' },
+  { q: 'Your calm tone is doing important structural work in a room full of dependencies.', a: 'Affirmation' },
+  { q: 'A concise email is a public service. A concise acquisition email is nearly mythological.', a: 'Affirmation' },
+  { q: 'The budget drill found you because hiding was not included in the acquisition plan.', a: 'Affirmation' },
+  { q: 'The milestone is green because the slide needed closure.', a: 'Affirmation' },
+  { q: 'You have survived every urgent data call so far, which is technically past performance.', a: 'Affirmation' },
+  { q: 'The procurement request is maturing, which means the acronyms have begun reproducing.', a: 'Affirmation' },
+  { q: 'You are allowed to celebrate a complete PR, quietly, before finance asks a fair question.', a: 'Affirmation' },
+  { q: 'The requirement changed overnight. This is unfortunate, but at least the tracker gets attention.', a: 'Affirmation' },
+  { q: 'Your professionalism remains intact despite direct exposure to Reply All.', a: 'Affirmation' },
+  { q: 'The final review is rarely final. The optimism is the important part.', a: 'Affirmation' },
+  { q: 'The business clearance is close, a word doing significant unpaid labor.', a: 'Affirmation' },
+  { q: 'You are not lost. You are conducting market research on possible directions.', a: 'Affirmation' },
+  { q: 'A well-placed caveat can hold up a briefing longer than some funding lines.', a: 'Affirmation' },
+  { q: 'The evaluation criteria are clear, except to the people evaluating them.', a: 'Affirmation' },
+  { q: 'Today, may your assumptions be documented before they become office folklore.', a: 'Affirmation' },
+  { q: 'The tracker is not judging you. It is presenting evidence with excellent formatting.', a: 'Affirmation' },
+  { q: 'The acquisition team is aligned, apart from the parts involving people.', a: 'Affirmation' },
+  { q: 'A complete package is possible. We choose to believe this for morale.', a: 'Affirmation' },
+  { q: 'Your file naming convention is aspirational, and so are we.', a: 'Affirmation' },
+  { q: 'The contract specialist knows. The contract specialist has always known.', a: 'Affirmation' },
+  { q: 'Some comments improve the product. Others confirm the reviewer opened the file.', a: 'Affirmation' },
+  { q: 'You did not miss the obvious. The obvious was hiding behind a local supplement.', a: 'Affirmation' },
+  { q: 'The source selection note briefly restored order, which made everyone suspicious.', a: 'Affirmation' },
+  { q: 'Your scope is stable, except for the parts currently stretching.', a: 'Affirmation' },
+  { q: 'Procurement lead time is not a suggestion. It is a lifestyle with forms.', a: 'Affirmation' },
+  { q: 'The answer may require a governance body, which is how simple questions build character.', a: 'Affirmation' },
+  { q: 'The agenda was ambitious. Reality submitted a nonconcurrence.', a: 'Affirmation' },
+  { q: 'The package has been routed. Now begins the ancient art of waiting professionally.', a: 'Affirmation' },
+  { q: 'You are building a record, not merely surviving a Tuesday.', a: 'Affirmation' },
+  { q: 'The estimate is rough, but it has cells and borders, so people will respect it.', a: 'Affirmation' },
+  { q: 'The good idea survived coordination, which means it may be unusually sturdy.', a: 'Affirmation' },
+  { q: 'The day has moving parts, and you have located enough of them to be useful.', a: 'Affirmation' },
+  { q: 'Your decision memo is becoming clearer, despite the comments trying to unionize.', a: 'Affirmation' },
+  { q: 'The approval is pending, which is Latin for check again after lunch.', a: 'Affirmation' },
+  { q: 'You can be strategic and still care deeply whether the PDF is searchable.', a: 'Affirmation' },
+  { q: 'The contract file believes in you, which is why it keeps requesting proof.', a: 'Affirmation' },
+  { q: 'A small win is still a win, especially if nobody schedules a lessons-learned meeting.', a: 'Affirmation' },
+  { q: 'You are one clean action item away from temporary alignment.', a: 'Affirmation' },
+  { q: 'The briefing is almost final, a phrase best treated like a weather forecast.', a: 'Affirmation' },
+  { q: 'The plan has risks, but at least they have names now.', a: 'Affirmation' },
+  { q: 'You are not drowning in details. You are participating in immersive compliance.', a: 'Affirmation' },
+  { q: 'The requirement is evolving. Please keep assumptions inside the vehicle.', a: 'Affirmation' },
+  { q: 'Your notes are clear enough that tomorrow-you may briefly forgive today-you.', a: 'Affirmation' },
+  { q: 'The contract is not awarded yet, but the documentation has a rich inner life.', a: 'Affirmation' },
+  { q: 'The clause is mandatory. Your emotional response remains optional.', a: 'Affirmation' },
+  { q: 'The package is not perfect, but it is no longer actively resisting civilization.', a: 'Affirmation' },
+  { q: 'You made the complicated thing slightly less complicated. That counts more than it sounds.', a: 'Affirmation' },
+  { q: 'The decision authority has questions, which means the slide deck is breathing.', a: 'Affirmation' },
+  { q: 'Your file is organized enough to make an auditor curious.', a: 'Affirmation' },
+  { q: 'The work is hard, but at least the acronym list is longer than the problem statement.', a: 'Affirmation' },
+  { q: 'You are one meeting away from clarity, or at least a better inventory of confusion.', a: 'Affirmation' },
+  { q: 'The program changed priorities, and you changed tabs with dignity.', a: 'Affirmation' },
+  { q: 'A good handoff is a quiet act of leadership and a gift to Friday.', a: 'Affirmation' },
+  { q: 'Your day has deliverables, dependencies, and the faint glow of possible closure.', a: 'Affirmation' },
+  { q: 'The requirement has been clarified, which means a new question has unlocked.', a: 'Affirmation' },
+  { q: 'Procurement is a team sport where the scoreboard is mostly signatures.', a: 'Affirmation' },
+  { q: "You are not moving paper. You are moving decisions through bureaucracy's natural habitat.", a: 'Affirmation' },
+  { q: 'The action officer life is not glamorous, but the version history is impeccable.', a: 'Affirmation' },
+  { q: 'Today, may your review comments be actionable and your meeting links functional.', a: 'Affirmation' },
+  { q: 'The acquisition community thanks you, mostly by assigning another suspense date.', a: 'Affirmation' },
+  { q: 'A clean table of contents will not fix the world, but it can improve the room.', a: 'Affirmation' },
+  { q: 'The procurement gods accept your attachment and request one more certification.', a: 'Affirmation' },
+  { q: 'Your acquisition package has fewer mysteries than yesterday, which is progress by any fair standard.', a: 'Affirmation' },
+  { q: 'The funding line is real, and for one beautiful second, so is hope.', a: 'Affirmation' },
+  { q: 'You have done harder things, though few required this many signatures.', a: 'Affirmation' },
+  { q: 'The final file name says final because language is sometimes aspirational.', a: 'Affirmation' },
+  { q: 'Your requirements crosswalk is doing the work of a small diplomatic mission.', a: 'Affirmation' },
+  { q: 'The contract action is urgent, which is unfortunate given how calendars work.', a: 'Affirmation' },
+  { q: 'The amendment is simple, except for the part where it amends everything emotionally.', a: 'Affirmation' },
+  { q: 'Your market research found options. The options found questions.', a: 'Affirmation' },
+  { q: 'The acquisition plan is not judging the team. It is merely keeping receipts.', a: 'Affirmation' },
+  { q: 'Today, may your stakeholders be decisive and your PDFs less decorative.', a: 'Affirmation' },
+  { q: 'The record will show you tried, and in contracting, the record is basically a character witness.', a: 'Affirmation' },
+  { q: 'You are close to done, which is when the package traditionally reveals a side quest.', a: 'Affirmation' },
+  { q: 'The office printer is not part of the acquisition strategy, but it has opinions.', a: 'Affirmation' },
+  { q: 'Your response to comments was measured, professional, and only internally theatrical.', a: 'Affirmation' },
+  { q: 'The clause lookup took time, but so does archaeology.', a: 'Affirmation' },
+  { q: 'The business decision is sound. The route to approval remains scenic.', a: 'Affirmation' },
+  { q: 'A good acquisition professional knows when to escalate and when to rename the file more clearly.', a: 'Affirmation' },
+  { q: 'Your patience is a renewable resource, but the procurement lead time is not.', a: 'Affirmation' },
+  { q: 'The suspense is due at close of business, a phrase doing a heroic amount of emotional work.', a: 'Affirmation' },
+  { q: 'The package has a few loose ends, which is acquisition-speak for tomorrow having plans.', a: 'Affirmation' },
+  { q: 'You are closer than you were, unless the baseline moved. It probably moved.', a: 'Affirmation' },
+  { q: 'Some days the win is a clean citation. Today may be one of those elite days.', a: 'Affirmation' },
+  { q: 'The requirement is measurable, assuming morale can be measured in tracked changes.', a: 'Affirmation' },
+  { q: 'Your acquisition strategy has entered the phase where everyone remembers one more thing.', a: 'Affirmation' },
+  { q: 'The meeting had outcomes, which puts it ahead of several government traditions.', a: 'Affirmation' },
+  { q: 'You did the hard part. Now the easy part will become weird for administrative reasons.', a: 'Affirmation' },
+  { q: 'The package is in review, which means it is both alive and unavailable.', a: 'Affirmation' },
+  { q: 'Today, may your email find the one person who can actually answer it.', a: 'Affirmation' },
+  { q: 'The file is complete enough to move forward and incomplete enough to remain realistic.', a: 'Affirmation' },
+  { q: 'Your calm is suspiciously effective. Continue using it sparingly.', a: 'Affirmation' },
+  { q: 'The acquisition machine runs on documentation, patience, and snacks nobody admits are lunch.', a: 'Affirmation' },
+  { q: 'You are enough. The missing attachment is not.', a: 'Affirmation' },
+  { q: 'You lost? Do you need help? You should probably call the policy guy named Dave.', a: 'Affirmation' }
+];
+let lastHeroQuoteKey = '';
+let lastAffirmationKey = '';
+let heroQuoteMode = 'affirmation';
+let affirmationQueue = [];
+let fallbackQuoteQueue = [];
+
+function quoteKey(item) {
+  return String((item && (item.q || item.content)) || '');
+}
+
+function shuffledItems(items, lastKey) {
+  const pool = (items || []).slice();
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  if (pool.length > 1 && quoteKey(pool[0]) === lastKey) {
+    const swapIndex = pool.findIndex(item => quoteKey(item) !== lastKey);
+    if (swapIndex > 0) [pool[0], pool[swapIndex]] = [pool[swapIndex], pool[0]];
+  }
+  return pool;
+}
+
+function nextQueuedItem(items, queue, lastKey) {
+  if (!queue.length) queue.push(...shuffledItems(items, lastKey));
+  return queue.shift() || null;
+}
+
+function preserveHeroScroll(fn) {
+  const x = window.scrollX;
+  const y = window.scrollY;
+  const result = fn();
+  requestAnimationFrame(() => {
+    window.scrollTo(x, y);
+  });
+  return result;
+}
+
+function setHeroQuote(quote, source) {
+  const textEl = document.getElementById('hero-quote-text');
+  const authorEl = document.getElementById('hero-quote-author');
+  const sourceEl = document.getElementById('hero-quote-source');
+  const refreshBtn = document.getElementById('hero-quote-refresh');
+  if (!textEl || !authorEl || !sourceEl || !quote) return;
+  textEl.textContent = quote.q || quote.content || '';
+  const showAuthor = heroQuoteMode !== 'affirmation';
+  authorEl.textContent = showAuthor ? (quote.a || quote.author || 'Unknown') : '';
+  authorEl.style.display = showAuthor ? '' : 'none';
+  sourceEl.textContent = source || 'curated';
+  if (refreshBtn) refreshBtn.textContent = heroQuoteMode === 'affirmation' ? 'New affirmation' : 'New quote';
+}
+
+function nextFallbackQuote() {
+  const quote = nextQueuedItem(HERO_QUOTES, fallbackQuoteQueue, lastHeroQuoteKey);
+  lastHeroQuoteKey = quoteKey(quote);
+  setHeroQuote(quote, 'curated');
+}
+
+function nextAffirmation() {
+  const affirmation = nextQueuedItem(AFFIRMATIONS, affirmationQueue, lastAffirmationKey);
+  lastAffirmationKey = quoteKey(affirmation);
+  setHeroQuote(affirmation, 'original');
+}
+
+async function loadHeroQuote({ preserveScroll = false } = {}) {
+  const run = async () => {
+    if (heroQuoteMode === 'affirmation') {
+      nextAffirmation();
+      return;
+    }
+    try {
+      const res = await fetch('https://zenquotes.io/api/random');
+      if (!res.ok) throw new Error('Quote API unavailable');
+      const data = await res.json();
+      const item = Array.isArray(data) ? data[0] : data;
+      if (!item || !item.q) throw new Error('Unexpected quote response');
+      if (quoteKey(item) === lastHeroQuoteKey) {
+        nextFallbackQuote();
+        return;
+      }
+      lastHeroQuoteKey = quoteKey(item);
+      setHeroQuote({ q: item.q, a: item.a || 'Unknown' }, 'ZenQuotes');
+    } catch(e) {
+      nextFallbackQuote();
+    }
+  };
+
+  if (!preserveScroll) return run();
+  const x = window.scrollX;
+  const y = window.scrollY;
+  await run();
+  requestAnimationFrame(() => {
+    window.scrollTo(x, y);
+  });
+}
+
+function setHeroQuoteMode(mode, options = {}) {
+  heroQuoteMode = mode === 'affirmation' ? 'affirmation' : 'quote';
+  document.querySelectorAll('.hero-quote-mode').forEach(btn => {
+    const active = btn.dataset.quoteMode === heroQuoteMode;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+  loadHeroQuote(options);
+}
+
+(function initHeroQuote() {
+  document.querySelectorAll('.hero-quote-mode').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      preserveHeroScroll(() => setHeroQuoteMode(btn.dataset.quoteMode, { preserveScroll: true }));
+    });
+  });
+  const btn = document.getElementById('hero-quote-refresh');
+  if (btn) {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      preserveHeroScroll(() => loadHeroQuote({ preserveScroll: true }));
+    });
+  }
+  loadHeroQuote();
+})();
+
+// ── SIDE TICKERS ─────────────────────────────────────────────────────────────
+
+function stAnimateNum(el, target, prefix, suffix, decimals, duration, formatter) {
+  var start = performance.now();
+  el.classList.add('live');
+  function render(val) {
+    return formatter ? formatter(val) : prefix + val.toFixed(decimals) + suffix;
+  }
+  function step(now) {
+    var p = Math.min((now - start) / duration, 1);
+    var e = 1 - Math.pow(1 - p, 3);
+    var val = e * target;
+    el.textContent = render(val);
+    if (p < 1) requestAnimationFrame(step);
+    else { el.textContent = render(target); el.classList.remove('live'); }
+  }
+  requestAnimationFrame(step);
+}
+
+function stFmtAmt(n) {
+  if (!n && n !== 0) return '$—';
+  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+  if (n >= 1e9)  return '$' + (n/1e9).toFixed(1) + 'B';
+  if (n >= 1e6)  return '$' + (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3)  return '$' + (n/1e3).toFixed(0) + 'K';
+  return '$' + n.toFixed(0);
+}
+
+function stToday() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function stFiscalYearStart() {
+  var now = new Date();
+  var fyStartYear = now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1;
+  return fyStartYear + '-10-01';
+}
+
+function stFyStats() {
+  // FY runs Oct 1 – Sep 30
+  var now = new Date();
+  var fyStart = new Date(now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1, 9, 1);
+  var fyEnd   = new Date(fyStart.getFullYear() + 1, 8, 30);
+  var total   = fyEnd - fyStart;
+  var elapsed = now - fyStart;
+  var daysLeft = Math.ceil((fyEnd - now) / 86400000);
+  var pct = Math.min(100, (elapsed / total * 100)).toFixed(1);
+  var daysEl = document.getElementById('st-fy-days');
+  var pctEl  = document.getElementById('st-fy-pct');
+  if (daysEl) daysEl.textContent = daysLeft + ' days left';
+  if (pctEl)  pctEl.textContent  = pct + '% complete';
+  var fillEl = document.getElementById('st-fy-fill');
+  var paceEl = document.getElementById('st-fy-pace-mini');
+  if (fillEl) fillEl.style.width = pct + '%';
+  if (paceEl) paceEl.textContent = pct + '% elapsed';
+}
+
+async function stFetchObligations() {
+  var el = document.getElementById('st-obligations-num');
+  if (!el) return;
+  var now = new Date();
+  var fyStartYear = now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1;
+  var fy = fyStartYear + 1;
+  var startDate = fyStartYear + '-10-01';
+  var endDate = now.toISOString().slice(0, 10);
+  try {
+    var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_over_time/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        group: 'fiscal_year',
+        spending_level: 'transactions',
+        filters: {
+          agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
+          award_type_codes: ['A','B','C','D'],
+          time_period: [{ start_date: startDate, end_date: endDate }]
+        }
+      })
+    });
+    if (!res.ok) throw new Error('USASpending obligations request failed');
+    var d = await res.json();
+    var row = (d.results || []).find(function(r) { return r.time_period && Number(r.time_period.fiscal_year) === fy; }) || (d.results || [])[0];
+    var val = row && (row.Contract_Obligations || row.aggregated_amount);
+    if (!Number.isFinite(Number(val))) throw new Error('No obligations returned');
+    stAnimateNum(el, Number(val), '$', '', 0, 1600, stFmtAmt);
+    var mini = document.getElementById('st-fy-spend-mini');
+    if (mini) mini.textContent = stFmtAmt(Number(val));
+  } catch(e) {
+    el.innerHTML = '<span class="st-error-num">Data delayed</span>';
+    el.classList.remove('live');
+    var card = el.closest('.side-ticker');
+    if (card) card.classList.add('st-fallback');
+    var mini = document.getElementById('st-fy-spend-mini');
+    if (mini) mini.textContent = 'Delayed';
+  }
+}
+
+async function stFetchDAFAwards() {
+  var body = document.getElementById('st-awards-body');
+  var footer = document.getElementById('st-awards-footer');
+  if (!body) return;
+  try {
+    var windows = [30, 90, 180, 365];
+    var awards = [];
+    var usedDays = 30;
+    for (var w = 0; w < windows.length; w++) {
+      usedDays = windows[w];
+      awards = await stFetchDAFTransactionWindow(usedDays);
+      if (awards.length >= 6 || w === windows.length - 1) break;
+    }
+    if (!awards.length) throw new Error();
+    var positiveAwards = awards.filter(function(a) { return Number(a['Transaction Amount']) > 0; });
+    if (positiveAwards.length >= 6) awards = positiveAwards;
+    if (footer) footer.textContent = 'USASpending.gov · ' + (usedDays === 30 ? 'last 30 days' : 'latest ' + usedDays + ' days');
+    stRenderAwards(awards.slice(0, 12).map(function(a) {
+      var vendor = stCleanAwardText(a['Recipient Name'] || '', 30);
+      var org = stAwardOrgFromTransaction(a);
+      var date = (a['Action Date'] || '').slice(0,10);
+      var id = a['Award ID'] || '';
+      var mod = a.Mod && a.Mod !== '0' ? ' · ' + a.Mod : '';
+      return { amt: stFmtAmt(a['Transaction Amount'] || 0), vendor: vendor, id: id + mod, date: date, org: org };
+    }));
+  } catch(e) {
+    body.closest('.side-ticker')?.classList.add('st-fallback');
+    body.innerHTML = '<div class="st-loading"><strong>Recent awards delayed</strong><br>Retrying from USASpending.</div>';
+  }
+}
+
+async function stFetchDAFTransactionWindow(days) {
+  var end = new Date();
+  var start = new Date(end);
+  start.setDate(start.getDate() - days);
+  var payload = {
+    filters: {
+      agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
+      award_type_codes: ['A','B','C','D'],
+      time_period: [{ start_date: start.toISOString().slice(0,10), end_date: end.toISOString().slice(0,10) }]
+    },
+    fields: ['Action Date','Award ID','Recipient Name','Transaction Amount','Awarding Agency','Awarding Sub Agency','generated_internal_id','Transaction Description','Mod'],
+    sort: 'Action Date', order: 'desc', limit: 30, page: 1
+  };
+  var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_transaction/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('USASpending transactions request failed');
+  var d = await res.json();
+  var seen = new Set();
+  return (d.results || []).filter(function(a) {
+    var id = [a['Award ID'], a.Mod, a['Action Date'], a['Transaction Amount']].join('|');
+    if (!a['Award ID'] || !a['Recipient Name'] || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+}
+
+function stAwardDoDAAC(awardId) {
+  var m = String(awardId || '').match(/^([A-Z0-9]{6})/i);
+  return m ? m[1].toUpperCase() : '';
+}
+
+function stAwardOrgFromTransaction(a) {
+  var dodaac = stAwardDoDAAC(a['Award ID']);
+  if (dodaac) return 'DoDAAC ' + dodaac;
+  return stCleanAwardText(a['Awarding Sub Agency'] || a['Awarding Agency'] || 'Awarding office pending', 36);
+}
+
+
+function stCleanAwardText(text, max) {
+  var clean = String(text || '').replace(/,?\s*(LLC|INC\.?|CORP\.?|CORPORATION|LTD|LP|CO\.?|COMPANY)\b/gi,'').replace(/\s+/g,' ').trim();
+  if (clean.length > max) clean = clean.slice(0, Math.max(0, max - 1)) + '…';
+  return clean;
+}
+
+function stRenderAwards(awards) {
+  var body = document.getElementById('st-awards-body');
+  if (!body) return;
+  body.innerHTML = '';
+  awards.forEach(function(a, i) {
+    var el = document.createElement('div');
+    el.className = 'st-award-item';
+    el.style.animationDelay = (i * 0.06) + 's';
+    el.innerHTML =
+      '<div class="st-award-dot"></div>' +
+      '<div class="st-award-info">' +
+        '<div class="st-award-top"><div class="st-award-amt">' + a.amt + '</div><div class="st-award-date">' + (a.date || '') + '</div></div>' +
+        '<div class="st-award-vendor">' + a.vendor + '</div>' +
+        '<div class="st-award-contract">' + (a.id || 'Award ID pending') + '</div>' +
+        '<div class="st-award-org">' + (a.org || '') + '</div>' +
+      '</div>';
+    body.appendChild(el);
+  });
+
+  // Auto-scroll only inside the awards panel. Never call scrollIntoView here;
+  // it can pull the whole page back to the hero while someone is reading below.
+  var idx = 0;
+  var items = body.querySelectorAll('.st-award-item');
+  if (items.length < 2) return;
+  setInterval(function() {
+    idx = (idx + 1) % items.length;
+    var target = items[idx];
+    if (target) body.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
+  }, 2500);
+}
+
+// Init side tickers
+(function() {
+  stFyStats();
+  stFetchObligations();
+  stFetchDAFAwards();
+})();
+
