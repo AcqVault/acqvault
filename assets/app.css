@@ -1832,7 +1832,8 @@ body.work-mode #quick-links{margin-top:0;}
   .hero-inner-b .hero-headline{font-size:clamp(34px,10vw,46px);max-width:none;}
   .hero-inner-b .hero-sub{font-size:15.5px;}
   .hero-inner-b .search-container{max-width:none;}
-  .search-go{padding:0 15px;font-size:14px;}
+  .search-bar input{flex:1;min-width:0;}      /* let input shrink so the Search button never clips */
+  .search-go{flex-shrink:0;padding:0 15px;font-size:14px;}
   /* On phones, drop floating offsets: stack the dark panel + cards cleanly */
   .hero-right{flex-direction:column;gap:14px;}
   .vault-panel{width:min(330px,92%);aspect-ratio:1/0.86;}
@@ -1841,8 +1842,16 @@ body.work-mode #quick-links{margin-top:0;}
   .fcard{position:static;width:100%!important;max-width:330px;animation:hero-rise 0.7s both;}
   .fcard:hover{animation-play-state:running;}
 }
+@media (max-width:600px){
+  .about-extra{display:none;}                  /* concise greeting + eyebrow on phones */
+  .hero-eyebrow{font-size:10px;max-width:100%;}
+  .search-bar input{flex:1;min-width:0;}
+  .search-go{flex-shrink:0;}
+}
 @media (max-width:420px){
-  .hero-inner-b .hero-headline{font-size:clamp(30px,11vw,40px);}
+  .hero-inner-b .hero-headline{font-size:clamp(26px,7.6vw,33px);line-height:1.06;}
+  .hero-inner-b .hero-sub{font-size:14.5px;line-height:1.55;}
+  .search-go{padding:0 12px;font-size:13px;}
   .vault-panel{width:92%;}
 }
 
