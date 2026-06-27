@@ -1,19 +1,31 @@
 const fs = require('fs');
 const path = require('path');
 
-const LOCAL_SOURCES = new Set(['category-management', 'afi-63-138', 'compass']);
-let localDocsCache = null;
+// AcqVault search runs fully in-memory over output/documents.json (all 6
+// sources, ~502 docs). No external search service — the corpus is small and
+// the data already ships with the deployment, so this removes the MeiliSearch
+// dependency (and its credentials) and the local/remote split-brain entirely.
 
-function loadLocalDocs() {
-  if (localDocsCache) return localDocsCache;
+let docsCache = null;
+let indexCache = null;
+
+function loadDocs() {
+  if (docsCache) return docsCache;
   const docsPath = path.join(process.cwd(), 'output', 'documents.json');
-  const docs = JSON.parse(fs.readFileSync(docsPath, 'utf8'));
-  localDocsCache = docs.filter(doc => doc && LOCAL_SOURCES.has(doc.source));
-  return localDocsCache;
+  docsCache = JSON.parse(fs.readFileSync(docsPath, 'utf8')).filter(Boolean);
+  return docsCache;
 }
 
-function parseSourceFilters(filter) {
-  return [...String(filter || '').matchAll(/source\s*=\s*"([^"]+)"/g)].map(match => match[1]);
+// Parallel index of lowercased title/content so queries don't re-lowercase the
+// (large) corpus every call. Built once per cold start; never sent to clients.
+function loadIndex() {
+  if (indexCache) return indexCache;
+  indexCache = loadDocs().map(doc => ({
+    doc,
+    titleLc: String(doc.title || '').toLowerCase(),
+    contentLc: String(doc.content || '').toLowerCase()
+  }));
+  return indexCache;
 }
 
 function parseValueFilters(filter, field) {
@@ -21,36 +33,36 @@ function parseValueFilters(filter, field) {
   return [...String(filter || '').matchAll(pattern)].map(match => match[1]);
 }
 
-function filterIncludesLocal(filter) {
-  const sources = parseSourceFilters(filter);
-  return !sources.length || sources.some(source => LOCAL_SOURCES.has(source));
+// Tokenize on any non-alphanumeric run so "micro-purchase" -> micro, purchase
+// (matches how the corpus renders such terms with spaces/hyphens).
+function queryTerms(query) {
+  return String(query || '').toLowerCase().split(/[^a-z0-9]+/).filter(t => t.length >= 2);
 }
 
-function stripLocalFromFilter(filter) {
-  if (!filterIncludesLocal(filter)) return filter || null;
-  const sources = parseSourceFilters(filter).filter(source => !LOCAL_SOURCES.has(source));
-  let next = String(filter || '');
-
-  if (sources.length) {
-    next = next.replace(/\((?:source\s*=\s*"[^"]+"\s*(?:OR\s*)?)+\)/, '(' + sources.map(source => `source = "${source}"`).join(' OR ') + ')');
-  } else {
-    next = next
-      .replace(/\((?:source\s*=\s*"[^"]+"\s*(?:OR\s*)?)+\)\s*AND\s*/g, '')
-      .replace(/\s*AND\s*\((?:source\s*=\s*"[^"]+"\s*(?:OR\s*)?)+\)/g, '')
-      .replace(/\((?:source\s*=\s*"[^"]+"\s*(?:OR\s*)?)+\)/g, '')
-      .replace(/^\s*source\s*=\s*"[^"]+"\s*AND\s*/g, '')
-      .replace(/\s*AND\s*source\s*=\s*"[^"]+"\s*$/g, '')
-      .replace(/^\s*source\s*=\s*"[^"]+"\s*$/g, '');
+// Relevance: every term must appear somewhere (AND). Title hits and full-phrase
+// hits dominate so the specific on-point section beats the big part-overview
+// doc (raw occurrence count is deliberately NOT used — it biases to long docs).
+function scoreEntry(entry, terms, phrase) {
+  if (!terms.length) return 1;
+  let score = 0, titleHits = 0;
+  for (const term of terms) {
+    const inTitle = entry.titleLc.includes(term);
+    const inContent = entry.contentLc.includes(term);
+    if (!inTitle && !inContent) return 0;
+    if (inTitle) { score += 20; titleHits++; }
+    if (inContent) score += 2;
   }
-
-  return next.trim() || null;
+  if (titleHits === terms.length) score += 15;
+  if (phrase && terms.length > 1) {
+    if (entry.titleLc.includes(phrase)) score += 100;
+    else if (entry.contentLc.includes(phrase)) score += 25;
+  }
+  return score;
 }
 
-function localMatchesQuery(doc, query) {
-  const q = String(query || '').trim().toLowerCase();
-  if (!q) return true;
-  const haystack = `${doc.title || ''}\n${doc.content || ''}`.toLowerCase();
-  return q.split(/\s+/).filter(Boolean).every(term => haystack.includes(term));
+function partNum(doc) {
+  const m = String(doc.part || '').match(/\d+/);
+  return m ? parseInt(m[0], 10) : 9999;
 }
 
 function cropContent(content, query, cropLength) {
@@ -66,9 +78,11 @@ function cropContent(content, query, cropLength) {
   return `${start > 0 ? '…' : ''}${text.slice(start, end)}${end < text.length ? '…' : ''}`;
 }
 
+// Wrap query terms in <mark>. Returns UNescaped text with <mark> tags; the
+// client (markOnly) html-escapes everything else, so this is XSS-safe there.
 function highlight(text, query) {
   let out = String(text || '');
-  const terms = [...new Set(String(query || '').trim().split(/\s+/).filter(term => term.length > 2))];
+  const terms = [...new Set(String(query || '').toLowerCase().split(/[^a-z0-9]+/).filter(term => term.length > 2))];
   for (const term of terms) {
     const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     out = out.replace(new RegExp(`(${escaped})`, 'ig'), '<mark>$1</mark>');
@@ -76,23 +90,36 @@ function highlight(text, query) {
   return out;
 }
 
-function localSearch(body = {}) {
+function searchDocs(body = {}) {
   const filter = body.filter || '';
-  if (!filterIncludesLocal(filter)) {
-    return { hits: [], estimatedTotalHits: 0 };
-  }
-
-  const sources = parseSourceFilters(filter);
+  const sources = parseValueFilters(filter, 'source');
   const parts = parseValueFilters(filter, 'part');
   const statuses = parseValueFilters(filter, 'status');
-  let hits = loadLocalDocs().filter(doc => {
+  const terms = queryTerms(body.q);
+  const phrase = terms.join(' ');
+
+  let entries = loadIndex().filter(({ doc }) => {
     if (sources.length && !sources.includes(String(doc.source || ''))) return false;
     if (parts.length && !parts.includes(String(doc.part || ''))) return false;
     if (statuses.length && !statuses.includes(String(doc.status || ''))) return false;
-    return localMatchesQuery(doc, body.q);
+    return true;
   });
 
-  hits = hits.map(doc => ({
+  if (terms.length) {
+    entries = entries
+      .map(entry => ({ entry, score: scoreEntry(entry, terms, phrase) }))
+      .filter(x => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(x => x.entry);
+  } else {
+    entries = entries.sort((a, b) =>
+      partNum(a.doc) - partNum(b.doc) || String(a.doc.title || '').localeCompare(String(b.doc.title || '')));
+  }
+
+  const total = entries.length;
+  const offset = Number(body.offset) || 0;
+  const limit = Math.min(Number(body.limit) || 20, 100);
+  const hits = entries.slice(offset, offset + limit).map(({ doc }) => ({
     ...doc,
     _formatted: {
       title: highlight(doc.title, body.q),
@@ -100,36 +127,11 @@ function localSearch(body = {}) {
     }
   }));
 
-  const offset = Number(body.offset) || 0;
-  const limit = Number(body.limit) || 20;
-  return {
-    hits: hits.slice(offset, offset + limit),
-    estimatedTotalHits: hits.length,
-    offset,
-    limit,
-    processingTimeMs: 0,
-    query: body.q || ''
-  };
+  return { hits, estimatedTotalHits: total, offset, limit, processingTimeMs: 0, query: body.q || '' };
 }
 
-function localDocument(id) {
-  return loadLocalDocs().find(doc => String(doc.id) === String(id)) || null;
-}
-
-async function fetchMeiliSearch(base, index, headers, body) {
-  const upstream = await fetch(`${base}/indexes/${encodeURIComponent(index)}/search`, {
-    method: 'POST',
-    headers: { ...headers, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body || {})
-  });
-  const data = await upstream.json().catch(async () => ({ error: await upstream.text() }));
-  if (!upstream.ok) {
-    const message = data && (data.error || data.message) ? (data.error || data.message) : `HTTP ${upstream.status}`;
-    const error = new Error(message);
-    error.status = upstream.status;
-    throw error;
-  }
-  return data;
+function getDocument(id) {
+  return loadDocs().find(doc => String(doc.id) === String(id)) || null;
 }
 
 module.exports = async function handler(req, res) {
@@ -138,77 +140,25 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const host = process.env.MEILI_HOST;
-  const key = process.env.MEILI_SEARCH_KEY;
-  const index = process.env.MEILI_INDEX || 'acqvault';
-
   try {
     const { action, body, id } = req.body || {};
-    const remoteConfig = () => ({
-      base: host.replace(/\/$/, ''),
-      headers: { Authorization: `Bearer ${key}` }
-    });
 
     if (action === 'search') {
-      const requestBody = body || {};
-      const sourceFilters = parseSourceFilters(requestBody.filter);
-      const wantsLocal = filterIncludesLocal(requestBody.filter);
-      const meiliFilter = stripLocalFromFilter(requestBody.filter);
-      const wantsMeili = sourceFilters.length ? sourceFilters.some(source => !LOCAL_SOURCES.has(source)) : true;
-      const local = wantsLocal ? localSearch(requestBody) : { hits: [], estimatedTotalHits: 0 };
-
-      if (!wantsMeili) {
-        res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-        return res.status(200).json(local);
-      }
-      if (!host || !key) {
-        return res.status(500).json({ error: 'Search service is not configured.' });
-      }
-
-      // Whitelist only known search fields before forwarding upstream — never
-      // pass through arbitrary client-supplied keys to MeiliSearch.
-      const ALLOWED = ['q', 'limit', 'offset', 'attributesToHighlight', 'highlightPreTag',
-        'highlightPostTag', 'attributesToCrop', 'cropLength', 'attributesToRetrieve'];
-      const meiliBody = {};
-      for (const k of ALLOWED) if (requestBody[k] !== undefined) meiliBody[k] = requestBody[k];
-      meiliBody.limit = Math.min(Number(requestBody.limit) || 40, 100);
-      if (meiliFilter) meiliBody.filter = meiliFilter;
-      const { base, headers } = remoteConfig();
-      const remote = await fetchMeiliSearch(base, index, headers, meiliBody);
-      const mergedHits = [...(remote.hits || []), ...(local.hits || [])];
-      res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-      return res.status(200).json({
-        ...remote,
-        hits: mergedHits.slice(0, Number(requestBody.limit) || mergedHits.length),
-        estimatedTotalHits: (remote.estimatedTotalHits || remote.hits?.length || 0) + (local.estimatedTotalHits || 0)
-      });
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+      return res.status(200).json(searchDocs(body || {}));
     }
 
     if (action === 'document') {
       if (!id) return res.status(400).json({ error: 'Missing document id.' });
-      const local = localDocument(id);
-      if (local) {
-        res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-        return res.status(200).json(local);
-      }
-      if (!host || !key) {
-        return res.status(500).json({ error: 'Search service is not configured.' });
-      }
-
-      const { base, headers } = remoteConfig();
-      const upstream = await fetch(`${base}/indexes/${encodeURIComponent(index)}/documents/${encodeURIComponent(id)}`, {
-        headers
-      });
-      const text = await upstream.text();
-      res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-      res.status(upstream.status);
-      res.setHeader('Content-Type', upstream.headers.get('content-type') || 'application/json');
-      return res.send(text);
+      const doc = getDocument(id);
+      if (!doc) return res.status(404).json({ error: 'Document not found.' });
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+      return res.status(200).json(doc);
     }
 
     return res.status(400).json({ error: 'Unsupported search action.' });
   } catch (error) {
     console.error('search error:', error && error.message ? error.message : error);
-    return res.status(error.status || 500).json({ error: 'Search request failed.' });
+    return res.status(500).json({ error: 'Search request failed.' });
   }
 };
