@@ -1,6 +1,9 @@
-/* AcqVault — Saved clauses & searches (client-side only).
+/* AcqVault — Saved clauses & searches + on-device change tracking (client-side only).
    Everything lives in localStorage: no account, no backend, nothing leaves the browser.
-   Seeds Phase-2 change tracking by baselining each pinned clause's indexed_at/status at save time.
+   Change tracking: each pinned clause stores the content hash it had when pinned; on load we
+   compare against /output/doc-hashes.json (regenerated each build via scripts/gen_doc_hashes.py)
+   and flag any clause whose text has changed — "N updated since you saved". Degrades silently
+   offline / if the manifest is missing.
    Reuses app.js globals when present (sourceTag, openDrawer, fetchDocumentById, runSearch,
    setMode, searchInput, activeSources) but degrades gracefully if any are missing. */
 (function () {
@@ -40,6 +43,51 @@
   var state = load();
   var panelOpen = false;
 
+  // ── Change tracking ────────────────────────────────────────────────────────
+  // Compare each pinned clause's content hash (baselined at pin time) against the
+  // live /output/doc-hashes.json manifest. The manifest is the single source of
+  // truth, so we never hash in JS — we just look ids up. Degrades silently offline.
+  var HASHES = null;        // { id: hash }
+  var hashesPromise = null;
+  function loadHashes() {
+    if (HASHES) return Promise.resolve(HASHES);
+    if (hashesPromise) return hashesPromise;
+    hashesPromise = fetch('/output/doc-hashes.json')
+      .then(function (r) { if (!r.ok) throw new Error('hashes ' + r.status); return r.json(); })
+      .then(function (h) { HASHES = h || {}; return HASHES; })
+      .catch(function (e) { hashesPromise = null; throw e; });
+    return hashesPromise;
+  }
+  function clauseChanged(c) {
+    if (!HASHES || c.chash == null) return false;
+    var h = HASHES[c.id];
+    return !!h && h !== c.chash;
+  }
+  function changedClauses() { return state.clauses.filter(clauseChanged); }
+  function markSeen(id) {
+    var c = state.clauses.find(function (x) { return x.id === id; });
+    if (c && HASHES && HASHES[id]) { c.chash = HASHES[id]; persist(); updateCounts(); if (panelOpen) renderPanel(); }
+  }
+  function markAllSeen() {
+    if (!HASHES) return;
+    state.clauses.forEach(function (c) { if (clauseChanged(c)) c.chash = HASHES[c.id]; });
+    persist(); updateCounts(); if (panelOpen) renderPanel();
+  }
+  // After the manifest loads, baseline any pins made before change-tracking existed
+  // (no chash) to "seen now" — so we never flash a false "Updated" for old pins.
+  function reconcileHashes() {
+    if (!HASHES) return;
+    var dirty = false;
+    state.clauses.forEach(function (c) {
+      if (c.chash == null && HASHES[c.id]) { c.chash = HASHES[c.id]; dirty = true; }
+    });
+    if (dirty) persist();
+    updateCounts(); if (panelOpen) renderPanel();
+  }
+  function ensureHashes() {
+    if (!HASHES && state.clauses.length) loadHashes().then(reconcileHashes).catch(function () {});
+  }
+
   function isPinned(id) { return state.clauses.some(function (c) { return c.id === id; }); }
 
   function toggleClause(d) {
@@ -51,11 +99,13 @@
       state.clauses.push({
         id: d.id, title: d.title || '', source: d.source || '', part: d.part || '',
         filename: d.filename || '', url: d.url || '', anchor: d.anchor || '',
-        indexed_at: d.indexed_at || '', status: d.status || '', // Phase-2 change-tracking baseline
+        indexed_at: d.indexed_at || '', status: d.status || '',
+        chash: (HASHES && HASHES[d.id]) || null, // content-hash baseline for change tracking
         savedAt: Date.now()
       });
     }
     persist(); syncStars(d.id); updateCounts(); if (panelOpen) renderPanel();
+    ensureHashes(); // baseline the new pin once the manifest is available
     return isPinned(d.id);
   }
   function removeClause(id) {
@@ -164,10 +214,17 @@
   // ── Counts / nav badge ───────────────────────────────────────────────────
   function updateCounts() {
     var n = state.clauses.length + state.searches.length;
+    var changed = changedClauses().length;
     var badge = document.getElementById('nav-saved-count');
     if (badge) { badge.textContent = n ? String(n) : ''; badge.style.display = n ? '' : 'none'; }
     var btn = document.getElementById('nav-saved');
-    if (btn) btn.classList.toggle('has-saved', n > 0);
+    if (btn) {
+      btn.classList.toggle('has-saved', n > 0);
+      btn.classList.toggle('has-changes', changed > 0);
+      btn.setAttribute('aria-label', changed > 0
+        ? ('Saved — ' + changed + ' clause' + (changed === 1 ? '' : 's') + ' updated since you saved')
+        : 'Open saved clauses and searches');
+    }
     refreshSaveSearchBtn();
   }
 
@@ -202,13 +259,27 @@
     document.getElementById('saved-n-searches').textContent = state.searches.length ? String(state.searches.length) : '';
 
     if (!state.clauses.length) {
-      cl.innerHTML = '<div class="saved-empty">No pinned clauses yet. Tap the ★ on any result or in the reader to keep it here.</div>';
+      cl.innerHTML = '<div class="saved-empty">No pinned clauses yet. Tap the ★ on any result or in the reader to keep it here — AcqVault will then flag it if the text changes.</div>';
     } else {
-      cl.innerHTML = state.clauses.slice().reverse().map(function (c) {
-        return '<div class="saved-item" data-kind="clause" data-id="' + esc(c.id) + '">' +
+      var changed = changedClauses();
+      var changedIds = {};
+      changed.forEach(function (c) { changedIds[c.id] = true; });
+      // changed clauses first, otherwise most-recent first
+      var ordered = state.clauses.slice().reverse().sort(function (a, b) {
+        return (changedIds[b.id] ? 1 : 0) - (changedIds[a.id] ? 1 : 0);
+      });
+      var banner = changed.length
+        ? '<div class="saved-changed-banner"><span><b>' + changed.length + '</b> updated since you saved ' +
+          (changed.length === 1 ? 'it' : 'them') + '</span>' +
+          '<button class="saved-markall" data-act="mark-all-seen" type="button">Mark all seen</button></div>'
+        : '';
+      cl.innerHTML = banner + ordered.map(function (c) {
+        var chg = !!changedIds[c.id];
+        return '<div class="saved-item' + (chg ? ' is-changed' : '') + '" data-kind="clause" data-id="' + esc(c.id) + '">' +
           '<button class="saved-item-main" data-act="open-clause" data-id="' + esc(c.id) + '">' +
             '<div class="saved-item-meta">' + sourceTag(c.source) +
-              (c.part ? '<span class="rc-part">Part ' + dispPart(c) + '</span>' : '') + '</div>' +
+              (c.part ? '<span class="rc-part">Part ' + dispPart(c) + '</span>' : '') +
+              (chg ? '<span class="saved-updated-pill">Updated</span>' : '') + '</div>' +
             '<div class="saved-item-title">' + esc(c.title || 'Untitled') + '</div>' +
             (c.filename ? '<div class="saved-item-sub">' + esc(c.filename) + '</div>' : '') +
           '</button>' +
@@ -284,8 +355,9 @@
       return;
     }
     var act = t.dataset.act;
-    if (act === 'open-clause') { var c = state.clauses.find(function (x) { return x.id === t.dataset.id; }); if (c) openSavedClause(c); }
+    if (act === 'open-clause') { var c = state.clauses.find(function (x) { return x.id === t.dataset.id; }); if (c) { markSeen(c.id); openSavedClause(c); } }
     else if (act === 'del-clause') { removeClause(t.dataset.id); }
+    else if (act === 'mark-all-seen') { markAllSeen(); }
     else if (act === 'run-search') { var s = state.searches[+t.dataset.idx]; if (s) runSavedSearch(s); }
     else if (act === 'del-search') { removeSearch(+t.dataset.idx); }
   }
@@ -312,6 +384,7 @@
     var si = document.getElementById('search-input');
     if (si) si.addEventListener('input', refreshSaveSearchBtn);
     updateCounts();
+    ensureHashes(); // check whether any pinned clause's text has changed since it was saved
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
