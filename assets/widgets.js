@@ -268,6 +268,16 @@
                 <button data-scope="con" role="tab" aria-selected="false">Contingency / Emergency</button>
               </div>
               <div class="thr-scope-note" id="thr-scope-note"></div>
+              <div class="thr-calc">
+                <label class="thr-calc-label" for="thr-amount">Check an amount</label>
+                <div class="thr-calc-field">
+                  <span class="thr-calc-cur">$</span>
+                  <input type="text" id="thr-amount" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="e.g. 250,000" aria-label="Acquisition dollar amount" />
+                  <button type="button" class="thr-calc-clear" id="thr-amount-clear" aria-label="Clear amount" hidden>✕</button>
+                </div>
+                <div class="thr-calc-out" id="thr-calc-out" role="status" aria-live="polite"></div>
+              </div>
+              <div class="thr-list-label">Reference table</div>
               <div class="thr-list" id="thr-list"></div>
               <div class="thr-foot">Per the FY2025 inflation adjustment effective Oct. 1, 2025 and carried into the RFO; DoD deviations live in the R-DFARS. Always verify against the live regulation &amp; any class deviations before acting. The RFO may revise these.</div>
             </div>
@@ -440,6 +450,79 @@
       ? 'Higher ceilings for contingency, humanitarian, peacekeeping or CBRN operations. Inside-U.S. figures shown; outside-U.S. noted per row.'
       : 'Standard thresholds for routine acquisitions inside the United States.';
   }
+  /* ── Threshold Decision Helper (deterministic: pure comparison to the cited THRESHOLDS) ── */
+  window.THRESHOLDS = THRESHOLDS; // single source of truth (mirrors window.ACRONYMS pattern)
+  const thrScopeVal = (t) => (thrScope === 'con' ? t.con : t.std);
+  const thrFind = (pred) => THRESHOLDS.find(pred);
+  function parseAmount(raw) {
+    const digits = String(raw == null ? '' : raw).replace(/[^0-9]/g, '');
+    return digits ? parseInt(digits, 10) : null;
+  }
+  function fmtAmountInput(raw) {
+    const digits = String(raw == null ? '' : raw).replace(/[^0-9]/g, '');
+    return digits ? parseInt(digits, 10).toLocaleString() : '';
+  }
+  // open the cited clause in the existing reader/drawer, falling back to a search
+  function thrJumpToCite(cite) {
+    const q = String(cite || '').trim();
+    if (!q) return;
+    if (typeof window.runExampleQuery === 'function') { window.runExampleQuery(q); return; }
+    if (typeof window.runSearch === 'function') {
+      const input = $('#search-input'); if (input) input.value = q;
+      if (typeof window.setMode === 'function') window.setMode('search');
+      window.runSearch(q);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+  function renderThrCalc() {
+    const out = $('#thr-calc-out'), input = $('#thr-amount'), clr = $('#thr-amount-clear');
+    if (!out || !input) return;
+    const amt = parseAmount(input.value);
+    if (clr) clr.hidden = !input.value;
+    if (amt == null) {
+      out.classList.remove('on');
+      out.innerHTML = `<div class="thr-calc-hint">Type a dollar amount to see which regime applies and which thresholds it crosses — each with its RFO citation.</div>`;
+      return;
+    }
+    const mpt = thrFind((t) => t.abbr === 'MPT'), sat = thrFind((t) => t.abbr === 'SAT'), sapC = thrFind((t) => t.abbr === 'SAP');
+    const mptV = thrScopeVal(mpt), satV = thrScopeVal(sat), sapV = thrScopeVal(sapC);
+    let band;
+    if (amt <= mptV) {
+      band = { cls: 'mp', tag: 'Micro-purchase', cite: mpt.cite,
+        desc: `At or below the Micro-Purchase Threshold (${fmtExact(mptV)}). Micro-purchase procedures generally apply (RFO 13.2) — competitive quotes are not required and purchases should be distributed equitably among qualified suppliers.` };
+    } else if (amt <= satV) {
+      band = { cls: 'sap', tag: 'Simplified acquisition', cite: sat.cite,
+        desc: `Above the Micro-Purchase Threshold and at or below the Simplified Acquisition Threshold (${fmtExact(satV)}). Simplified Acquisition Procedures are available (RFO Part 13); acquisitions in this range are generally reserved for small business.` };
+    } else {
+      band = { cls: 'open', tag: 'Above the SAT', cite: sat.cite,
+        desc: `Above the Simplified Acquisition Threshold (${fmtExact(satV)}). Full and open competition generally applies (RFO Part 6), using negotiated procedures (RFO Part 15) unless a documented exception applies. Commercial products and services may still use simplified procedures up to ${fmtExact(sapV)} (RFO 13.500).` };
+    }
+    const triggerDefs = [
+      { row: thrFind((t) => t.abbr === 'TINA'), label: 'Certified cost or pricing data (TINA)', cond: 'unless an exception applies — e.g., adequate price competition or commercial products/services' },
+      { row: thrFind((t) => /Subcontracting/i.test(t.name)), label: 'Subcontracting plan', cond: 'for other-than-small businesses when subcontracting opportunities exist' },
+      { row: thrFind((t) => t.abbr === 'J&A'), label: 'J&A — first approval tier', cond: 'only when awarding other than full and open competition' }
+    ];
+    const trigRows = triggerDefs.filter((d) => d.row).map((d) => {
+      const v = thrScopeVal(d.row), on = amt > v;
+      return `<div class="thr-trig ${on ? 'on' : 'off'}">
+        <span class="thr-trig-mark" aria-hidden="true">${on ? '●' : '○'}</span>
+        <span class="thr-trig-body">
+          <span class="thr-trig-label">${esc(d.label)} <button type="button" class="thr-trig-cite" data-cite="${esc(d.row.cite)}">${esc(d.row.cite)}</button></span>
+          <span class="thr-trig-detail">${on ? 'Generally required above' : 'Not required at or below'} ${fmtExact(v)}${on ? ` — ${esc(d.cond)}` : ''}.</span>
+        </span>
+      </div>`;
+    }).join('');
+    out.classList.add('on');
+    out.innerHTML = `
+      <div class="thr-band thr-band-${band.cls}">
+        <div class="thr-band-top"><span class="thr-band-amt">${fmtExact(amt)}</span><span class="thr-band-tag">${esc(band.tag)}</span></div>
+        <div class="thr-band-desc">${band.desc}</div>
+        <button type="button" class="thr-band-cite" data-cite="${esc(band.cite)}">Read ${esc(band.cite)} →</button>
+      </div>
+      <div class="thr-trig-head">At ${fmtExact(amt)}, these thresholds are crossed${thrScope === 'con' ? ' (contingency ceilings)' : ''}:</div>
+      <div class="thr-trig-list">${trigRows}</div>
+      <div class="thr-calc-verify">A mechanical comparison to the cited thresholds below — always verify against the live RFO and any class deviations before acting.</div>`;
+  }
   function initThresholds() {
     const scope = $('#thr-scope'); if (!scope) return;
     scope.addEventListener('click', (e) => {
@@ -449,8 +532,19 @@
         const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-selected', on);
       });
       renderThresholds(true);
+      renderThrCalc();
     });
     renderThresholds(false);
+    const amt = $('#thr-amount'), clr = $('#thr-amount-clear'), out = $('#thr-calc-out');
+    if (amt) {
+      amt.addEventListener('input', () => { amt.value = fmtAmountInput(amt.value); renderThrCalc(); });
+      amt.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+    }
+    if (clr) clr.addEventListener('click', () => { amt.value = ''; amt.focus(); renderThrCalc(); });
+    if (out) out.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-cite]'); if (b) thrJumpToCite(b.dataset.cite);
+    });
+    renderThrCalc();
   }
 
   /* ════════════════════════════════════════════════════════════
