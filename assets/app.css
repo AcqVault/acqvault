@@ -2122,6 +2122,12 @@ body.work-mode #quick-links{margin-top:0;}
 .saved-markall{flex-shrink:0;background:none;border:none;color:var(--accent);font-size:var(--fs-xs);font-weight:var(--fw-semibold);cursor:pointer;padding:2px 4px;border-radius:var(--r-sm);}
 .saved-markall:hover{text-decoration:underline;}
 .saved-markall:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.saved-actions{margin-bottom:10px;}
+.saved-copyall{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:40px;padding:9px 12px;border-radius:var(--r-md);cursor:pointer;font-size:var(--fs-sm);font-weight:650;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-d,#0E3F80));border:1px solid transparent;transition:box-shadow .15s,transform .1s,filter .15s;}
+.saved-copyall:hover{box-shadow:0 6px 18px -6px rgba(21,95,191,.5);filter:brightness(1.03);}
+.saved-copyall:active{transform:translateY(1px);}
+.saved-copyall.copied{background:#047857;}
+.saved-copyall:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .saved-updated-pill{font-size:var(--fs-3xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--accent);background:rgba(79,182,232,.18);border:1px solid rgba(79,182,232,.42);padding:1px 6px;border-radius:999px;line-height:var(--lh-base);}
 .saved-item.is-changed{border-color:rgba(79,182,232,.55);box-shadow:0 0 0 1px rgba(79,182,232,.22);}
 /* "See what changed" — the rendered old→new diff */

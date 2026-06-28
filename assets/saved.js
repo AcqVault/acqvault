@@ -79,6 +79,21 @@
     });
     persist(); updateCounts(); if (panelOpen) renderPanel();
   }
+  // File Builder: copy every pinned clause as one block of file-ready citations.
+  function copyAllPinned(btn) {
+    if (!state.clauses.length) return;
+    var blocks = state.clauses.map(function (c) {
+      if (typeof window.buildCiteBlock === 'function') {
+        return window.buildCiteBlock({ id: c.id, title: c.title, source: c.source, part: c.part, filename: c.filename, indexed_at: c.indexed_at, content: c.text || '' });
+      }
+      return (c.filename || c.title || '') + (c.text ? '\n\n"' + c.text + '"' : '');
+    });
+    var head = 'AcqVault — ' + state.clauses.length + ' saved clause' + (state.clauses.length === 1 ? '' : 's') + '\n\n';
+    var text = head + blocks.join('\n\n———\n\n');
+    var label = btn ? btn.textContent : '';
+    if (typeof window.copyTextTo === 'function' && btn) { window.copyTextTo(text, btn, label); }
+    else if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text); }
+  }
   // After the manifest loads, baseline any pins made before change-tracking existed
   // (no chash) to "seen now" — so we never flash a false "Updated" for old pins.
   function reconcileHashes() {
@@ -340,7 +355,8 @@
           (changed.length === 1 ? 'it' : 'them') + '</span>' +
           '<button class="saved-markall" data-act="mark-all-seen" type="button">Mark all seen</button></div>'
         : '';
-      cl.innerHTML = banner + ordered.map(function (c) {
+      var actions = '<div class="saved-actions"><button class="saved-copyall" data-act="copy-all" type="button">⧉ Copy all with citations</button></div>';
+      cl.innerHTML = banner + actions + ordered.map(function (c) {
         var chg = !!changedIds[c.id];
         return '<div class="saved-clause" data-id="' + esc(c.id) + '">' +
           '<div class="saved-item' + (chg ? ' is-changed' : '') + '" data-kind="clause" data-id="' + esc(c.id) + '">' +
@@ -469,6 +485,7 @@
     if (act === 'open-clause') { var c = state.clauses.find(function (x) { return x.id === t.dataset.id; }); if (c) { markSeen(c.id); openSavedClause(c); } }
     else if (act === 'del-clause') { removeClause(t.dataset.id); }
     else if (act === 'mark-all-seen') { markAllSeen(); }
+    else if (act === 'copy-all') { copyAllPinned(t); }
     else if (act === 'show-diff') { var open = t.getAttribute('aria-expanded') === 'true'; t.setAttribute('aria-expanded', String(!open)); t.textContent = open ? 'See what changed' : 'Hide changes'; toggleDiff(t.dataset.id); }
     else if (act === 'run-search') { var s = state.searches[+t.dataset.idx]; if (s) runSavedSearch(s); }
     else if (act === 'del-search') { removeSearch(+t.dataset.idx); }
