@@ -325,7 +325,7 @@
     document.getElementById('saved-n-searches').textContent = state.searches.length ? String(state.searches.length) : '';
 
     if (!state.clauses.length) {
-      cl.innerHTML = '<div class="saved-empty">No pinned clauses yet. Tap the ★ on any result or in the reader to keep it here — AcqVault will then flag it if the text changes.</div>';
+      cl.innerHTML = '<div class="saved-empty">No pinned clauses yet. Tap the ★ on any result or in the reader to keep it here — AcqVault will then flag it when its indexed copy of the text changes.</div>';
     } else {
       var changed = changedClauses();
       var changedIds = {};
@@ -431,7 +431,7 @@
     var tip = document.createElement('div');
     tip.id = 'pin-coach'; tip.className = 'pin-coach'; tip.setAttribute('role', 'status');
     tip.innerHTML = '<span class="pin-coach-star" aria-hidden="true">★</span>' +
-      '<span class="pin-coach-text"><b>Save the clauses you rely on.</b> AcqVault flags you the moment the RFO text changes — and shows you exactly what.</span>' +
+      '<span class="pin-coach-text"><b>Save the clauses you rely on.</b> AcqVault flags you when its indexed copy of the text changes — and shows you exactly what.</span>' +
       '<button type="button" class="pin-coach-x" aria-label="Dismiss">✕</button>';
     document.body.appendChild(tip);
     positionPinCoach(tip, firstPin, false);

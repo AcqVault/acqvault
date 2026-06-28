@@ -1830,10 +1830,11 @@ function buildCiteBlock(hit) {
   const ref = (typeof generateCitation === 'function' ? generateCitation(hit) : '') || hit.filename || hit.title || 'Citation';
   const text = cleanClauseText(hit.content);
   const label = SOURCE_LABELS[hit.source] || hit.source || '';
-  const asof = hit.indexed_at ? `indexed ${fmtAsOf(hit.indexed_at)}` : '';
+  const asof = hit.indexed_at ? `copy retrieved ${fmtAsOf(hit.indexed_at)}` : '';
   let out = ref;
   if (text) out += `\n\n"${text}"`;
   out += `\n\nSource: AcqVault · ${label}${asof ? ' · ' + asof : ''}`;
+  out += `\nUnofficial copy — confirm the current/effective text at the official source before relying on it.`;
   return out;
 }
 function fallbackCopy(text, cb) {
@@ -1855,7 +1856,7 @@ function copyResultCite(hit, btn) {
     const days = Math.floor((Date.now() - gen.getTime()) / 86400000);
     const bar = document.getElementById('stale-bar');
     if (bar && days > 21) {
-      bar.innerHTML = `<b>Heads up —</b> the regulation text was last refreshed ${days} days ago (${fmtAsOf(meta.generated_at)}). The RFO changes often; verify any citation against the live source before relying on it.`;
+      bar.innerHTML = `<b>Heads up —</b> AcqVault last re-indexed its copy ${days} days ago (${fmtAsOf(meta.generated_at)}). The RFO changes often; confirm any citation against the official source before relying on it.`;
       bar.hidden = false;
     }
   }).catch(() => {});
@@ -1940,7 +1941,7 @@ function renderResults(data, query) {
       ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
       <div class="rc-snippet">${markOnly(hl.content || '')}</div>
       <div class="rc-foot">
-        <span class="rc-asof">${hit.indexed_at ? `indexed ${esc(fmtAsOf(hit.indexed_at))}` : ''}</span>
+        <span class="rc-asof" title="When AcqVault captured this copy — not the regulation's effective date">${hit.indexed_at ? `AcqVault copy · ${esc(fmtAsOf(hit.indexed_at))}` : ''}</span>
         <button class="rc-cite-btn" type="button" aria-label="Copy a file-ready citation">⧉ Cite</button>
       </div>
     </div>`;
@@ -2099,7 +2100,7 @@ function openDrawer(hit) {
   document.getElementById('drawer-part').textContent   = hit.part ? `Part ${displayPartForSource(hit.source, hit.part)}` : '—';
   document.getElementById('drawer-file').textContent   = hit.filename || '—';
   const drawerAsof = document.getElementById('drawer-asof');
-  if (drawerAsof) drawerAsof.textContent = hit.indexed_at ? `indexed ${fmtAsOf(hit.indexed_at)}` : '—';
+  if (drawerAsof) drawerAsof.textContent = hit.indexed_at ? fmtAsOf(hit.indexed_at) : '—';
   const citation = generateCitation(hit);
   document.getElementById('cite-text').textContent = citation;
   const copyBtn = document.getElementById('cite-copy-btn');
