@@ -1,3 +1,13 @@
+/* ══ Newcomer "new to the RFO?" strip — stay dismissed once closed ══ */
+(function () {
+  try {
+    if (localStorage.getItem('acqvault_newhere_dismissed')) {
+      var e = document.getElementById('hero-newhere');
+      if (e) e.style.display = 'none';
+    }
+  } catch (x) {}
+})();
+
 /* ══ POLISH — ⌘K shortcut ════════════════════════════════════ */
 (function () {
   const input = document.getElementById('search-input');

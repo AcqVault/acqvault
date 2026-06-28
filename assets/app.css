@@ -480,7 +480,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   --ink2:   #24292f;
   --ink3:   #424a53;
   --muted:  #5c6675;
-  --muted2: #5c6675;
+  --muted2: #6b7280; /* tertiary tier — one step lighter than --muted (was identical); ~4.6:1 on white, AA-safe */
   --line:   #d0d7de;
   --line2:  #e8ecf0;
 
@@ -2211,6 +2211,16 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
 .eyebrow::before{ content:""; width:18px; height:2px; border-radius:2px; background:currentColor; opacity:.55; }
 /* 3) Vault panel — soft volumetric top light (extra background layer; stays behind the dial) */
 .vault-panel{ background: radial-gradient(120% 80% at 50% 0%, rgba(124,201,238,0.12), transparent 55%), linear-gradient(155deg,#15233b 0%,#0c1a30 55%,#091324 100%); }
+
+/* ══ Newcomer "new to the RFO?" orientation strip ════════════════════════════ */
+.hero-newhere{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:580px;margin:0 0 18px;padding:9px 13px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--accent-bdr);font-size:var(--fs-sm);color:var(--ink2);line-height:1.45;}
+.hero-newhere-txt{flex:1;min-width:200px;}
+.hero-newhere-txt strong{color:var(--accent);font-weight:750;}
+.hero-newhere-link{flex-shrink:0;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;}
+.hero-newhere-link:hover{text-decoration:underline;}
+.hero-newhere-x{flex-shrink:0;border:none;background:none;color:var(--muted2);cursor:pointer;font-size:12px;width:24px;height:24px;border-radius:999px;line-height:1;}
+.hero-newhere-x:hover{background:rgba(13,17,23,0.07);color:var(--ink);}
+.hero.search-active .hero-newhere,.hero.browse-active .hero-newhere,.hero.fulltext-active .hero-newhere{display:none;}
 
 /* ══ INSTRUMENT PASS — de-generic-AI the hero ════════════════════════════════
    Removes two AI-template tells: the multi-blob "aurora" atmosphere and the

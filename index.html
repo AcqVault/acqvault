@@ -32,7 +32,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=32">
+<link rel="stylesheet" href="/assets/app.css?v=33">
 </head>
 <body>
 
@@ -130,6 +130,13 @@
         <button type="button" class="trychip" onclick="runExampleQuery('R-DFARS 252.204')"><span class="trychip-k">Try</span>R-DFARS 252.204</button>
         <button type="button" class="trychip" onclick="runExampleQuery('sole source justification')"><span class="trychip-k">Try</span>sole source justification</button>
         <button type="button" class="trychip" onclick="runExampleQuery('commercial solutions opening')"><span class="trychip-k">Try</span>commercial solutions opening</button>
+      </div>
+
+      <!-- Newcomer orientation (dismissible once) -->
+      <div class="hero-newhere" id="hero-newhere">
+        <span class="hero-newhere-txt">New to the <strong>RFO</strong>? It's the Revolutionary FAR Overhaul — the rewritten FAR you cite for new acquisitions, in place of the legacy FAR/DFARS.</span>
+        <a class="hero-newhere-link" href="/what-is-the-rfo">What changed →</a>
+        <button class="hero-newhere-x" type="button" aria-label="Dismiss" onclick="(function(b){var e=document.getElementById('hero-newhere');if(e)e.style.display='none';try{localStorage.setItem('acqvault_newhere_dismissed','1');}catch(x){}})(this)">✕</button>
       </div>
 
       <!-- compact secondary mode row (Browse / Full Text) -->
@@ -614,6 +621,6 @@
 <script defer src="/assets/app.js?v=21"></script>
 <script defer src="/assets/saved.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=14"></script>
-<script defer src="/assets/polish.js?v=2"></script>
+<script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>
