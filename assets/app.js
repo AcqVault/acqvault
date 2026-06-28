@@ -1882,13 +1882,54 @@ function showAcronymAssist(q) {
   el.hidden = false;
 }
 
+// Zero-results launchpad — recovery actions for the highest-intent moment.
+function buildNoResultsHTML(query) {
+  const q = String(query || '').trim();
+  const legacyRe = /\b(FAR|DFARS|DFAR|DAFFARS)\b/i;
+  const stripped = q.replace(legacyRe, '').replace(/\s{2,}/g, ' ').trim();
+  const isLegacy = legacyRe.test(q) && stripped && stripped.toLowerCase() !== q.toLowerCase();
+  const filtered = activeSources && activeSources.size > 0;
+  const filterNames = filtered ? Array.from(activeSources).map(s => SOURCE_LABELS[s] || s).join(', ') : '';
+  let primary = '';
+  if (isLegacy) {
+    primary = `<div class="nr-note">AcqVault indexes the <strong>RFO / R-DFARS</strong> that replaced the legacy FAR&nbsp;/&nbsp;DFARS.</div>
+      <button class="nr-btn nr-btn-primary" data-action="strip-legacy" data-q="${esc(stripped)}">Search the RFO / R-DFARS for “${esc(stripped)}”</button>`;
+  } else if (filtered) {
+    primary = `<div class="nr-note">You're searching only <strong>${esc(filterNames)}</strong>.</div>
+      <button class="nr-btn nr-btn-primary" data-action="all-sources">Search all 6 sources</button>`;
+  }
+  return `<div class="no-results nr-launch">
+    <div class="nr-title">No matches for “${esc(q)}”</div>
+    <div class="nr-sub">Try one of these — or tell us what's missing.</div>
+    ${primary}
+    <div class="nr-actions">
+      <button class="nr-btn" data-action="browse">⊞ Browse by Part</button>
+      <button class="nr-btn" data-action="fulltext">↓ Full-Text PDFs</button>
+      <button class="nr-btn nr-btn-report" data-action="report" data-q="${esc(q)}">✦ Tell Iz this should be here</button>
+    </div>
+  </div>`;
+}
+document.getElementById('results-list').addEventListener('click', (e) => {
+  const b = e.target.closest('.nr-btn'); if (!b) return;
+  const action = b.dataset.action;
+  if (action === 'all-sources') { restoreFiltersFromParam(''); if (searchInput.value.trim()) runSearch(); }
+  else if (action === 'strip-legacy') { searchInput.value = b.dataset.q || ''; if (searchInput.value.trim()) runSearch(); }
+  else if (action === 'browse') { setMode('browse'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  else if (action === 'fulltext') { setMode('fulltext'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  else if (action === 'report') {
+    const m = document.getElementById('fb-message');
+    if (m) m.value = `Search gap: "${b.dataset.q || ''}" returned no results. Could this be added?`;
+    openFeedback();
+  }
+});
+
 function renderResults(data, query) {
   const list  = document.getElementById('results-list');
   const label = document.getElementById('result-count-label');
   const hits  = data.hits || [];
   const total = data.estimatedTotalHits || hits.length;
   label.innerHTML = `<strong>${total.toLocaleString()}</strong> result${total !== 1 ? 's' : ''} for "<em>${esc(query)}</em>"`;
-  if (!hits.length) { list.innerHTML = '<div class="no-results"><strong>No results found</strong>Try a different search term or adjust your filters.</div>'; return; }
+  if (!hits.length) { list.innerHTML = buildNoResultsHTML(query); return; }
   list.innerHTML = hits.map(hit => {
     const hl = hit._formatted || hit;
     const pinned = !!(window.AcqSaved && AcqSaved.isPinned(hit.id));
