@@ -1923,6 +1923,18 @@ document.getElementById('results-list').addEventListener('click', (e) => {
     openFeedback();
   }
 });
+// Keyboard: ↑/↓ move focus through result cards (power-user nav; Enter opens via the link)
+document.getElementById('results-list').addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+  const links = Array.from(document.querySelectorAll('#results-list .rc-open'));
+  if (!links.length) return;
+  e.preventDefault();
+  const cur = document.activeElement ? document.activeElement.closest('.rc-open') : null;
+  let idx = links.indexOf(cur);
+  if (idx === -1) idx = e.key === 'ArrowDown' ? -1 : links.length;
+  const next = Math.max(0, Math.min(links.length - 1, idx + (e.key === 'ArrowDown' ? 1 : -1)));
+  links[next].focus();
+});
 
 function renderResults(data, query) {
   const list  = document.getElementById('results-list');
@@ -1934,12 +1946,19 @@ function renderResults(data, query) {
   list.innerHTML = hits.map(hit => {
     const hl = hit._formatted || hit;
     const pinned = !!(window.AcqSaved && AcqSaved.isPinned(hit.id));
-    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}" role="button" tabindex="0" aria-label="Open: ${esc(hit.title || 'document')}">
+    const params = new URLSearchParams({ view: 'reader', doc: hit.id });
+    if (hit.source) params.set('source', hit.source);
+    if (hit.part) params.set('part', hit.part);
+    if (hit.title) params.set('title', hit.title);
+    const href = '?' + params.toString();
+    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}">
       <button class="rc-pin${pinned ? ' is-pinned' : ''}" type="button" data-pin-id="${esc(hit.id)}" data-pin-title="${esc(hit.title || '')}" data-pin-source="${esc(hit.source || '')}" data-pin-part="${esc(hit.part || '')}" data-pin-file="${esc(hit.filename || '')}" data-pin-url="${esc(hit.url || '')}" data-pin-anchor="${esc(hit.anchor || '')}" data-pin-indexed="${esc(hit.indexed_at || '')}" data-pin-status="${esc(hit.status || '')}" aria-pressed="${pinned ? 'true' : 'false'}" aria-label="${pinned ? 'Remove saved clause' : 'Save this clause'}" title="${pinned ? 'Saved — click to remove' : 'Save this clause'}">★</button>
-      <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
-      <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
-      ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
-      <div class="rc-snippet">${markOnly(hl.content || '')}</div>
+      <a class="rc-open" href="${esc(href)}" aria-label="Open: ${esc(hit.title || 'document')}">
+        <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
+        <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
+        ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
+        <div class="rc-snippet">${markOnly(hl.content || '')}</div>
+      </a>
       <div class="rc-foot">
         <span class="rc-asof" title="When AcqVault captured this copy — not the regulation's effective date">${hit.indexed_at ? `AcqVault copy · ${esc(fmtAsOf(hit.indexed_at))}` : ''}</span>
         <button class="rc-cite-btn" type="button" aria-label="Copy a file-ready citation">⧉ Cite</button>
@@ -1948,9 +1967,11 @@ function renderResults(data, query) {
   }).join('');
   list.querySelectorAll('.result-card').forEach(card => {
     const hit = hits.find(h => h.id === card.dataset.id);
-    const open = () => { if (hit) openDrawer(hit); };
-    card.addEventListener('click', open);
-    card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    const link = card.querySelector('.rc-open');
+    if (link && hit) link.addEventListener('click', (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // allow native open-in-new-tab
+      e.preventDefault(); openDrawer(hit);
+    });
     const citeBtn = card.querySelector('.rc-cite-btn');
     if (citeBtn && hit) citeBtn.addEventListener('click', (e) => { e.stopPropagation(); copyResultCite(hit, citeBtn); });
   });
