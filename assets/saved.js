@@ -303,6 +303,7 @@
     p.id = 'saved-panel'; p.className = 'saved-panel';
     p.setAttribute('role', 'dialog'); p.setAttribute('aria-modal', 'true');
     p.setAttribute('aria-hidden', 'true'); p.setAttribute('aria-label', 'Saved clauses and searches');
+    p.inert = true;
     p.innerHTML =
       '<div class="saved-head"><div class="saved-head-title">★ Saved</div>' +
       '<button class="saved-close" id="saved-close" aria-label="Close saved panel">✕</button></div>' +
@@ -381,7 +382,7 @@
     buildPanel(); renderPanel();
     var p = document.getElementById('saved-panel');
     var b = document.getElementById('saved-backdrop');
-    p.classList.add('open'); p.setAttribute('aria-hidden', 'false');
+    p.classList.add('open'); p.setAttribute('aria-hidden', 'false'); p.inert = false;
     b.classList.add('visible'); panelOpen = true;
     document.body.style.overflow = 'hidden';
     if (typeof window.trapFocus === 'function') { try { window.trapFocus(p); } catch (e) {} }
@@ -391,7 +392,7 @@
   function closePanel() {
     var p = document.getElementById('saved-panel');
     var b = document.getElementById('saved-backdrop');
-    if (p) { p.classList.remove('open'); p.setAttribute('aria-hidden', 'true'); }
+    if (p) { p.classList.remove('open'); p.setAttribute('aria-hidden', 'true'); p.inert = true; }
     if (b) b.classList.remove('visible');
     panelOpen = false;
     if (!document.getElementById('drawer') || !document.getElementById('drawer').classList.contains('open')) {

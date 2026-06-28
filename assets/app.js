@@ -2126,6 +2126,7 @@ function openDrawer(hit) {
   const drawer = document.getElementById('drawer');
   drawer.classList.add('open');
   drawer.setAttribute('aria-hidden', 'false');
+  drawer.inert = false;
   document.getElementById('drawer-backdrop').classList.add('visible');
   document.body.style.overflow = 'hidden';
   trapFocus(drawer);
@@ -2183,6 +2184,7 @@ function closeDrawer() {
   const drawer = document.getElementById('drawer');
   drawer.classList.remove('open');
   drawer.setAttribute('aria-hidden', 'true');
+  drawer.inert = true;
   document.getElementById('drawer-backdrop').classList.remove('visible');
   document.body.style.overflow = '';
   document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
@@ -2392,11 +2394,13 @@ function openFeedback() {
   const modal = document.getElementById('feedback-modal');
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
+  modal.inert = false;
   document.body.style.overflow = 'hidden';
   trapFocus(modal);
 }
 function closeFeedback() {
   const modal = document.getElementById('feedback-modal');
+  modal.inert = true;
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
   if (!document.getElementById('drawer').classList.contains('open')) document.body.style.overflow = '';

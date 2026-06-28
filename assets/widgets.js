@@ -1113,6 +1113,8 @@
       btn.setAttribute('aria-expanded', 'true'); btn.classList.add('open');
       document.body.style.overflow = 'hidden';
       isOpen = true;
+      if (typeof window.trapFocus === 'function') { try { window.trapFocus(menu); } catch (e) {} }
+      const first = list.querySelector('.mm-link'); if (first) first.focus();
     }
     function close() {
       if (!isOpen) return;
@@ -1120,6 +1122,8 @@
       menu.classList.remove('open'); backdrop.classList.remove('open');
       btn.setAttribute('aria-expanded', 'false'); btn.classList.remove('open');
       document.body.style.overflow = '';
+      if (typeof window.releaseFocus === 'function') { try { window.releaseFocus(); } catch (e) {} }
+      btn.focus();
       setTimeout(() => { if (!isOpen) { menu.hidden = true; backdrop.hidden = true; } }, 280);
     }
     btn.addEventListener('click', () => isOpen ? close() : open());
