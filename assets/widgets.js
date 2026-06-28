@@ -1081,12 +1081,7 @@
     initMarketResearch();
     initDashboard();
     loadWhatsNew();
-    // Deep-link / sitelinks search box: ?q=<term> runs a search on load.
-    try {
-      const q = new URLSearchParams(location.search).get('q');
-      const si = document.getElementById('search-input');
-      if (q && si && typeof runSearch === 'function') { si.value = q; runSearch(); }
-    } catch (e) {}
+    // Deep-link restore (?q=, ?src=, ?doc=) is owned by app.js restoreFromUrl().
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

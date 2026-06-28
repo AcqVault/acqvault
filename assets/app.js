@@ -2064,6 +2064,11 @@ function openDrawer(hit) {
   const copyBtn = document.getElementById('cite-copy-btn');
   copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied');
   copyBtn.onclick = () => copyCitation(citation, copyBtn);
+  const linkBtn = document.getElementById('cite-link-btn');
+  if (linkBtn) {
+    linkBtn.textContent = 'Copy link'; linkBtn.classList.remove('copied');
+    linkBtn.onclick = () => copyTextTo(window.location.href, linkBtn, 'Copy link');
+  }
   document.getElementById('drawer-meta').innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
   const drawerOrig = document.getElementById('drawer-orig');
   if (hit.source === 'compass') { drawerOrig.style.display = 'none'; }
@@ -2083,6 +2088,7 @@ function openDrawer(hit) {
   document.body.style.overflow = 'hidden';
   trapFocus(drawer);
   document.querySelectorAll('.result-card').forEach(c => c.classList.toggle('active', c.dataset.id === hit.id));
+  if (!document.body.classList.contains('reader-mode')) setDocParams(hit);
   // Load full part then scroll to this section
   loadFullPartInDrawer(hit);
   document.dispatchEvent(new CustomEvent('acqvault:draweropen', { detail: hit }));
@@ -2131,6 +2137,7 @@ async function loadFullPartInDrawer(hit) {
 
 function closeDrawer() {
   activeDocId = null; currentHit = null;
+  if (!document.body.classList.contains('reader-mode')) setDocParams(null);
   const drawer = document.getElementById('drawer');
   drawer.classList.remove('open');
   drawer.setAttribute('aria-hidden', 'true');
@@ -2141,49 +2148,24 @@ function closeDrawer() {
   releaseFocus();
 }
 
-function copyCitation(citation, btn) {
-  navigator.clipboard.writeText(citation).then(() => {
+function copyTextTo(text, btn, label) {
+  const done = () => {
     btn.textContent = 'Copied!'; btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
-  }).catch(() => {
+    setTimeout(() => { btn.textContent = label; btn.classList.remove('copied'); }, 2200);
+  };
+  navigator.clipboard.writeText(text).then(done).catch(() => {
     const ta = document.createElement('textarea');
-    ta.value = citation; ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-    btn.textContent = 'Copied!'; btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta); done();
   });
 }
+function copyCitation(citation, btn) { copyTextTo(citation, btn, 'Copy'); }
 
 document.getElementById('drawer-close').addEventListener('click', closeDrawer);
 document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeFeedback(); } });
-
-// ── URL ?doc= param ───────────────────────────────────────────────────────────
-(async function checkUrlDoc() {
-  const params = new URLSearchParams(window.location.search);
-  const docId = params.get('doc');
-  if (!docId) return;
-  const readerMode = params.get('view') === 'reader';
-  if (readerMode) {
-    document.body.classList.add('reader-mode');
-    document.body.style.overflow = '';
-  }
-  try {
-    const hit = await fetchDocumentById(docId, {
-      source: params.get('source'),
-      part: params.get('part'),
-      title: params.get('title')
-    });
-    if (hit) {
-      if (readerMode) renderReaderPage(hit);
-      else openDrawer(hit);
-    } else if (readerMode) {
-      renderReaderError();
-    }
-  } catch (e) {
-    if (readerMode) renderReaderError();
-  }
-})();
 
 // ── SEARCH INPUT & LIFECYCLE ──────────────────────────────────────────────────
 const hero           = document.getElementById('hero');
@@ -2191,6 +2173,45 @@ const resultsSection = document.getElementById('results-section');
 const searchInput    = document.getElementById('search-input');
 const searchCount    = document.getElementById('search-count');
 const searchClear    = document.getElementById('search-clear');
+
+// ── URL state sync — shareable / bookmarkable searches + clause links ─────────
+function activeSourceParam() {
+  return (activeSources && activeSources.size) ? Array.from(activeSources).sort().join(',') : '';
+}
+function setSearchParams(q) {
+  try {
+    const url = new URL(window.location.href);
+    if (q) { url.searchParams.set('q', q); const s = activeSourceParam(); s ? url.searchParams.set('src', s) : url.searchParams.delete('src'); }
+    else { ['q', 'src'].forEach(k => url.searchParams.delete(k)); }
+    history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+  } catch (e) {}
+}
+function setDocParams(hit) {
+  try {
+    const url = new URL(window.location.href);
+    if (hit) {
+      url.searchParams.set('doc', hit.id);
+      hit.source ? url.searchParams.set('source', hit.source) : url.searchParams.delete('source');
+      hit.part ? url.searchParams.set('part', hit.part) : url.searchParams.delete('part');
+      hit.title ? url.searchParams.set('title', hit.title) : url.searchParams.delete('title');
+    } else {
+      ['doc', 'source', 'part', 'title', 'view'].forEach(k => url.searchParams.delete(k));
+    }
+    history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+  } catch (e) {}
+}
+function restoreFiltersFromParam(srcStr) {
+  const wanted = String(srcStr || '').split(',').map(s => s.trim()).filter(Boolean);
+  const valid = new Set(Array.from(document.querySelectorAll('#source-filters .fpill[data-source]'))
+    .map(p => p.dataset.source).filter(s => s && s !== 'all'));
+  activeSources.clear();
+  wanted.forEach(s => { if (valid.has(s)) activeSources.add(s); });
+  document.querySelectorAll('#source-filters .fpill').forEach(p => {
+    const s = p.dataset.source;
+    const on = s === 'all' ? activeSources.size === 0 : activeSources.has(s);
+    p.classList.toggle('active', on); p.setAttribute('aria-pressed', String(on));
+  });
+}
 
 async function runSearch(options = {}) {
   const preserveScroll = Boolean(options.preserveScroll);
@@ -2202,6 +2223,7 @@ async function runSearch(options = {}) {
   try {
     const data = await search(q);
     renderResults(data, q);
+    setSearchParams(q);
     showAcronymAssist(q);
     document.dispatchEvent(new CustomEvent('acqvault:searched', { detail: { q: q } }));
     const total = data.estimatedTotalHits || (data.hits || []).length;
@@ -2228,6 +2250,7 @@ function deactivateSearch() {
   hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
   searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
   var asEl = document.getElementById('acr-suggest'); if (asEl) { asEl.hidden = true; asEl.innerHTML = ''; }
+  setSearchParams('');
 }
 
 searchInput.addEventListener('input', () => {
@@ -2243,6 +2266,29 @@ searchClear.addEventListener('click', () => { searchInput.value = ''; deactivate
     const b = e.target.closest('.acr-go'); if (!b) return;
     searchInput.value = b.dataset.exp; runSearch(); searchInput.focus();
   });
+})();
+
+// ── Restore from URL on load: ?q= (+ ?src=) search, then ?doc= clause/reader ──
+(async function restoreFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('q');
+  const docId = params.get('doc');
+  const readerMode = params.get('view') === 'reader';
+  if (q && !readerMode) {
+    const src = params.get('src');
+    if (src) restoreFiltersFromParam(src);
+    searchInput.value = q;
+    try { await runSearch(); } catch (e) {}
+  }
+  if (!docId) return;
+  if (readerMode) { document.body.classList.add('reader-mode'); document.body.style.overflow = ''; }
+  try {
+    const hit = await fetchDocumentById(docId, {
+      source: params.get('source'), part: params.get('part'), title: params.get('title')
+    });
+    if (hit) { if (readerMode) renderReaderPage(hit); else openDrawer(hit); }
+    else if (readerMode) renderReaderError();
+  } catch (e) { if (readerMode) renderReaderError(); }
 })();
 
 // ── FILTERS ───────────────────────────────────────────────────────────────────
