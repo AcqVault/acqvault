@@ -32,7 +32,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=18">
+<link rel="stylesheet" href="/assets/app.css?v=19">
 </head>
 <body>
 
@@ -209,6 +209,41 @@
       </div>
     </div>
 
+  </div>
+</section>
+
+<!-- CAPABILITY DIRECTORY — "what you can do here" (new-visitor discoverability; hidden once searching) -->
+<section class="capdir" id="capdir" aria-labelledby="capdir-h">
+  <div class="capdir-inner">
+    <p class="capdir-eyebrow" id="capdir-h">What you can do here</p>
+    <div class="capdir-grid">
+      <button type="button" class="capdir-tile" onclick="setMode('search');window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){var s=document.getElementById('search-input');if(s)s.focus();},420);">
+        <span class="capdir-ico" aria-hidden="true">⌕</span>
+        <span class="capdir-tt">Search every word</span>
+        <span class="capdir-dd">Full-text across all six official sources at once — RFO, R-DFARS &amp; more.</span>
+      </button>
+      <button type="button" class="capdir-tile" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){setMode('browse');},420);">
+        <span class="capdir-ico" aria-hidden="true">⊞</span>
+        <span class="capdir-tt">Browse by source</span>
+        <span class="capdir-dd">Read any source part-by-part — no search query needed.</span>
+      </button>
+      <button type="button" class="capdir-tile" onclick="var e=document.getElementById('toolkit');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
+        <span class="capdir-ico" aria-hidden="true">▰</span>
+        <span class="capdir-tt">Daily toolkit</span>
+        <span class="capdir-dd">Dollar thresholds, an acronym decoder, and what's new.</span>
+      </button>
+      <button type="button" class="capdir-tile" onclick="var e=document.getElementById('market-research');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
+        <span class="capdir-ico" aria-hidden="true">◎</span>
+        <span class="capdir-tt">Market research</span>
+        <span class="capdir-dd">Search live SAM.gov opportunities, awards &amp; set-asides.</span>
+      </button>
+      <button type="button" class="capdir-tile" onclick="var e=document.getElementById('spending-dashboard');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
+        <span class="capdir-ico" aria-hidden="true">▤</span>
+        <span class="capdir-tt">Live AF spending</span>
+        <span class="capdir-dd">Where the Air Force is putting its money, from USASpending.</span>
+      </button>
+    </div>
+    <p class="capdir-foot">Free · no account · saves to your device · works offline behind the CAC firewall.</p>
   </div>
 </section>
 

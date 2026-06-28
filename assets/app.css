@@ -1976,3 +1976,26 @@ body.work-mode #quick-links{margin-top:0;}
 @media (prefers-reduced-motion:reduce){
   .saved-backdrop,.saved-panel,.rc-pin,.drawer-pin,.save-search-btn,.nav-saved-btn,.saved-item{transition:none!important;}
 }
+
+/* ════════════════ CAPABILITY DIRECTORY — "what you can do here" (below hero) ════════════════ */
+.capdir{padding:40px 24px 8px;background:var(--white);}
+body.work-mode #capdir,body.reader-mode #capdir{display:none;}
+.capdir-inner{max-width:var(--max-w-wide);margin:0 auto;}
+.capdir-eyebrow{font-size:var(--fs-2xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wider);text-transform:uppercase;color:var(--muted);margin:0 0 16px;text-align:center;}
+.capdir-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;}
+.capdir-tile{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:left;background:var(--white);border:1px solid var(--line2);border-radius:var(--r-lg);padding:18px 16px;cursor:pointer;min-width:0;transition:border-color .15s var(--ease-out),box-shadow .2s var(--ease-out),transform .15s var(--ease-out),background .15s var(--ease-out);}
+.capdir-tile:hover{border-color:var(--accent-bdr);box-shadow:var(--shadow-md);transform:translateY(-2px);background:#fff;}
+.capdir-tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.capdir-ico{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-size:var(--fs-lg);line-height:var(--lh-none);}
+.capdir-tile:hover .capdir-ico{background:var(--accent);color:#fff;}
+.capdir-tt{font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--ink);letter-spacing:var(--ls-tight);}
+.capdir-dd{font-size:var(--fs-sm);line-height:var(--lh-snug);color:var(--muted);}
+.capdir-foot{margin:16px 0 0;text-align:center;font-size:var(--fs-xs);color:var(--muted);}
+@media (max-width:920px){ .capdir-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media (max-width:600px){
+  .capdir{padding:28px 16px 4px;}
+  .capdir-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .capdir-tile{padding:14px 13px;}
+  .capdir-ico{width:30px;height:30px;}
+}
+@media (prefers-reduced-motion:reduce){ .capdir-tile{transition:none!important;} }
