@@ -2004,6 +2004,19 @@ body.work-mode #quick-links{margin-top:0;}
 .saved-markall:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .saved-updated-pill{font-size:var(--fs-3xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--accent);background:rgba(79,182,232,.18);border:1px solid rgba(79,182,232,.42);padding:1px 6px;border-radius:999px;line-height:var(--lh-base);}
 .saved-item.is-changed{border-color:rgba(79,182,232,.55);box-shadow:0 0 0 1px rgba(79,182,232,.22);}
+/* "See what changed" — the rendered old→new diff */
+.saved-clause{display:flex;flex-direction:column;}
+.saved-diff-toggle{align-self:flex-start;margin-top:6px;background:none;border:none;padding:2px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--accent);cursor:pointer;border-radius:var(--r-sm);}
+.saved-diff-toggle:hover{text-decoration:underline;}
+.saved-diff-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.saved-diff{margin-top:8px;background:var(--off);border:1px solid var(--line2);border-radius:var(--r-md);padding:12px 13px;}
+.saved-diff-body{font-size:var(--fs-sm);line-height:var(--lh-base);color:var(--ink2);word-break:break-word;}
+.saved-diff-body del{color:#b91c1c;background:rgba(185,28,28,.08);text-decoration:line-through;text-decoration-thickness:1px;border-radius:2px;padding:0 1px;}
+.saved-diff-body ins{color:var(--accent);background:rgba(79,182,232,.22);text-decoration:none;font-weight:var(--fw-semibold);border-radius:2px;padding:0 1px;}
+.saved-diff-foot{margin-top:9px;font-size:var(--fs-2xs);color:var(--muted);}
+.saved-diff-foot del{color:#b91c1c;}
+.saved-diff-foot ins{color:var(--accent);text-decoration:none;font-weight:var(--fw-semibold);}
+.saved-diff-note,.saved-diff-loading{font-size:var(--fs-sm);color:var(--muted);line-height:var(--lh-snug);}
 @media (prefers-reduced-motion:reduce){ .nav-saved-btn.has-changes::after{animation:none!important;} }
 
 /* ════════════════ CAPABILITY DIRECTORY — "what you can do here" (below hero) ════════════════ */

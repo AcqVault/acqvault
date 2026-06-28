@@ -66,11 +66,17 @@
   function changedClauses() { return state.clauses.filter(clauseChanged); }
   function markSeen(id) {
     var c = state.clauses.find(function (x) { return x.id === id; });
-    if (c && HASHES && HASHES[id]) { c.chash = HASHES[id]; persist(); updateCounts(); if (panelOpen) renderPanel(); }
+    if (c && HASHES && HASHES[id]) {
+      c.chash = HASHES[id];
+      fetchClauseText(c).then(function (t) { if (t) { c.text = t; persist(); } }); // re-baseline wording to current
+      persist(); updateCounts(); if (panelOpen) renderPanel();
+    }
   }
   function markAllSeen() {
     if (!HASHES) return;
-    state.clauses.forEach(function (c) { if (clauseChanged(c)) c.chash = HASHES[c.id]; });
+    state.clauses.forEach(function (c) {
+      if (clauseChanged(c)) { c.chash = HASHES[c.id]; fetchClauseText(c).then(function (t) { if (t) { c.text = t; persist(); } }); }
+    });
     persist(); updateCounts(); if (panelOpen) renderPanel();
   }
   // After the manifest loads, baseline any pins made before change-tracking existed
@@ -88,6 +94,63 @@
     if (!HASHES && state.clauses.length) loadHashes().then(reconcileHashes).catch(function () {});
   }
 
+  // ── Snapshot + diff: show EXACTLY what changed in a pinned clause ────────────
+  // We snapshot the clause text at pin time (and re-baseline on "seen"); when it
+  // later changes we fetch the current text and render a word-level diff.
+  function cleanText(s) {
+    if (typeof window.cleanClauseText === 'function') { try { return window.cleanClauseText(s); } catch (e) {} }
+    return (s || '').replace(/L\d+:/g, '').replace(/\s+/g, ' ').trim();
+  }
+  function fetchClauseText(c) {
+    if (typeof window.fetchDocumentById !== 'function') return Promise.resolve('');
+    return window.fetchDocumentById(c.id, { source: c.source, part: c.part, title: c.title })
+      .then(function (doc) { return doc ? cleanText(doc.content || '') : ''; })
+      .catch(function () { return ''; });
+  }
+  function ensurePinText(c) {           // capture a baseline of the wording at pin/seen time
+    if (c.text != null) return;
+    fetchClauseText(c).then(function (t) { if (t && c.text == null) { c.text = t; persist(); } });
+  }
+  function wordDiff(oldStr, newStr) {   // LCS over whitespace-preserving word tokens
+    var a = (oldStr || '').split(/(\s+)/), b = (newStr || '').split(/(\s+)/);
+    var n = a.length, m = b.length, i, j;
+    var dp = []; for (i = 0; i <= n; i++) dp.push(new Array(m + 1).fill(0));
+    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--)
+      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    var out = []; i = 0; j = 0;
+    while (i < n && j < m) {
+      if (a[i] === b[j]) { out.push(['eq', a[i]]); i++; j++; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) { out.push(['del', a[i]]); i++; }
+      else { out.push(['ins', b[j]]); j++; }
+    }
+    while (i < n) out.push(['del', a[i++]]);
+    while (j < m) out.push(['ins', b[j++]]);
+    return out;
+  }
+  function renderDiffHtml(oldStr, newStr) {
+    return wordDiff(oldStr, newStr).map(function (p) {
+      var v = esc(p[1]);
+      return p[0] === 'eq' ? v : p[0] === 'del' ? '<del>' + v + '</del>' : '<ins>' + v + '</ins>';
+    }).join('');
+  }
+  function toggleDiff(id) {
+    var sel = (window.CSS && CSS.escape) ? CSS.escape(id) : id;
+    var box = document.querySelector('.saved-clause[data-id="' + sel + '"] .saved-diff');
+    if (!box) return;
+    if (box.dataset.open === '1') { box.style.display = 'none'; box.dataset.open = '0'; return; }
+    box.style.display = 'block'; box.dataset.open = '1';
+    var c = state.clauses.find(function (x) { return x.id === id; });
+    if (!c) return;
+    if (c.text == null) { box.innerHTML = '<div class="saved-diff-note">We didn’t capture the earlier wording for this one, so a side-by-side isn’t available — open it to read the current text.</div>'; return; }
+    box.innerHTML = '<div class="saved-diff-loading">Loading what changed…</div>';
+    fetchClauseText(c).then(function (cur) {
+      if (!cur) { box.innerHTML = '<div class="saved-diff-note">Couldn’t load the current text. Open the clause to read it.</div>'; return; }
+      if (cur === c.text) { box.innerHTML = '<div class="saved-diff-note">The wording reads the same now — the change may have been formatting or status.</div>'; return; }
+      box.innerHTML = '<div class="saved-diff-body">' + renderDiffHtml(c.text, cur) + '</div>' +
+        '<div class="saved-diff-foot"><del>struck</del> removed · <ins>highlighted</ins> added</div>';
+    });
+  }
+
   function isPinned(id) { return state.clauses.some(function (c) { return c.id === id; }); }
 
   function toggleClause(d) {
@@ -96,13 +159,16 @@
     if (i >= 0) { state.clauses.splice(i, 1); }
     else {
       if (state.clauses.length >= MAX) state.clauses.shift();
-      state.clauses.push({
+      var nc = {
         id: d.id, title: d.title || '', source: d.source || '', part: d.part || '',
         filename: d.filename || '', url: d.url || '', anchor: d.anchor || '',
         indexed_at: d.indexed_at || '', status: d.status || '',
         chash: (HASHES && HASHES[d.id]) || null, // content-hash baseline for change tracking
+        text: (d.content != null ? cleanText(d.content) : null), // wording baseline for the diff
         savedAt: Date.now()
-      });
+      };
+      state.clauses.push(nc);
+      ensurePinText(nc); // fill the text baseline from the corpus if the pin didn't carry content
     }
     persist(); syncStars(d.id); updateCounts(); if (panelOpen) renderPanel();
     ensureHashes(); // baseline the new pin once the manifest is available
@@ -275,15 +341,19 @@
         : '';
       cl.innerHTML = banner + ordered.map(function (c) {
         var chg = !!changedIds[c.id];
-        return '<div class="saved-item' + (chg ? ' is-changed' : '') + '" data-kind="clause" data-id="' + esc(c.id) + '">' +
-          '<button class="saved-item-main" data-act="open-clause" data-id="' + esc(c.id) + '">' +
-            '<div class="saved-item-meta">' + sourceTag(c.source) +
-              (c.part ? '<span class="rc-part">Part ' + dispPart(c) + '</span>' : '') +
-              (chg ? '<span class="saved-updated-pill">Updated</span>' : '') + '</div>' +
-            '<div class="saved-item-title">' + esc(c.title || 'Untitled') + '</div>' +
-            (c.filename ? '<div class="saved-item-sub">' + esc(c.filename) + '</div>' : '') +
-          '</button>' +
-          '<button class="saved-item-del" data-act="del-clause" data-id="' + esc(c.id) + '" aria-label="Remove pinned clause">✕</button>' +
+        return '<div class="saved-clause" data-id="' + esc(c.id) + '">' +
+          '<div class="saved-item' + (chg ? ' is-changed' : '') + '" data-kind="clause" data-id="' + esc(c.id) + '">' +
+            '<button class="saved-item-main" data-act="open-clause" data-id="' + esc(c.id) + '">' +
+              '<div class="saved-item-meta">' + sourceTag(c.source) +
+                (c.part ? '<span class="rc-part">Part ' + dispPart(c) + '</span>' : '') +
+                (chg ? '<span class="saved-updated-pill">Updated</span>' : '') + '</div>' +
+              '<div class="saved-item-title">' + esc(c.title || 'Untitled') + '</div>' +
+              (c.filename ? '<div class="saved-item-sub">' + esc(c.filename) + '</div>' : '') +
+            '</button>' +
+            '<button class="saved-item-del" data-act="del-clause" data-id="' + esc(c.id) + '" aria-label="Remove pinned clause">✕</button>' +
+          '</div>' +
+          (chg ? '<button class="saved-diff-toggle" type="button" data-act="show-diff" data-id="' + esc(c.id) + '" aria-expanded="false">See what changed</button>' +
+                 '<div class="saved-diff" style="display:none"></div>' : '') +
         '</div>';
       }).join('');
     }
@@ -358,6 +428,7 @@
     if (act === 'open-clause') { var c = state.clauses.find(function (x) { return x.id === t.dataset.id; }); if (c) { markSeen(c.id); openSavedClause(c); } }
     else if (act === 'del-clause') { removeClause(t.dataset.id); }
     else if (act === 'mark-all-seen') { markAllSeen(); }
+    else if (act === 'show-diff') { var open = t.getAttribute('aria-expanded') === 'true'; t.setAttribute('aria-expanded', String(!open)); t.textContent = open ? 'See what changed' : 'Hide changes'; toggleDiff(t.dataset.id); }
     else if (act === 'run-search') { var s = state.searches[+t.dataset.idx]; if (s) runSavedSearch(s); }
     else if (act === 'del-search') { removeSearch(+t.dataset.idx); }
   }
