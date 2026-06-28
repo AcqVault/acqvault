@@ -32,7 +32,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=20">
+<link rel="stylesheet" href="/assets/app.css?v=21">
 </head>
 <body>
 
@@ -59,6 +59,7 @@
       <div class="form-group"><label for="fb-message">Feedback</label><textarea id="fb-message" rows="4" placeholder="What's working, what isn't, what you'd add…" required></textarea></div>
       <button type="submit" class="feedback-submit" id="fb-submit">Send Feedback</button>
     </form>
+    <div class="feedback-error" id="feedback-error" role="alert" hidden></div>
     <div class="feedback-success" id="feedback-success"><div class="success-icon">✓</div><strong>Thanks — got it.</strong><p>Your feedback goes directly to Iz.</p></div>
   </div>
 </div>
@@ -615,7 +616,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=12"></script>
+<script defer src="/assets/app.js?v=13"></script>
 <script defer src="/assets/saved.js?v=2"></script>
 <script defer src="/assets/widgets.js?v=8"></script>
 <script defer src="/assets/polish.js?v=2"></script>

@@ -48,7 +48,7 @@
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 const SEARCH_API = '/api/search';
-const WEB3FORMS_ENDPOINT = ''; // Configure server-side; do not expose Web3Forms access keys in static HTML.
+const FEEDBACK_API = '/api/feedback'; // same-origin relay → Web3Forms server-side (CAC-safe; key never exposed)
 // ── CLIENT-SIDE SEARCH (offline-capable) ──────────────────────────────────────
 // Mirrors api/search.js scoring EXACTLY so local and server results are identical.
 // Once the corpus is cached, search runs on-device — instant, no per-search network,
@@ -2213,20 +2213,19 @@ document.getElementById('feedback-modal').addEventListener('click', e => { if (e
 document.getElementById('feedback-form').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = document.getElementById('fb-submit');
-  if (!WEB3FORMS_ENDPOINT) {
-    btn.textContent = 'Feedback offline';
-    btn.disabled = true;
-    return;
-  }
+  const errEl = document.getElementById('feedback-error');
+  const showErr = (msg) => { if (errEl) { errEl.textContent = msg; errEl.hidden = false; } };
+  if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+  const message = document.getElementById('fb-message').value.trim();
+  if (!message) { showErr('Please add a message first.'); return; }
   btn.disabled = true; btn.textContent = 'Sending…';
   try {
-    const res = await fetch(WEB3FORMS_ENDPOINT, {
+    const res = await fetch(FEEDBACK_API, {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
-        subject: 'AcqVault Feedback',
         name: document.getElementById('fb-name').value.trim() || 'Anonymous',
         email: document.getElementById('fb-email').value.trim() || '',
-        message: document.getElementById('fb-message').value.trim()
+        message
       })
     });
     if (res.ok) {
@@ -2234,8 +2233,15 @@ document.getElementById('feedback-form').addEventListener('submit', async e => {
       document.getElementById('feedback-success').style.display = 'block';
       ['fb-name','fb-email','fb-message'].forEach(id => document.getElementById(id).value = '');
       setTimeout(closeFeedback, 3200);
-    } else { btn.textContent = 'Try again'; btn.disabled = false; }
-  } catch { btn.textContent = 'Try again'; btn.disabled = false; }
+    } else {
+      const data = await res.json().catch(() => ({}));
+      btn.disabled = false; btn.textContent = 'Send Feedback';
+      showErr(data.error || 'Could not send right now — please try again.');
+    }
+  } catch {
+    btn.disabled = false; btn.textContent = 'Send Feedback';
+    showErr('Could not send — check your connection and try again.');
+  }
 });
 
 // ── PARTICLES ─────────────────────────────────────────────────────────────────

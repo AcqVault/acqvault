@@ -498,6 +498,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .feedback-submit{width:100%;background:var(--accent);border:none;border-radius:var(--r-md);padding:12px;font-size:var(--fs-md);font-weight:var(--fw-semibold);color:#fff;cursor:pointer;margin-top:4px;transition:background 0.15s,transform 0.1s;}
 .feedback-submit:hover{background:var(--accent-h);transform:translateY(-1px);}
 .feedback-submit:disabled{opacity:0.4;cursor:default;transform:none;}
+.feedback-error{margin-top:12px;padding:10px 12px;border-radius:var(--r-md);background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-size:var(--fs-sm);line-height:var(--lh-snug);}
+.feedback-error[hidden]{display:none;}
 .feedback-success{text-align:center;padding:20px 0 4px;display:none;}
 .success-icon{font-size:32px;margin-bottom:10px;color:#16a34a;}
 .feedback-success strong{font-size:var(--fs-16);font-weight:var(--fw-bold);letter-spacing:var(--ls-tight);display:block;margin-bottom:6px;}
