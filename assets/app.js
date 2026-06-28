@@ -1814,6 +1814,53 @@ function sourceTag(source) {
   return `<span class="rc-tag rc-tag-${cls}">${esc(label)}</span>`;
 }
 
+// ── Freshness / provenance: as-of stamps, file-ready citations, staleness banner ──
+function fmtAsOf(iso) {
+  try { const d = new Date(iso); if (isNaN(d)) return ''; return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); }
+  catch (e) { return ''; }
+}
+function cleanClauseText(s) {
+  return (s || '')
+    .replace(/L\d+:/g, '')   // strip internal list-level markers (L1:/L2:…)
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function buildCiteBlock(hit) {
+  // generateCitation already returns "<REF> — <Title>", so use it verbatim as the reference line.
+  const ref = (typeof generateCitation === 'function' ? generateCitation(hit) : '') || hit.filename || hit.title || 'Citation';
+  const text = cleanClauseText(hit.content);
+  const label = SOURCE_LABELS[hit.source] || hit.source || '';
+  const asof = hit.indexed_at ? `indexed ${fmtAsOf(hit.indexed_at)}` : '';
+  let out = ref;
+  if (text) out += `\n\n"${text}"`;
+  out += `\n\nSource: AcqVault · ${label}${asof ? ' · ' + asof : ''}`;
+  return out;
+}
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); if (cb) cb();
+}
+function copyResultCite(hit, btn) {
+  const block = buildCiteBlock(hit);
+  const flash = () => { const o = btn.dataset.label || btn.textContent; btn.dataset.label = o; btn.textContent = '✓ Copied'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove('copied'); }, 1800); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(block).then(flash).catch(() => fallbackCopy(block, flash));
+  else fallbackCopy(block, flash);
+}
+(function checkCorpusFreshness() {
+  fetch('/output/corpus-meta.json').then(r => r.ok ? r.json() : null).then(meta => {
+    if (!meta) return;
+    window.__corpusMeta = meta;
+    const gen = meta.generated_at ? new Date(meta.generated_at) : null;
+    if (!gen || isNaN(gen)) return;
+    const days = Math.floor((Date.now() - gen.getTime()) / 86400000);
+    const bar = document.getElementById('stale-bar');
+    if (bar && days > 21) {
+      bar.innerHTML = `<b>Heads up —</b> the regulation text was last refreshed ${days} days ago (${fmtAsOf(meta.generated_at)}). The RFO changes often; verify any citation against the live source before relying on it.`;
+      bar.hidden = false;
+    }
+  }).catch(() => {});
+})();
+
 function renderResults(data, query) {
   const list  = document.getElementById('results-list');
   const label = document.getElementById('result-count-label');
@@ -1830,12 +1877,19 @@ function renderResults(data, query) {
       <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
       ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
       <div class="rc-snippet">${markOnly(hl.content || '')}</div>
+      <div class="rc-foot">
+        <span class="rc-asof">${hit.indexed_at ? `indexed ${esc(fmtAsOf(hit.indexed_at))}` : ''}</span>
+        <button class="rc-cite-btn" type="button" aria-label="Copy a file-ready citation">⧉ Cite</button>
+      </div>
     </div>`;
   }).join('');
   list.querySelectorAll('.result-card').forEach(card => {
-    const open = () => { const hit = hits.find(h => h.id === card.dataset.id); if (hit) openDrawer(hit); };
+    const hit = hits.find(h => h.id === card.dataset.id);
+    const open = () => { if (hit) openDrawer(hit); };
     card.addEventListener('click', open);
     card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    const citeBtn = card.querySelector('.rc-cite-btn');
+    if (citeBtn && hit) citeBtn.addEventListener('click', (e) => { e.stopPropagation(); copyResultCite(hit, citeBtn); });
   });
 }
 
@@ -1982,6 +2036,8 @@ function openDrawer(hit) {
   document.getElementById('drawer-source').textContent = SOURCE_LABELS[hit.source] || hit.source;
   document.getElementById('drawer-part').textContent   = hit.part ? `Part ${displayPartForSource(hit.source, hit.part)}` : '—';
   document.getElementById('drawer-file').textContent   = hit.filename || '—';
+  const drawerAsof = document.getElementById('drawer-asof');
+  if (drawerAsof) drawerAsof.textContent = hit.indexed_at ? `indexed ${fmtAsOf(hit.indexed_at)}` : '—';
   const citation = generateCitation(hit);
   document.getElementById('cite-text').textContent = citation;
   const copyBtn = document.getElementById('cite-copy-btn');

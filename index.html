@@ -32,13 +32,14 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=22">
+<link rel="stylesheet" href="/assets/app.css?v=23">
 </head>
 <body>
 
 <a href="#search-input" class="skip-link" onclick="setTimeout(function(){var s=document.getElementById('search-input');if(s)s.focus();},0);">Skip to search</a>
 
 <div class="offline-bar" id="offline-bar" role="status" aria-live="polite" hidden><b>Offline</b> — full-text search still works. Live spending &amp; SAM.gov data returns when you reconnect.</div>
+<div class="stale-bar" id="stale-bar" role="status" aria-live="polite" hidden></div>
 
 <!-- ABOUT BAR -->
 <div class="about-bar" id="about-bar">
@@ -607,6 +608,7 @@
       <div class="drawer-dl"><dt>Source</dt><dd id="drawer-source"></dd></div>
       <div class="drawer-dl"><dt>Part / Section</dt><dd id="drawer-part"></dd></div>
       <div class="drawer-dl"><dt>File</dt><dd id="drawer-file"></dd></div>
+      <div class="drawer-dl"><dt>As of</dt><dd id="drawer-asof"></dd></div>
     </dl>
     <div class="drawer-content" id="drawer-content"></div>
   </div>
@@ -616,7 +618,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=13"></script>
+<script defer src="/assets/app.js?v=14"></script>
 <script defer src="/assets/saved.js?v=2"></script>
 <script defer src="/assets/widgets.js?v=8"></script>
 <script defer src="/assets/polish.js?v=2"></script>
