@@ -456,6 +456,7 @@
   /* ════════════════════════════════════════════════════════════
      2) ACRONYM DECODER  (lookup + auto-tooltip)
      ════════════════════════════════════════════════════════════ */
+  window.ACRONYMS = ACRONYMS; // expose for the search acronym-assist in app.js (read-only)
   const ACRO_ENTRIES = Object.keys(ACRONYMS).map((k) => ({ term: k, exp: ACRONYMS[k][0], note: ACRONYMS[k][1] || '' }))
     .sort((a, b) => a.term.localeCompare(b.term));
 

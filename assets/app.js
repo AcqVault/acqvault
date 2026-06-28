@@ -1861,6 +1861,27 @@ function copyResultCite(hit, btn) {
   }).catch(() => {});
 })();
 
+// ── Acronym-aware search assist: instant answer + "search the full term" ──
+function acronymHit(q) {
+  var dict = window.ACRONYMS; if (!dict) return null;
+  var key = (q || '').trim();
+  if (!key || key.length > 8) return null; // acronyms are short
+  var found = dict[key] ? key : null;
+  if (!found) { var up = key.toUpperCase(); for (var k in dict) { if (k.toUpperCase() === up) { found = k; break; } } }
+  if (!found) return null;
+  var v = dict[found] || [];
+  return { acr: found, exp: v[0] || '', note: v[1] || '' };
+}
+function showAcronymAssist(q) {
+  var el = document.getElementById('acr-suggest'); if (!el) return;
+  var hit = acronymHit(q);
+  if (!hit || !hit.exp || hit.exp.toLowerCase() === (q || '').trim().toLowerCase()) { el.hidden = true; el.innerHTML = ''; return; }
+  el.innerHTML = '<span class="acr-tag">' + esc(hit.acr) + '</span>' +
+    '<span class="acr-exp"><b>' + esc(hit.exp) + '</b>' + (hit.note ? '<span class="acr-note"> · ' + esc(hit.note) + '</span>' : '') + '</span>' +
+    '<button type="button" class="acr-go" data-exp="' + esc(hit.exp) + '">Search the full term →</button>';
+  el.hidden = false;
+}
+
 function renderResults(data, query) {
   const list  = document.getElementById('results-list');
   const label = document.getElementById('result-count-label');
@@ -2181,6 +2202,7 @@ async function runSearch(options = {}) {
   try {
     const data = await search(q);
     renderResults(data, q);
+    showAcronymAssist(q);
     document.dispatchEvent(new CustomEvent('acqvault:searched', { detail: { q: q } }));
     const total = data.estimatedTotalHits || (data.hits || []).length;
     searchCount.textContent = total ? `${total} results` : '';
@@ -2205,6 +2227,7 @@ function deactivateSearch() {
   document.body.classList.remove('work-mode');
   hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
   searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
+  var asEl = document.getElementById('acr-suggest'); if (asEl) { asEl.hidden = true; asEl.innerHTML = ''; }
 }
 
 searchInput.addEventListener('input', () => {
@@ -2214,6 +2237,13 @@ searchInput.addEventListener('input', () => {
 });
 searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(debounceTimer); if (searchInput.value.trim()) runSearch(); } });
 searchClear.addEventListener('click', () => { searchInput.value = ''; deactivateSearch(); searchInput.focus(); });
+(function () {
+  const as = document.getElementById('acr-suggest');
+  if (as) as.addEventListener('click', (e) => {
+    const b = e.target.closest('.acr-go'); if (!b) return;
+    searchInput.value = b.dataset.exp; runSearch(); searchInput.focus();
+  });
+})();
 
 // ── FILTERS ───────────────────────────────────────────────────────────────────
 document.getElementById('source-filters').addEventListener('click', e => {

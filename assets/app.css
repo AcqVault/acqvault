@@ -688,6 +688,17 @@ body.work-mode .source-tiles-section{display:none;}
 .rc-cite-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 @media (max-width:600px){ .rc-cite-btn{opacity:1;} }
 @media (prefers-reduced-motion:reduce){ .rc-cite-btn{transition:none!important;} }
+/* Acronym-aware search assist (instant answer + "search the full term") */
+.acr-suggest{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 12px;padding:9px 13px;background:var(--accent-soft);border:1px solid var(--accent-bdr);border-radius:var(--r-md);font-size:var(--fs-sm);color:var(--ink2);line-height:var(--lh-snug);}
+.acr-suggest[hidden]{display:none;}
+.acr-tag{flex-shrink:0;font-size:var(--fs-2xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wide);color:#fff;background:var(--accent);border-radius:var(--r-sm);padding:2px 7px;}
+.acr-exp{min-width:0;}
+.acr-exp b{color:var(--ink);font-weight:var(--fw-semibold);}
+.acr-note{color:var(--muted);}
+.acr-go{flex-shrink:0;margin-left:auto;background:none;border:none;color:var(--accent);font-size:var(--fs-sm);font-weight:var(--fw-semibold);cursor:pointer;padding:2px 4px;border-radius:var(--r-sm);white-space:nowrap;}
+.acr-go:hover{text-decoration:underline;}
+.acr-go:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+@media (max-width:600px){ .acr-go{margin-left:0;} }
 .no-results{text-align:center;padding:72px 0;color:var(--muted);font-size:var(--fs-lg);}
 .no-results strong{display:block;font-size:22px;font-weight:var(--fw-bold);color:var(--ink);letter-spacing:-0.03em;margin-bottom:8px;}
 .loading{text-align:center;padding:60px 0;}
