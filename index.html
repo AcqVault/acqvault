@@ -32,7 +32,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=21">
+<link rel="stylesheet" href="/assets/app.css?v=22">
 </head>
 <body>
 
@@ -219,27 +219,27 @@
     <p class="capdir-eyebrow" id="capdir-h">What you can do here</p>
     <div class="capdir-grid">
       <button type="button" class="capdir-tile" onclick="setMode('search');window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){var s=document.getElementById('search-input');if(s)s.focus();},420);">
-        <span class="capdir-ico" aria-hidden="true">⌕</span>
+        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
         <span class="capdir-tt">Search every word</span>
         <span class="capdir-dd">Full-text across all six official sources at once — RFO, R-DFARS &amp; more.</span>
       </button>
       <button type="button" class="capdir-tile" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){setMode('browse');},420);">
-        <span class="capdir-ico" aria-hidden="true">⊞</span>
+        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><line x1="8" y1="8.5" x2="16" y2="8.5"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="15.5" x2="13" y2="15.5"/></svg></span>
         <span class="capdir-tt">Browse by source</span>
         <span class="capdir-dd">Read any source part-by-part — no search query needed.</span>
       </button>
       <button type="button" class="capdir-tile" onclick="var e=document.getElementById('toolkit');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
-        <span class="capdir-ico" aria-hidden="true">▰</span>
+        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="9" cy="8" r="2.4"/><circle cx="15" cy="16" r="2.4"/></svg></span>
         <span class="capdir-tt">Daily toolkit</span>
         <span class="capdir-dd">Dollar thresholds, an acronym decoder, and what's new.</span>
       </button>
       <button type="button" class="capdir-tile" onclick="var e=document.getElementById('market-research');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
-        <span class="capdir-ico" aria-hidden="true">◎</span>
+        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><line x1="12" y1="1.5" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22.5" y2="12"/></svg></span>
         <span class="capdir-tt">Market research</span>
         <span class="capdir-dd">Search live SAM.gov opportunities, awards &amp; set-asides.</span>
       </button>
       <button type="button" class="capdir-tile" onclick="var e=document.getElementById('spending-dashboard');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
-        <span class="capdir-ico" aria-hidden="true">▤</span>
+        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3.5" y1="20" x2="20.5" y2="20"/><rect x="6" y="11" width="3.2" height="9" rx="0.6"/><rect x="11.4" y="7" width="3.2" height="13" rx="0.6"/><rect x="16.8" y="14" width="3.2" height="6" rx="0.6"/></svg></span>
         <span class="capdir-tt">Live AF spending</span>
         <span class="capdir-dd">Where the Air Force is putting its money, from USASpending.</span>
       </button>
