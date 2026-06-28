@@ -2262,3 +2262,14 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
 .fcard:nth-of-type(2) { animation: hero-rise .85s .50s cubic-bezier(0.16,1,0.3,1) both; }
 .fcard:nth-of-type(3) { animation: hero-rise .85s .60s cubic-bezier(0.16,1,0.3,1) both; }
 @media (prefers-reduced-motion: reduce) { .fcard { animation: none; } }
+
+/* ══ SIGNATURE — guilloché engraving behind the vault dial ════════════════════
+   The fine interwoven line-work of currency/securities/certificates: grounds
+   AcqVault as an official federal instrument. Engine-turns very slowly. */
+.vault-guilloche{position:absolute;inset:1%;z-index:0;pointer-events:none;
+  background:url(/assets/guilloche.svg) center/contain no-repeat;
+  opacity:.52;mix-blend-mode:screen;
+  animation:guilloche-turn 90s linear infinite;}
+@keyframes guilloche-turn{to{transform:rotate(360deg);}}
+.vault-panel > .vault-dial-big,.vault-panel > .vault-panel-tag{position:relative;z-index:1;}
+@media (prefers-reduced-motion:reduce){.vault-guilloche{animation:none;}}
