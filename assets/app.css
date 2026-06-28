@@ -2162,3 +2162,14 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
   .capdir-ico{width:30px;height:30px;}
 }
 @media (prefers-reduced-motion:reduce){ .capdir-tile{transition:none!important;} }
+
+/* ══ PREMIUM POLISH — coherent elevation, editorial eyebrows, vault light ══════ */
+/* 1) Navy-tinted elevation token so every card is lit by one source */
+:root{ --shadow-brand-md: 0 2px 6px rgba(14,63,128,.06), 0 16px 36px -14px rgba(14,63,128,.18); }
+.feat:hover, .capdir-tile:hover{ box-shadow: var(--shadow-brand-md); }
+/* 2) Editorial section-eyebrow lockup — a short accent rule leads each section in.
+      currentColor adapts to accent on light bands and white/cyan on dark bands. */
+.eyebrow{ display:inline-flex; align-items:center; gap:9px; }
+.eyebrow::before{ content:""; width:18px; height:2px; border-radius:2px; background:currentColor; opacity:.55; }
+/* 3) Vault panel — soft volumetric top light (extra background layer; stays behind the dial) */
+.vault-panel{ background: radial-gradient(120% 80% at 50% 0%, rgba(124,201,238,0.12), transparent 55%), linear-gradient(155deg,#15233b 0%,#0c1a30 55%,#091324 100%); }
