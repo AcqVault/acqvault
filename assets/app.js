@@ -2437,24 +2437,7 @@ document.getElementById('feedback-form').addEventListener('submit', async e => {
   }
 });
 
-// ── PARTICLES ─────────────────────────────────────────────────────────────────
-const canvas = document.getElementById('particles');
-const ctx    = canvas.getContext('2d');
-let pts = [];
-function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-function initPts() { pts = []; for (let i = 0; i < 90; i++) pts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28, r:Math.random()*1.4+.4 }); }
-function drawFrame() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  pts.forEach(p => { p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>canvas.width)p.vx*=-1; if(p.y<0||p.y>canvas.height)p.vy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fill(); });
-  for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(255,255,255,${.055*(1-d/130)})`;ctx.lineWidth=.5;ctx.stroke();}}
-  requestAnimationFrame(drawFrame);
-}
-if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  canvas.style.display = 'none';
-} else {
-  window.addEventListener('resize', () => { resizeCanvas(); initPts(); });
-  resizeCanvas(); initPts(); drawFrame();
-}
+// ── (particle canvas removed — generic decoration + a continuous O(n²) loop) ───
 
 // ── TYPING ANIMATION ──────────────────────────────────────────────────────────
 const QUERIES=[["sole source justification","47"],["RFO 6.302-1 only one source","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["DoD FMR volume 3 payments","34"],["DAFI 63-138 services acquisition","12"],["other than full and open competition","34"],["undefinitized contract action","12"]];
@@ -2806,6 +2789,7 @@ function setHeroQuoteMode(mode, options = {}) {
 }
 
 (function initHeroQuote() {
+  if (!document.getElementById('hero-quote-text')) return; // quote block removed — skip (also avoids a blocked third-party fetch)
   document.querySelectorAll('.hero-quote-mode').forEach(btn => {
     btn.addEventListener('click', e => {
       e.preventDefault();
