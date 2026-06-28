@@ -1081,7 +1081,66 @@
     initMarketResearch();
     initDashboard();
     loadWhatsNew();
+    initMobileNav();
     // Deep-link restore (?q=, ?src=, ?doc=) is owned by app.js restoreFromUrl().
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     MOBILE NAV — hamburger + slide-down sheet (≤768px)
+     ════════════════════════════════════════════════════════════ */
+  function initMobileNav() {
+    const btn = $('#nav-hamburger'), menu = $('#mobile-menu'),
+          backdrop = $('#mobile-menu-backdrop'), list = $('#mobile-menu-list');
+    if (!btn || !menu || !backdrop || !list) return;
+    let isOpen = false;
+    function buildList() {
+      let html = '';
+      document.querySelectorAll('nav .nav-center a').forEach((a) => {
+        html += `<a class="mm-link" href="${esc(a.getAttribute('href') || '#')}">${esc(a.textContent.trim())}<span class="mm-arrow" aria-hidden="true">→</span></a>`;
+      });
+      html += `<button type="button" class="mm-link mm-action" data-mm="saved">★ Saved<span class="mm-arrow" aria-hidden="true">→</span></button>`;
+      html += `<button type="button" class="mm-link mm-action" data-mm="feedback">Feedback<span class="mm-arrow" aria-hidden="true">→</span></button>`;
+      list.innerHTML = html;
+    }
+    function open() {
+      buildList();
+      const nav = document.getElementById('main-nav');
+      const bottom = nav ? nav.getBoundingClientRect().bottom : 90;
+      menu.style.top = Math.max(56, Math.round(bottom + 6)) + 'px';
+      menu.hidden = false; backdrop.hidden = false;
+      void menu.offsetHeight; // force reflow so the open transition runs reliably
+      menu.classList.add('open'); backdrop.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true'); btn.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      isOpen = true;
+    }
+    function close() {
+      if (!isOpen) return;
+      isOpen = false;
+      menu.classList.remove('open'); backdrop.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false'); btn.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => { if (!isOpen) { menu.hidden = true; backdrop.hidden = true; } }, 280);
+    }
+    btn.addEventListener('click', () => isOpen ? close() : open());
+    backdrop.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) close(); });
+    list.addEventListener('click', (e) => {
+      const el = e.target.closest('.mm-link'); if (!el) return;
+      const action = el.dataset.mm;
+      if (action === 'saved') { close(); const sv = $('#nav-saved'); if (sv) setTimeout(() => sv.click(), 60); return; }
+      if (action === 'feedback') { close(); if (typeof openFeedback === 'function') setTimeout(openFeedback, 60); return; }
+      const href = el.getAttribute('href');
+      if (href && href.charAt(0) === '#') {
+        e.preventDefault();
+        const target = document.getElementById(href.slice(1));
+        close();
+        if (target) setTimeout(() => {
+          const off = (typeof getStickyOffset === 'function' ? getStickyOffset() : 70) + 26;
+          window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - off), behavior: 'smooth' });
+        }, 80);
+      } else { close(); /* route link (e.g. /deviations) navigates normally */ }
+    });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
