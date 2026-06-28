@@ -2208,6 +2208,25 @@ document.getElementById('drawer-close').addEventListener('click', closeDrawer);
 document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeFeedback(); } });
 
+// ── Keyboard: "/" or ⌘K / Ctrl-K focuses search from anywhere ─────────────────
+document.addEventListener('keydown', (e) => {
+  const tag = (e.target && e.target.tagName) || '';
+  const inField = /^(INPUT|TEXTAREA|SELECT)$/.test(tag) || (e.target && e.target.isContentEditable);
+  const cmdK = (e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K');
+  const slash = e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey && !inField;
+  if (!cmdK && !slash) return;
+  if (document.body.classList.contains('reader-mode')) return;
+  const fb = document.getElementById('feedback-modal');
+  if (fb && fb.classList.contains('open')) return;
+  e.preventDefault();
+  const drawer = document.getElementById('drawer');
+  if (drawer && drawer.classList.contains('open')) closeDrawer();
+  const si = document.getElementById('search-input');
+  if (!si) return;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => { si.focus(); si.select(); }, 160);
+});
+
 // ── SEARCH INPUT & LIFECYCLE ──────────────────────────────────────────────────
 const hero           = document.getElementById('hero');
 const resultsSection = document.getElementById('results-section');
