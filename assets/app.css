@@ -2205,3 +2205,30 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
 .eyebrow::before{ content:""; width:18px; height:2px; border-radius:2px; background:currentColor; opacity:.55; }
 /* 3) Vault panel — soft volumetric top light (extra background layer; stays behind the dial) */
 .vault-panel{ background: radial-gradient(120% 80% at 50% 0%, rgba(124,201,238,0.12), transparent 55%), linear-gradient(155deg,#15233b 0%,#0c1a30 55%,#091324 100%); }
+
+/* ══ INSTRUMENT PASS — de-generic-AI the hero ════════════════════════════════
+   Removes two AI-template tells: the multi-blob "aurora" atmosphere and the
+   frosted-glass floating cards. The hero now reads as an engineered federal
+   instrument (the vault) flanked by precise data readouts, not glassy SaaS. */
+/* Atmosphere: one calm, static light instead of three drifting blurred blobs */
+.aurora-2, .aurora-3 { display: none; }
+.aurora-1 { animation: none !important; opacity: .28; filter: blur(100px); }
+/* Floating cards: solid white instrument plates (no backdrop-filter glass),
+   a hairline cyan readout-rule, monospace figures = regulatory/data texture */
+.fcard, .fcard.side-ticker {
+  background: #ffffff;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  box-shadow: var(--shadow-brand-md);
+}
+.fcard::before {
+  content: ""; position: absolute; left: 14px; right: 14px; top: 0; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: .55;
+}
+.fcard-bignum, .fcard .st-big-num { font-family: var(--font-mono); letter-spacing: -0.02em; }
+/* Fixed readouts, not bobbing glass — keep the staggered entrance, drop the float loop */
+.fcard { animation: hero-rise .85s .40s cubic-bezier(0.16,1,0.3,1) both; }
+.fcard:nth-of-type(2) { animation: hero-rise .85s .50s cubic-bezier(0.16,1,0.3,1) both; }
+.fcard:nth-of-type(3) { animation: hero-rise .85s .60s cubic-bezier(0.16,1,0.3,1) both; }
+@media (prefers-reduced-motion: reduce) { .fcard { animation: none; } }
