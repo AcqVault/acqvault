@@ -401,11 +401,51 @@
     var nav = document.getElementById('nav-saved'); if (nav) nav.focus();
   }
 
+  // ── First-run coachmark: teach pin + change-tracking (shown once, ever) ──────
+  var COACH_KEY = 'acqvault_pin_coach_seen';
+  var coachReposition = null;
+  function dismissPinCoach() {
+    var tip = document.getElementById('pin-coach');
+    if (tip && tip.parentNode) tip.parentNode.removeChild(tip);
+    if (coachReposition) {
+      window.removeEventListener('resize', coachReposition);
+      window.removeEventListener('scroll', coachReposition, true);
+      coachReposition = null;
+    }
+  }
+  function positionPinCoach(tip, anchor, allowDismiss) {
+    var r = anchor.getBoundingClientRect();
+    if (allowDismiss && (r.bottom < 8 || r.top > window.innerHeight - 8)) { dismissPinCoach(); return; }
+    var w = Math.min(300, window.innerWidth - 24);
+    tip.style.width = w + 'px';
+    tip.style.left = Math.max(12, Math.min(r.right - w, window.innerWidth - w - 12)) + 'px';
+    tip.style.top = Math.max(12, Math.min(r.bottom + 10, window.innerHeight - 96)) + 'px';
+  }
+  function maybeShowPinCoach() {
+    try { if (localStorage.getItem(COACH_KEY)) return; } catch (e) { return; }
+    if (state.clauses.length) return;                 // already a pinner — no lesson needed
+    if (document.getElementById('pin-coach')) return; // already showing
+    var firstPin = document.querySelector('#results-list .rc-pin');
+    if (!firstPin) return;
+    try { localStorage.setItem(COACH_KEY, '1'); } catch (e) {} // show once, ever
+    var tip = document.createElement('div');
+    tip.id = 'pin-coach'; tip.className = 'pin-coach'; tip.setAttribute('role', 'status');
+    tip.innerHTML = '<span class="pin-coach-star" aria-hidden="true">★</span>' +
+      '<span class="pin-coach-text"><b>Save the clauses you rely on.</b> AcqVault flags you the moment the RFO text changes — and shows you exactly what.</span>' +
+      '<button type="button" class="pin-coach-x" aria-label="Dismiss">✕</button>';
+    document.body.appendChild(tip);
+    positionPinCoach(tip, firstPin, false);
+    coachReposition = function () { var t = document.getElementById('pin-coach'); if (t) positionPinCoach(t, firstPin, true); };
+    window.addEventListener('resize', coachReposition);
+    window.addEventListener('scroll', coachReposition, true);
+    tip.querySelector('.pin-coach-x').addEventListener('click', dismissPinCoach);
+  }
+
   // ── Event wiring ─────────────────────────────────────────────────────────
   // Capture-phase for the card ★ so it never bubbles into the card's open-drawer handler.
   function onClickCapture(e) {
     var star = e.target.closest && e.target.closest('.rc-pin');
-    if (star) { e.preventDefault(); e.stopPropagation(); toggleClause(hitFromStar(star)); }
+    if (star) { e.preventDefault(); e.stopPropagation(); dismissPinCoach(); toggleClause(hitFromStar(star)); }
   }
   function onKeydownCapture(e) {
     if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
@@ -451,7 +491,7 @@
     document.addEventListener('click', onClick);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panelOpen) closePanel(); });
     document.addEventListener('acqvault:draweropen', onDrawerOpen);
-    document.addEventListener('acqvault:searched', refreshSaveSearchBtn);
+    document.addEventListener('acqvault:searched', function (e) { refreshSaveSearchBtn(e); setTimeout(maybeShowPinCoach, 650); });
     var si = document.getElementById('search-input');
     if (si) si.addEventListener('input', refreshSaveSearchBtn);
     updateCounts();
