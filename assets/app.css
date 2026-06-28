@@ -1035,6 +1035,12 @@ body.work-mode .source-tiles-section{display:none;}
 .drawer-newtab-btn .newtab-icon{font-size:var(--fs-base);line-height:var(--lh-none);}
 .drawer-newtab-btn:hover{background:var(--accent-h);color:#fff;transform:translateY(-1px);}
 .drawer-meta{padding:9px 18px;border-bottom:1px solid var(--line2);display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex-shrink:0;}
+.drawer-deviation{padding:10px 18px;border-bottom:1px solid var(--line2);background:rgba(79,182,232,.07);display:flex;flex-wrap:wrap;align-items:center;gap:9px;flex-shrink:0;font-size:var(--fs-xs);line-height:1.45;color:var(--ink2);}
+.dev-tag{flex-shrink:0;font-size:var(--fs-2xs);font-weight:750;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:var(--accent);padding:3px 9px;border-radius:999px;}
+.dev-body{min-width:0;font-variant-numeric:tabular-nums;}
+.dev-body a{color:var(--accent);font-weight:650;text-decoration:none;white-space:nowrap;}
+.dev-body a:hover{text-decoration:underline;}
+.dev-verify{display:block;font-size:var(--fs-2xs);color:var(--muted2);margin-top:3px;}
 .drawer-cite-bar{padding:8px 18px;background:var(--off);border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .cite-label{font-size:var(--fs-2xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wider);text-transform:uppercase;color:var(--muted2);white-space:nowrap;}
 .cite-text{flex:1;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--ink2);font-family:var(--font-mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}

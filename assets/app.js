@@ -2112,6 +2112,8 @@ function openDrawer(hit) {
     linkBtn.onclick = () => copyTextTo(window.location.href, linkBtn, 'Copy link');
   }
   document.getElementById('drawer-meta').innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
+  renderDrawerDeviation(hit);
+  loadDeviations().then(() => { if (activeDocId === hit.id) renderDrawerDeviation(hit); });
   const drawerOrig = document.getElementById('drawer-orig');
   if (hit.source === 'compass') { drawerOrig.style.display = 'none'; }
   else { drawerOrig.style.display = ''; drawerOrig.href = hit.url || SOURCE_URLS[hit.source] || '#'; }
@@ -2206,6 +2208,39 @@ function copyTextTo(text, btn, label) {
   });
 }
 function copyCitation(citation, btn) { copyTextTo(citation, btn, 'Copy'); }
+
+// ── Deviation crosswalk: mechanical pointer from a clause's part to the DoD class deviation ──
+let DEVIATIONS = null, deviationsPromise = null;
+function loadDeviations() {
+  if (DEVIATIONS) return Promise.resolve(DEVIATIONS);
+  if (deviationsPromise) return deviationsPromise;
+  deviationsPromise = fetch('/output/deviations.json')
+    .then(r => r.ok ? r.json() : [])
+    .then(j => { DEVIATIONS = Array.isArray(j) ? j : []; return DEVIATIONS; })
+    .catch(() => { DEVIATIONS = []; return DEVIATIONS; });
+  return deviationsPromise;
+}
+function deviationFor(hit) {
+  if (!hit || !DEVIATIONS) return null;
+  if (hit.source !== 'rfo' && hit.source !== 'r-dfars') return null;
+  // Match on the DISPLAYED part: RFO shows e.g. "6", R-DFARS shows the DFARS number e.g. "203".
+  const disp = (typeof displayPartForSource === 'function') ? displayPartForSource(hit.source, hit.part) : hit.part;
+  const p = String(disp || '').split(/[.\- ]/)[0].trim();
+  if (!p) return null;
+  return DEVIATIONS.find(d => hit.source === 'rfo' ? String(d.rfo_part) === p : String(d.dfars_part) === p) || null;
+}
+function renderDrawerDeviation(hit) {
+  const el = document.getElementById('drawer-deviation');
+  if (!el) return;
+  const d = deviationFor(hit);
+  if (!d) { el.hidden = true; el.innerHTML = ''; return; }
+  const memo = d.pdf_url ? ` · <a href="${esc(d.pdf_url)}" target="_blank" rel="noopener">signed memo ↗</a>` : '';
+  el.innerHTML = `<span class="dev-tag">DoD class deviation</span>` +
+    `<span class="dev-body">DARS ${esc(d.dars)} · effective ${esc(d.effective)} · RFO Part ${esc(d.rfo_part)} ↔ legacy DFARS Part ${esc(d.dfars_part)}${memo}` +
+    `<span class="dev-verify">Mechanical pointer — confirm against the official source.</span></span>`;
+  el.hidden = false;
+}
+loadDeviations(); // warm the small (~14KB) crosswalk on load
 
 document.getElementById('drawer-close').addEventListener('click', closeDrawer);
 document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
