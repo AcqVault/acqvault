@@ -452,6 +452,7 @@
   }
   /* ── Threshold Decision Helper (deterministic: pure comparison to the cited THRESHOLDS) ── */
   window.THRESHOLDS = THRESHOLDS; // single source of truth (mirrors window.ACRONYMS pattern)
+  let thrLast = null; // last computed {amt, scope, band, triggers} for the "Copy as file note" action
   const thrScopeVal = (t) => (thrScope === 'con' ? t.con : t.std);
   const thrFind = (pred) => THRESHOLDS.find(pred);
   function parseAmount(raw) {
@@ -502,16 +503,18 @@
       { row: thrFind((t) => /Subcontracting/i.test(t.name)), label: 'Subcontracting plan', cond: 'for other-than-small businesses when subcontracting opportunities exist' },
       { row: thrFind((t) => t.abbr === 'J&A'), label: 'J&A — first approval tier', cond: 'only when awarding other than full and open competition' }
     ];
-    const trigRows = triggerDefs.filter((d) => d.row).map((d) => {
-      const v = thrScopeVal(d.row), on = amt > v;
-      return `<div class="thr-trig ${on ? 'on' : 'off'}">
-        <span class="thr-trig-mark" aria-hidden="true">${on ? '●' : '○'}</span>
+    const triggers = triggerDefs.filter((d) => d.row).map((d) => {
+      const v = thrScopeVal(d.row);
+      return { label: d.label, cite: d.row.cite, on: amt > v, value: v, cond: d.cond };
+    });
+    thrLast = { amt: amt, scope: thrScope, band: band, triggers: triggers };
+    const trigRows = triggers.map((t) => `<div class="thr-trig ${t.on ? 'on' : 'off'}">
+        <span class="thr-trig-mark" aria-hidden="true">${t.on ? '●' : '○'}</span>
         <span class="thr-trig-body">
-          <span class="thr-trig-label">${esc(d.label)} <button type="button" class="thr-trig-cite" data-cite="${esc(d.row.cite)}">${esc(d.row.cite)}</button></span>
-          <span class="thr-trig-detail">${on ? 'Generally required above' : 'Not required at or below'} ${fmtExact(v)}${on ? ` — ${esc(d.cond)}` : ''}.</span>
+          <span class="thr-trig-label">${esc(t.label)} <button type="button" class="thr-trig-cite" data-cite="${esc(t.cite)}">${esc(t.cite)}</button></span>
+          <span class="thr-trig-detail">${t.on ? 'Generally required above' : 'Not required at or below'} ${fmtExact(t.value)}${t.on ? ` — ${esc(t.cond)}` : ''}.</span>
         </span>
-      </div>`;
-    }).join('');
+      </div>`).join('');
     out.classList.add('on');
     out.innerHTML = `
       <div class="thr-band thr-band-${band.cls}">
@@ -521,7 +524,31 @@
       </div>
       <div class="thr-trig-head">At ${fmtExact(amt)}, these thresholds are crossed${thrScope === 'con' ? ' (contingency ceilings)' : ''}:</div>
       <div class="thr-trig-list">${trigRows}</div>
-      <div class="thr-calc-verify">A mechanical comparison to the cited thresholds below — always verify against the live RFO and any class deviations before acting.</div>`;
+      <div class="thr-calc-foot-row">
+        <span class="thr-calc-verify">A mechanical comparison to the cited thresholds below — always verify against the live RFO and any class deviations before acting.</span>
+        <button type="button" class="thr-note-btn">⧉ Copy as file note</button>
+      </div>`;
+  }
+  function buildThrNote(t) {
+    if (!t) return '';
+    const lines = [];
+    lines.push(`Threshold check — ${fmtExact(t.amt)}${t.scope === 'con' ? ' (contingency / emergency ceilings)' : ' (standard)'}`);
+    lines.push('');
+    lines.push(`Regime: ${t.band.tag}. ${t.band.desc}`);
+    lines.push('');
+    lines.push(`Thresholds at ${fmtExact(t.amt)}:`);
+    t.triggers.forEach((tr) => {
+      lines.push(`  - ${tr.label} — ${tr.on ? 'generally required above' : 'not required at or below'} ${fmtExact(tr.value)} (${tr.cite})${tr.on ? ` — ${tr.cond}` : ''}.`);
+    });
+    lines.push('');
+    lines.push('Mechanical comparison to current thresholds — verify against the live RFO and any class deviations before acting. (via AcqVault)');
+    return lines.join('\n');
+  }
+  function copyThrNote(btn) {
+    const text = buildThrNote(thrLast);
+    if (!text) return;
+    if (typeof window.copyTextTo === 'function') window.copyTextTo(text, btn, '⧉ Copy as file note');
+    else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text);
   }
   function initThresholds() {
     const scope = $('#thr-scope'); if (!scope) return;
@@ -542,6 +569,7 @@
     }
     if (clr) clr.addEventListener('click', () => { amt.value = ''; amt.focus(); renderThrCalc(); });
     if (out) out.addEventListener('click', (e) => {
+      const note = e.target.closest('.thr-note-btn'); if (note) { copyThrNote(note); return; }
       const b = e.target.closest('[data-cite]'); if (b) thrJumpToCite(b.dataset.cite);
     });
     renderThrCalc();
