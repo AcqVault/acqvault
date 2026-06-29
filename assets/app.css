@@ -2280,14 +2280,16 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
    AcqVault as an official federal instrument. Engine-turns very slowly,
    CLIPPED to the vault face so the rotation never spills past the panel edge. */
 .vault-panel{overflow:hidden;}
-/* Tight engraved ring framing the dial — kept clear of the SECURED INDEX tag.
-   Square, centered on the dial via margin (so transform stays free for the
-   rotation); clipped by the panel so rotation never spills. */
-.vault-guilloche{position:absolute;top:50%;left:50%;width:66%;aspect-ratio:1;margin:-33% 0 0 -33%;
-  z-index:0;pointer-events:none;
+/* Centered, full vault-face engraving — concentric with the dial (symmetric inset
+   so it's perfectly centered), clipped by the panel so rotation never spills. */
+.vault-guilloche{position:absolute;inset:-3%;z-index:0;pointer-events:none;
   background:url(/assets/guilloche.svg) center/contain no-repeat;
   opacity:.5;mix-blend-mode:screen;transform-origin:center;
   animation:guilloche-turn 110s linear infinite;}
 @keyframes guilloche-turn{to{transform:rotate(360deg);}}
-.vault-panel > .vault-dial-big,.vault-panel > .vault-panel-tag{position:relative;z-index:1;}
+/* Soft navy vignette at the bottom (doesn't rotate) — fades the engraving out
+   where the SECURED INDEX tag sits so the text reads on clean navy. */
+.vault-panel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;z-index:1;pointer-events:none;
+  background:linear-gradient(to top,#091324 6%,rgba(9,19,36,0.72) 42%,transparent 100%);}
+.vault-panel > .vault-dial-big,.vault-panel > .vault-panel-tag{position:relative;z-index:2;}
 @media (prefers-reduced-motion:reduce){.vault-guilloche{animation:none;}}
