@@ -32,7 +32,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=51">
+<link rel="stylesheet" href="/assets/app.css?v=52">
 </head>
 <body>
 
@@ -382,38 +382,57 @@
 
 <!-- LIBRARY (resource repository: originals + templates + source PDFs; full page at /library) -->
 <section class="sec sec-white" id="library" aria-labelledby="library-h">
+  <div class="lib-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div>
   <div class="sec-inner">
     <p class="eyebrow eyebrow-dark fade-up">Library</p>
     <h2 class="sec-head fade-up" id="library-h">Guides, templates,<br>and the full rulebook.</h2>
     <p class="sec-sub sec-sub-dark fade-up">AcqVault originals plus the full text of every indexed source — one place to pull what you need. Free, no account, straight to your device.</p>
     <div class="lib-feature-grid fade-up">
-      <a class="lib-feature" href="/pdfs/acqvault-field-guide-vol-1.pdf?v=2" download="AcqVault-Field-Guide-Vol-1.pdf" rel="noopener">
-        <span class="lib-feature-kind">Field Guide</span>
-        <span class="lib-feature-title">AcqVault Field Guide — Vol. 1</span>
-        <span class="lib-feature-sub">Air Force Contracting Foundations</span>
-        <span class="lib-feature-foot"><span class="lib-feature-meta">PDF · 39 pp</span><span class="lib-feature-dl">↓ Download</span></span>
+      <a class="lib-feature lib-feature--guide" href="/pdfs/acqvault-field-guide-vol-1.pdf?v=2" download="AcqVault-Field-Guide-Vol-1.pdf" rel="noopener">
+        <div class="lib-cover">
+          <svg class="lib-cover-glyph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>
+          <span class="lib-cover-kind">Field Guide</span>
+          <span class="lib-cover-vol"><small>Volume</small>I</span>
+        </div>
+        <div class="lib-feature-body">
+          <span class="lib-feature-title">Contracting Foundations</span>
+          <span class="lib-feature-sub">The essentials, start to finish — for anyone new to acquisition.</span>
+          <span class="lib-feature-foot"><span class="lib-feature-meta">PDF · 39 pp</span><span class="lib-dl-btn">Download ↓</span></span>
+        </div>
       </a>
-      <a class="lib-feature" href="/pdfs/acqvault-field-guide-vol-2.pdf?v=2" download="AcqVault-Field-Guide-Vol-2.pdf" rel="noopener">
-        <span class="lib-feature-kind">Field Guide</span>
-        <span class="lib-feature-title">AcqVault Field Guide — Vol. 2</span>
-        <span class="lib-feature-sub">The Unlimited Warrant Board</span>
-        <span class="lib-feature-foot"><span class="lib-feature-meta">PDF · 95 pp</span><span class="lib-feature-dl">↓ Download</span></span>
+      <a class="lib-feature lib-feature--guide" href="/pdfs/acqvault-field-guide-vol-2.pdf?v=2" download="AcqVault-Field-Guide-Vol-2.pdf" rel="noopener">
+        <div class="lib-cover">
+          <svg class="lib-cover-glyph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>
+          <span class="lib-cover-kind">Field Guide</span>
+          <span class="lib-cover-vol"><small>Volume</small>II</span>
+        </div>
+        <div class="lib-feature-body">
+          <span class="lib-feature-title">The Unlimited Warrant Board</span>
+          <span class="lib-feature-sub">Board-ready prep with Know-Cold and self-test layers.</span>
+          <span class="lib-feature-foot"><span class="lib-feature-meta">PDF · 95 pp</span><span class="lib-dl-btn">Download ↓</span></span>
+        </div>
       </a>
-      <a class="lib-feature" href="/pdfs/casper-mfr-template.pdf?v=2" download="AcqVault-CASPER-MFR-Template.pdf" rel="noopener">
-        <span class="lib-feature-kind">Template</span>
-        <span class="lib-feature-title">CASPER MFR</span>
-        <span class="lib-feature-sub">Contract Acquisition Strategy, Pricing &amp; Execution Review</span>
-        <span class="lib-feature-foot"><span class="lib-feature-meta">Interactive PDF · 5 pp</span><span class="lib-feature-dl">↓ Download</span></span>
+      <a class="lib-feature lib-feature--tmpl" href="/pdfs/casper-mfr-template.pdf?v=2" download="AcqVault-CASPER-MFR-Template.pdf" rel="noopener">
+        <div class="lib-cover">
+          <svg class="lib-cover-glyph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>
+          <span class="lib-cover-kind">Template</span>
+          <span class="lib-cover-vol"><small>Interactive</small>MFR</span>
+        </div>
+        <div class="lib-feature-body">
+          <span class="lib-feature-title">CASPER MFR</span>
+          <span class="lib-feature-sub">Contract Acquisition Strategy, Pricing &amp; Execution Review.</span>
+          <span class="lib-feature-foot"><span class="lib-feature-meta">Interactive PDF · 5 pp</span><span class="lib-dl-btn">Download ↓</span></span>
+        </div>
       </a>
     </div>
     <div class="lib-sources fade-up">
       <div class="lib-sources-label">Source documents — full text, one clean PDF each</div>
-      <div class="lib-sources-row">
-        <a class="lib-src-chip" href="/pdfs/rfo.pdf" download="AcqVault-RFO.pdf" rel="noopener">RFO <span aria-hidden="true">↓</span></a>
-        <a class="lib-src-chip" href="/pdfs/r-dfars.pdf" download="AcqVault-R-DFARS.pdf" rel="noopener">R-DFARS <span aria-hidden="true">↓</span></a>
-        <a class="lib-src-chip" href="/pdfs/far-companion.pdf" download="AcqVault-FAR-Companion.pdf" rel="noopener">FAR Companion <span aria-hidden="true">↓</span></a>
-        <a class="lib-src-chip" href="/pdfs/category-management-buying-guide.pdf" download="AcqVault-Category-Management-Buying-Guide.pdf" rel="noopener">Category Management <span aria-hidden="true">↓</span></a>
-        <a class="lib-src-chip" href="/pdfs/dafi63-138.pdf" download="AcqVault-DAFI-63-138.pdf" rel="noopener">DAFI 63-138 <span aria-hidden="true">↓</span></a>
+      <div class="lib-src-grid">
+        <a class="lib-src" data-src="rfo" href="/pdfs/rfo.pdf" download="AcqVault-RFO.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">RFO</span><span class="lib-src-meta">Full-text PDF</span></a>
+        <a class="lib-src" data-src="r-dfars" href="/pdfs/r-dfars.pdf" download="AcqVault-R-DFARS.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">R-DFARS</span><span class="lib-src-meta">Full-text PDF</span></a>
+        <a class="lib-src" data-src="far-companion" href="/pdfs/far-companion.pdf" download="AcqVault-FAR-Companion.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">FAR Companion</span><span class="lib-src-meta">Full-text PDF</span></a>
+        <a class="lib-src" data-src="category-management" href="/pdfs/category-management-buying-guide.pdf" download="AcqVault-Category-Management-Buying-Guide.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">Category Mgmt</span><span class="lib-src-meta">Full-text PDF</span></a>
+        <a class="lib-src" data-src="afi" href="/pdfs/dafi63-138.pdf" download="AcqVault-DAFI-63-138.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">DAFI 63-138</span><span class="lib-src-meta">Full-text PDF</span></a>
       </div>
     </div>
     <div class="lib-cta-row fade-up">
