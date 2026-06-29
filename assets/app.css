@@ -520,7 +520,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 
   /* ── TYPE TOKENS (Pass 1: safe, size-preserving) ───────────── */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  --font-mono: 'SF Mono', 'Menlo', 'Cascadia Mono', 'Cascadia Code', 'Consolas', 'Roboto Mono', 'DejaVu Sans Mono', 'Liberation Mono', 'Courier New', monospace;
 
   --fw-regular: 400;
   --fw-medium: 500;
@@ -620,12 +620,11 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(21,95,191
 
 /* ── HERO — dark, professional ── */
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--top-chrome) + 60px) 24px 80px;text-align:center;overflow:visible;overflow-anchor:none;background:linear-gradient(165deg,#f3f6fb 0%,#eaf0f9 46%,#f4f1ee 100%);}
-.hero-grain{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.45;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+/* (hero grain removed — de-slop) */
 /* Stripe-style grid overlay */
 .hero::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(21,95,191,0.12) 0%,transparent 60%);}
 .hero::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(14,63,128,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(14,63,128,0.07) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 10%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 10%,transparent 100%);}
 .hero.search-active,.hero.browse-active,.hero.fulltext-active{min-height:0;padding:calc(var(--top-chrome) + 20px) 24px 24px;overflow:visible;}
-#particles{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:0.08;}
 
 .hero-content{position:relative;z-index:2;width:100%;max-width:860px;}
 
@@ -1797,23 +1796,7 @@ body.work-mode #quick-links{margin-top:0;}
    Light/airy but ALIVE. All motion stilled under reduced-motion.
    ═══════════════════════════════════════════════════════════════ */
 
-/* ---- Aurora / mesh-gradient background ---- */
-.hero-aurora{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-.aurora-blob{position:absolute;border-radius:50%;filter:blur(72px);mix-blend-mode:multiply;will-change:transform;}
-.aurora-1{width:780px;height:780px;left:-160px;top:-260px;opacity:.58;
-  background:radial-gradient(circle,#9cc7ff 0%,rgba(156,199,255,0) 70%);
-  animation:aurora-drift-a 22s ease-in-out infinite alternate;}
-.aurora-2{width:680px;height:680px;right:-180px;top:-120px;opacity:.5;
-  background:radial-gradient(circle,#7dd3fc 0%,rgba(124,201,238,0) 70%);
-  animation:aurora-drift-b 26s ease-in-out infinite alternate;}
-.aurora-3{width:760px;height:760px;left:34%;bottom:-380px;opacity:.46;
-  background:radial-gradient(circle,#bfe0ff 0%,rgba(191,224,255,0) 70%);
-  animation:aurora-drift-c 30s ease-in-out infinite alternate;}
-@keyframes aurora-drift-a{0%{transform:translate(0,0) scale(1)}100%{transform:translate(70px,46px) scale(1.1)}}
-@keyframes aurora-drift-b{0%{transform:translate(0,0) scale(1.02)}100%{transform:translate(-60px,40px) scale(1.12)}}
-@keyframes aurora-drift-c{0%{transform:translate(0,0) scale(1)}100%{transform:translate(50px,-40px) scale(1.08)}}
-/* keep the canvas particle layer subtle over the brighter aurora */
-#particles{opacity:0.05;mix-blend-mode:overlay;}
+/* (aurora + particle layers removed — de-slop) */
 
 /* ---- Rotating glowing dial ring around the vault wordmark logo ---- */
 .vault-mark{position:relative;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -1831,7 +1814,7 @@ body.work-mode #quick-links{margin-top:0;}
   background:linear-gradient(100deg,var(--accent),var(--cyan),#7dd3fc,var(--accent));
   background-size:300% 100%;filter:blur(13px);transition:opacity .35s ease;pointer-events:none;}
 .search-bar{position:relative;z-index:1;}
-.search-container:focus-within .search-glow{opacity:.6;animation:search-glow-move 6s linear infinite;}
+.search-container:focus-within .search-glow{opacity:.5;}
 @keyframes search-glow-move{0%{background-position:0% 50%}100%{background-position:300% 50%}}
 
 /* ---- Live dots: gentle pulsing halo ---- */
@@ -1847,7 +1830,6 @@ body.work-mode #quick-links{margin-top:0;}
 
 /* ---- Reduced-motion: still everything Kinetic Light adds ---- */
 @media (prefers-reduced-motion:reduce){
-  .aurora-blob{animation:none!important;}
   .vault-dial-ring{animation:none!important;}
   .search-container:focus-within .search-glow{animation:none!important;}
   .hero-live-dot,.st-live-dot{animation:none!important;}
@@ -2018,7 +2000,6 @@ body.work-mode #quick-links{margin-top:0;}
 .fcard-awards .st-footer{margin-top:6px;padding:6px 0 0;border-top:1px solid rgba(21,95,191,0.08);background:none;font-size:var(--fs-3xs);}
 
 /* Card 3 — indexed sections (bottom-right) */
-.fcard-sections{bottom:8px;right:-22px;width:178px;}
 
 /* floating cards keep glassy look but drop the side-ticker chrome */
 .fcard.side-ticker{gap:0;overflow:visible;}
@@ -2252,9 +2233,6 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
    Removes two AI-template tells: the multi-blob "aurora" atmosphere and the
    frosted-glass floating cards. The hero now reads as an engineered federal
    instrument (the vault) flanked by precise data readouts, not glassy SaaS. */
-/* Atmosphere: one calm, static light instead of three drifting blurred blobs */
-.aurora-2, .aurora-3 { display: none; }
-.aurora-1 { animation: none !important; opacity: .28; filter: blur(100px); }
 /* Floating cards: solid white instrument plates (no backdrop-filter glass),
    a hairline cyan readout-rule, monospace figures = regulatory/data texture */
 .fcard, .fcard.side-ticker {
