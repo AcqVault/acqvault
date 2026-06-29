@@ -2170,7 +2170,11 @@ function openDrawer(hit) {
 
 async function loadFullPartInDrawer(hit) {
   const contentEl = document.getElementById('drawer-content');
-  contentEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  // Show the clicked section IMMEDIATELY — the words the CO searched for, no blank spinner —
+  // then hydrate the rest of the part around it.
+  contentEl.innerHTML =
+    `<div id="drawer-sec-${hit.id}" class="drawer-full-section drawer-sec-active">${formatContent(hit.content || '', hit)}</div>` +
+    `<div class="drawer-rest-loading">Loading the rest of this part…</div>`;
   try {
     const indexPart = indexPartForSource(hit.source, hit.part);
     const allHits = [];
@@ -2187,25 +2191,21 @@ async function loadFullPartInDrawer(hit) {
       if (page.length < pageSize) break;
       offset += pageSize;
     }
-    if (!allHits.length) {
-      contentEl.innerHTML = formatContent(hit.content || '', hit);
+    if (activeDocId !== hit.id) return;   // user opened another clause while loading — don't clobber
+    if (!allHits.length) {                // nothing more to load — keep the section already shown
+      const lr = contentEl.querySelector('.drawer-rest-loading'); if (lr) lr.remove();
       return;
     }
-    // Render all sections using formatContent, separated by section headers
     let html = '';
     allHits.forEach(h => {
-      const anchor = `drawer-sec-${h.id}`;
-      html += `<div id="${anchor}" class="drawer-full-section">`;
-      html += formatContent(h.content || '', h);
-      html += `</div>`;
+      html += `<div id="drawer-sec-${h.id}" class="drawer-full-section${h.id === hit.id ? ' drawer-sec-active' : ''}">${formatContent(h.content || '', h)}</div>`;
     });
     contentEl.innerHTML = html;
-    // Scroll to the clicked section
+    // Restore the CO to the section they clicked, instantly (no smooth jump).
     const target = document.getElementById(`drawer-sec-${hit.id}`);
-    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    if (target) target.scrollIntoView({ behavior: 'auto', block: 'start' });
   } catch(e) {
-    // Fallback: just show the single section
-    contentEl.innerHTML = formatContent(hit.content || '', hit);
+    const lr = contentEl.querySelector('.drawer-rest-loading'); if (lr) lr.remove();  // keep the instant section
   }
 }
 

@@ -1126,6 +1126,9 @@ body.work-mode .source-tiles-section{display:none;}
 .dc-compass-callout{margin:12px 0 18px;padding:14px 15px;border-left:3px solid var(--cmp-solid);border-radius:10px;background:rgba(240,249,255,.88);color:var(--ink2);font-size:var(--fs-lg);line-height:1.68;}
 .drawer-full-section{margin-bottom:6px;}
 .drawer-full-section+.drawer-full-section{border-top:1px solid var(--line2);padding-top:14px;margin-top:6px;}
+/* the clause the CO clicked — marked so it's findable once the full part hydrates */
+.drawer-full-section.drawer-sec-active{box-shadow:inset 3px 0 0 var(--accent);padding-left:12px;}
+.drawer-rest-loading{padding:14px 2px 4px;font-size:var(--fs-xs);color:var(--muted2);font-style:italic;}
 .drawer-footer{padding:12px 18px;border-top:1px solid var(--line2);flex-shrink:0;}
 .drawer-orig-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:var(--ink);border:none;border-radius:var(--r-md);padding:11px;font-size:var(--fs-base);font-weight:var(--fw-semibold);color:#fff;cursor:pointer;transition:all 0.15s;text-decoration:none;}
 .drawer-orig-btn:hover{background:var(--ink2);}
