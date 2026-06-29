@@ -90,7 +90,7 @@ function metaDescription(docs) {
   return esc(text.slice(0, 155));
 }
 
-const STYLE = `:root{--ink:#0d1117;--muted:#656d76;--line:#d0d7de;--accent:#0066CC;--bg:#fff}
+const STYLE = `:root{--ink:#0d1117;--muted:#656d76;--line:#d0d7de;--accent:#155FBF;--bg:#fff}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
 .wrap{max-width:820px;margin:0 auto;padding:24px 20px 80px}
 header.site{border-bottom:1px solid var(--line);margin-bottom:24px;padding-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
@@ -117,21 +117,38 @@ table.devtable tr:hover td{background:#f6f8fa}
 table.devtable td a{color:var(--accent);text-decoration:none}table.devtable td a:hover{text-decoration:underline}
 table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:nowrap}
 @media(max-width:560px){.parts{columns:1}table.devtable{font-size:12.5px}table.devtable th,table.devtable td{padding:7px 6px}}
-.libcat{padding:22px 0;border-top:1px solid var(--line)}
+.libcat{padding:24px 0;border-top:1px solid var(--line)}
 .libcat h2{font-size:20px;letter-spacing:-0.02em;margin:0 0 4px}
-.libcat .catblurb{color:var(--muted);font-size:14px;margin:0 0 16px;max-width:640px}
-.libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.libcard{border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;background:#fff}
-.libcard .badge{align-self:flex-start;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:rgba(0,102,204,.07);border:1px solid rgba(0,102,204,.16);border-radius:6px;padding:3px 8px}
-.libcard .badge.official{color:#0e3f80;background:rgba(14,63,128,.06);border-color:rgba(14,63,128,.15)}
-.libcard h3{font-size:16px;letter-spacing:-0.01em;margin:6px 0 0;line-height:1.25}
-.libcard .sub{font-size:13px;color:var(--muted);font-weight:600;margin:0}
-.libcard .desc{font-size:13.5px;color:#3d444d;margin:4px 0 0;line-height:1.55;flex:1}
-.libcard .libmeta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);margin-top:6px}
-.libcard .dl{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-top:12px;background:var(--accent);color:#fff;font-weight:600;font-size:13.5px;padding:9px 12px;border-radius:8px;text-decoration:none}
-.libcard .dl:hover{background:#0055aa}
+.libcat .catblurb{color:var(--muted);font-size:14px;margin:0 0 16px;max-width:660px;line-height:1.55}
+/* feature "report cover" cards — matte federal-ink + brass seal + engraved vault emblem */
+.libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+.libfeat{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 1px 2px rgba(13,17,23,.04);transition:box-shadow .2s,transform .18s,border-color .18s}
+.libfeat:hover{border-color:rgba(21,95,191,.3);box-shadow:0 16px 34px -16px rgba(15,37,64,.34);transform:translateY(-3px)}
+.libcover{position:relative;height:120px;padding:14px 16px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;background:linear-gradient(158deg,#173a60,#0f2540 56%,#0a1c33)}
+.libcover::before{content:"";position:absolute;inset:0;opacity:.5;background:repeating-radial-gradient(circle at 84% 128%,rgba(202,168,95,.05) 0 1px,transparent 1px 9px)}
+.libcover::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#8a641d,#e4c477 50%,#8a641d)}
+.libcover svg{position:absolute;right:-18px;bottom:-22px;width:120px;height:120px;opacity:.22}
+.libcover .kind{position:relative;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#dcc081}
+.libcover .vol{position:relative;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:30px;color:#f3f6fa;line-height:1}
+.libcover .vol small{display:block;font-family:Inter,system-ui,sans-serif;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(214,226,240,.62);margin-bottom:5px}
+.libfeat-body{display:flex;flex-direction:column;gap:5px;padding:14px 16px;flex:1}
+.libfeat-body h3{font-size:16px;font-weight:800;letter-spacing:-0.02em;margin:0;line-height:1.25;color:var(--ink)}
+.libfeat-body .desc{font-size:13px;color:#3d444d;line-height:1.5;margin:0;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.libfeat-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.libfeat-foot .m{font-size:12px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.libfeat-foot .dl{font-size:13px;font-weight:700;color:var(--accent);background:rgba(21,95,191,.07);border:1px solid rgba(21,95,191,.18);border-radius:999px;padding:5px 12px}
+.libfeat:hover .libfeat-foot .dl{background:var(--accent);color:#fff}
+/* source-document cards, color-coded to the search UI */
+.libsrc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
+.libsrc{position:relative;display:flex;flex-direction:column;gap:3px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--src,#94a3b8);border-radius:10px;padding:13px 14px;text-decoration:none;color:inherit;transition:box-shadow .15s,transform .15s}
+.libsrc:hover{box-shadow:0 8px 18px -8px rgba(15,37,64,.24);transform:translateY(-2px)}
+.libsrc .nm{font-size:14.5px;font-weight:800;letter-spacing:-0.01em;color:var(--ink);padding-right:20px;line-height:1.25}
+.libsrc .sb{font-size:12px;color:var(--muted);font-weight:600}
+.libsrc .mt{font-size:11px;color:var(--muted);margin-top:2px}
+.libsrc .dl{position:absolute;top:12px;right:13px;font-size:14px;font-weight:800;color:var(--src,#94a3b8)}
+.libsrc[data-src="rfo"]{--src:#2563eb}.libsrc[data-src="r-dfars"]{--src:#16a34a}.libsrc[data-src="far-companion"]{--src:#7c3aed}.libsrc[data-src="category-management"]{--src:#0891b2}.libsrc[data-src="dafi-63-138"]{--src:#b0892f}
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
-@media(max-width:560px){.libgrid{grid-template-columns:1fr}}`;
+@media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}`;
 
 function shell({ title, description, canonical, jsonld, body }) {
   return `<!DOCTYPE html>
@@ -277,20 +294,45 @@ function renderLibraryPage() {
   const totalItems = cats.reduce((n, c) => n + c.items.length, 0);
   const description = esc(`Free downloadable AcqVault field guides and templates for Air Force / DoD contracting, plus the full text of every indexed source (RFO, R-DFARS, FAR Companion, Category Management, DAFI 63-138) as one clean PDF each. ${totalItems} resources, no account required.`);
 
+  // engraved brass vault emblem (line-art, no glow) — matches the homepage covers
+  const EMBLEM = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>';
+  const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+  const coverParts = (it, catKey) => {
+    const m = String(`${it.title} ${it.subtitle || ''}`).match(/Vol\.?\s*(\d+)/i);
+    if (catKey === 'field-guides' && m) return { kind: 'Field Guide', small: 'Volume', big: ROMAN[+m[1]] || m[1] };
+    if (catKey === 'templates') {
+      const ac = String(it.title || '').match(/\b[A-Z]{2,}\b/g) || [];
+      const big = ac.length ? ac[ac.length - 1] : String(it.title || '').replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
+      return { kind: 'Template', small: /interactive/i.test(it.type || '') ? 'Interactive' : 'Template', big };
+    }
+    return { kind: esc(it.origin || 'Resource'), small: '', big: '' };
+  };
+
   const catHtml = cats.map(cat => {
+    if (cat.key === 'source-documents') {
+      const cards = cat.items.map(it => {
+        const srcKey = String(it.id || '').replace(/^src-/, '');
+        return `<a class="libsrc" data-src="${esc(srcKey)}" href="${esc(it.file)}" download="${esc(it.download || '')}" rel="noopener">
+<span class="dl" aria-hidden="true">↓</span>
+<span class="nm">${esc(it.title)}</span>
+${it.subtitle ? `<span class="sb">${esc(it.subtitle)}</span>` : ''}
+${it.meta ? `<span class="mt">${esc(it.meta)}</span>` : ''}
+</a>`;
+      }).join('\n');
+      return `<section class="libcat">
+<h2>${esc(cat.name)}</h2>
+${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
+<div class="libsrc-grid">${cards}</div>
+</section>`;
+    }
     const cards = cat.items.map(it => {
-      const official = /official/i.test(it.origin || '');
-      const metaBits = [it.type, it.pages ? `${it.pages} pp` : null, it.meta || null,
-        it.updated ? `Updated ${esc(it.updated)}` : null].filter(Boolean)
-        .map(b => `<span>${esc(b)}</span>`).join('');
-      return `<div class="libcard">
-<span class="badge${official ? ' official' : ''}">${esc(it.origin || '')}</span>
-<h3>${esc(it.title)}</h3>
-${it.subtitle ? `<p class="sub">${esc(it.subtitle)}</p>` : ''}
-${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}
-<div class="libmeta">${metaBits}</div>
-<a class="dl" href="${esc(it.file)}" download="${esc(it.download || '')}" rel="noopener">↓ Download</a>
-</div>`;
+      const cp = coverParts(it, cat.key);
+      const name = (cat.key === 'field-guides' && it.subtitle) ? it.subtitle : it.title;
+      const meta = [it.type, it.pages ? `${it.pages} pp` : null].filter(Boolean).join(' · ');
+      return `<a class="libfeat" href="${esc(it.file)}" download="${esc(it.download || '')}" rel="noopener">
+<div class="libcover"><span class="kind">${esc(cp.kind)}</span><span class="vol">${cp.small ? `<small>${esc(cp.small)}</small>` : ''}${esc(cp.big)}</span>${EMBLEM}</div>
+<div class="libfeat-body"><h3>${esc(name)}</h3>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}<div class="libfeat-foot"><span class="m">${esc(meta)}</span><span class="dl">Download ↓</span></div></div>
+</a>`;
     }).join('\n');
     return `<section class="libcat">
 <h2>${esc(cat.name)}</h2>
