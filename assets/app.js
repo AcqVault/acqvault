@@ -1325,6 +1325,136 @@ function copyInlineCite(btn, citation) {
 }
 window.copyInlineCite = copyInlineCite;
 
+// ── CROSS-REFERENCE PREVIEW ────────────────────────────────────────────────────
+// Turn in-text FAR/RFO section references (e.g. "3.104-4", "52.225-1(a)") into
+// hover/focus-previewable links — but ONLY when the reference resolves EXACTLY to a
+// section AcqVault has indexed. Unresolved tokens (dollar amounts, dates, sections we
+// don't hold) stay plain text, so we never invent or mis-point a citation.
+let XREF_MAP = null; // { rfo: Map(token->id), 'r-dfars': Map(token->id) }
+const XREF_SOURCES = { rfo: 1, 'r-dfars': 1 };
+const XREF_LEAD = /^(\d{1,3}\.\d{1,6}(?:-\d+)?)\b/;
+function buildXrefMap() {
+  if (XREF_MAP || !ACQ_INDEX) return XREF_MAP;
+  const map = { rfo: new Map(), 'r-dfars': new Map() };
+  for (const { doc } of ACQ_INDEX) {
+    const table = map[doc.source];
+    if (!table) continue;
+    const m = String(doc.title || '').trim().match(XREF_LEAD);
+    if (m && !table.has(m[1])) table.set(m[1], doc.id);
+  }
+  XREF_MAP = map;
+  return XREF_MAP;
+}
+// Operates on ALREADY-ESCAPED text. esc() leaves ()/digits/dots intact, so the token
+// regex is safe here and we never introduce unescaped user content.
+function linkifyXrefs(escaped, hit) {
+  if (!hit || !XREF_SOURCES[hit.source]) return escaped;
+  const map = XREF_MAP || buildXrefMap();
+  const table = map && map[hit.source];
+  if (!table || !table.size) return escaped;
+  const selfM = String(hit.title || '').trim().match(XREF_LEAD);
+  const self = selfM ? selfM[1] : null;
+  return escaped.replace(/\b(\d{1,3}\.\d{1,6}(?:-\d+)?)\b/g, (full, num) => {
+    if (num === self) return full;          // don't self-link the section's own number
+    const id = table.get(num);
+    if (!id) return full;                    // unresolved -> leave as plain text
+    return `<a class="dc-xref" href="?view=reader&amp;doc=${encodeURIComponent(id)}" data-xref="${esc(id)}" tabindex="0">${full}</a>`;
+  });
+}
+
+let _xrefPop = null, _xrefHideTimer = null, _xrefShowTimer = null;
+function xrefSnippet(content) {
+  let t = String(content || '').split('\n').map(s => s.replace(/^L\d+:\s*/, '').trim()).filter(Boolean).join(' ');
+  t = t.replace(/\s+/g, ' ').trim();
+  return t.length > 240 ? t.slice(0, 240).replace(/\s+\S*$/, '') + '…' : t;
+}
+function xrefPopEl() {
+  if (_xrefPop) return _xrefPop;
+  const d = document.createElement('div');
+  d.id = 'xref-pop';
+  d.setAttribute('role', 'tooltip');
+  d.addEventListener('mouseenter', () => clearTimeout(_xrefHideTimer));
+  d.addEventListener('mouseleave', scheduleHideXrefPop);
+  document.body.appendChild(d);
+  _xrefPop = d;
+  return d;
+}
+function positionXrefPop(pop, a) {
+  const r = a.getBoundingClientRect();
+  pop.style.maxWidth = Math.min(360, window.innerWidth - 24) + 'px';
+  pop.style.visibility = 'hidden';
+  pop.classList.add('show');
+  const pr = pop.getBoundingClientRect();
+  let top = r.bottom + 8;
+  if (top + pr.height > window.innerHeight - 8 && r.top - 8 - pr.height > 8) top = r.top - 8 - pr.height;
+  let left = r.left;
+  if (left + pr.width > window.innerWidth - 12) left = window.innerWidth - 12 - pr.width;
+  if (left < 12) left = 12;
+  pop.style.top = Math.max(8, top) + 'px';
+  pop.style.left = left + 'px';
+  pop.style.visibility = '';
+}
+function showXrefPop(a) {
+  const id = a.dataset.xref;
+  const entry = ACQ_INDEX && ACQ_INDEX.find(x => String(x.doc.id) === String(id));
+  if (!entry) return;
+  const doc = entry.doc;
+  const pop = xrefPopEl();
+  pop.innerHTML =
+    `<div class="xp-head">${sourceTag(doc.source)}<span class="xp-title">${esc(doc.title || '')}</span></div>` +
+    `<div class="xp-body">${esc(xrefSnippet(doc.content))}</div>` +
+    `<div class="xp-foot"><span class="xp-open">Open clause →</span>` +
+    `<span class="xp-verify">AcqVault copy — verify at source</span></div>`;
+  positionXrefPop(pop, a);
+}
+function scheduleHideXrefPop() {
+  clearTimeout(_xrefHideTimer);
+  _xrefHideTimer = setTimeout(hideXrefPop, 180);
+}
+function hideXrefPop() {
+  clearTimeout(_xrefShowTimer);
+  if (_xrefPop) _xrefPop.classList.remove('show');
+}
+function openXref(a) {
+  const id = a.dataset.xref;
+  const entry = ACQ_INDEX && ACQ_INDEX.find(x => String(x.doc.id) === String(id));
+  if (!entry) return false;
+  hideXrefPop();
+  openDrawer(entry.doc);
+  return true;
+}
+// Delegated handlers — one set, covers drawer + reader, survives innerHTML swaps.
+document.addEventListener('mouseover', (e) => {
+  const a = e.target.closest && e.target.closest('.dc-xref');
+  if (!a) return;
+  clearTimeout(_xrefHideTimer);
+  clearTimeout(_xrefShowTimer);
+  _xrefShowTimer = setTimeout(() => showXrefPop(a), 120);
+});
+document.addEventListener('mouseout', (e) => {
+  const a = e.target.closest && e.target.closest('.dc-xref');
+  if (!a) return;
+  clearTimeout(_xrefShowTimer);
+  scheduleHideXrefPop();
+});
+document.addEventListener('focusin', (e) => {
+  const a = e.target.closest && e.target.closest('.dc-xref');
+  if (a) showXrefPop(a);
+});
+document.addEventListener('focusout', (e) => {
+  const a = e.target.closest && e.target.closest('.dc-xref');
+  if (a) scheduleHideXrefPop();
+});
+document.addEventListener('click', (e) => {
+  const a = e.target.closest && e.target.closest('.dc-xref');
+  if (!a) return;
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // allow open-in-new-tab
+  if (openXref(a)) e.preventDefault();
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideXrefPop(); });
+window.addEventListener('scroll', hideXrefPop, true);
+window.addEventListener('resize', hideXrefPop);
+
 // ── CONTENT FORMATTER ─────────────────────────────────────────────────────────
 function formatContent(text, hit) {
   if (!text) return '<div class="dc-text" style="color:#bbb;font-style:italic;">No content available.</div>';
@@ -1519,12 +1649,12 @@ function formatContent(text, hit) {
       const content = lMatch[2].trim();
       if (!content) { html += '<div class="dc-gap"></div>'; continue; }
       if (level === 0) {
-        html += `<div class="dc-text">${esc(content)}</div>`;
+        html += `<div class="dc-text">${linkifyXrefs(esc(content), hit)}</div>`;
       } else {
         const tokM = content.match(/^\(([^)]+)\)/);
         if (tokM) updateParagraphPath([tokM[1]]);
         const cl = Math.min(level, 4);
-        html += `<div class="dc-para dc-l${cl}"><span class="dc-para-text">${esc(content)}</span>${citeBtnHTML(buildCite())}</div>`;
+        html += `<div class="dc-para dc-l${cl}"><span class="dc-para-text">${linkifyXrefs(esc(content), hit)}</span>${citeBtnHTML(buildCite())}</div>`;
       }
       continue;
     }
@@ -1552,13 +1682,13 @@ function formatContent(text, hit) {
       const tokens = leadingParagraphTokens(line);
       updateParagraphPath(tokens);
       const level = Math.min(paragraphNodes.length || 1, 4);
-      html += `<div class="dc-para dc-l${level}"><span class="dc-para-text">${esc(line)}</span>${citeBtnHTML(buildCite())}</div>`;
+      html += `<div class="dc-para dc-l${level}"><span class="dc-para-text">${linkifyXrefs(esc(line), hit)}</span>${citeBtnHTML(buildCite())}</div>`;
     } else if (/^●\s+/.test(line)) {
       html += `<div class="dc-para dc-l1"><span class="dc-para-text">${esc(line)}</span></div>`;
     } else if (line === line.toUpperCase() && line.length > 3 && line.length < 80 && /[A-Z]{3}/.test(line)) {
       html += `<div class="dc-section">${esc(line)}</div>`;
     } else {
-      html += `<div class="dc-text">${esc(line)}</div>`;
+      html += `<div class="dc-text">${linkifyXrefs(esc(line), hit)}</div>`;
     }
   }
   return html;
