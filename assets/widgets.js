@@ -2,7 +2,7 @@
    ACQVAULT — WIDGETS ADD-ON  (self-contained, no deps)
    1) Threshold quick-reference   2) Acronym decoder
    3) What's new since last visit 4) DAF spending dashboard
-   Injects two homepage sections after #features and wires behaviour.
+   Injects the Toolkit + Spending sections after #quick-links and wires behaviour.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -250,8 +250,11 @@
      INJECT MARKUP
      ════════════════════════════════════════════════════════════ */
   function injectSections() {
+    // Anchor the injected tool sections on #quick-links (stable). The former #features
+    // band was merged into the Coverage band; keep a null-safe ref for the fallback below.
     const features = $('#features');
-    if (!features) return;
+    const anchor = $('#quick-links') || $('#market-research') || features;
+    if (!anchor) return;
 
     const toolkit = document.createElement('section');
     toolkit.className = 'sec sec-off';
@@ -366,7 +369,7 @@
         <div class="dash-foot"><span class="dash-live-dot"></span><span>Source: USASpending.gov \u00B7 Department of the Air Force \u00B7 contract actions (award types A\u2013D)</span></div>
       </div>`;
 
-    // Page flow: Market Research, Quick Links, Toolkit, Spending, Features, Sources.
+    // Page flow: Market Research, Quick Links, Toolkit, Spending, Coverage.
     const quicklinks = $('#quick-links');
     const marketResearch = $('#market-research');
     if (marketResearch && quicklinks && (marketResearch.compareDocumentPosition(quicklinks) & Node.DOCUMENT_POSITION_PRECEDING)) {
@@ -374,11 +377,6 @@
     }
     (quicklinks || marketResearch || features).insertAdjacentElement('afterend', toolkit);
     toolkit.insertAdjacentElement('afterend', dash);
-    const sourceTilesTpl = $('#source-tiles-template');
-    if (sourceTilesTpl) {
-      const sourceTiles = sourceTilesTpl.content.firstElementChild.cloneNode(true);
-      dash.insertAdjacentElement('afterend', sourceTiles);
-    }
 
     // reveal-on-scroll for the freshly injected .fade-up nodes
     const io = new IntersectionObserver((ents) => {

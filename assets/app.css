@@ -1242,6 +1242,16 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .source-status-chip.soon{background:rgba(255,255,255,0.045);color:rgba(226,232,240,0.66);}
 .source-status-chip.archived{background:rgba(79,182,232,0.12);border-color:rgba(79,182,232,0.26);color:#bce3f5;}
 .source-status-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8;}
+/* live/archived chips double as browse shortcuts (absorbed the old source-tiles strip) */
+button.source-status-chip{font:inherit;cursor:pointer;transition:transform .15s var(--ease-out),box-shadow .15s,border-color .15s,background .15s;}
+button.source-status-chip:hover{transform:translateY(-1px);}
+button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);outline-offset:2px;}
+#sources button.source-status-chip.live:hover{background:#d9fbe9;border-color:#86efac;box-shadow:0 6px 16px rgba(14,63,128,0.08);}
+#sources button.source-status-chip.archived:hover{background:#e3f1fa;border-color:#9fcdeb;box-shadow:0 6px 16px rgba(14,63,128,0.08);}
+/* the promises that don't change — preserves the cut capdir's brand line, single-sourced here */
+.trust-strip{list-style:none;display:flex;flex-wrap:wrap;gap:10px 22px;margin:26px 0 0;padding:0;}
+.trust-strip li{position:relative;font-size:var(--fs-sm);font-weight:var(--fw-semibold);letter-spacing:var(--ls-snug);color:var(--muted);padding-left:20px;}
+.trust-strip li::before{content:'✓';position:absolute;left:0;top:0;color:#15803d;font-weight:var(--fw-black);}
 .offline-bar{position:fixed;left:0;right:0;bottom:0;z-index:3000;background:var(--navy-900);color:#dbe7f5;font-size:var(--fs-base);font-weight:var(--fw-semibold);letter-spacing:var(--ls-snug);text-align:center;padding:9px 16px;box-shadow:0 -4px 18px rgba(0,0,0,0.2);}
 .offline-bar b{color:var(--cyan);font-weight:var(--fw-heavy);}
 /* Auto-amber staleness tripwire — shows only when the corpus hasn't refreshed in a while */
@@ -1445,7 +1455,7 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 /* Consistent homepage section rhythm */
 .source-tiles-section{padding-top:var(--sec-pad-y-tight);padding-bottom:var(--sec-pad-y-tight);}
 #quick-links,#market-research,#toolkit,#spending-dashboard,#features,#sources{border-top:1px solid rgba(21,95,191,0.08);}
-#market-research + #quick-links,#quick-links + #toolkit,#toolkit + #spending-dashboard,#spending-dashboard + #features,#features + #sources{margin-top:0;}
+#market-research + #quick-links,#quick-links + #toolkit,#toolkit + #spending-dashboard,#spending-dashboard + #sources{margin-top:0;}
 #spending-dashboard.sec-dark{background:radial-gradient(ellipse 70% 60% at 80% 0%,rgba(79,182,232,0.10),transparent 60%),linear-gradient(165deg,var(--navy-panel-from) 0%,var(--navy-900) 45%,var(--navy-950) 100%);border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;}
 #spending-dashboard .eyebrow-light{color:var(--cyan);}
 #spending-dashboard h2.sec-head{color:#fff;}

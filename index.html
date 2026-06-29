@@ -32,7 +32,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=48">
+<link rel="stylesheet" href="/assets/app.css?v=49">
 </head>
 <body>
 
@@ -74,8 +74,7 @@
       <a href="#market-research">Market Research</a>
       <a href="/deviations">Deviations</a>
       <a href="#quick-links">Quick Links</a>
-      <a href="#features">Features</a>
-      <a href="#sources">Sources</a>
+      <a href="#sources">Coverage</a>
     </div>
     <div class="nav-right">
       <button class="nav-saved-btn" id="nav-saved" type="button" aria-haspopup="dialog" aria-label="Open saved clauses and searches"><span class="nav-saved-star" aria-hidden="true">★</span><span class="nav-saved-label">Saved</span><span class="nav-saved-count" id="nav-saved-count" style="display:none"></span></button>
@@ -200,88 +199,6 @@
 
   </div>
 </section>
-
-<!-- CAPABILITY DIRECTORY — "what you can do here" (new-visitor discoverability; hidden once searching) -->
-<section class="capdir" id="capdir" aria-labelledby="capdir-h">
-  <div class="capdir-inner">
-    <p class="capdir-eyebrow" id="capdir-h">What you can do here</p>
-    <div class="capdir-grid">
-      <button type="button" class="capdir-tile" onclick="setMode('search');window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){var s=document.getElementById('search-input');if(s)s.focus();},420);">
-        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
-        <span class="capdir-tt">Search every word</span>
-        <span class="capdir-dd">Full-text across all six official sources at once — RFO, R-DFARS &amp; more.</span>
-      </button>
-      <button type="button" class="capdir-tile" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){setMode('browse');},420);">
-        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><line x1="8" y1="8.5" x2="16" y2="8.5"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="15.5" x2="13" y2="15.5"/></svg></span>
-        <span class="capdir-tt">Browse by source</span>
-        <span class="capdir-dd">Read any source part-by-part — no search query needed.</span>
-      </button>
-      <button type="button" class="capdir-tile" onclick="var e=document.getElementById('toolkit');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
-        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="9" cy="8" r="2.4"/><circle cx="15" cy="16" r="2.4"/></svg></span>
-        <span class="capdir-tt">Daily toolkit</span>
-        <span class="capdir-dd">Dollar thresholds, an acronym decoder, and what's new.</span>
-      </button>
-      <button type="button" class="capdir-tile" onclick="var e=document.getElementById('market-research');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
-        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><line x1="12" y1="1.5" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22.5" y2="12"/></svg></span>
-        <span class="capdir-tt">Market research</span>
-        <span class="capdir-dd">Search live SAM.gov opportunities, awards &amp; set-asides.</span>
-      </button>
-      <button type="button" class="capdir-tile" onclick="var e=document.getElementById('spending-dashboard');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});">
-        <span class="capdir-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3.5" y1="20" x2="20.5" y2="20"/><rect x="6" y="11" width="3.2" height="9" rx="0.6"/><rect x="11.4" y="7" width="3.2" height="13" rx="0.6"/><rect x="16.8" y="14" width="3.2" height="6" rx="0.6"/></svg></span>
-        <span class="capdir-tt">Live AF spending</span>
-        <span class="capdir-dd">Where the Air Force is putting its money, from USASpending.</span>
-      </button>
-    </div>
-    <p class="capdir-foot">Free · no account · saves to your device · works offline behind the CAC firewall.</p>
-  </div>
-</section>
-
-<!-- SOURCE TILES -->
-<template id="source-tiles-template">
-<div class="source-tiles-section" id="source-tiles-section">
-  <div class="source-tiles-inner">
-    <div class="source-tiles-label">Indexed Sources — click to browse</div>
-    <div class="source-tiles-grid">
-      <div class="src-tile src-tile-rfo" onclick="setMode('browse');setBrowseSource('rfo')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('rfo');}">
-        <div class="src-tile-badge">RFO</div>
-        <div class="src-tile-name">Revolutionary FAR Overhaul</div>
-        <div class="src-mini"><span class="src-mini-mark">R</span><span class="src-mini-word">RFO<small>Acquisition.gov</small></span></div>
-        <div class="src-tile-action">Browse RFO →</div>
-      </div>
-      <div class="src-tile src-tile-dfars" onclick="setMode('browse');setBrowseSource('r-dfars')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('r-dfars');}">
-        <div class="src-tile-badge">R-DFARS</div>
-        <div class="src-tile-name">R-DFARS</div>
-        <div class="src-mini"><span class="src-mini-mark">D</span><span class="src-mini-word">R-DFARS<small>DoD deviation guide</small></span></div>
-        <div class="src-tile-action">Browse R-DFARS →</div>
-      </div>
-      <div class="src-tile src-tile-fc" onclick="setMode('browse');setBrowseSource('far-companion')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('far-companion');}">
-        <div class="src-tile-badge">FAR Companion</div>
-        <div class="src-tile-name">FAR Companion v2.0</div>
-        <div class="src-mini"><span class="src-mini-mark">FC</span><span class="src-mini-word">FAR Companion<small>Practice guide</small></span></div>
-        <div class="src-tile-action">Browse FAR Companion →</div>
-      </div>
-      <div class="src-tile src-tile-cm" onclick="setMode('browse');setBrowseSource('category-management')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('category-management');}">
-        <div class="src-tile-badge">Category Mgmt</div>
-        <div class="src-tile-name">Category Management</div>
-        <div class="src-mini"><span class="src-mini-mark">CM</span><span class="src-mini-word">Category Management<small>Buying Guide</small></span></div>
-        <div class="src-tile-action">Browse Category Management Buying Guide →</div>
-      </div>
-      <div class="src-tile src-tile-afi" onclick="setMode('browse');setBrowseSource('afi-63-138')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('afi-63-138');}">
-        <div class="src-tile-badge">DAFI 63-138</div>
-        <div class="src-tile-name">Acquisition of Services</div>
-        <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAFI 63-138<small>Acquisition of Services</small></span></div>
-        <div class="src-tile-action">Browse DAFI 63-138 →</div>
-      </div>
-      <div class="src-tile src-tile-cmp" onclick="setMode('browse');setBrowseSource('compass')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setMode('browse');setBrowseSource('compass');}">
-        <div class="src-tile-badge">DAF Compass</div>
-        <div class="src-tile-name">DAF Contracting Compass</div>
-        <div class="src-mini"><span class="src-mini-mark">AF</span><span class="src-mini-word">DAF Contracting Compass<small>In-app archive</small></span></div>
-        <div class="src-tile-action">Browse DAF Contracting Compass →</div>
-      </div>
-    </div>
-  </div>
-</div>
-</template>
 
 <!-- SEARCH RESULTS -->
 <div id="results-section">
@@ -462,39 +379,22 @@
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="sec sec-white" id="features">
+<!-- COVERAGE & TRUST (merged: former Features + Sources + source-tiles) -->
+<section class="sec sec-dark" id="sources" aria-labelledby="coverage-h">
   <div class="sec-inner">
-    <p class="eyebrow eyebrow-dark fade-up">Why AcqVault</p>
-    <h2 class="sec-head fade-up">Acquisition research<br>without the friction.</h2>
-    <p class="sec-sub sec-sub-dark fade-up">Navigating acquisition.gov tabs, Federal Register alerts, and scattered PDFs shouldn't be your job. Researching what they say should be.</p>
-    <div class="feats">
-      <div class="feat feat-clickable fade-up" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{document.getElementById('search-input').focus();},400);"><div class="feat-icon">⌕</div><div class="feat-title">Full-text search</div><div class="feat-demo"><div class="feat-demo-search"><span class="feat-demo-dot"></span><span class="feat-demo-line"></span><span class="feat-demo-line short"></span></div></div><div class="feat-desc">Search across the RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass simultaneously. Find the regulation by how you'd describe it, not how it's filed.</div><div class="feat-cta">Try search →</div></div>
-      <div class="feat feat-clickable fade-up d1" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('browse'),400);"><div class="feat-icon">⊞</div><div class="feat-title">Browse by Part</div><div class="feat-demo"><div class="feat-demo-grid"><span class="feat-demo-cell">1</span><span class="feat-demo-cell">6</span><span class="feat-demo-cell">15</span><span class="feat-demo-cell">52</span></div></div><div class="feat-desc">Navigate by acquisition part number across all sources. Select a source, pick a part, and read every indexed section with inline citations — no search query needed.</div><div class="feat-cta">Try browse →</div></div>
-      <div class="feat feat-clickable fade-up d2" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>setMode('fulltext'),400);"><div class="feat-icon">↓</div><div class="feat-title">Full Text PDFs</div><div class="feat-demo"><div class="feat-demo-pdf"><span class="feat-demo-doc"></span><span class="feat-demo-bars"><span class="feat-demo-line"></span><span class="feat-demo-line short"></span><span class="feat-demo-line"></span></span></div></div><div class="feat-desc">Download PDFs for the full RFO, R-DFARS, FAR Companion, Category Management Buying Guide, and DAFI 63-138. Updated monthly from the live index where available.</div><div class="feat-cta">Download PDFs →</div></div>
-      <div class="feat fade-up"><div class="feat-stat-num">6</div><div class="feat-stat-label">Sources indexed</div><div class="feat-stat-track"><div class="feat-stat-fill blue" style="width:92%;"></div></div><div class="feat-stat-meta"><span>Live index</span><span>Monthly refresh</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass coverage. Updated from official source material where available.</div></div>
-      <div class="feat fade-up d1"><div class="feat-stat-num">6</div><div class="feat-stat-label">Live sources · more coming</div><div class="feat-stat-track"><div class="feat-stat-fill green" style="width:86%;"></div></div><div class="feat-stat-meta"><span>6 live</span><span>2 queued</span></div><div class="feat-desc">RFO, R-DFARS, FAR Companion, Category Management Buying Guide, DAFI 63-138, and DAF Contracting Compass are live now. DoD FMR and AFI 63-Series are on deck.</div></div>
-      <div class="feat fade-up d2"><div class="feat-stat-num">$0</div><div class="feat-stat-label">Cost to use</div><div class="feat-stat-track"><div class="feat-stat-fill dark" style="width:100%;"></div></div><div class="feat-stat-meta"><span>Open access</span><span>No account</span></div><div class="feat-desc">No cost, no subscriptions, no account. AcqVault is a community resource built for the AF acquisition workforce. Open access, always.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- SOURCES -->
-<section class="sec sec-dark" id="sources">
-  <div class="sec-inner">
-    <p class="eyebrow eyebrow-light fade-up">Source coverage</p>
-    <h2 class="sec-head fade-up">Official sources.<br>Clear status.</h2>
-    <p class="sec-sub sec-sub-light fade-up">A compact view of what is searchable today and what is queued next.</p>
+    <p class="eyebrow eyebrow-light fade-up">Coverage &amp; trust</p>
+    <h2 class="sec-head fade-up" id="coverage-h">Official sources.<br>Clear status.</h2>
+    <p class="sec-sub sec-sub-light fade-up">Everything searchable today, with honest status — and the promises that don't change. Pick a live source to start browsing it.</p>
     <div class="source-status-panel fade-up" style="transition-delay:0.1s;">
       <div class="source-status-row">
         <div class="source-status-label">Live</div>
         <div class="source-status-main">
-          <span class="source-status-chip live">RFO</span>
-          <span class="source-status-chip live">R-DFARS</span>
-          <span class="source-status-chip live">FAR Companion</span>
-          <span class="source-status-chip live">Category Management Buying Guide</span>
-          <span class="source-status-chip live">DAFI 63-138</span>
-          <span class="source-status-chip archived">DAF Contracting Compass</span>
+          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('rfo')">RFO</button>
+          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('r-dfars')">R-DFARS</button>
+          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('far-companion')">FAR Companion</button>
+          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('category-management')">Category Management Buying Guide</button>
+          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('afi-63-138')">DAFI 63-138</button>
+          <button type="button" class="source-status-chip archived" onclick="setMode('browse');setBrowseSource('compass')">DAF Contracting Compass</button>
         </div>
       </div>
       <div class="source-status-row">
@@ -505,6 +405,13 @@
         </div>
       </div>
     </div>
+    <ul class="trust-strip fade-up" style="transition-delay:0.12s;" aria-label="What AcqVault promises">
+      <li>Free — always</li>
+      <li>No account</li>
+      <li>Saves to your device</li>
+      <li>Works offline behind the CAC</li>
+      <li>No AI · no summaries</li>
+    </ul>
     <div class="callout fade-up" style="transition-delay:0.15s;">
       <div class="callout-head">Built alongside the overhaul.<br>Updated as it evolves.</div>
       <div class="callout-sub">The RFO is a living initiative. AcqVault re-indexes monthly so you're always searching the current version of the reform.</div>
@@ -610,7 +517,7 @@
 
 <script defer src="/assets/app.js?v=27"></script>
 <script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=16"></script>
+<script defer src="/assets/widgets.js?v=17"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>
