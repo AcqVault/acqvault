@@ -2280,9 +2280,13 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
    AcqVault as an official federal instrument. Engine-turns very slowly,
    CLIPPED to the vault face so the rotation never spills past the panel edge. */
 .vault-panel{overflow:hidden;}
-.vault-guilloche{position:absolute;inset:-8%;z-index:0;pointer-events:none;
+/* Tight engraved ring framing the dial — kept clear of the SECURED INDEX tag.
+   Square, centered on the dial via margin (so transform stays free for the
+   rotation); clipped by the panel so rotation never spills. */
+.vault-guilloche{position:absolute;top:50%;left:50%;width:66%;aspect-ratio:1;margin:-33% 0 0 -33%;
+  z-index:0;pointer-events:none;
   background:url(/assets/guilloche.svg) center/contain no-repeat;
-  opacity:.5;mix-blend-mode:screen;
+  opacity:.5;mix-blend-mode:screen;transform-origin:center;
   animation:guilloche-turn 110s linear infinite;}
 @keyframes guilloche-turn{to{transform:rotate(360deg);}}
 .vault-panel > .vault-dial-big,.vault-panel > .vault-panel-tag{position:relative;z-index:1;}
