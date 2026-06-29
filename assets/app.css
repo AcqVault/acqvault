@@ -2291,5 +2291,9 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
    where the SECURED INDEX tag sits so the text reads on clean navy. */
 .vault-panel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;z-index:1;pointer-events:none;
   background:linear-gradient(to top,#091324 6%,rgba(9,19,36,0.72) 42%,transparent 100%);}
-.vault-panel > .vault-dial-big,.vault-panel > .vault-panel-tag{position:relative;z-index:2;}
+/* Lift dial + tag above the engraving/vignette — WITHOUT disturbing the tag's
+   absolute positioning (making it position:relative pulled it into the flex flow
+   and shoved the dial off-center). Dial gets relative; tag stays absolute. */
+.vault-panel > .vault-dial-big{position:relative;z-index:2;}
+.vault-panel-tag{z-index:2;}
 @media (prefers-reduced-motion:reduce){.vault-guilloche{animation:none;}}
