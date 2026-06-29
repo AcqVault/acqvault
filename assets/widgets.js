@@ -238,6 +238,14 @@
   // ambiguous / too-short tokens: keep in lookup, skip auto-decoration
   const NO_AUTODECORATE = new Set(['LH', 'EPA', 'USC', 'CFR', 'SOW', 'BOE', 'ROM', 'NDI', 'AoA', 'DBA', 'DID', 'PSC']);
 
+  // Single source of truth for dollar thresholds: derive the MPT/SAT acronym notes
+  // from THRESHOLDS so the value can never drift between the two dicts (a prior agent
+  // once tried to "correct" MPT to $10k — keep it computed, never hand-typed twice).
+  ['MPT', 'SAT'].forEach((ab) => {
+    const t = THRESHOLDS.find((x) => x.abbr === ab);
+    if (t && ACRONYMS[ab]) ACRONYMS[ab][1] = fmtExact(t.std) + ' since Oct 2025 (' + t.cite + ')';
+  });
+
   /* ════════════════════════════════════════════════════════════
      INJECT MARKUP
      ════════════════════════════════════════════════════════════ */
