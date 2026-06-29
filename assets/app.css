@@ -632,6 +632,18 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(21,95,191
 @keyframes hero-rise{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
 .hero.search-active .hero-intro,.hero.browse-active .hero-intro,.hero.fulltext-active .hero-intro{opacity:0;transform:translateY(-14px);max-height:0;overflow:hidden;pointer-events:none;transition:opacity 0.3s ease,transform 0.3s ease,max-height 0.4s ease;}
 
+/* ══ WORK-MODE: the hero becomes a search header, results own the screen ══════
+   The moment a CO searches/browses, collapse the marketing hero — vault panel,
+   try-chips, stat strip — to just the search field + mode toggle, full width,
+   so the regulation text starts at the top instead of below a sales page. */
+.hero.search-active .hero-trychips,.hero.browse-active .hero-trychips,.hero.fulltext-active .hero-trychips,
+.hero.search-active .hero-statstrip,.hero.browse-active .hero-statstrip,.hero.fulltext-active .hero-statstrip,
+.hero.search-active .hero-right,.hero.browse-active .hero-right,.hero.fulltext-active .hero-right{display:none;}
+.hero.search-active .hero-inner-b,.hero.browse-active .hero-inner-b,.hero.fulltext-active .hero-inner-b{grid-template-columns:1fr;gap:0;}
+.hero.search-active .hero-inner-b .hero-content,.hero.browse-active .hero-inner-b .hero-content,.hero.fulltext-active .hero-inner-b .hero-content{align-items:stretch;}
+.hero.search-active .hero-inner-b .search-container,.hero.browse-active .hero-inner-b .search-container,.hero.fulltext-active .hero-inner-b .search-container{max-width:820px;margin-bottom:10px;}
+.hero.search-active .hero-command-dock-b,.hero.browse-active .hero-command-dock-b,.hero.fulltext-active .hero-command-dock-b{margin-bottom:0;}
+
 .hero-brand-title{width:100%;margin:0 auto 0;display:flex;align-items:center;justify-content:center;line-height:1.02;}
 
 .hero-headline{font-size:clamp(38px,4.8vw,56px);font-weight:var(--fw-heavy);letter-spacing:-0.05em;color:var(--ink);line-height:1.04;margin-bottom:12px;}
