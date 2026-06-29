@@ -37,6 +37,14 @@ function loadDeviations() {
   return devsCache;
 }
 
+let libraryCache = null;
+function loadLibrary() {
+  if (libraryCache) return libraryCache;
+  try { libraryCache = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'output', 'library.json'), 'utf8')); }
+  catch (e) { libraryCache = { categories: [] }; }
+  return libraryCache;
+}
+
 function esc(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -108,7 +116,22 @@ table.devtable th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em
 table.devtable tr:hover td{background:#f6f8fa}
 table.devtable td a{color:var(--accent);text-decoration:none}table.devtable td a:hover{text-decoration:underline}
 table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:nowrap}
-@media(max-width:560px){.parts{columns:1}table.devtable{font-size:12.5px}table.devtable th,table.devtable td{padding:7px 6px}}`;
+@media(max-width:560px){.parts{columns:1}table.devtable{font-size:12.5px}table.devtable th,table.devtable td{padding:7px 6px}}
+.libcat{padding:22px 0;border-top:1px solid var(--line)}
+.libcat h2{font-size:20px;letter-spacing:-0.02em;margin:0 0 4px}
+.libcat .catblurb{color:var(--muted);font-size:14px;margin:0 0 16px;max-width:640px}
+.libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.libcard{border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;background:#fff}
+.libcard .badge{align-self:flex-start;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:rgba(0,102,204,.07);border:1px solid rgba(0,102,204,.16);border-radius:6px;padding:3px 8px}
+.libcard .badge.official{color:#0e3f80;background:rgba(14,63,128,.06);border-color:rgba(14,63,128,.15)}
+.libcard h3{font-size:16px;letter-spacing:-0.01em;margin:6px 0 0;line-height:1.25}
+.libcard .sub{font-size:13px;color:var(--muted);font-weight:600;margin:0}
+.libcard .desc{font-size:13.5px;color:#3d444d;margin:4px 0 0;line-height:1.55;flex:1}
+.libcard .libmeta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);margin-top:6px}
+.libcard .dl{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-top:12px;background:var(--accent);color:#fff;font-weight:600;font-size:13.5px;padding:9px 12px;border-radius:8px;text-decoration:none}
+.libcard .dl:hover{background:#0055aa}
+.libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
+@media(max-width:560px){.libgrid{grid-template-columns:1fr}}`;
 
 function shell({ title, description, canonical, jsonld, body }) {
   return `<!DOCTYPE html>
@@ -245,6 +268,56 @@ ${tr}
   return shell({ title, description, canonical, jsonld, body });
 }
 
+function renderLibraryPage() {
+  const lib = loadLibrary();
+  const cats = (lib.categories || []).filter(c => c.items && c.items.length);
+  if (!cats.length) return null;
+  const canonical = `${SITE}/library`;
+  const title = `AcqVault Library — field guides, templates & source PDFs | AcqVault`;
+  const totalItems = cats.reduce((n, c) => n + c.items.length, 0);
+  const description = esc(`Free downloadable AcqVault field guides and templates for Air Force / DoD contracting, plus the full text of every indexed source (RFO, R-DFARS, FAR Companion, Category Management, DAFI 63-138) as one clean PDF each. ${totalItems} resources, no account required.`);
+
+  const catHtml = cats.map(cat => {
+    const cards = cat.items.map(it => {
+      const official = /official/i.test(it.origin || '');
+      const metaBits = [it.type, it.pages ? `${it.pages} pp` : null, it.meta || null,
+        it.updated ? `Updated ${esc(it.updated)}` : null].filter(Boolean)
+        .map(b => `<span>${esc(b)}</span>`).join('');
+      return `<div class="libcard">
+<span class="badge${official ? ' official' : ''}">${esc(it.origin || '')}</span>
+<h3>${esc(it.title)}</h3>
+${it.subtitle ? `<p class="sub">${esc(it.subtitle)}</p>` : ''}
+${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}
+<div class="libmeta">${metaBits}</div>
+<a class="dl" href="${esc(it.file)}" download="${esc(it.download || '')}" rel="noopener">↓ Download</a>
+</div>`;
+    }).join('\n');
+    return `<section class="libcat">
+<h2>${esc(cat.name)}</h2>
+${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
+<div class="libgrid">${cards}</div>
+</section>`;
+  }).join('\n');
+
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: 'AcqVault Library', description, url: canonical,
+    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE },
+    hasPart: cats.flatMap(c => c.items.map(it => ({
+      '@type': 'DigitalDocument', name: it.title, url: `${SITE}${it.file}`,
+      encodingFormat: 'application/pdf'
+    })))
+  };
+
+  const body = `<nav class="crumbs"><a href="/">AcqVault</a> › Library</nav>
+<h1>AcqVault Library</h1>
+<p class="lede">Field guides, templates, and the full text of every indexed source — one place to pull what you need. Free, no account, downloads straight to your device.</p>
+${catHtml}
+<p class="libnote"><strong>Originals</strong> are written by AcqVault as research aids. <strong>Source documents</strong> are compiled from official material and regenerated monthly — always verify against the signed DoD class deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on any result in a contract file.</p>`;
+
+  return shell({ title, description, canonical, jsonld, body });
+}
+
 const RFO_FAQ = [
   ['Is the Revolutionary FAR Overhaul the same as the FAR?',
    'Yes — it is the Federal Acquisition Regulation, overhauled. Under Executive Order 14275, "Restoring Common Sense to Federal Procurement," agencies use the revised FAR text published on the Revolutionary FAR Overhaul web page in lieu of the text codified at 48 CFR.'],
@@ -291,6 +364,7 @@ ${faqHtml}`;
 function renderSitemap() {
   const urls = [`${SITE}/`];
   urls.push(`${SITE}/what-is-the-rfo`);
+  if ((loadLibrary().categories || []).some(c => c.items && c.items.length)) urls.push(`${SITE}/library`);
   if (loadDeviations().length) urls.push(`${SITE}/deviations`);
   for (const source of SOURCE_KEYS) {
     const { parts } = partsForSource(source);
@@ -305,4 +379,4 @@ ${body}
 </urlset>`;
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderSitemap, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderSitemap, SITE };
