@@ -1851,6 +1851,14 @@ function copyResultCite(hit, btn) {
   fetch('/output/corpus-meta.json').then(r => r.ok ? r.json() : null).then(meta => {
     if (!meta) return;
     window.__corpusMeta = meta;
+    // Precision tool → state the exact indexed count from data, not a hand-typed "5,500+"
+    if (meta.doc_count) {
+      const n = Number(meta.doc_count);
+      if (n > 0) {
+        const ss = document.querySelector('.hero-statstrip-count strong'); if (ss) ss.textContent = n.toLocaleString();
+        const fb = document.querySelector('.fcard-sections .fcard-bignum'); if (fb) fb.textContent = n.toLocaleString();
+      }
+    }
     const gen = meta.generated_at ? new Date(meta.generated_at) : null;
     if (!gen || isNaN(gen)) return;
     const days = Math.floor((Date.now() - gen.getTime()) / 86400000);

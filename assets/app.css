@@ -1371,8 +1371,13 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .market-empty strong{display:block;color:var(--ink);font-size:var(--fs-16);margin-bottom:6px;}
 .market-loading{padding:30px 20px;color:var(--muted);font-size:var(--fs-base);text-align:center;}
 
-footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);color:var(--muted);border-top:1px solid rgba(21,95,191,0.08);padding:40px 0;}
-.foot-inner{max-width:var(--max-w);margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);color:var(--muted);border-top:1px solid rgba(21,95,191,0.08);padding:40px 0;position:relative;overflow:hidden;}
+/* guilloché through-line — a whisper-faint engraved watermark bookending the hero vault.
+   Masked so the cyan source SVG renders in brand navy on the light footer. */
+footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560px;height:560px;pointer-events:none;opacity:.05;
+  background:var(--accent);
+  -webkit-mask:url(/assets/guilloche.svg) center/contain no-repeat;mask:url(/assets/guilloche.svg) center/contain no-repeat;}
+.foot-inner{position:relative;z-index:1;max-width:var(--max-w);margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
 .foot-logo{display:inline-flex;align-items:center;}
 .foot-logo img{display:block;width:150px;height:auto;max-height:32px;}
 .foot-copy{font-size:var(--fs-sm);color:var(--muted);}
