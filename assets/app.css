@@ -564,6 +564,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 
 /* ── ABOUT BAR ── */
 .about-bar{position:fixed;top:0;left:0;right:0;z-index:400;background:var(--ink);border-bottom:0.5px solid rgba(255,255,255,0.08);padding:0 24px;min-height:38px;display:flex;align-items:center;transition:transform 0.3s ease,opacity 0.3s ease;}
+/* In work-mode the greeting steps aside so the search header sits at the top (JS re-runs adjustNavForAboutBar to reclaim the height). */
+body.work-mode .about-bar{display:none;}
 .about-bar-inner{flex:1;display:flex;align-items:center;gap:10px;max-width:var(--max-w);margin:0 auto;padding:8px 0;}
 .about-text{font-size:var(--fs-base);color:rgba(255,255,255,0.65);line-height:var(--lh-base);}
 .about-text strong{color:#fff;font-weight:var(--fw-semibold);}

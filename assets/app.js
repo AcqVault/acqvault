@@ -2369,11 +2369,13 @@ function activateSearch({ scrollToTop = false } = {}) {
   document.getElementById('browse-section').classList.remove('visible');
   document.getElementById('fulltext-section').classList.remove('visible');
   searchClear.classList.add('visible');
+  adjustNavForAboutBar(); // the about-bar is display:none in work-mode → reclaim its height
   if (scrollToTop) requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
 function deactivateSearch() {
   document.body.classList.remove('work-mode');
+  adjustNavForAboutBar(); // about-bar returns on the landing → restore its offset
   hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
   searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
   var asEl = document.getElementById('acr-suggest'); if (asEl) { asEl.hidden = true; asEl.innerHTML = ''; }
