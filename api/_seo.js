@@ -105,7 +105,7 @@ header.site a.brand svg{display:block;width:27px;height:27px;flex-shrink:0}
 header.site a.cta{font-weight:650;font-size:14px;color:#fff;background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));border:1px solid var(--brass-line);padding:8px 15px;border-radius:999px;text-decoration:none;transition:border-color .15s}
 header.site a.cta:hover{border-color:rgba(228,196,119,.55)}
 /* federal-ink masthead — frames the page in the homepage's visual language */
-.lib-mast{position:relative;overflow:hidden;border-radius:18px;margin:0 0 34px;padding:42px 40px 36px;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8;box-shadow:0 26px 54px -30px rgba(10,28,51,.62)}
+.lib-mast{position:relative;overflow:hidden;border-radius:18px;margin:0 0 34px;padding:42px 40px 36px;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8;box-shadow:inset 0 0 0 1px var(--brass-line),0 26px 54px -30px rgba(10,28,51,.62)}
 .lib-mast::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
 .lib-mast::after{content:"";position:absolute;right:-60px;bottom:-80px;width:320px;height:320px;opacity:.14;background:repeating-radial-gradient(circle at 50% 50%,rgba(228,196,119,.6) 0 1px,transparent 1px 11px);pointer-events:none}
 .lib-mast .eyebrow{position:relative;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-bright);margin:0 0 13px}
@@ -114,6 +114,8 @@ header.site a.cta:hover{border-color:rgba(228,196,119,.55)}
 .lib-mast .stats{position:relative;display:flex;flex-wrap:wrap;gap:9px}
 .lib-mast .stat{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#eaf1f8;background:rgba(255,255,255,.06);border:1px solid rgba(228,196,119,.3);border-radius:999px;padding:6px 13px}
 .lib-mast .stat b{color:var(--brass-bright);font-variant-numeric:tabular-nums}
+.lib-seal{position:absolute;right:46px;top:50%;transform:translateY(-50%);width:112px;height:112px;z-index:1;filter:drop-shadow(0 8px 16px rgba(0,0,0,.42));}
+@media(max-width:760px){.lib-seal{display:none}}
 nav.crumbs{font-size:13px;color:var(--muted);margin-bottom:8px}
 nav.crumbs a{color:var(--accent);text-decoration:none}nav.crumbs a:hover{text-decoration:underline}
 h1{font-size:30px;letter-spacing:-0.03em;margin:.2em 0 .1em}
@@ -380,6 +382,7 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 <h1>The reference shelf for federal&nbsp;acquisition</h1>
 <p class="lede">Field guides, templates, and the full text of every indexed source — one place to pull what you need.</p>
 <div class="stats"><span class="stat"><b>${totalItems}</b> resources</span><span class="stat">Free · no account</span><span class="stat">Source text re-indexed monthly</span></div>
+<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="ls-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#ls-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>
 </div>
 ${catHtml}
 <p class="libnote"><strong>Originals</strong> are written by AcqVault as research aids. <strong>Source documents</strong> are compiled from official material and regenerated monthly — always verify against the signed DoD class deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on any result in a contract file.</p>`;

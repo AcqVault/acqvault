@@ -1458,7 +1458,7 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 .foot-links a:hover{color:var(--accent);}
 
 /* Light treatment for the lower sources band, matching the opening hero. */
-#sources.sec-dark{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);color:var(--ink);border-top:1px solid rgba(21,95,191,0.08);border-bottom:1px solid rgba(21,95,191,0.08);}
+#sources.sec-dark{background:linear-gradient(160deg,#f3f1ec 0%,#ecebe4 45%,#f4f1ea 100%);color:var(--ink);border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);}
 #sources .eyebrow-light{color:var(--brass-bright);}
 #sources h2.sec-head{color:var(--ink);}
 #sources p.sec-sub-light{color:var(--muted);}
@@ -1541,7 +1541,7 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 .lib-open-btn:focus-visible{outline:3px solid var(--brass-line);outline-offset:3px;}
 .lib-cta-note{font-size:var(--fs-sm);color:var(--muted2);}
 @media(max-width:880px){#library .lib-feature-grid{grid-template-columns:1fr;}.lib-src-grid{grid-template-columns:repeat(2,1fr);}}
-#spending-dashboard.sec-dark{background:radial-gradient(ellipse 70% 60% at 80% 0%,rgba(79,182,232,0.10),transparent 60%),linear-gradient(165deg,var(--navy-panel-from) 0%,var(--navy-900) 45%,var(--navy-950) 100%);border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;}
+#spending-dashboard.sec-dark{background:radial-gradient(ellipse 70% 60% at 80% 0%,rgba(79,182,232,0.10),transparent 60%),linear-gradient(165deg,var(--navy-panel-from) 0%,var(--navy-900) 45%,var(--navy-950) 100%);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;}
 #spending-dashboard .eyebrow-light{color:var(--cyan);}
 #spending-dashboard h2.sec-head{color:#fff;}
 #spending-dashboard .sec-inner,.market-section .sec-inner{max-width:var(--max-w-wide);}
