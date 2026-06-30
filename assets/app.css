@@ -2434,3 +2434,67 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
 .market-status,.market-results-count,.market-opp-type{color:var(--brass-ink);background:var(--brass-bg);border-color:var(--brass-line);}
 .market-pill.active{background:linear-gradient(160deg,var(--navy-700),var(--navy-900));border-color:var(--brass-line);color:#fff;}
 .market-pill.active::before{background:rgba(228,196,119,.3);color:#fff;}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO LIFT + VAULT VISIBILITY PASS
+   Owner feedback: the dark hero was too dark, the vault dial was
+   hidden (dark-on-dark-on-dark), and the small white text was hard
+   to read. Lift the federal-ink slab one notch (still clearly deep
+   navy), make the vault read as a LIT brass lock, and raise the
+   reduced-opacity strip text to comfortable contrast. All AA.
+   ═══════════════════════════════════════════════════════════════ */
+/* 1) Lift the hero gradient — deep federal navy that breathes (no near-black bottom).
+   Lightened a 2nd notch per owner. Top stop stays <=L0.087 so brass-bright headline/
+   chips keep AA; brass small text lives mid/lower where the navy is darker still. */
+.hero{background:linear-gradient(160deg,#2c618d 0%,#1d476e 50%,#143655 100%);}
+
+/* 2) Raise low-opacity strip text to comfortable contrast on the lifted navy */
+.hero-eyebrow-sep,#hero-asof{color:rgba(228,238,250,.86);}
+.hero-statstrip,.hero-statstrip-count,.hero-source-strip{color:rgba(228,238,250,.86);}
+.hero-statstrip-count strong{color:#f3f7fc;}
+.hero-source-strip b{color:#f3f7fc;}
+.trychip-k{color:rgba(228,238,250,.78);}
+.hero-sub,.hero-inner-b .hero-sub{color:rgba(232,240,250,.92);}
+
+/* 3) VAULT — make it a LIT brass lock, not a black hole.
+   Lift the panel base, light the dial area with a brass (not cyan) wash,
+   add a brass halo + crisp brass rim so the dial separates from the panel. */
+.vault-panel{
+  background:
+    radial-gradient(115% 78% at 50% 32%, rgba(228,196,119,0.24), transparent 58%),
+    linear-gradient(155deg,#274a73 0%,#1a3a5c 55%,#142c4d 100%);
+}
+.vault-dial-big{
+  background:radial-gradient(circle at 50% 38%,#284b6c,#0e2034 74%);
+  box-shadow:
+    inset 0 2px 10px rgba(0,0,0,0.5),
+    0 0 0 8px rgba(16,32,54,0.9),
+    0 0 0 10px rgba(228,196,119,0.7),
+    0 0 56px rgba(228,196,119,0.3);
+}
+/* Fuller, brighter brass index ring (faint full circle + bright rotating indicator) */
+.vd-ring{
+  background:conic-gradient(from 0deg,
+    rgba(228,196,119,0.20) 0deg,
+    rgba(228,196,119,0.20) 188deg,
+    var(--brass-bright) 304deg,
+    #f4dca2 342deg,
+    rgba(228,196,119,0.20) 360deg);
+  opacity:1;
+}
+/* Brighter machined ticks so the bezel reads */
+.vd-ticks::before,.vd-ticks::after{
+  background:repeating-conic-gradient(from 0deg,rgba(232,206,150,0.48) 0deg 0.5deg,transparent 0.5deg 6deg);
+}
+/* Brass-rimmed core */
+.vd-core{
+  box-shadow:inset 0 2px 6px rgba(0,0,0,0.6),0 0 0 1px rgba(228,196,119,0.5);
+}
+
+/* 4) Spending dashboard (the dark live-data band): lift the dim small text for comfort.
+   These were 0.6–0.66 white; raise to ~0.76–0.80. Stays the dark+cyan live-data band. */
+#spending-dashboard .dash-stat-label,#spending-dashboard .dash-panel-title{color:rgba(255,255,255,0.80);}
+#spending-dashboard .dash-stat-foot,#spending-dashboard .dash-bar-sub,#spending-dashboard .dash-panel-title span,#spending-dashboard .dash-foot{color:rgba(255,255,255,0.76);}
+#spending-dashboard .dash-mix-key{color:rgba(255,255,255,0.78);}
+#spending-dashboard .dash-bar-name{color:rgba(255,255,255,0.90);}
+#spending-dashboard .dash-window button{color:rgba(255,255,255,0.78);}
