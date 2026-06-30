@@ -1865,7 +1865,9 @@ function esc(s) {
 // Safely render search highlights: escape ALL html, then restore only <mark> tags.
 // Neutralizes any html in indexed content (stored XSS) while preserving highlighting.
 function markOnly(s) {
-  return esc(s).replace(/&lt;mark&gt;/g, '<mark>').replace(/&lt;\/mark&gt;/g, '</mark>');
+  // Strip internal list-level ingest markers (L0:/L1:…) so they never leak into
+  // rendered titles/snippets — the SEO/reader paths already strip these.
+  return esc(s).replace(/L\d+:\s*/g, '').replace(/&lt;mark&gt;/g, '<mark>').replace(/&lt;\/mark&gt;/g, '</mark>');
 }
 
 // ── DRAWER FILTER ─────────────────────────────────────────────────────────────
@@ -2172,7 +2174,6 @@ function renderResults(data, query) {
       <a class="rc-open" href="${esc(href)}" aria-label="Open: ${esc(hit.title || 'document')}">
         <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">${partWord(hit.source)} ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
         <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
-        ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
         <div class="rc-snippet">${markOnly(hl.content || '')}</div>
       </a>
       <div class="rc-foot">

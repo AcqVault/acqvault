@@ -116,7 +116,7 @@
           <input type="text" id="search-input" placeholder="Search regulations, parts, guidance…" autocomplete="off" spellcheck="false" />
           <span class="search-count" id="search-count"></span>
           <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
-          <button type="button" class="search-go" id="search-go" onclick="setMode('search');document.getElementById('search-input').focus();" aria-label="Search">Search<span class="search-go-arrow" aria-hidden="true">→</span></button>
+          <button type="button" class="search-go" id="search-go" onclick="setMode('search');var i=document.getElementById('search-input');i.focus();if(i.value.trim())runSearch();" aria-label="Search">Search<span class="search-go-arrow" aria-hidden="true">→</span></button>
         </div>
       </div>
 
@@ -583,7 +583,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=36"></script>
+<script defer src="/assets/app.js?v=37"></script>
 <script defer src="/assets/saved.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=17"></script>
 <script defer src="/assets/polish.js?v=3"></script>
