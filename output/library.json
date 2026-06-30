@@ -4,13 +4,13 @@
     {
       "key": "field-guides",
       "name": "Field Guides",
-      "blurb": "AcqVault originals — plain-English study guides written for the Air Force contracting workforce. Built for the warrant board and the day-to-day.",
+      "blurb": "AcqVault originals — plain-English study guides written for the acquisition workforce. Built for the warrant board and the day-to-day.",
       "items": [
         {
           "id": "field-guide-vol-1",
           "title": "AcqVault Field Guide — Vol. 1",
           "subtitle": "Contracting Foundations",
-          "desc": "The foundations a 1102 actually uses — thresholds, methods, and the RFO framing — distilled into a working reference.",
+          "desc": "The foundations you actually use day to day — thresholds, methods, and the RFO framing — distilled into a working reference.",
           "file": "/pdfs/acqvault-field-guide-vol-1.pdf?v=2",
           "download": "AcqVault-Field-Guide-Vol-1.pdf",
           "type": "PDF",

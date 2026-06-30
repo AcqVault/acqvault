@@ -92,12 +92,27 @@ function metaDescription(docs) {
   return esc(text.slice(0, 155));
 }
 
-const STYLE = `:root{--ink:#0d1117;--muted:#656d76;--line:#d0d7de;--accent:#155FBF;--bg:#fff}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
-.wrap{max-width:820px;margin:0 auto;padding:24px 20px 80px}
-header.site{border-bottom:1px solid var(--line);margin-bottom:24px;padding-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-header.site a.brand{font-weight:800;font-size:18px;letter-spacing:-0.03em;color:var(--ink);text-decoration:none}
-header.site a.cta{font-weight:600;font-size:14px;color:#fff;background:var(--accent);padding:8px 14px;border-radius:8px;text-decoration:none}
+const STYLE = `@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
+:root{--ink:#0d1117;--muted:#656d76;--line:#d0d7de;--line2:#e8ecf0;--accent:#155FBF;--bg:#fff;--brass:#9a7320;--brass-bright:#e4c477;--brass-deep:#6f521a;--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33}
+*{box-sizing:border-box}body{margin:0;font-family:'Inter',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:22px 20px 80px}
+.wrap--wide{max-width:1060px}
+header.site{border-bottom:1px solid var(--line);margin-bottom:26px;padding-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+header.site a.brand{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-0.03em;color:var(--ink);text-decoration:none}
+header.site a.brand svg{display:block;width:27px;height:27px;flex-shrink:0}
+header.site a.cta{font-weight:650;font-size:14px;color:#fff;background:var(--accent);padding:8px 15px;border-radius:999px;text-decoration:none;transition:background .15s}
+header.site a.cta:hover{background:#114E9E}
+/* federal-ink masthead — frames the page in the homepage's visual language */
+.lib-mast{position:relative;overflow:hidden;border-radius:18px;margin:0 0 34px;padding:42px 40px 36px;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8;box-shadow:0 26px 54px -30px rgba(10,28,51,.62)}
+.lib-mast::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
+.lib-mast::after{content:"";position:absolute;right:-60px;bottom:-80px;width:320px;height:320px;opacity:.14;background:repeating-radial-gradient(circle at 50% 50%,rgba(228,196,119,.6) 0 1px,transparent 1px 11px);pointer-events:none}
+.lib-mast .eyebrow{position:relative;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-bright);margin:0 0 13px}
+.lib-mast h1{position:relative;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:42px;letter-spacing:-0.01em;line-height:1.05;margin:0 0 13px;color:#f4f8fc;max-width:14ch}
+.lib-mast .lede{position:relative;color:rgba(221,233,246,.85);font-size:15.5px;max-width:640px;margin:0 0 22px;line-height:1.6}
+.lib-mast .stats{position:relative;display:flex;flex-wrap:wrap;gap:9px}
+.lib-mast .stat{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#eaf1f8;background:rgba(255,255,255,.06);border:1px solid rgba(228,196,119,.3);border-radius:999px;padding:6px 13px}
+.lib-mast .stat b{color:var(--brass-bright);font-variant-numeric:tabular-nums}
 nav.crumbs{font-size:13px;color:var(--muted);margin-bottom:8px}
 nav.crumbs a{color:var(--accent);text-decoration:none}nav.crumbs a:hover{text-decoration:underline}
 h1{font-size:30px;letter-spacing:-0.03em;margin:.2em 0 .1em}
@@ -119,9 +134,12 @@ table.devtable tr:hover td{background:#f6f8fa}
 table.devtable td a{color:var(--accent);text-decoration:none}table.devtable td a:hover{text-decoration:underline}
 table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:nowrap}
 @media(max-width:560px){.parts{columns:1}table.devtable{font-size:12.5px}table.devtable th,table.devtable td{padding:7px 6px}}
-.libcat{padding:24px 0;border-top:1px solid var(--line)}
-.libcat h2{font-size:20px;letter-spacing:-0.02em;margin:0 0 4px}
-.libcat .catblurb{color:var(--muted);font-size:14px;margin:0 0 16px;max-width:660px;line-height:1.55}
+.libcat{padding:30px 0 8px;border-top:none}
+.libcat+.libcat{border-top:1px solid var(--line);padding-top:32px}
+.libcat .eyebrow{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin:0 0 6px}
+.libcat .eyebrow::before{content:"";width:18px;height:2px;background:var(--brass);border-radius:2px}
+.libcat h2{font-size:22px;letter-spacing:-0.02em;margin:0 0 5px}
+.libcat .catblurb{color:var(--muted);font-size:14px;margin:0 0 18px;max-width:660px;line-height:1.55}
 /* feature "report cover" cards — matte federal-ink + brass seal + engraved vault emblem */
 .libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
 .libfeat{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 1px 2px rgba(13,17,23,.04);transition:box-shadow .2s,transform .18s,border-color .18s}
@@ -152,7 +170,7 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
 @media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}`;
 
-function shell({ title, description, canonical, jsonld, body }) {
+function shell({ title, description, canonical, jsonld, body, wide }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,15 +186,12 @@ function shell({ title, description, canonical, jsonld, body }) {
 <meta property="og:site_name" content="AcqVault">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="/assets/acqvault-favicon-blue.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>${STYLE}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>
-<div class="wrap">
-<header class="site"><a class="brand" href="/">AcqVault</a><a class="cta" href="/?q=${''}">Search all sources →</a></header>
+<div class="wrap${wide ? ' wrap--wide' : ''}">
+<header class="site"><a class="brand" href="/"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><a class="cta" href="/?q=">Search all sources →</a></header>
 ${body}
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</footer>
 </div>
@@ -294,11 +309,12 @@ function renderLibraryPage() {
   const canonical = `${SITE}/library`;
   const title = `AcqVault Library — field guides, templates & source PDFs | AcqVault`;
   const totalItems = cats.reduce((n, c) => n + c.items.length, 0);
-  const description = esc(`Free downloadable AcqVault field guides and templates for Air Force / DoD contracting, plus the full text of every indexed source (RFO, R-DFARS, FAR Companion, Category Management, DAFI 63-138) as one clean PDF each. ${totalItems} resources, no account required.`);
+  const description = esc(`Free downloadable AcqVault field guides and templates for the DoD acquisition community, plus the full text of every indexed source (RFO, R-DFARS, FAR Companion, Category Management, DAFI 63-138, and the DoD FMR) as one clean PDF each. ${totalItems} resources, no account required.`);
 
   // engraved brass vault emblem (line-art, no glow) — matches the homepage covers
   const EMBLEM = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>';
   const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+  const CAT_EYEBROW = { 'field-guides': 'Written by AcqVault', 'templates': 'Adapt & reuse', 'source-documents': 'Official text · one clean PDF each' };
   const coverParts = (it, catKey) => {
     const m = String(`${it.title} ${it.subtitle || ''}`).match(/Vol\.?\s*(\d+)/i);
     if (catKey === 'field-guides' && m) return { kind: 'Field Guide', small: 'Volume', big: ROMAN[+m[1]] || m[1] };
@@ -324,6 +340,7 @@ ${it.meta ? `<span class="mt">${esc(it.meta)}</span>` : ''}
 </a>`;
       }).join('\n');
       return `<section class="libcat">
+${CAT_EYEBROW[cat.key] ? `<div class="eyebrow">${esc(CAT_EYEBROW[cat.key])}</div>` : ''}
 <h2>${esc(cat.name)}</h2>
 ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 <div class="libsrc-grid">${cards}</div>
@@ -339,6 +356,7 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 </a>`;
     }).join('\n');
     return `<section class="libcat">
+${CAT_EYEBROW[cat.key] ? `<div class="eyebrow">${esc(CAT_EYEBROW[cat.key])}</div>` : ''}
 <h2>${esc(cat.name)}</h2>
 ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 <div class="libgrid">${cards}</div>
@@ -356,12 +374,16 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
   };
 
   const body = `<nav class="crumbs"><a href="/">AcqVault</a> › Library</nav>
-<h1>AcqVault Library</h1>
-<p class="lede">Field guides, templates, and the full text of every indexed source — one place to pull what you need. Free, no account, downloads straight to your device.</p>
+<div class="lib-mast">
+<div class="eyebrow">AcqVault · Library</div>
+<h1>The reference shelf for federal&nbsp;acquisition</h1>
+<p class="lede">Field guides, templates, and the full text of every indexed source — one place to pull what you need.</p>
+<div class="stats"><span class="stat"><b>${totalItems}</b> resources</span><span class="stat">Free · no account</span><span class="stat">Source text re-indexed monthly</span></div>
+</div>
 ${catHtml}
 <p class="libnote"><strong>Originals</strong> are written by AcqVault as research aids. <strong>Source documents</strong> are compiled from official material and regenerated monthly — always verify against the signed DoD class deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on any result in a contract file.</p>`;
 
-  return shell({ title, description, canonical, jsonld, body });
+  return shell({ title, description, canonical, jsonld, body, wide: true });
 }
 
 const RFO_FAQ = [

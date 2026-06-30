@@ -3416,9 +3416,8 @@ function stRenderAwards(awards) {
   var navCenter = document.getElementById('nav-center');
   if (navCenter) {
     var pill = navCenter.querySelector('.nav-pill');
-    var links = Array.prototype.slice.call(navCenter.querySelectorAll('a'));
-    var hashLinks = links.filter(function (l) { return (l.getAttribute('href') || '').charAt(0) === '#'; });
-    var activeLink = links[0];
+    var activeLink = navCenter.querySelector('a');
+    function navLinks() { return Array.prototype.slice.call(navCenter.querySelectorAll('a')); }
     function movePill(el, instant) {
       if (!pill || !el || !el.offsetWidth) return;
       if (instant) pill.style.transition = 'none';
@@ -3427,10 +3426,17 @@ function stRenderAwards(awards) {
       navCenter.classList.add('pill-ready');
       if (instant) { void pill.offsetWidth; pill.style.transition = ''; }
     }
-    links.forEach(function (l) { l.addEventListener('mouseenter', function () { movePill(l); }); });
+    // Delegated hover so JS-injected links (e.g. Toolkit, added by widgets.js after this runs) glide too.
+    navCenter.addEventListener('mouseover', function (e) {
+      var a = e.target.closest('a'); if (a && navCenter.contains(a)) movePill(a);
+    });
     navCenter.addEventListener('mouseleave', function () { movePill(activeLink); });
     window.addEventListener('resize', function () { movePill(activeLink, true); }, { passive: true });
     function initSpy() {
+      // Re-query at call time (load+400ms) so late-injected links join the scrollspy.
+      var links = navLinks();
+      var hashLinks = links.filter(function (l) { return (l.getAttribute('href') || '').charAt(0) === '#'; });
+      if (!activeLink) activeLink = links[0];
       movePill(activeLink, true);
       hashLinks.forEach(function (l) {
         var sec = document.querySelector(l.getAttribute('href'));
