@@ -2498,3 +2498,36 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
 #spending-dashboard .dash-mix-key{color:rgba(255,255,255,0.78);}
 #spending-dashboard .dash-bar-name{color:rgba(255,255,255,0.90);}
 #spending-dashboard .dash-window button{color:rgba(255,255,255,0.78);}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO CHROME LEGIBILITY (follows the hero-lift pass)
+   Two defects surfaced once the hero was lightened:
+   (a) the over-hero TOP NAV used a translucent-dark bar tuned for the
+       near-black hero — over the lighter blue it floated, so the light
+       links lost contrast. Fix: darken the bar, brighten the links.
+   (b) the SEARCH-CONTROL cluster (mode-toggle pill + trychips) was a
+       LIGHT white pill, but the dark-hero pass had set the inactive
+       button text LIGHT — light-on-light. Fix: treat it as a crisp
+       LIGHT control cluster (pairs with the white search bar): dark
+       text on the light pill, navy "Search" active state (pops on
+       white), legible light trychips. All AA.
+   ═══════════════════════════════════════════════════════════════ */
+/* (a) Top menu bar over the hero: darker glass bar + brighter links */
+nav#main-nav.over-hero{background:rgba(9,21,40,.88);border-bottom-color:rgba(228,196,119,.26);}
+nav#main-nav.over-hero .nav-center{background:rgba(255,255,255,.05);border-color:rgba(228,196,119,.22);}
+nav#main-nav.over-hero .nav-center a{color:rgba(234,242,252,.94);}
+nav#main-nav.over-hero .nav-center a:hover,nav#main-nav.over-hero .nav-center a.active{color:#fff;}
+nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{color:rgba(234,242,252,.95);border-color:rgba(228,196,119,.3);}
+
+/* (b) Search-control cluster → crisp light pill, dark text, navy active */
+.hero-command-dock-b .mode-toggle{background:rgba(255,255,255,.9);border-color:var(--brass-line);}
+.mode-btn{color:var(--ink2);}
+.mode-btn:hover:not(.active){color:var(--navy-900);background:var(--brass-bg);border-color:var(--brass-line);}
+.mode-btn.active{background:linear-gradient(160deg,var(--navy-700),var(--navy-900));color:#fff;border-color:var(--brass-line);}
+.trychip{background:rgba(255,255,255,.88);border-color:var(--brass-line);color:var(--brass-ink);}
+.trychip:hover{background:#fff;border-color:var(--brass);}
+.trychip-k{color:var(--muted);}
+
+/* Bottom stat / source strip: brighten the label + keep the names near-white */
+.hero-statstrip,.hero-statstrip-count,.hero-source-strip{color:rgba(233,241,251,.90);}
+.hero-live-label{color:#f3f7fc;}
