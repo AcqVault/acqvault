@@ -434,8 +434,8 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: wm-intro 4.4s cubic-bezier(0.4,0,0.2,1) 0.5s 1 forwards,
-             wm-shimmer 9s ease-in-out 5s infinite;
+  /* one-shot intro only — no perpetual shimmer (de-slop: the mark is fixed, not "alive") */
+  animation: wm-intro 4.4s cubic-bezier(0.4,0,0.2,1) 0.5s 1 forwards;
 }
 @keyframes wm-intro {
   0%   { background-position: 150% 0; }
@@ -445,15 +445,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   0%,100% { background-position: 40% 0; }
   50%     { background-position: 12% 0; }
 }
-/* Arc reactor pulse in sync with streak arriving */
-@keyframes arc-pulse {
-  0%,40%  { filter: drop-shadow(0 0 2px #0ea5e9) drop-shadow(0 0 4px #155FBF); }
-  50%     { filter: drop-shadow(0 0 8px #4FB6E8) drop-shadow(0 0 16px #0ea5e9) drop-shadow(0 0 28px #155FBF); }
-  65%,100%{ filter: drop-shadow(0 0 2px #0ea5e9) drop-shadow(0 0 4px #155FBF); }
-}
-.hero-brand-title svg {
-  animation: arc-pulse 4.8s cubic-bezier(0.4,0,0.2,1) 0.6s 1 forwards;
-}
+/* (arc-reactor cyan pulse removed — de-slop: an issued mark does not glow) */
 
 /* ═══════════════════════════════════════
    ACQVAULT — Stripe docs × acquisition.gov
@@ -470,6 +462,14 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   /* Kinetic Light cyan tokens */
   --cyan:        #4FB6E8;
   --cyan-soft:   #7CC9EE;
+
+  /* Brass / seal — the single signature accent of the "certified copy" identity.
+     Reserved for engraved marks, eyebrows, seals; cyan is demoted to live-data only. */
+  --brass:        #9a7320;
+  --brass-bright: #e4c477;
+  --brass-deep:   #6f521a;
+  --brass-bg:     #fbf6e8;
+  --brass-line:   rgba(154,115,32,0.40);
 
   /* Source identity colors */
   --rfo-bg:     #dbeafe; --rfo-txt:    #1e3a8a; --rfo-solid:  #2563eb;
@@ -1903,20 +1903,20 @@ body.work-mode #quick-links{margin-top:0;}
 /* ---- Rotating glowing dial ring around the vault wordmark logo ---- */
 .vault-mark{position:relative;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
 .vault-dial-ring{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;pointer-events:none;
-  background:conic-gradient(from 0deg,rgba(79,182,232,0) 0deg,rgba(79,182,232,0) 180deg,var(--cyan) 285deg,#7dd3fc 335deg,rgba(79,182,232,0) 360deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2.5px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2.5px));
-  filter:drop-shadow(0 0 4px rgba(79,182,232,.8));opacity:.95;
-  animation:vault-spin 7s linear infinite;}
+  background:conic-gradient(from 0deg,rgba(228,196,119,0) 0deg,rgba(228,196,119,0) 200deg,var(--brass-bright) 315deg,var(--brass) 350deg,rgba(228,196,119,0) 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
+  opacity:.8;
+  animation:vault-spin 60s linear infinite;}
 @keyframes vault-spin{to{transform:rotate(360deg)}}
 
 /* ---- Search bar: animated focus-glow halo ---- */
 .search-container{isolation:isolate;}
-.search-glow{position:absolute;inset:-4px;border-radius:calc(var(--r-xl) + 4px);z-index:0;opacity:0;
-  background:linear-gradient(100deg,var(--accent),var(--cyan),#7dd3fc,var(--accent));
-  background-size:300% 100%;filter:blur(13px);transition:opacity .35s ease;pointer-events:none;}
+.search-glow{position:absolute;inset:-3px;border-radius:calc(var(--r-xl) + 3px);z-index:0;opacity:0;
+  background:transparent;box-shadow:0 0 0 2px var(--accent-bdr),0 8px 24px -10px var(--accent-shadow);
+  transition:opacity .2s ease;pointer-events:none;}
 .search-bar{position:relative;z-index:1;}
-.search-container:focus-within .search-glow{opacity:.5;}
+.search-container:focus-within .search-glow{opacity:1;}
 @keyframes search-glow-move{0%{background-position:0% 50%}100%{background-position:300% 50%}}
 
 /* ---- Live dots: gentle pulsing halo ---- */
@@ -2032,50 +2032,49 @@ body.work-mode #quick-links{margin-top:0;}
   box-shadow:0 50px 90px -34px rgba(9,19,36,0.7),inset 0 1px 0 rgba(255,255,255,0.06);
   display:flex;align-items:center;justify-content:center;
   animation:hero-rise 0.9s 0.18s cubic-bezier(0.16,1,0.3,1) both;}
-.vault-panel::before{content:"";position:absolute;inset:14px;border-radius:22px;border:1px solid rgba(124,201,238,0.16);pointer-events:none;}
+.vault-panel::before{content:"";position:absolute;inset:14px;border-radius:22px;border:1px solid var(--brass-line);pointer-events:none;}
 .vault-panel-tag{position:absolute;bottom:20px;left:0;right:0;text-align:center;
-  color:var(--cyan-soft,#7dd3fc);font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:0.2em;}
+  color:var(--brass-bright);font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:0.2em;}
 
 /* big glowing rotating dial */
 .vault-dial-big{position:relative;width:210px;height:210px;border-radius:50%;
-  background:radial-gradient(circle at 50% 38%,#16314f,#0a1626 70%);
-  box-shadow:inset 0 2px 8px rgba(0,0,0,0.6),0 0 0 8px rgba(8,16,30,0.9);}
+  background:radial-gradient(circle at 50% 38%,#14253c,#091421 72%);
+  box-shadow:inset 0 2px 10px rgba(0,0,0,0.7),0 0 0 8px rgba(8,16,30,0.95),0 0 0 9px var(--brass-line);}
+/* Brass index arc — a turned, machined mark, not a glow */
 .vd-ring{position:absolute;inset:-6px;border-radius:50%;
-  background:conic-gradient(from 0deg,rgba(79,182,232,0),#4FB6E8,#7dd3fc,rgba(79,182,232,0));
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
-  filter:drop-shadow(0 0 8px rgba(79,182,232,0.7));animation:vault-spin 14s linear infinite;}
+  background:conic-gradient(from 0deg,rgba(228,196,119,0) 0deg,rgba(228,196,119,0) 205deg,var(--brass-bright) 320deg,var(--brass) 352deg,rgba(228,196,119,0) 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
+  opacity:.85;animation:vault-spin 90s linear infinite;}
 .vd-ticks{position:absolute;inset:8px;border-radius:50%;}
 .vd-ticks::before,.vd-ticks::after{content:"";position:absolute;inset:0;border-radius:50%;
   background:
-    repeating-conic-gradient(from 0deg,rgba(124,201,238,0.5) 0deg 0.6deg,transparent 0.6deg 6deg);
+    repeating-conic-gradient(from 0deg,rgba(176,164,140,0.32) 0deg 0.5deg,transparent 0.5deg 6deg);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 12px) calc(100% - 1px),transparent calc(100% - 1px));
   mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 12px) calc(100% - 1px),transparent calc(100% - 1px));}
 .vd-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:96px;height:96px;border-radius:50%;
-  background:radial-gradient(circle at 50% 40%,#1c3c5e,#0b1a2e);
+  background:radial-gradient(circle at 50% 40%,#19324e,#0a1828);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:inset 0 2px 6px rgba(0,0,0,0.6),0 0 26px rgba(79,182,232,0.4);}
-.vd-spoke{position:absolute;left:50%;top:50%;width:5px;height:74px;border-radius:5px;
-  background:linear-gradient(#7dd3fc,rgba(79,182,232,0.1));
+  box-shadow:inset 0 2px 6px rgba(0,0,0,0.7),0 0 0 1px var(--brass-line);}
+.vd-spoke{position:absolute;left:50%;top:50%;width:4px;height:74px;border-radius:4px;
+  background:linear-gradient(var(--brass-bright),rgba(154,115,32,0.12));
   transform:translate(-50%,-50%) rotate(34deg);transform-origin:50% 50%;
-  box-shadow:0 0 10px rgba(79,182,232,0.6);animation:vd-turn 22s linear infinite;}
+  animation:vd-turn 90s linear infinite;}
 @keyframes vd-turn{to{transform:translate(-50%,-50%) rotate(394deg);}}
 .vd-hub{width:30px;height:30px;border-radius:50%;z-index:2;
-  background:radial-gradient(circle,#7dd3fc,#1f8fe0);box-shadow:0 0 18px #4FB6E8;
-  animation:vd-hub-pulse 4s ease-in-out infinite;}
-@keyframes vd-hub-pulse{0%,100%{box-shadow:0 0 14px #4FB6E8;}50%{box-shadow:0 0 26px #7dd3fc;}}
+  background:radial-gradient(circle at 50% 40%,var(--brass-bright),var(--brass-deep));
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.45),0 0 0 1px var(--brass-line);}
 
 /* ───────── Floating glassy data cards ───────── */
+/* Solid instrument cards — opaque, grounded (de-slop: no frosted glass, no perpetual bob) */
 .fcard{position:absolute;z-index:5;
-  background:rgba(255,255,255,0.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,0.92);border-radius:16px;padding:13px 16px;
-  box-shadow:0 26px 50px -22px rgba(10,79,158,0.5),0 2px 6px -2px rgba(0,0,0,0.06);
-  animation:hero-rise 0.85s 0.4s cubic-bezier(0.16,1,0.3,1) both, kl-float 7s ease-in-out 1.2s infinite;}
-.fcard:nth-of-type(2){animation:hero-rise 0.85s 0.5s cubic-bezier(0.16,1,0.3,1) both, kl-float 7.6s ease-in-out 1.5s infinite;}
-.fcard:nth-of-type(3){animation:hero-rise 0.85s 0.6s cubic-bezier(0.16,1,0.3,1) both, kl-float 8.2s ease-in-out 1.8s infinite;}
-.fcard:hover{animation-play-state:paused;}
-@keyframes kl-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-11px);}}
+  background:var(--white);
+  border:1px solid var(--line2);border-radius:16px;padding:13px 16px;
+  box-shadow:0 18px 40px -22px rgba(10,79,158,0.32),0 2px 6px -2px rgba(0,0,0,0.06);
+  animation:hero-rise 0.85s 0.4s cubic-bezier(0.16,1,0.3,1) both;}
+.fcard:nth-of-type(2){animation:hero-rise 0.85s 0.5s cubic-bezier(0.16,1,0.3,1) both;}
+.fcard:nth-of-type(3){animation:hero-rise 0.85s 0.6s cubic-bezier(0.16,1,0.3,1) both;}
 .fcard-lbl{display:flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:var(--fw-bold);
   letter-spacing:0.03em;text-transform:uppercase;color:var(--muted);}
 .fcard-trend{color:#16a34a;font-size:var(--fs-2xs);}
