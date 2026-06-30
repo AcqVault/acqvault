@@ -18,7 +18,9 @@ const SOURCES = {
   'afi-63-138':          { name: 'DAFI 63-138', short: 'DAFI 63-138',
     desc: 'Department of the Air Force Instruction 63-138, Acquisition Program Management.' },
   'category-management': { name: 'Category Management Buying Guide', short: 'Cat Mgmt',
-    desc: 'Federal category management buying guidance.' }
+    desc: 'Federal category management buying guidance.' },
+  'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
+    desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.' }
 };
 const SOURCE_KEYS = Object.keys(SOURCES);
 
@@ -146,7 +148,7 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 .libsrc .sb{font-size:12px;color:var(--muted);font-weight:600}
 .libsrc .mt{font-size:11px;color:var(--muted);margin-top:2px}
 .libsrc .dl{position:absolute;top:12px;right:13px;font-size:14px;font-weight:800;color:var(--src,#94a3b8)}
-.libsrc[data-src="rfo"]{--src:#2563eb}.libsrc[data-src="r-dfars"]{--src:#16a34a}.libsrc[data-src="far-companion"]{--src:#7c3aed}.libsrc[data-src="category-management"]{--src:#0891b2}.libsrc[data-src="dafi-63-138"]{--src:#b0892f}
+.libsrc[data-src="rfo"]{--src:#2563eb}.libsrc[data-src="r-dfars"]{--src:#16a34a}.libsrc[data-src="far-companion"]{--src:#7c3aed}.libsrc[data-src="category-management"]{--src:#0891b2}.libsrc[data-src="dafi-63-138"]{--src:#b0892f}.libsrc[data-src="fmr"]{--src:#b45309}
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
 @media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}`;
 
@@ -312,8 +314,10 @@ function renderLibraryPage() {
     if (cat.key === 'source-documents') {
       const cards = cat.items.map(it => {
         const srcKey = String(it.id || '').replace(/^src-/, '');
-        return `<a class="libsrc" data-src="${esc(srcKey)}" href="${esc(it.file)}" download="${esc(it.download || '')}" rel="noopener">
-<span class="dl" aria-hidden="true">↓</span>
+        const ext = /^https?:\/\//i.test(it.file || '');
+        const attrs = ext ? 'target="_blank" rel="noopener"' : `download="${esc(it.download || '')}" rel="noopener"`;
+        return `<a class="libsrc" data-src="${esc(srcKey)}" href="${esc(it.file)}" ${attrs}>
+<span class="dl" aria-hidden="true">${ext ? '↗' : '↓'}</span>
 <span class="nm">${esc(it.title)}</span>
 ${it.subtitle ? `<span class="sb">${esc(it.subtitle)}</span>` : ''}
 ${it.meta ? `<span class="mt">${esc(it.meta)}</span>` : ''}

@@ -210,7 +210,7 @@ const SOURCE_URLS = {
   'r-dfars':       'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide',
   'far-companion': 'https://www.acquisition.gov/far-companion',
   'category-management': 'https://www.acquisition.gov/far-overhaul',
-  'fmr':           'https://comptroller.defense.gov/FMR/',
+  'fmr':           'https://comptroller.war.gov/FMR/',
   'afi-63-138':    'https://www.e-publishing.af.mil/',
   'compass':        'https://usaf.dps.mil/sites/AFCC/AQCP/KnowledgeCenter/SitePages/DAF-Contracting-Compass.aspx',
 };
@@ -273,6 +273,20 @@ const PARTS_BY_SOURCE = {
     [1,'Overview and Applicability'],[2,'Roles and Responsibilities'],
     [3,'Requirements Approval Process'],[4,'Services Acquisition Process'],
     [5,'Governance Assessment'],[6,'Quality Oversight']
+  ],
+  'fmr': [
+    ['1','General Financial Management Information, Systems, and Requirements'],
+    ['2A','Budget Formulation and Presentation (2A)'],
+    ['2B','Budget Formulation and Presentation (2B)'],
+    ['3','Budget Execution — Availability and Use of Budgetary Resources'],
+    ['4','Accounting Policy'],['5','Disbursing Policy'],
+    ['6A','Reporting Policy'],['6B','Form and Content of the DoD Audited Financial Statements'],
+    ['7A','Military Pay Policy — Active Duty and Reserve Pay'],['7B','Military Pay Policy — Retired Pay'],
+    ['8','Civilian Pay Policy'],['9','Travel Policy'],['10','Contract Payment Policy'],
+    ['11A','Reimbursable Operations Policy — General'],['11B','Reimbursable Operations Policy — Working Capital Funds'],
+    ['12','Special Accounts, Funds, and Programs'],['13','Nonappropriated Funds Policy and Procedures'],
+    ['14','Administrative Control of Funds and Antideficiency Act Violations'],
+    ['15','Security Cooperation Policy'],['16','Department of Defense Debt Management']
   ],
   'compass': [
     [1,'Federal Acquisition Regulations System'],[2,'Definitions'],
@@ -1108,7 +1122,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
   return `
     <div class="br-header">
       <span class="br-source-badge" style="background:${tagBg};color:${tagClr}">${srcLabel}</span>
-      <div class="br-part-num">Part ${partNum}</div>
+      <div class="br-part-num">${partWord(source)} ${partNum}</div>
       <div class="br-part-title">${esc(partLabel)}</div>
       <div class="br-meta">
         <span>${displayCount} section${displayCount !== 1 ? 's' : ''}</span>
@@ -1119,7 +1133,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     </div>
     <div class="br-part-search" id="br-part-search" role="search" aria-label="Search within this part">
       <span class="br-part-search-icon" aria-hidden="true">⌕</span>
-      <input class="br-part-search-input" id="br-part-search-input" type="text" placeholder="Search within Part ${partNum}…" autocomplete="off" spellcheck="false" aria-label="Search within this part">
+      <input class="br-part-search-input" id="br-part-search-input" type="text" placeholder="Search within ${partWord(source)} ${partNum}…" autocomplete="off" spellcheck="false" aria-label="Search within this part">
       <span class="br-part-search-count" id="br-part-search-count"></span>
       <span class="br-part-search-nav" id="br-part-search-nav" aria-label="Part search matches">
         <button type="button" class="br-part-search-step" id="br-part-search-prev" aria-label="Previous match">↑</button>
@@ -1144,6 +1158,9 @@ function displayPartForSource(source, part) {
   if (source === 'r-dfars' && Number.isFinite(n) && n > 0 && n < 200) return String(n + 200);
   return String(part);
 }
+
+// FMR is organized into Volumes (not Parts); everything else uses "Part".
+function partWord(source) { return source === 'fmr' ? 'Volume' : 'Part'; }
 
 function buildCategoryManagementLanding() {
   const categories = (PARTS_BY_SOURCE['category-management'] || []).filter(([num]) => Number(num) >= 3);
@@ -1304,7 +1321,7 @@ function generateCitation(hit) {
   // Filename fallback
   const fileMatch = (hit.filename || '').match(/\b(\d{1,3}\.\d{3,6}(?:-\d+)?)\b/);
   if (fileMatch) return `${label} ${fileMatch[1]}`;
-  if (hit.part) return `${label} Part ${displayPartForSource(hit.source, hit.part)}`;
+  if (hit.part) return `${label} ${partWord(hit.source)} ${displayPartForSource(hit.source, hit.part)}`;
   return label;
 }
 
@@ -2035,7 +2052,7 @@ function buildNoResultsHTML(query) {
       <button class="nr-btn nr-btn-primary" data-action="strip-legacy" data-q="${esc(stripped)}">Search the RFO / R-DFARS for “${esc(stripped)}”</button>`;
   } else if (filtered) {
     primary = `<div class="nr-note">You're searching only <strong>${esc(filterNames)}</strong>.</div>
-      <button class="nr-btn nr-btn-primary" data-action="all-sources">Search all 6 sources</button>`;
+      <button class="nr-btn nr-btn-primary" data-action="all-sources">Search all 7 sources</button>`;
   }
   return `<div class="no-results nr-launch">
     <div class="nr-title">No matches for “${esc(q)}”</div>
@@ -2092,7 +2109,7 @@ function renderResults(data, query) {
     return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}">
       <button class="rc-pin${pinned ? ' is-pinned' : ''}" type="button" data-pin-id="${esc(hit.id)}" data-pin-title="${esc(hit.title || '')}" data-pin-source="${esc(hit.source || '')}" data-pin-part="${esc(hit.part || '')}" data-pin-file="${esc(hit.filename || '')}" data-pin-url="${esc(hit.url || '')}" data-pin-anchor="${esc(hit.anchor || '')}" data-pin-indexed="${esc(hit.indexed_at || '')}" data-pin-status="${esc(hit.status || '')}" aria-pressed="${pinned ? 'true' : 'false'}" aria-label="${pinned ? 'Remove saved clause' : 'Save this clause'}" title="${pinned ? 'Saved — click to remove' : 'Save this clause'}">★</button>
       <a class="rc-open" href="${esc(href)}" aria-label="Open: ${esc(hit.title || 'document')}">
-        <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">Part ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
+        <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">${partWord(hit.source)} ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
         <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
         ${hit.filename ? `<div class="rc-ref">${esc(hit.filename)}</div>` : ''}
         <div class="rc-snippet">${markOnly(hl.content || '')}</div>
@@ -2129,7 +2146,7 @@ function renderReaderPage(hit) {
   document.getElementById('reader-aside-cite').textContent = citation;
   document.getElementById('reader-file').textContent = hit.filename || '';
   document.getElementById('reader-source').textContent = SOURCE_LABELS[hit.source] || hit.source || '—';
-  document.getElementById('reader-part').textContent = hit.part ? `Part ${displayPartForSource(hit.source, hit.part)}` : '—';
+  document.getElementById('reader-part').textContent = hit.part ? `${partWord(hit.source)} ${displayPartForSource(hit.source, hit.part)}` : '—';
 
   const original = document.getElementById('reader-original');
   // Compass official source is CAC-gated — don't send users to a 403 wall.
@@ -2144,6 +2161,11 @@ function renderReaderPage(hit) {
 async function loadFullPartInReader(hit) {
   const contentEl = document.getElementById('reader-content');
   contentEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  // FMR: render just the clicked chapter (the readable unit), not the whole large volume.
+  if (hit.source === 'fmr') {
+    contentEl.innerHTML = `<div class="reader-full-section">${formatContent(hit.content || '', hit)}</div>`;
+    return;
+  }
   try {
     const indexPart = indexPartForSource(hit.source, hit.part);
     const allHits = [];
@@ -2256,7 +2278,7 @@ function openDrawer(hit) {
   cacheDocumentForNewTab(hit);
   document.getElementById('drawer-title').textContent  = hit.title || 'Document';
   document.getElementById('drawer-source').textContent = SOURCE_LABELS[hit.source] || hit.source;
-  document.getElementById('drawer-part').textContent   = hit.part ? `Part ${displayPartForSource(hit.source, hit.part)}` : '—';
+  document.getElementById('drawer-part').textContent   = hit.part ? `${partWord(hit.source)} ${displayPartForSource(hit.source, hit.part)}` : '—';
   document.getElementById('drawer-file').textContent   = hit.filename || '—';
   const drawerAsof = document.getElementById('drawer-asof');
   if (drawerAsof) drawerAsof.textContent = hit.indexed_at ? fmtAsOf(hit.indexed_at) : '—';
@@ -2305,6 +2327,12 @@ async function loadFullPartInDrawer(hit) {
   contentEl.innerHTML =
     `<div id="drawer-sec-${hit.id}" class="drawer-full-section drawer-sec-active">${formatContent(hit.content || '', hit)}</div>` +
     `<div class="drawer-rest-loading">Loading the rest of this part…</div>`;
+  // FMR is grouped by Volume but a Volume holds many large chapters; the chapter is the
+  // readable unit, so show just the clicked chapter rather than hydrating the whole volume.
+  if (hit.source === 'fmr') {
+    const lr = contentEl.querySelector('.drawer-rest-loading'); if (lr) lr.remove();
+    return;
+  }
   try {
     const indexPart = indexPartForSource(hit.source, hit.part);
     const allHits = [];

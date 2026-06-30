@@ -32,7 +32,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=52">
+<link rel="stylesheet" href="/assets/app.css?v=53">
 </head>
 <body>
 
@@ -105,7 +105,7 @@
       <div class="hero-intro">
         <span class="hero-eyebrow"><span class="hero-eyebrow-dot st-live-dot"></span>FY2026 DAF obligations tracked live<span class="hero-eyebrow-sep">—</span><span id="hero-asof">live data</span></span>
         <h1 class="hero-headline">The <em>Revolutionary FAR&nbsp;Overhaul</em> is here.<br><span class="hl-ink">Search every word of&nbsp;it.</span></h1>
-        <p class="hero-sub">Full-text search across all six official sources — free, no account, no AI summaries. Just the authoritative <strong>RFO</strong>, <strong>R-DFARS</strong>, and DAF acquisition text, current today.</p>
+        <p class="hero-sub">Full-text search across all seven official sources — free, no account, no AI summaries. Just the authoritative <strong>RFO</strong>, <strong>R-DFARS</strong>, and DoD acquisition text, current today.</p>
       </div>
 
       <div class="search-container" role="search">
@@ -215,10 +215,10 @@
           <button type="button" class="fpill" data-source="category-management" aria-pressed="false">Category Management Buying Guide</button>
           <button type="button" class="fpill" data-source="afi-63-138" aria-pressed="false">DAFI 63-138</button>
           <button type="button" class="fpill" data-source="compass" aria-pressed="false">DAF Contracting Compass</button>
+          <button type="button" class="fpill" data-source="fmr" aria-pressed="false">DoD FMR</button>
         </div>
         <span class="filter-label filter-label-soft">Coming soon</span>
         <div class="filter-pill-row">
-          <button type="button" class="fpill disabled" disabled>DoD FMR</button>
           <button type="button" class="fpill disabled" disabled>AFI 63-Series</button>
         </div>
       </div>
@@ -240,7 +240,7 @@
       <button type="button" class="browse-src-pill" data-bsource="category-management" aria-pressed="false" onclick="setBrowseSource('category-management')">Category Management Buying Guide</button>
       <button type="button" class="browse-src-pill" data-bsource="afi-63-138" aria-pressed="false" onclick="setBrowseSource('afi-63-138')">DAFI 63-138</button>
       <button type="button" class="browse-src-pill" data-bsource="compass" aria-pressed="false" onclick="setBrowseSource('compass')">DAF Contracting Compass</button>
-      <span class="browse-src-soon">DoD FMR</span>
+      <button type="button" class="browse-src-pill" data-bsource="fmr" aria-pressed="false" onclick="setBrowseSource('fmr')">DoD FMR</button>
       <span class="browse-src-soon">AFI 63-Series</span>
     </div>
   </div>
@@ -284,7 +284,7 @@
     <div class="fulltext-section-label">Browse-only sources</div>
     <div class="fulltext-cards">
       <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--cmp-bg);color:var(--cmp-txt);">DAF Compass</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>48 parts covered</span><span>In-app archive · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('compass')">Browse in-app</button></div>
-      <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:#fefce8;color:#854d0e;">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>14 volumes</span><span>comptroller.defense.gov</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
+      <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--fmr-bg);color:var(--fmr-txt);">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>304 chapters · 16 volumes</span><span>In-app · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('fmr')">Browse in-app</button></div>
       <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:var(--off2);color:var(--muted2);">AFI 63-Series</span><div class="fulltext-card-name">AFI 63-Series</div><div class="fulltext-card-meta"><span>Program management regs</span><span>AF instruction series</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
     </div>
   </div>
@@ -433,6 +433,7 @@
         <a class="lib-src" data-src="far-companion" href="/pdfs/far-companion.pdf" download="AcqVault-FAR-Companion.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">FAR Companion</span><span class="lib-src-meta">Full-text PDF</span></a>
         <a class="lib-src" data-src="category-management" href="/pdfs/category-management-buying-guide.pdf" download="AcqVault-Category-Management-Buying-Guide.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">Category Mgmt</span><span class="lib-src-meta">Full-text PDF</span></a>
         <a class="lib-src" data-src="afi" href="/pdfs/dafi63-138.pdf" download="AcqVault-DAFI-63-138.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">DAFI 63-138</span><span class="lib-src-meta">Full-text PDF</span></a>
+        <a class="lib-src" data-src="fmr" href="https://comptroller.war.gov/portals/45/documents/fmr/Combined_Volume1-16.pdf" target="_blank" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↗</span><span class="lib-src-name">DoD FMR</span><span class="lib-src-meta">Official PDF · all 16 volumes</span></a>
       </div>
     </div>
     <div class="lib-cta-row fade-up">
@@ -457,13 +458,13 @@
           <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('far-companion')">FAR Companion</button>
           <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('category-management')">Category Management Buying Guide</button>
           <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('afi-63-138')">DAFI 63-138</button>
+          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('fmr')">DoD FMR</button>
           <button type="button" class="source-status-chip archived" onclick="setMode('browse');setBrowseSource('compass')">DAF Contracting Compass</button>
         </div>
       </div>
       <div class="source-status-row">
         <div class="source-status-label">Queued</div>
         <div class="source-status-main">
-          <span class="source-status-chip soon">DoD FMR</span>
           <span class="source-status-chip soon">AFI 63-Series</span>
         </div>
       </div>
@@ -579,7 +580,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=28"></script>
+<script defer src="/assets/app.js?v=29"></script>
 <script defer src="/assets/saved.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=17"></script>
 <script defer src="/assets/polish.js?v=3"></script>

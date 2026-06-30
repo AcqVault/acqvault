@@ -115,6 +115,18 @@
           "meta": "41 sections · 6 chapters",
           "origin": "Official source, compiled by AcqVault",
           "updated": "Jan 2, 2024"
+        },
+        {
+          "id": "src-fmr",
+          "title": "DoD Financial Management Regulation",
+          "subtitle": "DoD 7000.14-R · Volumes 1–16",
+          "desc": "The full DoD Financial Management Regulation — searchable and browsable in-app by volume and chapter. The official combined PDF (all 16 volumes) is hosted by the DoD Comptroller and opens on their site.",
+          "file": "https://comptroller.war.gov/portals/45/documents/fmr/Combined_Volume1-16.pdf",
+          "download": "",
+          "type": "Official PDF",
+          "meta": "20 volume-parts · 304 chapters",
+          "origin": "Official source (DoD Comptroller)",
+          "updated": "Mar 2024"
         }
       ]
     }
