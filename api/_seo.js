@@ -167,7 +167,7 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 .libsrc .sb{font-size:12px;color:var(--muted);font-weight:600}
 .libsrc .mt{font-size:11px;color:var(--muted);margin-top:2px}
 .libsrc .dl{position:absolute;top:12px;right:13px;font-size:14px;font-weight:800;color:var(--src,#94a3b8)}
-.libsrc[data-src="rfo"]{--src:#2563eb}.libsrc[data-src="r-dfars"]{--src:#16a34a}.libsrc[data-src="far-companion"]{--src:#7c3aed}.libsrc[data-src="category-management"]{--src:#0891b2}.libsrc[data-src="dafi-63-138"]{--src:#b0892f}.libsrc[data-src="fmr"]{--src:#b45309}
+.libsrc[data-src="rfo"]{--src:#2563eb}.libsrc[data-src="r-dfars"]{--src:#15803d}.libsrc[data-src="far-companion"]{--src:#7c3aed}.libsrc[data-src="category-management"]{--src:#0e7490}.libsrc[data-src="dafi-63-138"]{--src:#87651c}.libsrc[data-src="fmr"]{--src:#b45309}
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
 @media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}`;
 

@@ -478,10 +478,10 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 
   /* Source identity colors */
   --rfo-bg:     #dbeafe; --rfo-txt:    #1e3a8a; --rfo-solid:  #2563eb;
-  --dfars-bg:   #dcfce7; --dfars-txt:  #14532d; --dfars-solid:#16a34a;
+  --dfars-bg:   #dcfce7; --dfars-txt:  #14532d; --dfars-solid:#15803d;
   --fc-bg:      #ede9fe; --fc-txt:     #3b0764; --fc-solid:   #7c3aed;
-  --cm-bg:      #e0f2fe; --cm-txt:     #075985; --cm-solid:   #0891b2;
-  --cmp-bg:     #fff7ed; --cmp-txt:    #7c2d12; --cmp-solid:  #ea580c;
+  --cm-bg:      #e0f2fe; --cm-txt:     #075985; --cm-solid:   #0e7490;
+  --cmp-bg:     #fff7ed; --cmp-txt:    #7c2d12; --cmp-solid:  #c2410c;
   --fmr-bg:     #fef3c7; --fmr-txt:    #92400e; --fmr-solid:  #b45309;
 
   /* Neutrals — Apple/Stripe palette */
@@ -494,7 +494,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   --ink3:   #424a53;
   --muted:  #5c6675;
   --muted2: #6b7280; /* tertiary tier — one step lighter than --muted (was identical); ~4.6:1 on white, AA-safe */
-  --line:   #d0d7de;
+  --line:   #8a929e; /* interactive control borders — ~3.2:1 on white (WCAG 1.4.11). Decorative dividers use --line2. */
   --line2:  #e8ecf0;
 
   /* Dark surface */
