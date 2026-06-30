@@ -517,9 +517,9 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   --sec-pad-x: 48px;
   --sec-head-gap: 40px;
   /* Elevation — 2-layer ambient + contact (neutral) */
-  --shadow-sm: 0 1px 2px rgba(13,17,23,.04), 0 4px 12px -2px rgba(13,17,23,.06);
-  --shadow-md: 0 2px 4px rgba(13,17,23,.05), 0 12px 28px -6px rgba(13,17,23,.10);
-  --shadow-lg: 0 4px 10px rgba(13,17,23,.06), 0 24px 48px -12px rgba(13,17,23,.16);
+  --shadow-sm: 0 1px 2px rgba(28,22,14,.05), 0 4px 12px -2px rgba(28,22,14,.07);
+  --shadow-md: 0 2px 4px rgba(28,22,14,.06), 0 12px 28px -6px rgba(28,22,14,.11);
+  --shadow-lg: 0 4px 10px rgba(28,22,14,.07), 0 24px 48px -12px rgba(28,22,14,.17);
   /* Motion system */
   --ease-out: cubic-bezier(0.16,1,0.3,1);
   --ease-spring: cubic-bezier(0.34,1.4,0.64,1);
@@ -2321,7 +2321,7 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
 
 /* ══ PREMIUM POLISH — coherent elevation, editorial eyebrows, vault light ══════ */
 /* 1) Navy-tinted elevation token so every card is lit by one source */
-:root{ --shadow-brand-md: 0 2px 6px rgba(14,63,128,.06), 0 16px 36px -14px rgba(14,63,128,.18); }
+:root{ --shadow-brand-md: 0 2px 6px rgba(28,22,14,.07), 0 16px 36px -14px rgba(28,22,14,.2); }
 .feat:hover, .capdir-tile:hover{ box-shadow: var(--shadow-brand-md); }
 /* 2) Editorial section-eyebrow lockup — a short accent rule leads each section in.
       currentColor adapts to accent on light bands and white/cyan on dark bands. */

@@ -95,15 +95,15 @@ function metaDescription(docs) {
 const STYLE = `@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
 @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
 @font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}
-:root{--ink:#0d1117;--muted:#656d76;--line:#d0d7de;--line2:#e8ecf0;--accent:#155FBF;--bg:#fff;--brass:#87651c;--brass-bright:#e4c477;--brass-deep:#6f521a;--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif}
+:root{--ink:#13151b;--muted:#5e5d66;--line:#948b7c;--line2:#e8e5de;--accent:#155FBF;--bg:#fff;--brass:#87651c;--brass-ink:#5e4715;--brass-bright:#e4c477;--brass-deep:#6f521a;--brass-line:rgba(154,115,32,0.40);--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif}
 *{box-sizing:border-box}body{margin:0;font-family:'Inter',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
 .wrap{max-width:820px;margin:0 auto;padding:22px 20px 80px}
 .wrap--wide{max-width:1060px}
 header.site{border-bottom:1px solid var(--line);margin-bottom:26px;padding-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 header.site a.brand{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-0.03em;color:var(--ink);text-decoration:none}
 header.site a.brand svg{display:block;width:27px;height:27px;flex-shrink:0}
-header.site a.cta{font-weight:650;font-size:14px;color:#fff;background:var(--accent);padding:8px 15px;border-radius:999px;text-decoration:none;transition:background .15s}
-header.site a.cta:hover{background:#114E9E}
+header.site a.cta{font-weight:650;font-size:14px;color:#fff;background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));border:1px solid var(--brass-line);padding:8px 15px;border-radius:999px;text-decoration:none;transition:border-color .15s}
+header.site a.cta:hover{border-color:rgba(228,196,119,.55)}
 /* federal-ink masthead — frames the page in the homepage's visual language */
 .lib-mast{position:relative;overflow:hidden;border-radius:18px;margin:0 0 34px;padding:42px 40px 36px;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8;box-shadow:0 26px 54px -30px rgba(10,28,51,.62)}
 .lib-mast::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
@@ -167,7 +167,7 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 .libsrc .sb{font-size:12px;color:var(--muted);font-weight:600}
 .libsrc .mt{font-size:11px;color:var(--muted);margin-top:2px}
 .libsrc .dl{position:absolute;top:12px;right:13px;font-size:14px;font-weight:800;color:var(--src,#94a3b8)}
-.libsrc[data-src="rfo"]{--src:#2563eb}.libsrc[data-src="r-dfars"]{--src:#15803d}.libsrc[data-src="far-companion"]{--src:#7c3aed}.libsrc[data-src="category-management"]{--src:#0e7490}.libsrc[data-src="dafi-63-138"]{--src:#87651c}.libsrc[data-src="fmr"]{--src:#b45309}
+.libsrc[data-src="rfo"]{--src:#2f5aa6}.libsrc[data-src="r-dfars"]{--src:#2c6a44}.libsrc[data-src="far-companion"]{--src:#67508f}.libsrc[data-src="category-management"]{--src:#1c6377}.libsrc[data-src="dafi-63-138"]{--src:#87651c}.libsrc[data-src="fmr"]{--src:#976420}
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
 @media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}`;
 
