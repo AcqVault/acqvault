@@ -475,34 +475,35 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   --brass-deep:   #6f521a;
   --brass-bg:     #fbf6e8;
   --brass-line:   rgba(154,115,32,0.40);
+  --brass-ink:    #5e4715;  /* AA-dark brass for occasional text/active states on light */
 
-  /* Source identity colors */
-  --rfo-bg:     #dbeafe; --rfo-txt:    #1e3a8a; --rfo-solid:  #2563eb;
-  --dfars-bg:   #dcfce7; --dfars-txt:  #14532d; --dfars-solid:#15803d;
-  --fc-bg:      #ede9fe; --fc-txt:     #3b0764; --fc-solid:   #7c3aed;
-  --cm-bg:      #e0f2fe; --cm-txt:     #075985; --cm-solid:   #0e7490;
-  --cmp-bg:     #fff7ed; --cmp-txt:    #7c2d12; --cmp-solid:  #c2410c;
-  --fmr-bg:     #fef3c7; --fmr-txt:    #92400e; --fmr-solid:  #b45309;
+  /* Source identity colors — muted "library-spine" family (desaturated ~15-20%, all AA) */
+  --rfo-bg:     #dde7f4; --rfo-txt:    #1e3a8a; --rfo-solid:  #2f5aa6;
+  --dfars-bg:   #dde9e0; --dfars-txt:  #14532d; --dfars-solid:#2c6a44;
+  --fc-bg:      #e7e2f0; --fc-txt:     #3b0764; --fc-solid:   #67508f;
+  --cm-bg:      #dceaef; --cm-txt:     #075985; --cm-solid:   #1c6377;
+  --cmp-bg:     #f1e7df; --cmp-txt:    #7c2d12; --cmp-solid:  #a84e22;
+  --fmr-bg:     #efe7d4; --fmr-txt:    #92400e; --fmr-solid:  #976420;
 
-  /* Neutrals — Apple/Stripe palette */
+  /* Neutrals — warm-tuned to the brass/ink brand (not default GitHub grey) */
   --white:  #ffffff;
-  --off:    #f6f8fa;
-  --off2:   #eef0f3;
+  --off:    #f7f6f2;  /* warm paper — "certified document" base (was cool #f6f8fa) */
+  --off2:   #edebe4;  /* warm fill */
   --black:  #000000;
-  --ink:    #0d1117;
-  --ink2:   #24292f;
-  --ink3:   #424a53;
-  --muted:  #5c6675;
-  --muted2: #6b7280; /* tertiary tier — one step lighter than --muted (was identical); ~4.6:1 on white, AA-safe */
-  --line:   #8a929e; /* interactive control borders — ~3.2:1 on white (WCAG 1.4.11). Decorative dividers use --line2. */
-  --line2:  #e8ecf0;
+  --ink:    #13151b;  /* warm near-black (was cool #0d1117) */
+  --ink2:   #262a31;
+  --ink3:   #474c55;
+  --muted:  #5e5d66;  /* warm-neutral secondary text (AA on white) */
+  --muted2: #6f6c74; /* tertiary tier — ~4.6:1 on white, AA-safe */
+  --line:   #948b7c; /* warm interactive control border — ties to brass, ~3.1:1 on white (WCAG 1.4.11). Dividers use --line2. */
+  --line2:  #e8e5de;  /* warm divider */
 
   /* Dark surface */
   --d0:#000; --d1:#0a0a0f; --d2:#111118;
   --dbdr: rgba(255,255,255,0.1);
-  /* Navy band surfaces (premium dark sections) */
-  --navy-900:#0f2540; --navy-950:#0a1a30;
-  --navy-panel-from:#142c4a; --navy-panel-to:#091a30;
+  /* Navy band surfaces — one canonical federal-ink ramp (matches the library masthead) */
+  --navy-700:#173a60; --navy-900:#0f2540; --navy-950:#0a1c33;
+  --navy-panel-from:#173a60; --navy-panel-to:#0a1c33;
 
   --nav-height: 56px;
   --top-chrome: 94px;
