@@ -3110,32 +3110,15 @@ function nextAffirmation() {
 }
 
 async function loadHeroQuote({ preserveScroll = false } = {}) {
-  const run = async () => {
-    if (heroQuoteMode === 'affirmation') {
-      nextAffirmation();
-      return;
-    }
-    try {
-      const res = await fetch('https://zenquotes.io/api/random');
-      if (!res.ok) throw new Error('Quote API unavailable');
-      const data = await res.json();
-      const item = Array.isArray(data) ? data[0] : data;
-      if (!item || !item.q) throw new Error('Unexpected quote response');
-      if (quoteKey(item) === lastHeroQuoteKey) {
-        nextFallbackQuote();
-        return;
-      }
-      lastHeroQuoteKey = quoteKey(item);
-      setHeroQuote({ q: item.q, a: item.a || 'Unknown' }, 'ZenQuotes');
-    } catch(e) {
-      nextFallbackQuote();
-    }
+  // Curated, on-device only — no third-party fetch (CAC networks block it; also a privacy/self-host win).
+  const run = () => {
+    if (heroQuoteMode === 'affirmation') nextAffirmation();
+    else nextFallbackQuote();
   };
-
   if (!preserveScroll) return run();
   const x = window.scrollX;
   const y = window.scrollY;
-  await run();
+  run();
   requestAnimationFrame(() => {
     window.scrollTo(x, y);
   });
