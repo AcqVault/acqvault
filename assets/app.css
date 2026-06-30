@@ -1315,7 +1315,7 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .callout-head{font-size:30px;font-weight:var(--fw-bold);letter-spacing:-0.04em;color:#fff;margin-bottom:10px;line-height:1.1;}
 .callout-sub{font-size:var(--fs-16);color:rgba(255,255,255,0.44);max-width:520px;margin-left:auto;margin-right:auto;line-height:var(--lh-loose);}
 
-.cta-strip{background:linear-gradient(160deg,#f6f5f0 0%,#eff0ec 45%,#f7f4ec 100%);border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);padding:var(--sec-pad-y-tight) 48px;text-align:center;}
+.cta-strip{background:var(--off);border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);padding:var(--sec-pad-y-tight) 48px;text-align:center;}
 .cta-head{font-size:clamp(28px,3.5vw,44px);font-weight:var(--fw-bold);letter-spacing:-0.05em;line-height:1.07;margin-bottom:16px;color:var(--ink);}
 .cta-sub{font-size:var(--fs-17);color:var(--muted);letter-spacing:var(--ls-snug);margin:0 auto;max-width:620px;line-height:1.6;}
 .cta-btn{display:inline-flex;align-items:center;gap:8px;margin-top:28px;background:linear-gradient(160deg,var(--navy-700),var(--navy-900));color:#fff;font-weight:var(--fw-bold);font-size:var(--fs-lg);letter-spacing:var(--ls-snug);padding:13px 26px;border:1px solid var(--brass-line);border-radius:12px;text-decoration:none;box-shadow:0 1px 2px rgba(20,16,10,.18),0 10px 24px -10px rgba(15,37,64,.5);transition:transform .15s,box-shadow .15s,border-color .15s;}
@@ -1365,7 +1365,7 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .ql-arrow{font-size:var(--fs-base);color:var(--accent);font-weight:var(--fw-heavy);opacity:0.8;transition:transform 0.15s;}
 .ql-card:hover .ql-arrow{transform:translate(2px,-2px);}
 
-.market-section{position:relative;overflow:hidden;background:linear-gradient(150deg,#f8fbff 0%,#eef6ff 42%,#f7fafc 100%);border-top:1px solid rgba(21,95,191,0.08);border-bottom:1px solid rgba(21,95,191,0.08);}
+.market-section{position:relative;overflow:hidden;background:var(--off);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);}
 .market-section::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(14,63,128,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(14,63,128,0.05) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(180deg,transparent 0%,black 18%,black 88%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 18%,black 88%,transparent 100%);}
 .market-section .sec-inner{position:relative;z-index:1;}
 .market-shell{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:var(--sec-head-gap);align-items:start;}
@@ -1443,7 +1443,7 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .market-empty strong{display:block;color:var(--ink);font-size:var(--fs-16);margin-bottom:6px;}
 .market-loading{padding:30px 20px;color:var(--muted);font-size:var(--fs-base);text-align:center;}
 
-footer{background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 45%,#eaeff6 100%);color:var(--muted);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;padding:40px 0;position:relative;overflow:hidden;}
+footer{background:var(--off);color:var(--muted);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;padding:40px 0;position:relative;overflow:hidden;}
 /* guilloché through-line — a whisper-faint engraved watermark bookending the hero vault.
    Masked so the cyan source SVG renders in brand navy on the light footer. */
 footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560px;height:560px;pointer-events:none;opacity:.05;
@@ -1458,7 +1458,7 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 .foot-links a:hover{color:var(--accent);}
 
 /* Light treatment for the lower sources band, matching the opening hero. */
-#sources.sec-dark{background:linear-gradient(160deg,#f3f1ec 0%,#ecebe4 45%,#f4f1ea 100%);color:var(--ink);border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);}
+#sources.sec-dark{background:var(--off);color:var(--ink);border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);}
 #sources .eyebrow-light{color:var(--brass-bright);}
 #sources h2.sec-head{color:var(--ink);}
 #sources p.sec-sub-light{color:var(--muted);}
@@ -2391,3 +2391,46 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
 .vault-panel > .vault-dial-big{position:relative;z-index:2;}
 .vault-panel-tag{z-index:2;}
 @media (prefers-reduced-motion:reduce){.vault-guilloche{animation:none;}}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK FEDERAL-INK HERO (the "vault cover") + scroll-aware nav.
+   Light text on deep navy; brass for the headline + emphasis.
+   ═══════════════════════════════════════════════════════════════ */
+.hero{background:linear-gradient(160deg,#173a60 0%,#0f2540 52%,#0a1c33 100%);}
+.hero-headline,.hero-inner-b .hero-headline,.hero-headline .hl-ink,.hero-inner-b .hero-headline .hl-ink{color:#eef3f9;-webkit-text-fill-color:#eef3f9;}
+.hero-headline em,.hero-inner-b .hero-headline em{color:var(--brass-bright);-webkit-text-fill-color:var(--brass-bright);}
+.hero-sub,.hero-inner-b .hero-sub{color:rgba(223,234,247,.88);}
+.hero-sub strong,.hero-inner-b .hero-sub strong{color:var(--brass-bright);}
+.hero-eyebrow{color:rgba(223,234,247,.92);background:rgba(255,255,255,.06);border-color:rgba(228,196,119,.32);}
+.hero-eyebrow-sep,#hero-asof{color:rgba(223,234,247,.72);}
+.hero-newhere{background:rgba(255,255,255,.06);border-color:rgba(228,196,119,.26);}
+.hero-newhere-txt{color:rgba(223,234,247,.86);}
+.hero-newhere-txt strong,.hero-newhere-link{color:var(--brass-bright);}
+.hero-newhere-x{color:rgba(223,234,247,.62);}
+.hero-command-dock{background:rgba(255,255,255,.07);border-color:rgba(228,196,119,.3);box-shadow:0 16px 42px rgba(8,18,32,.4);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+.mode-btn{color:rgba(223,234,247,.84);}
+.mode-btn.active{color:#fff;}
+.trychip{background:rgba(255,255,255,.07);border-color:rgba(228,196,119,.32);color:var(--brass-bright);}
+.trychip:hover{background:rgba(255,255,255,.12);border-color:rgba(228,196,119,.5);}
+.trychip-k{color:rgba(223,234,247,.62);}
+.hero-statstrip,.hero-statstrip-count,.hero-source-strip{color:rgba(223,234,247,.74);}
+.hero-statstrip-count strong{color:#eef3f9;}
+.hero-source-strip b{color:rgba(223,234,247,.9);}
+.hero-live-label{color:rgba(236,242,249,.95);}
+.hero-live-count{color:rgba(236,242,249,.95);background:rgba(255,255,255,.1);border-color:rgba(228,196,119,.3);}
+/* Nav: transparent dark over the hero, solid light once scrolled into content */
+nav#main-nav.over-hero{background:rgba(13,31,55,.66);-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid rgba(228,196,119,.22);}
+nav#main-nav.over-hero .nav-center{background:rgba(255,255,255,.06);border-color:rgba(228,196,119,.2);}
+nav#main-nav.over-hero .nav-center a{color:rgba(223,234,247,.84);}
+nav#main-nav.over-hero .nav-center a:hover,nav#main-nav.over-hero .nav-center a.active{color:#fff;}
+nav#main-nav.over-hero .nav-pill{background:rgba(255,255,255,.13);}
+nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{color:rgba(223,234,247,.9);background:transparent;border-color:rgba(228,196,119,.24);}
+
+/* Market section: de-blue accents to ink/brass (section is now warm paper) */
+.market-btn{background:linear-gradient(160deg,var(--navy-700),var(--navy-900));border:1px solid var(--brass-line);box-shadow:0 8px 20px rgba(15,37,64,.22);}
+.market-step.lit{border-color:var(--brass-line);}
+.market-step-num{background:var(--brass-bg);border-color:var(--brass-line);color:var(--brass-ink);}
+.market-step.lit .market-step-num{background:linear-gradient(160deg,var(--navy-700),var(--navy-900));border-color:var(--brass-line);color:#fff;}
+.market-status,.market-results-count,.market-opp-type{color:var(--brass-ink);background:var(--brass-bg);border-color:var(--brass-line);}
+.market-pill.active{background:linear-gradient(160deg,var(--navy-700),var(--navy-900));border-color:var(--brass-line);color:#fff;}
+.market-pill.active::before{background:rgba(228,196,119,.3);color:#fff;}

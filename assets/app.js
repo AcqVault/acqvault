@@ -11,8 +11,13 @@
   }
 
   function updateNav() {
-    nav.classList.toggle('scrolled', window.scrollY > 30);
+    var heroEl = document.querySelector('.hero');
+    var overHero = !!heroEl && !document.body.classList.contains('work-mode')
+      && window.scrollY < (heroEl.offsetHeight - 72);
+    nav.classList.toggle('over-hero', overHero);
+    nav.classList.toggle('scrolled', window.scrollY > 30 && !overHero);
   }
+  window.acqUpdateNav = updateNav; // let mode changes (work-mode) recolor the nav without a scroll
 
   window.addEventListener('scroll', function() {
     updateNav();
@@ -2663,6 +2668,7 @@ function activateSearch({ scrollToTop = false } = {}) {
   document.getElementById('fulltext-section').classList.remove('visible');
   searchClear.classList.add('visible');
   adjustNavForAboutBar(); // the about-bar is display:none in work-mode → reclaim its height
+  if (window.acqUpdateNav) window.acqUpdateNav(); // drop the dark over-hero nav in work-mode
   if (scrollToTop) requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
@@ -2673,6 +2679,7 @@ function deactivateSearch() {
   searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
   var asEl = document.getElementById('acr-suggest'); if (asEl) { asEl.hidden = true; asEl.innerHTML = ''; }
   setSearchParams('');
+  if (window.acqUpdateNav) window.acqUpdateNav(); // restore dark over-hero nav on the landing
 }
 
 searchInput.addEventListener('input', () => {
