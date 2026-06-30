@@ -450,10 +450,10 @@ function renderPartsGrid(source) {
     return;
   }
   grid.innerHTML = parts.map(([num, label]) => {
-    const active = browseActivePart === num && browseSrc === source;
+    const active = String(browseActivePart) === String(num) && browseSrc === source;
     return `<button type="button" class="part-tile${active ? ' active' : ''}"
       data-part="${num}" data-label="${esc(label)}" aria-pressed="${active}"
-      onclick="selectPart(this,${num},this.dataset.label)">
+      onclick="selectPart(this,'${num}',this.dataset.label)">
       <span class="part-tile-num">${num}</span>
       <span class="part-tile-label">${esc(label)}</span>
     </button>`;
@@ -1055,10 +1055,50 @@ function parseBrowseTitle(hit, source) {
   return { type: 'other', num: '', label: title, anchor };
 }
 
+// ── FMR browse: chapter index + single-chapter view ───────────────────────────
+let fmrBrowseState = null; // { partNum, partLabel, hits } for the active FMR volume
+function fmrChapterNum(hit) { const m = String(hit && hit.title || '').match(/Chapter\s+([\w-]+)/i); return m ? m[1] : ''; }
+function fmrChapterLabel(hit) {
+  const t = String(hit && hit.title || '');
+  return t.replace(/^Chapter\s+[\w-]+\s*[:.\-]?\s*/i, '').trim() || t || 'Chapter';
+}
+function renderFmrVolumeIndex(scroll) {
+  const st = fmrBrowseState; if (!st) return;
+  const reader = document.getElementById('browse-reader-inner');
+  const srcLabel = SOURCE_LABELS['fmr'] || 'DoD FMR';
+  const items = st.hits.map((hit, i) =>
+    `<li><a class="br-toc-link" href="#" data-fmr-ch="${i}">
+      <span class="br-toc-link-num">Ch ${esc(fmrChapterNum(hit) || String(i + 1))}</span>
+      <span class="br-toc-link-title">${esc(fmrChapterLabel(hit))}</span>
+    </a></li>`).join('');
+  reader.innerHTML = `
+    <div class="br-header">
+      <span class="br-source-badge" style="background:#fef3c7;color:#92400e">${esc(String(srcLabel))}</span>
+      <div class="br-part-num">Volume ${esc(String(st.partNum))}</div>
+      <div class="br-part-title">${esc(String(st.partLabel))}</div>
+      <div class="br-meta"><span>${st.hits.length} chapter${st.hits.length !== 1 ? 's' : ''}</span><span class="br-meta-dot"></span><span>Select a chapter to read</span></div>
+    </div>
+    <div class="br-toc"><div class="br-toc-title">Chapters</div><ul class="br-toc-list">${items}</ul></div>`;
+  reader.querySelectorAll('.br-toc-link[data-fmr-ch]').forEach(a =>
+    a.addEventListener('click', e => { e.preventDefault(); openFmrChapter(Number(a.dataset.fmrCh)); }));
+  if (scroll !== false) requestAnimationFrame(scrollBrowseReaderToTop);
+}
+function openFmrChapter(idx) {
+  const st = fmrBrowseState; if (!st) return;
+  const hit = st.hits[idx]; if (!hit) return;
+  const reader = document.getElementById('browse-reader-inner');
+  reader.innerHTML =
+    `<button type="button" class="br-fmr-back" id="br-fmr-back">← All chapters in Volume ${esc(String(st.partNum))}</button>` +
+    buildReaderHTML([hit], 'fmr', st.partNum, fmrChapterLabel(hit), 1);
+  const back = document.getElementById('br-fmr-back');
+  if (back) back.addEventListener('click', () => renderFmrVolumeIndex(true));
+  requestAnimationFrame(scrollBrowseReaderToTop);
+}
+
 function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
   const srcLabel  = SOURCE_LABELS[source] || source.toUpperCase();
-  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff','category-management':'#e0f2fe','afi-63-138':'#fff1f2','compass':'#f0f9ff'}[source] || '#f0f0f0';
-  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799','category-management':'#075985','afi-63-138':'#9f1239','compass':'#075985'}[source] || '#666';
+  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff','category-management':'#e0f2fe','afi-63-138':'#fff1f2','compass':'#f0f9ff','fmr':'#fef3c7'}[source] || '#f0f0f0';
+  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799','category-management':'#075985','afi-63-138':'#9f1239','compass':'#075985','fmr':'#92400e'}[source] || '#666';
   const readerHits = source === 'far-companion'
     ? hits.filter(hit => parseBrowseTitle(hit, source).num)
     : hits;
@@ -1200,9 +1240,9 @@ function selectCategoryGuidePart(tile, partKey, partLabel) {
 
 async function selectPart(tile, partNum, partLabel) {
   browseActivePart = partNum;
-  // Update active tile
+  // Update active tile (part ids can be strings like FMR's "7A", so compare as strings)
   document.querySelectorAll('.part-tile').forEach(t => {
-    const active = parseInt(t.dataset.part) === partNum;
+    const active = String(t.dataset.part) === String(partNum);
     t.classList.toggle('active', active);
     t.setAttribute('aria-pressed', String(active));
   });
@@ -1236,6 +1276,13 @@ async function selectPart(tile, partNum, partLabel) {
     if (!hits.length) {
       reader.innerHTML = '<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No content found</div><div class="browse-empty-sub">This part may not be indexed yet for this source.</div></div>';
       requestAnimationFrame(scrollBrowseReaderToTop);
+      return;
+    }
+    // FMR volumes hold one doc per CHAPTER (Vol 7A = 59) — rendering them all at once is heavy.
+    // Show a chapter index and load a single chapter on demand (mirrors the drawer/reader path).
+    if (browseSrc === 'fmr') {
+      fmrBrowseState = { partNum, partLabel, hits };
+      renderFmrVolumeIndex();
       return;
     }
     try {
@@ -1860,9 +1907,14 @@ function resetDrawerFilter() {
 }
 
 // ── SEARCH ────────────────────────────────────────────────────────────────────
-async function search(query) {
+const RESULTS_PAGE_SIZE = 40;
+// Accumulator for the current result set so "Show more" can append further pages.
+let lastSearchQuery = '';
+let lastSearchHits = [];
+let lastSearchTotal = 0;
+async function search(query, offset = 0) {
   const filter = buildFilter(activeSources, activeStatuses);
-  const body   = { q: query, limit: 40, attributesToHighlight: ['title','content'],
+  const body   = { q: query, offset, limit: RESULTS_PAGE_SIZE, attributesToHighlight: ['title','content'],
     highlightPreTag: '<mark>', highlightPostTag: '</mark>', attributesToCrop: ['content'], cropLength: 180 };
   if (filter) body.filter = filter;
   return meiliSearch(body);
@@ -2046,12 +2098,14 @@ function buildNoResultsHTML(query) {
   const isLegacy = legacyRe.test(q) && stripped && stripped.toLowerCase() !== q.toLowerCase();
   const filtered = activeSources && activeSources.size > 0;
   const filterNames = filtered ? Array.from(activeSources).map(s => SOURCE_LABELS[s] || s).join(', ') : '';
+  // Both rescues can apply at once (e.g. a legacy term WHILE filtered) — stack them, don't pick one.
   let primary = '';
   if (isLegacy) {
-    primary = `<div class="nr-note">AcqVault indexes the <strong>RFO / R-DFARS</strong> that replaced the legacy FAR&nbsp;/&nbsp;DFARS.</div>
+    primary += `<div class="nr-note">AcqVault indexes the <strong>RFO / R-DFARS</strong> that replaced the legacy FAR&nbsp;/&nbsp;DFARS.</div>
       <button class="nr-btn nr-btn-primary" data-action="strip-legacy" data-q="${esc(stripped)}">Search the RFO / R-DFARS for “${esc(stripped)}”</button>`;
-  } else if (filtered) {
-    primary = `<div class="nr-note">You're searching only <strong>${esc(filterNames)}</strong>.</div>
+  }
+  if (filtered) {
+    primary += `<div class="nr-note">You're searching only <strong>${esc(filterNames)}</strong>.</div>
       <button class="nr-btn nr-btn-primary" data-action="all-sources">Search all 7 sources</button>`;
   }
   return `<div class="no-results nr-launch">
@@ -2096,7 +2150,9 @@ function renderResults(data, query) {
   const label = document.getElementById('result-count-label');
   const hits  = data.hits || [];
   const total = data.estimatedTotalHits || hits.length;
-  label.innerHTML = `<strong>${total.toLocaleString()}</strong> result${total !== 1 ? 's' : ''} for "<em>${esc(query)}</em>"`;
+  const fscope = (activeSources && activeSources.size > 0)
+    ? ` in ${esc(Array.from(activeSources).map(s => SOURCE_LABELS[s] || s).join(', '))}` : '';
+  label.innerHTML = `<strong>${total.toLocaleString()}</strong> result${total !== 1 ? 's' : ''} for "<em>${esc(query)}</em>"${fscope}`;
   if (!hits.length) { list.innerHTML = buildNoResultsHTML(query); return; }
   list.innerHTML = hits.map(hit => {
     const hl = hit._formatted || hit;
@@ -2130,6 +2186,32 @@ function renderResults(data, query) {
     const citeBtn = card.querySelector('.rc-cite-btn');
     if (citeBtn && hit) citeBtn.addEventListener('click', (e) => { e.stopPropagation(); copyResultCite(hit, citeBtn); });
   });
+  // "Show more" — append the next page so clauses ranked past the first page stay reachable.
+  const shown = hits.length;
+  if (shown < total) {
+    const remaining = total - shown;
+    list.insertAdjacentHTML('beforeend',
+      `<button type="button" class="rc-more" id="rc-more-btn">Show ${Math.min(RESULTS_PAGE_SIZE, remaining).toLocaleString()} more` +
+      `<span class="rc-more-count">${shown.toLocaleString()} of ${total.toLocaleString()} shown</span></button>`);
+    const moreBtn = document.getElementById('rc-more-btn');
+    if (moreBtn) moreBtn.addEventListener('click', () => loadMoreResults(moreBtn));
+  }
+}
+
+// Fetch + append the next page of results, keeping keyboard focus on the first new card.
+async function loadMoreResults(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+  const prevCount = lastSearchHits.length;
+  try {
+    const data = await search(lastSearchQuery, prevCount);
+    lastSearchHits = lastSearchHits.concat(data.hits || []);
+    lastSearchTotal = data.estimatedTotalHits || lastSearchTotal;
+    renderResults({ hits: lastSearchHits, estimatedTotalHits: lastSearchTotal }, lastSearchQuery);
+    const links = document.querySelectorAll('#results-list .rc-open');
+    if (links[prevCount]) links[prevCount].focus();
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Show more'; }
+  }
 }
 
 // ── READER PAGE ───────────────────────────────────────────────────────────────
@@ -2140,7 +2222,11 @@ function renderReaderPage(hit) {
   document.title = `${hit.title || 'Document'} — AcqVault`;
 
   const citation = generateCitation(hit);
-  document.getElementById('reader-title').textContent = hit.title || 'Document';
+  const readerTitle = document.getElementById('reader-title');
+  readerTitle.textContent = hit.title || 'Document';
+  // Move keyboard/SR focus into the reader so users aren't stranded on now-hidden results.
+  readerTitle.setAttribute('tabindex', '-1');
+  readerTitle.focus({ preventScroll: true });
   document.getElementById('reader-meta').innerHTML = `${sourceTag(hit.source)} ${badgeTag(hit.status)}`;
   document.getElementById('reader-cite').textContent = citation;
   document.getElementById('reader-aside-cite').textContent = citation;
@@ -2431,7 +2517,29 @@ loadDeviations(); // warm the small (~14KB) crosswalk on load
 
 document.getElementById('drawer-close').addEventListener('click', closeDrawer);
 document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeFeedback(); } });
+// Leave the reader: prefer same-site back, else go home. Wired to the Back control and Esc.
+function exitReader() {
+  try {
+    if (document.referrer && new URL(document.referrer).origin === location.origin && window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+  } catch (e) {}
+  window.location.href = '/';
+}
+(function wireReaderBack() {
+  const rb = document.getElementById('reader-back');
+  if (rb) rb.addEventListener('click', exitReader);
+})();
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  closeDrawer(); closeFeedback();
+  if (document.body.classList.contains('reader-mode')) {
+    const ri = document.getElementById('reader-search-input');
+    if (ri && document.activeElement === ri && ri.value) { ri.value = ''; ri.dispatchEvent(new Event('input')); return; }
+    exitReader();
+  }
+});
 
 // ── Keyboard: "/" or ⌘K / Ctrl-K focuses search from anywhere ─────────────────
 document.addEventListener('keydown', (e) => {
@@ -2506,8 +2614,11 @@ async function runSearch(options = {}) {
   activateSearch({ scrollToTop: !preserveScroll });
   document.getElementById('results-list').innerHTML = Array.from({ length: 4 }, () => '<div class="skel-card"><div class="skel-line skel-tag"></div><div class="skel-line skel-title"></div><div class="skel-line skel-snippet"></div><div class="skel-line skel-snippet short"></div></div>').join('');
   try {
-    const data = await search(q);
-    renderResults(data, q);
+    const data = await search(q, 0);
+    lastSearchQuery = q;
+    lastSearchHits = data.hits || [];
+    lastSearchTotal = data.estimatedTotalHits || lastSearchHits.length;
+    renderResults({ hits: lastSearchHits, estimatedTotalHits: lastSearchTotal }, q);
     setSearchParams(q);
     showAcronymAssist(q);
     document.dispatchEvent(new CustomEvent('acqvault:searched', { detail: { q: q } }));

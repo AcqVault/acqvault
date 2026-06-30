@@ -32,7 +32,7 @@
 ]}
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=53">
+<link rel="stylesheet" href="/assets/app.css?v=55">
 </head>
 <body>
 
@@ -155,7 +155,7 @@
 
       <!-- bottom stats + source strip -->
       <div class="hero-statstrip">
-        <span class="hero-statstrip-count"><strong>5,500+</strong> indexed sections</span>
+        <span class="hero-statstrip-count"><strong>5,807</strong> indexed sections</span>
         <span class="hero-statstrip-div"></span>
         <div class="hero-source-strip" aria-label="Live sources">
           <span class="hero-live-label"><span class="hero-live-dot"></span>Live sources</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>Category Mgmt</b><b>DAFI 63-138</b><b>DoD FMR</b><b>DAF Compass</b><span class="hero-live-count">7 live</span>
@@ -522,6 +522,7 @@
         <button type="button" class="reader-find-clear" id="reader-search-clear" aria-label="Clear">✕</button>
       </div>
       <div class="reader-actions">
+        <button type="button" class="reader-action reader-back" id="reader-back" aria-label="Back to results">← Back</button>
         <a href="#" class="reader-action" id="reader-original" target="_blank" rel="noopener">View original</a>
       </div>
     </div>
@@ -529,7 +530,7 @@
   <div class="reader-shell">
     <header class="reader-header">
       <div class="reader-kicker" id="reader-meta"></div>
-      <h1 class="reader-title" id="reader-title">Loading document…</h1>
+      <h1 class="reader-title" id="reader-title" tabindex="-1">Loading document…</h1>
       <div class="reader-subline"><span class="reader-cite" id="reader-cite"></span><span id="reader-file"></span></div>
     </header>
     <div class="reader-layout">
@@ -581,7 +582,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=30"></script>
+<script defer src="/assets/app.js?v=32"></script>
 <script defer src="/assets/saved.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=17"></script>
 <script defer src="/assets/polish.js?v=3"></script>
