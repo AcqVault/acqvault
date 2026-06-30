@@ -2337,6 +2337,11 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
 .hero-newhere-link:hover{text-decoration:underline;}
 .hero-newhere-x{flex-shrink:0;border:none;background:none;color:var(--muted2);cursor:pointer;font-size:12px;width:24px;height:24px;border-radius:999px;line-height:1;}
 .hero-newhere-x:hover{background:rgba(13,17,23,0.07);color:var(--ink);}
+/* Touch: give the small close buttons a >=44px tap target without growing the visual (WCAG 2.5.5) */
+@media (pointer:coarse){
+  .modal-close,.drawer-close,.hero-newhere-x{position:relative;}
+  .modal-close::after,.drawer-close::after,.hero-newhere-x::after,.about-dismiss::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%);}
+}
 .hero.search-active .hero-newhere,.hero.browse-active .hero-newhere,.hero.fulltext-active .hero-newhere{display:none;}
 
 /* ══ INSTRUMENT PASS — de-generic-AI the hero ════════════════════════════════

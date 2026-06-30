@@ -2338,9 +2338,28 @@ function _focusable(container) {
     'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'
   )).filter(el => el.offsetParent !== null);
 }
+// Hide everything behind an open dialog from the AT virtual cursor (aria-modal
+// support is inconsistent). Records what we inerted so we restore exactly that.
+let _inertedEls = [];
+function _setBackgroundInert(container) {
+  _inertedEls = [];
+  Array.prototype.forEach.call(document.body.children, function (el) {
+    if (el === container || el.contains(container)) return;
+    if (el.id === 'drawer-backdrop' || el.id === 'mobile-menu-backdrop') return;
+    if (el.hasAttribute('inert')) return; // already inert (e.g. a closed dialog) — leave as-is
+    el.setAttribute('inert', '');
+    el.setAttribute('aria-hidden', 'true');
+    _inertedEls.push(el);
+  });
+}
+function _clearBackgroundInert() {
+  _inertedEls.forEach(function (el) { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); });
+  _inertedEls = [];
+}
 function trapFocus(container) {
   releaseFocus();
   _focusReturnEl = document.activeElement;
+  _setBackgroundInert(container);
   const items = _focusable(container);
   (items[0] || container).focus();
   _focusTrapHandler = function (e) {
@@ -2355,6 +2374,7 @@ function trapFocus(container) {
 }
 function releaseFocus() {
   if (_focusTrapHandler) { document.removeEventListener('keydown', _focusTrapHandler, true); _focusTrapHandler = null; }
+  _clearBackgroundInert(); // restore the background BEFORE returning focus (can't focus an inert el)
   if (_focusReturnEl && typeof _focusReturnEl.focus === 'function') { try { _focusReturnEl.focus(); } catch (_) {} }
   _focusReturnEl = null;
 }
@@ -2612,7 +2632,9 @@ async function runSearch(options = {}) {
   if (!q) { deactivateSearch(); return; }
   if (currentMode !== 'search') setMode('search');
   activateSearch({ scrollToTop: !preserveScroll });
-  document.getElementById('results-list').innerHTML = Array.from({ length: 4 }, () => '<div class="skel-card"><div class="skel-line skel-tag"></div><div class="skel-line skel-title"></div><div class="skel-line skel-snippet"></div><div class="skel-line skel-snippet short"></div></div>').join('');
+  const resultsList = document.getElementById('results-list');
+  resultsList.setAttribute('aria-busy', 'true'); // tell AT a fetch is in progress
+  resultsList.innerHTML = Array.from({ length: 4 }, () => '<div class="skel-card"><div class="skel-line skel-tag"></div><div class="skel-line skel-title"></div><div class="skel-line skel-snippet"></div><div class="skel-line skel-snippet short"></div></div>').join('');
   try {
     const data = await search(q, 0);
     lastSearchQuery = q;
@@ -2626,8 +2648,10 @@ async function runSearch(options = {}) {
     searchCount.textContent = total ? `${total} results` : '';
   } catch (e) {
     const msg = e && e.message ? e.message : 'Please try again.';
-    document.getElementById('results-list').innerHTML = '<div class="no-results"><strong>Search unavailable</strong>' + esc(msg) + '</div>';
+    resultsList.innerHTML = '<div class="no-results"><strong>Search unavailable</strong>' + esc(msg) + '</div>';
     searchCount.textContent = '';
+  } finally {
+    resultsList.setAttribute('aria-busy', 'false');
   }
 }
 

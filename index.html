@@ -33,7 +33,7 @@
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=61">
+<link rel="stylesheet" href="/assets/app.css?v=62">
 </head>
 <body>
 
@@ -139,15 +139,15 @@
         <div class="mode-toggle">
           <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
           <div class="browse-source-picker">
-            <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="menu" aria-expanded="false" onclick="toggleBrowseSourceMenu(event)">⊞ <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
-            <div class="browse-source-menu" id="browse-source-menu" role="menu" aria-label="Browse by source or regulation">
-              <button type="button" role="menuitem" onclick="chooseBrowseSource('rfo')"><span>RFO</span><small>Live</small></button>
-              <button type="button" role="menuitem" onclick="chooseBrowseSource('r-dfars')"><span>R-DFARS</span><small>Live</small></button>
-              <button type="button" role="menuitem" onclick="chooseBrowseSource('far-companion')"><span>FAR Companion</span><small>Live</small></button>
-              <button type="button" role="menuitem" onclick="chooseBrowseSource('category-management')"><span>Category Management Buying Guide</span><small>Live</small></button>
-              <button type="button" role="menuitem" onclick="chooseBrowseSource('afi-63-138')"><span>DAFI 63-138</span><small>Live</small></button>
-              <button type="button" role="menuitem" onclick="chooseBrowseSource('fmr')"><span>DoD FMR</span><small>Live</small></button>
-              <button type="button" role="menuitem" onclick="chooseBrowseSource('compass')"><span>DAF Contracting Compass</span><small>In-app</small></button>
+            <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="true" aria-expanded="false" onclick="toggleBrowseSourceMenu(event)">⊞ <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
+            <div class="browse-source-menu" id="browse-source-menu" role="group" aria-label="Browse by source or regulation">
+              <button type="button" onclick="chooseBrowseSource('rfo')"><span>RFO</span><small>Live</small></button>
+              <button type="button" onclick="chooseBrowseSource('r-dfars')"><span>R-DFARS</span><small>Live</small></button>
+              <button type="button" onclick="chooseBrowseSource('far-companion')"><span>FAR Companion</span><small>Live</small></button>
+              <button type="button" onclick="chooseBrowseSource('category-management')"><span>Category Management Buying Guide</span><small>Live</small></button>
+              <button type="button" onclick="chooseBrowseSource('afi-63-138')"><span>DAFI 63-138</span><small>Live</small></button>
+              <button type="button" onclick="chooseBrowseSource('fmr')"><span>DoD FMR</span><small>Live</small></button>
+              <button type="button" onclick="chooseBrowseSource('compass')"><span>DAF Contracting Compass</span><small>In-app</small></button>
             </div>
           </div>
           <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
@@ -583,7 +583,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=33"></script>
+<script defer src="/assets/app.js?v=34"></script>
 <script defer src="/assets/saved.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=17"></script>
 <script defer src="/assets/polish.js?v=3"></script>
