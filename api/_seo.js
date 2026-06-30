@@ -8,9 +8,9 @@ const SITE = 'https://www.acqvault.com';
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
-    desc: 'Full text of the Revolutionary FAR Overhaul (RFO) — the overhauled Federal Acquisition Regulation implemented via DoD class deviations under E.O. 14275.' },
+    desc: 'Full text of the Revolutionary FAR Overhaul (RFO) — the overhauled acquisition rulebook agencies cite for new awards, implemented for DoD via class deviations under E.O. 14275.' },
   'r-dfars':             { name: 'R-DFARS Deviations', short: 'R-DFARS',
-    desc: 'DoD class deviations implementing the FAR overhaul (the deviation-based DFARS regime).' },
+    desc: 'DoD class deviations implementing the RFO for the Department of Defense — the deviation set you cite in place of the legacy supplement.' },
   'far-companion':       { name: 'FAR Companion', short: 'FAR Companion',
     desc: 'Practitioner guidance accompanying the Revolutionary FAR Overhaul.' },
   'compass':             { name: 'DAF Contracting Compass', short: 'Compass',
@@ -275,7 +275,7 @@ function renderDeviationsPage() {
   if (!rows.length) return null;
   const canonical = `${SITE}/deviations`;
   const title = `R-DFARS Deviations Index — DoD class deviations for the FAR Overhaul | AcqVault`;
-  const description = esc(`All ${rows.length} DoD R-DFARS class deviations implementing the Revolutionary FAR Overhaul — DFARS part, effective date, DARS tracking number, and full text.`);
+  const description = esc(`All ${rows.length} DoD R-DFARS class deviations implementing the Revolutionary FAR Overhaul — RFO part, legacy DFARS reference, effective date, DARS tracking number, and full text.`);
 
   const tr = rows.map(r => `<tr>
 <td><a href="/r-dfars/part-${esc(r.rfo_part)}">Part ${esc(r.rfo_part)}</a></td>
@@ -293,9 +293,9 @@ function renderDeviationsPage() {
 
   const body = `<nav class="crumbs"><a href="/">AcqVault</a> › <a href="/r-dfars">R-DFARS Deviations</a> › Index</nav>
 <h1>R-DFARS Deviations Index</h1>
-<p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul (${rows.length} parts), with its DFARS part, effective date, and DARS tracking number. Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
+<p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul (${rows.length} parts), with its RFO part, legacy DFARS reference, effective date, and DARS tracking number. Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
 <table class="devtable">
-<thead><tr><th>FAR / RFO Part</th><th>DFARS Part</th><th>Effective</th><th>DARS Tracking #</th><th>Read</th></tr></thead>
+<thead><tr><th>RFO Part</th><th>Legacy DFARS ref</th><th>Effective</th><th>DARS Tracking #</th><th>Read</th></tr></thead>
 <tbody>
 ${tr}
 </tbody></table>`;
