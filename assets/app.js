@@ -388,6 +388,7 @@ function setMode(mode) {
     btn.setAttribute('aria-pressed', String(m === mode));
     hero.classList.toggle(m + '-active', m === mode && mode !== 'search');
   });
+  const _mt = document.querySelector('.mode-toggle'); if (_mt && _mt._segRest) _mt._segRest();
   if (mode !== 'search') hero.classList.remove('search-active');
   document.getElementById('results-section').classList.toggle('visible', false);
   document.getElementById('browse-section').classList.toggle('visible', mode === 'browse');
@@ -3456,6 +3457,52 @@ function stRenderAwards(awards) {
   stFyStats();
   stFetchObligations();
   stFetchDAFAwards();
+})();
+
+// ── SLIDING SELECTION GLIDER — the nav's magic indicator, generalized to any
+//    single-select segmented control (hero mode-toggle, spending window toggle).
+function initSegGlider(container, buttonSel, isActive) {
+  if (!container || container._segRest) return container && container._segRest;
+  container.classList.add('seg');
+  var glider = document.createElement('span');
+  glider.className = 'seg-glider';
+  container.insertBefore(glider, container.firstChild);
+  function btns() { return Array.prototype.slice.call(container.querySelectorAll(buttonSel)); }
+  function moveTo(el, instant) {
+    if (!el) return;
+    var cr = container.getBoundingClientRect(), br = el.getBoundingClientRect();
+    if (!br.width) return;
+    if (instant) glider.style.transition = 'none';
+    glider.style.width = br.width + 'px';
+    glider.style.height = br.height + 'px';
+    glider.style.transform = 'translate(' + (br.left - cr.left) + 'px,' + (br.top - cr.top) + 'px)';
+    container.classList.add('glider-ready');
+    btns().forEach(function (b) { b.classList.toggle('on-glider', b === el); });
+    if (instant) { void glider.offsetWidth; glider.style.transition = ''; }
+  }
+  function rest(instant) {
+    var a = btns().filter(isActive)[0];
+    if (a) moveTo(a, instant);
+    else { container.classList.remove('glider-ready'); btns().forEach(function (b) { b.classList.remove('on-glider'); }); }
+  }
+  container.addEventListener('mouseover', function (e) {
+    var b = e.target.closest(buttonSel); if (b && container.contains(b)) moveTo(b);
+  });
+  container.addEventListener('mouseleave', function () { rest(); });
+  window.addEventListener('resize', function () { rest(true); }, { passive: true });
+  container._segRest = rest;
+  // Position under the active button once laid out. Retry across paint + the
+  // command-dock entrance animation (it has zero width at first frame).
+  requestAnimationFrame(function () { rest(true); });
+  window.addEventListener('load', function () { rest(true); });
+  setTimeout(function () { rest(true); }, 350);
+  return rest;
+}
+window.initSegGlider = initSegGlider;
+// Hero command dock (Search / Browse by Source·Regulation / Full Text)
+(function () {
+  var mt = document.querySelector('.mode-toggle');
+  if (mt) initSegGlider(mt, '.mode-btn', function (b) { return b.classList.contains('active'); });
 })();
 
 // ── MEANINGFUL MOTION: nav sliding pill + scrollspy, market path, feature stats ─

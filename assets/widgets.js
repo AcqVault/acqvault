@@ -990,9 +990,11 @@
   }
   function initDashboard() {
     const win = $('#dash-window'); if (!win) return;
+    if (window.initSegGlider) window.initSegGlider(win, 'button', (b) => b.classList.contains('active'));
     win.addEventListener('click', (e) => {
       const b = e.target.closest('button[data-days]'); if (!b) return;
       win.querySelectorAll('button').forEach((x) => { const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      if (win._segRest) win._segRest();
       dashDays = Number(b.dataset.days);
       loadDashWindow(dashDays);
     });

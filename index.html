@@ -33,7 +33,7 @@
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=83">
+<link rel="stylesheet" href="/assets/app.css?v=84">
 </head>
 <body>
 
@@ -218,10 +218,6 @@
           <button type="button" class="fpill" data-source="compass" aria-pressed="false">DAF Contracting Compass</button>
           <button type="button" class="fpill" data-source="fmr" aria-pressed="false">DoD FMR</button>
         </div>
-        <span class="filter-label filter-label-soft">Coming soon</span>
-        <div class="filter-pill-row">
-          <button type="button" class="fpill disabled" disabled>AFI 63-Series</button>
-        </div>
       </div>
     </div>
     <div class="result-meta"><div class="result-count-label" id="result-count-label" role="status" aria-live="polite" aria-atomic="true"></div><button class="save-search-btn" id="save-search-btn" type="button" aria-pressed="false">☆ Save this search</button></div>
@@ -242,7 +238,6 @@
       <button type="button" class="browse-src-pill" data-bsource="afi-63-138" aria-pressed="false" onclick="setBrowseSource('afi-63-138')">DAFI 63-138</button>
       <button type="button" class="browse-src-pill" data-bsource="compass" aria-pressed="false" onclick="setBrowseSource('compass')">DAF Contracting Compass</button>
       <button type="button" class="browse-src-pill" data-bsource="fmr" aria-pressed="false" onclick="setBrowseSource('fmr')">DoD FMR</button>
-      <span class="browse-src-soon">AFI 63-Series</span>
     </div>
   </div>
   <div class="browse-layout">
@@ -286,7 +281,6 @@
     <div class="fulltext-cards">
       <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--cmp-bg);color:var(--cmp-txt);">DAF Compass</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>48 parts covered</span><span>In-app archive · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('compass')">Browse in-app</button></div>
       <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--fmr-bg);color:var(--fmr-txt);">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>304 chapters · 16 volumes</span><span>In-app · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('fmr')">Browse in-app</button></div>
-      <div class="fulltext-card dim"><span class="fulltext-card-tag" style="background:var(--off2);color:var(--muted2);">AFI 63-Series</span><div class="fulltext-card-name">AFI 63-Series</div><div class="fulltext-card-meta"><span>Program management regs</span><span>AF instruction series</span></div><div class="fulltext-dl-btn-soon">Coming soon</div></div>
     </div>
   </div>
 </div>
@@ -468,12 +462,6 @@
           <button type="button" class="source-status-chip archived" onclick="setMode('browse');setBrowseSource('compass')">DAF Contracting Compass <span class="source-status-note">archived copy · verify vs CAC source</span></button>
         </div>
       </div>
-      <div class="source-status-row">
-        <div class="source-status-label">Queued</div>
-        <div class="source-status-main">
-          <span class="source-status-chip soon">AFI 63-Series</span>
-        </div>
-      </div>
     </div>
     <ul class="trust-strip fade-up" style="transition-delay:0.12s;" aria-label="What AcqVault promises">
       <li>Free — always</li>
@@ -587,9 +575,9 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=40"></script>
+<script defer src="/assets/app.js?v=42"></script>
 <script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=17"></script>
+<script defer src="/assets/widgets.js?v=18"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>

@@ -2554,3 +2554,33 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
   .thr-row-val{white-space:normal;}
   .thr-row-val .thr-up{display:block;margin-left:0;margin-top:3px;}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SLIDING SELECTION GLIDER — the nav's "magic indicator" generalized
+   to segmented controls (hero mode-toggle + spending window toggle).
+   `.seg` is added by JS; without it the controls keep their static
+   active state, so this degrades gracefully.
+   ═══════════════════════════════════════════════════════════════ */
+.seg{position:relative;}
+.seg-glider{position:absolute;top:0;left:0;width:0;height:0;z-index:0;border-radius:11px;
+  background:linear-gradient(160deg,var(--navy-700),var(--navy-900));
+  box-shadow:0 1px 2px rgba(20,16,10,.12),0 3px 10px -2px rgba(15,37,64,.3),0 0 0 1px var(--brass-line);
+  opacity:0;pointer-events:none;
+  transition:transform .32s var(--ease-out),width .32s var(--ease-out),height .32s var(--ease-out),opacity .22s ease;}
+.seg.glider-ready .seg-glider{opacity:1;}
+@media (prefers-reduced-motion:reduce){.seg-glider{transition:opacity .2s ease;}}
+
+/* Hero mode-toggle: hand the selection to the glider (drop the per-button pill) */
+.mode-toggle.seg .mode-btn{position:relative;z-index:1;}
+.mode-toggle.seg .mode-btn.active{background:transparent;box-shadow:none;border-color:transparent;}
+.mode-toggle.seg .mode-btn:hover:not(.active){background:transparent;border-color:transparent;}
+.mode-toggle.seg .mode-btn.on-glider{color:#fff;font-weight:750;}
+
+/* Spending window toggle: a brass glider so it reads on the dark dashboard */
+#spending-dashboard .dash-window.seg .seg-glider{border-radius:999px;
+  background:linear-gradient(160deg,#c9a24b,var(--brass-bright));
+  box-shadow:0 2px 8px rgba(228,196,119,.28),0 0 0 1px rgba(228,196,119,.42);}
+#spending-dashboard .dash-window.seg button{position:relative;z-index:1;}
+#spending-dashboard .dash-window.seg button.active{background:transparent;box-shadow:none;}
+#spending-dashboard .dash-window.seg button:hover:not(.active){background:transparent;}
+#spending-dashboard .dash-window.seg button.on-glider{color:#3a2c0a;font-weight:750;}
