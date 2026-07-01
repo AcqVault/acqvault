@@ -2531,3 +2531,27 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
 /* Bottom stat / source strip: brighten the label + keep the names near-white */
 .hero-statstrip,.hero-statstrip-count,.hero-source-strip{color:rgba(233,241,251,.90);}
 .hero-live-label{color:#f3f7fc;}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE RENDERING FIXES (appended so they win over base rules)
+   ═══════════════════════════════════════════════════════════════ */
+/* Root cause of the mobile horizontal overflow: .hero-inner-b's right column
+   was minmax(440px,…), forcing the whole document ~660px wide on a 390px phone
+   (which clipped the nav, about-bar and hero content off the right edge).
+   Collapse to a single column and drop the vault/ticker panel on small screens. */
+@media (max-width:860px){
+  .hero-inner-b{grid-template-columns:1fr;grid-template-areas:"left" "quote";gap:0;padding:0 16px;max-width:100%;}
+  .hero-inner-b .hero-right{display:none;}
+}
+/* Touch targets — WCAG 2.5.5 / iOS HIG want ~44px on coarse pointers. */
+@media (max-width:768px){
+  .fpill{min-height:44px;display:inline-flex;align-items:center;}
+  .trychip{min-height:44px;}
+  .nav-hamburger{width:44px;height:44px;}
+}
+/* Threshold table: on narrow screens let the value cell wrap and push its
+   inline "up" note to its own line so the SAT/SAP dollar amounts never clip. */
+@media (max-width:600px){
+  .thr-row-val{white-space:normal;}
+  .thr-row-val .thr-up{display:block;margin-left:0;margin-top:3px;}
+}
