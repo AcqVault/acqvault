@@ -1000,15 +1000,117 @@
     const sub = $('#market-results-sub');
     const noticeWrap = $('#market-notice-types');
     const escAttr = (s) => esc(s).replace(/'/g, '&#39;');
+    const filtersEl = $('#market-active-filters');
+    const SETASIDE_LABELS = { SBA: 'Small business', '8A': '8(a)', HZC: 'HUBZone', SDVOSBC: 'SDVOSB', WOSB: 'WOSB', EDWOSB: 'EDWOSB' };
+    const WINDOW_LABELS = { '90': 'Last 90 days', '365': 'Last 12 months', '1095': 'Last 3 years' };
+    const EXAMPLES = [
+      { label: 'Base operations support', query: 'base operations support' },
+      { label: 'Aircraft parts · PSC 1560', query: '', psc: '1560' },
+      { label: 'IT services · NAICS 541512', query: '', naics: '541512' },
+      { label: 'Janitorial · NAICS 561720', query: '', naics: '561720' }
+    ];
     function selectedTypes() {
       const active = Array.from(noticeWrap?.querySelectorAll('.market-pill.active') || []).map(btn => btn.dataset.type);
       return active.length ? active : ['all'];
     }
-    function setResultsState(label, message) {
-      if (count) count.textContent = label;
-      if (list) list.innerHTML = `<div class="market-empty"><strong>${esc(label)}</strong>${esc(message)}</div>`;
+    function resetNoticeTypes() {
+      noticeWrap?.querySelectorAll('.market-pill').forEach(item => {
+        const isAll = item.dataset.type === 'all';
+        item.classList.toggle('active', isAll);
+        item.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+      });
+    }
+    function currentFilters() {
+      return {
+        query: (query?.value || '').trim(),
+        naics: ($('#market-naics-input')?.value || '').trim(),
+        psc: ($('#market-psc-input')?.value || '').trim().toUpperCase(),
+        agency: $('#market-agency-input')?.value || '',
+        windowDays: $('#market-window-select')?.value || '365',
+        setAside: $('#market-setaside-select')?.value || '',
+        limit: $('#market-limit-select')?.value || '12'
+      };
+    }
+    // Chips reflect the filters of the LAST RUN search (applied state), not
+    // in-progress edits — rendered on search, cleared filters re-run the search.
+    function renderActiveFilters() {
+      if (!filtersEl) return;
+      const f = currentFilters();
+      const types = selectedTypes();
+      const chips = [];
+      if (f.query) chips.push(['query', `“${f.query}”`]);
+      if (f.naics) chips.push(['naics', `NAICS ${f.naics}`]);
+      if (f.psc) chips.push(['psc', `PSC ${f.psc}`]);
+      if (f.agency) chips.push(['agency', f.agency]);
+      if (f.setAside) chips.push(['setAside', SETASIDE_LABELS[f.setAside] || f.setAside]);
+      if (f.windowDays && f.windowDays !== '365') chips.push(['windowDays', WINDOW_LABELS[f.windowDays] || `${f.windowDays} days`]);
+      if (types.length && !types.includes('all')) chips.push(['types', `${types.length} notice type${types.length === 1 ? '' : 's'}`]);
+      if (!chips.length) { filtersEl.innerHTML = ''; filtersEl.hidden = true; return; }
+      filtersEl.hidden = false;
+      filtersEl.innerHTML = '<span class="market-af-label">Filters</span>' +
+        chips.map(([key, text]) => `<button type="button" class="market-af-chip" data-clear="${escAttr(key)}">${esc(text)}<span aria-hidden="true">×</span></button>`).join('') +
+        '<button type="button" class="market-af-clear" data-clear="__all">Clear all</button>';
+    }
+    function clearFilter(key) {
+      const set = (sel, val) => { const el = $(sel); if (el) el.value = val; };
+      if (key === '__all') {
+        set('#market-query-input', ''); set('#market-naics-input', ''); set('#market-psc-input', '');
+        set('#market-agency-input', ''); set('#market-window-select', '365'); set('#market-setaside-select', '');
+        resetNoticeTypes();
+      } else if (key === 'query') set('#market-query-input', '');
+      else if (key === 'naics') set('#market-naics-input', '');
+      else if (key === 'psc') set('#market-psc-input', '');
+      else if (key === 'agency') set('#market-agency-input', '');
+      else if (key === 'setAside') set('#market-setaside-select', '');
+      else if (key === 'windowDays') set('#market-window-select', '365');
+      else if (key === 'types') resetNoticeTypes();
+      runMarketSearch();
+    }
+    function fmtAmount(v) {
+      if (!v && v !== 0) return '';
+      const n = Number(String(v).replace(/[^0-9.]/g, ''));
+      if (isFinite(n) && n > 0) return '$' + Math.round(n).toLocaleString();
+      return esc(String(v));
+    }
+    function awardLine(item) {
+      const amt = fmtAmount(item.awardAmount);
+      const head = amt ? `Award ${amt}` : (item.awardAmount ? 'Awarded' : '');
+      const parts = [head, item.awardee ? esc(String(item.awardee)) : ''].filter(Boolean).join(' · ');
+      return parts ? `<div class="market-opp-award">${parts}</div>` : '';
+    }
+    function deadlineFlag(item) {
+      const raw = item.responseDeadline;
+      if (!raw) return '';
+      const d = new Date(raw);
+      if (isNaN(d.getTime())) return '';
+      const days = Math.ceil((d.getTime() - Date.now()) / 86400000);
+      if (days < 0) return '<span class="market-opp-flag closed">Response closed</span>';
+      if (days === 0) return '<span class="market-opp-flag soon">Closes today</span>';
+      const cls = days <= 7 ? 'soon' : 'open';
+      return `<span class="market-opp-flag ${cls}">Closes in ${days} day${days === 1 ? '' : 's'}</span>`;
+    }
+    function examplesHTML() {
+      return `<div class="market-examples">${EXAMPLES.map((ex, i) => `<button type="button" class="market-example" data-ex="${i}">${esc(ex.label)}</button>`).join('')}</div>`;
+    }
+    function renderEmptyState(label, message, opts) {
+      opts = opts || {};
+      if (count) count.textContent = opts.count || label;
+      if (list) list.innerHTML = `<div class="market-empty"><strong>${esc(label)}</strong>${esc(message)}${opts.examples ? examplesHTML() : ''}</div>`;
+    }
+    function renderLoading() {
+      if (count) count.textContent = 'Searching';
+      if (sub) sub.textContent = 'Searching SAM.gov through AcqVault…';
+      if (list) list.innerHTML = Array.from({ length: 4 }).map(() =>
+        '<div class="market-skel"><div class="market-skel-line w40"></div><div class="market-skel-line w90"></div><div class="market-skel-line w70"></div><div class="market-skel-chips"><span></span><span></span></div></div>'
+      ).join('');
+    }
+    function renderError(message) {
+      if (count) count.textContent = 'Try again';
+      if (sub) sub.textContent = 'The in-site market research service did not respond cleanly.';
+      if (list) list.innerHTML = `<div class="market-empty market-error"><strong>Search paused.</strong>${esc(message)}<div class="market-examples"><button type="button" class="market-retry" data-retry="1">Retry search</button><a class="market-example" href="https://sam.gov/search/" target="_blank" rel="noopener">Open in SAM.gov</a></div></div>`;
     }
     function renderOpportunities(data) {
+      renderActiveFilters();
       if (data && data.configured === false) {
         if (count) count.textContent = 'Setup needed';
         if (sub) sub.textContent = 'In-site SAM.gov results are ready once the server-side SAM_API_KEY is configured.';
@@ -1016,54 +1118,68 @@
         return;
       }
       const opps = data.opportunities || [];
+      const matched = Number(data.totalRecords) || 0;
       if (count) count.textContent = opps.length ? `${opps.length} shown` : 'No matches';
-      if (sub) sub.textContent = data.totalRecords ? `${Number(data.totalRecords).toLocaleString()} SAM.gov records matched the current filters.` : 'No SAM.gov records matched the current filters.';
+      if (sub) {
+        if (!matched) sub.textContent = 'No SAM.gov opportunities matched the current filters.';
+        else sub.textContent = `${matched.toLocaleString()}${data.capped ? '+' : ''} matching ${matched === 1 ? 'opportunity' : 'opportunities'} in the selected window${opps.length < matched ? ` · showing the top ${opps.length}` : ''}.`;
+      }
       if (!opps.length) {
-        setResultsState('No matches', 'Try fewer filters, leave Notice type on All, or remove NAICS/PSC to broaden the market view.');
+        renderEmptyState('No matches', 'Nothing came back for these filters. Try removing NAICS/PSC, widening the window, or keeping Notice type on All — or start from a common market:', { examples: true, count: 'No matches' });
         return;
       }
       list.innerHTML = opps.map(item => {
         const meta = [item.solicitationNumber, item.naicsCode ? `NAICS ${item.naicsCode}` : '', item.classificationCode ? `PSC ${item.classificationCode}` : '', item.setAside].filter(Boolean);
+        const foot = [deadlineFlag(item), item.attachments ? `<span class="market-opp-attach">${item.attachments} attachment${item.attachments === 1 ? '' : 's'}</span>` : ''].filter(Boolean).join('');
         return `<a class="market-opp-card" href="${escAttr(item.uiLink || 'https://sam.gov/search/?index=opp')}" target="_blank" rel="noopener">
           <div class="market-opp-top"><span class="market-opp-type">${esc(item.type || 'Opportunity')}</span><span class="market-opp-date">${esc(item.postedDate || '')}</span></div>
           <div class="market-opp-title">${esc(item.title)}</div>
           <div class="market-opp-org">${esc(item.organization || 'SAM.gov opportunity')}</div>
           <div class="market-opp-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>
+          ${awardLine(item)}
+          ${foot ? `<div class="market-opp-foot">${foot}</div>` : ''}
         </a>`;
       }).join('');
     }
     async function runMarketSearch() {
       if (!list) return;
-      if (count) count.textContent = 'Searching';
-      if (sub) sub.textContent = 'Searching SAM.gov through AcqVault...';
-      list.innerHTML = '<div class="market-loading">Searching official SAM.gov opportunities...</div>';
+      renderActiveFilters();
+      renderLoading();
       btn?.setAttribute('disabled', 'disabled');
       try {
         const response = await fetch('/api/market-research', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: query?.value || '',
-            naics: $('#market-naics-input')?.value || '',
-            psc: $('#market-psc-input')?.value || '',
-            agency: $('#market-agency-input')?.value || '',
-            windowDays: $('#market-window-select')?.value || '365',
-            setAside: $('#market-setaside-select')?.value || '',
-            limit: $('#market-limit-select')?.value || '12',
-            noticeTypes: selectedTypes()
-          })
+          body: JSON.stringify({ ...currentFilters(), noticeTypes: selectedTypes() })
         });
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.detail || data.error || 'Market research search failed.');
         renderOpportunities(data);
       } catch (error) {
-        if (count) count.textContent = 'Try again';
-        if (sub) sub.textContent = 'The in-site market research service did not respond cleanly.';
-        setResultsState('Search paused', error.message || 'The market research service could not be reached.');
+        renderError(error.message || 'The market research service could not be reached.');
       } finally {
         btn?.removeAttribute('disabled');
       }
     }
+    // Delegated: example chips (empty state) prefill + run; retry re-runs; filter chips clear.
+    list?.addEventListener('click', (event) => {
+      const ex = event.target.closest('[data-ex]');
+      if (ex) {
+        event.preventDefault();
+        const spec = EXAMPLES[Number(ex.dataset.ex)] || {};
+        if (query) query.value = spec.query || '';
+        const n = $('#market-naics-input'); if (n) n.value = spec.naics || '';
+        const p = $('#market-psc-input'); if (p) p.value = spec.psc || '';
+        runMarketSearch();
+        return;
+      }
+      const retry = event.target.closest('[data-retry]');
+      if (retry) { event.preventDefault(); runMarketSearch(); }
+    });
+    filtersEl?.addEventListener('click', (event) => {
+      const chip = event.target.closest('[data-clear]');
+      if (chip) clearFilter(chip.dataset.clear);
+    });
     noticeWrap?.addEventListener('click', (event) => {
       const pill = event.target.closest('.market-pill');
       if (!pill) return;
@@ -1089,6 +1205,8 @@
     query?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') runMarketSearch();
     });
+    // First-run state: no default query — invite a search or a common market.
+    renderEmptyState('Ready for market research', 'Search a requirement above, or start from a common market:', { examples: true, count: 'Ready' });
   }
 
   /* ════════════════════════════════════════════════════════════

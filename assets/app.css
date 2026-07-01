@@ -1447,6 +1447,37 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .market-empty strong{display:block;color:var(--ink);font-size:var(--fs-16);margin-bottom:6px;}
 .market-loading{padding:30px 20px;color:var(--muted);font-size:var(--fs-base);text-align:center;}
 
+/* ── Market research: filter chips, richer cards, states, skeleton (Phase 1) ── */
+.market-active-filters{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:12px 20px 0;}
+.market-active-filters[hidden]{display:none;}
+.market-af-label{font-size:var(--fs-3xs);font-weight:var(--fw-black);letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--muted2);margin-right:2px;}
+.market-af-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(135,101,28,0.2);background:rgba(135,101,28,0.06);color:var(--ink2);border-radius:999px;padding:5px 10px;font-size:var(--fs-2xs);font-weight:var(--fw-heavy);cursor:pointer;transition:all .15s;}
+.market-af-chip span{color:var(--muted2);font-weight:900;}
+.market-af-chip:hover{border-color:var(--accent);background:rgba(135,101,28,0.12);}
+.market-af-clear{border:none;background:transparent;color:var(--accent);font-size:var(--fs-2xs);font-weight:var(--fw-black);letter-spacing:var(--ls-caps);text-transform:uppercase;cursor:pointer;padding:5px 4px;}
+.market-af-clear:hover{text-decoration:underline;}
+.market-opp-award{font-size:var(--fs-xs);font-weight:800;color:var(--brass-ink);background:rgba(135,101,28,0.08);border:1px solid rgba(135,101,28,0.14);border-radius:8px;padding:5px 8px;align-self:flex-start;}
+.market-opp-foot{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:2px;}
+.market-opp-flag{font-size:var(--fs-2xs);font-weight:800;border-radius:999px;padding:4px 9px;border:1px solid transparent;}
+.market-opp-flag.open{color:#047857;background:#ecfdf5;border-color:#bbf7d0;}
+.market-opp-flag.soon{color:#b45309;background:#fffbeb;border-color:#fde68a;}
+.market-opp-flag.closed{color:var(--muted2);background:var(--off);border-color:var(--line2);}
+.market-opp-attach{font-size:var(--fs-2xs);font-weight:750;color:var(--muted);}
+.market-examples{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
+.market-example{display:inline-flex;align-items:center;border:1px solid rgba(135,101,28,0.16);background:#fff;color:var(--ink2);border-radius:999px;padding:8px 13px;font-size:var(--fs-xs);font-weight:var(--fw-heavy);cursor:pointer;text-decoration:none;transition:all .15s;}
+.market-example:hover{border-color:var(--accent);box-shadow:0 6px 16px rgba(14,63,128,0.07);transform:translateY(-1px);}
+.market-retry{display:inline-flex;align-items:center;border:none;border-radius:999px;background:linear-gradient(135deg,var(--accent),#b8923a);color:#fff;padding:8px 14px;font-size:var(--fs-xs);font-weight:var(--fw-heavy);cursor:pointer;}
+.market-error strong{color:#b45309;}
+.market-skel{display:flex;flex-direction:column;gap:10px;border:1px solid rgba(135,101,28,0.1);background:linear-gradient(180deg,#fff,#fbfdff);border-radius:16px;padding:16px;}
+.market-skel-line{height:11px;border-radius:6px;background:linear-gradient(90deg,rgba(135,101,28,0.08) 25%,rgba(135,101,28,0.15) 37%,rgba(135,101,28,0.08) 63%);background-size:400% 100%;animation:market-shimmer 1.4s ease infinite;}
+.market-skel-line.w40{width:40%;height:9px;}
+.market-skel-line.w90{width:90%;height:15px;}
+.market-skel-line.w70{width:70%;}
+.market-skel-chips{display:flex;gap:7px;margin-top:2px;}
+.market-skel-chips span{width:58px;height:20px;border-radius:999px;background:linear-gradient(90deg,rgba(135,101,28,0.08) 25%,rgba(135,101,28,0.15) 37%,rgba(135,101,28,0.08) 63%);background-size:400% 100%;animation:market-shimmer 1.4s ease infinite;}
+@keyframes market-shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
+@media (prefers-reduced-motion: reduce){.market-skel-line,.market-skel-chips span{animation:none;}}
+
 footer{background:var(--off);color:var(--muted);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;padding:40px 0;position:relative;overflow:hidden;}
 /* guilloché through-line — a whisper-faint engraved watermark bookending the hero vault.
    Masked so the cyan source SVG renders in brand navy on the light footer. */

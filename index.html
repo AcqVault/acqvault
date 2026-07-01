@@ -33,7 +33,7 @@
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=87">
+<link rel="stylesheet" href="/assets/app.css?v=88">
 </head>
 <body>
 
@@ -318,7 +318,7 @@
         </div>
         <div class="market-query">
           <span>⌕</span>
-          <input type="text" value="base support" aria-label="Market research query" id="market-query-input" />
+          <input type="text" placeholder="Search a requirement (e.g. base operations support)" aria-label="Market research query" id="market-query-input" />
           <button class="market-btn" type="button" id="market-snapshot-btn">Search market</button>
         </div>
         <div class="market-filter-grid market-filter-grid-wide">
@@ -366,6 +366,7 @@
           </div>
             <span class="market-results-count" id="market-results-count">Ready</span>
         </div>
+          <div class="market-active-filters" id="market-active-filters" role="group" aria-label="Active filters" hidden></div>
           <div class="market-results-list" id="market-results-list">
             <div class="market-empty"><strong>Ready for market research.</strong> Keep Notice type on All for broad discovery, or select one or more types to narrow the result set.</div>
           </div>
@@ -577,7 +578,7 @@
 
 <script defer src="/assets/app.js?v=44"></script>
 <script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=20"></script>
+<script defer src="/assets/widgets.js?v=21"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>

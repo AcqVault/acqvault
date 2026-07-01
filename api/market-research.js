@@ -12,6 +12,12 @@ const NOTICE_TYPE_LABELS = {
   g: 'Sale of surplus'
 };
 
+// SAM.gov quota is billed per REQUEST, not per page size, so pulling a generous
+// page per (notice-type × date-range) bucket costs no extra quota while letting
+// us rank/slice the full set locally instead of truncating each bucket to a few
+// most-recent records before scoring.
+const FETCH_PAGE = 100;
+
 function mmddyyyy(date) {
   const mm = String(date.getMonth() + 1).padStart(2, '0');
   const dd = String(date.getDate()).padStart(2, '0');
@@ -99,6 +105,8 @@ function compactOpportunity(item) {
     active: item.active || '',
     awardAmount: award?.amount || '',
     awardee: award?.awardee?.name || award?.awardee || '',
+    attachments: Array.isArray(item.resourceLinks) ? item.resourceLinks.length : 0,
+    additionalInfoLink: item.additionalInfoLink && item.additionalInfoLink !== 'null' ? item.additionalInfoLink : '',
     uiLink: item.uiLink && item.uiLink !== 'null'
       ? item.uiLink
       : (item.noticeId ? `https://sam.gov/opp/${encodeURIComponent(item.noticeId)}/view` : 'https://sam.gov/search/?index=opp')
@@ -170,9 +178,7 @@ module.exports = async function handler(req, res) {
     };
 
     const types = noticeTypes.length && !noticeTypes.includes('all') ? noticeTypes : [''];
-    const requestCount = Math.max(1, types.length * ranges.length);
-    const perRequestLimit = requestCount > 1 ? Math.ceil(limit / requestCount) : limit;
-    const makeRequests = (query, limitOverride = perRequestLimit) => {
+    const makeRequests = (query, limitOverride = FETCH_PAGE) => {
       const requests = [];
       for (const range of ranges) {
         for (const ptype of types) requests.push(fetchSamSafe({ ...base, ...range, query, ptype, limit: limitOverride }, apiKey));
@@ -196,29 +202,31 @@ module.exports = async function handler(req, res) {
     };
 
     let responses = await Promise.all(makeRequests(base.query));
-    let opportunities = mergeResponses(responses);
-    if (queryTerms(base.query).length) opportunities = opportunities.filter(item => matchesAllTerms(item, queryTerms(base.query)));
-    opportunities = opportunities.slice(0, limit);
-    if (!opportunities.length && queryTerms(base.query).length > 1) {
+    let matched = mergeResponses(responses);
+    if (queryTerms(base.query).length) matched = matched.filter(item => matchesAllTerms(item, queryTerms(base.query)));
+    if (!matched.length && queryTerms(base.query).length > 1) {
       // Bounded per-term fallback: at most 3 terms against the most-recent range
       // only, to cap upstream SAM.gov request amplification (quota protection).
       const terms = queryTerms(base.query).slice(0, 3);
       const recentRange = ranges.slice(0, 1);
-      const termLimit = Math.max(perRequestLimit, Math.ceil(limit / Math.max(1, terms.length)));
       const fbRequests = terms.flatMap(term =>
         recentRange.flatMap(range => types.map(ptype =>
-          fetchSamSafe({ ...base, ...range, query: term, ptype, limit: termLimit }, apiKey))));
+          fetchSamSafe({ ...base, ...range, query: term, ptype, limit: FETCH_PAGE }, apiKey))));
       responses = await Promise.all(fbRequests);
-      opportunities = mergeResponses(responses)
-        .filter(item => matchesAllTerms(item, terms))
-        .slice(0, limit);
+      matched = mergeResponses(responses).filter(item => matchesAllTerms(item, terms));
     }
-    opportunities = opportunities.map(({ _score, ...item }) => item);
+    // `matched` = distinct opportunities actually retrieved and matched (not a
+    // naive sum of per-bucket SAM totals, which over-counts in the overlapping
+    // per-term fallback). A bucket is "capped" when SAM reports more matches than
+    // the page we pulled, meaning additional records exist beyond what we ranked.
+    const capped = responses.some(data => (Number(data.totalRecords) || 0) > (data.opportunitiesData?.length || 0));
+    const opportunities = matched.slice(0, limit).map(({ _score, ...item }) => item);
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900');
     return res.status(200).json({
       configured: true,
-      totalRecords: responses.reduce((sum, data) => sum + (Number(data.totalRecords) || 0), 0),
+      totalRecords: matched.length,
+      capped,
       opportunities,
       query: base.query,
       postedFrom: ranges[ranges.length - 1]?.postedFrom,
