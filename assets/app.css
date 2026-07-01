@@ -1542,24 +1542,24 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 .lib-open-btn:focus-visible{outline:3px solid var(--brass-line);outline-offset:3px;}
 .lib-cta-note{font-size:var(--fs-sm);color:var(--muted2);}
 @media(max-width:880px){#library .lib-feature-grid{grid-template-columns:1fr;}.lib-src-grid{grid-template-columns:repeat(2,1fr);}}
-#spending-dashboard.sec-dark{background:radial-gradient(ellipse 70% 60% at 80% 0%,rgba(79,182,232,0.10),transparent 60%),linear-gradient(160deg,#2c618d 0%,#1d476e 50%,#143655 100%);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;}
-#spending-dashboard .eyebrow-light{color:var(--cyan);}
+#spending-dashboard.sec-dark{background:radial-gradient(ellipse 70% 60% at 80% 0%,rgba(228,196,119,0.09),transparent 60%),linear-gradient(160deg,#2c618d 0%,#1d476e 50%,#143655 100%);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;}
+#spending-dashboard .eyebrow-light{color:var(--brass-bright);}
 #spending-dashboard h2.sec-head{color:#fff;}
 #spending-dashboard .sec-inner,.market-section .sec-inner{max-width:var(--max-w-wide);}
 /* Dashboard dark-surface theme */
 #spending-dashboard .dash-window{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.12);box-shadow:none;}
 #spending-dashboard .dash-window button{color:rgba(255,255,255,0.6);}
-#spending-dashboard .dash-window button.active{background:var(--accent);color:#fff;box-shadow:0 2px 12px rgba(21,95,191,0.45);}
+#spending-dashboard .dash-window button.active{background:var(--brass-bright);color:#3a2c0a;box-shadow:0 2px 12px rgba(228,196,119,0.35);}
 #spending-dashboard .dash-window button:hover:not(.active){color:#fff;background:rgba(255,255,255,0.07);}
 #spending-dashboard .dash-stat,#spending-dashboard .dash-panel{background:linear-gradient(180deg,rgba(255,255,255,0.06) 0%,rgba(255,255,255,0.025) 100%);border:1px solid rgba(255,255,255,0.10);box-shadow:0 1px 0 rgba(255,255,255,0.06) inset,0 18px 40px -20px rgba(0,0,0,0.6);backdrop-filter:blur(6px);}
 #spending-dashboard .dash-stat-num{color:#fff;}
-#spending-dashboard .dash-stat-num.accent{color:var(--cyan);}
+#spending-dashboard .dash-stat-num.accent{color:var(--brass-bright);}
 #spending-dashboard .dash-stat-label,#spending-dashboard .dash-panel-title{color:rgba(255,255,255,0.66);}
 #spending-dashboard .dash-stat-foot,#spending-dashboard .dash-bar-sub,#spending-dashboard .dash-panel-title span,#spending-dashboard .dash-foot{color:rgba(255,255,255,0.62);}
 #spending-dashboard .dash-bar-name{color:rgba(255,255,255,0.82);}
 #spending-dashboard .dash-bar-val{color:#fff;}
 #spending-dashboard .dash-bar-track,#spending-dashboard .dash-mix-bar{background:rgba(255,255,255,0.10);}
-#spending-dashboard .dash-bar-fill{background:linear-gradient(90deg,var(--cyan),#7CC9EE);}
+#spending-dashboard .dash-bar-fill{background:linear-gradient(90deg,#a87f28,#e4c477);}
 #spending-dashboard .dash-mix-key{color:rgba(255,255,255,0.6);}
 #spending-dashboard .dash-mix-key b{color:#fff;}
 @media (max-width:768px){.sec{padding:var(--sec-pad-y-sm) 20px;}.source-tiles-section{padding-top:22px;padding-bottom:22px;}}
