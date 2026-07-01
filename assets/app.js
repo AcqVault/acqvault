@@ -3,6 +3,8 @@
 (function() {
   var nav = document.getElementById('main-nav');
   var aboutBar = document.getElementById('about-bar');
+  // Persist the greeting-bar dismissal so it doesn't reappear every visit (esp. costly on the mobile fold).
+  try { if (aboutBar && localStorage.getItem('acqvault_about_dismissed') === '1') { aboutBar.remove(); aboutBar = null; } } catch (e) {}
 
   function updateLayout() {
     var barH = aboutBar && !aboutBar.classList.contains('hidden') ? aboutBar.offsetHeight : 0;
@@ -2047,9 +2049,23 @@ function fallbackCopy(text, cb) {
   const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
   document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); if (cb) cb();
 }
+// Visually-hidden polite live region so copy/cite success is announced to screen readers
+// (the button's label swap alone isn't reliably announced).
+function srAnnounce(msg) {
+  let el = document.getElementById('sr-status');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sr-status'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); el.setAttribute('aria-atomic', 'true');
+    el.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0';
+    document.body.appendChild(el);
+  }
+  el.textContent = '';
+  setTimeout(() => { el.textContent = msg; }, 40); // clear→set so repeats re-announce
+}
+
 function copyResultCite(hit, btn) {
   const block = buildCiteBlock(hit);
-  const flash = () => { const o = btn.dataset.label || btn.textContent; btn.dataset.label = o; btn.textContent = '✓ Copied'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove('copied'); }, 1800); };
+  const flash = () => { const o = btn.dataset.label || btn.textContent; btn.dataset.label = o; btn.textContent = '✓ Copied'; btn.classList.add('copied'); srAnnounce('Citation copied to clipboard'); setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove('copied'); }, 1800); };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(block).then(flash).catch(() => fallbackCopy(block, flash));
   else fallbackCopy(block, flash);
 }
@@ -2161,15 +2177,21 @@ function renderResults(data, query) {
     ? ` in ${esc(Array.from(activeSources).map(s => SOURCE_LABELS[s] || s).join(', '))}` : '';
   label.innerHTML = `<strong>${total.toLocaleString()}</strong> result${total !== 1 ? 's' : ''} for "<em>${esc(query)}</em>"${fscope}`;
   if (!hits.length) { list.innerHTML = buildNoResultsHTML(query); return; }
-  list.innerHTML = hits.map(hit => {
-    const hl = hit._formatted || hit;
-    const pinned = !!(window.AcqSaved && AcqSaved.isPinned(hit.id));
-    const params = new URLSearchParams({ view: 'reader', doc: hit.id });
-    if (hit.source) params.set('source', hit.source);
-    if (hit.part) params.set('part', hit.part);
-    if (hit.title) params.set('title', hit.title);
-    const href = '?' + params.toString();
-    return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}">
+  list.innerHTML = hits.map(resultCardHTML).join('');
+  list.querySelectorAll('.result-card').forEach(bindResultCard);
+  renderMoreButton(hits.length, total);
+}
+
+// One result card's HTML — shared by the initial render and the "Show more" append.
+function resultCardHTML(hit) {
+  const hl = hit._formatted || hit;
+  const pinned = !!(window.AcqSaved && AcqSaved.isPinned(hit.id));
+  const params = new URLSearchParams({ view: 'reader', doc: hit.id });
+  if (hit.source) params.set('source', hit.source);
+  if (hit.part) params.set('part', hit.part);
+  if (hit.title) params.set('title', hit.title);
+  const href = '?' + params.toString();
+  return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}">
       <button class="rc-pin${pinned ? ' is-pinned' : ''}" type="button" data-pin-id="${esc(hit.id)}" data-pin-title="${esc(hit.title || '')}" data-pin-source="${esc(hit.source || '')}" data-pin-part="${esc(hit.part || '')}" data-pin-file="${esc(hit.filename || '')}" data-pin-url="${esc(hit.url || '')}" data-pin-anchor="${esc(hit.anchor || '')}" data-pin-indexed="${esc(hit.indexed_at || '')}" data-pin-status="${esc(hit.status || '')}" aria-pressed="${pinned ? 'true' : 'false'}" aria-label="${pinned ? 'Remove saved clause' : 'Save this clause'}" title="${pinned ? 'Saved — click to remove' : 'Save this clause'}">★</button>
       <a class="rc-open" href="${esc(href)}" aria-label="Open: ${esc(hit.title || 'document')}">
         <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">${partWord(hit.source)} ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
@@ -2181,27 +2203,30 @@ function renderResults(data, query) {
         <button class="rc-cite-btn" type="button" aria-label="Copy a file-ready citation">⧉ Cite</button>
       </div>
     </div>`;
-  }).join('');
-  list.querySelectorAll('.result-card').forEach(card => {
-    const hit = hits.find(h => h.id === card.dataset.id);
-    const link = card.querySelector('.rc-open');
-    if (link && hit) link.addEventListener('click', (e) => {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // allow native open-in-new-tab
-      e.preventDefault(); openDrawer(hit);
-    });
-    const citeBtn = card.querySelector('.rc-cite-btn');
-    if (citeBtn && hit) citeBtn.addEventListener('click', (e) => { e.stopPropagation(); copyResultCite(hit, citeBtn); });
+}
+// Wire one card's open/cite handlers (hit looked up from the accumulator).
+function bindResultCard(card) {
+  const hit = lastSearchHits.find(h => h.id === card.dataset.id);
+  if (!hit) return;
+  const link = card.querySelector('.rc-open');
+  if (link) link.addEventListener('click', (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // allow native open-in-new-tab
+    e.preventDefault(); openDrawer(hit);
   });
-  // "Show more" — append the next page so clauses ranked past the first page stay reachable.
-  const shown = hits.length;
-  if (shown < total) {
-    const remaining = total - shown;
-    list.insertAdjacentHTML('beforeend',
-      `<button type="button" class="rc-more" id="rc-more-btn">Show ${Math.min(RESULTS_PAGE_SIZE, remaining).toLocaleString()} more` +
-      `<span class="rc-more-count">${shown.toLocaleString()} of ${total.toLocaleString()} shown</span></button>`);
-    const moreBtn = document.getElementById('rc-more-btn');
-    if (moreBtn) moreBtn.addEventListener('click', () => loadMoreResults(moreBtn));
-  }
+  const citeBtn = card.querySelector('.rc-cite-btn');
+  if (citeBtn) citeBtn.addEventListener('click', (e) => { e.stopPropagation(); copyResultCite(hit, citeBtn); });
+}
+// (Re)draw the "Show more" pager at the end of the list.
+function renderMoreButton(shown, total) {
+  const old = document.getElementById('rc-more-btn'); if (old) old.remove();
+  if (shown >= total) return;
+  const remaining = total - shown;
+  const list = document.getElementById('results-list');
+  list.insertAdjacentHTML('beforeend',
+    `<button type="button" class="rc-more" id="rc-more-btn">Show ${Math.min(RESULTS_PAGE_SIZE, remaining).toLocaleString()} more` +
+    `<span class="rc-more-count">${shown.toLocaleString()} of ${total.toLocaleString()} shown</span></button>`);
+  const moreBtn = document.getElementById('rc-more-btn');
+  if (moreBtn) moreBtn.addEventListener('click', () => loadMoreResults(moreBtn));
 }
 
 // Fetch + append the next page of results, keeping keyboard focus on the first new card.
@@ -2210,11 +2235,19 @@ async function loadMoreResults(btn) {
   const prevCount = lastSearchHits.length;
   try {
     const data = await search(lastSearchQuery, prevCount);
-    lastSearchHits = lastSearchHits.concat(data.hits || []);
+    const newHits = data.hits || [];
+    lastSearchHits = lastSearchHits.concat(newHits);
     lastSearchTotal = data.estimatedTotalHits || lastSearchTotal;
-    renderResults({ hits: lastSearchHits, estimatedTotalHits: lastSearchTotal }, lastSearchQuery);
-    const links = document.querySelectorAll('#results-list .rc-open');
-    if (links[prevCount]) links[prevCount].focus();
+    // Append only the new page instead of re-rendering the whole accumulated list
+    // (which blanked the list under the user's scroll and rebuilt every card).
+    const list = document.getElementById('results-list');
+    const oldMore = document.getElementById('rc-more-btn'); if (oldMore) oldMore.remove();
+    newHits.forEach(hit => list.insertAdjacentHTML('beforeend', resultCardHTML(hit)));
+    const cards = list.querySelectorAll('.result-card');
+    for (let i = prevCount; i < cards.length; i++) bindResultCard(cards[i]);
+    renderMoreButton(lastSearchHits.length, lastSearchTotal);
+    const firstNew = cards[prevCount] && cards[prevCount].querySelector('.rc-open');
+    if (firstNew) firstNew.focus();
   } catch (e) {
     if (btn) { btn.disabled = false; btn.textContent = 'Show more'; }
   }
@@ -2496,6 +2529,7 @@ function closeDrawer() {
 function copyTextTo(text, btn, label) {
   const done = () => {
     btn.textContent = 'Copied!'; btn.classList.add('copied');
+    srAnnounce('Copied to clipboard');
     setTimeout(() => { btn.textContent = label; btn.classList.remove('copied'); }, 2200);
   };
   navigator.clipboard.writeText(text).then(done).catch(() => {
@@ -2744,6 +2778,7 @@ document.getElementById('source-filters').addEventListener('click', e => {
 
 // ── ABOUT BAR ─────────────────────────────────────────────────────────────────
 function dismissAbout() {
+  try { localStorage.setItem('acqvault_about_dismissed', '1'); } catch (e) {}
   const bar = document.getElementById('about-bar');
   const nav = document.getElementById('main-nav');
   bar.style.transform = 'translateY(-100%)'; bar.style.opacity = '0';
