@@ -1009,6 +1009,110 @@
       { label: 'IT services · NAICS 541512', query: '', naics: '541512' },
       { label: 'Janitorial · NAICS 561720', query: '', naics: '561720' }
     ];
+
+    /* ── PIN-TO-BOARD ──────────────────────────────────────────────
+       A persistent working set of opportunities in localStorage (no
+       account, nothing leaves the browser — same model as saved.js).
+       This is the spine: pattern summary + FAR Part 10 MR note hang
+       off the pinned set in later phases. ───────────────────────── */
+    const PIN_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path d="M6.5 3.25h11a1 1 0 0 1 1 1V21l-6.5-3.9L5.5 21V4.25a1 1 0 0 1 1-1Z"/></svg>';
+    const BOARD_KEY = 'acqvault_market_board_v1';
+    const PIN_FIELDS = ['id', 'title', 'type', 'organization', 'postedDate', 'naicsCode', 'classificationCode', 'setAside', 'awardAmount', 'awardee', 'responseDeadline', 'uiLink', 'solicitationNumber', 'attachments'];
+    const boardLoad = () => { try { const a = JSON.parse(localStorage.getItem(BOARD_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+    const boardSave = () => { try { localStorage.setItem(BOARD_KEY, JSON.stringify(board)); } catch (e) { /* private mode / quota: degrade */ } };
+    const oppKey = (o) => String((o && (o.id || o.uiLink || o.solicitationNumber || o.title)) || '');
+    const isPinned = (k) => board.some(o => oppKey(o) === k);
+    const compactForBoard = (o) => { const c = {}; PIN_FIELDS.forEach(f => { if (o[f] != null) c[f] = o[f]; }); return c; };
+    let board = boardLoad();
+    let lastOppByKey = {};
+    let boardBtn = null;
+    let trayOpen = false;
+
+    // board tray (slide-in) + backdrop — created once, appended to body
+    const boardTray = document.createElement('div');
+    boardTray.className = 'market-board-tray';
+    boardTray.id = 'market-board-tray';
+    boardTray.setAttribute('role', 'dialog');
+    boardTray.setAttribute('aria-label', 'Pinned opportunities board');
+    boardTray.hidden = true;
+    const boardBackdrop = document.createElement('div');
+    boardBackdrop.className = 'market-board-backdrop';
+    boardBackdrop.hidden = true;
+    document.body.appendChild(boardBackdrop);
+    document.body.appendChild(boardTray);
+
+    function updateBoardBtn() {
+      if (!boardBtn) return;
+      const n = board.length;
+      boardBtn.innerHTML = `${PIN_SVG}<span>Board</span><span class="market-board-badge">${n}</span>`;
+      boardBtn.classList.toggle('has-items', n > 0);
+      boardBtn.setAttribute('aria-label', `Open board — ${n} pinned opportunit${n === 1 ? 'y' : 'ies'}`);
+    }
+    // reflect pinned state on any currently-rendered result cards
+    function syncPinUI() {
+      list?.querySelectorAll('.market-opp-pin').forEach(b => {
+        const on = isPinned(b.dataset.pin);
+        b.classList.toggle('pinned', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.setAttribute('aria-label', on ? 'Remove from board' : 'Pin to board');
+        b.setAttribute('title', on ? 'Pinned to your board' : 'Pin to your board');
+      });
+    }
+    function togglePin(key) {
+      const i = board.findIndex(o => oppKey(o) === key);
+      if (i >= 0) board.splice(i, 1);
+      else { const item = lastOppByKey[key]; if (!item) return; board.push(compactForBoard(item)); }
+      boardSave(); syncPinUI(); updateBoardBtn();
+      if (trayOpen) renderBoardTray();
+    }
+    function removeFromBoard(key) {
+      const i = board.findIndex(o => oppKey(o) === key);
+      if (i >= 0) { board.splice(i, 1); boardSave(); syncPinUI(); updateBoardBtn(); renderBoardTray(); }
+    }
+    function clearBoard() { board = []; boardSave(); syncPinUI(); updateBoardBtn(); renderBoardTray(); }
+    function boardItemHTML(o) {
+      const key = oppKey(o);
+      const meta = [o.solicitationNumber, o.naicsCode ? `NAICS ${o.naicsCode}` : '', o.classificationCode ? `PSC ${o.classificationCode}` : '', o.setAside].filter(Boolean);
+      return `<div class="market-board-item">
+        <button type="button" class="market-board-remove" data-unpin="${escAttr(key)}" aria-label="Remove from board" title="Remove">×</button>
+        <div class="market-board-item-type">${esc(o.type || 'Opportunity')}${o.postedDate ? ` · ${esc(o.postedDate)}` : ''}</div>
+        <a class="market-board-item-title" href="${escAttr(o.uiLink || 'https://sam.gov/search/?index=opp')}" target="_blank" rel="noopener">${esc(o.title || 'Untitled opportunity')}</a>
+        <div class="market-board-item-org">${esc(o.organization || '')}</div>
+        ${meta.length ? `<div class="market-opp-meta">${meta.map(v => `<span>${esc(v)}</span>`).join('')}</div>` : ''}
+        ${awardLine(o)}
+      </div>`;
+    }
+    function renderBoardTray() {
+      const n = board.length;
+      boardTray.innerHTML = `
+        <div class="market-board-head">
+          <div class="market-board-title">Your board <span class="market-board-count">${n}</span></div>
+          <button type="button" class="market-board-close" aria-label="Close board" title="Close">×</button>
+        </div>
+        <div class="market-board-intro">Your working set for a market research note. Pinned opportunities stay on this device.</div>
+        <div class="market-board-body">${n ? board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>'}</div>
+        ${n ? '<div class="market-board-foot"><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button><span class="market-board-foot-note">Pattern summary &amp; MR note — next</span></div>' : ''}`;
+    }
+    function openTray() {
+      renderBoardTray();
+      boardBackdrop.hidden = false; boardTray.hidden = false;
+      requestAnimationFrame(() => { boardBackdrop.classList.add('show'); boardTray.classList.add('open'); });
+      trayOpen = true;
+      boardTray.querySelector('.market-board-close')?.focus();
+    }
+    function closeTray() {
+      boardTray.classList.remove('open'); boardBackdrop.classList.remove('show');
+      trayOpen = false;
+      setTimeout(() => { if (!trayOpen) { boardTray.hidden = true; boardBackdrop.hidden = true; } }, 300);
+      boardBtn?.focus();
+    }
+    boardTray.addEventListener('click', (e) => {
+      if (e.target.closest('.market-board-close')) { closeTray(); return; }
+      const unpin = e.target.closest('[data-unpin]'); if (unpin) { removeFromBoard(unpin.dataset.unpin); return; }
+      if (e.target.closest('[data-board-clear]')) { clearBoard(); }
+    });
+    boardBackdrop.addEventListener('click', closeTray);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && trayOpen) closeTray(); });
     function selectedTypes() {
       const active = Array.from(noticeWrap?.querySelectorAll('.market-pill.active') || []).map(btn => btn.dataset.type);
       return active.length ? active : ['all'];
@@ -1128,11 +1232,14 @@
         renderEmptyState('No matches', 'Nothing came back for these filters. Try removing NAICS/PSC, widening the window, or keeping Notice type on All — or start from a common market:', { examples: true, count: 'No matches' });
         return;
       }
+      lastOppByKey = {};
       list.innerHTML = opps.map(item => {
+        const key = oppKey(item); lastOppByKey[key] = item;
+        const pinned = isPinned(key);
         const meta = [item.solicitationNumber, item.naicsCode ? `NAICS ${item.naicsCode}` : '', item.classificationCode ? `PSC ${item.classificationCode}` : '', item.setAside].filter(Boolean);
         const foot = [deadlineFlag(item), item.attachments ? `<span class="market-opp-attach">${item.attachments} attachment${item.attachments === 1 ? '' : 's'}</span>` : ''].filter(Boolean).join('');
         return `<a class="market-opp-card" href="${escAttr(item.uiLink || 'https://sam.gov/search/?index=opp')}" target="_blank" rel="noopener">
-          <div class="market-opp-top"><span class="market-opp-type">${esc(item.type || 'Opportunity')}</span><span class="market-opp-date">${esc(item.postedDate || '')}</span></div>
+          <div class="market-opp-top"><span class="market-opp-type">${esc(item.type || 'Opportunity')}</span><span class="market-opp-top-right"><span class="market-opp-date">${esc(item.postedDate || '')}</span><button type="button" class="market-opp-pin${pinned ? ' pinned' : ''}" data-pin="${escAttr(key)}" aria-pressed="${pinned}" aria-label="${pinned ? 'Remove from board' : 'Pin to board'}" title="${pinned ? 'Pinned to your board' : 'Pin to your board'}">${PIN_SVG}</button></span></div>
           <div class="market-opp-title">${esc(item.title)}</div>
           <div class="market-opp-org">${esc(item.organization || 'SAM.gov opportunity')}</div>
           <div class="market-opp-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>
@@ -1140,6 +1247,7 @@
           ${foot ? `<div class="market-opp-foot">${foot}</div>` : ''}
         </a>`;
       }).join('');
+      updateBoardBtn();
     }
     async function runMarketSearch() {
       if (!list) return;
@@ -1163,6 +1271,8 @@
     }
     // Delegated: example chips (empty state) prefill + run; retry re-runs; filter chips clear.
     list?.addEventListener('click', (event) => {
+      const pin = event.target.closest('[data-pin]');
+      if (pin) { event.preventDefault(); event.stopPropagation(); togglePin(pin.dataset.pin); return; }
       const ex = event.target.closest('[data-ex]');
       if (ex) {
         event.preventDefault();
@@ -1205,6 +1315,21 @@
     query?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') runMarketSearch();
     });
+    // Board button in the results head — grouped with the count on the right.
+    const resultsHead = section.querySelector('.market-results-head');
+    if (resultsHead && count) {
+      const right = document.createElement('div');
+      right.className = 'market-head-right';
+      boardBtn = document.createElement('button');
+      boardBtn.type = 'button';
+      boardBtn.className = 'market-board-btn';
+      boardBtn.setAttribute('aria-haspopup', 'dialog');
+      resultsHead.appendChild(right);
+      right.appendChild(count);
+      right.appendChild(boardBtn);
+      boardBtn.addEventListener('click', () => { trayOpen ? closeTray() : openTray(); });
+    }
+    updateBoardBtn();
     // First-run state: no default query — invite a search or a common market.
     renderEmptyState('Ready for market research', 'Search a requirement above, or start from a common market:', { examples: true, count: 'Ready' });
   }
