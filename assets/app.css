@@ -90,6 +90,7 @@ body.reader-mode #spending-dashboard { display: none !important; }
 .thr-row-cite {
   font-size:var(--fs-2xs); color: var(--muted2); margin-top: 3px;
   font-family:var(--font-mono); letter-spacing: .01em;
+  white-space: nowrap;
 }
 .thr-row-val {
   font-size: 19px; font-weight:var(--fw-heavy); letter-spacing: -0.04em;
@@ -321,9 +322,10 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   border-radius: 999px; box-shadow: 0 1px 8px rgba(14,63,128,0.04);
 }
 .dash-window button {
+  display: inline-flex; align-items: center; justify-content: center;
   border: none; background: none; cursor: pointer;
   font-size:var(--fs-sm); font-weight: 650; color: var(--muted);
-  padding: 7px 14px; min-height: 44px; border-radius: 999px; transition: color .15s, background .15s, box-shadow .15s;
+  padding: 7px 12px; min-width: 48px; min-height: 36px; border-radius: 999px; transition: color .15s, background .15s, box-shadow .15s;
 }
 .dash-window button.active { background: var(--accent); color: #fff; box-shadow: 0 2px 10px rgba(135,101,28,0.18); }
 .dash-window button:hover:not(.active) { color: var(--accent); background: var(--accent-soft); }
@@ -1680,7 +1682,8 @@ body.work-mode #quick-links{margin-top:0;}
   .fulltext-title{font-size:30px;}
   footer{padding:32px 0;}
   .foot-inner{flex-direction:column;text-align:center;gap:12px;}
-  .foot-links{justify-content:center;}
+  .foot-links{justify-content:center;flex-wrap:wrap;gap:12px 18px;}
+  .foot-links a{white-space:nowrap;}
   .fulltext-cards{grid-template-columns:1fr;}
   .reader-topbar-inner{grid-template-columns:1fr auto;gap:10px;min-height:50px;padding:0 16px;}
   .reader-find{grid-column:1/-1;order:3;}
@@ -2541,11 +2544,15 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
   .hero-inner-b{grid-template-columns:1fr;grid-template-areas:"left" "quote";gap:0;padding:0 16px;max-width:100%;}
   .hero-inner-b .hero-right{display:none;}
 }
-/* Touch targets — WCAG 2.5.5 / iOS HIG want ~44px on coarse pointers. */
+/* Touch targets — WCAG 2.5.5 / iOS HIG want ~44px on coarse pointers.
+   The hamburger stays visually 36px so it sits cleanly inside the 40px nav
+   pill; its tap area is extended to 44px via an invisible ::after (same
+   pattern as the modal/drawer close buttons in the pointer:coarse block). */
 @media (max-width:768px){
   .fpill{min-height:44px;display:inline-flex;align-items:center;}
   .trychip{min-height:44px;}
-  .nav-hamburger{width:44px;height:44px;}
+  .nav-hamburger{width:36px;height:36px;position:relative;}
+  .nav-hamburger::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%);}
 }
 /* Threshold table: on narrow screens let the value cell wrap and push its
    inline "up" note to its own line so the SAT/SAP dollar amounts never clip. */
