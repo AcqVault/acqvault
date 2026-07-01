@@ -1527,6 +1527,63 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideXrefPo
 window.addEventListener('scroll', hideXrefPop, true);
 window.addEventListener('resize', hideXrefPop);
 
+// ── TOOLKIT INFO POPOVER — click a threshold row / acronym for the RFO reference ─
+let _tkPop = null;
+function tkPopEl() {
+  if (_tkPop) return _tkPop;
+  const d = document.createElement('div');
+  d.id = 'tk-pop'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Reference detail');
+  document.body.appendChild(d); _tkPop = d; return d;
+}
+function hideTkPop() { if (_tkPop) _tkPop.classList.remove('show'); }
+function tkPartFromCite(cite) { const m = String(cite || '').match(/(\d+)\./); return m ? m[1] : null; }
+function showThrPop(row) {
+  const q = (s) => ((row.querySelector(s) || {}).textContent || '').trim();
+  const name = q('.thr-row-name'), cite = q('.thr-row-cite'), val = q('.thr-row-val');
+  const part = tkPartFromCite(cite);
+  const pop = tkPopEl();
+  pop.innerHTML =
+    `<div class="tkp-term">${esc(name)}</div>` +
+    (val ? `<div class="tkp-val">${esc(val)}</div>` : '') +
+    (cite ? `<div class="tkp-sub">Reference · ${esc(cite)}</div>` : '') +
+    (part ? `<a class="tkp-open" href="/rfo/part-${esc(part)}">Read ${esc(cite)} in the RFO →</a>` : '') +
+    `<div class="tkp-verify">AcqVault copy — verify the current text at the official source.</div>`;
+  positionXrefPop(pop, row);
+}
+function showAcroPop(item) {
+  const term = ((item.querySelector('.acro-term') || {}).textContent || '').trim();
+  const expEl = item.querySelector('.acro-exp');
+  let expText = '', noteText = '';
+  if (expEl) {
+    const small = expEl.querySelector('small');
+    noteText = small ? small.textContent.trim() : '';
+    expText = (small ? expEl.textContent.replace(small.textContent, '') : expEl.textContent).trim();
+  }
+  const pop = tkPopEl();
+  pop.innerHTML =
+    `<div class="tkp-term">${esc(term)}</div>` +
+    (expText ? `<div class="tkp-body">${esc(expText)}</div>` : '') +
+    (noteText ? `<div class="tkp-note">${esc(noteText)}</div>` : '') +
+    `<div class="tkp-verify">AcqVault glossary — cite the RFO / R-DFARS for current research.</div>`;
+  positionXrefPop(pop, item);
+}
+document.addEventListener('click', (e) => {
+  const thr = e.target.closest && e.target.closest('.thr-row');
+  if (thr) { e.stopPropagation(); showThrPop(thr); return; }
+  const acro = e.target.closest && e.target.closest('.acro-item');
+  if (acro) { e.stopPropagation(); showAcroPop(acro); return; }
+  if (_tkPop && _tkPop.classList.contains('show') && !_tkPop.contains(e.target)) hideTkPop();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { hideTkPop(); return; }
+  if (e.key === 'Enter' || e.key === ' ') {
+    const el = e.target.closest && e.target.closest('.thr-row,.acro-item');
+    if (el) { e.preventDefault(); el.classList.contains('thr-row') ? showThrPop(el) : showAcroPop(el); }
+  }
+});
+window.addEventListener('scroll', hideTkPop, true);
+window.addEventListener('resize', hideTkPop);
+
 // ── CONTENT FORMATTER ─────────────────────────────────────────────────────────
 function formatContent(text, hit) {
   if (!text) return '<div class="dc-text" style="color:#bbb;font-style:italic;">No content available.</div>';

@@ -443,7 +443,7 @@
       const nm = t.abbr
         ? `<span class="thr-row-abbr">${esc(t.abbr)}</span> \u00B7 ${esc(t.name)}`
         : esc(t.name);
-      return `<div class="thr-row${changed && uplift ? ' changed' : ''}">
+      return `<div class="thr-row${changed && uplift ? ' changed' : ''}" role="button" tabindex="0" aria-haspopup="dialog">
         <div class="thr-row-main">
           <div class="thr-row-name">${nm}</div>
           <div class="thr-row-cite">${esc(t.cite)}</div>
@@ -611,7 +611,7 @@
       return esc(txt.slice(0, i)) + '<mark>' + esc(txt.slice(i, i + qq.length)) + '</mark>' + esc(txt.slice(i + qq.length));
     };
     box.innerHTML = rows.slice(0, 60).map((e) =>
-      `<div class="acro-item"><div class="acro-term">${hl(e.term)}</div><div class="acro-exp">${hl(e.exp)}${e.note ? `<small>${esc(e.note)}</small>` : ''}</div></div>`
+      `<div class="acro-item" role="button" tabindex="0" aria-haspopup="dialog"><div class="acro-term">${hl(e.term)}</div><div class="acro-exp">${hl(e.exp)}${e.note ? `<small>${esc(e.note)}</small>` : ''}</div></div>`
     ).join('');
   }
   function initAcroLookup() {
