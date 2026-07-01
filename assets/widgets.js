@@ -1070,6 +1070,38 @@
       if (i >= 0) { board.splice(i, 1); boardSave(); syncPinUI(); updateBoardBtn(); renderBoardTray(); }
     }
     function clearBoard() { board = []; boardSave(); syncPinUI(); updateBoardBtn(); renderBoardTray(); }
+    // Pattern summary over the pinned set — pure client-side counting, no charts.
+    // NAICS/PSC chips refine the live search; the rest is read-only.
+    function tally(getter) {
+      const m = new Map();
+      board.forEach(o => { const v = getter(o); if (v) m.set(v, (m.get(v) || 0) + 1); });
+      return [...m.entries()].sort((a, b) => b[1] - a[1]);
+    }
+    function patternRow(label, entries, refineKey) {
+      if (!entries.length) return '';
+      const chips = entries.slice(0, 4).map(([val, ct]) => {
+        if (refineKey) return `<button type="button" class="market-pat-chip refine" data-refine="${refineKey}" data-val="${escAttr(val)}" title="Refine search to ${escAttr(val)}">${esc(val)}<span class="market-pat-ct">${ct}</span></button>`;
+        return `<span class="market-pat-chip">${esc(val)}<span class="market-pat-ct">${ct}</span></span>`;
+      }).join('');
+      return `<div class="market-pat-row"><span class="market-pat-label">${esc(label)}</span><span class="market-pat-vals">${chips}</span></div>`;
+    }
+    function patternsHTML() {
+      if (board.length < 2) return '';
+      const dates = board.map(o => o.postedDate).filter(Boolean).sort();
+      const rows = [
+        patternRow('Notice type', tally(o => o.type)),
+        patternRow('Top offices', tally(o => o.organization)),
+        patternRow('NAICS', tally(o => o.naicsCode), 'naics'),
+        patternRow('PSC', tally(o => o.classificationCode), 'psc'),
+        patternRow('Set-aside', tally(o => o.setAside))
+      ].filter(Boolean);
+      if (dates.length) {
+        const span = dates.length > 1 ? `${dates[0]} → ${dates[dates.length - 1]}` : dates[0];
+        rows.push(`<div class="market-pat-row"><span class="market-pat-label">Posted</span><span class="market-pat-span">${esc(span)}</span></div>`);
+      }
+      if (!rows.length) return '';
+      return `<div class="market-patterns"><div class="market-pat-head">Patterns across ${board.length} pinned</div>${rows.join('')}</div>`;
+    }
     function boardItemHTML(o) {
       const key = oppKey(o);
       const meta = [o.solicitationNumber, o.naicsCode ? `NAICS ${o.naicsCode}` : '', o.classificationCode ? `PSC ${o.classificationCode}` : '', o.setAside].filter(Boolean);
@@ -1090,13 +1122,16 @@
           <button type="button" class="market-board-close" aria-label="Close board" title="Close">×</button>
         </div>
         <div class="market-board-intro">Your working set for a market research note. Pinned opportunities stay on this device.</div>
-        <div class="market-board-body">${n ? board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>'}</div>
-        ${n ? '<div class="market-board-foot"><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button><span class="market-board-foot-note">Pattern summary &amp; MR note — next</span></div>' : ''}`;
+        <div class="market-board-body">${n ? patternsHTML() + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>'}</div>
+        ${n ? '<div class="market-board-foot"><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button><span class="market-board-foot-note">FAR Part 10 MR note — next</span></div>' : ''}`;
     }
     function openTray() {
       renderBoardTray();
       boardBackdrop.hidden = false; boardTray.hidden = false;
-      requestAnimationFrame(() => { boardBackdrop.classList.add('show'); boardTray.classList.add('open'); });
+      // force a reflow so the slide-in transition plays, then add the open
+      // classes synchronously (rAF can be throttled in some render contexts)
+      void boardTray.offsetWidth;
+      boardBackdrop.classList.add('show'); boardTray.classList.add('open');
       trayOpen = true;
       boardTray.querySelector('.market-board-close')?.focus();
     }
@@ -1108,6 +1143,13 @@
     }
     boardTray.addEventListener('click', (e) => {
       if (e.target.closest('.market-board-close')) { closeTray(); return; }
+      const refine = e.target.closest('[data-refine]');
+      if (refine) {
+        const k = refine.dataset.refine, v = refine.dataset.val;
+        if (k === 'naics') { const el = $('#market-naics-input'); if (el) el.value = v; }
+        else if (k === 'psc') { const el = $('#market-psc-input'); if (el) el.value = v; }
+        closeTray(); runMarketSearch(); return;
+      }
       const unpin = e.target.closest('[data-unpin]'); if (unpin) { removeFromBoard(unpin.dataset.unpin); return; }
       if (e.target.closest('[data-board-clear]')) { clearBoard(); }
     });

@@ -1519,6 +1519,19 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .market-board-foot-note{font-size:var(--fs-3xs);color:var(--muted2);letter-spacing:var(--ls-snug);}
 @media (prefers-reduced-motion:reduce){.market-board-tray,.market-board-backdrop{transition:none;}}
 @media (max-width:768px){.market-board-tray{width:100vw;}}
+/* pattern summary over the pinned set */
+.market-patterns{border:1px solid rgba(135,101,28,0.16);background:linear-gradient(180deg,var(--brass-bg),#fff);border-radius:12px;padding:12px 14px;margin-bottom:12px;}
+.market-pat-head{font-size:var(--fs-3xs);font-weight:900;letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink);margin-bottom:6px;}
+.market-pat-row{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-top:1px solid rgba(135,101,28,0.12);}
+.market-pat-label{flex:0 0 74px;font-size:var(--fs-3xs);font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:var(--ls-caps);}
+.market-pat-vals{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0;}
+.market-pat-chip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-2xs);font-weight:700;color:var(--ink2);background:#fff;border:1px solid var(--line2);border-radius:999px;padding:3px 9px;}
+button.market-pat-chip{cursor:pointer;font-family:inherit;}
+button.market-pat-chip.refine{border-color:rgba(135,101,28,0.28);color:var(--brass-ink);transition:background .15s,border-color .15s;}
+button.market-pat-chip.refine:hover{background:var(--brass-bg);border-color:var(--accent);}
+.market-pat-ct{font-weight:900;color:var(--muted2);font-size:var(--fs-3xs);}
+button.market-pat-chip.refine .market-pat-ct{color:var(--accent);}
+.market-pat-span{font-size:var(--fs-2xs);font-weight:700;color:var(--ink2);font-family:var(--font-mono);}
 
 footer{background:var(--off);color:var(--muted);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;padding:40px 0;position:relative;overflow:hidden;}
 /* guilloché through-line — a whisper-faint engraved watermark bookending the hero vault.
