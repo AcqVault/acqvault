@@ -263,7 +263,7 @@
       <div class="sec-inner">
         <p class="eyebrow eyebrow-dark fade-up">Daily toolkit</p>
         <h2 class="sec-head fade-up">The lookups you do<br>a dozen times a day.</h2>
-        <p class="sec-sub sec-sub-dark fade-up">Dollar thresholds, the acronym you half-remember, and what changed since you last logged in \u2014 without leaving the page.</p>
+        <p class="sec-sub sec-sub-dark fade-up">Dollar thresholds and the acronym you half-remember \u2014 without leaving the page.</p>
         <div class="tk-grid">
           <div class="tk-col">
             <div class="tk-card fade-up" id="thr-card">
@@ -309,21 +309,6 @@
               </div>
               <div class="acro-results" id="acro-results"></div>
               <div class="acro-foot"><b>Tip:</b> acronyms in document text are underlined \u2014 hover any one to see what it means.</div>
-            </div>
-            <div class="tk-card wn-card fade-up d2" id="wn-card">
-              <div class="tk-card-head">
-                <div class="tk-card-icon">\u2726</div>
-                <div class="tk-card-titles">
-                  <div class="tk-card-title">What\u2019s new</div>
-                  <div class="tk-card-sub">Latest RFO / R-DFARS rulemaking</div>
-                </div>
-              </div>
-              <div class="wn-meta" id="wn-meta">
-                <span class="wn-meta-left" id="wn-meta-left">Checking the Federal Register\u2026</span>
-                <span class="wn-badge zero" id="wn-badge">\u2014</span>
-              </div>
-              <div class="wn-list" id="wn-list"><div class="wn-loading">Loading latest rules\u2026</div></div>
-              <div class="wn-foot"><a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">View all on Federal Register \u2192</a></div>
             </div>
           </div>
         </div>
@@ -611,7 +596,7 @@
       return esc(txt.slice(0, i)) + '<mark>' + esc(txt.slice(i, i + qq.length)) + '</mark>' + esc(txt.slice(i + qq.length));
     };
     box.innerHTML = rows.slice(0, 60).map((e) =>
-      `<div class="acro-item" role="button" tabindex="0" aria-haspopup="dialog"><div class="acro-term">${hl(e.term)}</div><div class="acro-exp">${hl(e.exp)}${e.note ? `<small>${esc(e.note)}</small>` : ''}</div></div>`
+      `<div class="acro-item"><div class="acro-term">${hl(e.term)}</div><div class="acro-exp">${hl(e.exp)}${e.note ? `<small>${esc(e.note)}</small>` : ''}</div></div>`
     ).join('');
   }
   function initAcroLookup() {
@@ -1116,7 +1101,6 @@
     initAcroTooltips();
     initMarketResearch();
     initDashboard();
-    loadWhatsNew();
     initMobileNav();
     // Deep-link restore (?q=, ?src=, ?doc=) is owned by app.js restoreFromUrl().
   }

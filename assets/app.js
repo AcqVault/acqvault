@@ -1550,39 +1550,19 @@ function showThrPop(row) {
     `<div class="tkp-verify">AcqVault copy — verify the current text at the official source.</div>`;
   positionXrefPop(pop, row);
 }
-function showAcroPop(item) {
-  const term = ((item.querySelector('.acro-term') || {}).textContent || '').trim();
-  const expEl = item.querySelector('.acro-exp');
-  let expText = '', noteText = '';
-  if (expEl) {
-    const small = expEl.querySelector('small');
-    noteText = small ? small.textContent.trim() : '';
-    expText = (small ? expEl.textContent.replace(small.textContent, '') : expEl.textContent).trim();
-  }
-  const pop = tkPopEl();
-  pop.innerHTML =
-    `<div class="tkp-term">${esc(term)}</div>` +
-    (expText ? `<div class="tkp-body">${esc(expText)}</div>` : '') +
-    (noteText ? `<div class="tkp-note">${esc(noteText)}</div>` : '') +
-    `<div class="tkp-verify">AcqVault glossary — cite the RFO / R-DFARS for current research.</div>`;
-  positionXrefPop(pop, item);
-}
 document.addEventListener('click', (e) => {
   const thr = e.target.closest && e.target.closest('.thr-row');
   if (thr) { e.stopPropagation(); showThrPop(thr); return; }
-  const acro = e.target.closest && e.target.closest('.acro-item');
-  if (acro) { e.stopPropagation(); showAcroPop(acro); return; }
+  // Stays open until the user clicks away (or Esc) — no scroll/hover auto-dismiss.
   if (_tkPop && _tkPop.classList.contains('show') && !_tkPop.contains(e.target)) hideTkPop();
 });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { hideTkPop(); return; }
   if (e.key === 'Enter' || e.key === ' ') {
-    const el = e.target.closest && e.target.closest('.thr-row,.acro-item');
-    if (el) { e.preventDefault(); el.classList.contains('thr-row') ? showThrPop(el) : showAcroPop(el); }
+    const el = e.target.closest && e.target.closest('.thr-row');
+    if (el) { e.preventDefault(); showThrPop(el); }
   }
 });
-window.addEventListener('scroll', hideTkPop, true);
-window.addEventListener('resize', hideTkPop);
 
 // ── CONTENT FORMATTER ─────────────────────────────────────────────────────────
 function formatContent(text, hit) {
