@@ -620,10 +620,12 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(135,101,2
 .nav-logo:hover{opacity:.82;transform:translateY(-1px);}
 .nav-center{position:relative;justify-self:center;display:flex;gap:3px;align-items:center;background:rgba(246,248,250,0.72);border:1px solid rgba(135,101,28,0.08);border-radius:999px;padding:3px;}
 .nav-center a{position:relative;z-index:1;font-size:var(--fs-sm);font-weight:650;color:var(--muted);padding:6px 11px;border-radius:999px;transition:color 0.2s var(--ease-out);white-space:nowrap;}
-.nav-center a:hover{color:var(--accent);}
-.nav-center a.active{color:var(--accent);}
+.nav-center a{color:var(--ink2);}
+/* Only the link the navy pill currently sits under goes white (JS-driven, so it's
+   always exactly one — no invisible white-on-white when the pill slides away). */
+.nav-center a.pilled{color:#fff;}
 /* Sliding "magic" indicator — glides under the hovered/active link */
-.nav-pill{position:absolute;top:3px;left:0;height:calc(100% - 6px);width:0;border-radius:999px;background:#fff;box-shadow:0 1px 5px rgba(14,63,128,0.1),0 0 0 1px rgba(135,101,28,0.06);opacity:0;transform:translateX(0);transition:transform .34s var(--ease-out),width .34s var(--ease-out),opacity .25s ease;pointer-events:none;z-index:0;}
+.nav-pill{position:absolute;top:3px;left:0;height:calc(100% - 6px);width:0;border-radius:999px;background:linear-gradient(160deg,var(--navy-700),var(--navy-900));box-shadow:0 2px 8px rgba(15,37,64,0.28),0 0 0 1px var(--brass-line);opacity:0;transform:translateX(0);transition:transform .34s var(--ease-out),width .34s var(--ease-out),opacity .25s ease;pointer-events:none;z-index:0;}
 .nav-center.pill-ready .nav-pill{opacity:1;}
 .nav-right{justify-self:end;display:flex;align-items:center;gap:7px;}
 .nav-feedback-btn{font-size:var(--fs-sm);font-weight:650;background:rgba(246,248,250,0.82);border:1px solid rgba(135,101,28,0.12);color:var(--muted);padding:7px 13px;border-radius:999px;cursor:pointer;transition:all 0.15s;}
@@ -2419,13 +2421,13 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
 .hero-source-strip b{color:rgba(223,234,247,.9);}
 .hero-live-label{color:rgba(236,242,249,.95);}
 .hero-live-count{color:rgba(236,242,249,.95);background:rgba(255,255,255,.1);border-color:rgba(228,196,119,.3);}
-/* Nav: transparent dark over the hero, solid light once scrolled into content */
-nav#main-nav.over-hero{background:rgba(13,31,55,.66);-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid rgba(228,196,119,.22);}
-nav#main-nav.over-hero .nav-center{background:rgba(255,255,255,.06);border-color:rgba(228,196,119,.2);}
-nav#main-nav.over-hero .nav-center a{color:rgba(223,234,247,.84);}
-nav#main-nav.over-hero .nav-center a:hover,nav#main-nav.over-hero .nav-center a.active{color:#fff;}
-nav#main-nav.over-hero .nav-pill{background:rgba(255,255,255,.13);}
-nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{color:rgba(223,234,247,.9);background:transparent;border-color:rgba(228,196,119,.24);}
+/* Nav OVER THE HERO: a WHITE floating bar with the navy sliding-selection pill
+   (mirrors the hero mode-toggle). Pill + white hover/active text come from the
+   default rules; here we just make the bar read as solid white on the blue hero. */
+nav#main-nav.over-hero{background:transparent;border-bottom:none;-webkit-backdrop-filter:none;backdrop-filter:none;}
+nav#main-nav.over-hero .nav-inner{background:rgba(255,255,255,0.95);border-color:var(--brass-line);box-shadow:0 6px 24px rgba(9,21,40,0.22),0 1px 3px rgba(9,21,40,0.14);}
+nav#main-nav.over-hero .nav-center{background:var(--off2);border-color:var(--line2);}
+nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{color:var(--ink2);background:transparent;border-color:var(--brass-line);}
 
 /* Market section: de-blue accents to ink/brass (section is now warm paper) */
 .market-btn{background:linear-gradient(160deg,var(--navy-700),var(--navy-900));border:1px solid var(--brass-line);box-shadow:0 8px 20px rgba(15,37,64,.22);}
@@ -2513,12 +2515,8 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
        text on the light pill, navy "Search" active state (pops on
        white), legible light trychips. All AA.
    ═══════════════════════════════════════════════════════════════ */
-/* (a) Top menu bar over the hero: darker glass bar + brighter links */
-nav#main-nav.over-hero{background:rgba(9,21,40,.88);border-bottom-color:rgba(228,196,119,.26);}
-nav#main-nav.over-hero .nav-center{background:rgba(255,255,255,.05);border-color:rgba(228,196,119,.22);}
-nav#main-nav.over-hero .nav-center a{color:rgba(234,242,252,.94);}
-nav#main-nav.over-hero .nav-center a:hover,nav#main-nav.over-hero .nav-center a.active{color:#fff;}
-nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{color:rgba(234,242,252,.95);border-color:rgba(228,196,119,.3);}
+/* (a) Top menu bar over the hero is now the WHITE floating bar — see the
+   over-hero block above. (Former dark-glass treatment removed.) */
 
 /* (b) Search-control cluster → crisp light pill, dark text, navy active */
 .hero-command-dock-b .mode-toggle{background:rgba(255,255,255,.9);border-color:var(--brass-line);}

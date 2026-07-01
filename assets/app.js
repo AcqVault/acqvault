@@ -3474,20 +3474,30 @@ function stRenderAwards(awards) {
       pill.style.width = el.offsetWidth + 'px';
       pill.style.transform = 'translateX(' + el.offsetLeft + 'px)';
       navCenter.classList.add('pill-ready');
+      // Mark exactly the link under the pill so only it inverts to white text.
+      navLinks().forEach(function (x) { x.classList.toggle('pilled', x === el); });
       if (instant) { void pill.offsetWidth; pill.style.transition = ''; }
+    }
+    // Rest the pill under the current-section link; hide it entirely when no
+    // section is active (e.g. at the top over the hero) so a navy pill never
+    // sits under a dark, unselected link.
+    function restPill(instant) {
+      var act = navCenter.querySelector('a.active');
+      if (act) movePill(act, instant);
+      else { navCenter.classList.remove('pill-ready'); navLinks().forEach(function (x) { x.classList.remove('pilled'); }); }
     }
     // Delegated hover so JS-injected links (e.g. Toolkit, added by widgets.js after this runs) glide too.
     navCenter.addEventListener('mouseover', function (e) {
       var a = e.target.closest('a'); if (a && navCenter.contains(a)) movePill(a);
     });
-    navCenter.addEventListener('mouseleave', function () { movePill(activeLink); });
-    window.addEventListener('resize', function () { movePill(activeLink, true); }, { passive: true });
+    navCenter.addEventListener('mouseleave', function () { restPill(); });
+    window.addEventListener('resize', function () { restPill(true); }, { passive: true });
     function initSpy() {
       // Re-query at call time (load+400ms) so late-injected links join the scrollspy.
       var links = navLinks();
       var hashLinks = links.filter(function (l) { return (l.getAttribute('href') || '').charAt(0) === '#'; });
       if (!activeLink) activeLink = links[0];
-      movePill(activeLink, true);
+      restPill(true);
       hashLinks.forEach(function (l) {
         var sec = document.querySelector(l.getAttribute('href'));
         if (!sec) return;
