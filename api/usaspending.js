@@ -44,6 +44,25 @@ async function fetchUsa(payload) {
   return data;
 }
 
+// Market-wide incumbent leaderboard (top recipients by total obligation across
+// the whole market, not just the awards pulled). Best-effort — the award list is
+// the primary result, so a leaderboard failure must not fail the request.
+async function fetchLeaderboardSafe(filters) {
+  try {
+    const upstream = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_category/recipient/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ filters, limit: 6 })
+    });
+    if (!upstream.ok) return null;
+    const data = await upstream.json().catch(() => null);
+    if (!data || !Array.isArray(data.results)) return null;
+    return data.results.map(r => ({ name: r.name || '—', total: Number(r.amount) || 0 })).filter(r => r.total > 0);
+  } catch (e) {
+    return null;
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -63,31 +82,43 @@ module.exports = async function handler(req, res) {
     if (naics.length) filters.naics_codes = naics;
     if (psc.length) filters.psc_codes = psc;
 
-    const data = await fetchUsa({ filters, fields: FIELDS, sort: 'Award Amount', order: 'desc', limit: 25 });
+    const [data, leaderboard] = await Promise.all([
+      fetchUsa({ filters, fields: FIELDS, sort: 'Award Amount', order: 'desc', limit: 25 }),
+      fetchLeaderboardSafe(filters)
+    ]);
     const results = (data.results || []).map(compactAward);
 
-    // Incumbent rollup across the pulled set (top awards by obligated $).
-    const rollup = new Map();
-    results.forEach(a => {
-      const key = a.recipient || '—';
-      const cur = rollup.get(key) || { name: key, total: 0, count: 0 };
-      cur.total += Number(a.amount) || 0;
-      cur.count += 1;
-      rollup.set(key, cur);
-    });
-    const recipients = [...rollup.values()].sort((a, b) => b.total - a.total).slice(0, 6);
+    // Prefer the market-wide leaderboard; fall back to a rollup across the pulled
+    // awards if the category endpoint is unavailable.
+    let recipients, recipientsScope;
+    if (leaderboard && leaderboard.length) {
+      recipients = leaderboard;
+      recipientsScope = 'market';
+    } else {
+      const rollup = new Map();
+      results.forEach(a => {
+        const key = a.recipient || '—';
+        const cur = rollup.get(key) || { name: key, total: 0, count: 0 };
+        cur.total += Number(a.amount) || 0;
+        cur.count += 1;
+        rollup.set(key, cur);
+      });
+      recipients = [...rollup.values()].sort((a, b) => b.total - a.total).slice(0, 6);
+      recipientsScope = 'sample';
+    }
 
     // Data is stable historical record → cache hard at the edge.
     res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
     return res.status(200).json({
       awards: results.slice(0, 12),
       recipients,
+      recipientsScope,
       pulled: results.length,
       naics,
       psc,
       years,
       note: results.length
-        ? `Top contract awards by obligated amount over the last ${years} FY. The recipient rollup is across the awards pulled, not the entire market.`
+        ? `Top recipients by total obligation${recipientsScope === 'market' ? ' across this market' : ' across the awards pulled'} and the largest recent contract awards, last ${years} FY.`
         : 'No contract awards found for these codes in the window.'
     });
   } catch (error) {

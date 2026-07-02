@@ -1133,10 +1133,11 @@
       if (usaState === 'error') return head + '<div class="market-usa-msg">Award history unavailable right now.</div>';
       if (usaState === 'empty') return head + '<div class="market-usa-msg">No contract awards found for these NAICS/PSC in the last 3 FY.</div>';
       if (usaState !== 'ready' || !usaData) return '';
-      const recips = (usaData.recipients || []).map(r => `<div class="market-usa-recip"><span class="market-usa-name">${esc(r.name)}</span><span class="market-usa-amt">${usaFmt(r.total)} <span class="market-usa-ct">${r.count} award${r.count === 1 ? '' : 's'}</span></span></div>`).join('');
+      const recips = (usaData.recipients || []).map(r => `<div class="market-usa-recip"><span class="market-usa-name">${esc(r.name)}</span><span class="market-usa-amt">${usaFmt(r.total)}${r.count ? ` <span class="market-usa-ct">${r.count} award${r.count === 1 ? '' : 's'}</span>` : ''}</span></div>`).join('');
       const awards = (usaData.awards || []).slice(0, 5).map(a => `<a class="market-usa-award" href="${escAttr(a.link)}" target="_blank" rel="noopener"><span class="market-usa-aw-top"><span class="market-usa-name">${esc(a.recipient || '—')}</span><span class="market-usa-amt">${usaFmt(a.amount)}</span></span><span class="market-usa-aw-sub">${esc(a.agency || '')}${a.start ? ' · ' + esc(a.start) : ''}</span></a>`).join('');
+      const recLbl = usaData.recipientsScope === 'market' ? 'Top recipients in this market (by total obligated $)' : 'Top recipients by obligated $';
       return `<div class="market-usa-head">Incumbents &amp; recent awards <span class="market-usa-src">USASpending · last ${usaData.years} FY</span></div>`
-        + `<div class="market-usa-lbl">Top recipients by obligated $</div>${recips}`
+        + `<div class="market-usa-lbl">${recLbl}</div>${recips}`
         + `<div class="market-usa-lbl">Largest recent awards</div>${awards}`;
     }
     // § N of the MR note — historical awards + incumbents (only when data loaded)
@@ -1270,7 +1271,7 @@
       });
       if (usaState === 'ready' && usaData && (usaData.awards || []).length) {
         L.push('', `INCUMBENTS & HISTORICAL AWARDS (USASpending.gov, last ${usaData.years} FY)`, '  Top recipients by obligated $:');
-        (usaData.recipients || []).forEach(r => L.push(`    ${r.name} — ${usaFmt(r.total)} (${r.count} award${r.count === 1 ? '' : 's'})`));
+        (usaData.recipients || []).forEach(r => L.push(`    ${r.name} — ${usaFmt(r.total)}${r.count ? ` (${r.count} award${r.count === 1 ? '' : 's'})` : ''}`));
         L.push('  Largest recent awards:');
         (usaData.awards || []).slice(0, 8).forEach(a => { L.push(`    ${a.recipient || '—'} — ${usaFmt(a.amount)} · ${a.agency || ''} · ${a.start || ''} · ${a.type || ''}`); if (a.link) L.push(`      ${a.link}`); });
         L.push('  Source: USASpending.gov (FPDS) — authoritative for award $ and incumbent; SAM notices are a weaker signal.');
