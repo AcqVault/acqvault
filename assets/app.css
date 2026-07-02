@@ -579,7 +579,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;scroll-padding-top:calc(var(--top-chrome) + 26px);}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--top-chrome) + 26px);overflow-x:clip;}
 body{font-family:var(--font-sans);background:var(--white);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-optical-sizing:auto;}
 a{color:inherit;text-decoration:none;}
 button,input,textarea{font-family:inherit;}
@@ -1671,6 +1671,29 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 .lib-open-btn:focus-visible{outline:3px solid var(--brass-line);outline-offset:3px;}
 .lib-cta-note{font-size:var(--fs-sm);color:var(--muted2);}
 @media(max-width:880px){#library .lib-feature-grid{grid-template-columns:1fr;}.lib-src-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ── STUDY invite strip (/study drill room) ── */
+#study.sec-dark{position:relative;overflow:hidden;background:radial-gradient(ellipse 58% 55% at 84% 0%,rgba(228,196,119,0.11),transparent 62%),linear-gradient(158deg,#173a60 0%,#0f2c4c 52%,#0b2038 100%);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;}
+#study .eyebrow-light{color:var(--brass-bright);}
+#study h2.sec-head{color:#fff;}
+#study .sec-sub-light{color:rgba(255,255,255,0.62);}
+.study-glow{position:absolute;right:-140px;top:-120px;width:440px;height:440px;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(228,196,119,0.16),transparent 70%);}
+.study-inner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:46px;align-items:center;}
+.study-cta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;}
+.study-open-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(160deg,var(--brass-bright),#c79a3a);color:#2a1f06;font-size:var(--fs-base);font-weight:var(--fw-bold);padding:12px 22px;border:1px solid rgba(228,196,119,0.7);border-radius:var(--r-md);text-decoration:none;box-shadow:0 12px 28px -12px rgba(228,196,119,0.5);transition:border-color .15s,transform .15s,box-shadow .2s;}
+.study-open-btn:hover{border-color:#fff;transform:translateY(-2px);}
+.study-open-btn:focus-visible{outline:3px solid var(--brass-bright);outline-offset:3px;}
+.study-cta-note{font-size:var(--fs-sm);color:rgba(255,255,255,0.5);}
+.study-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.study-mode{display:block;text-decoration:none;background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025));border:1px solid rgba(255,255,255,0.11);border-radius:12px;padding:15px 16px;transition:border-color .15s,transform .15s,background .15s;}
+.study-mode:hover{border-color:rgba(228,196,119,0.5);transform:translateY(-2px);background:linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.04));}
+.study-mode:focus-visible{outline:3px solid var(--brass-bright);outline-offset:3px;}
+.study-mode-name{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.01em;margin-bottom:5px;}
+.study-mode-name::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--brass-bright);flex:none;}
+.study-mode-sub{display:block;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.62);}
+@media(max-width:880px){.study-inner{grid-template-columns:1fr;gap:26px;}}
+@media(max-width:440px){.study-modes{grid-template-columns:1fr;}}
+
 #spending-dashboard.sec-dark{background:radial-gradient(ellipse 70% 60% at 80% 0%,rgba(228,196,119,0.09),transparent 60%),linear-gradient(160deg,#2c618d 0%,#1d476e 50%,#143655 100%);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;}
 #spending-dashboard .eyebrow-light{color:var(--brass-bright);}
 #spending-dashboard h2.sec-head{color:#fff;}

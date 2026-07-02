@@ -425,15 +425,27 @@
     initHomeNavPolish();
   }
 
+  // Resolve a nav link to the on-page section it should track: a #hash link maps to
+  // that element; a bare page link (/library, /study) maps to an on-page section that
+  // shares its slug, so those links join the scrollspy instead of being skipped.
+  function navSectionId(a) {
+    const href = a.getAttribute('href') || '';
+    if (href.charAt(0) === '#') { const el = href.length > 1 ? document.querySelector(href) : null; return el ? el.id : null; }
+    const m = href.match(/^\/([a-z0-9-]+)\/?$/i);
+    const el = m ? document.getElementById(m[1]) : null;
+    return el ? el.id : null;
+  }
   function initHomeNavPolish() {
-    const links = Array.from(document.querySelectorAll('nav .nav-center a[href^="#"]'));
-    if (!links.length) return;
+    const pairs = Array.from(document.querySelectorAll('nav .nav-center a'))
+      .map(a => ({ a, id: navSectionId(a) })).filter(p => p.id);
+    if (!pairs.length) return;
     function setActive(id) {
-      links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + id));
+      pairs.forEach(p => p.a.classList.toggle('active', p.id === id));
     }
-    links.forEach(link => {
-      link.addEventListener('click', (event) => {
-        const id = link.getAttribute('href').slice(1);
+    pairs.forEach(({ a, id }) => {
+      a.addEventListener('click', (event) => {
+        // Page links (e.g. /library, /study) navigate normally; only in-page hashes smooth-scroll.
+        if ((a.getAttribute('href') || '').charAt(0) !== '#') return;
         const target = document.getElementById(id);
         if (!target) return;
         event.preventDefault();
@@ -443,7 +455,7 @@
         setActive(id);
       });
     });
-    const observed = links.map(link => document.getElementById(link.getAttribute('href').slice(1))).filter(Boolean);
+    const observed = pairs.map(p => document.getElementById(p.id)).filter(Boolean);
     const io = new IntersectionObserver((entries) => {
       const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
       if (visible?.target?.id) setActive(visible.target.id);

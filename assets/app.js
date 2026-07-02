@@ -3593,14 +3593,22 @@ window.initSegGlider = initSegGlider;
     });
     navCenter.addEventListener('mouseleave', function () { restPill(); });
     window.addEventListener('resize', function () { restPill(true); }, { passive: true });
+    // Resolve a nav link to the on-page section it should light up: a #hash link
+    // maps to that element; a bare page link like /library or /study lights up an
+    // on-page section that shares its slug (so the pill never skips those).
+    function spyTarget(l) {
+      var href = l.getAttribute('href') || '';
+      if (href.charAt(0) === '#') return href.length > 1 ? document.querySelector(href) : null;
+      var m = href.match(/^\/([a-z0-9-]+)\/?$/i);
+      return m ? document.getElementById(m[1]) : null;
+    }
     function initSpy() {
       // Re-query at call time (load+400ms) so late-injected links join the scrollspy.
       var links = navLinks();
-      var hashLinks = links.filter(function (l) { return (l.getAttribute('href') || '').charAt(0) === '#'; });
       if (!activeLink) activeLink = links[0];
       restPill(true);
-      hashLinks.forEach(function (l) {
-        var sec = document.querySelector(l.getAttribute('href'));
+      links.forEach(function (l) {
+        var sec = spyTarget(l);
         if (!sec) return;
         new IntersectionObserver(function (entries) {
           entries.forEach(function (e) {
