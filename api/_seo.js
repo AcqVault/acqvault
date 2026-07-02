@@ -169,9 +169,45 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 .libsrc .dl{position:absolute;top:12px;right:13px;font-size:14px;font-weight:800;color:var(--src,#94a3b8)}
 .libsrc[data-src="rfo"]{--src:#2f5aa6}.libsrc[data-src="r-dfars"]{--src:#2c6a44}.libsrc[data-src="far-companion"]{--src:#67508f}.libsrc[data-src="category-management"]{--src:#1c6377}.libsrc[data-src="dafi-63-138"]{--src:#87651c}.libsrc[data-src="fmr"]{--src:#976420}
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
-@media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}`;
+@media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}
+/* ── Library themed full-bleed bands (homepage rhythm: navy hero / white / beige) ── */
+:root{--off:#f7f6f2}
+.lnav{background:#fff;border-bottom:1px solid var(--line2)}
+.lnav-inner{max-width:1060px;margin:0 auto;padding:15px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.lnav .brand{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-0.03em;color:var(--ink);text-decoration:none}
+.lnav .brand svg{display:block;width:27px;height:27px;flex-shrink:0}
+.lnav .cta{font-weight:650;font-size:14px;color:#fff;background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));border:1px solid var(--brass-line);padding:8px 15px;border-radius:999px;text-decoration:none;transition:border-color .15s}
+.lnav .cta:hover{border-color:rgba(228,196,119,.55)}
+.lband{width:100%}
+.lband-inner{max-width:1060px;margin:0 auto;padding:54px 24px}
+.lband--white{background:#fff}
+.lband--off{background:var(--off)}
+.lband--white+.lband--white{border-top:1px solid var(--line2)}
+.lband .libcat{padding:0;border:none}
+.lband .libcat+.libcat{padding:0;border:none}
+.lhero{position:relative;overflow:hidden;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8}
+.lhero::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep));z-index:2}
+.lhero::after{content:"";position:absolute;right:-40px;bottom:-130px;width:440px;height:440px;opacity:.12;background:repeating-radial-gradient(circle at 50% 50%,rgba(228,196,119,.6) 0 1px,transparent 1px 12px);pointer-events:none}
+.lhero .lband-inner{position:relative;padding:54px 24px 52px}
+.lhero .crumbs{font-size:13px;margin:0 0 14px;color:rgba(214,226,240,.72)}
+.lhero .crumbs a{color:rgba(228,196,119,.9);text-decoration:none}
+.lhero .eyebrow{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-bright);margin:0 0 13px}
+.lhero .eyebrow::before{content:"";width:18px;height:2px;background:var(--brass-bright);border-radius:2px}
+.lhero h1{font-family:var(--serif);font-weight:700;font-size:44px;letter-spacing:-0.01em;line-height:1.04;margin:0 0 14px;color:#f4f8fc;max-width:15ch}
+.lhero .lede{color:rgba(221,233,246,.85);font-size:16px;max-width:640px;margin:0 0 22px;line-height:1.6}
+.lhero .stats{display:flex;flex-wrap:wrap;gap:9px}
+.lhero .stat{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#eaf1f8;background:rgba(255,255,255,.06);border:1px solid rgba(228,196,119,.3);border-radius:999px;padding:6px 13px}
+.lhero .stat b{color:var(--brass-bright);font-variant-numeric:tabular-nums}
+.lhero .lib-seal{position:absolute;right:24px;top:50%;transform:translateY(-50%);width:120px;height:120px;z-index:1;filter:drop-shadow(0 8px 16px rgba(0,0,0,.42))}
+@media(max-width:820px){.lhero .lib-seal{display:none}.lhero h1{font-size:34px}}
+.lband--foot{background:var(--off);border-top:1px solid var(--line2)}
+.lband--foot .lband-inner{padding:30px 24px 42px}
+.lfoot-note{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.55;max-width:840px}
+.lfoot-legal{font-size:12.5px;color:var(--muted);line-height:1.55;margin:0;max-width:840px}
+.lfoot-legal a{color:var(--accent)}
+@media(max-width:560px){.lband-inner{padding:40px 18px}.lhero .lband-inner{padding:40px 18px 38px}.lhero h1{font-size:30px}}`;
 
-function shell({ title, description, canonical, jsonld, body, wide }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -191,11 +227,11 @@ function shell({ title, description, canonical, jsonld, body, wide }) {
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>
-<div class="wrap${wide ? ' wrap--wide' : ''}">
+${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
 <header class="site"><a class="brand" href="/"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><a class="cta" href="/?q=">Search all sources →</a></header>
 ${body}
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</footer>
-</div>
+</div>`}
 </body>
 </html>`;
 }
@@ -316,6 +352,8 @@ function renderLibraryPage() {
   const EMBLEM = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>';
   const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
   const CAT_EYEBROW = { 'field-guides': 'Written by AcqVault', 'templates': 'Adapt & reuse', 'source-documents': 'Official text · one clean PDF each' };
+  // Alternate the band backgrounds like the homepage: white / beige / white.
+  const bandFor = (key) => (key === 'templates' ? 'off' : 'white');
   const coverParts = (it, catKey) => {
     const m = String(`${it.title} ${it.subtitle || ''}`).match(/Vol\.?\s*(\d+)/i);
     if (catKey === 'field-guides' && m) return { kind: 'Field Guide', small: 'Volume', big: ROMAN[+m[1]] || m[1] };
@@ -340,12 +378,12 @@ ${it.subtitle ? `<span class="sb">${esc(it.subtitle)}</span>` : ''}
 ${it.meta ? `<span class="mt">${esc(it.meta)}</span>` : ''}
 </a>`;
       }).join('\n');
-      return `<section class="libcat">
+      return `<section class="lband lband--${bandFor(cat.key)}"><div class="lband-inner"><section class="libcat">
 ${CAT_EYEBROW[cat.key] ? `<div class="eyebrow">${esc(CAT_EYEBROW[cat.key])}</div>` : ''}
 <h2>${esc(cat.name)}</h2>
 ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 <div class="libsrc-grid">${cards}</div>
-</section>`;
+</section></div></section>`;
     }
     const cards = cat.items.map(it => {
       const cp = coverParts(it, cat.key);
@@ -356,12 +394,12 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 <div class="libfeat-body"><h3>${esc(name)}</h3>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}<div class="libfeat-foot"><span class="m">${esc(meta)}</span><span class="dl">Download ↓</span></div></div>
 </a>`;
     }).join('\n');
-    return `<section class="libcat">
+    return `<section class="lband lband--${bandFor(cat.key)}"><div class="lband-inner"><section class="libcat">
 ${CAT_EYEBROW[cat.key] ? `<div class="eyebrow">${esc(CAT_EYEBROW[cat.key])}</div>` : ''}
 <h2>${esc(cat.name)}</h2>
 ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 <div class="libgrid">${cards}</div>
-</section>`;
+</section></div></section>`;
   }).join('\n');
 
   const jsonld = {
@@ -374,18 +412,24 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
     })))
   };
 
-  const body = `<nav class="crumbs"><a href="/">AcqVault</a> › Library</nav>
-<div class="lib-mast">
+  const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
+
+  const body = `<header class="lnav"><div class="lnav-inner"><a class="brand" href="/">${BRAND_SVG}AcqVault</a><a class="cta" href="/?q=">Search all sources →</a></div></header>
+<section class="lband lhero"><div class="lband-inner">
+<nav class="crumbs"><a href="/">AcqVault</a> › Library</nav>
 <div class="eyebrow">AcqVault · Library</div>
 <h1>The reference shelf for federal&nbsp;acquisition</h1>
 <p class="lede">Field guides, templates, and the full text of every indexed source — one place to pull what you need.</p>
 <div class="stats"><span class="stat"><b>${totalItems}</b> resources</span><span class="stat">Free · no account</span><span class="stat">Source text re-indexed monthly</span></div>
 <svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="ls-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#ls-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>
-</div>
+</div></section>
 ${catHtml}
-<p class="libnote"><strong>Originals</strong> are written by AcqVault as research aids. <strong>Source documents</strong> are compiled from official material and regenerated monthly — always verify against the signed DoD class deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on any result in a contract file.</p>`;
+<footer class="lband lband--foot"><div class="lband-inner">
+<p class="lfoot-note"><strong>Originals</strong> are written by AcqVault as research aids. <strong>Source documents</strong> are compiled from official material and regenerated monthly — always verify against the signed DoD class deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on any result in a contract file.</p>
+<p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</p>
+</div></footer>`;
 
-  return shell({ title, description, canonical, jsonld, body, wide: true });
+  return shell({ title, description, canonical, jsonld, body, bleed: true });
 }
 
 const RFO_FAQ = [
