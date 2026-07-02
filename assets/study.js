@@ -129,6 +129,7 @@
       ' <button class="st-link" id="st-switch">switch</button></div></div>' +
       '<div class="st-modes">' +
       '<button class="st-mode st-mode-primary" id="m-daily"><b>Daily Review</b><span>' + due.length + ' card' + (due.length !== 1 ? 's' : '') + ' due — spaced repetition does the scheduling</span></button>' +
+      '<button class="st-mode" id="m-deep"><b>Deep Study</b><span>Endless random cards, every topic in the mix — go as long as you want</span></button>' +
       '<button class="st-mode" id="m-sprint"><b>Threshold Sprint</b><span>Rapid-fire numbers · best streak ' + (S.sprint.best || 0) + '</span></button>' +
       (S.track === 'advanced' ?
         '<button class="st-mode" id="m-board"><b>Board Sim</b><span>' + scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups</span></button>' : '') +
@@ -141,6 +142,7 @@
       '<button class="st-link" id="st-reset">Reset</button><input type="file" id="st-file" accept="application/json" hidden></div>'
     );
     el('m-daily').onclick = function () { goDepth(2, function () { startSession(due, 'Daily Review'); }); };
+    el('m-deep').onclick = function () { goDepth(2, viewDeep); };
     el('m-sprint').onclick = function () { goDepth(2, viewSprint); };
     if (el('m-board')) el('m-board').onclick = function () { goDepth(2, viewBoard); };
     el('st-switch').onclick = function () { goDepth(0, viewTrack); };
@@ -253,6 +255,89 @@
       }
     }
     return cards;
+  }
+
+  /* ---- deep study: endless random cards, every topic in the mix ---- */
+  function viewDeep() {
+    var pool = recallPool();
+    var order = shuffle(pool.slice());
+    var i = 0, seen = 0, got = 0;
+    function nextCard() {
+      if (i >= order.length) { order = shuffle(pool.slice()); i = 0; } // deck exhausted → reshuffle, keep going
+      return order[i++];
+    }
+    function step() {
+      var c = nextCard();
+      var opts = mcqOptions(c, pool);
+      var head = '<div class="st-session-head"><span>Deep Study · endless</span><span>' + got + ' / ' + seen + ' solid</span></div>';
+      if (opts) {
+        render(head +
+          '<div class="st-card" aria-live="polite">' +
+          '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
+          '<div class="st-q">' + esc(c.q) + '</div>' +
+          '<div class="st-opts">' + opts.map(function (o, k) {
+            return '<button class="st-opt" data-k="' + k + '"><kbd>' + (k + 1) + '</kbd><span>' + esc(o) + '</span></button>';
+          }).join('') + '</div></div>' +
+          '<button class="st-link st-quit" id="st-quit">That&rsquo;s enough for now</button>');
+        el('st-quit').onclick = summary;
+        var answered = false;
+        function pick(k) {
+          if (answered) return; answered = true;
+          var right = opts[k] === c.a;
+          Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
+            var bk = +b.getAttribute('data-k');
+            if (opts[bk] === c.a) b.classList.add('st-opt-right');
+            else if (bk === k) b.classList.add('st-opt-wrong');
+            b.disabled = true;
+          });
+          grade(c.id, right ? 3 : 1); // deep-study answers still teach the daily scheduler
+          seen++; if (right) got++;
+          var act = document.createElement('div'); act.className = 'st-actions';
+          act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">Next <kbd>space</kbd></button>';
+          app.querySelector('.st-card').appendChild(act);
+          el('st-next').onclick = step;
+          keyHandler(function (key) { if (key === ' ' || key === 'Enter') { step(); return true; } });
+        }
+        Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
+          b.onclick = function () { pick(+b.getAttribute('data-k')); };
+        });
+        keyHandler(function (k) {
+          var n = parseInt(k, 10);
+          if (n >= 1 && n <= opts.length) { pick(n - 1); return true; }
+        });
+      } else { // rare fallback: produce-then-reveal
+        render(head +
+          '<div class="st-card" aria-live="polite">' +
+          '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
+          '<div class="st-q">' + esc(c.q) + '</div>' +
+          '<div id="st-a" class="st-a" hidden>' + esc(c.a) + '</div>' +
+          '<div class="st-actions" id="st-act"><button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
+          '<button class="st-link st-quit" id="st-quit">That&rsquo;s enough for now</button>');
+        el('st-quit').onclick = summary;
+        el('st-reveal').onclick = function () {
+          el('st-a').hidden = false;
+          el('st-act').innerHTML =
+            '<button class="st-btn st-g1" id="g1">Missed <kbd>1</kbd></button>' +
+            '<button class="st-btn st-g3" id="g3">Got it <kbd>3</kbd></button>';
+          el('g1').onclick = function () { grade(c.id, 1); seen++; step(); };
+          el('g3').onclick = function () { grade(c.id, 3); seen++; got++; step(); };
+          keyHandler(function (k) {
+            if (k === '1') { el('g1').onclick(); return true; }
+            if (k === '3' || k === ' ') { el('g3').onclick(); return true; }
+          });
+        };
+        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('st-reveal').onclick(); return true; } });
+      }
+    }
+    function summary() {
+      keyHandler(null);
+      render('<div class="st-card st-summary"><div class="st-chip">Deep Study</div>' +
+        '<div class="st-q">' + got + ' of ' + seen + ' solid.</div>' +
+        '<p class="st-sub">Every answer here also updated your spaced schedule — what you nailed stretches out, what you missed shows up in tomorrow’s Daily Review.</p>' +
+        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
+      el('st-home').onclick = backHome;
+    }
+    step();
   }
 
   /* ---- threshold sprint (multiple choice, streak on correct) ---- */
