@@ -28,50 +28,45 @@
   // Thresholds — two scopes. Values reflect FAR 2.101 et al.; verify against current FAR.
   // Values reflect FAR Case 2024-001 / FAC 2025-06 (effective Oct 1, 2025) as carried
   // into the RFO. Citations point to the RFO (the overhauled FAR indexed on this site).
-  // Truthful (certified) cost-or-pricing-data threshold rises to $10M for new
-  // contracts/orders effective 30 Jun 2026 (NDAA FY2026 sec. 1804(c)); awards
-  // made before then — and modifications to them — stay at $2.5M. Date-aware so
-  // the headline value is correct as the cutover passes. Source: DAF Compass
-  // Part 15 / R-DFARS 215.403-3 (both indexed on this site).
-  const _tinaAfterCutover = new Date() >= new Date('2026-06-30T00:00:00');
-  const TINA_VALUE = _tinaAfterCutover ? 10000000 : 2500000;
-  const TINA_NOTE = _tinaAfterCutover
-    ? 'new awards; mods to pre-30 Jun 2026 contracts stay $2.5M'
-    : '→ $10M for new awards on/after 30 Jun 2026';
+  // TINA: $10M since 30 Jun 2026 (NDAA FY2026 sec. 1804(c)). Pre-cutover awards and
+  // their mods keep $2.5M — that nuance lives in the acronym glossary, not the row.
+  const TINA_VALUE = 10000000;
   // Citations verified against the live corpus 2026-07-02 (post-July RFO refresh);
   // refresh.py cite-watch flags any of these that stop resolving after a corpus update.
-  // Two groups, each ascending by dollar value, so the list reads like a ruler.
-  const G1 = 'Purchase floors & labor standards';
-  const G2 = 'Reviews, data & approvals';
+  // Three groups in the order a CO thinks: the two anchors first, then the
+  // floors that carve them up, then the approval/data tiers — ascending within each.
+  const G1 = 'Core thresholds';
+  const G2 = 'Labor & construction floors';
+  const G3 = 'Approvals, plans & data';
   const THRESHOLDS = [
-    { group: G1, abbr: 'DBA', name: 'Construction wage rates (Davis-Bacon) above', cite: 'RFO 22.402',
-      std: 2000, con: 2000, fixed: true, note: 'Also caps the construction MPT at $2,000' },
-    { group: G1, abbr: 'SCA', name: 'Service Contract Labor Standards above', cite: 'RFO 22.1002',
-      std: 2500, con: 2500, fixed: true, note: 'Also caps the services MPT at $2,500' },
     { group: G1, abbr: 'MPT', name: 'Micro-Purchase Threshold', cite: 'RFO 2.101',
       std: 15000, con: 25000, conNote: '$40K outside U.S.' },
-    { group: G1, abbr: '', name: 'Supply contract labor standards (Walsh-Healey) above', cite: 'RFO 22.601',
-      std: 20000, con: 20000, fixed: true },
-    { group: G1, abbr: '', name: 'Construction performance & payment bonds above', cite: 'RFO 28.102',
-      std: 150000, con: 150000, fixed: true },
     { group: G1, abbr: 'SAT', name: 'Simplified Acquisition Threshold', cite: 'RFO 2.101',
       std: 350000, con: 1000000, conNote: '$2M outside U.S.' },
-    { group: G2, abbr: '', name: 'Trafficking compliance plan — work outside U.S.', cite: 'RFO 22.1703',
-      std: 700000, con: 700000, fixed: true },
-    { group: G2, abbr: '', name: 'Subcontracting plan required above', cite: 'RFO 19.109',
+    { group: G2, abbr: 'DBA', name: 'Davis-Bacon wage rules — construction', cite: 'RFO 22.402',
+      std: 2000, con: 2000, fixed: true, note: 'Sets the construction micro-purchase ceiling' },
+    { group: G2, abbr: 'SCA', name: 'Service Contract Labor Standards', cite: 'RFO 22.1002',
+      std: 2500, con: 2500, fixed: true, note: 'Sets the services micro-purchase ceiling' },
+    { group: G2, abbr: '', name: 'Walsh-Healey — supply contracts', cite: 'RFO 22.601',
+      std: 20000, con: 20000, fixed: true },
+    { group: G2, abbr: '', name: 'Performance & payment bonds — construction', cite: 'RFO 28.102',
+      std: 150000, con: 150000, fixed: true },
+    { group: G3, abbr: '', name: 'Trafficking compliance plan', cite: 'RFO 22.1703',
+      std: 700000, con: 700000, fixed: true, note: 'Work performed outside the U.S.' },
+    { group: G3, abbr: '', name: 'Subcontracting plan', cite: 'RFO 19.109',
       std: 900000, con: 900000, fixed: true, note: '$2M for construction of a public facility' },
-    { group: G2, abbr: 'J&A', name: 'Other than full & open — first approval tier', cite: 'RFO 6.104-2',
+    { group: G3, abbr: 'J&A', name: 'Other than full & open — first tier', cite: 'RFO 6.104-2',
       std: 900000, con: 900000, fixed: true },
-    { group: G2, abbr: '', name: 'Past performance eval — construction (CPARS)', cite: 'RFO 42.1102',
+    { group: G3, abbr: '', name: 'Construction past-performance eval (CPARS)', cite: 'RFO 42.1102',
       std: 900000, con: 900000, fixed: true, note: 'Above the SAT for most other contracts' },
-    { group: G2, abbr: 'SAP', name: 'Simplified procedures, commercial', cite: 'RFO 12.201-1',
+    { group: G3, abbr: 'SAP', name: 'Commercial simplified procedures', cite: 'RFO 12.201-1',
       std: 9000000, con: 15000000 },
-    { group: G2, abbr: 'TINA', name: 'Certified cost or pricing data', cite: 'RFO 15.403-3',
-      std: TINA_VALUE, con: TINA_VALUE, fixed: true, note: TINA_NOTE },
-    { group: G2, abbr: '', name: '8(a) sole source — justification required above', cite: 'RFO 6.103-5',
+    { group: G3, abbr: 'TINA', name: 'Certified cost or pricing data', cite: 'RFO 15.403-3',
+      std: TINA_VALUE, con: TINA_VALUE, fixed: true },
+    { group: G3, abbr: '', name: '8(a) sole source — justification', cite: 'RFO 6.103-5',
       std: 30000000, con: 30000000, fixed: true },
-    { group: G2, abbr: '', name: 'E.O. 14402 justification — other than fixed-price, DoD', cite: 'RFO 16.104',
-      std: 100000000, con: 100000000, fixed: true, note: '$10M most civilian agencies · E.O. of Apr 2026' }
+    { group: G3, abbr: '', name: 'E.O. 14402 justification — DoD', cite: 'RFO 16.104',
+      std: 100000000, con: 100000000, fixed: true, note: '$10M at most civilian agencies' }
   ];
 
   // Acronym glossary: TERM -> [expansion, optional note]
@@ -86,7 +81,7 @@
     SAT: ['Simplified Acquisition Threshold', '$350,000 since Oct 2025 (RFO 2.101)'],
     MPT: ['Micro-Purchase Threshold', '$15,000 since Oct 2025 (RFO 2.101)'],
     SAP: ['Simplified Acquisition Procedures', 'RFO Part 13'],
-    TINA: ['Truth in Negotiations Act', 'Certified cost/pricing data; $2.5M, rising to $10M for new awards on/after 30 Jun 2026 (NDAA FY26)'],
+    TINA: ['Truth in Negotiations Act', 'Certified cost/pricing data — $10M since 30 Jun 2026 (NDAA FY26); pre-cutover awards and their mods stay $2.5M'],
     CAS: ['Cost Accounting Standards', '48 CFR 9903 (CAS Board)'],
     IDIQ: ['Indefinite-Delivery, Indefinite-Quantity', 'FAR 16.504'],
     IDV: ['Indefinite-Delivery Vehicle'],
@@ -319,10 +314,11 @@
               <div class="tk-card-head">
                 <div class="tk-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7l-4-4Z"/><path d="M14 3v4h4"/><path d="m9 14.5 2 2 4-4.5"/></svg></div>
                 <div class="tk-card-titles">
-                  <div class="tk-card-title">CASPER — contract review authority</div>
-                  <div class="tk-card-sub">Who reviews, by portfolio &amp; value (CRA tiers)</div>
+                  <div class="tk-card-title">CASPER review tiers</div>
+                  <div class="tk-card-sub">Contract Acquisition Strategy, Pricing &amp; Execution Review</div>
                 </div>
               </div>
+              <div class="cra-intro">Every CASPER gets an independent review. Find your portfolio column — the row your dollar value lands in is your Contract Review Authority (CRA).</div>
               <div class="cra-wrap">
                 <table class="cra-table">
                   <thead><tr><th scope="col">CRA</th><th scope="col">Operational</th><th scope="col">Enterprise</th><th scope="col">PEO</th><th scope="col">PAE</th></tr></thead>
@@ -479,9 +475,9 @@
       return `${head}<div class="thr-row${changed && uplift ? ' changed' : ''}" role="button" tabindex="0" aria-haspopup="dialog">
         <div class="thr-row-main">
           <div class="thr-row-name">${nm}</div>
-          <div class="thr-row-cite">${esc(t.cite)}</div>
+          <div class="thr-row-cite">${esc(t.cite)}</div>${t.note ? `<div class="thr-row-note">${esc(t.note)}</div>` : ''}
         </div>
-        <div class="thr-row-val">${fmtExact(val)}${note}${t.note ? `<span class="thr-up">${esc(t.note)}</span>` : ''}</div>
+        <div class="thr-row-val">${fmtExact(val)}${note}</div>
       </div>`;
     }).join('');
     const noteEl = $('#thr-scope-note');
