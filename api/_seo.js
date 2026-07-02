@@ -545,6 +545,100 @@ ${runHtml}`;
   return shell({ title, description, canonical, jsonld, body });
 }
 
+// ── /study — the client-side drill room (Basic/Advanced tracks; assets/study.js does the work) ──
+function renderStudyPage() {
+  const canonical = `${SITE}/study`;
+  const title = 'AcqVault Study — drills & spaced review for the acquisition community | AcqVault';
+  const description = esc('Free, no-login study drills for contracting professionals: spaced-repetition knowledge checks from the AcqVault Field Guides, rapid threshold sprints, and board-style scenario simulations with follow-up questions. Works offline. No AI, no account.');
+
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'WebApplication',
+    name: 'AcqVault Study', applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description, url: canonical,
+    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
+  };
+
+  const STUDY_CSS = `<style>
+.st-wrap{max-width:860px;margin:0 auto;padding:34px 24px 70px}
+#study-app{min-height:420px}
+.st-h2{font-family:var(--serif);font-size:22px;color:var(--ink);letter-spacing:-.01em;margin:26px 0 4px}
+.st-sub{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.55}
+.st-head{display:flex;justify-content:flex-end;margin:0 0 10px}
+.st-track-chip{font-size:12.5px;font-weight:700;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(135,101,28,.28);border-radius:999px;padding:5px 12px}
+.st-link{background:none;border:none;color:var(--brass-ink);text-decoration:underline;cursor:pointer;font-size:12.5px;padding:0}
+.st-tracks{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:640px){.st-tracks{grid-template-columns:1fr}}
+.st-trackcard{text-align:left;background:#fff;border:1px solid var(--line2);border-radius:14px;padding:18px 18px 14px;cursor:pointer;transition:box-shadow .15s,transform .15s,border-color .15s}
+.st-trackcard:hover{border-color:rgba(135,101,28,.45);box-shadow:0 14px 30px -16px rgba(15,37,64,.3);transform:translateY(-2px)}
+.st-tc-kicker{display:block;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:5px}
+.st-trackcard b{font-size:17px;letter-spacing:-.01em;color:var(--ink)}
+.st-trackcard p{color:var(--muted);font-size:13.5px;line-height:1.55;margin:7px 0 0}
+.st-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:6px 0 8px}
+.st-mode{text-align:left;background:#fff;border:1px solid var(--line2);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.st-mode:hover{border-color:rgba(135,101,28,.45);box-shadow:0 10px 24px -14px rgba(15,37,64,.28)}
+.st-mode b{display:block;font-size:15.5px;color:var(--ink);letter-spacing:-.01em}
+.st-mode span{display:block;color:var(--muted);font-size:12.5px;margin-top:3px;line-height:1.45}
+.st-mode-primary{background:linear-gradient(158deg,#173a60,#0f2540 70%);border-color:rgba(228,196,119,.4)}
+.st-mode-primary b{color:#f4f8fc}
+.st-mode-primary span{color:#dde9f6}
+.st-topics{display:flex;flex-direction:column;gap:6px}
+.st-topic{display:grid;grid-template-columns:minmax(150px,1.4fr) 1fr auto;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:9px 13px;cursor:pointer;min-height:44px}
+.st-topic:hover{border-color:rgba(135,101,28,.45)}
+.st-topic-name{font-size:13.5px;font-weight:650;color:var(--ink);line-height:1.3}
+.st-bar{height:6px;background:var(--off,#f1efe8);border-radius:99px;overflow:hidden}
+.st-bar-fill{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px}
+.st-topic-meta{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.st-session-head{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-ink);margin:4px 0 10px}
+.st-card{background:#fff;border:1px solid var(--line2);border-radius:14px;padding:24px;box-shadow:0 18px 40px -24px rgba(15,37,64,.25)}
+.st-chip{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);background:#f6efdd;border-radius:4px;padding:2px 8px;margin-bottom:12px}
+.st-q{font-family:var(--serif);font-size:21px;line-height:1.35;color:var(--ink);letter-spacing:-.005em}
+.st-a{margin-top:16px;padding-top:14px;border-top:1px dashed rgba(135,101,28,.4);font-size:15.5px;line-height:1.6;color:#2a3140}
+.st-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.st-btn{border:none;border-radius:9px;padding:11px 18px;font-size:14.5px;font-weight:700;cursor:pointer;min-height:44px}
+.st-btn kbd{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;opacity:.65;font-weight:600;margin-left:5px;border:1px solid currentColor;border-radius:3px;padding:0 4px}
+.st-btn-reveal{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#f4f8fc}
+.st-g1{background:#fdf0ef;color:#8c2b23;border:1px solid rgba(179,38,30,.3)}
+.st-g2{background:#f6efdd;color:#5e4715;border:1px solid rgba(135,101,28,.3)}
+.st-g3{background:#eef7f0;color:#155433;border:1px solid rgba(30,107,67,.3)}
+.st-quit{display:block;margin:14px auto 0}
+.st-summary .st-q{font-size:24px}
+.st-scenario{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#dde9f6;border-radius:10px;padding:16px 18px;font-size:15px;line-height:1.6}
+.st-scenario-sm{font-size:13px;opacity:.92;margin-bottom:14px}
+.st-outloud{color:var(--brass-ink);font-size:13.5px;font-style:italic;margin:14px 0 0}
+.st-fact{border-left:3px solid rgba(228,196,119,.9);padding:7px 0 7px 12px;margin:10px 0;font-size:14px;line-height:1.55}
+.st-fact b{color:var(--ink)}
+.st-fact>div{color:#3d444d;margin-top:2px}
+.st-bait{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8c2b23;background:#fdf0ef;border-radius:3px;padding:1px 6px;margin-left:6px}
+.st-gov{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#155433;background:#eef7f0;border-radius:3px;padding:1px 6px;margin-left:6px}
+.st-boardans{background:var(--off,#f7f6f2);border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.6;margin-top:12px}
+.st-followup{margin:6px 0 0}
+.st-followup>span{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+.st-foot-tools{margin-top:26px;font-size:12.5px;color:var(--muted)}
+</style>`;
+
+  const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
+
+  const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/">${BRAND_SVG}AcqVault</a><a class="cta" href="/?q=">Search all sources →</a></div></header>
+<section class="lband lhero"><div class="lband-inner">
+<nav class="crumbs"><a href="/">AcqVault</a> › Study</nav>
+<div class="eyebrow">AcqVault · Study</div>
+<h1>Drill it until it&rsquo;s reflex</h1>
+<p class="lede">Knowledge checks, threshold sprints, and board-style scenario drills built from the AcqVault Field Guides — spaced repetition decides what you see, you decide how honest your self-grade is.</p>
+<div class="stats"><span class="stat"><b>350+</b> drills</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+</div></section>
+<section class="lband lband--white"><div class="st-wrap">
+<div id="study-app"><noscript><p>AcqVault Study is an interactive drill tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
+</div></section>
+<footer class="lband lband--foot"><div class="lband-inner">
+<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
+<p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
+</div></footer>
+<script defer src="/assets/study.js?v=1"></script>`;
+
+  return shell({ title, description, canonical, jsonld, body, bleed: true });
+}
+
 const RFO_FAQ = [
   ['Is the Revolutionary FAR Overhaul the same as the FAR?',
    'Yes — it is the Federal Acquisition Regulation, overhauled. Under Executive Order 14275, "Restoring Common Sense to Federal Procurement," agencies use the revised FAR text published on the Revolutionary FAR Overhaul web page in lieu of the text codified at 48 CFR.'],
@@ -594,6 +688,7 @@ function renderSitemap() {
   if ((loadLibrary().categories || []).some(c => c.items && c.items.length)) urls.push(`${SITE}/library`);
   if (loadDeviations().length) urls.push(`${SITE}/deviations`);
   if (loadChangesLog().length) urls.push(`${SITE}/changes`);
+  urls.push(`${SITE}/study`);
   for (const source of SOURCE_KEYS) {
     const { parts } = partsForSource(source);
     if (!parts.length) continue;
@@ -607,4 +702,4 @@ ${body}
 </urlset>`;
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderSitemap, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSitemap, SITE };
