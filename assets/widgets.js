@@ -1140,12 +1140,12 @@
         + `<div class="market-usa-lbl">${recLbl}</div>${recips}`
         + `<div class="market-usa-lbl">Largest recent awards</div>${awards}`;
     }
-    // § N of the MR note — historical awards + incumbents (only when data loaded)
-    function usaNoteHTML(num) {
+    // MR note section — historical awards + incumbents (only when data loaded)
+    function usaNoteHTML() {
       if (usaState !== 'ready' || !usaData || !(usaData.awards || []).length) return '';
       const recips = (usaData.recipients || []).map(r => `<span class="chip">${esc(r.name)} <b>${esc(usaFmt(r.total))}</b></span>`).join('');
       const rows = (usaData.awards || []).slice(0, 8).map(a => `<tr><td><div class="t-title">${esc(a.recipient || '—')}</div><div class="t-org">${esc(a.agency || '')}${a.subAgency ? ' · ' + esc(a.subAgency) : ''}</div></td><td class="t-mono">${esc(a.start || '')}</td><td class="t-award">${esc(usaFmt(a.amount))}</td><td class="t-mono">${esc(a.type || '')}</td></tr>`).join('');
-      return `<div class="sec"><div class="sec-eyebrow"><span class="sec-num">${num}</span><span class="sec-title">Incumbents &amp; historical awards</span></div>
+      return `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Incumbents &amp; historical awards</span></div>
         <div class="pat"><div class="pat-row"><div class="pat-k">Top recipients</div><div class="pat-v">${recips}</div></div></div>
         <table style="margin-top:10px"><thead><tr><th style="width:44%">Recipient / awarding agency</th><th style="width:16%">Start</th><th style="width:20%">Obligated</th><th style="width:20%">Type</th></tr></thead><tbody>${rows}</tbody></table>
         <div class="foot" style="margin-top:8px;border:none;padding:0;">Source: USASpending.gov (FPDS) — top contract awards by obligated amount, last ${usaData.years} FY. Authoritative for award $ and incumbent; SAM notices above are a weaker signal for award value.</div></div>`;
@@ -1217,10 +1217,7 @@
         const award = o.awardAmount ? `<div class="t-award">${esc(mrAwardText(o))}</div>` : '';
         return `<tr><td><div class="t-type">${esc(o.type || 'Opportunity')}</div><div class="t-mono t-muted">${esc(o.postedDate || '')}</div></td><td><div class="t-title">${esc(o.title || 'Untitled')}</div><div class="t-org">${esc(o.organization || '')}</div>${award}</td><td class="t-mono">${esc(np)}</td><td>${esc(o.setAside || '—')}</td><td class="t-mono">${esc(o.solicitationNumber || '—')}</td></tr>`;
       }).join('');
-      const rl = (n) => Array.from({ length: n }).map(() => '<div class="rl"></div>').join('');
-      const usaSec = usaNoteHTML('03');           // present only when award data loaded
-      const findNum = usaSec ? '04' : '03';
-      const recNum = usaSec ? '05' : '04';
+      const usaSec = usaNoteHTML();  // present only when award data loaded
       return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><base href="${base}/"><title>AcqVault — Market Research Summary</title><style>${MRCSS}</style></head><body>
         <div class="toolbar no-print"><button onclick="window.print()">⤓ Save as PDF</button><span>Opens your browser's print dialog — choose “Save as PDF.”</span></div>
         <div class="wrap">
@@ -1235,16 +1232,12 @@
             <div class="meta-cell"><div class="meta-k">Posting window reviewed</div><div class="meta-v mono">${esc(mrSpan())}</div></div>
             <div class="meta-cell"><div class="meta-k">Notices reviewed</div><div class="meta-v">${board.length} pinned</div></div>
           </div>
-          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">01</span><span class="sec-title">Market landscape</span></div><div class="pat">${pats}</div></div>
-          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">02</span><span class="sec-title">Comparable notices reviewed</span></div>
+          <div class="sec"><div class="sec-eyebrow"><span class="sec-title">Market landscape</span></div><div class="pat">${pats}</div></div>
+          <div class="sec"><div class="sec-eyebrow"><span class="sec-title">Comparable notices reviewed</span></div>
             <table><thead><tr><th style="width:15%">Type / posted</th><th style="width:34%">Notice</th><th style="width:16%">NAICS · PSC</th><th style="width:20%">Set-aside</th><th style="width:15%">Notice #</th></tr></thead><tbody>${rows}</tbody></table>
             <div class="foot" style="margin-top:8px;border:none;padding:0;">Source records retrieved from SAM.gov via AcqVault. Open each notice at <b>sam.gov</b> using its notice number for the authoritative file, attachments, and full description.</div>
           </div>
           ${usaSec}
-          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">${findNum}</span><span class="sec-title">Findings</span></div><div class="prompt">Summarize what the market shows — availability and adequacy of sources, small-business capability, typical contract types/vehicles, pricing signals, and any apparent incumbents. Complete before filing.</div>${rl(6)}</div>
-          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">${recNum}</span><span class="sec-title">Recommendation</span></div><div class="prompt">Recommended acquisition approach, set-aside determination, and competition strategy, with the market evidence above as the basis. Complete before filing.</div>${rl(5)}
-            <div class="signoff"><div class="so-cell"><div class="so-k">Prepared by</div><div class="so-line"></div></div><div class="so-cell"><div class="so-k">Date</div><div class="so-line"></div></div></div>
-          </div>
           <div class="guide"><div class="guide-k">Governing guidance</div><div class="guide-t">This market research supports <a href="/rfo/part-10">RFO Part 10</a> (Market Research). Small-business set-asides recur in this market — see <a href="/rfo/part-19">RFO Part 19</a> for the set-aside determination. For commercial-item treatment by PSC, see <a href="/rfo/part-12">RFO Part 12</a>.</div></div>
           <div class="foot"><b>Generated by AcqVault</b> (acqvault.com) on ${esc(today)} from SAM.gov opportunity data. AcqVault is an <b>unofficial research aid</b> — not legal advice and not an official source. Verify every notice and citation against the official record at sam.gov and the Revolutionary FAR Overhaul before relying on this summary in a contract file.</div>
         </div>
@@ -1276,13 +1269,13 @@
         (usaData.awards || []).slice(0, 8).forEach(a => { L.push(`    ${a.recipient || '—'} — ${usaFmt(a.amount)} · ${a.agency || ''} · ${a.start || ''} · ${a.type || ''}`); if (a.link) L.push(`      ${a.link}`); });
         L.push('  Source: USASpending.gov (FPDS) — authoritative for award $ and incumbent; SAM notices are a weaker signal.');
       }
-      L.push('', 'FINDINGS', '  [Summarize source availability, small-business capability, contract types, pricing signals, incumbents.]', '', 'RECOMMENDATION', '  [Recommended approach, set-aside determination, competition strategy.]', '', 'GOVERNING GUIDANCE: RFO Part 10 (Market Research); RFO Part 19 (set-asides); RFO Part 12 (commercial by PSC).', '', `Generated by AcqVault (acqvault.com) on ${new Date().toISOString().slice(0, 10)} from SAM.gov data. Unofficial research aid — verify against the official record before filing.`);
+      L.push('', 'GOVERNING GUIDANCE: RFO Part 10 (Market Research); RFO Part 19 (set-asides); RFO Part 12 (commercial by PSC).', '', `Generated by AcqVault (acqvault.com) on ${new Date().toISOString().slice(0, 10)} from SAM.gov data. Unofficial research aid — verify against the official record before filing.`);
       return L.join('\n');
     }
     function generateMrNote() {
       if (!board.length) return;
       const w = window.open('', '_blank');
-      if (!w) { srAnnounceMR('Allow pop-ups to open the note, or use Copy text.'); return; }
+      if (!w) { srAnnounceMR('Allow pop-ups to open the report, or use Copy snapshot.'); return; }
       w.document.open(); w.document.write(mrHTML()); w.document.close();
     }
     function copyMrNote(btn) {
@@ -1313,7 +1306,7 @@
         </div>
         <div class="market-board-intro">Your working set for a market research note. Pinned opportunities stay on this device.</div>
         <div class="market-board-body">${n ? patternsHTML() + ((usaCodes().naics.length || usaCodes().psc.length) ? '<div class="market-usa" id="market-usa"></div>' : '') + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>'}</div>
-        ${n ? '<div class="market-board-foot"><div class="market-board-foot-actions"><button type="button" class="market-board-gen" data-mr-note="1">Generate MR note</button><button type="button" class="market-board-copy" data-mr-copy="1">Copy text</button></div><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button></div>' : ''}`;
+        ${n ? '<div class="market-board-foot"><div class="market-board-foot-actions"><button type="button" class="market-board-gen" data-mr-note="1">Generate report</button><button type="button" class="market-board-copy" data-mr-copy="1">Copy snapshot</button></div><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button></div>' : ''}`;
       if (n) loadUsa();
     }
     function openTray() {

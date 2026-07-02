@@ -33,7 +33,7 @@
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=92">
+<link rel="stylesheet" href="/assets/app.css?v=93">
 </head>
 <body>
 
@@ -352,11 +352,21 @@
             <a class="market-action" href="/rfo/part-10">RFO Part 10</a>
           </div>
         </div>
-        <div class="market-path">
-          <div class="market-step"><div class="market-step-num">1</div><div class="market-step-title">Find the market</div><div class="market-step-text">Search SAM.gov notices and awards by keyword, agency, NAICS, PSC, place of performance, and date.</div></div>
-          <div class="market-step"><div class="market-step-num">2</div><div class="market-step-title">Spot patterns</div><div class="market-step-text">Surface repeated offices, vendors, set-asides, contract types, and response timelines.</div></div>
-          <div class="market-step"><div class="market-step-num">3</div><div class="market-step-title">Compare language</div><div class="market-step-text">Collect common requirement phrasing, attachments, evaluation factors, and industry questions.</div></div>
-          <div class="market-step"><div class="market-step-num">4</div><div class="market-step-title">Brief the file</div><div class="market-step-text">Turn the search trail into a concise market research note with links back to source records.</div></div>
+        <div class="market-flow" aria-label="How to use this tool">
+          <div class="market-flow-step">
+            <span class="market-flow-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
+            <div class="market-flow-tx"><div class="market-flow-t">Search opportunities</div><div class="market-flow-d">By keyword, NAICS, PSC, agency, or set-aside — results appear below.</div></div>
+          </div>
+          <span class="market-flow-sep" aria-hidden="true">→</span>
+          <div class="market-flow-step">
+            <span class="market-flow-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4.2L5 21V4.5a1 1 0 0 1 1-1Z"/></svg></span>
+            <div class="market-flow-tx"><div class="market-flow-t">Pin to your board</div><div class="market-flow-d">Tap the bookmark on any result to build your working set.</div></div>
+          </div>
+          <span class="market-flow-sep" aria-hidden="true">→</span>
+          <div class="market-flow-step">
+            <span class="market-flow-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7l-4-4Z"/><path d="M14 3v4h4"/><line x1="9" y1="13.5" x2="15" y2="13.5"/><line x1="9" y1="17" x2="13.5" y2="17"/></svg></span>
+            <div class="market-flow-tx"><div class="market-flow-t">Open the board → generate</div><div class="market-flow-d">Review incumbents &amp; patterns, then generate a report or copy a snapshot.</div></div>
+          </div>
         </div>
         <div class="market-panel market-results-panel" aria-live="polite">
           <div class="market-results-head">
@@ -578,7 +588,7 @@
 
 <script defer src="/assets/app.js?v=44"></script>
 <script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=28"></script>
+<script defer src="/assets/widgets.js?v=29"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>

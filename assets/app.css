@@ -1389,17 +1389,15 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .market-label{display:block;font-size:var(--fs-3xs);font-weight:var(--fw-black);letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
 .market-field input,.market-field select{width:100%;border:none;outline:none;background:transparent;color:var(--ink2);font-size:var(--fs-base);font-weight:650;}
 .market-field select{cursor:pointer;}
-.market-path{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px;}
-.market-step{position:relative;min-width:0;background:var(--white);border:1px solid var(--line2);border-radius:var(--r-lg);padding:14px;min-height:122px;box-shadow:var(--shadow-sm);transition:box-shadow .45s var(--ease-out),transform .45s var(--ease-out),border-color .45s ease;}
-.market-step.lit{border-color:var(--accent-bdr);box-shadow:0 14px 30px rgba(14,63,128,0.11);transform:translateY(-2px);}
-/* connector chevron drawn in the gap as each step lights, conveying the flow */
-.market-step::after{content:'';position:absolute;right:-9px;top:24px;width:7px;height:7px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);transform:rotate(45deg) scale(.5);opacity:0;transition:opacity .4s ease,transform .4s var(--ease-out);}
-.market-step:last-child::after{display:none;}
-.market-step.lit::after{opacity:.65;transform:rotate(45deg) scale(1);}
-.market-step-num{width:24px;height:24px;border-radius:8px;background:var(--accent-soft);border:1px solid var(--accent-bdr);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:var(--fs-xs);font-weight:var(--fw-black);margin-bottom:10px;transition:background .45s var(--ease-out),color .45s ease,border-color .45s ease,transform .45s var(--ease-spring);}
-.market-step.lit .market-step-num{background:var(--accent);border-color:var(--accent);color:#fff;transform:scale(1.08);box-shadow:0 4px 12px var(--accent-shadow);}
-.market-step-title{font-size:var(--fs-base);font-weight:var(--fw-heavy);letter-spacing:var(--ls-tight);color:var(--ink);margin-bottom:5px;}
-.market-step-text{font-size:var(--fs-sm);line-height:var(--lh-loose);color:var(--muted);}
+/* Functional how-it-works strip — the real pin → board → generate flow, tied to
+   the controls users click (replaced the abstract numbered "market path"). */
+.market-flow{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;margin-top:20px;}
+.market-flow-step{flex:1;min-width:190px;display:flex;gap:11px;align-items:flex-start;background:var(--white);border:1px solid var(--line2);border-radius:var(--r-lg);padding:13px 15px;box-shadow:var(--shadow-sm);}
+.market-flow-ic{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex-shrink:0;border-radius:9px;background:var(--brass-bg);border:1px solid var(--brass-line);color:var(--brass-ink);}
+.market-flow-ic svg{width:17px;height:17px;}
+.market-flow-t{font-size:var(--fs-base);font-weight:var(--fw-heavy);letter-spacing:var(--ls-tight);color:var(--ink);}
+.market-flow-d{font-size:var(--fs-sm);line-height:var(--lh-base);color:var(--muted);margin-top:2px;}
+.market-flow-sep{display:flex;align-items:center;color:var(--brass);font-weight:700;font-size:17px;flex-shrink:0;}
 .market-output{padding:0;overflow:hidden;}
 .market-output-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(135,101,28,0.08);}
 .market-output-title{font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--ink);letter-spacing:var(--ls-tight);}
@@ -1763,9 +1761,8 @@ body.work-mode #quick-links{margin-top:0;}
   .market-query input{font-size:var(--fs-md);}
   .market-btn{padding:10px 12px;font-size:var(--fs-xs);white-space:nowrap;}
   .market-filter-grid{grid-template-columns:1fr 1fr;}
-  .market-path{grid-template-columns:1fr 1fr;}
-  .market-step{min-height:0;padding:13px;}
-  .market-step::after{display:none;}
+  .market-flow-sep{display:none;}
+  .market-flow-step{min-width:0;flex:1 1 100%;}
   .market-result{grid-template-columns:72px minmax(0,1fr);padding:15px 16px;}
   .market-actions{padding:14px 16px;}
   .browse-source-bar{top:var(--top-chrome);}
@@ -1800,7 +1797,7 @@ body.work-mode #quick-links{margin-top:0;}
 @media(max-width:480px){
   .source-tiles-grid{grid-template-columns:1fr;}
   .quick-links-grid{grid-template-columns:1fr;}
-  .market-filter-grid,.market-filter-grid.market-filter-grid-wide,.market-path,.market-results-list{grid-template-columns:1fr;}
+  .market-filter-grid,.market-filter-grid.market-filter-grid-wide,.market-results-list{grid-template-columns:1fr;}
   .market-query{align-items:stretch;flex-wrap:wrap;height:auto;padding:12px;}
   .market-query span{display:flex;align-items:center;}
   .market-query input{min-height:34px;flex:1 1 calc(100% - 34px);}
