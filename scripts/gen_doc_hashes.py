@@ -33,6 +33,9 @@ def main():
     with open(SRC, encoding="utf-8") as f:
         docs = json.load(f)
     docs = [d for d in docs if d]
+    # Mirror the site's corpus filters (api/search.js + assets/app.js exclude compass),
+    # so doc_count / per-source counts describe what users can actually search.
+    docs = [d for d in docs if d.get("source") != "compass"]
 
     # ── doc-hashes.json ────────────────────────────────────────────────────
     hashes = {}
