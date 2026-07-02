@@ -1102,6 +1102,137 @@
       if (!rows.length) return '';
       return `<div class="market-patterns"><div class="market-pat-head">Patterns across ${board.length} pinned</div>${rows.join('')}</div>`;
     }
+    // ── FAR/RFO Part 10 market research note (client-side print-to-PDF, CAC-safe) ──
+    const mrDistinct = (getter) => [...new Set(board.map(getter).filter(Boolean))];
+    const mrSpan = () => { const d = board.map(o => o.postedDate).filter(Boolean).sort(); return d.length ? (d.length > 1 ? `${d[0]} → ${d[d.length - 1]}` : d[0]) : '—'; };
+    const mrAwardText = (o) => { const amt = fmtAmount(o.awardAmount); const head = amt || (o.awardAmount ? 'Awarded' : ''); return [head, o.awardee || ''].filter(Boolean).join(' · '); };
+    const MRCSS = `
+      @font-face{font-family:'Source Serif 4';src:url('/assets/fonts/source-serif4-latin.woff2') format('woff2');font-weight:400 900;font-display:swap;}
+      @font-face{font-family:'Inter';src:url('/assets/fonts/inter-latin.woff2') format('woff2');font-weight:400 800;font-display:swap;}
+      @font-face{font-family:'IBM Plex Mono';src:url('/assets/fonts/ibm-plex-mono-latin.woff2') format('woff2');font-weight:400;font-display:swap;}
+      @font-face{font-family:'IBM Plex Mono';src:url('/assets/fonts/ibm-plex-mono-sb-latin.woff2') format('woff2');font-weight:600;font-display:swap;}
+      :root{--brass:#87651c;--brass-ink:#5e4715;--brass-bg:#fbf6e8;--brass-line:rgba(154,115,32,.40);--navy:#0f2540;--ink:#13151b;--ink2:#262a31;--muted:#5e5d66;--muted2:#6f6c74;--off:#f7f6f2;--line:#d9d4c7;--line2:#e8e5de;--ink3:#474c55;}
+      @page{size:Letter;margin:0.7in 0.72in;}
+      *{box-sizing:border-box;} html,body{margin:0;padding:0;}
+      body{font-family:'Inter',system-ui,sans-serif;color:var(--ink2);font-size:10.5px;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#fff;}
+      .toolbar{position:sticky;top:0;display:flex;align-items:center;gap:12px;background:var(--navy);color:#fff;padding:10px 16px;font-size:12px;}
+      .toolbar button{background:var(--brass);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer;}
+      .toolbar span{color:rgba(255,255,255,.75);}
+      .wrap{max-width:7.2in;margin:0 auto;padding:26px 6px;}
+      .mast{display:flex;align-items:center;justify-content:space-between;padding-bottom:11px;border-bottom:2px solid var(--brass);}
+      .mast-left{display:flex;align-items:center;gap:9px;} .mast-mark{width:30px;height:30px;display:block;flex-shrink:0;}
+      .mast-name{font-weight:800;font-size:15px;letter-spacing:-0.03em;color:var(--ink);} .mast-name span{color:var(--brass-ink);}
+      .mast-right{text-align:right;font-size:8px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted2);line-height:1.5;}
+      .doc-title{font-family:'Source Serif 4',serif;font-weight:800;font-size:27px;line-height:1.08;letter-spacing:-0.015em;color:var(--ink);margin:18px 0 3px;}
+      .doc-sub{font-size:11px;color:var(--muted);font-weight:600;} .doc-sub b{color:var(--brass-ink);font-weight:700;}
+      .meta{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;margin:16px 0 4px;border:1px solid var(--line2);border-radius:9px;overflow:hidden;}
+      .meta-cell{padding:8px 13px;border-top:1px solid var(--line2);} .meta-cell:nth-child(1),.meta-cell:nth-child(2){border-top:none;}
+      .meta-k{font-size:7.5px;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:var(--muted2);margin-bottom:2px;}
+      .meta-v{font-size:11px;color:var(--ink);font-weight:600;} .meta-v.mono{font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:10px;letter-spacing:-0.01em;}
+      .sec{margin-top:20px;break-inside:avoid;}
+      .sec-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+      .sec-num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:9px;color:#fff;background:var(--navy);border-radius:5px;padding:2px 6px;}
+      .sec-title{font-family:'Source Serif 4',serif;font-weight:700;font-size:15px;color:var(--ink);letter-spacing:-0.01em;}
+      .pat{border:1px solid var(--brass-line);border-radius:9px;overflow:hidden;}
+      .pat-row{display:flex;gap:12px;align-items:baseline;padding:8px 14px;border-top:1px solid rgba(135,101,28,.14);} .pat-row:first-child{border-top:none;}
+      .pat-k{flex:0 0 118px;font-size:8px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);}
+      .pat-v{flex:1;display:flex;flex-wrap:wrap;gap:6px;}
+      .chip{display:inline-flex;align-items:baseline;gap:5px;font-size:9.5px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:20px;padding:2px 9px;}
+      .chip b{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--brass-ink);font-size:8.5px;}
+      .pat-span{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink2);}
+      table{width:100%;border-collapse:collapse;margin-top:2px;font-size:9.5px;}
+      thead th{text-align:left;font-size:7.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);padding:0 8px 6px;border-bottom:1.5px solid var(--brass-line);}
+      tbody td{padding:8px;border-bottom:1px solid var(--line2);vertical-align:top;} tbody tr{break-inside:avoid;}
+      .t-type{font-size:7.5px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:var(--brass-ink);white-space:nowrap;}
+      .t-title{font-weight:700;color:var(--ink);line-height:1.3;} .t-org{color:var(--muted);font-size:9px;margin-top:1px;}
+      .t-mono{font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:var(--ink2);white-space:nowrap;}
+      .t-award{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--brass-ink);font-size:9px;margin-top:2px;} .t-muted{color:var(--muted2);}
+      .prompt{font-size:9.5px;color:var(--muted);font-style:italic;margin-bottom:9px;}
+      .rl{border-bottom:1px solid var(--line);height:22px;}
+      .signoff{display:flex;gap:34px;margin-top:16px;break-inside:avoid;}
+      .so-cell{flex:1;} .so-k{font-size:7.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:16px;} .so-line{border-bottom:1px solid var(--ink3);}
+      .guide{margin-top:20px;background:var(--brass-bg);border:1px solid var(--brass-line);border-radius:9px;padding:11px 14px;break-inside:avoid;}
+      .guide-k{font-size:8px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:4px;}
+      .guide-t{font-size:10px;color:var(--ink2);line-height:1.55;} .guide-t a{color:var(--brass-ink);text-decoration:none;font-weight:700;font-family:'IBM Plex Mono',monospace;font-size:9px;}
+      .foot{margin-top:22px;padding-top:10px;border-top:1px solid var(--line2);font-size:8px;color:var(--muted2);line-height:1.55;} .foot b{color:var(--muted);}
+      @media print{.no-print{display:none!important;} .wrap{padding:0;max-width:none;}}
+    `;
+    const MRMARK = '<svg class="mast-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="94" height="94" rx="20" fill="#0f2540"/><rect x="11" y="11" width="78" height="78" rx="14" fill="none" stroke="#87651c" stroke-width="2"/><circle cx="50" cy="50" r="24" fill="none" stroke="#e4c477" stroke-width="3.5"/><g stroke="#e4c477" stroke-width="4" stroke-linecap="round"><line x1="50" y1="29" x2="50" y2="39"/><line x1="50" y1="71" x2="50" y2="61"/><line x1="29" y1="50" x2="39" y2="50"/><line x1="71" y1="50" x2="61" y2="50"/></g><circle cx="50" cy="50" r="6" fill="#e4c477"/></svg>';
+    function mrHTML() {
+      const base = location.origin;
+      const q = (query?.value || '').trim();
+      const today = new Date().toISOString().slice(0, 10);
+      const chipRow = (label, entries) => entries.length ? `<div class="pat-row"><div class="pat-k">${esc(label)}</div><div class="pat-v">${entries.slice(0, 6).map(([v, c]) => `<span class="chip">${esc(v)} <b>${c}</b></span>`).join('')}</div></div>` : '';
+      const pats = [chipRow('Notice types', tally(o => o.type)), chipRow('Buying offices', tally(o => o.organization)), chipRow('NAICS observed', tally(o => o.naicsCode)), chipRow('PSC observed', tally(o => o.classificationCode)), chipRow('Set-aside signals', tally(o => o.setAside))].filter(Boolean).join('') + `<div class="pat-row"><div class="pat-k">Posting window</div><div class="pat-v"><span class="pat-span">${esc(mrSpan())}</span></div></div>`;
+      const rows = board.map(o => {
+        const np = [o.naicsCode || '', o.classificationCode || ''].filter(Boolean).join(' · ') || '—';
+        const award = o.awardAmount ? `<div class="t-award">${esc(mrAwardText(o))}</div>` : '';
+        return `<tr><td><div class="t-type">${esc(o.type || 'Opportunity')}</div><div class="t-mono t-muted">${esc(o.postedDate || '')}</div></td><td><div class="t-title">${esc(o.title || 'Untitled')}</div><div class="t-org">${esc(o.organization || '')}</div>${award}</td><td class="t-mono">${esc(np)}</td><td>${esc(o.setAside || '—')}</td><td class="t-mono">${esc(o.solicitationNumber || '—')}</td></tr>`;
+      }).join('');
+      const rl = (n) => Array.from({ length: n }).map(() => '<div class="rl"></div>').join('');
+      return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><base href="${base}/"><title>AcqVault — Market Research Summary</title><style>${MRCSS}</style></head><body>
+        <div class="toolbar no-print"><button onclick="window.print()">⤓ Save as PDF</button><span>Opens your browser's print dialog — choose “Save as PDF.”</span></div>
+        <div class="wrap">
+          <div class="mast"><div class="mast-left">${MRMARK}<div class="mast-name">Acq<span>Vault</span></div></div><div class="mast-right">Market Research Summary<br>Working file · not an official record</div></div>
+          <h1 class="doc-title">Market Research Summary</h1>
+          <div class="doc-sub">Prepared in support of <b>RFO Part 10</b> (Market Research) · legacy FAR Part 10</div>
+          <div class="meta">
+            <div class="meta-cell"><div class="meta-k">Market / requirement</div><div class="meta-v">${esc(q || '—')}</div></div>
+            <div class="meta-cell"><div class="meta-k">Prepared</div><div class="meta-v mono">${esc(today)}</div></div>
+            <div class="meta-cell"><div class="meta-k">NAICS in scope</div><div class="meta-v mono">${esc(mrDistinct(o => o.naicsCode).join(' · ') || '—')}</div></div>
+            <div class="meta-cell"><div class="meta-k">PSC in scope</div><div class="meta-v mono">${esc(mrDistinct(o => o.classificationCode).join(' · ') || '—')}</div></div>
+            <div class="meta-cell"><div class="meta-k">Posting window reviewed</div><div class="meta-v mono">${esc(mrSpan())}</div></div>
+            <div class="meta-cell"><div class="meta-k">Notices reviewed</div><div class="meta-v">${board.length} pinned</div></div>
+          </div>
+          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">01</span><span class="sec-title">Market landscape</span></div><div class="pat">${pats}</div></div>
+          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">02</span><span class="sec-title">Comparable notices reviewed</span></div>
+            <table><thead><tr><th style="width:15%">Type / posted</th><th style="width:34%">Notice</th><th style="width:16%">NAICS · PSC</th><th style="width:20%">Set-aside</th><th style="width:15%">Notice #</th></tr></thead><tbody>${rows}</tbody></table>
+            <div class="foot" style="margin-top:8px;border:none;padding:0;">Source records retrieved from SAM.gov via AcqVault. Open each notice at <b>sam.gov</b> using its notice number for the authoritative file, attachments, and full description.</div>
+          </div>
+          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">03</span><span class="sec-title">Findings</span></div><div class="prompt">Summarize what the market shows — availability and adequacy of sources, small-business capability, typical contract types/vehicles, pricing signals, and any apparent incumbents. Complete before filing.</div>${rl(6)}</div>
+          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">04</span><span class="sec-title">Recommendation</span></div><div class="prompt">Recommended acquisition approach, set-aside determination, and competition strategy, with the market evidence above as the basis. Complete before filing.</div>${rl(5)}
+            <div class="signoff"><div class="so-cell"><div class="so-k">Prepared by</div><div class="so-line"></div></div><div class="so-cell"><div class="so-k">Date</div><div class="so-line"></div></div></div>
+          </div>
+          <div class="guide"><div class="guide-k">Governing guidance</div><div class="guide-t">This market research supports <a href="/rfo/part-10">RFO Part 10</a> (Market Research). Small-business set-asides recur in this market — see <a href="/rfo/part-19">RFO Part 19</a> for the set-aside determination. For commercial-item treatment by PSC, see <a href="/rfo/part-12">RFO Part 12</a>.</div></div>
+          <div class="foot"><b>Generated by AcqVault</b> (acqvault.com) on ${esc(today)} from SAM.gov opportunity data. AcqVault is an <b>unofficial research aid</b> — not legal advice and not an official source. Verify every notice and citation against the official record at sam.gov and the Revolutionary FAR Overhaul before relying on this summary in a contract file.</div>
+        </div>
+      </body></html>`;
+    }
+    function mrText() {
+      const q = (query?.value || '').trim();
+      const patLine = (label, entries) => entries.length ? `  ${label}: ${entries.slice(0, 6).map(([v, c]) => `${v} (${c})`).join(', ')}` : '';
+      const L = ['MARKET RESEARCH SUMMARY', 'Prepared in support of RFO Part 10 (Market Research) — working file, not an official record', ''];
+      L.push(`Market / requirement: ${q || '—'}`);
+      L.push(`NAICS in scope: ${mrDistinct(o => o.naicsCode).join(' · ') || '—'}`);
+      L.push(`PSC in scope: ${mrDistinct(o => o.classificationCode).join(' · ') || '—'}`);
+      L.push(`Posting window reviewed: ${mrSpan()}`);
+      L.push(`Notices reviewed: ${board.length} pinned`);
+      L.push(`Prepared: ${new Date().toISOString().slice(0, 10)}`, '', 'MARKET LANDSCAPE');
+      [['Notice types', tally(o => o.type)], ['Buying offices', tally(o => o.organization)], ['NAICS observed', tally(o => o.naicsCode)], ['PSC observed', tally(o => o.classificationCode)], ['Set-aside signals', tally(o => o.setAside)]].forEach(([l, e]) => { const s = patLine(l, e); if (s) L.push(s); });
+      L.push(`  Posting window: ${mrSpan()}`, '', 'COMPARABLE NOTICES REVIEWED');
+      board.forEach(o => {
+        L.push(`- [${o.type || 'Opportunity'} · ${o.postedDate || ''}] ${o.title || 'Untitled'} — ${o.organization || ''}`);
+        const bits = [o.naicsCode && `NAICS ${o.naicsCode}`, o.classificationCode && `PSC ${o.classificationCode}`, o.setAside, o.solicitationNumber && `Notice ${o.solicitationNumber}`].filter(Boolean);
+        if (bits.length) L.push('    ' + bits.join(' · '));
+        if (o.awardAmount) L.push('    ' + mrAwardText(o));
+        if (o.uiLink) L.push('    ' + o.uiLink);
+      });
+      L.push('', 'FINDINGS', '  [Summarize source availability, small-business capability, contract types, pricing signals, incumbents.]', '', 'RECOMMENDATION', '  [Recommended approach, set-aside determination, competition strategy.]', '', 'GOVERNING GUIDANCE: RFO Part 10 (Market Research); RFO Part 19 (set-asides); RFO Part 12 (commercial by PSC).', '', `Generated by AcqVault (acqvault.com) on ${new Date().toISOString().slice(0, 10)} from SAM.gov data. Unofficial research aid — verify against the official record before filing.`);
+      return L.join('\n');
+    }
+    function generateMrNote() {
+      if (!board.length) return;
+      const w = window.open('', '_blank');
+      if (!w) { srAnnounceMR('Allow pop-ups to open the note, or use Copy text.'); return; }
+      w.document.open(); w.document.write(mrHTML()); w.document.close();
+    }
+    function copyMrNote(btn) {
+      const text = mrText();
+      const done = () => { if (btn) { const o = btn.textContent; btn.textContent = 'Copied ✓'; setTimeout(() => { btn.textContent = o; }, 1600); } };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, done);
+      else { try { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); } catch (e) {} }
+    }
+    const srAnnounceMR = (msg) => { if (typeof window.srAnnounce === 'function') window.srAnnounce(msg); };
     function boardItemHTML(o) {
       const key = oppKey(o);
       const meta = [o.solicitationNumber, o.naicsCode ? `NAICS ${o.naicsCode}` : '', o.classificationCode ? `PSC ${o.classificationCode}` : '', o.setAside].filter(Boolean);
@@ -1123,7 +1254,7 @@
         </div>
         <div class="market-board-intro">Your working set for a market research note. Pinned opportunities stay on this device.</div>
         <div class="market-board-body">${n ? patternsHTML() + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>'}</div>
-        ${n ? '<div class="market-board-foot"><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button><span class="market-board-foot-note">FAR Part 10 MR note — next</span></div>' : ''}`;
+        ${n ? '<div class="market-board-foot"><div class="market-board-foot-actions"><button type="button" class="market-board-gen" data-mr-note="1">Generate MR note</button><button type="button" class="market-board-copy" data-mr-copy="1">Copy text</button></div><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button></div>' : ''}`;
     }
     function openTray() {
       renderBoardTray();
@@ -1151,6 +1282,8 @@
         closeTray(); runMarketSearch(); return;
       }
       const unpin = e.target.closest('[data-unpin]'); if (unpin) { removeFromBoard(unpin.dataset.unpin); return; }
+      if (e.target.closest('[data-mr-note]')) { generateMrNote(); return; }
+      const cp = e.target.closest('[data-mr-copy]'); if (cp) { copyMrNote(cp); return; }
       if (e.target.closest('[data-board-clear]')) { clearBoard(); }
     });
     boardBackdrop.addEventListener('click', closeTray);
