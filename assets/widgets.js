@@ -1102,6 +1102,53 @@
       if (!rows.length) return '';
       return `<div class="market-patterns"><div class="market-pat-head">Patterns across ${board.length} pinned</div>${rows.join('')}</div>`;
     }
+    // ── USASpending.gov: comparable awards + incumbents for the pinned market ──
+    // (authoritative award $ + incumbent — SAM notices are a weaker signal). Fetched
+    // via our server-side /api/usaspending proxy (CORS + CAC block direct calls).
+    let usaData = null;
+    let usaState = 'idle'; // idle | loading | ready | empty | error
+    let usaSig = '';
+    const usaCodes = () => ({ naics: mrDistinct(o => o.naicsCode), psc: mrDistinct(o => o.classificationCode) });
+    const usaFmt = (v) => { const n = Number(v); return isFinite(n) ? '$' + Math.round(n).toLocaleString() : '—'; };
+    const boardSig = () => { const c = usaCodes(); return c.naics.slice().sort().join(',') + '|' + c.psc.slice().sort().join(','); };
+    function paintUsa() { const el = document.getElementById('market-usa'); if (el) el.innerHTML = usaInnerHTML(); }
+    async function loadUsa() {
+      const c = usaCodes();
+      if (!c.naics.length && !c.psc.length) { usaState = 'idle'; paintUsa(); return; }
+      const sig = boardSig();
+      if (sig === usaSig && (usaState === 'ready' || usaState === 'empty')) { paintUsa(); return; }
+      usaSig = sig; usaState = 'loading'; paintUsa();
+      try {
+        const r = await fetch('/api/usaspending', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ naics: c.naics, psc: c.psc, years: 3 }) });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || 'USASpending request failed');
+        usaData = data;
+        usaState = (data.awards && data.awards.length) ? 'ready' : 'empty';
+      } catch (e) { usaState = 'error'; }
+      paintUsa();
+    }
+    function usaInnerHTML() {
+      const head = `<div class="market-usa-head">Incumbents &amp; recent awards <span class="market-usa-src">USASpending.gov</span></div>`;
+      if (usaState === 'loading') return head + '<div class="market-usa-msg">Loading award history…</div>';
+      if (usaState === 'error') return head + '<div class="market-usa-msg">Award history unavailable right now.</div>';
+      if (usaState === 'empty') return head + '<div class="market-usa-msg">No contract awards found for these NAICS/PSC in the last 3 FY.</div>';
+      if (usaState !== 'ready' || !usaData) return '';
+      const recips = (usaData.recipients || []).map(r => `<div class="market-usa-recip"><span class="market-usa-name">${esc(r.name)}</span><span class="market-usa-amt">${usaFmt(r.total)} <span class="market-usa-ct">${r.count} award${r.count === 1 ? '' : 's'}</span></span></div>`).join('');
+      const awards = (usaData.awards || []).slice(0, 5).map(a => `<a class="market-usa-award" href="${escAttr(a.link)}" target="_blank" rel="noopener"><span class="market-usa-aw-top"><span class="market-usa-name">${esc(a.recipient || '—')}</span><span class="market-usa-amt">${usaFmt(a.amount)}</span></span><span class="market-usa-aw-sub">${esc(a.agency || '')}${a.start ? ' · ' + esc(a.start) : ''}</span></a>`).join('');
+      return `<div class="market-usa-head">Incumbents &amp; recent awards <span class="market-usa-src">USASpending · last ${usaData.years} FY</span></div>`
+        + `<div class="market-usa-lbl">Top recipients by obligated $</div>${recips}`
+        + `<div class="market-usa-lbl">Largest recent awards</div>${awards}`;
+    }
+    // § N of the MR note — historical awards + incumbents (only when data loaded)
+    function usaNoteHTML(num) {
+      if (usaState !== 'ready' || !usaData || !(usaData.awards || []).length) return '';
+      const recips = (usaData.recipients || []).map(r => `<span class="chip">${esc(r.name)} <b>${esc(usaFmt(r.total))}</b></span>`).join('');
+      const rows = (usaData.awards || []).slice(0, 8).map(a => `<tr><td><div class="t-title">${esc(a.recipient || '—')}</div><div class="t-org">${esc(a.agency || '')}${a.subAgency ? ' · ' + esc(a.subAgency) : ''}</div></td><td class="t-mono">${esc(a.start || '')}</td><td class="t-award">${esc(usaFmt(a.amount))}</td><td class="t-mono">${esc(a.type || '')}</td></tr>`).join('');
+      return `<div class="sec"><div class="sec-eyebrow"><span class="sec-num">${num}</span><span class="sec-title">Incumbents &amp; historical awards</span></div>
+        <div class="pat"><div class="pat-row"><div class="pat-k">Top recipients</div><div class="pat-v">${recips}</div></div></div>
+        <table style="margin-top:10px"><thead><tr><th style="width:44%">Recipient / awarding agency</th><th style="width:16%">Start</th><th style="width:20%">Obligated</th><th style="width:20%">Type</th></tr></thead><tbody>${rows}</tbody></table>
+        <div class="foot" style="margin-top:8px;border:none;padding:0;">Source: USASpending.gov (FPDS) — top contract awards by obligated amount, last ${usaData.years} FY. Authoritative for award $ and incumbent; SAM notices above are a weaker signal for award value.</div></div>`;
+    }
     // ── FAR/RFO Part 10 market research note (client-side print-to-PDF, CAC-safe) ──
     const mrDistinct = (getter) => [...new Set(board.map(getter).filter(Boolean))];
     const mrSpan = () => { const d = board.map(o => o.postedDate).filter(Boolean).sort(); return d.length ? (d.length > 1 ? `${d[0]} → ${d[d.length - 1]}` : d[0]) : '—'; };
@@ -1170,6 +1217,9 @@
         return `<tr><td><div class="t-type">${esc(o.type || 'Opportunity')}</div><div class="t-mono t-muted">${esc(o.postedDate || '')}</div></td><td><div class="t-title">${esc(o.title || 'Untitled')}</div><div class="t-org">${esc(o.organization || '')}</div>${award}</td><td class="t-mono">${esc(np)}</td><td>${esc(o.setAside || '—')}</td><td class="t-mono">${esc(o.solicitationNumber || '—')}</td></tr>`;
       }).join('');
       const rl = (n) => Array.from({ length: n }).map(() => '<div class="rl"></div>').join('');
+      const usaSec = usaNoteHTML('03');           // present only when award data loaded
+      const findNum = usaSec ? '04' : '03';
+      const recNum = usaSec ? '05' : '04';
       return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><base href="${base}/"><title>AcqVault — Market Research Summary</title><style>${MRCSS}</style></head><body>
         <div class="toolbar no-print"><button onclick="window.print()">⤓ Save as PDF</button><span>Opens your browser's print dialog — choose “Save as PDF.”</span></div>
         <div class="wrap">
@@ -1189,8 +1239,9 @@
             <table><thead><tr><th style="width:15%">Type / posted</th><th style="width:34%">Notice</th><th style="width:16%">NAICS · PSC</th><th style="width:20%">Set-aside</th><th style="width:15%">Notice #</th></tr></thead><tbody>${rows}</tbody></table>
             <div class="foot" style="margin-top:8px;border:none;padding:0;">Source records retrieved from SAM.gov via AcqVault. Open each notice at <b>sam.gov</b> using its notice number for the authoritative file, attachments, and full description.</div>
           </div>
-          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">03</span><span class="sec-title">Findings</span></div><div class="prompt">Summarize what the market shows — availability and adequacy of sources, small-business capability, typical contract types/vehicles, pricing signals, and any apparent incumbents. Complete before filing.</div>${rl(6)}</div>
-          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">04</span><span class="sec-title">Recommendation</span></div><div class="prompt">Recommended acquisition approach, set-aside determination, and competition strategy, with the market evidence above as the basis. Complete before filing.</div>${rl(5)}
+          ${usaSec}
+          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">${findNum}</span><span class="sec-title">Findings</span></div><div class="prompt">Summarize what the market shows — availability and adequacy of sources, small-business capability, typical contract types/vehicles, pricing signals, and any apparent incumbents. Complete before filing.</div>${rl(6)}</div>
+          <div class="sec"><div class="sec-eyebrow"><span class="sec-num">${recNum}</span><span class="sec-title">Recommendation</span></div><div class="prompt">Recommended acquisition approach, set-aside determination, and competition strategy, with the market evidence above as the basis. Complete before filing.</div>${rl(5)}
             <div class="signoff"><div class="so-cell"><div class="so-k">Prepared by</div><div class="so-line"></div></div><div class="so-cell"><div class="so-k">Date</div><div class="so-line"></div></div></div>
           </div>
           <div class="guide"><div class="guide-k">Governing guidance</div><div class="guide-t">This market research supports <a href="/rfo/part-10">RFO Part 10</a> (Market Research). Small-business set-asides recur in this market — see <a href="/rfo/part-19">RFO Part 19</a> for the set-aside determination. For commercial-item treatment by PSC, see <a href="/rfo/part-12">RFO Part 12</a>.</div></div>
@@ -1217,6 +1268,13 @@
         if (o.awardAmount) L.push('    ' + mrAwardText(o));
         if (o.uiLink) L.push('    ' + o.uiLink);
       });
+      if (usaState === 'ready' && usaData && (usaData.awards || []).length) {
+        L.push('', `INCUMBENTS & HISTORICAL AWARDS (USASpending.gov, last ${usaData.years} FY)`, '  Top recipients by obligated $:');
+        (usaData.recipients || []).forEach(r => L.push(`    ${r.name} — ${usaFmt(r.total)} (${r.count} award${r.count === 1 ? '' : 's'})`));
+        L.push('  Largest recent awards:');
+        (usaData.awards || []).slice(0, 8).forEach(a => { L.push(`    ${a.recipient || '—'} — ${usaFmt(a.amount)} · ${a.agency || ''} · ${a.start || ''} · ${a.type || ''}`); if (a.link) L.push(`      ${a.link}`); });
+        L.push('  Source: USASpending.gov (FPDS) — authoritative for award $ and incumbent; SAM notices are a weaker signal.');
+      }
       L.push('', 'FINDINGS', '  [Summarize source availability, small-business capability, contract types, pricing signals, incumbents.]', '', 'RECOMMENDATION', '  [Recommended approach, set-aside determination, competition strategy.]', '', 'GOVERNING GUIDANCE: RFO Part 10 (Market Research); RFO Part 19 (set-asides); RFO Part 12 (commercial by PSC).', '', `Generated by AcqVault (acqvault.com) on ${new Date().toISOString().slice(0, 10)} from SAM.gov data. Unofficial research aid — verify against the official record before filing.`);
       return L.join('\n');
     }
@@ -1253,8 +1311,9 @@
           <button type="button" class="market-board-close" aria-label="Close board" title="Close">×</button>
         </div>
         <div class="market-board-intro">Your working set for a market research note. Pinned opportunities stay on this device.</div>
-        <div class="market-board-body">${n ? patternsHTML() + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>'}</div>
+        <div class="market-board-body">${n ? patternsHTML() + ((usaCodes().naics.length || usaCodes().psc.length) ? '<div class="market-usa" id="market-usa"></div>' : '') + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>'}</div>
         ${n ? '<div class="market-board-foot"><div class="market-board-foot-actions"><button type="button" class="market-board-gen" data-mr-note="1">Generate MR note</button><button type="button" class="market-board-copy" data-mr-copy="1">Copy text</button></div><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button></div>' : ''}`;
+      if (n) loadUsa();
     }
     function openTray() {
       renderBoardTray();
