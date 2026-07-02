@@ -297,6 +297,47 @@ def check_static_pdf(label, url, local_glob, download=True):
     return msg, True
 
 
+# ── Threshold watch ───────────────────────────────────────────────────────────
+
+MONEY_RE = re.compile(r"\$[\d][\d,.]*(?:\s?(?:million|billion))?")
+
+
+def threshold_watch(existing_rfo, final_rfo, modified):
+    """Two drift alarms for the Toolkit threshold widget:
+    (a) modified sections whose dollar figures changed (a value the widget quotes
+        may have moved), and (b) widget citations that no longer resolve to a
+        section in the refreshed corpus (the RFO renumbered — fix widgets.js)."""
+    old_by_anchor = {d["anchor"]: d for d in existing_rfo}
+    dollar_drift = []
+    for d in modified:
+        o = old_by_anchor.get(d.get("anchor"))
+        if not o:
+            continue
+        om, nm = set(MONEY_RE.findall(o["content"])), set(MONEY_RE.findall(d["content"]))
+        if om != nm:
+            dollar_drift.append({"title": d["title"], "part": d["part"],
+                                 "gone": sorted(om - nm), "new": sorted(nm - om)})
+    widget = BASE_DIR / "assets" / "widgets.js"
+    cites = re.findall(r"cite:\s*'RFO ([^']+)'", widget.read_text()) if widget.exists() else []
+    first_words = {d["title"].split()[0] for d in final_rfo}
+    subpart_words = {d["title"].split()[1] for d in final_rfo if d["title"].startswith("Subpart ")}
+    broken = [c for c in set(cites) if c not in first_words and c not in subpart_words]
+    if dollar_drift or broken:
+        print("\n⚠ THRESHOLD WATCH")
+        if broken:
+            print("  Toolkit citations that no longer resolve in the corpus (fix assets/widgets.js):")
+            for c in sorted(broken):
+                print("    · RFO " + c)
+        if dollar_drift:
+            print("  Modified sections with changed dollar figures (check the Toolkit values):")
+            for e in dollar_drift[:15]:
+                print("    · Part {:>3}  {}  −{} +{}".format(
+                    e["part"], e["title"][:58], e["gone"] or "[]", e["new"] or "[]"))
+            if len(dollar_drift) > 15:
+                print("    · … and {} more (full list in refresh-report.json)".format(len(dollar_drift) - 15))
+    return {"dollar_drift": dollar_drift, "broken_widget_cites": sorted(broken)}
+
+
 # ── documents.json merge + ship ───────────────────────────────────────────────
 
 def load_docs():
@@ -432,8 +473,11 @@ def main():
         print("  Removed sections:")
         brief(removed)
 
+    watch = threshold_watch(existing_rfo, final_rfo, modified)
+
     report = {
         "run_at": now_iso(),
+        "threshold_watch": watch,
         "rfo": {
             "unchanged": unchanged,
             "modified": [{"id": d["id"], "part": d["part"], "title": d["title"]} for d in modified],

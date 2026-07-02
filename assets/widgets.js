@@ -39,18 +39,30 @@
     ? 'new awards; mods to pre-30 Jun 2026 contracts stay $2.5M'
     : '→ $10M for new awards on/after 30 Jun 2026';
   const THRESHOLDS = [
+    // Citations verified against the live corpus 2026-07-02 (post-July RFO refresh);
+    // refresh.py cite-watch flags any of these that stop resolving after a corpus update.
     { abbr: 'MPT', name: 'Micro-Purchase Threshold', cite: 'RFO 2.101',
       std: 15000, con: 25000, conNote: '$40K outside U.S.' },
+    { abbr: 'DBA', name: 'Construction wage rates (Davis-Bacon) above', cite: 'RFO 22.402',
+      std: 2000, con: 2000, fixed: true, note: 'Also caps the construction MPT at $2,000' },
+    { abbr: 'SCA', name: 'Service Contract Labor Standards above', cite: 'RFO 22.1002',
+      std: 2500, con: 2500, fixed: true, note: 'Also caps the services MPT at $2,500' },
+    { abbr: '', name: 'Supply contract labor standards (Walsh-Healey) above', cite: 'RFO 22.601',
+      std: 20000, con: 20000, fixed: true },
+    { abbr: '', name: 'Construction performance & payment bonds above', cite: 'RFO 28.102',
+      std: 150000, con: 150000, fixed: true },
     { abbr: 'SAT', name: 'Simplified Acquisition Threshold', cite: 'RFO 2.101',
       std: 350000, con: 1000000, conNote: '$2M outside U.S.' },
-    { abbr: 'SAP', name: 'Simplified procedures, commercial', cite: 'RFO 13.500',
-      std: 9000000, con: 15000000 },
-    { abbr: 'TINA', name: 'Certified cost or pricing data', cite: 'RFO 15.403-4',
-      std: TINA_VALUE, con: TINA_VALUE, fixed: true, note: TINA_NOTE },
-    { abbr: '', name: 'Subcontracting plan required above', cite: 'RFO 19.702',
+    { abbr: '', name: 'Subcontracting plan required above', cite: 'RFO 19.109',
+      std: 900000, con: 900000, fixed: true, note: '$2M for construction of a public facility' },
+    { abbr: 'J&A', name: 'Other than full & open — first approval tier', cite: 'RFO 6.104-2',
       std: 900000, con: 900000, fixed: true },
-    { abbr: 'J&A', name: 'Other than full & open — first approval tier', cite: 'RFO 6.304',
-      std: 900000, con: 900000, fixed: true }
+    { abbr: 'TINA', name: 'Certified cost or pricing data', cite: 'RFO 15.403-3',
+      std: TINA_VALUE, con: TINA_VALUE, fixed: true, note: TINA_NOTE },
+    { abbr: 'SAP', name: 'Simplified procedures, commercial', cite: 'RFO 12.201-1',
+      std: 9000000, con: 15000000 },
+    { abbr: '', name: 'E.O. 14402 justification — other than fixed-price, DoD', cite: 'RFO 16.104',
+      std: 100000000, con: 100000000, fixed: true, note: '$10M most civilian agencies · E.O. of Apr 2026' }
   ];
 
   // Acronym glossary: TERM -> [expansion, optional note]
@@ -102,7 +114,9 @@
     SSA: ['Source Selection Authority'],
     SSAC: ['Source Selection Advisory Council'],
     PNM: ['Price Negotiation Memorandum'],
-    'J&A': ['Justification and Approval', 'Other than full & open — RFO 6.304'],
+    'J&A': ['Justification and Approval', 'Other than full & open — RFO 6.104-2'],
+    SCA: ['Service Contract Act', 'Now “Service Contract Labor Standards” — applies above $2,500 (RFO 22.1002)'],
+    DBA: ['Davis-Bacon Act', 'Construction wage rates — applies above $2,000 (RFO 22.402)'],
     'D&F': ['Determination and Findings', 'FAR 1.7'],
     BAA: ['Broad Agency Announcement', 'FAR 35.016'],
     OTA: ['Other Transaction Authority', '10 U.S.C. 4021/4022'],
@@ -490,12 +504,15 @@
         desc: `Above the Micro-Purchase Threshold and at or below the Simplified Acquisition Threshold (${fmtExact(satV)}). Simplified Acquisition Procedures are available (RFO Part 13); acquisitions in this range are generally reserved for small business.` };
     } else {
       band = { cls: 'open', tag: 'Above the SAT', cite: sat.cite,
-        desc: `Above the Simplified Acquisition Threshold (${fmtExact(satV)}). Full and open competition generally applies (RFO Part 6), using negotiated procedures (RFO Part 15) unless a documented exception applies. Commercial products and services may still use simplified procedures up to ${fmtExact(sapV)} (RFO 13.500).` };
+        desc: `Above the Simplified Acquisition Threshold (${fmtExact(satV)}). Full and open competition generally applies (RFO Part 6), using negotiated procedures (RFO Part 15) unless a documented exception applies. Commercial products and services may still use simplified procedures up to ${fmtExact(sapV)} (RFO 12.201-1).` };
     }
     const triggerDefs = [
-      { row: thrFind((t) => t.abbr === 'TINA'), label: 'Certified cost or pricing data (TINA)', cond: 'unless an exception applies — e.g., adequate price competition or commercial products/services' },
+      { row: thrFind((t) => t.abbr === 'DBA'), label: 'Construction wage rates (Davis-Bacon)', cond: 'for construction at a specific site — also caps the construction micro-purchase threshold' },
+      { row: thrFind((t) => t.abbr === 'SCA'), label: 'Service Contract Labor Standards (SCA)', cond: 'for service contracts principally using service employees — also caps the services micro-purchase threshold' },
+      { row: thrFind((t) => /payment bonds/i.test(t.name)), label: 'Performance & payment bonds', cond: 'for construction contracts (Bonds statute)' },
       { row: thrFind((t) => /Subcontracting/i.test(t.name)), label: 'Subcontracting plan', cond: 'for other-than-small businesses when subcontracting opportunities exist' },
-      { row: thrFind((t) => t.abbr === 'J&A'), label: 'J&A — first approval tier', cond: 'only when awarding other than full and open competition' }
+      { row: thrFind((t) => t.abbr === 'J&A'), label: 'J&A — first approval tier', cond: 'only when awarding other than full and open competition' },
+      { row: thrFind((t) => t.abbr === 'TINA'), label: 'Certified cost or pricing data (TINA)', cond: 'unless an exception applies — e.g., adequate price competition or commercial products/services' }
     ];
     const triggers = triggerDefs.filter((d) => d.row).map((d) => {
       const v = thrScopeVal(d.row);
