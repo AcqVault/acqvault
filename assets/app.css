@@ -1370,7 +1370,6 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .ql-card:hover .ql-arrow{transform:translate(2px,-2px);color:var(--brass-ink);opacity:1;}
 
 .market-section{position:relative;overflow:hidden;background:var(--off);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);}
-.market-section::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(14,63,128,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(14,63,128,0.05) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(180deg,transparent 0%,black 18%,black 88%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 18%,black 88%,transparent 100%);}
 .market-section .sec-inner{position:relative;z-index:1;}
 .market-shell{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:var(--sec-head-gap);align-items:start;}
 .market-panel{min-width:0;background:rgba(255,255,255,0.76);border:1px solid rgba(135,101,28,0.13);border-radius:20px;box-shadow:0 1px 0 rgba(255,255,255,0.9) inset,0 18px 48px rgba(15,23,42,0.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}

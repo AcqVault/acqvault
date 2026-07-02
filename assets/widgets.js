@@ -369,14 +369,17 @@
     }, { threshold: 0.01, rootMargin: '0px 0px 20% 0px' });
     [marketResearch, toolkit, dash].filter(Boolean).forEach((sec) => sec.querySelectorAll('.fade-up').forEach((el) => io.observe(el)));
 
-    // add nav link
+    // add nav links (Toolkit + Spending) in scroll order, after Quick Links
     const navCenter = $('nav .nav-center');
     if (navCenter) {
-      const a = document.createElement('a');
-      a.href = '#toolkit'; a.textContent = 'Toolkit';
+      const tk = document.createElement('a');
+      tk.href = '#toolkit'; tk.textContent = 'Toolkit';
       const quickLink = navCenter.querySelector('a[href="#quick-links"]');
-      if (quickLink) quickLink.insertAdjacentElement('afterend', a);
-      else navCenter.insertBefore(a, navCenter.firstChild);
+      if (quickLink) quickLink.insertAdjacentElement('afterend', tk);
+      else navCenter.insertBefore(tk, navCenter.firstChild);
+      const sp = document.createElement('a');
+      sp.href = '#spending-dashboard'; sp.textContent = 'Spending';
+      tk.insertAdjacentElement('afterend', sp);
     }
     initHomeNavPolish();
   }
