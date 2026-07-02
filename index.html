@@ -105,7 +105,7 @@
     <div class="hero-left hero-content">
       <div class="hero-intro">
         <h1 class="hero-headline">The <em>Revolutionary FAR&nbsp;Overhaul</em> is here.<br><span class="hl-ink">Search every word of&nbsp;it.</span></h1>
-        <p class="hero-sub">Full-text search across all seven official sources — free, no account, no AI summaries. Just the authoritative <strong>RFO</strong>, <strong>R-DFARS</strong>, and DoD acquisition text, current today.</p>
+        <p class="hero-sub">Full-text search across all six official sources — free, no account, no AI summaries. Just the authoritative <strong>RFO</strong>, <strong>R-DFARS</strong>, and DoD acquisition text, current today.</p>
       </div>
 
       <div class="search-container" role="search">
@@ -146,7 +146,6 @@
               <button type="button" onclick="chooseBrowseSource('category-management')"><span>Category Management Buying Guide</span><small>Live</small></button>
               <button type="button" onclick="chooseBrowseSource('afi-63-138')"><span>DAFI 63-138</span><small>Live</small></button>
               <button type="button" onclick="chooseBrowseSource('fmr')"><span>DoD FMR</span><small>Live</small></button>
-              <button type="button" onclick="chooseBrowseSource('compass')"><span>DAF Contracting Compass</span><small>In-app</small></button>
             </div>
           </div>
           <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
@@ -155,10 +154,10 @@
 
       <!-- bottom stats + source strip -->
       <div class="hero-statstrip">
-        <span class="hero-statstrip-count"><strong>5,807</strong> indexed sections</span>
+        <span class="hero-statstrip-count"><strong>5,759</strong> indexed sections</span>
         <span class="hero-statstrip-div"></span>
         <div class="hero-source-strip" aria-label="Live sources">
-          <span class="hero-live-label"><span class="hero-live-dot"></span>Live sources</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>Category Mgmt</b><b>DAFI 63-138</b><b>DoD FMR</b><b>DAF Compass</b><span class="hero-live-count">7 live</span>
+          <span class="hero-live-label"><span class="hero-live-dot"></span>Live sources</span><b>RFO</b><b>R-DFARS</b><b>FAR Companion</b><b>Category Mgmt</b><b>DAFI 63-138</b><b>DoD FMR</b><span class="hero-live-count">6 live</span>
         </div>
       </div>
     </div>
@@ -215,7 +214,6 @@
           <button type="button" class="fpill" data-source="far-companion" aria-pressed="false">FAR Companion</button>
           <button type="button" class="fpill" data-source="category-management" aria-pressed="false">Category Management Buying Guide</button>
           <button type="button" class="fpill" data-source="afi-63-138" aria-pressed="false">DAFI 63-138</button>
-          <button type="button" class="fpill" data-source="compass" aria-pressed="false">DAF Contracting Compass</button>
           <button type="button" class="fpill" data-source="fmr" aria-pressed="false">DoD FMR</button>
         </div>
       </div>
@@ -236,7 +234,6 @@
       <button type="button" class="browse-src-pill" data-bsource="far-companion" aria-pressed="false" onclick="setBrowseSource('far-companion')">FAR Companion</button>
       <button type="button" class="browse-src-pill" data-bsource="category-management" aria-pressed="false" onclick="setBrowseSource('category-management')">Category Management Buying Guide</button>
       <button type="button" class="browse-src-pill" data-bsource="afi-63-138" aria-pressed="false" onclick="setBrowseSource('afi-63-138')">DAFI 63-138</button>
-      <button type="button" class="browse-src-pill" data-bsource="compass" aria-pressed="false" onclick="setBrowseSource('compass')">DAF Contracting Compass</button>
       <button type="button" class="browse-src-pill" data-bsource="fmr" aria-pressed="false" onclick="setBrowseSource('fmr')">DoD FMR</button>
     </div>
   </div>
@@ -279,7 +276,6 @@
     <div class="fulltext-note"><strong>How these are generated:</strong> A GitHub Actions workflow runs on the 1st of every month, fetches all documents from the live Meilisearch index, compiles them in sequential part order, and commits fresh PDFs to the repository. Each page carries an AcqVault.com watermark. Files are served directly from GitHub — no server required.</div>
     <div class="fulltext-section-label">Browse-only sources</div>
     <div class="fulltext-cards">
-      <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--cmp-bg);color:var(--cmp-txt);">DAF Compass</span><div class="fulltext-card-name">DAF Contracting Compass</div><div class="fulltext-card-meta"><span>48 parts covered</span><span>In-app archive · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('compass')">Browse in-app</button></div>
       <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--fmr-bg);color:var(--fmr-txt);">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>304 chapters · 16 volumes</span><span>In-app · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('fmr')">Browse in-app</button></div>
     </div>
   </div>
@@ -467,12 +463,6 @@
           <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('fmr')">DoD FMR</button>
         </div>
       </div>
-      <div class="source-status-row">
-        <div class="source-status-label">Reference</div>
-        <div class="source-status-main">
-          <button type="button" class="source-status-chip archived" onclick="setMode('browse');setBrowseSource('compass')">DAF Contracting Compass <span class="source-status-note">archived copy · verify vs CAC source</span></button>
-        </div>
-      </div>
     </div>
     <ul class="trust-strip fade-up" style="transition-delay:0.12s;" aria-label="What AcqVault promises">
       <li>Free — always</li>
@@ -586,7 +576,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=44"></script>
+<script defer src="/assets/app.js?v=45"></script>
 <script defer src="/assets/saved.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=30"></script>
 <script defer src="/assets/polish.js?v=3"></script>

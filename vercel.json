@@ -4,8 +4,8 @@
     { "source": "/deviations", "destination": "/api/deviations" },
     { "source": "/library", "destination": "/api/library" },
     { "source": "/what-is-the-rfo", "destination": "/api/explainer" },
-    { "source": "/:source(rfo|r-dfars|far-companion|compass|afi-63-138|category-management|fmr)", "destination": "/api/hub?source=:source" },
-    { "source": "/:source(rfo|r-dfars|far-companion|compass|afi-63-138|category-management|fmr)/part-:part", "destination": "/api/page?source=:source&part=:part" }
+    { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr)", "destination": "/api/hub?source=:source" },
+    { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr)/part-:part", "destination": "/api/page?source=:source&part=:part" }
   ],
   "headers": [
     {

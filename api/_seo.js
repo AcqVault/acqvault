@@ -13,8 +13,6 @@ const SOURCES = {
     desc: 'DoD class deviations implementing the RFO for the Department of Defense — the deviation set you cite in place of the legacy supplement.' },
   'far-companion':       { name: 'FAR Companion', short: 'FAR Companion',
     desc: 'Practitioner guidance accompanying the Revolutionary FAR Overhaul.' },
-  'compass':             { name: 'DAF Contracting Compass', short: 'Compass',
-    desc: 'Department of the Air Force contracting guidance (DAF Contracting Compass).' },
   'afi-63-138':          { name: 'DAFI 63-138', short: 'DAFI 63-138',
     desc: 'Department of the Air Force Instruction 63-138, Acquisition Program Management.' },
   'category-management': { name: 'Category Management Buying Guide', short: 'Cat Mgmt',

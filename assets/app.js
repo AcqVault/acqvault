@@ -106,7 +106,9 @@ function acqLoadCorpus(){
   if(acqCorpusPromise) return acqCorpusPromise;
   acqCorpusPromise = fetch(CORPUS_URL)
     .then(r => { if(!r.ok) throw new Error('corpus HTTP '+r.status); return r.json(); })
-    .then(docs => { ACQ_INDEX = docs.filter(Boolean).map(doc => ({ doc, titleLc:String(doc.title||'').toLowerCase(), contentLc:String(doc.content||'').toLowerCase() })); return ACQ_INDEX; })
+    // DAF Compass temporarily excluded from search (kept identical to the server
+    // filter in api/search.js loadDocs) — docs remain in the corpus, just not indexed.
+    .then(docs => { ACQ_INDEX = docs.filter(Boolean).filter(doc => doc.source!=='compass').map(doc => ({ doc, titleLc:String(doc.title||'').toLowerCase(), contentLc:String(doc.content||'').toLowerCase() })); return ACQ_INDEX; })
     .catch(e => { acqCorpusPromise = null; throw e; });
   return acqCorpusPromise;
 }
@@ -219,11 +221,10 @@ const SOURCE_URLS = {
   'category-management': 'https://www.acquisition.gov/far-overhaul',
   'fmr':           'https://comptroller.war.gov/FMR/',
   'afi-63-138':    'https://www.e-publishing.af.mil/',
-  'compass':        'https://usaf.dps.mil/sites/AFCC/AQCP/KnowledgeCenter/SitePages/DAF-Contracting-Compass.aspx',
 };
 const SOURCE_LABELS = {
   'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management Buying Guide',
-  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'compass': 'DAF Contracting Compass',
+  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138',
 };
 
 // ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
@@ -294,33 +295,6 @@ const PARTS_BY_SOURCE = {
     ['12','Special Accounts, Funds, and Programs'],['13','Nonappropriated Funds Policy and Procedures'],
     ['14','Administrative Control of Funds and Antideficiency Act Violations'],
     ['15','Security Cooperation Policy'],['16','Department of Defense Debt Management']
-  ],
-  'compass': [
-    [1,'Federal Acquisition Regulations System'],[2,'Definitions'],
-    [3,'Improper Business Practices and Personal Conflicts of Interest'],
-    [4,'Administrative and Information Matters'],[5,'Publicizing Contract Actions'],
-    [6,'Competition Requirements'],[7,'Acquisition Planning'],
-    [8,'Required Sources of Supplies and Services'],[9,'Contractor Qualifications'],
-    [10,'Market Research'],[11,'Describing Agency Needs'],
-    [12,'Acquisition of Commercial Products and Commercial Services'],
-    [13,'Simplified Acquisition Procedures'],[14,'Sealed Bidding'],
-    [15,'Contracting by Negotiation'],[16,'Types of Contracts'],
-    [17,'Special Contracting Methods'],[18,'Emergency Acquisitions'],
-    [19,'Small Business Programs'],[22,'Application of Labor Laws'],
-    [23,'Environment, Sustainable Acquisition, and Material Safety'],
-    [24,'Protection of Privacy and Freedom of Information'],[25,'Foreign Acquisition'],
-    [26,'Other Socioeconomic Programs'],[27,'Patents, Data, and Copyrights'],
-    [28,'Bonds and Insurance'],[29,'Taxes'],[30,'Cost Accounting Standards Administration'],
-    [31,'Contract Cost Principles and Procedures'],[32,'Contract Financing'],
-    [33,'Protests, Disputes, and Appeals'],[34,'Major System Acquisition'],
-    [35,'Research and Development Contracting'],[36,'Construction and Architect-Engineer Contracts'],
-    [37,'Service Contracting'],[39,'Acquisition of Information Technology'],
-    [40,'Information Security and Supply Chain Security'],[41,'Acquisition of Utility Services'],
-    [42,'Contract Administration and Audit Services'],[43,'Contract Modifications'],
-    [44,'Subcontracting Policies and Procedures'],[45,'Government Property'],
-    [46,'Quality Assurance'],[47,'Transportation'],[48,'Value Engineering'],
-    [49,'Termination of Contracts'],[50,'Extraordinary Contractual Actions and the Safety Act'],
-    [53,'Forms']
   ]
 };
 
@@ -1969,7 +1943,7 @@ async function search(query, offset = 0) {
 
 function buildFilter(sources, statuses) {
   const parts = [];
-  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'fmr', 'compass'];
+  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'fmr'];
   const selectedSources = sources.size > 0 ? [...sources].filter(s => liveSources.includes(s)) : liveSources;
   if (selectedSources.length) parts.push('(' + selectedSources.map(s => `source = "${s}"`).join(' OR ') + ')');
   if (statuses.length)  parts.push('(' + statuses.map(s => `status = "${s}"`).join(' OR ') + ')');

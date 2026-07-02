@@ -13,7 +13,11 @@ let indexCache = null;
 function loadDocs() {
   if (docsCache) return docsCache;
   const docsPath = path.join(process.cwd(), 'output', 'documents.json');
-  docsCache = JSON.parse(fs.readFileSync(docsPath, 'utf8')).filter(Boolean);
+  // DAF Compass is temporarily excluded from search until we can source it in a
+  // way that isn't CAC-gated. Docs stay in documents.json (reversible) but are
+  // filtered out of the searchable index — keep this identical to the client
+  // filter in assets/app.js (acqLoadCorpus).
+  docsCache = JSON.parse(fs.readFileSync(docsPath, 'utf8')).filter(Boolean).filter(doc => doc.source !== 'compass');
   return docsCache;
 }
 
