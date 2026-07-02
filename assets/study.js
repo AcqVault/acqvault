@@ -6,6 +6,8 @@
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
+  var MCQ_RATIO = 0.5;      // roughly half the recall cards render as multiple choice
+  var MCQ_MAX_LEN = 220;    // long answers stay produce-then-reveal (bad MCQ options)
 
   var deck = null;
   var S = load();
@@ -19,6 +21,25 @@
   function esc(x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function el(id) { return document.getElementById(id); }
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  /* ---- history: back inside the tool steps back through the tool, not off the page ----
+     depth 0 = track select · depth 1 = dashboard · depth 2 = an activity */
+  var navDepth = 0, popping = false;
+  function goDepth(depth, renderFn) {
+    if (!popping) {
+      while (navDepth >= depth) navDepth--; // never push same depth twice in a row
+      for (var d = navDepth + 1; d <= depth; d++) history.pushState({ st: d }, '');
+      navDepth = depth;
+    }
+    renderFn();
+  }
+  window.addEventListener('popstate', function (e) {
+    var d = (e.state && typeof e.state.st === 'number') ? e.state.st : 0;
+    navDepth = d; popping = true; keyHandler(null);
+    if (!deck) { popping = false; return; }
+    if (d <= 0) viewTrack(); else viewHome();
+    popping = false;
+  });
 
   /* ---- deck accessors ---- */
   function recallPool() {
@@ -47,10 +68,44 @@
     var sum = 0; cards.forEach(function (c) { sum += cardState(c.id).box / 5; });
     return Math.round(100 * sum / cards.length);
   }
+  function mcqOptions(card, pool) { // 3 distractors: same topic first, then anywhere
+    var seen = { }; seen[card.a] = true;
+    var same = [], other = [];
+    pool.forEach(function (c) {
+      if (c.id === card.id || seen[c.a] || c.a.length > MCQ_MAX_LEN) return;
+      seen[c.a] = true;
+      ((c.topic === card.topic) ? same : other).push(c.a);
+    });
+    var opts = shuffle(same).slice(0, 3);
+    if (opts.length < 3) opts = opts.concat(shuffle(other).slice(0, 3 - opts.length));
+    if (opts.length < 3) return null; // not enough material — fall back to reveal style
+    opts.push(card.a);
+    return shuffle(opts);
+  }
 
   /* ---- views ---- */
   var app;
   function render(html) { app.innerHTML = html; window.scrollTo({ top: app.offsetTop - 80, behavior: 'instant' }); }
+
+  function viewTrack() {
+    var last = S.track;
+    function cardHtml(id, kicker, name, blurb, active) {
+      return '<button class="st-trackcard' + (active ? ' st-trackcard-active' : '') + '" id="' + id + '">' +
+        (active ? '<span class="st-tc-continue">Continue — you were here</span>' : '') +
+        '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></button>';
+    }
+    render(
+      '<h2 class="st-h2" style="margin-top:0">Pick your track</h2>' +
+      '<p class="st-sub">Your progress is saved per card either way — switch tracks any time without losing it.</p>' +
+      '<div class="st-tracks">' +
+      cardHtml('t-basic', 'New to contracting', 'Basic — Foundations',
+        'Knowledge checks from Field Guide Vol. 1: the players, the money, the methods. Build the base before the board.', last === 'basic') +
+      cardHtml('t-adv', 'Warrant board prep', 'Advanced — The Board',
+        'Everything in Basic plus Vol. 2: board-probe questions, threshold drills, and full scenario simulations with follow-ups.', last === 'advanced') +
+      '</div>');
+    el('t-basic').onclick = function () { S.track = 'basic'; save(); goDepth(1, viewHome); };
+    el('t-adv').onclick = function () { S.track = 'advanced'; save(); goDepth(1, viewHome); };
+  }
 
   function viewHome() {
     if (!S.track) return viewTrack();
@@ -84,10 +139,10 @@
       '<button class="st-link" id="st-import">Import</button> · ' +
       '<button class="st-link" id="st-reset">Reset</button><input type="file" id="st-file" accept="application/json" hidden></div>'
     );
-    el('m-daily').onclick = function () { startSession(due, 'Daily Review'); };
-    el('m-sprint').onclick = viewSprint;
-    if (el('m-board')) el('m-board').onclick = viewBoard;
-    el('st-switch').onclick = function () { S.track = null; save(); viewHome(); };
+    el('m-daily').onclick = function () { goDepth(2, function () { startSession(due, 'Daily Review'); }); };
+    el('m-sprint').onclick = function () { goDepth(2, viewSprint); };
+    if (el('m-board')) el('m-board').onclick = function () { goDepth(2, viewBoard); };
+    el('st-switch').onclick = function () { goDepth(0, viewTrack); };
     el('st-export').onclick = doExport;
     el('st-import').onclick = function () { el('st-file').click(); };
     el('st-file').onchange = doImport;
@@ -95,45 +150,72 @@
     Array.prototype.forEach.call(app.querySelectorAll('.st-topic'), function (b) {
       b.onclick = function () {
         var t = b.getAttribute('data-topic');
-        startSession(shuffle(byTopic[t].slice()), t);
+        goDepth(2, function () { startSession(shuffle(byTopic[t].slice()), t); });
       };
     });
   }
 
-  function viewTrack() {
-    render(
-      '<h2 class="st-h2" style="margin-top:0">Pick your track</h2>' +
-      '<div class="st-tracks">' +
-      '<button class="st-trackcard" id="t-basic"><span class="st-tc-kicker">New to contracting</span><b>Basic — Foundations</b>' +
-      '<p>Knowledge checks from Field Guide Vol. 1: the players, the money, the methods. Build the base before the board.</p></button>' +
-      '<button class="st-trackcard" id="t-adv"><span class="st-tc-kicker">Warrant board prep</span><b>Advanced — The Board</b>' +
-      '<p>Everything in Basic plus Vol. 2: board-probe questions, threshold drills, and full scenario simulations with follow-ups.</p></button>' +
-      '</div>');
-    el('t-basic').onclick = function () { S.track = 'basic'; save(); viewHome(); };
-    el('t-adv').onclick = function () { S.track = 'advanced'; save(); viewHome(); };
-  }
+  function backHome() { keyHandler(null); if (navDepth >= 2) history.back(); else viewHome(); }
 
-  /* ---- recall session ---- */
+  /* ---- recall session (mixed reveal + multiple-choice) ---- */
   function startSession(cards, label) {
     if (!cards.length) { viewHome(); return; }
+    var pool = recallPool();
     var q = interleave(shuffle(cards.slice()).slice(0, SESSION_CAP));
     var i = 0, got = 0;
     function step() {
       if (i >= q.length) return summary();
       var c = q[i];
-      render(
-        '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>' +
-        '<div class="st-card" aria-live="polite">' +
-        '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
-        '<div class="st-q">' + esc(c.q) + '</div>' +
-        '<div id="st-a" class="st-a" hidden>' + esc(c.a) + '</div>' +
-        '<div class="st-actions" id="st-act">' +
-        '<button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
-        '<button class="st-link st-quit" id="st-quit">End session</button>'
-      );
-      el('st-quit').onclick = summary;
-      el('st-reveal').onclick = reveal;
-      keyHandler(function (k) { if (k === ' ' || k === 'Enter') { reveal(); return true; } });
+      var opts = (c.a.length <= MCQ_MAX_LEN && Math.random() < MCQ_RATIO) ? mcqOptions(c, pool) : null;
+      var head = '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>';
+      if (opts) {
+        render(head +
+          '<div class="st-card" aria-live="polite">' +
+          '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
+          '<div class="st-q">' + esc(c.q) + '</div>' +
+          '<div class="st-opts">' + opts.map(function (o, k) {
+            return '<button class="st-opt" data-k="' + k + '"><kbd>' + (k + 1) + '</kbd><span>' + esc(o) + '</span></button>';
+          }).join('') + '</div></div>' +
+          '<button class="st-link st-quit" id="st-quit">End session</button>');
+        el('st-quit').onclick = summary;
+        var answered = false;
+        function pick(k) {
+          if (answered) return; answered = true;
+          var right = opts[k] === c.a;
+          Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
+            var bk = +b.getAttribute('data-k');
+            if (opts[bk] === c.a) b.classList.add('st-opt-right');
+            else if (bk === k) b.classList.add('st-opt-wrong');
+            b.disabled = true;
+          });
+          grade(c.id, right ? 3 : 1);
+          if (right) got++;
+          var act = document.createElement('div'); act.className = 'st-actions';
+          act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">' + (right ? 'Next' : 'Got it — next') + ' <kbd>space</kbd></button>';
+          app.querySelector('.st-card').appendChild(act);
+          el('st-next').onclick = function () { i++; step(); };
+          keyHandler(function (key) { if (key === ' ' || key === 'Enter') { i++; step(); return true; } });
+        }
+        Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
+          b.onclick = function () { pick(+b.getAttribute('data-k')); };
+        });
+        keyHandler(function (key) {
+          var n = parseInt(key, 10);
+          if (n >= 1 && n <= opts.length) { pick(n - 1); return true; }
+        });
+      } else {
+        render(head +
+          '<div class="st-card" aria-live="polite">' +
+          '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
+          '<div class="st-q">' + esc(c.q) + '</div>' +
+          '<div id="st-a" class="st-a" hidden>' + esc(c.a) + '</div>' +
+          '<div class="st-actions" id="st-act">' +
+          '<button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
+          '<button class="st-link st-quit" id="st-quit">End session</button>');
+        el('st-quit').onclick = summary;
+        el('st-reveal').onclick = reveal;
+        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { reveal(); return true; } });
+      }
       function reveal() {
         el('st-a').hidden = false;
         el('st-act').innerHTML =
@@ -157,7 +239,7 @@
         '<div class="st-q">' + got + ' of ' + i + ' solid.</div>' +
         '<p class="st-sub">Missed cards come back tomorrow; solid ones stretch out. Come back daily — short and often beats long and rare.</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
-      el('st-home').onclick = viewHome;
+      el('st-home').onclick = backHome;
     }
     step();
   }
@@ -208,25 +290,42 @@
         '<div class="st-q">Best streak: ' + (S.sprint.best || 0) + '</div>' +
         '<p class="st-sub">Numbers rot fastest — sprint a few times a week and the board can’t rattle you with a dollar figure.</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
-      el('st-home').onclick = viewHome;
+      el('st-home').onclick = backHome;
     }
     step();
   }
 
-  /* ---- board sim ---- */
+  /* ---- board sim (out loud, with hints) ---- */
+  function boardHints(sc) {
+    var h = [];
+    var tops = sc.topics && sc.topics.length ? sc.topics.join(' · ') : null;
+    if (tops) h.push('Framework(s) in play: ' + tops + '.');
+    if (sc.facts) {
+      var baits = sc.facts.filter(function (f) { return f.verdict === 'bait'; }).length;
+      h.push('There are ' + sc.facts.length + ' load-bearing facts here — ' + baits + ' of them ' + (baits === 1 ? 'is' : 'are') + ' bait. Ask of each fact: why is it in the scenario?');
+    } else if (sc.baits && sc.baits.length) {
+      h.push('Watch for the bait: ' + sc.baits[0]);
+    }
+    if (sc.key_moves && sc.key_moves.length) h.push('Opening move: ' + sc.key_moves[0]);
+    else h.push('Open the way you would at the board: name the framework, name who you\'d call, state the default rule.');
+    return h;
+  }
   function viewBoard() {
     var pool = deck.scenarios.slice();
     var fresh = pool.filter(function (s) { return !S.scen[s.id]; });
     var sc = (fresh.length ? shuffle(fresh) : shuffle(pool))[0];
     var stage = 0; // 0 scenario, 1 debrief, 2+ follow-ups
-    var fus = sc.follow_ups || (sc.facts ? [] : []);
+    var fus = sc.follow_ups || [];
+    var hints = boardHints(sc), hintsShown = 0;
     function step() {
-      var body = '<div class="st-chip">Board Sim' + (sc.topics && sc.topics.length ? ' · ' + esc(sc.topics.join(' · ')) : '') + '</div>';
+      var body = '<div class="st-chip">Board Sim' + (sc.topics && sc.topics.length && stage > 0 ? ' · ' + esc(sc.topics.join(' · ')) : '') + '</div>';
       if (stage === 0) {
         body = '<div class="st-chip">Board Sim</div>' +
           '<div class="st-scenario">' + esc(sc.scenario) + '</div>' +
-          '<p class="st-outloud">Answer <b>out loud</b> — name the framework, name your help, walk it. Then reveal.</p>' +
-          '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">Reveal the debrief <kbd>space</kbd></button></div>';
+          '<p class="st-outloud">Answer <b>out loud</b> — name the framework, name your help, walk it. Stuck? Take a hint.</p>' +
+          '<div id="st-hints"></div>' +
+          '<div class="st-actions"><button class="st-btn st-btn-hint" id="st-hint">Hint <span class="st-hint-n">' + (hints.length - hintsShown) + '</span></button>' +
+          '<button class="st-btn st-btn-reveal" id="next">Reveal the debrief <kbd>space</kbd></button></div>';
       } else if (stage === 1) {
         var d = '';
         if (sc.facts) {
@@ -256,7 +355,26 @@
       }
       render('<div class="st-session-head"><span>Board Sim</span><span>&nbsp;</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
         '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
-      el('st-quit').onclick = function () { keyHandler(null); viewHome(); };
+      el('st-quit').onclick = backHome;
+      if (stage === 0 && el('st-hint')) {
+        // re-show any hints already taken (render() wipes them)
+        for (var hi = 0; hi < hintsShown; hi++) addHint(hints[hi]);
+        refreshHintBtn();
+        el('st-hint').onclick = function () {
+          if (hintsShown < hints.length) { addHint(hints[hintsShown]); hintsShown++; refreshHintBtn(); }
+        };
+      }
+      function addHint(text) {
+        var div = document.createElement('div'); div.className = 'st-hint';
+        div.innerHTML = '<b>Hint:</b> ' + esc(text);
+        el('st-hints').appendChild(div);
+      }
+      function refreshHintBtn() {
+        var b = el('st-hint'); if (!b) return;
+        var left = hints.length - hintsShown;
+        if (left <= 0) { b.disabled = true; b.innerHTML = 'No more hints'; }
+        else b.innerHTML = 'Hint <span class="st-hint-n">' + left + '</span>';
+      }
       if (el('next')) {
         el('next').onclick = function () { stage++; step(); };
         keyHandler(function (k) { if (k === ' ' || k === 'Enter') { stage++; step(); return true; } });
@@ -296,13 +414,15 @@
     r.readAsText(f);
   }
 
-  /* ---- boot ---- */
+  /* ---- boot: always land on the track selector (progress remembered underneath) ---- */
   document.addEventListener('DOMContentLoaded', function () {
     app = el('study-app');
     if (!app) return;
     fetch(DECK_URL).then(function (r) { return r.json(); }).then(function (d) {
       deck = d;
-      viewHome();
+      history.replaceState({ st: 0 }, '');
+      navDepth = 0;
+      viewTrack();
     }).catch(function () {
       app.innerHTML = '<p class="st-sub">Couldn’t load the question deck — check your connection and refresh. (Once loaded once, it works offline.)</p>';
     });

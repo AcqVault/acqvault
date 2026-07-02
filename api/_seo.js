@@ -615,6 +615,22 @@ function renderStudyPage() {
 .st-followup{margin:6px 0 0}
 .st-followup>span{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
 .st-foot-tools{margin-top:26px;font-size:12.5px;color:var(--muted)}
+.st-trackcard{position:relative}
+.st-trackcard-active{border-color:rgba(135,101,28,.55);box-shadow:0 10px 26px -16px rgba(15,37,64,.3)}
+.st-tc-continue{position:absolute;top:-9px;right:12px;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:linear-gradient(158deg,#173a60,#0f2540);border:1px solid rgba(228,196,119,.5);border-radius:999px;padding:2px 9px}
+.st-opts{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.st-opt{display:flex;align-items:baseline;gap:10px;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:11px 14px;font-size:14.5px;line-height:1.5;color:#2a3140;cursor:pointer;min-height:44px;transition:border-color .12s}
+.st-opt:hover:not(:disabled){border-color:rgba(135,101,28,.5)}
+.st-opt kbd{flex:none;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--muted);border:1px solid var(--line2);border-radius:3px;padding:0 5px}
+.st-opt:disabled{cursor:default;opacity:.75}
+.st-opt-right{border-color:#1e6b43!important;background:#eef7f0;opacity:1!important}
+.st-opt-right kbd{border-color:#1e6b43;color:#155433}
+.st-opt-wrong{border-color:#b3261e!important;background:#fdf0ef}
+.st-btn-hint{background:#f6efdd;color:#5e4715;border:1px solid rgba(135,101,28,.35)}
+.st-btn-hint:disabled{opacity:.55;cursor:default}
+.st-hint-n{display:inline-block;background:#5e4715;color:#f6efdd;border-radius:999px;font-size:11px;padding:0 7px;margin-left:4px;font-variant-numeric:tabular-nums}
+.st-hint{background:var(--off,#f7f6f2);border-left:3px solid rgba(228,196,119,.9);border-radius:0 6px 6px 0;padding:9px 12px;font-size:13.5px;line-height:1.55;color:#3d444d;margin-top:10px}
+.st-hint b{color:var(--brass-ink)}
 </style>`;
 
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
@@ -634,7 +650,7 @@ function renderStudyPage() {
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=1"></script>`;
+<script defer src="/assets/study.js?v=2"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }
