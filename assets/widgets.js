@@ -1631,6 +1631,8 @@
       const href = el.getAttribute('href');
       if (href && href.charAt(0) === '#') {
         e.preventDefault();
+        // In work-mode the landing sections are hidden — restore them before scrolling
+        if (document.body.classList.contains('work-mode') && typeof window.acqExitToLanding === 'function') window.acqExitToLanding();
         const target = document.getElementById(href.slice(1));
         close();
         if (target) setTimeout(() => {

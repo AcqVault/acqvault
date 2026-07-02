@@ -33,7 +33,7 @@
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=94">
+<link rel="stylesheet" href="/assets/app.css?v=95">
 </head>
 <body>
 
@@ -111,10 +111,11 @@
       <div class="search-container" role="search">
         <span class="search-glow" aria-hidden="true"></span>
         <div class="search-bar">
-          <span class="search-icon">⌕</span>
+          <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
           <input type="text" id="search-input" placeholder="Search regulations, parts, guidance…" autocomplete="off" spellcheck="false" />
           <span class="search-count" id="search-count"></span>
           <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
+          <kbd class="search-kbd" aria-hidden="true">/</kbd>
           <button type="button" class="search-go" id="search-go" onclick="setMode('search');var i=document.getElementById('search-input');i.focus();if(i.value.trim())runSearch();" aria-label="Search">Search<span class="search-go-arrow" aria-hidden="true">→</span></button>
         </div>
       </div>
@@ -136,9 +137,9 @@
       <!-- compact secondary mode row (Browse / Full Text) -->
       <div class="hero-command-dock hero-command-dock-b" aria-label="Search modes and live sources">
         <div class="mode-toggle">
-          <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')">⌕ Search</button>
+          <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg> Search</button>
           <div class="browse-source-picker">
-            <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="true" aria-expanded="false" onclick="toggleBrowseSourceMenu(event)">⊞ <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
+            <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="true" aria-expanded="false" onclick="toggleBrowseSourceMenu(event)"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/></svg> <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
             <div class="browse-source-menu" id="browse-source-menu" role="group" aria-label="Browse by source or regulation">
               <button type="button" onclick="chooseBrowseSource('rfo')"><span>RFO</span><small>Live</small></button>
               <button type="button" onclick="chooseBrowseSource('r-dfars')"><span>R-DFARS</span><small>Live</small></button>
@@ -148,7 +149,7 @@
               <button type="button" onclick="chooseBrowseSource('fmr')"><span>DoD FMR</span><small>Live</small></button>
             </div>
           </div>
-          <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')">↓ <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
+          <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg> <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
         </div>
       </div>
 
@@ -245,7 +246,7 @@
     <div class="browse-reader" id="browse-reader">
       <div class="browse-reader-inner" id="browse-reader-inner">
         <div class="browse-empty" id="browse-empty">
-          <div class="browse-empty-icon">⊞</div>
+          <div class="browse-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/></svg></div>
           <div class="browse-empty-title">Select a part to read</div>
           <div class="browse-empty-sub">Choose a regulation and part from the left panel. The full text loads here — table of contents, all sections, inline citations.</div>
         </div>
@@ -273,7 +274,7 @@
       <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--cm-bg);color:var(--cm-txt);">Category Management Buying Guide</span><div class="fulltext-card-name">Category Management Buying Guide</div><div class="fulltext-card-meta"><span>12 sections covered</span><span>Beta 0.1</span><span>FAR Council</span><span>October 30, 2025</span></div><a class="fulltext-dl-btn" href="/pdfs/category-management-buying-guide.pdf" download="AcqVault-Category-Management-Buying-Guide.pdf" target="_blank" rel="noopener">↓ Download PDF</a></div>
       <div class="fulltext-card"><span class="fulltext-card-tag" style="background:#fff1f2;color:#9f1239;">DAFI 63-138</span><div class="fulltext-card-name">Acquisition of Services</div><div class="fulltext-card-meta"><span>41 sections covered</span><span>6 chapters</span><span>Department of the Air Force</span><span>January 2, 2024</span></div><a class="fulltext-dl-btn" href="/pdfs/dafi63-138.pdf" download="AcqVault-DAFI-63-138.pdf" target="_blank" rel="noopener">↓ Download PDF</a></div>
     </div>
-    <div class="fulltext-note"><strong>How these are generated:</strong> A GitHub Actions workflow runs on the 1st of every month, fetches all documents from the live Meilisearch index, compiles them in sequential part order, and commits fresh PDFs to the repository. Each page carries an AcqVault.com watermark. Files are served directly from GitHub — no server required.</div>
+    <div class="fulltext-note"><strong>How these are generated:</strong> A GitHub Actions workflow runs on the 1st of every month, compiles every indexed document in sequential part order, and commits fresh PDFs to the repository. Each page carries an AcqVault.com watermark. Files are served directly from GitHub — no server required.</div>
     <div class="fulltext-section-label">Browse-only sources</div>
     <div class="fulltext-cards">
       <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--fmr-bg);color:var(--fmr-txt);">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>304 chapters · 16 volumes</span><span>In-app · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('fmr')">Browse in-app</button></div>
@@ -288,12 +289,12 @@
     <h2 class="sec-head fade-up">The sites you open every day.</h2>
     <p class="sec-sub sec-sub-dark fade-up">The most-used tools in the acquisition professional's daily workflow — one click away.</p>
     <div class="quick-links-grid">
-      <a class="ql-card fade-up" href="https://www.acquisition.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚖</div><span class="ql-chip">Regs</span></div><div class="ql-name">Acquisition.gov</div><div class="ql-desc">RFO, R-DFARS, FAR Companion, and acquisition policy — the authoritative regulatory source.</div><div class="ql-brand ql-brand-dark ql-brand-acq"><span class="ql-seal"></span><span class="ql-wordmark">Acquisition.gov</span></div><div class="ql-action"><span>Primary source</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up d1" href="https://sam.gov" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⌕</div><span class="ql-chip">Awards</span></div><div class="ql-name">SAM.gov</div><div class="ql-desc">Contract opportunities, solicitations, entity registrations, and federal award data.</div><div class="ql-brand ql-brand-lightblue ql-brand-sam"><span class="bars"><span></span><span></span><span></span></span><span class="ql-wordmark">SAM<b>.</b>gov</span></div><div class="ql-action"><span>Opportunities</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up d2" href="https://kthq.org/index.html" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">▦</div><span class="ql-chip">Tools</span></div><div class="ql-name">KT HQ</div><div class="ql-desc">Knowledge tools, templates, and acquisition resources for contracting professionals.</div><div class="ql-brand ql-brand-dark ql-brand-kthq"><span class="ql-wordmark">KTHQ<small>ContractingHQ</small></span></div><div class="ql-action"><span>Templates</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up" href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">⚡</div><span class="ql-chip">Protests</span></div><div class="ql-name">GAO Search Decisions</div><div class="ql-desc">Search bid protest decisions and dockets — the practical GAO entry point for contracting research.</div><div class="ql-brand ql-brand-dark ql-brand-gao"><span class="ql-wordmark">GAO<small>U.S. Government Accountability Office</small></span></div><div class="ql-action"><span>Dockets</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up d1" href="https://piee.eb.mil" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">🔒</div><span class="ql-chip">DoD</span></div><div class="ql-name">PIEE</div><div class="ql-desc">Procurement Integrated Enterprise Environment — CPARS, JAM, WAWF, and DoD contracting systems.</div><div class="ql-brand ql-brand-piee"><span class="ql-mini-seal"></span><span class="ql-wordmark">PIEE<small>Procurement Integrated Enterprise Environment</small></span></div><div class="ql-action"><span>Systems</span><span class="ql-arrow">↗</span></div></a>
-      <a class="ql-card fade-up d2" href="https://www.dau.edu" target="_blank" rel="noopener"><div class="ql-top"><div class="ql-icon">◆</div><span class="ql-chip">Learn</span></div><div class="ql-name">Warfighting Acquisition University</div><div class="ql-desc">DAU learning, training, and acquisition knowledge resources for the defense workforce.</div><div class="ql-brand ql-brand-wau"><span class="ql-wau-mark"></span><span class="ql-wordmark">Warfighting<br><b>Acquisition</b><br>University</span></div><div class="ql-action"><span>Training</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up" href="https://www.acquisition.gov" target="_blank" rel="noopener"><div class="ql-top"><span class="ql-chip">Regs</span></div><div class="ql-name">Acquisition.gov</div><div class="ql-desc">RFO, R-DFARS, FAR Companion, and acquisition policy — the authoritative regulatory source.</div><div class="ql-brand ql-brand-dark ql-brand-acq"><span class="ql-seal"></span><span class="ql-wordmark">Acquisition.gov</span></div><div class="ql-action"><span>Primary source</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up d1" href="https://sam.gov" target="_blank" rel="noopener"><div class="ql-top"><span class="ql-chip">Awards</span></div><div class="ql-name">SAM.gov</div><div class="ql-desc">Contract opportunities, solicitations, entity registrations, and federal award data.</div><div class="ql-brand ql-brand-lightblue ql-brand-sam"><span class="bars"><span></span><span></span><span></span></span><span class="ql-wordmark">SAM<b>.</b>gov</span></div><div class="ql-action"><span>Opportunities</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up d2" href="https://kthq.org/index.html" target="_blank" rel="noopener"><div class="ql-top"><span class="ql-chip">Tools</span></div><div class="ql-name">KT HQ</div><div class="ql-desc">Knowledge tools, templates, and acquisition resources for contracting professionals.</div><div class="ql-brand ql-brand-dark ql-brand-kthq"><span class="ql-wordmark">KTHQ<small>ContractingHQ</small></span></div><div class="ql-action"><span>Templates</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up" href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener"><div class="ql-top"><span class="ql-chip">Protests</span></div><div class="ql-name">GAO Search Decisions</div><div class="ql-desc">Search bid protest decisions and dockets — the practical GAO entry point for contracting research.</div><div class="ql-brand ql-brand-dark ql-brand-gao"><span class="ql-wordmark">GAO<small>U.S. Government Accountability Office</small></span></div><div class="ql-action"><span>Dockets</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up d1" href="https://piee.eb.mil" target="_blank" rel="noopener"><div class="ql-top"><span class="ql-chip">DoD</span></div><div class="ql-name">PIEE</div><div class="ql-desc">Procurement Integrated Enterprise Environment — CPARS, JAM, WAWF, and DoD contracting systems.</div><div class="ql-brand ql-brand-piee"><span class="ql-mini-seal"></span><span class="ql-wordmark">PIEE<small>Procurement Integrated Enterprise Environment</small></span></div><div class="ql-action"><span>Systems</span><span class="ql-arrow">↗</span></div></a>
+      <a class="ql-card fade-up d2" href="https://www.dau.edu" target="_blank" rel="noopener"><div class="ql-top"><span class="ql-chip">Learn</span></div><div class="ql-name">Warfighting Acquisition University</div><div class="ql-desc">DAU learning, training, and acquisition knowledge resources for the defense workforce.</div><div class="ql-brand ql-brand-wau"><span class="ql-wau-mark"></span><span class="ql-wordmark">Warfighting<br><b>Acquisition</b><br>University</span></div><div class="ql-action"><span>Training</span><span class="ql-arrow">↗</span></div></a>
     </div>
   </div>
 </section>
@@ -313,7 +314,7 @@
           <span class="market-chip">Set-asides</span>
         </div>
         <div class="market-query">
-          <span>⌕</span>
+          <span aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display:block;"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
           <input type="text" placeholder="Search a requirement (e.g. base operations support)" aria-label="Market research query" id="market-query-input" />
           <button class="market-btn" type="button" id="market-snapshot-btn">Search market</button>
         </div>
@@ -478,15 +479,6 @@
   </div>
 </section>
 
-<div class="cta-strip">
-  <div class="fade-up">
-    <h2 class="cta-head">Free. Open. Current.</h2>
-    <p class="cta-sub">No cost, no ads, no AI summaries. Just acquisition documents — searchable, organized, always up to date.</p>
-    <a href="#search-input" class="cta-btn">Start searching <span class="cta-btn-arrow" aria-hidden="true">→</span></a>
-    <p class="cta-meta">Free and open to the acquisition community. No account required.</p>
-  </div>
-</div>
-
 </main>
 
 <footer>
@@ -510,7 +502,7 @@
     <div class="reader-topbar-inner">
       <a href="/" class="reader-brand" aria-label="AcqVault"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28" role="img" aria-hidden="true" style="display:block;flex-shrink:0;"><rect x="3" y="3" width="94" height="94" rx="20" fill="#0f2540"/><rect x="11" y="11" width="78" height="78" rx="14" fill="none" stroke="#87651c" stroke-width="2"/><circle cx="50" cy="50" r="24" fill="none" stroke="#e4c477" stroke-width="3.5"/><g stroke="#e4c477" stroke-width="4" stroke-linecap="round"><line x1="50" y1="29" x2="50" y2="39"/><line x1="50" y1="71" x2="50" y2="61"/><line x1="29" y1="50" x2="39" y2="50"/><line x1="71" y1="50" x2="61" y2="50"/></g><circle cx="50" cy="50" r="6" fill="#e4c477"/></svg><span style="font-family:Inter,system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.04em;color:var(--ink2);">AcqVault</span></a>
       <div class="reader-find" role="search">
-        <span class="reader-find-icon">⌕</span>
+        <span class="reader-find-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
         <input type="text" class="reader-find-input" id="reader-search-input" placeholder="Search within this document…" autocomplete="off" />
         <span class="reader-find-count" id="reader-search-count"></span>
         <button type="button" class="reader-find-clear" id="reader-search-clear" aria-label="Clear">✕</button>
@@ -576,9 +568,9 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=45"></script>
+<script defer src="/assets/app.js?v=46"></script>
 <script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=30"></script>
+<script defer src="/assets/widgets.js?v=31"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>

@@ -453,7 +453,7 @@ function setBrowseSource(source) {
   // Reset reader to empty state
   document.getElementById('browse-reader-inner').innerHTML =
     `<div class="browse-empty" id="browse-empty">
-      <div class="browse-empty-icon">⊞</div>
+      <div class="browse-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/></svg></div>
       <div class="browse-empty-title">Select a part to read</div>
       <div class="browse-empty-sub">Choose a part from the left panel to load the full text.</div>
     </div>`;
@@ -1154,7 +1154,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       </div>
     </div>
     <div class="br-part-search" id="br-part-search" role="search" aria-label="Search within this part">
-      <span class="br-part-search-icon" aria-hidden="true">⌕</span>
+      <span class="br-part-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
       <input class="br-part-search-input" id="br-part-search-input" type="text" placeholder="Search within ${partWord(source)} ${partNum}…" autocomplete="off" spellcheck="false" aria-label="Search within this part">
       <span class="br-part-search-count" id="br-part-search-count"></span>
       <span class="br-part-search-nav" id="br-part-search-nav" aria-label="Part search matches">
@@ -2141,16 +2141,16 @@ function buildNoResultsHTML(query) {
   }
   if (filtered) {
     primary += `<div class="nr-note">You're searching only <strong>${esc(filterNames)}</strong>.</div>
-      <button class="nr-btn nr-btn-primary" data-action="all-sources">Search all 7 sources</button>`;
+      <button class="nr-btn nr-btn-primary" data-action="all-sources">Search all sources</button>`;
   }
   return `<div class="no-results nr-launch">
     <div class="nr-title">No matches for “${esc(q)}”</div>
     <div class="nr-sub">Try one of these — or tell us what's missing.</div>
     ${primary}
     <div class="nr-actions">
-      <button class="nr-btn" data-action="browse">⊞ Browse by Part</button>
-      <button class="nr-btn" data-action="fulltext">↓ Full-Text PDFs</button>
-      <button class="nr-btn nr-btn-report" data-action="report" data-q="${esc(q)}">✦ Tell Iz this should be here</button>
+      <button class="nr-btn" data-action="browse">Browse by Part</button>
+      <button class="nr-btn" data-action="fulltext">Full-Text PDFs</button>
+      <button class="nr-btn nr-btn-report" data-action="report" data-q="${esc(q)}">Tell Iz this should be here</button>
     </div>
   </div>`;
 }
@@ -2736,6 +2736,24 @@ searchInput.addEventListener('input', () => {
 });
 searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(debounceTimer); if (searchInput.value.trim()) runSearch(); } });
 searchClear.addEventListener('click', () => { searchInput.value = ''; deactivateSearch(); searchInput.focus(); });
+
+// ── Work-mode nav guard: home-section links restore the landing before the anchor scroll ──
+// (work-mode hides the landing sections, so the target must be revealed first)
+function exitToLanding() {
+  clearTimeout(debounceTimer);
+  if (searchInput.value.trim()) searchInput.value = '';
+  deactivateSearch();
+  if (currentMode !== 'search') setMode('search');
+}
+window.acqExitToLanding = exitToLanding;
+(function () {
+  const nc = document.getElementById('nav-center');
+  if (nc) nc.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || !document.body.classList.contains('work-mode')) return;
+    exitToLanding(); // sections are visible again before the browser's native anchor scroll runs
+  });
+})();
 (function () {
   const as = document.getElementById('acr-suggest');
   if (as) as.addEventListener('click', (e) => {
