@@ -38,30 +38,39 @@
   const TINA_NOTE = _tinaAfterCutover
     ? 'new awards; mods to pre-30 Jun 2026 contracts stay $2.5M'
     : '→ $10M for new awards on/after 30 Jun 2026';
+  // Citations verified against the live corpus 2026-07-02 (post-July RFO refresh);
+  // refresh.py cite-watch flags any of these that stop resolving after a corpus update.
+  // Two groups, each ascending by dollar value, so the list reads like a ruler.
+  const G1 = 'Purchase floors & labor standards';
+  const G2 = 'Reviews, data & approvals';
   const THRESHOLDS = [
-    // Citations verified against the live corpus 2026-07-02 (post-July RFO refresh);
-    // refresh.py cite-watch flags any of these that stop resolving after a corpus update.
-    { abbr: 'MPT', name: 'Micro-Purchase Threshold', cite: 'RFO 2.101',
-      std: 15000, con: 25000, conNote: '$40K outside U.S.' },
-    { abbr: 'DBA', name: 'Construction wage rates (Davis-Bacon) above', cite: 'RFO 22.402',
+    { group: G1, abbr: 'DBA', name: 'Construction wage rates (Davis-Bacon) above', cite: 'RFO 22.402',
       std: 2000, con: 2000, fixed: true, note: 'Also caps the construction MPT at $2,000' },
-    { abbr: 'SCA', name: 'Service Contract Labor Standards above', cite: 'RFO 22.1002',
+    { group: G1, abbr: 'SCA', name: 'Service Contract Labor Standards above', cite: 'RFO 22.1002',
       std: 2500, con: 2500, fixed: true, note: 'Also caps the services MPT at $2,500' },
-    { abbr: '', name: 'Supply contract labor standards (Walsh-Healey) above', cite: 'RFO 22.601',
+    { group: G1, abbr: 'MPT', name: 'Micro-Purchase Threshold', cite: 'RFO 2.101',
+      std: 15000, con: 25000, conNote: '$40K outside U.S.' },
+    { group: G1, abbr: '', name: 'Supply contract labor standards (Walsh-Healey) above', cite: 'RFO 22.601',
       std: 20000, con: 20000, fixed: true },
-    { abbr: '', name: 'Construction performance & payment bonds above', cite: 'RFO 28.102',
+    { group: G1, abbr: '', name: 'Construction performance & payment bonds above', cite: 'RFO 28.102',
       std: 150000, con: 150000, fixed: true },
-    { abbr: 'SAT', name: 'Simplified Acquisition Threshold', cite: 'RFO 2.101',
+    { group: G1, abbr: 'SAT', name: 'Simplified Acquisition Threshold', cite: 'RFO 2.101',
       std: 350000, con: 1000000, conNote: '$2M outside U.S.' },
-    { abbr: '', name: 'Subcontracting plan required above', cite: 'RFO 19.109',
+    { group: G2, abbr: '', name: 'Trafficking compliance plan — work outside U.S.', cite: 'RFO 22.1703',
+      std: 700000, con: 700000, fixed: true },
+    { group: G2, abbr: '', name: 'Subcontracting plan required above', cite: 'RFO 19.109',
       std: 900000, con: 900000, fixed: true, note: '$2M for construction of a public facility' },
-    { abbr: 'J&A', name: 'Other than full & open — first approval tier', cite: 'RFO 6.104-2',
+    { group: G2, abbr: 'J&A', name: 'Other than full & open — first approval tier', cite: 'RFO 6.104-2',
       std: 900000, con: 900000, fixed: true },
-    { abbr: 'TINA', name: 'Certified cost or pricing data', cite: 'RFO 15.403-3',
-      std: TINA_VALUE, con: TINA_VALUE, fixed: true, note: TINA_NOTE },
-    { abbr: 'SAP', name: 'Simplified procedures, commercial', cite: 'RFO 12.201-1',
+    { group: G2, abbr: '', name: 'Past performance eval — construction (CPARS)', cite: 'RFO 42.1102',
+      std: 900000, con: 900000, fixed: true, note: 'Above the SAT for most other contracts' },
+    { group: G2, abbr: 'SAP', name: 'Simplified procedures, commercial', cite: 'RFO 12.201-1',
       std: 9000000, con: 15000000 },
-    { abbr: '', name: 'E.O. 14402 justification — other than fixed-price, DoD', cite: 'RFO 16.104',
+    { group: G2, abbr: 'TINA', name: 'Certified cost or pricing data', cite: 'RFO 15.403-3',
+      std: TINA_VALUE, con: TINA_VALUE, fixed: true, note: TINA_NOTE },
+    { group: G2, abbr: '', name: '8(a) sole source — justification required above', cite: 'RFO 6.103-5',
+      std: 30000000, con: 30000000, fixed: true },
+    { group: G2, abbr: '', name: 'E.O. 14402 justification — other than fixed-price, DoD', cite: 'RFO 16.104',
       std: 100000000, con: 100000000, fixed: true, note: '$10M most civilian agencies · E.O. of Apr 2026' }
   ];
 
@@ -306,6 +315,26 @@
               <div class="thr-list" id="thr-list"></div>
               <div class="thr-foot">Per the FY2025 inflation adjustment effective Oct. 1, 2025 and carried into the RFO; DoD deviations live in the R-DFARS. Always verify against the live regulation &amp; any class deviations before acting. The RFO may revise these.</div>
             </div>
+            <div class="tk-card fade-up d1" id="cra-card">
+              <div class="tk-card-head">
+                <div class="tk-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7l-4-4Z"/><path d="M14 3v4h4"/><path d="m9 14.5 2 2 4-4.5"/></svg></div>
+                <div class="tk-card-titles">
+                  <div class="tk-card-title">CASPER — contract review authority</div>
+                  <div class="tk-card-sub">Who reviews, by portfolio &amp; value (CRA tiers)</div>
+                </div>
+              </div>
+              <div class="cra-wrap">
+                <table class="cra-table">
+                  <thead><tr><th scope="col">CRA</th><th scope="col">Operational</th><th scope="col">Enterprise</th><th scope="col">PEO</th><th scope="col">PAE</th></tr></thead>
+                  <tbody>
+                    <tr><td>COCO / designee</td><td>≥$5M – ≤$10M</td><td>≥$10M – ≤$50M</td><td>≥$10M – ≤$100M</td><td>≥$10M</td></tr>
+                    <tr><td>SCO / designee¹</td><td>&gt;$10M – &lt;$1B</td><td>&gt;$50M – &lt;$1B</td><td>&gt;$100M – &lt;$1B</td><td>Special interest²</td></tr>
+                    <tr><td>HCA / designee</td><td colspan="4">Special interest² or ≥$1B — all portfolio types</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="thr-foot">¹ The SCO also serves as CRA for IDIQs ≥$1B that don't establish pricing in the basic contract. ² Special interest may be designated by the SAE for any action regardless of value; designees must be at least one level above the CO. From the AcqVault <a class="cra-dl" href="/pdfs/casper-mfr-template.pdf" download="AcqVault-CASPER-MFR-Template.pdf">CASPER MFR template ↓</a></div>
+            </div>
           </div>
           <div class="tk-col">
             <div class="tk-card fade-up d1" id="acro-card">
@@ -438,14 +467,16 @@
   let thrScope = 'std';
   function renderThresholds(changed) {
     const list = $('#thr-list'); if (!list) return;
-    list.innerHTML = THRESHOLDS.map((t) => {
+    list.innerHTML = THRESHOLDS.map((t, i) => {
       const val = thrScope === 'con' ? t.con : t.std;
       const uplift = thrScope === 'con' && !t.fixed && t.con !== t.std;
       const note = thrScope === 'con' && t.conNote ? `<span class="thr-up">${esc(t.conNote)}</span>` : '';
       const nm = t.abbr
         ? `<span class="thr-row-abbr">${esc(t.abbr)}</span> \u00B7 ${esc(t.name)}`
         : esc(t.name);
-      return `<div class="thr-row${changed && uplift ? ' changed' : ''}" role="button" tabindex="0" aria-haspopup="dialog">
+      const head = t.group && (i === 0 || THRESHOLDS[i - 1].group !== t.group)
+        ? `<div class="thr-group">${esc(t.group)}</div>` : '';
+      return `${head}<div class="thr-row${changed && uplift ? ' changed' : ''}" role="button" tabindex="0" aria-haspopup="dialog">
         <div class="thr-row-main">
           <div class="thr-row-name">${nm}</div>
           <div class="thr-row-cite">${esc(t.cite)}</div>

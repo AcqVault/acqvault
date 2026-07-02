@@ -74,6 +74,17 @@ body.reader-mode #spending-dashboard { display: none !important; }
   padding: 6px 18px 2px;
 }
 .thr-list { padding: 8px 8px 6px; }
+.thr-group{font-size:var(--fs-2xs);font-weight:750;letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--muted2);padding:14px 10px 5px;}
+.thr-list .thr-group:first-child{padding-top:6px;}
+/* ── CASPER CRA matrix card ── */
+.cra-wrap{padding:12px 14px 6px;overflow-x:auto;}
+.cra-table{width:100%;border-collapse:collapse;}
+.cra-table th{font-size:var(--fs-2xs);font-weight:750;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--muted2);text-align:left;padding:4px 8px 6px;border-bottom:1px solid var(--line2);white-space:nowrap;}
+.cra-table td{padding:8px;border-bottom:1px solid var(--line2);font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--ink2);white-space:nowrap;}
+.cra-table td:first-child{font-family:var(--font-sans);font-weight:650;font-size:var(--fs-xs);color:var(--ink);}
+.cra-table tbody tr:last-child td{border-bottom:none;}
+.cra-dl{color:var(--accent);font-weight:var(--fw-semibold);text-decoration:none;}
+.cra-dl:hover{text-decoration:underline;}
 .thr-row {
   display: grid;
   grid-template-columns: 1fr auto;
