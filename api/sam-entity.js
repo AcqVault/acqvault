@@ -23,8 +23,8 @@ function compactEntity(e) {
   };
 }
 
-async function samGet(path, params, apiKey) {
-  const url = new URL(`https://api.sam.gov/entity-information/v3/${path}`);
+async function samGet(version, path, params, apiKey) {
+  const url = new URL(`https://api.sam.gov/entity-information/${version}/${path}`);
   url.searchParams.set('api_key', apiKey);
   Object.entries(params).forEach(([k, v]) => { if (v) url.searchParams.set(k, v); });
   const upstream = await fetch(url.toString(), { headers: { Accept: 'application/json' } });
@@ -51,7 +51,7 @@ module.exports = async function handler(req, res) {
     const entParams = looksLikeUei(q)
       ? { ueiSAM: q.toUpperCase(), includeSections: 'entityRegistration,coreData' }
       : { legalBusinessName: q, includeSections: 'entityRegistration,coreData', registrationStatus: 'A' };
-    const ent = await samGet('entities', entParams, apiKey);
+    const ent = await samGet('v3', 'entities', entParams, apiKey);
 
     // Role-gated key → not authorized for the Entity API. Surface distinctly.
     if (ent.status === 401 || ent.status === 403) {
@@ -75,7 +75,9 @@ module.exports = async function handler(req, res) {
     let exclusions = { checked: false, count: 0, excluded: false };
     const uei = entity?.uei || (looksLikeUei(q) ? q.toUpperCase() : '');
     const exParams = uei ? { ueiSAM: uei } : { exclusionName: q };
-    const ex = await samGet('exclusions', exParams, apiKey);
+    // Exclusions live at a different API version than entities; try v4 then v3.
+    let ex = await samGet('v4', 'exclusions', exParams, apiKey);
+    if (ex.status === 404) ex = await samGet('v3', 'exclusions', exParams, apiKey);
     if (ex.ok) {
       const count = Number(ex.data.totalRecords) || (Array.isArray(ex.data.excludedEntityData) ? ex.data.excludedEntityData.length : 0);
       exclusions = { checked: true, count, excluded: count > 0 };
