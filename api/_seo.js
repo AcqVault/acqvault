@@ -37,6 +37,14 @@ function loadDeviations() {
   return devsCache;
 }
 
+let changesCache = null;
+function loadChangesLog() {
+  if (changesCache) return changesCache;
+  try { changesCache = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'output', 'changes-log.json'), 'utf8')); }
+  catch (e) { changesCache = []; }
+  return changesCache;
+}
+
 let libraryCache = null;
 function loadLibrary() {
   if (libraryCache) return libraryCache;
@@ -432,6 +440,111 @@ ${catHtml}
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }
 
+// ── /changes — the corpus-refresh ledger, rendered as a citable change record ──
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function fmtRunDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return esc(String(iso || ''));
+  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+}
+
+function renderChangesPage() {
+  const runs = loadChangesLog();
+  if (!Array.isArray(runs) || !runs.length) return null;
+  const canonical = `${SITE}/changes`;
+  const title = 'What changed — corpus refresh log | AcqVault';
+  const latest = runs[runs.length - 1];
+  const description = esc(`Every AcqVault re-index of the Revolutionary FAR Overhaul and its companion sources, with the exact sections that changed. Latest refresh: ${fmtRunDate(latest.run_at)}.`);
+
+  // Newest run first.
+  const runHtml = [...runs].reverse().map(run => {
+    const rfo = run.rfo || {};
+    const added = rfo.added || [];
+    const modified = rfo.modified || [];
+    const removed = rfo.removed || [];
+    const runDate = fmtRunDate(run.run_at);
+
+    // Group changed sections by part for scannability.
+    const byPart = new Map();
+    const put = (list, kind) => {
+      for (const s of list) {
+        const p = String(s.part || '?');
+        if (!byPart.has(p)) byPart.set(p, []);
+        byPart.get(p).push({ ...s, kind });
+      }
+    };
+    put(added, 'added'); put(removed, 'removed'); put(modified, 'modified');
+    const parts = [...byPart.keys()].sort((a, b) => partNum(a) - partNum(b) || a.localeCompare(b));
+
+    const partBlocks = parts.map(p => {
+      const rows = byPart.get(p).map(s => {
+        const kindChip = s.kind !== 'modified' ? `<span class="chg-kind chg-kind-${s.kind}">${s.kind === 'added' ? 'New' : 'Removed'}</span>` : '';
+        const link = s.kind === 'removed'
+          ? esc(s.title)
+          : `<a href="/?view=reader&amp;doc=${esc(s.id)}">${esc(s.title)}</a>`;
+        return `<li>${kindChip}${link}</li>`;
+      }).join('\n');
+      return `<details class="chg-part">
+<summary><strong>RFO Part ${esc(p)}</strong> — ${byPart.get(p).length} section${byPart.get(p).length !== 1 ? 's' : ''}</summary>
+<ul class="chg-list">${rows}</ul>
+</details>`;
+    }).join('\n');
+
+    const OTHER_LABELS = { r_dfars: 'R-DFARS', far_companion: 'FAR Companion', category_management: 'Category Mgmt', fmr: 'DoD FMR', afi_63_138: 'DAFI 63-138' };
+    const otherSources = Object.keys(OTHER_LABELS)
+      .filter(k => run[k] != null)
+      .map(k => {
+        const v = String(run[k]);
+        const label = OTHER_LABELS[k];
+        // Ledger strings sometimes already lead with the source name — don't double it.
+        return `<li>${v.toLowerCase().startsWith(label.toLowerCase()) ? esc(v) : `${esc(label)}: ${esc(v)}`}</li>`;
+      }).join('\n');
+
+    const counts = [
+      `<span class="chg-stat"><b>${modified.length}</b> modified</span>`,
+      `<span class="chg-stat"><b>${added.length}</b> added</span>`,
+      `<span class="chg-stat"><b>${removed.length}</b> removed</span>`,
+      rfo.unchanged != null ? `<span class="chg-stat"><b>${Number(rfo.unchanged).toLocaleString()}</b> unchanged</span>` : ''
+    ].filter(Boolean).join('\n');
+
+    return `<section class="sec chg-run">
+<h2 id="run-${esc(String(run.run_at || '').slice(0, 10))}">Re-index of ${runDate}</h2>
+<div class="chg-stats">${counts}</div>
+${partBlocks || '<p>No RFO text changes in this re-index.</p>'}
+${otherSources ? `<p class="srcref" style="margin-top:14px"><strong>Other sources checked:</strong></p><ul class="chg-other">${otherSources}</ul>` : ''}
+</section>`;
+  }).join('\n');
+
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: 'AcqVault corpus refresh log', description, url: canonical,
+    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
+  };
+
+  const CHG_STYLE = `<style>
+.chg-stats{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+.chg-stat{font-size:12.5px;font-weight:600;color:var(--muted);background:#f4f2ec;border:1px solid var(--line2);border-radius:999px;padding:4px 11px}
+.chg-stat b{color:var(--ink);font-variant-numeric:tabular-nums}
+details.chg-part{border:1px solid var(--line2);border-radius:10px;padding:0;margin:8px 0;background:#fff}
+details.chg-part summary{cursor:pointer;padding:10px 14px;font-size:14.5px;list-style-position:inside}
+details.chg-part[open] summary{border-bottom:1px solid var(--line2)}
+ul.chg-list{margin:8px 0 12px;padding:0 16px 0 34px;font-size:14px}
+ul.chg-list li{padding:3px 0}
+ul.chg-list a{color:var(--accent);text-decoration:none}ul.chg-list a:hover{text-decoration:underline}
+.chg-kind{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:1px 6px;margin-right:7px;vertical-align:1px}
+.chg-kind-added{background:#f0fdf4;color:#166534}
+.chg-kind-removed{background:#fff1f2;color:#991b1b}
+ul.chg-other{font-size:13.5px;color:var(--muted);margin:4px 0 0;padding-left:22px}
+</style>`;
+
+  const body = `${CHG_STYLE}<nav class="crumbs"><a href="/">AcqVault</a> › What changed</nav>
+<h1>What changed</h1>
+<p class="lede">AcqVault re-indexes its sources monthly and logs exactly which sections changed. This is that log — cite it when you need to show a regulation moved under you. Section links open the current full text; always verify against the signed deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on a result in a contract file.</p>
+${runHtml}`;
+
+  return shell({ title, description, canonical, jsonld, body });
+}
+
 const RFO_FAQ = [
   ['Is the Revolutionary FAR Overhaul the same as the FAR?',
    'Yes — it is the Federal Acquisition Regulation, overhauled. Under Executive Order 14275, "Restoring Common Sense to Federal Procurement," agencies use the revised FAR text published on the Revolutionary FAR Overhaul web page in lieu of the text codified at 48 CFR.'],
@@ -480,6 +593,7 @@ function renderSitemap() {
   urls.push(`${SITE}/what-is-the-rfo`);
   if ((loadLibrary().categories || []).some(c => c.items && c.items.length)) urls.push(`${SITE}/library`);
   if (loadDeviations().length) urls.push(`${SITE}/deviations`);
+  if (loadChangesLog().length) urls.push(`${SITE}/changes`);
   for (const source of SOURCE_KEYS) {
     const { parts } = partsForSource(source);
     if (!parts.length) continue;
@@ -493,4 +607,4 @@ ${body}
 </urlset>`;
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderSitemap, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderSitemap, SITE };

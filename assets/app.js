@@ -2104,6 +2104,31 @@ function copyResultCite(hit, btn) {
   }).catch(() => {});
 })();
 
+// ── "Updated" badges: sections changed in a recent re-index (ledger: /output/changes-log.json) ──
+// Map of doc id → run date for changes within the badge window. Populated async at
+// startup; cards rendered before it resolves simply omit the badge (next render has it).
+const UPDATED_WINDOW_DAYS = 45;
+let updatedDocs = new Map();
+(function loadChangeLedger() {
+  fetch('/output/changes-log.json').then(r => r.ok ? r.json() : null).then(runs => {
+    if (!Array.isArray(runs)) return;
+    const cutoff = Date.now() - UPDATED_WINDOW_DAYS * 86400000;
+    for (const run of runs) {
+      const at = new Date(run.run_at).getTime();
+      if (isNaN(at) || at < cutoff) continue;
+      const rfo = run.rfo || {};
+      for (const s of [].concat(rfo.modified || [], rfo.added || [])) {
+        if (s && s.id) updatedDocs.set(s.id, run.run_at);
+      }
+    }
+  }).catch(() => {});
+})();
+function updatedTag(id) {
+  const at = updatedDocs.get(id);
+  if (!at) return '';
+  return `<span class="rc-badge rc-badge-updated" title="Text changed in AcqVault's ${esc(fmtAsOf(at))} re-index — see /changes">Updated</span>`;
+}
+
 // ── Acronym-aware search assist: instant answer + "search the full term" ──
 function acronymHit(q) {
   var dict = window.ACRONYMS; if (!dict) return null;
@@ -2206,7 +2231,7 @@ function resultCardHTML(hit) {
   return `<div class="result-card${hit.id === activeDocId ? ' active' : ''}" data-id="${esc(hit.id)}" data-source="${esc(hit.source || '')}">
       <button class="rc-pin${pinned ? ' is-pinned' : ''}" type="button" data-pin-id="${esc(hit.id)}" data-pin-title="${esc(hit.title || '')}" data-pin-source="${esc(hit.source || '')}" data-pin-part="${esc(hit.part || '')}" data-pin-file="${esc(hit.filename || '')}" data-pin-url="${esc(hit.url || '')}" data-pin-anchor="${esc(hit.anchor || '')}" data-pin-indexed="${esc(hit.indexed_at || '')}" data-pin-status="${esc(hit.status || '')}" aria-pressed="${pinned ? 'true' : 'false'}" aria-label="${pinned ? 'Remove saved clause' : 'Save this clause'}" title="${pinned ? 'Saved — click to remove' : 'Save this clause'}">★</button>
       <a class="rc-open" href="${esc(href)}" aria-label="Open: ${esc(hit.title || 'document')}">
-        <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${hit.part ? `<span class="rc-part">${partWord(hit.source)} ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
+        <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${updatedTag(hit.id)}${hit.part ? `<span class="rc-part">${partWord(hit.source)} ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
         <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
         <div class="rc-snippet">${markOnly(hl.content || '')}</div>
       </a>

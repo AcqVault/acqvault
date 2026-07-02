@@ -835,6 +835,7 @@ body.work-mode #spending-dashboard{display:none;}
 .rc-badge-proposed{background:#f5f3ff;color:#5b21b6;}
 .rc-badge-final{background:#f0fdf4;color:#166534;}
 .rc-badge-unknown{background:var(--off2);color:var(--muted2);}
+.rc-badge-updated{background:#f6efdd;color:#5e4715;border:1px solid rgba(135,101,28,.28);cursor:help;}
 .rc-title{font-size:var(--fs-lg);font-weight:var(--fw-bold);letter-spacing:var(--ls-snug);color:var(--ink);line-height:1.3;margin-bottom:3px;}
 .rc-ref{font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--ink2);letter-spacing:0;margin-bottom:5px;}
 .rc-part{font-size:var(--fs-xs);color:var(--muted2);}

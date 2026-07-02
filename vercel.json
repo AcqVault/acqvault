@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/deviations", "destination": "/api/deviations" },
+    { "source": "/changes", "destination": "/api/changes" },
     { "source": "/library", "destination": "/api/library" },
     { "source": "/what-is-the-rfo", "destination": "/api/explainer" },
     { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr)", "destination": "/api/hub?source=:source" },
