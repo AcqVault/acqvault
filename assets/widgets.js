@@ -66,7 +66,8 @@
     { group: G3, abbr: '', name: '8(a) sole source — justification', cite: 'RFO 6.103-5',
       std: 30000000, con: 30000000, fixed: true },
     { group: G3, abbr: '', name: 'E.O. 14402 justification — DoD', cite: 'RFO 16.104',
-      std: 100000000, con: 100000000, fixed: true, note: '$10M at most civilian agencies' }
+      std: 100000000, con: 100000000, fixed: true,
+      note: 'Other than fixed-price · $10M most agencies · $25M DHS · $35M NASA' }
   ];
 
   // Acronym glossary: TERM -> [expansion, optional note]
@@ -310,6 +311,8 @@
               <div class="thr-list" id="thr-list"></div>
               <div class="thr-foot">Per the FY2025 inflation adjustment effective Oct. 1, 2025 and carried into the RFO; DoD deviations live in the R-DFARS. Always verify against the live regulation &amp; any class deviations before acting. The RFO may revise these.</div>
             </div>
+          </div>
+          <div class="tk-col">
             <div class="tk-card fade-up d1" id="cra-card">
               <div class="tk-card-head">
                 <div class="tk-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7l-4-4Z"/><path d="M14 3v4h4"/><path d="m9 14.5 2 2 4-4.5"/></svg></div>
@@ -331,8 +334,6 @@
               </div>
               <div class="thr-foot">¹ The SCO also serves as CRA for IDIQs ≥$1B that don't establish pricing in the basic contract. ² Special interest may be designated by the SAE for any action regardless of value; designees must be at least one level above the CO. From the AcqVault <a class="cra-dl" href="/pdfs/casper-mfr-template.pdf" download="AcqVault-CASPER-MFR-Template.pdf">CASPER MFR template ↓</a></div>
             </div>
-          </div>
-          <div class="tk-col">
             <div class="tk-card fade-up d1" id="acro-card">
               <div class="tk-card-head">
                 <div class="tk-card-icon">A\u02B7</div>
@@ -342,7 +343,7 @@
                 </div>
               </div>
               <div class="acro-search">
-                <span class="acro-search-icon">\u2315</span>
+                <span class="acro-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="13" height="13" style="display:block;"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
                 <input type="text" id="acro-input" placeholder="e.g. IDIQ, J&amp;A, LPTA\u2026" autocomplete="off" spellcheck="false" aria-label="Search acronyms" />
                 <span class="acro-count" id="acro-count"></span>
               </div>
