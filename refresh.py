@@ -276,13 +276,25 @@ def check_rdfars():
     return "; ".join(parts), True
 
 
-def check_static_pdf(label, url, local_glob):
+def check_static_pdf(label, url, local_glob, download=True):
+    """Probe an acquisition.gov PDF; when it changed upstream, pull the new copy
+    into the tracked source folder (validated as a real PDF first). The corpus
+    re-extraction for these sources is deliberately a supervised session job."""
     lm, size = head_info(url)
-    local = sorted((BASE_DIR).glob(local_glob))
+    local = sorted(BASE_DIR.glob(local_glob))
     lsize = local[0].stat().st_size if local else 0
-    status = "current" if size == lsize else "CHANGED upstream (remote {:,}B vs local {:,}B, last-modified {})".format(
-        size, lsize, lm or "?")
-    return "{}: {}".format(label, status), size != lsize
+    if size == lsize:
+        return "{}: current".format(label), False
+    msg = "{}: CHANGED upstream (remote {:,}B vs local {:,}B, last-modified {})".format(
+        label, size, lsize, lm or "?")
+    if download and local:
+        data = get(url).content
+        if data[:5] == b"%PDF-" and len(data) > 100000:
+            local[0].write_bytes(data)
+            msg += " — new PDF downloaded to {}".format(local[0].relative_to(BASE_DIR))
+        else:
+            msg += " — download did NOT look like a valid PDF ({} bytes), left untouched".format(len(data))
+    return msg, True
 
 
 # ── documents.json merge + ship ───────────────────────────────────────────────
@@ -368,17 +380,26 @@ def main():
 
     rd_msg, rd_changed = check_rdfars()
     print("R-DFARS: " + rd_msg)
-    fc_msg, _ = check_static_pdf("FAR Companion",
-                                 SITE + "/sites/default/files/page_file_uploads/far-companion.pdf",
-                                 "FAR Companion/*.pdf")
-    cm_msg, _ = check_static_pdf("Category Mgmt",
-                                 SITE + "/sites/default/files/page_file_uploads/category-management-buying-guide.pdf",
-                                 "Category Management/*.pdf")
+    fc_msg, fc_changed = check_static_pdf(
+        "FAR Companion", SITE + "/sites/default/files/page_file_uploads/far-companion.pdf",
+        "FAR Companion/*.pdf", download=not args.check)
+    cm_msg, cm_changed = check_static_pdf(
+        "Category Mgmt", SITE + "/sites/default/files/page_file_uploads/category-management-buying-guide.pdf",
+        "Category Management/*.pdf", download=not args.check)
     print(fc_msg)
     print(cm_msg)
-    if rd_changed:
-        print("  → run `python3 fetch_dod_deviations.py` to pull the new memos, then ping")
-        print("    your assistant to re-extract R-DFARS — that path is deliberately manual.")
+    if (rd_changed or fc_changed or cm_changed) and not args.check:
+        print("  → NOTE: new source PDFs are downloaded locally, but re-extracting them into")
+        print("    the searchable corpus is a supervised job — tell your assistant AcqVault")
+        print("    needs updating and it will extract, parity-validate, and ship them.")
+    if rd_changed and not args.check:
+        print("  → pulling the new/changed DoD memos via fetch_dod_deviations.py …")
+        try:
+            subprocess.run([sys.executable, str(BASE_DIR / "fetch_dod_deviations.py")],
+                           cwd=str(BASE_DIR), check=True)
+            print("  → memos downloaded into R-DFARS/.")
+        except Exception as e:  # noqa: BLE001
+            print("  ⚠ memo download failed ({}) — R-DFARS files left untouched".format(e))
 
     if args.check:
         lm, _ = head_info(SITE + "/sites/default/files/page_file_uploads/RFO.pdf")
