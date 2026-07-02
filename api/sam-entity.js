@@ -79,6 +79,8 @@ module.exports = async function handler(req, res) {
     if (ex.ok) {
       const count = Number(ex.data.totalRecords) || (Array.isArray(ex.data.excludedEntityData) ? ex.data.excludedEntityData.length : 0);
       exclusions = { checked: true, count, excluded: count > 0 };
+    } else {
+      exclusions = { checked: false, count: 0, excluded: false, debugStatus: ex.status, debugMsg: (ex.data && (ex.data.error?.message || ex.data.message || ex.data._raw)) || '' };
     }
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
