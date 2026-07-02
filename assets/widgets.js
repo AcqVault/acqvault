@@ -65,9 +65,9 @@
       std: TINA_VALUE, con: TINA_VALUE, fixed: true },
     { group: G3, abbr: '', name: '8(a) sole source — justification', cite: 'RFO 6.103-5',
       std: 30000000, con: 30000000, fixed: true },
-    { group: G3, abbr: '', name: 'E.O. 14402 justification — DoD', cite: 'RFO 16.104',
+    { group: G3, abbr: '', name: 'Non-fixed-price contract justification — DoD', cite: 'RFO 16.104',
       std: 100000000, con: 100000000, fixed: true,
-      note: 'Other than fixed-price · $10M most agencies · $25M DHS · $35M NASA' }
+      note: 'E.O. 14402 · other agencies $10M (DHS $25M, NASA $35M)' }
   ];
 
   // Acronym glossary: TERM -> [expansion, optional note]
@@ -121,6 +121,7 @@
     PNM: ['Price Negotiation Memorandum'],
     'J&A': ['Justification and Approval', 'Other than full & open — RFO 6.104-2'],
     SCA: ['Service Contract Act', 'Now “Service Contract Labor Standards” — applies above $2,500 (RFO 22.1002)'],
+    'EO 14402': ['Promoting Efficiency, Accountability, and Performance in Federal Contracting', 'Apr 2026 E.O. — head-of-agency justification to award other than firm-fixed-price: $100M DoD, $35M NASA, $25M DHS, $10M all others (RFO 16.104)'],
     DBA: ['Davis-Bacon Act', 'Construction wage rates — applies above $2,000 (RFO 22.402)'],
     'D&F': ['Determination and Findings', 'FAR 1.7'],
     BAA: ['Broad Agency Announcement', 'FAR 35.016'],
