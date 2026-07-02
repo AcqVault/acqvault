@@ -6,8 +6,7 @@
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
-  var MCQ_RATIO = 0.5;      // roughly half the recall cards render as multiple choice
-  var MCQ_MAX_LEN = 220;    // long answers stay produce-then-reveal (bad MCQ options)
+  var HINT_COOLDOWN_MS = 4000; // hammering the hint button slows down — think between hints
 
   var deck = null;
   var S = load();
@@ -68,16 +67,18 @@
     var sum = 0; cards.forEach(function (c) { sum += cardState(c.id).box / 5; });
     return Math.round(100 * sum / cards.length);
   }
-  function mcqOptions(card, pool) { // 3 distractors: same topic first, then anywhere
-    var seen = { }; seen[card.a] = true;
+  function mcqOptions(card, pool) { // 3 distractors: same topic + similar length first, then anywhere
+    var seen = {}; seen[card.a] = true;
     var same = [], other = [];
     pool.forEach(function (c) {
-      if (c.id === card.id || seen[c.a] || c.a.length > MCQ_MAX_LEN) return;
+      if (c.id === card.id || seen[c.a]) return;
       seen[c.a] = true;
       ((c.topic === card.topic) ? same : other).push(c.a);
     });
-    var opts = shuffle(same).slice(0, 3);
-    if (opts.length < 3) opts = opts.concat(shuffle(other).slice(0, 3 - opts.length));
+    var byLen = function (x, y) { return Math.abs(x.length - card.a.length) - Math.abs(y.length - card.a.length); };
+    // prefer same-topic; among candidates, prefer answers of comparable length so the odd one out isn't obvious
+    var opts = shuffle(same).sort(byLen).slice(0, 3);
+    if (opts.length < 3) opts = opts.concat(shuffle(other).sort(byLen).slice(0, 3 - opts.length));
     if (opts.length < 3) return null; // not enough material — fall back to reveal style
     opts.push(card.a);
     return shuffle(opts);
@@ -166,7 +167,7 @@
     function step() {
       if (i >= q.length) return summary();
       var c = q[i];
-      var opts = (c.a.length <= MCQ_MAX_LEN && Math.random() < MCQ_RATIO) ? mcqOptions(c, pool) : null;
+      var opts = mcqOptions(c, pool); // knowledge checks are multiple choice; reveal-style is the rare fallback
       var head = '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>';
       if (opts) {
         render(head +
@@ -254,35 +255,48 @@
     return cards;
   }
 
-  /* ---- threshold sprint ---- */
+  /* ---- threshold sprint (multiple choice, streak on correct) ---- */
   function viewSprint() {
     var q = shuffle(deck.thresholds.slice());
     var i = 0, streak = 0;
     function step() {
       if (i >= q.length) return done();
       var c = q[i];
+      var opts = mcqOptions(c, deck.thresholds) || [c.a];
       render(
         '<div class="st-session-head"><span>Threshold Sprint</span><span>streak ' + streak + ' · best ' + (S.sprint.best || 0) + '</span></div>' +
         '<div class="st-card st-sprint" aria-live="polite">' +
         '<div class="st-q">' + esc(c.q) + '</div>' +
-        '<div id="st-a" class="st-a" hidden>' + esc(c.a) + '</div>' +
-        '<div class="st-actions" id="st-act"><button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
+        '<div class="st-opts">' + opts.map(function (o, k) {
+          return '<button class="st-opt" data-k="' + k + '"><kbd>' + (k + 1) + '</kbd><span>' + esc(o) + '</span></button>';
+        }).join('') + '</div></div>' +
         '<button class="st-link st-quit" id="st-quit">End sprint</button>');
       el('st-quit').onclick = done;
-      el('st-reveal').onclick = reveal;
-      keyHandler(function (k) { if (k === ' ' || k === 'Enter') { reveal(); return true; } });
-      function reveal() {
-        el('st-a').hidden = false;
-        el('st-act').innerHTML =
-          '<button class="st-btn st-g1" id="g1">Missed <kbd>1</kbd></button>' +
-          '<button class="st-btn st-g3" id="g3">Nailed it <kbd>3</kbd></button>';
-        el('g1').onclick = function () { streak = 0; i++; step(); };
-        el('g3').onclick = function () { streak++; if (streak > (S.sprint.best || 0)) { S.sprint.best = streak; save(); } i++; step(); };
-        keyHandler(function (k) {
-          if (k === '1') { el('g1').onclick(); return true; }
-          if (k === '3' || k === ' ') { el('g3').onclick(); return true; }
+      var answered = false;
+      function pick(k) {
+        if (answered) return; answered = true;
+        var right = opts[k] === c.a;
+        Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
+          var bk = +b.getAttribute('data-k');
+          if (opts[bk] === c.a) b.classList.add('st-opt-right');
+          else if (bk === k) b.classList.add('st-opt-wrong');
+          b.disabled = true;
         });
+        if (right) { streak++; if (streak > (S.sprint.best || 0)) { S.sprint.best = streak; save(); } }
+        else streak = 0;
+        var act = document.createElement('div'); act.className = 'st-actions';
+        act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">Next <kbd>space</kbd></button>';
+        app.querySelector('.st-card').appendChild(act);
+        el('st-next').onclick = function () { i++; step(); };
+        keyHandler(function (key) { if (key === ' ' || key === 'Enter') { i++; step(); return true; } });
       }
+      Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
+        b.onclick = function () { pick(+b.getAttribute('data-k')); };
+      });
+      keyHandler(function (k) {
+        var n = parseInt(k, 10);
+        if (n >= 1 && n <= opts.length) { pick(n - 1); return true; }
+      });
     }
     function done() {
       keyHandler(null);
@@ -296,18 +310,23 @@
   }
 
   /* ---- board sim (out loud, with hints) ---- */
-  function boardHints(sc) {
+  function boardHints(sc) { // a ladder: each hint gives away a little more
     var h = [];
+    h.push('Open the way you would at the board: name the framework, name who you\'d call, state the default rule before any exception.');
     var tops = sc.topics && sc.topics.length ? sc.topics.join(' · ') : null;
     if (tops) h.push('Framework(s) in play: ' + tops + '.');
     if (sc.facts) {
-      var baits = sc.facts.filter(function (f) { return f.verdict === 'bait'; }).length;
-      h.push('There are ' + sc.facts.length + ' load-bearing facts here — ' + baits + ' of them ' + (baits === 1 ? 'is' : 'are') + ' bait. Ask of each fact: why is it in the scenario?');
-    } else if (sc.baits && sc.baits.length) {
-      h.push('Watch for the bait: ' + sc.baits[0]);
+      var baitFacts = sc.facts.filter(function (f) { return f.verdict === 'bait'; });
+      h.push('There are ' + sc.facts.length + ' load-bearing facts here — ' + baitFacts.length + ' of them ' + (baitFacts.length === 1 ? 'is' : 'are') + ' bait. Ask of each fact: why is it in the scenario?');
+      if (baitFacts.length) h.push('One of the baits: “' + baitFacts[0].fact + '” — don\'t let it pick your framework for you.');
+      var gov = sc.facts.filter(function (f) { return f.verdict !== 'bait'; });
+      if (gov.length) h.push('The fact that actually governs: “' + gov[0].fact + '”. Build your answer on that one.');
+    } else {
+      if (sc.baits && sc.baits.length) h.push('Watch for the bait: ' + sc.baits[0]);
+      if (sc.baits && sc.baits.length > 1) h.push('There\'s a second bait too: ' + sc.baits[1]);
+      if (sc.key_moves && sc.key_moves.length) h.push('Opening move: ' + sc.key_moves[0]);
+      if (sc.key_moves && sc.key_moves.length > 1) h.push('And then: ' + sc.key_moves[1]);
     }
-    if (sc.key_moves && sc.key_moves.length) h.push('Opening move: ' + sc.key_moves[0]);
-    else h.push('Open the way you would at the board: name the framework, name who you\'d call, state the default rule.');
     return h;
   }
   function viewBoard() {
@@ -361,7 +380,9 @@
         for (var hi = 0; hi < hintsShown; hi++) addHint(hints[hi]);
         refreshHintBtn();
         el('st-hint').onclick = function () {
-          if (hintsShown < hints.length) { addHint(hints[hintsShown]); hintsShown++; refreshHintBtn(); }
+          if (el('st-hint').disabled || hintsShown >= hints.length) return;
+          addHint(hints[hintsShown]); hintsShown++;
+          cooldownHintBtn(); // hammering slows down — sit with the hint before the next one
         };
       }
       function addHint(text) {
@@ -373,7 +394,21 @@
         var b = el('st-hint'); if (!b) return;
         var left = hints.length - hintsShown;
         if (left <= 0) { b.disabled = true; b.innerHTML = 'No more hints'; }
-        else b.innerHTML = 'Hint <span class="st-hint-n">' + left + '</span>';
+        else { b.disabled = false; b.innerHTML = 'Hint <span class="st-hint-n">' + left + '</span>'; }
+      }
+      function cooldownHintBtn() {
+        var b = el('st-hint'); if (!b) return;
+        if (hintsShown >= hints.length) { refreshHintBtn(); return; }
+        var wait = Math.ceil(HINT_COOLDOWN_MS / 1000);
+        b.disabled = true;
+        var tick = setInterval(function () {
+          wait--;
+          var btn = el('st-hint');
+          if (!btn || stage !== 0) { clearInterval(tick); return; } // view moved on
+          if (wait <= 0) { clearInterval(tick); refreshHintBtn(); }
+          else btn.innerHTML = 'Next hint in ' + wait + '…';
+        }, 1000);
+        b.innerHTML = 'Next hint in ' + wait + '…';
       }
       if (el('next')) {
         el('next').onclick = function () { stage++; step(); };
