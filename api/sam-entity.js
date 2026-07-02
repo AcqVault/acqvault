@@ -1,9 +1,11 @@
-// SAM.gov Entity + Exclusions "quick picture" proxy — registration status,
-// business size/socioeconomic types, and active exclusion/debarment for a
-// vendor (by UEI or legal name). Server-side because CAC blocks 3rd-party
-// client calls. NOTE: SAM's Entity Management API is role-gated — the shared
-// opportunities key may NOT be authorized (returns 401/403); the handler
-// surfaces that distinctly so the UI can hide the feature cleanly.
+// SAM.gov Entity "quick picture" proxy — registration status, business
+// size/socioeconomic types, UEI/CAGE for a vendor (by UEI or legal name).
+// Server-side because CAC blocks 3rd-party client calls. Verified live: the
+// existing SAM_API_KEY IS authorized for the Entity Management API (v3/entities).
+// Exclusions/debarment was dropped — SAM's exclusions endpoint has a different
+// contract (v3 404, v4 406) that this key/query couldn't satisfy; revisit only
+// with the exact exclusions endpoint + params. authorized:false is still
+// surfaced (401/403) so the UI can hide the feature if entitlement ever changes.
 const { enforce } = require('./_ratelimit');
 
 const looksLikeUei = (s) => /^[A-Z0-9]{12}$/i.test(s);
@@ -71,27 +73,12 @@ module.exports = async function handler(req, res) {
     const list = ent.data.entityData || ent.data.entities || [];
     const entity = list.length ? compactEntity(list[0]) : null;
 
-    // Exclusions (debarment) — by UEI when we have one, else by name.
-    let exclusions = { checked: false, count: 0, excluded: false };
-    const uei = entity?.uei || (looksLikeUei(q) ? q.toUpperCase() : '');
-    const exParams = uei ? { ueiSAM: uei } : { exclusionName: q };
-    // Exclusions live at a different API version than entities; try v4 then v3.
-    let ex = await samGet('v4', 'exclusions', exParams, apiKey);
-    if (ex.status === 404) ex = await samGet('v3', 'exclusions', exParams, apiKey);
-    if (ex.ok) {
-      const count = Number(ex.data.totalRecords) || (Array.isArray(ex.data.excludedEntityData) ? ex.data.excludedEntityData.length : 0);
-      exclusions = { checked: true, count, excluded: count > 0 };
-    } else {
-      exclusions = { checked: false, count: 0, excluded: false, debugStatus: ex.status, debugMsg: (ex.data && (ex.data.error?.message || ex.data.message || ex.data._raw)) || '' };
-    }
-
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json({
       configured: true,
       authorized: true,
       query: q,
       entity,
-      exclusions,
       note: entity ? '' : 'No active SAM registration matched. Try the exact legal name or the UEI.'
     });
   } catch (error) {
