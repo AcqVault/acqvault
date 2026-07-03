@@ -641,6 +641,14 @@ function renderStudyPage() {
 .st-summary .st-prog-lg{max-width:340px;margin:16px auto 12px}
 .st-scenario{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#dde9f6;border-left:3px solid #e4c477;border-radius:10px;padding:16px 18px;font-size:15px;line-height:1.6}
 .st-scen-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#e4c477;margin-bottom:8px}
+.st-panel-ask{margin-top:12px;background:#f6efdd;border:1px solid rgba(135,101,28,.3);border-left:3px solid var(--brass);border-radius:0 10px 10px 0;padding:12px 15px;font-size:15px;line-height:1.55;color:#2a3140;font-weight:600}
+.st-ask-kicker{display:block;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:5px}
+.st-script{margin-top:16px;background:linear-gradient(158deg,#173a60,#0f2540 70%);border-left:3px solid #e4c477;border-radius:0 12px 12px 0;padding:16px 18px}
+.st-script-head{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#e4c477;margin-bottom:8px}
+.st-script p{margin:0;font-size:14.5px;line-height:1.68;color:#dde9f6}
+.st-fu-debrief{margin-top:14px;background:var(--off,#f7f6f2);border-left:3px solid rgba(228,196,119,.9);border-radius:0 8px 8px 0;padding:13px 15px}
+.st-fu-debrief-head{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:6px}
+.st-fu-debrief p{margin:0;font-size:14px;line-height:1.6;color:#3d444d}
 .st-scenario-sm{font-size:13px;opacity:.92;margin-bottom:14px}
 .st-outloud{color:var(--brass-ink);font-size:13.5px;font-style:italic;margin:14px 0 0}
 .st-fact{border-left:3px solid rgba(228,196,119,.9);padding:7px 0 7px 12px;margin:10px 0;font-size:14px;line-height:1.55}
@@ -700,7 +708,7 @@ ${SEAL_SVG}
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Drill it until it&rsquo;s reflex</h1>
 <p class="lede">Knowledge checks, threshold sprints, and board-style scenario drills built from the AcqVault Field Guides — spaced repetition decides what you see, you decide how honest your self-grade is.</p>
-<div class="stats"><span class="stat"><b>425+</b> drills</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+<div class="stats"><span class="stat"><b>500+</b> drills</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
 <div id="study-app"><noscript><p>AcqVault Study is an interactive drill tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
@@ -709,7 +717,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=7"></script>`;
+<script defer src="/assets/study.js?v=8"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }

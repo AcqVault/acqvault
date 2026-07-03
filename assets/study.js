@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=3';
+  var DECK_URL = '/assets/study-deck.json?v=4';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -428,9 +428,10 @@
   function boardHints(sc) { // a ladder built on the coaching spine: each hint gives away a little more
     var h = [];
     var co = sc.coach || {};
+    var opener = sc.style === 'opener';
     if (co.qtype) h.push('Name the question type first. This is ' + co.qtype);
-    if (co.smes) h.push('Name your help before your answer. Your phone-a-friends here: ' + co.smes);
-    if (co.rule) h.push('State the default rule before any exception: ' + co.rule);
+    if (co.smes) h.push(opener ? 'On help: ' + co.smes : 'Name your help before your answer. Your phone-a-friends here: ' + co.smes);
+    if (co.rule) h.push(opener ? co.rule : 'State the default rule before any exception: ' + co.rule);
     if (sc.facts) {
       var baitFacts = sc.facts.filter(function (f) { return f.verdict === 'bait'; });
       h.push('There are ' + sc.facts.length + ' load-bearing facts here — ' + baitFacts.length + ' of them ' + (baitFacts.length === 1 ? 'is' : 'are') + ' bait. Ask of each fact: why is it in the scenario?');
@@ -448,6 +449,7 @@
   // walk the facts → land the decision → close the loop. "That's the way you learn."
   function boardWalkthrough(sc) {
     var co = sc.coach || {};
+    var opener = sc.style === 'opener';
     var steps = [];
     steps.push('<li><b>Name the question.</b> Out loud, first sentence: this is ' + esc(co.qtype || 'a frameworks question — name it, then walk it.') + '</li>');
     if (sc.frameworks && sc.frameworks.length) {
@@ -455,8 +457,13 @@
         return esc(typeof f === 'string' ? f : (f.framework + (f.why ? ' — ' + f.why : '')));
       }).join('<br>') + '</li>');
     }
-    steps.push('<li><b>Name your help.</b> Boards reward knowing who to call: ' + esc(co.smes || 'your CO/chief, Legal (JA), and FM.') + '</li>');
-    steps.push('<li><b>State the default rule before any exception.</b> ' + esc(co.rule || 'Default first, exception second, facts third.') + '</li>');
+    if (opener) {
+      steps.push('<li><b>Own it.</b> ' + esc(co.smes || 'This one is yours — anchor on your own experience and what you actually control.') + '</li>');
+      steps.push('<li><b>Give it a spine.</b> ' + esc(co.rule || 'A definition, a concrete plan, and one example — in that order.') + '</li>');
+    } else {
+      steps.push('<li><b>Name your help.</b> Boards reward knowing who to call: ' + esc(co.smes || 'your CO/chief, Legal (JA), and FM.') + '</li>');
+      steps.push('<li><b>State the default rule before any exception.</b> ' + esc(co.rule || 'Default first, exception second, facts third.') + '</li>');
+    }
     if (sc.facts) {
       var baits = sc.facts.filter(function (f) { return f.verdict === 'bait'; }).map(function (f) { return f.fact; });
       var govs = sc.facts.filter(function (f) { return f.verdict !== 'bait'; }).map(function (f) { return f.fact; });
@@ -472,7 +479,9 @@
     } else if (sc.board_answer) {
       steps.push('<li><b>Land the decision.</b> ' + esc(sc.board_answer) + '</li>');
     }
-    steps.push('<li><b>Close the loop.</b> Say where you\'d verify before acting — the live RFO/R-DFARS text, your Legal office — and what goes in the file. Never quote a threshold from memory.</li>');
+    steps.push('<li><b>Close the loop.</b> ' + (opener
+      ? 'End in your own voice — one concrete thing you would change on Monday. Perspective questions are scored on judgment and specifics, not recitation.'
+      : 'Say where you\'d verify before acting — the live RFO/R-DFARS text, your Legal office — and what goes in the file. Never quote a threshold from memory.') + '</li>');
     return '<div class="st-walk"><div class="st-walk-head">How you should have answered — step by step</div><ol>' + steps.join('') + '</ol></div>';
   }
   function viewBoard() {
@@ -480,14 +489,19 @@
     var fresh = pool.filter(function (s) { return !S.scen[s.id]; });
     var sc = (fresh.length ? shuffle(fresh) : shuffle(pool))[0];
     var stage = 0; // 0 scenario, 1 debrief, 2+ follow-ups
+    var fuRevealed = false; // within a follow-up: question shown → debrief shown
     var fus = sc.follow_ups || [];
     var hints = boardHints(sc), hintsShown = 0;
+    var askHtml = sc.ask ? '<div class="st-panel-ask"><span class="st-ask-kicker">The panel asks</span>' + esc(sc.ask) + '</div>' : '';
     function step() {
       var body = '<div class="st-chip">Board Sim' + (sc.topics && sc.topics.length && stage > 0 ? ' · ' + esc(sc.topics.join(' · ')) : '') + '</div>';
       if (stage === 0) {
         body = '<div class="st-chip">Board Sim</div>' +
           '<div class="st-scenario"><div class="st-scen-eyebrow">The scenario</div>' + esc(sc.scenario) + '</div>' +
-          '<p class="st-outloud">Answer <b>out loud</b> — name the framework, name your help, walk it. Stuck? Take a hint.</p>' +
+          askHtml +
+          '<p class="st-outloud">Answer <b>out loud</b> — ' + (sc.style === 'opener'
+            ? 'in your own voice: a definition, a plan, one example. Stuck? Take a hint.'
+            : 'name the framework, name your help, walk it. Stuck? Take a hint.') + '</p>' +
           '<div id="st-hints"></div>' +
           '<div class="st-actions"><button class="st-btn st-btn-hint" id="st-hint">Hint <span class="st-hint-n">' + (hints.length - hintsShown) + '</span></button>' +
           '<button class="st-btn st-btn-reveal" id="next">Reveal the debrief <kbd>space</kbd></button></div>';
@@ -501,14 +515,27 @@
             return '<div class="st-fact"><b>' + esc(f.fact) + '</b> ' + v + '<div>' + esc(f.why) + '</div></div>';
           }).join('');
         }
-        body += '<div class="st-scenario st-scenario-sm">' + esc(sc.scenario) + '</div>' + d +
+        body += '<div class="st-scenario st-scenario-sm">' + esc(sc.scenario) + '</div>' + askHtml + d +
           boardWalkthrough(sc) +
+          (sc.script ? '<div class="st-script"><div class="st-script-head">Say it like this</div><p>' + esc(sc.script) + '</p></div>' : '') +
           '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (fus.length ? 'The panel follows up… <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
       } else if (stage - 2 < fus.length) {
         var k = stage - 2;
-        body += '<div class="st-followup"><span>Panel follow-up ' + (k + 1) + ' of ' + fus.length + '</span><div class="st-q">' + esc(fus[k]) + '</div></div>' +
-          '<p class="st-outloud">Answer out loud, then continue.</p>' +
-          '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (k + 1 < fus.length ? 'Next follow-up <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
+        var fu = fus[k] || {};
+        var fq = fu.q || fu; // deck v4 uses {q,h,d}; tolerate legacy plain strings
+        body += '<div class="st-followup"><span>Panel follow-up ' + (k + 1) + ' of ' + fus.length + '</span><div class="st-q">' + esc(fq) + '</div></div>';
+        if (fu.d && fuRevealed) {
+          body += '<div class="st-fu-debrief"><div class="st-fu-debrief-head">Debrief</div><p>' + esc(fu.d) + '</p></div>' +
+            '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (k + 1 < fus.length ? 'Next follow-up <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
+        } else {
+          body += '<p class="st-outloud">Answer <b>out loud</b>' + (fu.d ? ', then reveal the debrief.' : ', then continue.') + '</p>' +
+            '<div id="fu-hint-box"></div>' +
+            '<div class="st-actions">' +
+            (fu.h ? '<button class="st-btn st-btn-hint" id="fu-hint">Hint</button>' : '') +
+            (fu.d ? '<button class="st-btn st-btn-reveal" id="fu-reveal">Reveal the debrief <kbd>space</kbd></button>'
+                  : '<button class="st-btn st-btn-reveal" id="next">' + (k + 1 < fus.length ? 'Next follow-up <kbd>space</kbd>' : 'Grade yourself') + '</button>') +
+            '</div>';
+        }
       } else {
         body += '<div class="st-q">How did the whole exchange go?</div>' +
           '<div class="st-actions">' +
@@ -554,9 +581,24 @@
         }, 1000);
         b.innerHTML = 'Next hint in ' + wait + '…';
       }
-      if (el('next')) {
-        el('next').onclick = function () { stage++; step(); };
-        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { stage++; step(); return true; } });
+      if (el('fu-hint')) {
+        el('fu-hint').onclick = function () {
+          var f = fus[stage - 2] || {};
+          var box = el('fu-hint-box');
+          if (box && f.h) {
+            var div = document.createElement('div'); div.className = 'st-hint';
+            div.innerHTML = '<b>Hint:</b> ' + esc(f.h);
+            box.appendChild(div);
+          }
+          el('fu-hint').disabled = true;
+        };
+      }
+      if (el('fu-reveal')) {
+        el('fu-reveal').onclick = function () { fuRevealed = true; step(); };
+        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { fuRevealed = true; step(); return true; } });
+      } else if (el('next')) {
+        el('next').onclick = function () { stage++; fuRevealed = false; step(); };
+        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { stage++; fuRevealed = false; step(); return true; } });
       } else {
         ['g1', 'g2', 'g3'].forEach(function (id, gi) {
           el(id).onclick = function () { S.scen[sc.id] = gi + 1; save(); keyHandler(null); viewBoard(); };
