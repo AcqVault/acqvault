@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=1';
+  var DECK_URL = '/assets/study-deck.json?v=3';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -44,7 +44,8 @@
   function recallPool() {
     if (S.track === 'basic') return deck.recall_basic;
     return deck.recall_basic.concat(deck.recall_advanced, deck.thresholds.map(function (t) {
-      return { id: t.id, type: 'recall', topic: 'Thresholds & Numbers', q: t.q, a: t.a };
+      // keep d/x/ref so threshold cards stay MCQ with their debriefs outside the Sprint
+      return { id: t.id, type: 'recall', topic: 'Thresholds & Numbers', q: t.q, a: t.a, d: t.d, x: t.x, ref: t.ref };
     }));
   }
   function cardState(id) { return S.cards[id] || { box: 0, due: 0, lapses: 0 }; }
@@ -67,21 +68,35 @@
     var sum = 0; cards.forEach(function (c) { sum += cardState(c.id).box / 5; });
     return Math.round(100 * sum / cards.length);
   }
-  function mcqOptions(card, pool) { // 3 distractors: same topic + similar length first, then anywhere
-    var seen = {}; seen[card.a] = true;
-    var same = [], other = [];
-    pool.forEach(function (c) {
-      if (c.id === card.id || seen[c.a]) return;
-      seen[c.a] = true;
-      ((c.topic === card.topic) ? same : other).push(c.a);
-    });
-    var byLen = function (x, y) { return Math.abs(x.length - card.a.length) - Math.abs(y.length - card.a.length); };
-    // prefer same-topic; among candidates, prefer answers of comparable length so the odd one out isn't obvious
-    var opts = shuffle(same).sort(byLen).slice(0, 3);
-    if (opts.length < 3) opts = opts.concat(shuffle(other).sort(byLen).slice(0, 3 - opts.length));
-    if (opts.length < 3) return null; // not enough material — fall back to reveal style
-    opts.push(card.a);
-    return shuffle(opts);
+  function mcqOptions(card) {
+    // Multiple choice ONLY from hand-authored distractors (card.d, built into the deck).
+    // The old fallback — random same-topic answers — produced giveaway options (an answer
+    // about fiscal law as a "distractor" on an authority question), so it's gone: a card
+    // without authored distractors renders produce-then-reveal instead. Long board-probe
+    // narratives are deliberately in that group.
+    if (!card.d || card.d.length < 3) return null;
+    return shuffle([card.a, card.d[0], card.d[1], card.d[2]]);
+  }
+  // Post-answer debrief: the rule, the trap, and where the reference lives.
+  // right === true/false → verdict line (MCQ); right === null → no verdict (reveal cards).
+  function explainHtml(card, right) {
+    if (!card.x && !card.ref) return '';
+    var v = '';
+    if (right === true) v = '<div class="st-verdict st-verdict-right">✓ Right</div>';
+    else if (right === false) v = '<div class="st-verdict st-verdict-wrong">✗ Not quite — the correct answer is highlighted above</div>';
+    return '<div class="st-explain">' + v +
+      (card.x ? '<p>' + esc(card.x) + '</p>' : '') +
+      (card.ref ? '<div class="st-explain-ref">Where it lives: <b>' + esc(card.ref) + '</b></div>' : '') +
+      '</div>';
+  }
+  function appendExplain(card, right) {
+    var html = explainHtml(card, right);
+    if (!html) return;
+    var host = app.querySelector('.st-card');
+    if (!host) return;
+    var wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    host.appendChild(wrap.firstChild);
   }
 
   /* ---- views ---- */
@@ -120,7 +135,7 @@
       return '<button class="st-topic" data-topic="' + esc(t) + '" aria-label="Drill ' + esc(t) + ', mastery ' + m + ' percent">' +
         '<span class="st-topic-name">' + esc(t) + '</span>' +
         '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
-        '<span class="st-topic-meta">' + m + '%' + (d ? ' · ' + d + ' due' : '') + '</span></button>';
+        '<span class="st-topic-meta">' + m + '%' + (d ? ' <b class="st-due">· ' + d + ' due</b>' : '') + '</span></button>';
     }).join('');
     var scen = deck.scenarios;
     var scenDone = scen.filter(function (s) { return S.scen[s.id]; }).length;
@@ -128,11 +143,11 @@
       '<div class="st-head"><div class="st-track-chip">' + (S.track === 'basic' ? 'Basic · Foundations' : 'Advanced · Board Prep') +
       ' <button class="st-link" id="st-switch">switch</button></div></div>' +
       '<div class="st-modes">' +
-      '<button class="st-mode st-mode-primary" id="m-daily"><b>Daily Review</b><span>' + due.length + ' card' + (due.length !== 1 ? 's' : '') + ' due — spaced repetition does the scheduling</span></button>' +
-      '<button class="st-mode" id="m-deep"><b>Deep Study</b><span>Endless random cards, every topic in the mix — go as long as you want</span></button>' +
-      '<button class="st-mode" id="m-sprint"><b>Threshold Sprint</b><span>Rapid-fire numbers · best streak ' + (S.sprint.best || 0) + '</span></button>' +
+      '<button class="st-mode st-mode-primary" id="m-daily"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg></span>Daily Review</b><span>' + due.length + ' card' + (due.length !== 1 ? 's' : '') + ' due — spaced repetition does the scheduling</span></button>' +
+      '<button class="st-mode" id="m-deep"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Deep Study</b><span>Endless random cards, every topic in the mix — go as long as you want</span></button>' +
+      '<button class="st-mode" id="m-sprint"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Threshold Sprint</b><span>Rapid-fire numbers · best streak ' + (S.sprint.best || 0) + '</span></button>' +
       (S.track === 'advanced' ?
-        '<button class="st-mode" id="m-board"><b>Board Sim</b><span>' + scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups</span></button>' : '') +
+        '<button class="st-mode" id="m-board"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Board Sim</b><span>' + scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups</span></button>' : '') +
       '</div>' +
       '<h2 class="st-h2">Readiness by topic</h2>' +
       '<p class="st-sub">Tap a topic to drill it directly, due or not.</p>' +
@@ -163,14 +178,14 @@
   /* ---- recall session (mixed reveal + multiple-choice) ---- */
   function startSession(cards, label) {
     if (!cards.length) { viewHome(); return; }
-    var pool = recallPool();
     var q = interleave(shuffle(cards.slice()).slice(0, SESSION_CAP));
     var i = 0, got = 0;
     function step() {
       if (i >= q.length) return summary();
       var c = q[i];
-      var opts = mcqOptions(c, pool); // knowledge checks are multiple choice; reveal-style is the rare fallback
-      var head = '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>';
+      var opts = mcqOptions(c); // authored multiple choice; reveal-style when the card has no authored options
+      var head = '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>' +
+        '<div class="st-prog" aria-hidden="true"><span style="width:' + Math.round(100 * i / q.length) + '%"></span></div>';
       if (opts) {
         render(head +
           '<div class="st-card" aria-live="polite">' +
@@ -186,13 +201,14 @@
           if (answered) return; answered = true;
           var right = opts[k] === c.a;
           Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
-            var bk = +b.getAttribute('data-k');
-            if (opts[bk] === c.a) b.classList.add('st-opt-right');
-            else if (bk === k) b.classList.add('st-opt-wrong');
+            var bk = +b.getAttribute('data-k'), kb = b.querySelector('kbd');
+            if (opts[bk] === c.a) { b.classList.add('st-opt-right'); if (kb) kb.textContent = '✓'; }
+            else if (bk === k) { b.classList.add('st-opt-wrong'); if (kb) kb.textContent = '✗'; }
             b.disabled = true;
           });
           grade(c.id, right ? 3 : 1);
           if (right) got++;
+          appendExplain(c, right);
           var act = document.createElement('div'); act.className = 'st-actions';
           act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">' + (right ? 'Next' : 'Got it — next') + ' <kbd>space</kbd></button>';
           app.querySelector('.st-card').appendChild(act);
@@ -211,7 +227,7 @@
           '<div class="st-card" aria-live="polite">' +
           '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
           '<div class="st-q">' + esc(c.q) + '</div>' +
-          '<div id="st-a" class="st-a" hidden>' + esc(c.a) + '</div>' +
+          '<div id="st-a" class="st-a" hidden>' + esc(c.a) + explainHtml(c, null) + '</div>' +
           '<div class="st-actions" id="st-act">' +
           '<button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
           '<button class="st-link st-quit" id="st-quit">End session</button>');
@@ -238,8 +254,10 @@
     }
     function summary() {
       keyHandler(null);
+      var pct = i ? Math.round(100 * got / i) : 0;
       render('<div class="st-card st-summary"><div class="st-chip">' + esc(label) + '</div>' +
-        '<div class="st-q">' + got + ' of ' + i + ' solid.</div>' +
+        '<div class="st-sum-num">' + got + '<span> of ' + i + ' solid</span></div>' +
+        '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
         '<p class="st-sub">Missed cards come back tomorrow; solid ones stretch out. Come back daily — short and often beats long and rare.</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
       el('st-home').onclick = backHome;
@@ -268,7 +286,7 @@
     }
     function step() {
       var c = nextCard();
-      var opts = mcqOptions(c, pool);
+      var opts = mcqOptions(c);
       var head = '<div class="st-session-head"><span>Deep Study · endless</span><span>' + got + ' / ' + seen + ' solid</span></div>';
       if (opts) {
         render(head +
@@ -285,13 +303,14 @@
           if (answered) return; answered = true;
           var right = opts[k] === c.a;
           Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
-            var bk = +b.getAttribute('data-k');
-            if (opts[bk] === c.a) b.classList.add('st-opt-right');
-            else if (bk === k) b.classList.add('st-opt-wrong');
+            var bk = +b.getAttribute('data-k'), kb = b.querySelector('kbd');
+            if (opts[bk] === c.a) { b.classList.add('st-opt-right'); if (kb) kb.textContent = '✓'; }
+            else if (bk === k) { b.classList.add('st-opt-wrong'); if (kb) kb.textContent = '✗'; }
             b.disabled = true;
           });
           grade(c.id, right ? 3 : 1); // deep-study answers still teach the daily scheduler
           seen++; if (right) got++;
+          appendExplain(c, right);
           var act = document.createElement('div'); act.className = 'st-actions';
           act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">Next <kbd>space</kbd></button>';
           app.querySelector('.st-card').appendChild(act);
@@ -310,7 +329,7 @@
           '<div class="st-card" aria-live="polite">' +
           '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
           '<div class="st-q">' + esc(c.q) + '</div>' +
-          '<div id="st-a" class="st-a" hidden>' + esc(c.a) + '</div>' +
+          '<div id="st-a" class="st-a" hidden>' + esc(c.a) + explainHtml(c, null) + '</div>' +
           '<div class="st-actions" id="st-act"><button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
           '<button class="st-link st-quit" id="st-quit">That&rsquo;s enough for now</button>');
         el('st-quit').onclick = summary;
@@ -331,8 +350,10 @@
     }
     function summary() {
       keyHandler(null);
+      var pct = seen ? Math.round(100 * got / seen) : 0;
       render('<div class="st-card st-summary"><div class="st-chip">Deep Study</div>' +
-        '<div class="st-q">' + got + ' of ' + seen + ' solid.</div>' +
+        '<div class="st-sum-num">' + got + '<span> of ' + seen + ' solid</span></div>' +
+        '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
         '<p class="st-sub">Every answer here also updated your spaced schedule — what you nailed stretches out, what you missed shows up in tomorrow’s Daily Review.</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
       el('st-home').onclick = backHome;
@@ -347,7 +368,7 @@
     function step() {
       if (i >= q.length) return done();
       var c = q[i];
-      var opts = mcqOptions(c, deck.thresholds) || [c.a];
+      var opts = mcqOptions(c) || [c.a];
       render(
         '<div class="st-session-head"><span>Threshold Sprint</span><span>streak ' + streak + ' · best ' + (S.sprint.best || 0) + '</span></div>' +
         '<div class="st-card st-sprint" aria-live="polite">' +
@@ -362,13 +383,14 @@
         if (answered) return; answered = true;
         var right = opts[k] === c.a;
         Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
-          var bk = +b.getAttribute('data-k');
-          if (opts[bk] === c.a) b.classList.add('st-opt-right');
-          else if (bk === k) b.classList.add('st-opt-wrong');
+          var bk = +b.getAttribute('data-k'), kb = b.querySelector('kbd');
+          if (opts[bk] === c.a) { b.classList.add('st-opt-right'); if (kb) kb.textContent = '✓'; }
+          else if (bk === k) { b.classList.add('st-opt-wrong'); if (kb) kb.textContent = '✗'; }
           b.disabled = true;
         });
         if (right) { streak++; if (streak > (S.sprint.best || 0)) { S.sprint.best = streak; save(); } }
         else streak = 0;
+        appendExplain(c, right);
         var act = document.createElement('div'); act.className = 'st-actions';
         act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">Next <kbd>space</kbd></button>';
         app.querySelector('.st-card').appendChild(act);
@@ -386,7 +408,7 @@
     function done() {
       keyHandler(null);
       render('<div class="st-card st-summary"><div class="st-chip">Threshold Sprint</div>' +
-        '<div class="st-q">Best streak: ' + (S.sprint.best || 0) + '</div>' +
+        '<div class="st-sum-num">' + (S.sprint.best || 0) + '<span> best streak</span></div>' +
         '<p class="st-sub">Numbers rot fastest — sprint a few times a week and the board can’t rattle you with a dollar figure.</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
       el('st-home').onclick = backHome;
@@ -394,12 +416,13 @@
     step();
   }
 
-  /* ---- board sim (out loud, with hints) ---- */
-  function boardHints(sc) { // a ladder: each hint gives away a little more
+  /* ---- board sim (out loud, with hints + a methodical model answer) ---- */
+  function boardHints(sc) { // a ladder built on the coaching spine: each hint gives away a little more
     var h = [];
-    h.push('Open the way you would at the board: name the framework, name who you\'d call, state the default rule before any exception.');
-    var tops = sc.topics && sc.topics.length ? sc.topics.join(' · ') : null;
-    if (tops) h.push('Framework(s) in play: ' + tops + '.');
+    var co = sc.coach || {};
+    if (co.qtype) h.push('Name the question type first. This is ' + co.qtype);
+    if (co.smes) h.push('Name your help before your answer. Your phone-a-friends here: ' + co.smes);
+    if (co.rule) h.push('State the default rule before any exception: ' + co.rule);
     if (sc.facts) {
       var baitFacts = sc.facts.filter(function (f) { return f.verdict === 'bait'; });
       h.push('There are ' + sc.facts.length + ' load-bearing facts here — ' + baitFacts.length + ' of them ' + (baitFacts.length === 1 ? 'is' : 'are') + ' bait. Ask of each fact: why is it in the scenario?');
@@ -410,9 +433,39 @@
       if (sc.baits && sc.baits.length) h.push('Watch for the bait: ' + sc.baits[0]);
       if (sc.baits && sc.baits.length > 1) h.push('There\'s a second bait too: ' + sc.baits[1]);
       if (sc.key_moves && sc.key_moves.length) h.push('Opening move: ' + sc.key_moves[0]);
-      if (sc.key_moves && sc.key_moves.length > 1) h.push('And then: ' + sc.key_moves[1]);
     }
     return h;
+  }
+  // The model answer, assembled methodically: name it → frameworks → help → default rule →
+  // walk the facts → land the decision → close the loop. "That's the way you learn."
+  function boardWalkthrough(sc) {
+    var co = sc.coach || {};
+    var steps = [];
+    steps.push('<li><b>Name the question.</b> Out loud, first sentence: this is ' + esc(co.qtype || 'a frameworks question — name it, then walk it.') + '</li>');
+    if (sc.frameworks && sc.frameworks.length) {
+      steps.push('<li><b>Name the framework(s) in play.</b> ' + sc.frameworks.map(function (f) {
+        return esc(typeof f === 'string' ? f : (f.framework + (f.why ? ' — ' + f.why : '')));
+      }).join('<br>') + '</li>');
+    }
+    steps.push('<li><b>Name your help.</b> Boards reward knowing who to call: ' + esc(co.smes || 'your CO/chief, Legal (JA), and FM.') + '</li>');
+    steps.push('<li><b>State the default rule before any exception.</b> ' + esc(co.rule || 'Default first, exception second, facts third.') + '</li>');
+    if (sc.facts) {
+      var baits = sc.facts.filter(function (f) { return f.verdict === 'bait'; }).map(function (f) { return f.fact; });
+      var govs = sc.facts.filter(function (f) { return f.verdict !== 'bait'; }).map(function (f) { return f.fact; });
+      var walk = 'Take each planted fact and say whether it governs or baits (debrief above).';
+      if (baits.length) walk += ' Call the bait by name: ' + baits.map(esc).join(' · ') + '.';
+      if (govs.length) walk += ' Then anchor on what governs: “' + esc(govs[0]) + '”.';
+      steps.push('<li><b>Walk the facts — bait vs. governs.</b> ' + walk + '</li>');
+    } else if (sc.baits && sc.baits.length) {
+      steps.push('<li><b>Walk the facts — call the bait.</b> Say why each of these is in the scenario, and why it doesn\'t control: ' + sc.baits.map(esc).join(' · ') + '</li>');
+    }
+    if (sc.key_moves && sc.key_moves.length) {
+      steps.push('<li><b>Land the decision — your moves, in order.</b><ul>' + sc.key_moves.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul></li>');
+    } else if (sc.board_answer) {
+      steps.push('<li><b>Land the decision.</b> ' + esc(sc.board_answer) + '</li>');
+    }
+    steps.push('<li><b>Close the loop.</b> Say where you\'d verify before acting — the live RFO/R-DFARS text, your Legal office — and what goes in the file. Never quote a threshold from memory.</li>');
+    return '<div class="st-walk"><div class="st-walk-head">How you should have answered — step by step</div><ol>' + steps.join('') + '</ol></div>';
   }
   function viewBoard() {
     var pool = deck.scenarios.slice();
@@ -425,25 +478,23 @@
       var body = '<div class="st-chip">Board Sim' + (sc.topics && sc.topics.length && stage > 0 ? ' · ' + esc(sc.topics.join(' · ')) : '') + '</div>';
       if (stage === 0) {
         body = '<div class="st-chip">Board Sim</div>' +
-          '<div class="st-scenario">' + esc(sc.scenario) + '</div>' +
+          '<div class="st-scenario"><div class="st-scen-eyebrow">The scenario</div>' + esc(sc.scenario) + '</div>' +
           '<p class="st-outloud">Answer <b>out loud</b> — name the framework, name your help, walk it. Stuck? Take a hint.</p>' +
           '<div id="st-hints"></div>' +
           '<div class="st-actions"><button class="st-btn st-btn-hint" id="st-hint">Hint <span class="st-hint-n">' + (hints.length - hintsShown) + '</span></button>' +
           '<button class="st-btn st-btn-reveal" id="next">Reveal the debrief <kbd>space</kbd></button></div>';
       } else if (stage === 1) {
+        // Debrief = the guide's bait/governs teaching (facts scenarios) + the methodical model
+        // answer. Frameworks/baits/key-moves content now lives INSIDE the walkthrough steps.
         var d = '';
         if (sc.facts) {
           d = sc.facts.map(function (f) {
             var v = f.verdict === 'bait' ? '<span class="st-bait">bait</span>' : '<span class="st-gov">governs</span>';
             return '<div class="st-fact"><b>' + esc(f.fact) + '</b> ' + v + '<div>' + esc(f.why) + '</div></div>';
           }).join('');
-          if (sc.board_answer) d += '<div class="st-boardans"><b>Board-ready answer:</b> ' + esc(sc.board_answer) + '</div>';
-        } else if (sc.frameworks) {
-          d = '<div class="st-fact"><b>Frameworks in play</b><div>' + sc.frameworks.map(function (f) { return esc(typeof f === 'string' ? f : f.framework + ' — ' + f.why); }).join('<br>') + '</div></div>';
-          if (sc.baits) d += '<div class="st-fact"><b>The bait</b> <span class="st-bait">bait</span><div>' + sc.baits.map(esc).join('<br>') + '</div></div>';
-          if (sc.key_moves) d += '<div class="st-fact"><b>Key moves</b> <span class="st-gov">governs</span><div>' + sc.key_moves.map(esc).join('<br>') + '</div></div>';
         }
         body += '<div class="st-scenario st-scenario-sm">' + esc(sc.scenario) + '</div>' + d +
+          boardWalkthrough(sc) +
           '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (fus.length ? 'The panel follows up… <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
       } else if (stage - 2 < fus.length) {
         var k = stage - 2;

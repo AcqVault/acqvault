@@ -577,11 +577,14 @@ function renderStudyPage() {
 .st-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:6px 0 8px}
 .st-mode{text-align:left;background:#fff;border:1px solid var(--line2);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
 .st-mode:hover{border-color:rgba(135,101,28,.45);box-shadow:0 10px 24px -14px rgba(15,37,64,.28)}
-.st-mode b{display:block;font-size:15.5px;color:var(--ink);letter-spacing:-.01em}
-.st-mode span{display:block;color:var(--muted);font-size:12.5px;margin-top:3px;line-height:1.45}
+.st-mode b{display:flex;align-items:center;font-size:15.5px;color:var(--ink);letter-spacing:-.01em}
+.st-mode span{display:block;color:var(--muted);font-size:12.5px;margin-top:5px;line-height:1.45}
+.st-mode-ic{display:inline-flex;flex:none;width:28px;height:28px;border-radius:8px;background:#f6efdd;color:#87651c;align-items:center;justify-content:center;margin-right:9px}
+.st-mode-ic svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .st-mode-primary{background:linear-gradient(158deg,#173a60,#0f2540 70%);border-color:rgba(228,196,119,.4)}
 .st-mode-primary b{color:#f4f8fc}
 .st-mode-primary span{color:#dde9f6}
+.st-mode-primary .st-mode-ic{background:rgba(228,196,119,.16);color:#e4c477}
 .st-topics{display:flex;flex-direction:column;gap:6px}
 .st-topic{display:grid;grid-template-columns:minmax(150px,1.4fr) 1fr auto;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:9px 13px;cursor:pointer;min-height:44px}
 .st-topic:hover{border-color:rgba(135,101,28,.45)}
@@ -589,8 +592,14 @@ function renderStudyPage() {
 .st-bar{height:6px;background:var(--off,#f1efe8);border-radius:99px;overflow:hidden}
 .st-bar-fill{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px}
 .st-topic-meta{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-.st-session-head{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-ink);margin:4px 0 10px}
-.st-card{background:#fff;border:1px solid var(--line2);border-radius:14px;padding:24px;box-shadow:0 18px 40px -24px rgba(15,37,64,.25)}
+.st-topic-meta .st-due{color:var(--brass-ink);font-weight:700}
+.st-btn:focus-visible,.st-topic:focus-visible,.st-mode:focus-visible,.st-trackcard:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
+.st-session-head{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-ink);margin:4px 0 8px}
+.st-prog{height:5px;background:#ece8dd;border-radius:99px;overflow:hidden;margin:0 0 14px}
+.st-prog span{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px;transition:width .3s ease}
+.st-prog-lg{height:8px;margin:14px 0 10px}
+.st-card{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line2);border-radius:14px;padding:24px;box-shadow:0 18px 40px -24px rgba(15,37,64,.25)}
+.st-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 4%,#b8934a 35%,#e4c477 50%,#b8934a 65%,transparent 96%)}
 .st-chip{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);background:#f6efdd;border-radius:4px;padding:2px 8px;margin-bottom:12px}
 .st-q{font-family:var(--serif);font-size:21px;line-height:1.35;color:var(--ink);letter-spacing:-.005em}
 .st-a{margin-top:16px;padding-top:14px;border-top:1px dashed rgba(135,101,28,.4);font-size:15.5px;line-height:1.6;color:#2a3140}
@@ -603,7 +612,10 @@ function renderStudyPage() {
 .st-g3{background:#eef7f0;color:#155433;border:1px solid rgba(30,107,67,.3)}
 .st-quit{display:block;margin:14px auto 0}
 .st-summary .st-q{font-size:24px}
-.st-scenario{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#dde9f6;border-radius:10px;padding:16px 18px;font-size:15px;line-height:1.6}
+.st-sum-num{font-family:var(--serif);font-size:46px;color:var(--ink);letter-spacing:-.02em;line-height:1;margin:8px 0 2px}
+.st-sum-num span{font-family:var(--sans,Inter,system-ui,sans-serif);font-size:17px;color:var(--muted);letter-spacing:0;font-weight:600}
+.st-scenario{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#dde9f6;border-left:3px solid #e4c477;border-radius:10px;padding:16px 18px;font-size:15px;line-height:1.6}
+.st-scen-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#e4c477;margin-bottom:8px}
 .st-scenario-sm{font-size:13px;opacity:.92;margin-bottom:14px}
 .st-outloud{color:var(--brass-ink);font-size:13.5px;font-style:italic;margin:14px 0 0}
 .st-fact{border-left:3px solid rgba(228,196,119,.9);padding:7px 0 7px 12px;margin:10px 0;font-size:14px;line-height:1.55}
@@ -619,13 +631,32 @@ function renderStudyPage() {
 .st-trackcard-active{border-color:rgba(135,101,28,.55);box-shadow:0 10px 26px -16px rgba(15,37,64,.3)}
 .st-tc-continue{position:absolute;top:-9px;right:12px;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:linear-gradient(158deg,#173a60,#0f2540);border:1px solid rgba(228,196,119,.5);border-radius:999px;padding:2px 9px}
 .st-opts{display:flex;flex-direction:column;gap:8px;margin-top:18px}
-.st-opt{display:flex;align-items:baseline;gap:10px;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:11px 14px;font-size:14.5px;line-height:1.5;color:#2a3140;cursor:pointer;min-height:44px;transition:border-color .12s}
-.st-opt:hover:not(:disabled){border-color:rgba(135,101,28,.5)}
-.st-opt kbd{flex:none;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--muted);border:1px solid var(--line2);border-radius:3px;padding:0 5px}
-.st-opt:disabled{cursor:default;opacity:.75}
-.st-opt-right{border-color:#1e6b43!important;background:#eef7f0;opacity:1!important}
-.st-opt-right kbd{border-color:#1e6b43;color:#155433}
-.st-opt-wrong{border-color:#b3261e!important;background:#fdf0ef}
+.st-opt{display:flex;align-items:baseline;gap:10px;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:11px 14px;font-size:14.5px;line-height:1.5;color:#2a3140;cursor:pointer;min-height:44px;transition:border-color .12s,transform .12s,box-shadow .12s}
+.st-opt:hover:not(:disabled){border-color:rgba(135,101,28,.5);transform:translateY(-1px);box-shadow:0 8px 18px -12px rgba(15,37,64,.3)}
+.st-opt:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
+.st-opt kbd{flex:none;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--muted);border:1px solid var(--line2);border-radius:4px;padding:1px 6px;min-width:20px;text-align:center;transition:background .12s,color .12s}
+.st-opt:disabled{cursor:default;opacity:.7}
+.st-opt-right{border-color:#1e6b43!important;background:#eef7f0;opacity:1!important;box-shadow:0 0 0 1px #1e6b43 inset}
+.st-opt-right kbd{background:#1e6b43;border-color:#1e6b43;color:#fff}
+.st-opt-wrong{border-color:#b3261e!important;background:#fdf0ef;opacity:1!important}
+.st-opt-wrong kbd{background:#b3261e;border-color:#b3261e;color:#fff}
+.st-explain{margin-top:16px;background:var(--off,#f7f6f2);border-left:3px solid rgba(228,196,119,.9);border-radius:0 8px 8px 0;padding:13px 15px}
+.st-explain p{font-size:14px;line-height:1.6;color:#3d444d;margin:0}
+.st-verdict{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px}
+.st-verdict-right{color:#155433}
+.st-verdict-wrong{color:#8c2b23}
+.st-explain-ref{margin-top:9px;padding-top:8px;border-top:1px dashed rgba(135,101,28,.35);font-size:12.5px;color:var(--muted)}
+.st-explain-ref b{color:var(--brass-ink);font-weight:700}
+.st-walk{margin-top:18px;background:var(--off,#f7f6f2);border:1px solid rgba(135,101,28,.22);border-radius:10px;padding:16px 18px}
+.st-walk-head{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:10px}
+.st-walk-head::before{content:"";display:inline-block;width:16px;height:2px;background:var(--brass);border-radius:2px;margin-right:8px;vertical-align:3px}
+.st-walk ol{margin:0;padding:0;list-style:none;counter-reset:walk}
+.st-walk ol>li{counter-increment:walk;position:relative;padding:0 0 12px 34px;font-size:14px;line-height:1.6;color:#3d444d}
+.st-walk ol>li:last-child{padding-bottom:0}
+.st-walk ol>li::before{content:counter(walk);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:linear-gradient(158deg,#173a60,#0f2540);color:#e4c477;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.st-walk ol>li b{color:var(--ink)}
+.st-walk ul{margin:7px 0 0;padding-left:18px}
+.st-walk ul li{font-size:13.5px;line-height:1.55;color:#3d444d;padding:2px 0}
 .st-btn-hint{background:#f6efdd;color:#5e4715;border:1px solid rgba(135,101,28,.35)}
 .st-btn-hint:disabled{opacity:.55;cursor:default}
 .st-hint-n{display:inline-block;background:#5e4715;color:#f6efdd;border-radius:999px;font-size:11px;padding:0 7px;margin-left:4px;font-variant-numeric:tabular-nums}
@@ -641,7 +672,7 @@ function renderStudyPage() {
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Drill it until it&rsquo;s reflex</h1>
 <p class="lede">Knowledge checks, threshold sprints, and board-style scenario drills built from the AcqVault Field Guides — spaced repetition decides what you see, you decide how honest your self-grade is.</p>
-<div class="stats"><span class="stat"><b>350+</b> drills</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+<div class="stats"><span class="stat"><b>425+</b> drills</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--white"><div class="st-wrap">
 <div id="study-app"><noscript><p>AcqVault Study is an interactive drill tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
@@ -650,7 +681,7 @@ function renderStudyPage() {
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=4"></script>`;
+<script defer src="/assets/study.js?v=6"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }
