@@ -1,0 +1,286 @@
+{
+  "370f23a93603": {
+    "ask": "Option year one starts in 60 days. Do you exercise — and what do you do about the 'extra monitoring'?",
+    "script": "Two questions wearing one scenario: an RFO Part 17 options question and an RFO 1.405 unauthorized-commitment question. My help: the COR's record, Legal, and FM. On the option: it's a unilateral right with gates — and performance is a gate. Two missed surveillance reports and a safety near-miss go straight into the determination; the PM's promise to the contractor binds nothing, and I'd correct that channel today. If the record supports exercise, notice goes out on time; if not, my honest paths are a short extension or recompete. On the 'extra monitoring': work directed by a range officer with no authority is a UAC candidate — stop the practice in writing, sort entitlement through the ratification or constructive-change lane, and retrain everyone who touched it."
+  },
+  "3141b8cd4cf5": {
+    "ask": "The facility manager wants one five-year award funded two years deep today. How do you structure and fund this?",
+    "script": "This is a fiscal-law question with an RFO Part 17 structure answer. My help: FM first and always, then Legal. The rules: custodial and preventive maintenance is severable — benefit delivered as performed — and severable services on annual O&M fund up to 12 months, may cross fiscal years, but never two years off one appropriation. Obligating two years now fails Time, period. The structure that lawfully meets the five-year need: a base year plus four one-year options on the services rail — one award, one competition, renewed by exercise, each year funded by its own money. The facility manager gets exactly what he wants — 'never re-do this' — without a single fiscal violation. That's the answer: structure solves what funding can't."
+  },
+  "9ebdcf249c43": {
+    "ask": "One offer came back. The PM says award it today. How do you proceed?",
+    "script": "This is a competition-and-pricing question — RFO Part 6 posture, RFO 15.404-1 price analysis. My help: my pricing office and the no-bid field itself. The rule: the competition was full and open — one responsive offer doesn't undo that; what changes is my pricing burden. First, find out why the field passed: informal debriefs of the no-bids — the answers either reveal a solicitation defect worth fixing or confirm the market is thin, and both belong in the file. Then price the single offer on evidence: 6% under the IGCE is a good sign, but I'd support it with prior-buy history and catalog comparisons before calling it fair and reasonable. If the record holds, award — documented single-offer awards are perfectly defensible. What's not defensible is 'they might change their mind' as price analysis."
+  },
+  "5ecfeace5e45": {
+    "ask": "The PM wants them terminated today. The contractor claims excusable delay and waiver. What's your move?",
+    "script": "This is a termination question — RFO Part 49 — complicated by our own conduct. My help: Legal, mandatory, before any notice moves. The rules in play: late delivery on fixed-price supplies supports default without a cure notice — the schedule was the cure period — but the COR's 'keep at it' message three weeks ago raises schedule waiver, which means the original date may no longer be enforceable. So first, with Legal, I re-establish a firm delivery date in writing — show-cause framing — restoring an enforceable schedule. In parallel, the excusability analysis on the subcontractor's fire: fires can be excusable if beyond control and without fault, and that record gets built before, not after, any default. Terminate today and we buy the conversion to convenience later."
+  },
+  "e131654f29c2": {
+    "ask": "Can you place the $1.4M order directly with the builder — and what paperwork actually stands between you and award?",
+    "script": "This is a fair-opportunity question — RFO 16.505 — under real urgency. My help: the vehicle's PCO, Legal, and the Competition Advocate — because at $1.4M, that's the D&A approval tier. The default is fair opportunity to all five holders; the exceptions that fit are urgency — the 60-day operational order — and only-one-capable, the original firmware knowledge. The facts braid both, and the D&A gets written on whichever the evidence actually supports, approved at the CA tier and posted. Here's what I'd stress: the paperwork isn't the delay — a same-week D&A is entirely achievable. 'Skip the paperwork' is the only path that actually risks the schedule, because an undocumented direct award invites the ombudsman complaint or protest that stops everything."
+  },
+  "e2a8b964dfec": {
+    "ask": "The PM says the leak was harmless. Is this a PIA problem, and what do you do about the capture lead's email?",
+    "script": "This is a Procurement Integrity Act question — RFO 3.104 — and a disclosure has already happened. Legal comes in now; the HCA channel stands by depending on impact. The facts: a past-performance rating in an active selection is source selection information, and saying it in front of two support contractors is a disclosure — 'harmless' isn't a determination the PM gets to make. Then the email: the capture lead asking to 'address performance concerns before FPRs' is evidence the information may have reached an offeror — the serious branch. So: affidavits on what was heard and where it went, an MFR from the analyst, containment, and my written impact determination. If it reached the offeror, the HCA decides how — and whether — this selection proceeds."
+  },
+  "6a46384cf480": {
+    "ask": "Strategy meeting is tomorrow. What do you tell the PM about her funding plan and the award structure?",
+    "script": "This is a fiscal-law question — Purpose under 31 U.S.C. 1301 and the Anti-Deficiency Act — dressed as an acquisition strategy. My help: FM and Legal before the meeting, not after. Two rules kill two branches of her plan. Purpose: development integration and test is development — RDT&E work can't ride O&M 'later'; that branch dies in the meeting, on the record. Time and Amount: awarding a four-year, forty-million-dollar effort against six million in hand is an Anti-Deficiency exposure unless the structure honestly matches the money. The lawful shape: a cost-type development effort, incrementally funded under Limitation of Funds discipline, with the contract ceiling and funding schedule stated honestly — or phased awards matched to real appropriations. She can start now; she just can't promise money that doesn't exist yet."
+  },
+  "95e08834394b": {
+    "ask": "The contractor wants to be paid and released; the customer wants the scope quietly shrunk. What's your ruling on each?",
+    "script": "This is a differing-site-conditions question — the RFO Part 36 clause machinery — and for once, the contractor did everything right. My help: Legal, civil engineering, and the labor advisor on abatement requirements. The rule: a latent condition materially different from the contract documents, with written notice before further disturbance — textbook Type I. That entitles him to an equitable adjustment — abatement, schedule, price — not to walk away; a DSC is not a termination right, and I'd negotiate the adjustment on the documented record. On the customer's idea: quietly descoping to 'call it complete' is a constructive termination for convenience wearing a modification costume — if the Government genuinely wants less work, we do a partial T4C with a proper settlement, honestly labeled. The clause machinery exists so nobody improvises."
+  },
+  "81e6c477871d": {
+    "ask": "Leadership wants the innovation cell stood up in 90 days and the PM has a vendor picked. Where do you start?",
+    "fu": [
+      {
+        "h": "Start with what the Government must hand you before any strategy exists — the thing the seven-step loop begins with.",
+        "d": "The requirements conversation produces the inputs everything else rides on: what outcomes the cell must deliver, how much of it, by when, measured how — captured in a PWS or SOO — plus an IGCE so price has a yardstick. Without those, there's no market research target, no competition strategy, and no defensible file. A directed vendor and a deadline are inputs to none of it."
+      },
+      {
+        "h": "Urgency has a legal definition — think about what a 6.103-2 justification must actually quantify.",
+        "d": "Urgency legitimately shortcuts competition only when the Government would suffer serious harm — mission failure, safety, unacceptable delay quantified in the J&A — not when leadership set an ambitious date. A self-imposed 90-day goal is planning pressure, not statutory urgency; and even a real urgency J&A requires soliciting as many sources as practical and is limited in duration."
+      }
+    ],
+    "script": "This is an acquisition-planning question — RFO Part 7, built on RFO Part 10 research. My help: the PM and requiring activity on outcomes, Legal, and my Small Business Professional once research starts. The default: strategy precedes paper — no vendor conversations, no timeline promises, until a requirement exists. So my first move is the requirements conversation: outcomes, quantities, measures, an IGCE. Then real market research — a symposium briefing isn't research, it's marketing. On the 90 days: a directed timeline doesn't create urgency under 6.103-2 — urgency is quantified mission harm, and self-imposed deadlines don't qualify. If the date matters, the honest answer is a right-sized initial capability competed quickly, not a sole source justified by the calendar we set ourselves."
+  },
+  "619dae946aa3": {
+    "ask": "The program says wait five months for the new PM. What do you tell them — and what starts today?",
+    "fu": [
+      {
+        "h": "Bridges need a cause the Government couldn't foresee. Is a staffing gap one?",
+        "d": "A valid bridge justification stands on genuinely unforeseen causes — a protest, a directed strategy change, a regulatory shift. Waiting for a new PM to arrive is a staffing choice, fully within the Government's control: a bridge born of it is a planning failure documented in real time, and repeat bridges escalate approval each round. The Decision Memorandum has to name the cause honestly — and 'we waited' won't survive review."
+      },
+      {
+        "h": "Think about everything a fresh strategy would re-test — market, size standards, requirement shape.",
+        "d": "Since last award: the market may have new entrants (or lost the incumbent's competitors), small-business capability may now satisfy the Rule of Two, thresholds and program rules changed in 2025-2026, the requirement itself may have drifted — new systems, new volumes, changed standards. 'The same thing again' assumes five years of stasis; fresh research and a requirement scrub are how you find out, and both take months you only have if you start now."
+      }
+    ],
+    "script": "This is acquisition planning — RFO Part 7 — with an RFO Part 17 options rail. My help: the requiring activity as it stands today, my Small Business Professional, and FM. The rule I'd anchor: strategy work starts now — ten months is barely enough for research, a set-aside look, and a requirement scrub, and none of it needs the new PM to begin. Waiting five months manufactures a bridge, and a bridge born of waiting for staff is a planning failure, not an unforeseen cause — it won't justify. So today: fresh sources-sought, requirement validation with the current team, timeline documented so the record shows diligence. The new PM inherits a strategy in motion instead of a crisis with his name on it."
+  },
+  "42bfc7929490": {
+    "ask": "The vendor wants $65K and the engineer says exigency covers it. Is the Government bound — and what now?",
+    "fu": [
+      {
+        "h": "Six elements — which one turns on money that may or may not have been there in the storm window?",
+        "d": "The element that most often fails is funds availability — then and now. Benefit is usually obvious (the Government used the generators), the price is often supportable, and the proper-if-a-CO-had-done-it test usually passes. But if no funds were available at the time of the commitment, ratification cannot cure it — that's an Anti-Deficiency problem wearing a UAC costume, and it escalates rather than resolves."
+      },
+      {
+        "h": "The storm didn't require an unauthorized email — what lawful fast lanes existed?",
+        "d": "Real rapid tools existed: the GPC up to the MPT for fragments genuinely under it, an oral/letter authorization through an actual CO on emergency footing, existing BPAs or IDIQ vehicles with same-day ordering, and — for true operational exigency — the contingency thresholds. The lesson the panel wants: speed never requires bypassing authority; it requires knowing which lawful fast lane fits before the storm, which is a training point for that unit."
+      }
+    ],
+    "script": "This is an authority question — an RFO 1.405 unauthorized commitment with good intentions. My help: Legal first, FM on the funds timeline, then the ratifying official. The rule: engineers don't hold contracting authority, and exigency doesn't create it — the Government isn't bound until an official with actual authority ratifies. The path: stop anything ongoing, gather the record — the engineer's statement, the storm timeline, receipt and use of the units — then run the elements: proper if a CO had done it, benefit received, fair and reasonable price, and the one that decides most cases: funds available then and now. At $65K, ratification sits at the COCO level. Then prevention: that unit gets trained on the lawful rapid-buy tools they actually had."
+  },
+  "3ce08a3a44ae": {
+    "ask": "Fifteen percent of unbilled 'verbal expansions' just surfaced. How do you sort this out?",
+    "fu": [
+      {
+        "h": "One lane is for brand-new work nobody authorized; the other is for Government conduct that changed existing work.",
+        "d": "Ratification handles unauthorized NEW work — a commitment someone without authority made that the Government must now decide to adopt. Constructive change handles Government CONDUCT that altered existing contract work without formal direction — entitlement flows through the Changes clause via an REA. Here, each 'expansion' gets sorted: additions outside the contract's scope go down the ratification lane; directed alterations to in-scope work are constructive-change candidates. The sorting determines who approves what and which money pays."
+      },
+      {
+        "h": "Small changes, judged one at a time, are how contracts drift — what's the cumulative test?",
+        "d": "Scope is judged against the original contract with all changes cumulative — not increment by increment. Fifteen percent growth through undocumented verbal direction may still be in scope, but it's unexamined scope: the four corners (competition anticipation, type, period, cumulative cost) have to be run on the total. And the process failure is its own finding: changes that never became mods mean the contract file no longer describes the contract being performed."
+      }
+    ],
+    "script": "This is an authority-and-scope question — RFO 1.405 ratification sorted against RFO Part 43 constructive change. My help: Legal, the site's chain, and the contractor's own records — which, notably, are better than ours. First move: stop the practice in writing today — site leads don't direct work, and every future need routes through me. Then sort six months of history into its lanes: unauthorized new work goes down the ratification path; Government-directed changes to existing work are constructive-change candidates handled as REAs. Then the scope check: fifteen percent cumulative growth gets tested against the original award, all four corners. The contractor performed in good faith and documented everything — that helps them and shames us. The fix is channel discipline and a file that matches reality again."
+  },
+  "643ccd35960e": {
+    "ask": "The evaluator swears nothing was discussed. Does he stay on the SSEB — and who decides?",
+    "fu": [
+      {
+        "h": "Two categories, RFO 3.104 — one belongs to the Government, one to the offerors.",
+        "d": "Protected classes: source selection information — rankings, evaluation results, the source selection plan, competitive-range lists, the Government estimate — and contractor bid and proposal information. The spouse's post suggests offeror awareness of momentum, which is why the question isn't the evaluator's intent but what information was accessible in his position and whether any of it could have moved. The PIA reaches attempts and appearances, not just proven leaks."
+      },
+      {
+        "h": "Recusal instincts are personal; disqualification decisions are institutional.",
+        "d": "An appearance problem becomes a disqualification problem when a reasonable observer, knowing the facts, would doubt the integrity of the process — a spouse employed by an offeror, posting about the very competition, sits close to that line. The evaluator doesn't get to self-assess; the PCO and SSA, with Legal, decide his continued participation based on documented facts: what he accessed, when the spouse's role began, what controls existed. Document the decision either way — the record is the defense."
+      }
+    ],
+    "script": "This is a Procurement Integrity question — RFO 3.104 — about appearance and access. My help: Legal now, and the SSA on team composition. The rule: protected information includes evaluation results and rankings, and the PIA cares about access and appearances, not just intent — his sincerity isn't the test. So: report it, establish the facts — what he accessed, when the spouse's employment began, whether any protected information could have moved — and make the participation decision at my level with the SSA and Legal, not his. If the appearance can't be cured, he comes off the board and evaluations he touched get reviewed. And the team gets re-briefed: the next LinkedIn post shouldn't be how we find out."
+  },
+  "f5df1837f435": {
+    "ask": "An offeror just told your COCO their own second-place rating. What has to happen before this award can proceed?",
+    "fu": [
+      {
+        "h": "Impact on the procurement moves this above the PCO's desk.",
+        "d": "The PCO owns the investigation and the written impact determination — but when a disclosure has reached an offeror and may have compromised the competition, the proceed/cancel/disqualify decision belongs to the HCA, with Legal driving the analysis. Quiet local handling is exactly how a curable incident becomes a sustained protest: the venue for 'does this competition survive' is above the person who ran it."
+      },
+      {
+        "h": "The offeror holding Government information has duties too — think mirror image of the Government's containment.",
+        "d": "An offeror that receives protected information must stop, safeguard it, report the receipt, and not use it — continuing to act on it (like sending supplemental references shaped by a known rating) compounds the violation. Their conduct after receipt becomes evidence: an offeror that reported promptly may survive with mitigation; one that exploited the leak has volunteered itself for disqualification analysis."
+      }
+    ],
+    "script": "This is the serious branch of an RFO 3.104 Procurement Integrity question — protected information reached an offeror. My help: Legal immediately; the HCA owns the big decision. The facts: ratings are source selection information, and the VP's call is evidence of a leak — declining the references doesn't un-ring it. So: containment and tracing — who knew that rating, who talked; affidavits; the offeror gets written direction on its obligations — safeguard, don't use, report. Then my written impact determination, and because this reached an offeror, the proceed-or-not decision goes to the HCA with the full record. What I won't do is handle it quietly — quiet handling converts a recoverable incident into the protest that ends the program."
+  },
+  "04a710389a96": {
+    "ask": "The contractor proposes a firewall and the affiliate wants to bid. What's your call?",
+    "fu": [
+      {
+        "h": "A firewall controls where information goes. What did the conflicted work already shape?",
+        "d": "Firewalls address information FLOW — unequal access. Biased ground rules is a different disease: the requirement itself has been shaped by a party with a stake in the outcome, and no wall un-writes test criteria already drafted. The influence is baked into the documents every competitor will be measured against, which is why exclusion, not mitigation, is the usual outcome — and why the panel calls it the hardest OCI type."
+      },
+      {
+        "h": "Fixing this means changing who authored what — or what gets authored.",
+        "d": "A valid path re-establishes untainted ground rules: remove the contractor from criteria work now, have the Government (or a conflict-free party) independently develop or scrub the test criteria, document what the affiliate's people touched, and only then let the affiliate compete on requirements it demonstrably didn't shape. If the criteria can't be untangled from the conflicted authorship, exclusion stands — the waiver lane (HCA, non-delegable) exists but is for cases where the benefit demonstrably outweighs the taint."
+      }
+    ],
+    "script": "This is an organizational-conflict-of-interest question — RFO 9.5 biased ground rules, the hardest type. My help: Legal, the OCI review chain, and the HCA if anyone breathes the word waiver. The rule: type drives remedy. A firewall manages information flow — it does nothing about test criteria the contractor is drafting for a competition its new affiliate will enter; that influence is already in the documents. So: the contractor comes off the criteria work now, the Government independently develops or scrubs what they touched, and the record documents exactly what their people authored. If the affiliate wants to compete, it competes on ground rules it provably didn't shape. And the final decision on any mitigation plan is mine as the PCO — panels advise, I own it."
+  },
+  "6b6384cdbb14": {
+    "ask": "Holder A's proposal is quoting the requirements database it maintains. Can this competition proceed?",
+    "fu": [
+      {
+        "h": "Mid-competition cures level the field — what levels information?",
+        "d": "Yes — the classic cure for unequal access is equal access: release the same database extract (scrubbed appropriately) to all five holders, extend the response date, and allow proposal revisions so everyone competes on the same picture. Alternatives: neutralize Holder A's advantage by excluding the tainted content from evaluation, or in a bad case exclude Holder A from this order. Document whichever cure you pick and why it restores fairness — the record is what survives the ombudsman."
+      },
+      {
+        "h": "The fix for next time lives in the support task order's own terms.",
+        "d": "Support task orders should carry OCI clauses tailored to the access the work creates: firewall and nondisclosure obligations, restrictions on using program information in the holder's own proposals, screening or recusal duties when competitions open, and — where the access is structural — an agreed mitigation plan as a condition of the support work. The time to price and paper those terms is when the support order is placed, not when the first tainted proposal arrives."
+      }
+    ],
+    "script": "This is an RFO 9.5 OCI question inside an RFO 16.505 fair-opportunity competition — unequal access to nonpublic information. My help: Legal and the vehicle PCO. The rule: the imbalance is the conflict — Holder A citing unfunded requirements from a database it maintains for the Government is competing on information the other four holders can't see. No bad act required. The cure that keeps the competition alive: give everyone the same picture — release the scrubbed data to all holders, extend the clock, allow revisions. If the taint runs deeper, neutralize or exclude, documented. And going forward, the support order itself gets OCI terms — firewalls, use restrictions, screening duties — because this conflict was foreseeable the day we let a holder run the requirements database."
+  },
+  "fede6544f88c": {
+    "ask": "Mailbox address, leased-everything, moonlighting superintendent. Award, or not — and on what?",
+    "fu": [
+      {
+        "h": "Map each fact to a standard: organization, equipment, personnel.",
+        "d": "In play: adequate organization and experience (a mailbox office and no visible operation), necessary equipment and facilities or the ability to obtain them (leasing is legitimate — IF lease commitments exist for this job), and key personnel actually available (a superintendent already employed full-time elsewhere fails the availability test unless there's a real transition plan). None of these facts is disqualifying alone; each demands verification. A pre-award survey is the right tool at this dollar value and doubt level."
+      },
+      {
+        "h": "The referral is mandatory; the certificate is conclusive.",
+        "d": "If the offeror is small and you determine non-responsibility, the referral to SBA is mandatory — and a Certificate of Competency, if SBA issues one, conclusively establishes responsibility: you award. The CO's protection then shifts to administration — surveillance, milestones, early engagement. Appeal paths exist in a dollar band (roughly $100K to $25M) but are worked through channels with Legal and SBA, not unilaterally."
+      }
+    ],
+    "script": "This is a responsibility question — the seven RFO 9.104 standards on today's documented facts. My help: my chain, a pre-award survey, and the SBA if this goes where it might. The rule: doubt cuts in the Government's favor, but doubt must stand on facts, so I verify before I judge: demand the equipment lease commitments for this job, the superintendent's actual availability and transition plan, and evidence of an operating organization behind the mailbox. Leasing is a legitimate model — undocumented leasing is not. If the facts hold up, award. If they don't, non-responsibility on the standards — and because they're small, mandatory referral to SBA, whose Certificate of Competency, if issued, I honor and then protect the Government through hard-nosed administration."
+  },
+  "0a1e6ab4c146": {
+    "ask": "Same owners, new LLC, low offer. Does the default history follow them?",
+    "fu": [
+      {
+        "h": "What separates reorganization from costume change?",
+        "d": "A legitimate fresh start shows substantive change: new capital, new management, corrected root causes of the failure, and a track record — however short — under the new structure. Evasion shows continuity wearing new paper: same owners, same operations, same address, new CAGE code. Responsibility looks through the paper to the people and the operation; a shell that exists to shed a default record is itself an integrity fact under the standards."
+      },
+      {
+        "h": "The systems are built for exactly this connection — think beyond a clean SAM search on the new name.",
+        "d": "FAPIIS and CPARS searched by the principals, not just the entity; SAM exclusion records checked against owners and key individuals (exclusions attach to people too); state incorporation records showing officers and addresses; and the prior contract file itself. A new CAGE code resets none of it. Over the SAT, the FAPIIS review is mandatory — and the connection this scenario hands you is precisely what that review exists to surface."
+      }
+    ],
+    "script": "This is a responsibility question — RFO 9.104 — about continuity. My help: Legal and the record systems — FAPIIS, CPARS, SAM, searched by the people, not just the new entity. The rule: responsibility looks through paper. Same owners, same address, same operations means the performance and integrity record follows them — my own T4D eight months ago is exactly the documented history the standards exist to weigh. 'New entity, clean slate' is true for the CAGE code and false for the humans. So: evaluate the fresh-start claim on substance — new capital, new management, root causes fixed — and if it's a costume, determine non-responsibility on documented facts. If they're small, SBA referral follows. What doesn't happen is the low price laundering the history."
+  },
+  "d958c1fe7efa": {
+    "ask": "Zero responses, and the PM wants the J&A started. Is the market really empty?",
+    "fu": [
+      {
+        "h": "A notice nobody qualified could find proves what, exactly?",
+        "d": "An effective sources-sought is findable and answerable: right NAICS and PSC codes, a title that says what the work is, a response window that doesn't die over a holiday, a description with enough substance to let a capable firm self-identify, and direct outreach to the firms research already suggests. Zero responses to a mis-coded, badly-timed notice measures the notice, not the market — and a J&A whose market-research section rests on it inherits the defect."
+      },
+      {
+        "h": "Scale the evidence to a $10M sole-source claim.",
+        "d": "For a $10M sole source, the research has to support the strongest claim in contracting: nobody else can do this. That means a properly shaped notice AND direct industry outreach, trade channels, adjacent-NAICS sweeps, other services' experience, and documented conversations — an effort a competitor's lawyer will read line by line. The J&A's market-research section is its spine; thin research is the number-one way sole-source justifications die at review or protest."
+      }
+    ],
+    "script": "This is a market-research question — RFO Part 10 — and the evidence doesn't say what the PM thinks it says. My help: my Small Business Professional, industry channels, and the requiring activity to fix the requirement description. The rule: research is the evidence; the J&A is a conclusion the evidence must earn. Zero responses to a notice with the wrong codes, a holiday window, and a vague title proves the notice failed — not that the market is empty. So: reshape and rerun it — right NAICS, real title, adequate window — plus direct outreach to plausible performers. If genuine absence emerges, the J&A writes itself on solid ground. If competition surfaces, we just avoided a protest. Either way, the file shows we measured the market, not our own noise."
+  },
+  "faada1b2235b": {
+    "ask": "Three catalog makers cover everything but one vibration profile. Custom build, or commercial with a mod?",
+    "fu": [
+      {
+        "h": "Minor is measured against form, fit, and function — not against effort.",
+        "d": "A modification is minor when it doesn't alter the item's essential form, fit, or function — the chamber still does what commercial chambers do, in the same envelope, the same way. A factory-offered vibration option two vendors already sell is close to definitionally minor: it's within the product line's normal configuration space. The determination is a facts-and-engineering call documented in the CID, not a gut call — and 'we wrote a 40-page spec' doesn't make an item noncommercial."
+      },
+      {
+        "h": "Part 12 changes the data you can demand, the clauses, and the termination machinery.",
+        "d": "Commercial procedures mean: no certified cost or pricing data (price on market evidence — catalogs, competition among the three makers), streamlined commercial terms with an FFP preference, customary commercial data rights only, and termination under the commercial clause rather than Part 49. Under the $9M streamlined ceiling this buy moves fast. The trade: less Government-unique protection — which is exactly right for a catalog product with three competing makers."
+      }
+    ],
+    "script": "This is an RFO Part 10 market-research question that becomes an RFO 2.101 commerciality call. My help: the program engineers, my pricing office, and the CID approver one level up. The rule: research exists to reshape requirements, not just to document them. Three catalog makers cover every parameter but one vibration profile — and two offer that profile as a factory option. That's a commercial product with a minor modification: form, fit, and function unchanged. So I'd push the requirement toward performance terms, write the CID on the comparison analysis, and compete it among the three makers under commercial procedures — market pricing, no certified data, fast. The 40-page custom spec buys a slower, costlier chamber and a thinner industrial base. The catalog buys the mission."
+  },
+  "385df91a2aa9": {
+    "ask": "The unit says the e-commerce site is cheaper and faster than the mandatory source. What do you fix, and how?",
+    "fu": [
+      {
+        "h": "Walk it: what the Government owns, then statute, then schedules, then market.",
+        "d": "Supplies ladder, in order: existing Government inventory; excess from other agencies; Federal Prison Industries (UNICOR); AbilityOne procurement-list items; wholesale sources; mandatory Federal Supply Schedules; then the commercial market. Each rung is checked and documented before moving past it — and for procurement-list items, AbilityOne isn't a suggestion. Price alone never unlocks the next rung; fit and availability problems are worked through the program channels, on the record."
+      },
+      {
+        "h": "Fifty swipes, one predictable annual demand — what's the requirement, really?",
+        "d": "Splitting happens whenever a known requirement is fragmented to stay under a threshold — intent to evade isn't required for the pattern to be a violation. $140K of predictable custodial demand is one annual requirement; buying it as 50 GPC swipes both evades the MPT and bypasses the mandatory sources. The structural fix: a BPA or purchase-order arrangement against the right source, sized to the real annual demand, with the GPC reserved for genuine micro-purchases."
+      }
+    ],
+    "script": "This is an RFO Part 8 required-sources question compounded by RFO Part 13 splitting. My help: the GPC program coordinator, the AbilityOne program office, and my policy shop. Two rules: the supplies ladder is mandatory and runs in priority order — and price alone doesn't unlock the open market; if these items sit on the procurement list, AbilityOne is the source, cheaper e-commerce notwithstanding. Second: $140K of predictable annual demand is one requirement wearing fifty swipes — that's splitting, and it evades both the MPT and the mandatory sources. The fix: structure the real demand into a BPA or purchase orders against the correct source, retrain the unit's cardholders, and document the transition. Faster delivery is a requirement to work through the program — not a license to shop."
+  },
+  "e9abca37a7c6": {
+    "ask": "The customer wants Vendor Q's listing bought as-is at $290K. What does a defensible schedule order look like?",
+    "fu": [
+      {
+        "h": "GSA priced the schedule; who prices the order?",
+        "d": "GSA's determination establishes schedule-level ceiling prices as fair and reasonable — for the schedule, not for your order. The ordering CO independently determines the ORDER price fair and reasonable: comparing holders carrying the same line, seeking discounts (schedule prices are ceilings, discounts are expected), and documenting the comparison. Four holders with published prices 6-9% apart is a comparison begging to be run."
+      },
+      {
+        "h": "Limiting sources on a schedule buy has its own justification lane.",
+        "d": "An order can be limited to one schedule holder only on a documented basis — a logical follow-on to a schedule order, urgency, only-one-holder-carries-it, or an item peculiar to one vendor — written and kept in the file (the schedule equivalent of a brand-name justification). 'The customer likes Vendor Q's listing' isn't a basis. When multiple holders carry the same OEM line, competition among them is both the default and the easiest path to a defensible price."
+      }
+    ],
+    "script": "This is an RFO Part 8 schedules question about what GSA's pricing actually covers. My help: the schedules' eBuy tools and my own comparison file. The rule: GSA established schedule-level prices as fair and reasonable — the order-level determination is mine, and it doesn't come free with the listing. Four holders carry the same OEM line, two visibly cheaper. So: RFQ among the holders, seek discounts — schedule prices are ceilings, not floors — and document the comparison as my price analysis. If the customer wants Vendor Q specifically, that takes a written justification naming a real basis, and 'we liked their listing' isn't one. Ten minutes of eBuy competition is the difference between a defensible order and a $290K habit."
+  },
+  "f02f6a5c96ef": {
+    "ask": "One foreign military sale and a month-old catalog. Does the commercial assertion survive — and what happens to the buy either way?",
+    "fu": [
+      {
+        "h": "'Of a type' still needs a market — whose purchases prove one exists?",
+        "d": "Evidence that establishes commerciality: actual sales, leases, or licenses to the GENERAL PUBLIC — commercial customers, at market prices, in ordinary volumes — or an item evolved from such a product and available in time. Catalogs corroborate; they don't substitute. One sale to a foreign navy is a government sale, and a catalog created last month for this proposal is advocacy, not evidence. The determination is the Government's, made on the record the vendor supplies — and the burden of supporting the assertion sits with the vendor."
+      },
+      {
+        "h": "Non-commercial at $4.2M sole source — what does the pricing lane become?",
+        "d": "If the item is non-commercial, the Part 12 shortcuts fall away: at $4.2M the action is above the SAT but below the certified-data trigger, so you demand data other than certified cost or pricing data — cost element detail, sales history, supporting quotes — sufficient for a fair-and-reasonable determination, with price analysis always and cost analysis as needed. The vendor's refusal to provide adequate data becomes its own answer: no data, no deal."
+      }
+    ],
+    "script": "This is a commerciality question — RFO 2.101 — and the Government makes the call, not the proposal. My help: my pricing office, Legal, and the CID approver one level up. The rule: commercial means sold, leased, or licensed to the general public — or evolved and available in time. One sale to a foreign navy is a government sale; a catalog created last month is a prop. On these facts the assertion likely fails, and my CID says so with the comparison analysis written down. Then the buy continues honestly: non-commercial, $4.2M, sole source — I demand data other than certified sufficient to price it, run price analysis plus cost analysis as needed, and if the vendor won't support its own price, that refusal is my answer. No data, no deal."
+  },
+  "99533bc58727": {
+    "ask": "The PM wants a cure notice and a T4D 'like the radar contract.' What's different here?",
+    "fu": [
+      {
+        "h": "Same failure, different clause — what machinery actually runs a Part 12 contract?",
+        "d": "Termination for cause under the commercial clause reaches the same destination as T4D — the Government doesn't pay for nonconforming performance and can pursue reprocurement exposure — but the road differs: rights and procedures come from the commercial clause itself (notice, opportunity consistent with commercial practice), not Part 49's cure/show-cause machinery. Citing 49.x procedures on a commercial contract invites the conversion argument that the termination itself was procedurally defective."
+      },
+      {
+        "h": "Commercial convenience settlements are narrower than Part 49's.",
+        "d": "On a commercial termination for convenience, the Government owes the percentage of work performed at the contract price plus reasonable charges resulting from the termination — a leaner formula than Part 49's cost-plus-settlement machinery, with no anticipatory profit either way. The contractor's records support the charges. Knowing the two formulas apart — and which contract carries which — is precisely the seam this scenario tests."
+      }
+    ],
+    "script": "This is a terminations question on a commercial contract — RFO 12.403 territory, not RFO Part 49 — and the seam is the whole answer. My help: Legal before any notice, and the COR's cold-weather failure record. The rule: Part 49 doesn't run Part 12 contracts. The commercial clause's own framework does — termination for cause for the failures, with notice consistent with its terms, or convenience under its leaner settlement formula. So: document the cold-weather failures against the requirement, give the clause's notice honestly, and if we terminate for cause, do it under the right authority with the right words — because citing 49.x machinery on a commercial award hands the contractor a procedural-defect argument. Same destination as the radar contract; different road, and the road matters."
+  },
+  "c34aeab9c4f4": {
+    "ask": "One quote per item, award by Friday. What does this buy actually need?",
+    "fu": [
+      {
+        "h": "SAP wants promoting competition 'to the maximum extent practicable' — what does that mean at $120K?",
+        "d": "There's no statutory quote count — the standard is promoting competition to the maximum extent practicable and, always, a supportable price-reasonableness determination. At $120K, one quote per item from last year's vendors is thin: solicit at least a few capable sources per item (the band is small-business reserved), or support the single quotes with real comparison evidence — history, catalogs, IGCE. The documentation, not a magic number, is what defends the award."
+      },
+      {
+        "h": "Same sites, same gear, every exercise cycle — what structure fits recurring demand?",
+        "d": "Yes — a BPA against the recurring exercise cycle: negotiated up front with one or more small-business sources, priced terms, then each exercise's needs placed as fast calls without re-soliciting. It converts an annual fire drill into an account with discipline — and the calls stay inside the BPA's scope and the band's rules. The structural fix is what prevents next year's staff sergeant from collecting one quote per item under deadline."
+      }
+    ],
+    "script": "This is a simplified-acquisition question — RFO Part 13. My help: my Small Business Professional and the exercise planners on the real recurring demand. The rules: the MPT-to-SAT band is reserved for small business — so the first check is the vendors' size status — and price reasonableness rides on evidence, not on Friday. One quote per item at $120K is thin: I'd quickly solicit competitors or support the quotes with history and catalog comparisons; SAP is streamlined, not standard-free. Then the structural answer: this same requirement recurs every exercise cycle, so it belongs on a BPA — negotiated once, called quickly forever after. That's how Friday deadlines stop producing one-quote files."
+  },
+  "c23dfef26d5e": {
+    "ask": "It's September 28th with $47K expiring. What survives the fiscal test, and what doesn't?",
+    "fu": [
+      {
+        "h": "The question is when the need arises, not when the money dies.",
+        "d": "A current-year obligation serves next-year performance only when the need is bona fide to the current year: severable services within their 12-month window may cross fiscal years; delivery lead times can justify ordering now for later arrival; reasonable stock replenishment is current-year need. What never works: obligating simply because money expires — for a November course, the analysis is when the training need genuinely arises, worked with FM, not the color of September's calendar."
+      },
+      {
+        "h": "A license term is a service period — measure it like one.",
+        "d": "Software licenses are generally severable services measured by their term: a 12-month license on current-year O&M works (and may cross fiscal years); a 24-month term on one-year money fails Time — the second year is next year's need bought with this year's appropriation. The lawful shapes: buy the one-year term now and next year's separately, or structure a base-plus-option that lets each year's money fund each year's term."
+      }
+    ],
+    "script": "This is a fiscal-law question — Time, Purpose, Amount under the appropriations statutes, applied item by item. My help: FM first and always — the GAO Red Book and DoD FMR are the references behind every call here. The wish list, sorted: two years of licenses on one-year money fails Time — buy the 12-month term, structure the rest; the November course gets a bona fide need analysis — when does the need actually arise? — worked with FM rather than assumed; and reasonable toner-and-cable replenishment is legitimate current-year need, while 'stocking up' beyond reasonable levels is next year's need wearing this year's money. And I'd say the quiet part: expiring funds create urgency, never authority. The test is the need's year — not the money's expiration date."
+  }
+}

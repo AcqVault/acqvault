@@ -1,0 +1,362 @@
+{
+  "935ffc933d7a": [
+    "Price history · incumbent performance · schedule float · budget stability · fee structure.",
+    "Small-business impact · protest risk · clearance level · funding color · contract type.",
+    "Requirement clarity · evaluation criteria · debrief posture · option structure · NAICS fit."
+  ],
+  "d0361b53188e": [
+    "Incumbent staffing, wage rates, award-fee history, subcontractor list.",
+    "CPARS ratings, DCMA findings, open claims, warranty status.",
+    "The IGCE, the acquisition plan, the QASP, and the PWS."
+  ],
+  "33042bd006cf": [
+    "A sustained protest on the follow-on.",
+    "A directed change in acquisition strategy.",
+    "A regulatory change late in the cycle."
+  ],
+  "079022ee3f6d": [
+    "Ask the incumbent for a teaming list · check SAM registrations · rely on last cycle's research.",
+    "FPDS awards to similar NAICS · the program's engineering judgment · the IGCE basis of estimate.",
+    "A synopsis at award · SBA's Dynamic Small Business Search · DCMA capability surveys alone."
+  ],
+  "abce5003908c": [
+    "RFO 6.103-2, urgency — with the J&A signed after award and posted within 30 days.",
+    "Skip the J&A — single-source under SAP rules applies when research shows one source.",
+    "Award a bridge to the incumbent while the requirement is re-scoped for competition."
+  ],
+  "27b9ce4d2c0e": [
+    "Express, implied, apparent — implied binds nothing.",
+    "Actual, delegated, apparent — delegated binds nothing.",
+    "Express, implied, apparent — all three can bind once ratified."
+  ],
+  "88dd62fee9f3": [
+    "Good faith · benefit · CO concurrence · lowest price · funds now · command endorsement.",
+    "Proper-if-CO · urgency · apparent authority · fair price · funds now · IG notification.",
+    "Benefit · contractor fault-free · ratifier one level up · price under SAT · funds then · Legal."
+  ],
+  "e982f0457dbb": [
+    "$500K → SPE; $90K → HCA.",
+    "Both → HCA — ratification authority doesn't tier by dollars.",
+    "$500K → COCO; $90K → the CO who discovers it."
+  ],
+  "2949d2327e73": [
+    "Offer · acceptance · funding · signature · delivery schedule.",
+    "Consideration · competition · certification · clauses · closeout.",
+    "Mutual intent · fair price · written form · warrant · performance."
+  ],
+  "5b24c7798b4a": [
+    "Stop the ratification — without the maker's statement the package can't move.",
+    "Refer the individual to the IG and hold the contractor's invoice until they cooperate.",
+    "Have the contractor write the narrative instead; their account substitutes for the maker's."
+  ],
+  "70fbb68e0e19": [
+    "No — only express written authority binds the Government; everything else is apparent.",
+    "Yes, but only for actions under the micro-purchase threshold.",
+    "No — implied authority binds the employee personally, not the Government."
+  ],
+  "0998b7e6e642": [
+    "Classified information; controlled unclassified information.",
+    "The IGCE; the acquisition plan.",
+    "Past-performance ratings; subcontractor pricing."
+  ],
+  "322937e75d22": [
+    "Notify the HCA; cancel the solicitation the same day.",
+    "Interview the sender; report to the IG within 24 hours.",
+    "Recall the email; brief the source selection team at the next meeting."
+  ],
+  "25228f00090d": [
+    "The SSA.",
+    "GAO.",
+    "The SPE."
+  ],
+  "f78b31102ae4": [
+    "Yes — a good-faith deletion by the recipient ends the incident.",
+    "No — the solicitation must be cancelled once SSI leaves the building.",
+    "Yes, if she wasn't an offeror employee; otherwise the HCA decides."
+  ],
+  "99d0a01bede1": [
+    "Same as any spill: recipient deletes, CO documents, competition continues.",
+    "Automatic cancellation — no discretion once an offeror holds SSI.",
+    "The offeror is disqualified by operation of law; the CO just documents it."
+  ],
+  "f46f3249feba": [
+    "Not yet — the PIA reaches disclosure, not requests; nothing to report unless something was shared.",
+    "Only if the evaluator answered; log it informally and move on.",
+    "It's a violation by the contractor only if they're in the competitive range."
+  ],
+  "9602ba9c7412": [
+    "Unequal access (hardest) · biased ground rules · impaired objectivity.",
+    "Impaired objectivity (hardest) · unequal access · biased ground rules.",
+    "Financial interest (hardest) · personal conflict · organizational bias."
+  ],
+  "b25c39993384": [
+    "Mitigate · neutralize · avoid.",
+    "Avoid · mitigate · waive.",
+    "Disclose · firewall · exclude."
+  ],
+  "491f47d224e6": [
+    "HCA; delegable one level.",
+    "SPE; non-delegable.",
+    "The PCO with Legal concurrence; delegable."
+  ],
+  "57ce0f1a8517": [
+    "True — without use, there's no competitive harm.",
+    "True — access alone is cured by a firewall certification.",
+    "False — but only if the information was source selection information."
+  ],
+  "74433b82312d": [
+    "Unequal access — you can never prove what information actually moved.",
+    "Impaired objectivity — self-assessment can't be firewalled, so waiver is the only cure.",
+    "Biased ground rules — because the waiver authority sits at the SPE."
+  ],
+  "735bd0bd5fe4": [
+    "Yes — a certified firewall is the standard cure for all three OCI types.",
+    "No — firewalls are never acceptable mitigation; exclusion is required.",
+    "Yes, if the firewall predates the solicitation release date."
+  ],
+  "ec763e1449e6": [
+    "The HCA — the same authority that owns the waiver.",
+    "Legal — an OCI is a legal determination.",
+    "The SSA, since the conflict affects the selection."
+  ],
+  "d146eee4b073": [
+    "Price · schedule · quality · safety · security · staffing · certifications.",
+    "Finances · past performance · size status · facility clearance · bonding · insurance · SAM.",
+    "Capability · capacity · credit · character · compliance · continuity · citizenship."
+  ],
+  "00c9dd64b727": [
+    "FAPIIS always; SAM exclusions over the SAT.",
+    "SAM and CPARS — both at every dollar value.",
+    "SAM exclusions over the MPT; FAPIIS over $1M."
+  ],
+  "97fe9fa8f578": [
+    "Award to the next offeror — SBA is notified after award.",
+    "The SBA gets 15 days to comment, but the CO's finding stands.",
+    "The finding is elevated to the HCA for a final determination."
+  ],
+  "389e9eb3be11": [
+    "The contractor's — responsibility is presumed once registered in SAM.",
+    "Neither — doubt triggers a pre-award survey to resolve it first.",
+    "The contractor's, for small businesses only."
+  ],
+  "9a68017198a8": [
+    "Yes — responsibility is inherently a judgment call the boards won't second-guess.",
+    "No — once an offeror is otherwise successful, responsibility can't be the basis.",
+    "Only with the HCA's concurrence and a pre-award survey."
+  ],
+  "1e37736760b9": [
+    "They're synonyms — both mean the offeror can't receive this award.",
+    "Non-responsible = excluded in SAM; ineligible = fails the seven standards.",
+    "Ineligible is permanent; non-responsible lasts three years."
+  ],
+  "5fec57ac3832": [
+    "Best vendor · fair price · contract type · evaluation factors.",
+    "Funding color · requirement clarity · protest risk · incumbent performance.",
+    "Sources' size status · SAM registration · CPARS history · capacity."
+  ],
+  "602833ee075f": [
+    "12 months.",
+    "24 months.",
+    "One fiscal year."
+  ],
+  "f4ad30db7f45": [
+    "The acquisition plan; missing research shifts the burden to the IGCE.",
+    "The sources-sought synopsis; without it the action simply proceeds full-and-open.",
+    "The D&F; undocumented research is cured by a post-award memo."
+  ],
+  "094a9da4d668": [
+    "Excess → inventory → AbilityOne → UNICOR → mandatory FSS → wholesale → commercial.",
+    "Inventory → UNICOR → excess → wholesale → AbilityOne → commercial → mandatory FSS.",
+    "AbilityOne → UNICOR → inventory → excess → mandatory FSS → wholesale → commercial."
+  ],
+  "3b8d75841b8f": [
+    "UNICOR (Federal Prison Industries).",
+    "Agency inventories.",
+    "Mandatory Federal Supply Schedules."
+  ],
+  "f923c906e0d0": [
+    "GSA — schedule award established reasonableness for all orders.",
+    "No one — schedule prices are reasonable by definition.",
+    "The schedule contractor certifies it with each quote."
+  ],
+  "fa14b528a799": [
+    "Sold to any Government agency in the past 12 months, including mods under 10% of value.",
+    "Catalog-priced and NAICS-coded commercial, excluding any modified item.",
+    "Available from two or more sources at market prices, with mods approved by the CID authority."
+  ],
+  "fe82a9fce34d": [
+    "Over $1M; the CO signs their own.",
+    "Over SAT ($350K); the HCA, non-delegable.",
+    "At every dollar value; one level above the CO."
+  ],
+  "5a3c40a9312a": [
+    "RFO 12.301-2; $7.5M.",
+    "RFO 13.501; $9M.",
+    "RFO 12.201-1; the SAT ($350K)."
+  ],
+  "49c3619626fe": [
+    "Gets: unlimited data rights, cost transparency. Takes: FFP preference; protest exposure.",
+    "Gets: GPC use at any value, no synopsis. Takes: small-business set-asides; options.",
+    "Gets: sealed bidding, price competition. Takes: commercial warranties; T4C rights."
+  ],
+  "34673e1efe8e": [
+    "GPC ≤$25K · POs to $500K · BPAs above that.",
+    "GPC ≤$10K · BPAs $10K–$350K · POs above the SAT.",
+    "GPC ≤$15K · POs to $250K · IDIQs for repetitive needs."
+  ],
+  "8b949db1e574": [
+    "AbilityOne and UNICOR, in priority order.",
+    "8(a) firms first, then all small business.",
+    "Local businesses within the installation's commuting area."
+  ],
+  "03458c10c23f": [
+    "A formal J&A approved by the Competition Advocate.",
+    "A D&F signed one level above the CO.",
+    "Nothing — under the SAT, source choice is unrestricted."
+  ],
+  "3ad36f49ee18": [
+    "$7.5M · RFO 12.201-1.",
+    "$9M · RFO 13.106-3.",
+    "$12M · RFO 12.203."
+  ],
+  "2c3a46f79aaf": [
+    "It's allowed if each swipe stays under the cardholder's single-purchase limit.",
+    "It's fine when the shops are separate cost centers with separate funding.",
+    "GPC splits are only a violation above the SAT."
+  ],
+  "9a7d7ce960be": [
+    "A BPA obligates its ceiling at establishment — it stops fitting when funds run short.",
+    "BPAs convert to IDIQs automatically at the SAT; there's nothing to decide.",
+    "The paths are interchangeable — pick whichever the customer prefers."
+  ],
+  "754298487c89": [
+    "No — SAP requires at least three quotes before award.",
+    "Only after resoliciting once and notifying the competition advocate.",
+    "Yes — under the SAT, any received quote is presumed reasonable."
+  ],
+  "f67eaf0a98e1": [
+    "Two or more small businesses actually submit offers → set aside after receipt.",
+    "Two capable sources of any size → compete rather than sole-source.",
+    "Two or more quotes required on every buy over the MPT."
+  ],
+  "b23a98ab7ac6": [
+    "$5M · $5.5M · $100M (with J&A).",
+    "$4.5M · $4M · $50M (no J&A).",
+    "$5.5M · $5M · $30M (no J&A)."
+  ],
+  "91821da14882": [
+    "SF 1449.",
+    "DD Form 1547.",
+    "SF 30."
+  ],
+  "7217434521d2": [
+    "$750K; $1.5M construction.",
+    "$1M; $2.5M construction.",
+    "The SAT; $1M construction."
+  ],
+  "fdfcedccde23": [
+    "Withdraw the set-aside and resolicit full-and-open.",
+    "Refer to the SBA for a certificate of competency before award.",
+    "Cancel and re-run the sources-sought — one offer defeats the set-aside."
+  ],
+  "1658ed2fe51a": [
+    "Yes — each new requirement starts fresh; prior program history doesn't bind.",
+    "Yes, once the incumbent has graduated from the program.",
+    "Only the HCA can release it, with Competition Advocate concurrence."
+  ],
+  "f10497ad0ee0": [
+    "Above the SAT, like any other sole source.",
+    "Above $30M for DoD; $100M is the civilian line.",
+    "Never — 8(a) awards are exempt from J&As at every value."
+  ],
+  "a78f420d29c1": [
+    "SAP · set-asides · urgent actions · commercial buys.",
+    "Statute · micro-purchases · options · GPC actions.",
+    "SAP · sole source · in-scope mods · bridge actions."
+  ],
+  "8575184a4e67": [
+    "One source · urgency · follow-on · small business · statute · security · best value.",
+    "Sole source · emergency · mobilization · treaty · regulation · classification · agency head.",
+    "One source · urgency · logical follow-on · international agreement · statute · secrecy · economy."
+  ],
+  "2406b1119b1b": [
+    "$18M → CO; $95M → Competition Advocate; $160M → HPA/PEO.",
+    "$18M → Competition Advocate; $95M → SPE; $160M → USD(A&S).",
+    "All three → HCA; the ladder applies only to fair-opportunity D&As."
+  ],
+  "c06634e050d7": [
+    "30 days; 14 days for urgency.",
+    "10 days; 30 days for urgency.",
+    "14 days in both cases."
+  ],
+  "fba64c8b4c70": [
+    "They're the same bucket — both require a J&A under RFO 6.103.",
+    "Exclusion is for security-driven narrowing only; 'other than' covers set-asides.",
+    "Exclusion needs SPE approval; 'other than' needs only the CO's certification."
+  ],
+  "e1ade89aced2": [
+    "$40M → SPE. $15M → HPA/PEO.",
+    "$40M → Competition Advocate. $15M → CO.",
+    "Both → HCA — the DoD ladder starts at $50M."
+  ],
+  "3d44b1b923cc": [
+    "Clarifications (pre-range) · communications (post-range) · discussions (award stage).",
+    "Communications (minor fixes) · clarifications (pre-range) · negotiations (any time).",
+    "Clarifications (no limit) · discussions (pre-range) · debriefings (post-range)."
+  ],
+  "ef642dc89894": [
+    "SSA · SSEB · PCO.",
+    "SSEB · PCO · SSA.",
+    "SSAC · SSA · SSEB."
+  ],
+  "56466fa2b9dc": [
+    "Whenever all offerors are technically acceptable.",
+    "Only under the SAT or on commercial actions.",
+    "When the SSA documents urgency in the SSDD."
+  ],
+  "69f57fa773b3": [
+    "Include: all evaluator notes and scoresheets. Exclude: the award price.",
+    "Include: a point-by-point comparison with the winner. Exclude: past-performance sources.",
+    "Include: the SSDD verbatim. Exclude: the protester's own weaknesses."
+  ],
+  "5be0fb484cba": [
+    "That's a clarification — the evaluator can send it directly.",
+    "Forbidden — no contact of any kind before the competitive range.",
+    "That's discussions — allowed pre-range if offered to every offeror."
+  ],
+  "a2ba32887821": [
+    "Yes — price gets the same adjectival scale so the tradeoff is apples-to-apples.",
+    "Yes, but only in LPTA source selections.",
+    "No — price is considered only after the technical ranking is final."
+  ],
+  "31ebec1f7357": [
+    "Every offeror receives the identical list of questions, verbatim.",
+    "At least two rounds with revised proposals after each.",
+    "The Government reveals its price objective so offerors can meet it."
+  ],
+  "257067de1eaf": [
+    "$2.5M across the board until the RFO rulemaking finalizes.",
+    "$10M for everything — mods of older contracts included.",
+    "$5M after 30 Jun 2026; $2.5M before."
+  ],
+  "d097b13b7eac": [
+    "Competition · Law · Audit rights · Waiver · Market pricing — RFO 15.402-1.",
+    "Commercial · Low dollar · Adequate competition · Waiver (SPE) · Mods — RFO 15.403-4.",
+    "Catalog · Law/regulation · Award without discussions · Waiver (CO) · Mods — RFO 12.209."
+  ],
+  "37a864f423df": [
+    "Cost analysis, always; price analysis only when competition is adequate.",
+    "Price analysis above the SAT; realism on all fixed-price awards.",
+    "Both price and cost analysis, on every negotiated action."
+  ],
+  "9135a54de3d6": [
+    "Certified data · post-award discovery · intent to deceive · materiality · Government harm.",
+    "Data existed · was requested · was withheld · caused overrun · exceeded threshold.",
+    "Cost data · pre-award · disclosed late · auditor flagged · price unreasonable."
+  ],
+  "dfb052112b10": [
+    "10% · 8% · 5%.",
+    "15% · 12% · 6%.",
+    "20% · 15% · 10%."
+  ]
+}

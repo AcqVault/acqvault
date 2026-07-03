@@ -1,0 +1,242 @@
+[
+ {
+  "type": "threshold",
+  "q": "Micro-purchase threshold?",
+  "a": "$15,000",
+  "id": "668e8c2a3f2f"
+ },
+ {
+  "type": "threshold",
+  "q": "Simplified Acquisition Threshold?",
+  "a": "$350,000",
+  "id": "ae0debb7c9f8"
+ },
+ {
+  "type": "threshold",
+  "q": "Certified cost or pricing data — actions entered after 30 Jun 2026?",
+  "a": "$10,000,000 (FY26 NDAA §1804)",
+  "id": "40843b428d74"
+ },
+ {
+  "type": "threshold",
+  "q": "Certified cost or pricing data — contracts entered on/before 30 Jun 2026 and their mods?",
+  "a": "$2,500,000",
+  "id": "d27e176014b3"
+ },
+ {
+  "type": "threshold",
+  "q": "Certified data prohibited at or below…?",
+  "a": "the SAT ($350,000)",
+  "id": "14ba343b8025"
+ },
+ {
+  "type": "threshold",
+  "q": "Commercial streamlined procedures ceiling (RFO 12.201-1)?",
+  "a": "$9,000,000",
+  "id": "7a979edf562a"
+ },
+ {
+  "type": "threshold",
+  "q": "Market research documentation required for non-commercial buys over… (RFO 10.001)?",
+  "a": "$7,500,000; research current within 18 months",
+  "id": "8d842486424e"
+ },
+ {
+  "type": "threshold",
+  "q": "J&A approval — up to $900K?",
+  "a": "The contracting officer (certification = approval)",
+  "id": "8cb1c429ea52"
+ },
+ {
+  "type": "threshold",
+  "q": "J&A approval — $5M? $15M?",
+  "a": "Competition Advocate (tier runs >$900K to $20M)",
+  "id": "3cc4afd547e2"
+ },
+ {
+  "type": "threshold",
+  "q": "J&A approval — $60M (DoD)?",
+  "a": "Head of the Procuring Activity / PEO (tier to $150M DoD)",
+  "id": "00794581889d"
+ },
+ {
+  "type": "threshold",
+  "q": "J&A approval — $200M (DoD)?",
+  "a": "Senior Procurement Executive (above $150M DoD)",
+  "id": "adcba9449eb9"
+ },
+ {
+  "type": "threshold",
+  "q": "J&A posting to SAM.gov — standard? urgency?",
+  "a": "14 days after award; 30 days for urgency",
+  "id": "5edb3a487fb9"
+ },
+ {
+  "type": "threshold",
+  "q": "8(a) sole source without J&A — DoD? civilian?",
+  "a": "$100M DoD; $30M civilian",
+  "id": "0df8e100e849"
+ },
+ {
+  "type": "threshold",
+  "q": "Competitive 8(a) begins at…?",
+  "a": "$8.5M manufacturing / $5.5M other",
+  "id": "ba6d444cbe87"
+ },
+ {
+  "type": "threshold",
+  "q": "HUBZone / WOSB sole-source caps?",
+  "a": "$8.5M manufacturing / $5.5M other",
+  "id": "0f1980679faa"
+ },
+ {
+  "type": "threshold",
+  "q": "SDVOSB sole-source caps?",
+  "a": "$8.5M manufacturing / $5M other",
+  "id": "d0ca25b8dc94"
+ },
+ {
+  "type": "threshold",
+  "q": "Subcontracting plan trigger?",
+  "a": "$900K ($2M construction), non-small primes",
+  "id": "da815bd4830a"
+ },
+ {
+  "type": "threshold",
+  "q": "GAO task-order protest floor — DoD? civilian?",
+  "a": "$35M DoD / $10M civilian (any value if the order grows scope, period, or ceiling)",
+  "id": "892446f9ab1c"
+ },
+ {
+  "type": "threshold",
+  "q": "IDIQ order debriefing rights begin at… (RFO 16.507)?",
+  "a": "$7.5M",
+  "id": "16cac2656f7e"
+ },
+ {
+  "type": "threshold",
+  "q": "Fair-opportunity exception D&A approval tiers?",
+  "a": "Same ladder as J&As: ≤$900K CO · ≤$20M CA · ≤$90M/$150M-DoD HPA-PEO · above SPE",
+  "id": "0d274e32d3e5"
+ },
+ {
+  "type": "threshold",
+  "q": "CDA claim certification required over…?",
+  "a": "$100,000",
+  "id": "cdf19e4ec307"
+ },
+ {
+  "type": "threshold",
+  "q": "CDA claim must be brought within…?",
+  "a": "6 years of accrual",
+  "id": "523202d92bea"
+ },
+ {
+  "type": "threshold",
+  "q": "Claim appeal windows — Board? COFC?",
+  "a": "90 days Board / 12 months COFC",
+  "id": "3fa7dbdd6f41"
+ },
+ {
+  "type": "threshold",
+  "q": "REA certification (DoD) kicks in above…?",
+  "a": "the SAT ($350,000)",
+  "id": "a8937df338c9"
+ },
+ {
+  "type": "threshold",
+  "q": "UCA obligation cap before qualifying proposal? after?",
+  "a": "50% of NTE; 75% after",
+  "id": "b76ac785923e"
+ },
+ {
+  "type": "threshold",
+  "q": "UCA definitization deadline?",
+  "a": "180 days from the qualifying proposal (or when obligations hit the caps)",
+  "id": "65924aa98b6f"
+ },
+ {
+  "type": "threshold",
+  "q": "Construction performance + payment bonds required over…?",
+  "a": "$150,000",
+  "id": "e3866ad99322"
+ },
+ {
+  "type": "threshold",
+  "q": "CPFF fee ceilings — R&D? most others? A&E?",
+  "a": "15% · 10% · 6%",
+  "id": "429b12a0f587"
+ },
+ {
+  "type": "threshold",
+  "q": "E.O. 14402 other-than-FFP justification — DoD? most agencies?",
+  "a": "$100M DoD; $10M most agencies (RFO 16.104)",
+  "id": "6f92260c64f4"
+ },
+ {
+  "type": "threshold",
+  "q": "Ratification approval — over SAT? at/under?",
+  "a": "HCA (delegable) over SAT; COCO level at/under",
+  "id": "70337063204b"
+ },
+ {
+  "type": "threshold",
+  "q": "Post-award protest stay window at GAO?",
+  "a": "10 days from award or 5 days from the required debrief — whichever is later",
+  "id": "ed23a8e28274"
+ },
+ {
+  "type": "threshold",
+  "q": "GAO protest decision deadline? Agency-protest target?",
+  "a": "100 days GAO; ~35 days agency",
+  "id": "d0650ad9021f"
+ },
+ {
+  "type": "threshold",
+  "q": "Services extension-of-services clause cap?",
+  "a": "6 months",
+  "id": "ddb0b0391d2b"
+ },
+ {
+  "type": "threshold",
+  "q": "Services base + options duration rail?",
+  "a": "About 5 years",
+  "id": "f20605790f3c"
+ },
+ {
+  "type": "threshold",
+  "q": "Severable services funded with annual money can run…?",
+  "a": "Up to 12 months, may cross fiscal years",
+  "id": "de3be767f6f4"
+ },
+ {
+  "type": "threshold",
+  "q": "Colors of money — O&M? RDT&E? Procurement?",
+  "a": "1 year · 2 years · 3 years",
+  "id": "8e87862c50b3"
+ },
+ {
+  "type": "threshold",
+  "q": "Limitation of Cost / Funds notice trigger?",
+  "a": "~75% of the estimate (LoC) or allotted amount (LoF)",
+  "id": "364be33ffc3b"
+ },
+ {
+  "type": "threshold",
+  "q": "Expired funds remain usable for adjustments for…?",
+  "a": "5 years, then cancelled (gone for all purposes)",
+  "id": "62b9fa59741f"
+ },
+ {
+  "type": "threshold",
+  "q": "Small business set-aside band (automatic posture)?",
+  "a": "Between the MPT ($15K) and SAT ($350K)",
+  "id": "9c7428726fef"
+ },
+ {
+  "type": "threshold",
+  "q": "Cure notice rhythm before a performance-failure T4D?",
+  "a": "10 days to cure (not required for pure late delivery)",
+  "id": "38fc939f9b1e"
+ }
+]

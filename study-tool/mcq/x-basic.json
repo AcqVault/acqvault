@@ -1,0 +1,122 @@
+{
+  "5f9a44f71c12": {
+    "x": "Authority is the whole ballgame: PMs own requirements, commanders own missions, FM owns funds — but none of them can obligate the Government. Only a CO, acting inside a written warrant, binds the United States. Every unauthorized-commitment mess starts with someone forgetting this.",
+    "ref": "Field Guide Vol. 1 §1 & §3 · SF 1402"
+  },
+  "11c6cb9600c6": {
+    "x": "The package is the artifact, not the product. What senior leaders and mission partners actually need from you is a defensible business decision — strategy, competition, fair price, managed risk. If you optimize for processing speed or customer appeasement, you produce fast, indefensible actions.",
+    "ref": "Field Guide Vol. 1 §1"
+  },
+  "3989cd17e48b": {
+    "x": "The COR is the CO's eyes on performance — nothing more. A COR who adjusts price, scope, or terms (or tells the contractor to start something new) is making an unauthorized commitment. All contractual direction flows through the CO; everyone else talks technically.",
+    "ref": "Field Guide Vol. 1 §2 · §15"
+  },
+  "6a635bacb345": {
+    "x": "Funds certification is FM/Comptroller's lane — the CO can't self-certify money, and the PM owning the budget isn't certification. No certified funds, no award: it's why the money check happens early, not at signature.",
+    "ref": "Field Guide Vol. 1 §2 & §5"
+  },
+  "51c42fca30c6": {
+    "x": "The warrant (SF 1402) is the written delegation that creates contracting authority — position, grade, and job title create none. That's also the audit trail: when someone claims authority, the first question is 'show me the warrant and its limits.'",
+    "ref": "Field Guide Vol. 1 §3 · SF 1402"
+  },
+  "1c11fa6bdc35": {
+    "x": "No authority, no contract — the Government isn't bound, but the contractor performed in good faith, so you have a UAC to fix. Ratification (an official with actual authority approving it after the fact) is the documented exception, never the routine. A constructive change requires an existing contract; a UAC has none.",
+    "ref": "Field Guide Vol. 1 §3"
+  },
+  "992359e18bd1": {
+    "x": "Under E.O. 14275 the RFO replaces the legacy FAR, and DoD's supplement is being reissued as the R-DFARS through class deviations. Citing legacy FAR/DFARS/DAFFARS in a new action tells a reviewer your references are stale.",
+    "ref": "Field Guide Vol. 1 §4 · acquisition.gov/far-overhaul"
+  },
+  "5442f5a6dd95": {
+    "x": "The rules are mid-rewrite: content is moving, renumbering, and thresholds shifted in 2025–2026. Printed guides, posters, and memory all rot — the live RFO text and current class deviations at acquisition.gov/far-overhaul are the only safe confirmation.",
+    "ref": "Field Guide Vol. 1 §4 · acquisition.gov/far-overhaul"
+  },
+  "186e8688381d": {
+    "x": "Time (right period, bona fide need), Purpose (what Congress appropriated it for), Amount (no more than available — the ADA line). Every fiscal question you'll ever get is one of these three wearing a costume.",
+    "ref": "Field Guide Vol. 1 §5 · GAO Red Book"
+  },
+  "f6c110876fa6": {
+    "x": "Appropriations serve the needs of their own period — that's the bona fide need rule, and it's Time in the T-P-A test. Obligating this year's money for next year's need doesn't become legal by rushing it before 30 September; that timing move is the classic violation, not the cure.",
+    "ref": "Field Guide Vol. 1 §5 · GAO Red Book"
+  },
+  "fcd45c41647b": {
+    "x": "Phases change; the file doesn't. Documentation and oversight run under every phase because each decision must survive an auditor, an IG, and a protest — sometimes years later, argued by people who weren't in the room.",
+    "ref": "Field Guide Vol. 1 §6"
+  },
+  "c0b969faf7f4": {
+    "x": "Memory doesn't testify and emails scatter — the contract file is the single record that tells the story of why each decision was made. If a decision isn't documented there, for review purposes it didn't happen.",
+    "ref": "Field Guide Vol. 1 §1 & §6"
+  },
+  "efa6a198427f": {
+    "x": "Market research answers the four strategy-driving questions: who can perform, is it commercial, can small business compete, and what's a realistic price. It doesn't pick your vendor (that's the competition's job) and it doesn't touch the funding question (that's FM's).",
+    "ref": "Field Guide Vol. 1 §7 · RFO Part 10"
+  },
+  "95d9034caf74": {
+    "x": "The IGCE is the Government's own independent estimate — your pre-negotiation yardstick for price reasonableness and your reality check on quotes. Push for one on every real buy; you can't judge a price with nothing to judge it against.",
+    "ref": "Field Guide Vol. 1 §7"
+  },
+  "f257cb727f30": {
+    "x": "CICA makes full and open competition the statutory default over the SAT. Set-asides and sole source are exceptions that must be earned — by the Rule of Two being met, or by a documented RFO 6.103 exception. The default never needs justifying; departures do.",
+    "ref": "Field Guide Vol. 1 §8 · RFO Part 6"
+  },
+  "184550fef4f3": {
+    "x": "Other than full and open competition takes a Justification & Approval citing one of the seven recognized exceptions, approved at the right dollar tier. A D&F is a different instrument, a PM can't approve away competition, and a memo isn't a J&A.",
+    "ref": "Field Guide Vol. 1 §8 · RFO 6.103"
+  },
+  "7bc2a694296a": {
+    "x": "$15,000 since the 1 October 2025 adjustment — $10K is the legacy figure people still quote from old guides, and $3,500 is ancient history. Below the MPT you're usually on the GPC, with fair distribution among sources but no formal competition file.",
+    "ref": "Field Guide Vol. 1 §9 · RFO Part 13"
+  },
+  "8dbac49e05eb": {
+    "x": "$350,000 since 1 October 2025 — $250K is the pre-adjustment number your instincts may still carry. The SAT is the biggest fork in the road: above it, full CICA and formal procedures; below it, SAP with the small-business reservation.",
+    "ref": "Field Guide Vol. 1 §9 · RFO Part 13"
+  },
+  "dcfba529b706": {
+    "x": "FFP means one price, whatever it actually costs — the contractor owns every dollar of cost risk, which is why it fits well-defined, priceable work. The share-ratio answer describes incentive contracts (FPIF/CPIF), not firm-fixed-price.",
+    "ref": "Field Guide Vol. 1 §10 · RFO Part 16"
+  },
+  "ab16eded03ad": {
+    "x": "Cost-type is the honest answer when nobody can price the work — R&D, novel development. It's not a reward for weak proposals and not a cost-control tool; the Government takes the cost risk precisely because the uncertainty is real. Forcing FFP there just buys a padded price.",
+    "ref": "Field Guide Vol. 1 §10 · RFO Part 16"
+  },
+  "92f5734bf4ef": {
+    "x": "Every action — every dollar value, every method — requires a documented conclusion that the price is fair and reasonable. Competition is the best evidence, but even a $50 GPC buy rides on a judgment. 'Always' is the load-bearing word the distractors chip at.",
+    "ref": "Field Guide Vol. 1 §11 · RFO 15.404-1"
+  },
+  "cba512084552": {
+    "x": "For the certified-data threshold, additions and deletions each count at absolute value — $1M added plus $1M deleted is a $2M pricing action, not zero. Netting them out is the classic dodge the rule is written to defeat: both sides of the change get priced.",
+    "ref": "Field Guide Vol. 1 §11 · RFO Part 15"
+  },
+  "cef907ea9e52": {
+    "x": "Section L instructs offerors how to prepare and submit; Section M tells them how you'll evaluate. They must trace perfectly — asking for something L-side that M never evaluates (or evaluating what you never asked for) is the flaw protesters hunt first.",
+    "ref": "Field Guide Vol. 1 §12 · RFO Part 15"
+  },
+  "bd3b5d6789c7": {
+    "x": "Best value is the best mix of price and non-price factors for the Government — a continuum from LPTA (cheapest acceptable) to tradeoff (paying more when it's worth it). It's never 'cheapest, period' or 'best technical regardless of price'; those are its two failure modes.",
+    "ref": "Field Guide Vol. 1 §12 · RFO Part 15"
+  },
+  "2476fe0226cc": {
+    "x": "The PIA protects two things: the Government's source selection information (rankings, evaluations, the estimate) and the offerors' proprietary bid/proposal data. CUI and PII matter under other regimes — the PIA is specifically about competition-sensitive information.",
+    "ref": "Field Guide Vol. 1 §13 · RFO 3.104"
+  },
+  "307ef5afd221": {
+    "x": "Integrity problems compound with handling: quietly fixing it destroys evidence, and waiting until award review lets taint spread. Stop, preserve, and call the CO and JA the same day — a 5-minute call is recoverable; a helpful cover-up rarely is.",
+    "ref": "Field Guide Vol. 1 §13"
+  },
+  "7d14006ec3d6": {
+    "x": "The Rule of Two runs on reasonable expectation at strategy time — two or more capable small businesses likely to offer at fair market prices → set it aside. It isn't a quote-count mandate and it isn't judged by who ultimately shows up; that's why the research documentation matters.",
+    "ref": "Field Guide Vol. 1 §14 · RFO Part 19"
+  },
+  "2b1c0d2dfdfa": {
+    "x": "The NAICS code you assign sets the size standard — who counts as 'small' for this buy. Wrong code, wrong universe of eligible firms, wrong set-aside analysis, and a size-protest headache. Dollar value and SAM categories don't decide it; your code does.",
+    "ref": "Field Guide Vol. 1 §14 · SBA size standards"
+  },
+  "ab579f7dcccb": {
+    "x": "Day-to-day surveillance belongs to the COR; deal-changing belongs to the CO — that split is the whole design. DCMA administers only assigned contracts, and the PM watching the mission isn't contract surveillance. When those lanes blur, constructive changes and UACs follow.",
+    "ref": "Field Guide Vol. 1 §2 & §15"
+  },
+  "0aaa0c1ee73a": {
+    "x": "A cardinal change is work so far beyond the original competition that the Changes clause can't authorize it — effectively a new procurement (and potentially a breach). The fix is competition or a J&A, not a signature: even a bilateral mod can't launder new work into an old contract.",
+    "ref": "Field Guide Vol. 1 §15"
+  }
+}

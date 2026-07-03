@@ -1,0 +1,765 @@
+[
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "IDIQ Ordering & Fair Opportunity"
+  ],
+  "scenario": "On a 4-holder engineering IDIQ, the program shapes a new task order around a proprietary modeling tool that only Holder C owns — the requirement literally names the tool. Asked why, the PM says 'their engineer demoed it and it's exactly what we need.'",
+  "frameworks": [
+   "Fair opportunity",
+   "Requirement shaping"
+  ],
+  "baits": [
+   "Naming the tool feels like precision, not steering",
+   "The demo genuinely was impressive"
+  ],
+  "key_moves": [
+   "A requirement written around one holder's proprietary product is steering wearing a spec costume — restate to performance terms",
+   "If only the tool truly satisfies the need, that's an 'only one capable' exception argument — made honestly in a D&A, not smuggled in",
+   "Fair opportunity means the other three get a real shot at the actual need"
+  ],
+  "follow_ups": [
+   "What belongs in the D&A if the tool is genuinely unique?",
+   "How does this differ from a brand-name justification in open competition?"
+  ],
+  "id": "3f06fb9f3c9d"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "IDIQ Ordering & Fair Opportunity",
+   "Modifications & Scope"
+  ],
+  "scenario": "A $9M task order for logistics software support is at month 30 of 36. The program wants to add data-migration work for a completely different system owned by another PEO — 'the vehicle's ceiling has room and the contractor is willing.'",
+  "frameworks": [
+   "Order scope",
+   "New procurement discipline"
+  ],
+  "baits": [
+   "Ceiling room framed as authority",
+   "Contractor willingness framed as feasibility"
+  ],
+  "key_moves": [
+   "Ceiling is capacity, not scope — test the new work against the IDIQ's scope and this order's",
+   "Another PEO's unrelated system is a new requirement: fair opportunity on this vehicle (if in scope) or a new procurement (if not)",
+   "Out-of-scope orders are protestable at any dollar value as improper sole-source awards"
+  ],
+  "follow_ups": [
+   "Who protests an out-of-scope order and where?",
+   "What analysis documents an in-scope conclusion?"
+  ],
+  "id": "e05dd5a0d1c5"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Options"
+  ],
+  "scenario": "Exercising option year 2 of a lab-services contract, you discover the option CLIN was never priced at award — the schedule says 'TBD, to be negotiated.' The COR has already emailed the contractor that 'the option is being picked up' and performance continues seamlessly in three weeks.",
+  "frameworks": [
+   "Options — pricing at award",
+   "Authority"
+  ],
+  "baits": [
+   "Seamless continuity pressure",
+   "The COR's email creating apparent momentum"
+  ],
+  "key_moves": [
+   "An unpriced 'option' isn't an option — there's no unilateral right to exercise; it's a negotiation (and its competition posture needs Legal now)",
+   "The COR email binds nothing but complicates the negotiation — correct it in writing",
+   "Bridge honestly if needed while the real path (negotiate/compete) is worked"
+  ],
+  "follow_ups": [
+   "What made the option invalid at award — evaluation or pricing?",
+   "What are the Government's lawful continuity tools here?"
+  ],
+  "id": "ffc2bef72b93"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Options",
+   "Contract Finance & Fiscal Law"
+  ],
+  "scenario": "An option must be exercised by 15 September for a performance period starting 1 October. FM says the new fiscal year's funds obviously don't exist yet, and the PM concludes 'so we legally can't exercise until October — the contractor will just have to gap two weeks.'",
+  "frameworks": [
+   "Options mechanics",
+   "Availability of funds"
+  ],
+  "baits": [
+   "The fiscal logic sounds airtight",
+   "A two-week gap normalized as inevitable"
+  ],
+  "key_moves": [
+   "The availability-of-funds mechanism exists for exactly this: exercise subject to availability, obligation upon funds",
+   "Missing the 15 September date kills the unilateral right — that's the real risk in the room",
+   "Coordinate the clause mechanics with FM now; no gap required"
+  ],
+  "follow_ups": [
+   "What does the funds-availability clause actually promise the contractor?",
+   "What if funds never materialize?"
+  ],
+  "id": "25034f52840f"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Interagency"
+  ],
+  "scenario": "An outfit wants to send $3.2M to another agency's 'rapid-tech marketplace' office, which promises award in 30 days through 'pre-competed innovation vehicles.' The one-page flyer doesn't identify the underlying contracts, the fee is 6%, and the PM says 'everyone at the symposium uses them.'",
+  "frameworks": [
+   "Interagency acquisitions",
+   "Best-procurement-approach D&F"
+  ],
+  "baits": [
+   "Speed and social proof",
+   "'Pre-competed' as a magic word"
+  ],
+  "key_moves": [
+   "Identify the actual vehicles and authority before a dollar moves — 'marketplace' is marketing, not analysis",
+   "Over SAT to a non-DoD shop → best-procurement-approach D&F: alternatives, fee scrutiny, servicing agency's track record",
+   "Assisted acquisition needs the signed interagency agreement; our fiscal rules travel with the money"
+  ],
+  "follow_ups": [
+   "What makes the 6% fee acceptable or not?",
+   "Direct vs. assisted here — which is this?"
+  ],
+  "id": "de2a59ebf22f"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Interagency",
+   "Contract Finance & Fiscal Law"
+  ],
+  "scenario": "Last September your office MIPRed $1.5M of O&M to a servicing agency for a training-support task. It's now July; their CO reports $410K will go unspent when the task ends next month, and their program office suggests 'rolling the remainder into a follow-on task so the funds don't go to waste.'",
+  "frameworks": [
+   "Economy Act mechanics",
+   "Fiscal — expired funds"
+  ],
+  "baits": [
+   "'Don't go to waste' — the eternal siren",
+   "The servicing agency's helpfulness"
+  ],
+  "key_moves": [
+   "Unobligated MIPR balances come home — they don't become the servicing agency's seed corn",
+   "The FY25 O&M is expiring; a new follow-on task is a new (current-year) need",
+   "Recover the funds, close the agreement cleanly, fund any follow-on properly"
+  ],
+  "follow_ups": [
+   "What happens to the recovered funds now?",
+   "Who tracks interagency balances — and how often should you?"
+  ],
+  "id": "889ac661f351"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Contract Finance & Fiscal Law"
+  ],
+  "scenario": "A small business on an FFP production contract asks for progress payments, then mid-year requests the rate be raised 'to the max allowed' and asks whether the Government can also pay for a materials stockpile it wants to pre-buy against future orders that aren't on contract yet.",
+  "frameworks": [
+   "Contract financing",
+   "Payment discipline"
+  ],
+  "baits": [
+   "Small-business sympathy",
+   "'Max allowed' framed as an entitlement"
+  ],
+  "key_moves": [
+   "Progress payments follow the clause rates; customary financing is fine — but payments attach to THIS contract's performance",
+   "Financing a stockpile for hoped-for future orders isn't contract financing — it's an advance against nothing",
+   "If cash flow is the real issue, performance-based payments or delivery scheduling may honestly help"
+  ],
+  "follow_ups": [
+   "Order of preference for financing methods?",
+   "What protects the Government in progress payments (title, liquidation)?"
+  ],
+  "id": "9816f21a82dd"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Data Rights"
+  ],
+  "scenario": "A contractor delivers the final technical data package for a missile-handling trailer — every drawing stamped with limited-rights legends, including drawings the Government watched them create under this fully Government-funded contract. 'Standard company template,' their data manager shrugs, offering to 'sort it out during sustainment.'",
+  "frameworks": [
+   "Data rights — markings"
+  ],
+  "baits": [
+   "'Template' minimization",
+   "Deferral to sustainment (when leverage is gone)"
+  ],
+  "key_moves": [
+   "Government-funded development = unlimited rights; the legends are nonconforming markings — challenge/correct now, in writing",
+   "'Sort it later' means competing sustainment against markings you accepted silently",
+   "The assertion list from award is the yardstick — unasserted restrictions carry the contractor's burden"
+  ],
+  "follow_ups": [
+   "The marking-challenge sequence?",
+   "What if some drawings genuinely mixed in private-expense heritage?"
+  ],
+  "id": "7120cb3d8b78"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Data Rights",
+   "R&D Contracting"
+  ],
+  "scenario": "A small firm's SBIR Phase II produced a promising power-management module. Years later, your program wants the design data to second-source production. The firm asserts SBIR data rights; your engineer argues 'the protection must be expired by now,' and the PM suggests just reverse-engineering it from delivered units.",
+  "frameworks": [
+   "SBIR data rights",
+   "Rights timeline"
+  ],
+  "baits": [
+   "'Must be expired' — assumed, not verified",
+   "Reverse-engineering framed as a clean workaround"
+  ],
+  "key_moves": [
+   "SBIR protection runs long — verify the actual window from the contract and delivery dates before anyone acts",
+   "Reverse-engineering has its own legal limits and practical costs; it's a Legal conversation, not a shop decision",
+   "The durable fix is negotiating rights or a license priced against the second-source business case"
+  ],
+  "follow_ups": [
+   "What do SBIR rights protect during the period?",
+   "What happens to the rights when the window closes?"
+  ],
+  "id": "c4521547f681"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Modifications & Scope"
+  ],
+  "scenario": "A firm-fixed-price contract delivers training courseware in English. Partway through, the customer asks to add Spanish and Portuguese versions — roughly 40% more content-hours — and the contractor cheerfully offers a 'no-cost mod' in exchange for a 10-month period extension and relief from two quality metrics.",
+  "frameworks": [
+   "Scope analysis",
+   "Consideration"
+  ],
+  "baits": [
+   "'No-cost' hides the real price (time + quality relief)",
+   "Contractor cheerfulness"
+  ],
+  "key_moves": [
+   "Nothing about this is no-cost — schedule and metric relief ARE consideration; price the exchange honestly",
+   "New-language versions at +40% effort: run the four-corner scope test; this may be out-of-scope new work",
+   "If out of scope: competition or a justified exception — a mod can't carry it"
+  ],
+  "follow_ups": [
+   "What counts as consideration in a mod?",
+   "How does the anticipation test apply to added languages?"
+  ],
+  "id": "a3a7624f2b7f"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Modifications & Scope",
+   "REAs & Claims"
+  ],
+  "scenario": "During a base network upgrade, the Government's fiber-conduit maps prove wrong in six buildings — the contractor reroutes on the fly at the COR's verbal 'keep moving, we'll square up.' Four months later a consolidated $340K REA arrives. The PM objects: 'they never got a mod authorizing any of that.'",
+  "frameworks": [
+   "Constructive change",
+   "REA evaluation"
+  ],
+  "baits": [
+   "'No mod = no entitlement' — exactly backwards here",
+   "The consolidated lump obscures per-building facts"
+  ],
+  "key_moves": [
+   "Government-caused changes (bad maps + directed continuation) are constructive changes — the missing mod is the Government's paperwork failure, not the contractor's entitlement bar",
+   "Evaluate entitlement building-by-building, then quantum with technical support",
+   "Settle bilaterally with a release; and fix the direction channel"
+  ],
+  "follow_ups": [
+   "REA vs. claim consequences if this stalls?",
+   "Who had authority to say 'keep moving' — and what does that change?"
+  ],
+  "id": "457016c02cef"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Government Property"
+  ],
+  "scenario": "Closing out a five-year R&D contract, the property report lists 212 Government-furnished items; the contractor can locate 168. Of the missing 44, they say 30 were 'consumed in testing years ago' (no records), 9 are 'probably at the subcontractor,' and 5 are simply unknown. They propose closing out now and 'reconciling later.'",
+  "frameworks": [
+   "Property closeout",
+   "Loss accountability"
+  ],
+  "baits": [
+   "'Consumed in testing' as an unverifiable catch-all",
+   "Closeout momentum"
+  ],
+  "key_moves": [
+   "No closeout with an open property reconciliation — the leverage ends at closeout",
+   "Loss/damage/destruction process per the clause: investigation, liability determination under the risk allocation, records",
+   "Subcontractor-held property is still the prime's accountability"
+  ],
+  "follow_ups": [
+   "Who adjudicates property loss — and on what standard?",
+   "What does the contractor's property-management-system status change?"
+  ],
+  "id": "443b2d02e1b1"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Government Property",
+   "Contract Types"
+  ],
+  "scenario": "To help a struggling FFP contractor meet schedule, the PM wants to lend them a Government CNC machine 'for a few months, informally — putting it on contract takes too long and they only need it for one part run.'",
+  "frameworks": [
+   "GFP discipline",
+   "FFP risk allocation"
+  ],
+  "baits": [
+   "Informality justified by brevity",
+   "Helping-the-schedule urgency"
+  ],
+  "key_moves": [
+   "No informal property loans — on contract with the property clause set or not at all",
+   "Furnishing property to an FFP contractor shifts risk and may found an REA if it's late or faulty — price/paper the arrangement deliberately",
+   "The four-part GFP justification still applies, brief or not"
+  ],
+  "follow_ups": [
+   "What happens if the informal machine breaks mid-run?",
+   "How does GFP alter FFP's risk story?"
+  ],
+  "id": "a322f19f5597"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Undefinitized Contract Actions"
+  ],
+  "scenario": "A UCA for aircraft battle-damage repair was issued at a $30M NTE. The qualifying proposal arrives at $41M with a letter explaining 'actual damage exceeded initial survey.' The contractor requests the NTE be raised to match 'so definitization can proceed on real numbers.'",
+  "frameworks": [
+   "UCA limits",
+   "Scope of the UCA"
+  ],
+  "baits": [
+   "'Real numbers' framing makes the raise sound like accuracy",
+   "Definitization urgency used as leverage"
+  ],
+  "key_moves": [
+   "The NTE is the Government's liability ceiling — it doesn't float up to meet proposals",
+   "Is the extra damage in-scope growth (negotiate within/adjust deliberately with approvals) or new work (new action, new approvals)?",
+   "Definitize what was ordered; obligations stay inside the caps meanwhile"
+  ],
+  "follow_ups": [
+   "What approvals would an NTE increase require?",
+   "How do the 50/75% caps apply during this fight?"
+  ],
+  "id": "9606983a87e6"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Undefinitized Contract Actions",
+   "Certified Cost or Pricing Data"
+  ],
+  "scenario": "Definitizing a 9-month-old UCA, the contractor proposes forward rates for the remaining work but resists providing actual incurred costs for the months already performed — 'the certified proposal covers everything going forward, and actuals would just confuse the comparison.'",
+  "frameworks": [
+   "UCA definitization pricing"
+  ],
+  "baits": [
+   "'Certified forward proposal' sounds complete",
+   "'Confuse the comparison' — the confusion is the point"
+  ],
+  "key_moves": [
+   "Work performed has actuals — they're exactly what definitization pricing must use for the performed portion",
+   "Certified data spans the action; incurred costs are cost or pricing data",
+   "Fee reflects the burned-down risk in weighted guidelines — actuals are how you see it"
+  ],
+  "follow_ups": [
+   "Why does fee typically drop at definitization?",
+   "What audit support fits here?"
+  ],
+  "id": "ff18caab6ec5"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Clearance"
+  ],
+  "scenario": "Your negotiation team reaches a handshake deal Friday on a $60M sole-source action — inside the objective. The contractor's CEO emails Monday asking to 'paper it this week before our quarter closes.' Clearance is scheduled in twelve days. The PM asks if you can sign now and 'ratify through clearance after.'",
+  "frameworks": [
+   "Contract clearance discipline"
+  ],
+  "baits": [
+   "Deal inside the objective feels pre-blessed",
+   "CEO/quarter pressure"
+  ],
+  "key_moves": [
+   "No award before contract clearance — the review is the approval, not a receipt",
+   "'Ratify after' inverts the design: independent eyes before commitment",
+   "Ask the clearance shop to accelerate on merits; that's the lawful fast path"
+  ],
+  "follow_ups": [
+   "What does the clearance authority review in the PNM?",
+   "What if clearance directs a position change after your handshake?"
+  ],
+  "id": "bcd3199183a2"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Protests"
+  ],
+  "scenario": "Day 40 of a GAO protest on your IT award, agency counsel concludes the evaluation record has a genuine defect — one factor was scored against an unstated standard. GAO's decision is 60 days away; the PM wants to 'ride it out since we might still win.'",
+  "frameworks": [
+   "Corrective action strategy"
+  ],
+  "baits": [
+   "'Might still win' gambling with a known defect",
+   "Sunk-cost momentum"
+  ],
+  "key_moves": [
+   "Voluntary corrective action on a real defect beats a sustain: faster, cheaper, and you control the remedy scope",
+   "Riding out a known defect risks paying protester's costs on top of losing",
+   "Define the correction precisely (re-evaluate the factor, revised SSDD) — not a panicked full redo"
+  ],
+  "follow_ups": [
+   "What corrective actions are available?",
+   "How does GAO treat corrective action taken mid-protest?"
+  ],
+  "id": "17c3ac278de8"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Protests",
+   "IDIQ Ordering & Fair Opportunity"
+  ],
+  "scenario": "A holder on your MA-IDIQ emails a formal-looking 'protest' of a $4M task order award (DoD), citing unfair evaluation. It's below the GAO order-protest threshold and doesn't allege scope growth. The contractor CCs your SCO and threatens 'escalation to GAO and the Court' within five days.",
+  "frameworks": [
+   "Order protest jurisdiction",
+   "Ombudsman"
+  ],
+  "baits": [
+   "Formal formatting and CC-intimidation",
+   "The five-day ultimatum"
+  ],
+  "key_moves": [
+   "Under $35M with no scope allegation: GAO lacks jurisdiction — the lane is the task-order ombudsman",
+   "Treat it seriously anyway: review the order file, respond through the ombudsman process",
+   "No stay attaches; performance continues while the complaint is worked"
+  ],
+  "follow_ups": [
+   "What DOES get an order to GAO?",
+   "What does the ombudsman actually do?"
+  ],
+  "id": "20e32891eb7b"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "REAs & Claims"
+  ],
+  "scenario": "A contractor's $85K REA for Government-caused test-range delays has sat in your predecessor's inbox for seven months unanswered. The contractor's new letter converts it to a certified claim 'for $85K plus interest from the original submission' and demands a final decision in 60 days.",
+  "frameworks": [
+   "REA-to-claim conversion",
+   "CDA mechanics"
+  ],
+  "baits": [
+   "Interest 'from the original submission' — check the actual trigger",
+   "Seven months of silence feels indefensible (it is, but it's not entitlement)"
+  ],
+  "key_moves": [
+   "Interest runs from receipt of the certified CLAIM, not the earlier REA — correct the math while owning the delay",
+   "Under $100K certification isn't required, but as submitted the decision clock is real: decide or settle within the window",
+   "Evaluate entitlement on the delay facts now — the merits didn't age out"
+  ],
+  "follow_ups": [
+   "Deemed denial — when and what follows?",
+   "How does the 6-year accrual limit interact with the seven months?"
+  ],
+  "id": "e639009b6943"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "REAs & Claims",
+   "Terminations"
+  ],
+  "scenario": "After a partial T4C removed one of three sites from a custodial contract, the contractor's settlement proposal includes: costs at the terminated site (fine), 'unabsorbed overhead' spread across the surviving sites, anticipated profit on the cancelled option years, and $12K in settlement-proposal preparation costs.",
+  "frameworks": [
+   "T4C settlement principles"
+  ],
+  "baits": [
+   "The plausible-sounding mix of allowable and not",
+   "Option-year profit smuggled into a convenience settlement"
+  ],
+  "key_moves": [
+   "Costs incurred + reasonable profit on work PERFORMED + settlement expenses = the frame; prep costs are generally allowable here",
+   "Anticipated profit on unperformed work (cancelled options especially) is out",
+   "Unabsorbed overhead is a real doctrine with strict proof — DCAA support, Legal on the standard"
+  ],
+  "follow_ups": [
+   "Why are settlement prep costs treated differently than claim prep costs?",
+   "What proof supports unabsorbed overhead?"
+  ],
+  "id": "f40d9fc54cb7"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Terminations"
+  ],
+  "scenario": "A key-supplier bankruptcy leaves your avionics contractor unable to deliver for at least nine months. They propose novating 'the whole contract' to a competitor who bought the supplier's assets — or, alternatively, ask the Government to T4C them 'so nobody's record gets hurt.' Units are needed in six months.",
+  "frameworks": [
+   "Termination decision",
+   "Excusability",
+   "Novation lane"
+  ],
+  "baits": [
+   "T4C offered as a courtesy to their CPARS",
+   "Novation floated casually"
+  ],
+  "key_moves": [
+   "Bankruptcy upstream may be excusable delay — analyze before any termination posture",
+   "T4C isn't a record-laundering service; the decision follows the Government's interest, honestly recorded",
+   "Novation runs its own legal process (successor-in-interest, through Legal); meanwhile mission needs may drive reprocurement of the six-month quantity"
+  ],
+  "follow_ups": [
+   "Excusable vs. not for subcontractor failure?",
+   "What does a T4D require if delay proves non-excusable?"
+  ],
+  "id": "4f318705f708"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Terminations",
+   "Responsibility"
+  ],
+  "scenario": "Two months into a $2M roofing contract, the contractor's crews stop showing up; calls go unanswered for three weeks; the bonding company writes that the firm 'has ceased operations.' The PM asks whether you still have to send a cure notice to an empty office before defaulting.",
+  "frameworks": [
+   "T4D — anticipatory repudiation",
+   "Surety"
+  ],
+  "baits": [
+   "Process formalism ('must cure-notice a ghost?')",
+   "Ignoring the surety's role"
+  ],
+  "key_moves": [
+   "Ceased operations = anticipatory failure; document the abandonment record (attempts, surety letter) with Legal — the notice posture follows the facts",
+   "The performance bond is now the story: demand on the surety to complete or fund completion",
+   "Move fast; weather and schedule are running against an unmanned roof"
+  ],
+  "follow_ups": [
+   "What does the surety owe under the performance bond?",
+   "How do excess reprocurement costs work with a surety in play?"
+  ],
+  "id": "511b3e71ff48"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "R&D Contracting"
+  ],
+  "scenario": "An open BAA topic on autonomous logistics draws a white paper from a nontraditional startup — genuinely novel approach, weak cost volume, and a note that they 'won't sign anything giving the Government our IP.' The lab wants them badly and asks whether an OT fixes everything.",
+  "frameworks": [
+   "Instrument fit",
+   "OT negotiation",
+   "Data rights posture"
+  ],
+  "baits": [
+   "'OT fixes everything' — flexibility ≠ magic",
+   "Enthusiasm outrunning the rights conversation"
+  ],
+  "key_moves": [
+   "An OT can tailor IP terms — but the Government still needs SOMETHING durable: define minimum-essential rights against the transition plan",
+   "Weak cost volume gets fixed in negotiation regardless of instrument",
+   "Write the follow-on production pathway into the prototype OT now if you ever want it"
+  ],
+  "follow_ups": [
+   "What makes a performer 'nontraditional'?",
+   "What rights floor would you hold for a transition-bound prototype?"
+  ],
+  "id": "a121607dcbba"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "R&D Contracting",
+   "Small Business Programs"
+  ],
+  "scenario": "A program office wants to award a Phase III SBIR production contract to a firm — but the firm was acquired last year by a large defense prime, and a competitor argues Phase III 'is a small business program, so they're ineligible now.'",
+  "frameworks": [
+   "SBIR Phase III mechanics"
+  ],
+  "baits": [
+   "'Small business program' intuition misapplied to Phase III",
+   "Competitor advocacy shaping the analysis"
+  ],
+  "key_moves": [
+   "Phase III has no size requirement and no dollar cap — eligibility follows derivation from the competed SBIR work, which survives acquisition",
+   "Verify the derivation chain and document it; the sole-source basis is the statute",
+   "SBIR data rights also survived the acquisition — relevant to everyone's expectations"
+  ],
+  "follow_ups": [
+   "What documents the derivation?",
+   "What happens to SBIR rights post-acquisition?"
+  ],
+  "id": "1499cade705d"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Construction & Services"
+  ],
+  "scenario": "A design-bid-build project for a maintenance hangar comes in: IGCE $8.4M. The draft solicitation announces 'estimated value $8.4M' verbatim, requires only a payment bond 'to save the contractor money,' and sets liquidated damages at $25K/day because 'that will motivate them.'",
+  "frameworks": [
+   "Construction solicitation mechanics"
+  ],
+  "baits": [
+   "Transparency instinct (publishing the estimate)",
+   "'Motivational' LDs"
+  ],
+  "key_moves": [
+   "Disclose the magnitude RANGE, never the estimate — protects the Government's negotiating position",
+   "Over the bonding threshold both performance AND payment bonds are required",
+   "LDs must be a genuine pre-estimate of daily harm — punitive rates are unenforceable"
+  ],
+  "follow_ups": [
+   "How is an LD rate derived defensibly?",
+   "Who is the payment bond actually for?"
+  ],
+  "id": "f9eb9f7bedb1"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Construction & Services"
+  ],
+  "scenario": "Six months into a base operations support contract, the contractor's site manager quits. Rather than wait for a replacement, the squadron 'temporarily' assigns tasking through the Government flight chief — daily standups, direct assignments, leave approvals for contractor staff. Everyone agrees it's working great.",
+  "frameworks": [
+   "Personal services drift"
+  ],
+  "baits": [
+   "Temporary-and-working normalizes the arrangement",
+   "Leave approvals buried in the list (the loudest red flag)"
+  ],
+  "key_moves": [
+   "Government supervision of contractor employees — down to leave approval — is personal services without authority; stop it now",
+   "The contract requires the contractor to manage its people: demand the replacement manager under the key-personnel terms",
+   "Document the interim fix that routes direction through the contractor's structure"
+  ],
+  "follow_ups": [
+   "What's the legal test for personal services?",
+   "What does the key-personnel clause let you demand?"
+  ],
+  "id": "4c134150cccb"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Contract Finance & Fiscal Law",
+   "Authority & Ratification"
+  ],
+  "scenario": "An audit flags that a unit paid a contractor twice for the same invoice eight months ago — $38K. The contractor never mentioned it. The PM suggests 'just deducting it from next month's invoice quietly' to avoid the paperwork of a formal demand.",
+  "frameworks": [
+   "Overpayment recovery",
+   "Debt process"
+  ],
+  "baits": [
+   "Quiet netting feels efficient",
+   "Eight months of contractor silence goes unremarked"
+  ],
+  "key_moves": [
+   "Overpayments are Government debts with a process: written demand, interest rules, FM coordination — not informal netting",
+   "The contractor's duty to report duplicate payments matters; note it in the record",
+   "Fix the payment-review breakdown that let it happen"
+  ],
+  "follow_ups": [
+   "When can you offset against invoices — and how formally?",
+   "What does the contractor's silence do to the relationship record?"
+  ],
+  "id": "bf80a26beb90"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "style": "spot",
+  "topics": [
+   "Source Selection",
+   "Certified Cost or Pricing Data"
+  ],
+  "scenario": "On a competitive cost-type source selection, one offeror's proposed labor rates run 30% below the DCMA-recognized rates for their own facility. Their technical volume is strong. An evaluator suggests scoring them down on technical 'to reflect the pricing games.'",
+  "frameworks": [
+   "Cost realism",
+   "Evaluation lane discipline"
+  ],
+  "baits": [
+   "Punishing price problems in the technical score",
+   "'Games' assumed rather than analyzed"
+  ],
+  "key_moves": [
+   "The lane for low cost-type pricing is cost realism: adjust to a most-probable-cost for evaluation — the proposal competes at what it will really cost",
+   "Technical scores reflect technical merit; cross-lane punishment is protest fuel",
+   "Document the realism adjustments and their basis (DCMA rates)"
+  ],
+  "follow_ups": [
+   "Probable cost vs. proposed cost in the SSDD?",
+   "When does realism apply on fixed-price competitions?"
+  ],
+  "id": "ce2e0c0afc63"
+ }
+]

@@ -1,0 +1,242 @@
+[
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "What Air Force Contracting Is",
+  "q": "Who is the only person who can legally obligate the Government on a contract?",
+  "a": "The contracting officer (CO), through a warrant.",
+  "id": "5f9a44f71c12"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "What Air Force Contracting Is",
+  "q": "Your real value as a 1102 isn't running the package — it's what?",
+  "a": "Business judgment — sound, defensible decisions.",
+  "id": "11c6cb9600c6"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "The Players: Roles & Who Does What",
+  "q": "Can a COR change a contract's price, scope, or terms?",
+  "a": "No — only the CO can.",
+  "id": "3989cd17e48b"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "The Players: Roles & Who Does What",
+  "q": "Who certifies that funds are available?",
+  "a": "Financial Management (FM / Comptroller).",
+  "id": "6a635bacb345"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Authority, Warrants & Unauthorized Commitments",
+  "q": "What document makes someone a CO?",
+  "a": "A written warrant (SF 1402).",
+  "id": "51c42fca30c6"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Authority, Warrants & Unauthorized Commitments",
+  "q": "Someone without authority tells a contractor to start work — what is that, and is the Government bound?",
+  "a": "An unauthorized commitment (UAC); not bound unless it's ratified.",
+  "id": "1c11fa6bdc35"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "The Rulebook: The RFO, R-DFARS & DAF Policy",
+  "q": "What's the governing rulebook now, and what's being retired?",
+  "a": "The RFO and R-DFARS; the legacy FAR / DFARS / DAFFARS.",
+  "id": "992359e18bd1"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "The Rulebook: The RFO, R-DFARS & DAF Policy",
+  "q": "Where do you confirm a current threshold or rule?",
+  "a": "acquisition.gov/far-overhaul — never quote from memory.",
+  "id": "5442f5a6dd95"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Colors of Money & Fiscal Law Basics",
+  "q": "Name the three-part fiscal test.",
+  "a": "Time · Purpose · Amount (TPA).",
+  "id": "186e8688381d"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Colors of Money & Fiscal Law Basics",
+  "q": "Can you use this year's money for next year's need?",
+  "a": "Generally no — the bona fide need rule.",
+  "id": "f6c110876fa6"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "The Acquisition Lifecycle",
+  "q": "What runs underneath every phase of the lifecycle?",
+  "a": "The contract file / documentation (and oversight).",
+  "id": "fcd45c41647b"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "The Acquisition Lifecycle",
+  "q": "If it isn't in the file…",
+  "a": "…it didn't happen. The file tells the story of every decision.",
+  "id": "c0b969faf7f4"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Requirements & Market Research",
+  "q": "What does market research tell you?",
+  "a": "Who can perform, whether it's commercial, whether small businesses can compete, and a realistic price.",
+  "id": "efa6a198427f"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Requirements & Market Research",
+  "q": "What's the Government's own price estimate called?",
+  "a": "The IGCE (Independent Government Cost Estimate).",
+  "id": "95d9034caf74"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Competition & CICA",
+  "q": "What's the default for buys over the SAT ($350K)?",
+  "a": "Full and open competition.",
+  "id": "f257cb727f30"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Competition & CICA",
+  "q": "If you can't compete it, what do you need?",
+  "a": "A justification (J&A) under a recognized exception.",
+  "id": "184550fef4f3"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Buying Methods by Dollar Value",
+  "q": "Micro-purchase threshold?",
+  "a": "$15,000.",
+  "id": "7bc2a694296a"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Buying Methods by Dollar Value",
+  "q": "Simplified Acquisition Threshold (SAT)?",
+  "a": "$350,000.",
+  "id": "8dbac49e05eb"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Contract Types & Risk",
+  "q": "On a firm-fixed-price contract, who bears the cost risk?",
+  "a": "The contractor.",
+  "id": "dcfba529b706"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Contract Types & Risk",
+  "q": "When is a cost-type contract appropriate?",
+  "a": "When the work is too uncertain to price firmly (e.g., R&D).",
+  "id": "ab16eded03ad"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Pricing: Getting to Fair & Reasonable",
+  "q": "What's the goal of price analysis, and is it always required?",
+  "a": "A fair and reasonable price — and yes, always.",
+  "id": "92f5734bf4ef"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Pricing: Getting to Fair & Reasonable",
+  "q": "Mod adds $1M and deletes $1M — what value counts for the certified-data threshold?",
+  "a": "$2M (absolute value of each, not the net).",
+  "id": "cba512084552"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Source Selection Basics",
+  "q": "Section L vs. Section M?",
+  "a": "L = how to submit; M = how you'll be evaluated.",
+  "id": "cef907ea9e52"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Source Selection Basics",
+  "q": "What is \"best value\"?",
+  "a": "The best mix of price and non-price factors for the Government.",
+  "id": "bd3b5d6789c7"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Ethics & Procurement Integrity",
+  "q": "What are you protecting during a source selection?",
+  "a": "Source-selection information and contractor proposal data (the PIA).",
+  "id": "2476fe0226cc"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Ethics & Procurement Integrity",
+  "q": "You spot an integrity problem — first move?",
+  "a": "Stop, and call your CO and JA (legal) immediately.",
+  "id": "307ef5afd221"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Small Business Programs",
+  "q": "State the Rule of Two.",
+  "a": "Set it aside if you expect two or more small businesses to compete at fair market prices.",
+  "id": "7d14006ec3d6"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Small Business Programs",
+  "q": "What drives the small-business size standard?",
+  "a": "The NAICS code you assign.",
+  "id": "2b1c0d2dfdfa"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Contract Administration: Mods, Options, Claims & Terminations",
+  "q": "Who watches contractor performance day-to-day?",
+  "a": "The COR — but only the CO changes the deal.",
+  "id": "ab579f7dcccb"
+ },
+ {
+  "type": "recall",
+  "level": "basic",
+  "topic": "Contract Administration: Mods, Options, Claims & Terminations",
+  "q": "A change so big it goes beyond the original contract's scope is a…?",
+  "a": "Cardinal change — it needs new competition or a J&A, not a modification.",
+  "id": "0aaa0c1ee73a"
+ }
+]
