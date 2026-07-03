@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=4';
+  var DECK_URL = '/assets/study-deck.json?v=5';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -482,7 +482,8 @@
     steps.push('<li><b>Close the loop.</b> ' + (opener
       ? 'End in your own voice — one concrete thing you would change on Monday. Perspective questions are scored on judgment and specifics, not recitation.'
       : 'Say where you\'d verify before acting — the live RFO/R-DFARS text, your Legal office — and what goes in the file. Never quote a threshold from memory.') + '</li>');
-    return '<div class="st-walk"><div class="st-walk-head">How you should have answered — step by step</div><ol>' + steps.join('') + '</ol></div>';
+    return '<div class="st-walk"><div class="st-walk-head">How you should have answered — step by step</div><ol>' + steps.join('') + '</ol>' +
+      (co.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(co.cite) + '</b></div>' : '') + '</div>';
   }
   function viewBoard() {
     var pool = deck.scenarios.slice();
@@ -525,7 +526,8 @@
         var fq = fu.q || fu; // deck v4 uses {q,h,d}; tolerate legacy plain strings
         body += '<div class="st-followup"><span>Panel follow-up ' + (k + 1) + ' of ' + fus.length + '</span><div class="st-q">' + esc(fq) + '</div></div>';
         if (fu.d && fuRevealed) {
-          body += '<div class="st-fu-debrief"><div class="st-fu-debrief-head">Debrief</div><p>' + esc(fu.d) + '</p></div>' +
+          body += '<div class="st-fu-debrief"><div class="st-fu-debrief-head">Debrief</div><p>' + esc(fu.d) + '</p>' +
+            (sc.coach && sc.coach.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(sc.coach.cite) + '</b></div>' : '') + '</div>' +
             '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (k + 1 < fus.length ? 'Next follow-up <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
         } else {
           body += '<p class="st-outloud">Answer <b>out loud</b>' + (fu.d ? ', then reveal the debrief.' : ', then continue.') + '</p>' +

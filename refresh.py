@@ -338,6 +338,127 @@ def threshold_watch(existing_rfo, final_rfo, modified):
     return {"dollar_drift": dollar_drift, "broken_widget_cites": sorted(broken)}
 
 
+def _deck_texts(deck):
+    """Yield (kind, id, topic, text) for every human-facing string in the study deck —
+    questions, answers, distractors, debriefs, refs, scenario prose, asks, scripts,
+    facts, baits, key moves, follow-up hints/debriefs, and coach lines."""
+    for pool in ("recall_basic", "recall_advanced", "thresholds"):
+        for c in deck.get(pool, []):
+            topic = c.get("topic", pool)
+            for f in ("q", "a", "x", "ref"):
+                if c.get(f):
+                    yield pool, c["id"], topic, c[f]
+            for opt in c.get("d") or []:
+                yield pool, c["id"], topic, opt
+    for s in deck.get("scenarios", []):
+        topic = "/".join(s.get("topics") or [])
+        for f in ("scenario", "ask", "script", "board_answer"):
+            if s.get(f):
+                yield "scenario", s["id"], topic, s[f]
+        for fact in s.get("facts") or []:
+            yield "scenario", s["id"], topic, fact.get("fact", "") + " " + fact.get("why", "")
+        for fw in s.get("frameworks") or []:
+            yield "scenario", s["id"], topic, (fw if isinstance(fw, str) else fw.get("framework", "") + " " + fw.get("why", ""))
+        for b in s.get("baits") or []:
+            yield "scenario", s["id"], topic, b
+        for k in s.get("key_moves") or []:
+            yield "scenario", s["id"], topic, k
+        for fu in s.get("follow_ups") or []:
+            if isinstance(fu, dict):
+                yield "scenario", s["id"], topic, " ".join(filter(None, (fu.get("q"), fu.get("h"), fu.get("d"))))
+            else:
+                yield "scenario", s["id"], topic, fu
+        co = s.get("coach") or {}
+        yield "scenario", s["id"], topic, " ".join(filter(None, (co.get("qtype"), co.get("rule"), co.get("cite"))))
+
+
+DECK_PATH = BASE_DIR / "assets" / "study-deck.json"
+DECK_CITE_RE = re.compile(r"\b(RFO|R-DFARS)\s+(?:Part\s+(\d+)|(\d+(?:\.[\d]+)*(?:-\d+)?))")
+
+
+def study_deck_watch(final_rfo, all_docs, modified):
+    """Guards the /study question deck (assets/study-deck.json) against corpus drift.
+    Runs on every refresh, alongside threshold_watch:
+      (a) BROKEN CITES — every 'RFO x.y' / 'RFO Part N' / 'R-DFARS x.y' the deck quotes
+          must still resolve to a section in the refreshed corpus (renumbering breaks
+          study answers silently);
+      (b) CONTENT REVIEW — any deck item whose text cites a section this run MODIFIED
+          gets flagged: the rule the question teaches may have changed. Reviewing the
+          flagged questions is a supervised job — tell your assistant AcqVault's study
+          deck needs a review pass and it will re-verify each one against the new text.
+    The deck itself is never auto-edited; this is an alarm, not a mutation."""
+    if not DECK_PATH.exists():
+        return {"skipped": "no study deck"}
+    deck = json.loads(DECK_PATH.read_text())
+
+    # resolution sets from the refreshed corpus
+    rfo_sections = {d["title"].split()[0] for d in final_rfo}                       # "6.103", "15.404-1", …
+    rfo_subparts = {d["title"].split()[1] for d in final_rfo if d["title"].startswith("Subpart ")}
+    rfo_parts = {str(d["part"]) for d in final_rfo}
+    rd_docs = [d for d in all_docs if d.get("source") == "r-dfars"]
+    rd_tokens = set()
+    for d in rd_docs:
+        for w in d["title"].replace("—", " ").split():
+            if w and w[0].isdigit():
+                rd_tokens.add(w.rstrip(".,"))
+
+    def rfo_resolves(sec):
+        if sec in rfo_sections or sec in rfo_subparts:
+            return True
+        base = sec.split("-")[0]                       # 6.103-1 → 6.103
+        if base in rfo_sections or base in rfo_subparts:
+            return True
+        return sec.split(".")[0] in rfo_parts          # last resort: the part still exists
+
+    def rd_resolves(sec):
+        if any(t == sec or t.startswith(sec + ".") for t in rd_tokens):
+            return True
+        return any(t.startswith(sec) for t in rd_tokens)  # "217.74" ← "217.7401" etc.
+
+    modified_secs = {d["title"].split()[0] for d in modified}
+    modified_parts = {str(d["part"]) for d in modified}
+
+    broken, review = {}, {}
+    for kind, item_id, topic, text in _deck_texts(deck):
+        for m in DECK_CITE_RE.finditer(text or ""):
+            book, part_no, sec = m.group(1), m.group(2), m.group(3)
+            label = "{} {}".format(book, "Part " + part_no if part_no else sec)
+            # (a) does the cite still resolve?
+            ok = True
+            if book == "RFO":
+                ok = (part_no in rfo_parts) if part_no else rfo_resolves(sec)
+            else:
+                ok = rd_resolves(part_no or sec)
+            if not ok:
+                broken.setdefault(label, set()).add("{}:{}".format(kind, item_id))
+            # (b) does the cite touch a section this run modified?
+            if book == "RFO" and modified:
+                hit = (part_no and part_no in modified_parts) or \
+                      (sec and (sec in modified_secs or sec.split("-")[0] in modified_secs))
+                if hit:
+                    review.setdefault("{}:{}".format(kind, item_id), set()).add(label)
+
+    broken_out = {k: sorted(v) for k, v in sorted(broken.items())}
+    review_out = {k: sorted(v) for k, v in sorted(review.items())}
+    if broken_out or review_out:
+        print("\n⚠ STUDY DECK WATCH (assets/study-deck.json)")
+        if broken_out:
+            print("  Deck citations that no longer resolve in the corpus (fix the questions):")
+            for c, items in list(broken_out.items())[:12]:
+                print("    · {}  ({} item{}: {})".format(c, len(items), "s" if len(items) != 1 else "", ", ".join(items[:4])))
+        if review_out:
+            print("  Deck items citing sections MODIFIED this run — supervised review needed:")
+            for item, cites in list(review_out.items())[:15]:
+                print("    · {}  cites {}".format(item, ", ".join(cites)))
+            if len(review_out) > 15:
+                print("    · … and {} more (full list in refresh-report.json)".format(len(review_out) - 15))
+        print("  → Reviewing flagged questions is a supervised job — tell your assistant the")
+        print("    study deck needs a review pass; it will re-verify each against the new text.")
+    else:
+        print("\n✓ STUDY DECK WATCH: all deck citations resolve; no flagged questions this run.")
+    return {"broken_deck_cites": broken_out, "review_items": review_out}
+
+
 # ── documents.json merge + ship ───────────────────────────────────────────────
 
 def load_docs():
@@ -474,10 +595,12 @@ def main():
         brief(removed)
 
     watch = threshold_watch(existing_rfo, final_rfo, modified)
+    deck_watch = study_deck_watch(final_rfo, all_docs, modified)
 
     report = {
         "run_at": now_iso(),
         "threshold_watch": watch,
+        "study_deck_watch": deck_watch,
         "rfo": {
             "unchanged": unchanged,
             "modified": [{"id": d["id"], "part": d["part"], "title": d["title"]} for d in modified],
