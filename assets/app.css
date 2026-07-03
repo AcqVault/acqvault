@@ -423,7 +423,13 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 
 /* ── RESPONSIVE ───────────────────────────────────────────────── */
 @media (max-width: 920px) {
-  .tk-grid { grid-template-columns: 1fr; }
+  /* minmax(0,1fr): a plain 1fr track can't shrink below its content's min width —
+     the CASPER table's nowrap cells (~640px min-content) were forcing the whole
+     single-column Toolkit off-viewport, and html{overflow-x:clip} silently
+     amputated the threshold value rail on phones. Let the track shrink; the
+     table then scrolls inside its own .cra-wrap as designed. */
+  .tk-grid { grid-template-columns: minmax(0, 1fr); }
+  .tk-col, .tk-card { min-width: 0; }
   .dash-grid { grid-template-columns: repeat(2, 1fr); }
   .dash-cols { grid-template-columns: 1fr; }
 }
@@ -431,6 +437,10 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   .dash-grid { grid-template-columns: 1fr 1fr; }
   .thr-row-val { font-size:var(--fs-17); }
   .dash-stat-num { font-size: 25px; }
+  /* CASPER matrix: let cells wrap and tighten the scale so all five columns
+     fit a phone without scrolling inside the card */
+  .cra-table th, .cra-table td { white-space: normal; padding: 8px 4px; font-size: 12px; }
+  .cra-table th { font-size: 9.5px; letter-spacing: .02em; }
 }
 
 
