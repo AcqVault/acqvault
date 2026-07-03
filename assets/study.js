@@ -103,21 +103,23 @@
   var app;
   function render(html) { app.innerHTML = html; window.scrollTo({ top: app.offsetTop - 80, behavior: 'instant' }); }
 
+  var VAULT_GLYPH = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="2"><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="10"/></g><g stroke="#cdb277" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="27" x2="50" y2="38"/><line x1="50" y1="73" x2="50" y2="62"/><line x1="27" y1="50" x2="38" y2="50"/><line x1="73" y1="50" x2="62" y2="50"/></g><circle cx="50" cy="50" r="3.6" fill="#cdb277"/></svg>';
   function viewTrack() {
     var last = S.track;
-    function cardHtml(id, kicker, name, blurb, active) {
+    function cardHtml(id, kicker, name, blurb, active, vol) {
       return '<button class="st-trackcard' + (active ? ' st-trackcard-active' : '') + '" id="' + id + '">' +
         (active ? '<span class="st-tc-continue">Continue — you were here</span>' : '') +
-        '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></button>';
+        '<span class="st-tcover" aria-hidden="true">' + VAULT_GLYPH + '<span class="st-tcover-vol">' + vol + '</span></span>' +
+        '<span class="st-tc-body"><span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
     render(
       '<h2 class="st-h2" style="margin-top:0">Pick your track</h2>' +
       '<p class="st-sub">Your progress is saved per card either way — switch tracks any time without losing it.</p>' +
       '<div class="st-tracks">' +
       cardHtml('t-basic', 'New to contracting', 'Basic — Foundations',
-        'Knowledge checks from Field Guide Vol. 1: the players, the money, the methods. Build the base before the board.', last === 'basic') +
+        'Knowledge checks from Field Guide Vol. 1: the players, the money, the methods. Build the base before the board.', last === 'basic', 'VOL I') +
       cardHtml('t-adv', 'Warrant board prep', 'Advanced — The Board',
-        'Everything in Basic plus Vol. 2: board-probe questions, threshold drills, and full scenario simulations with follow-ups.', last === 'advanced') +
+        'Everything in Basic plus Vol. 2: board-probe questions, threshold drills, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
       '</div>');
     el('t-basic').onclick = function () { S.track = 'basic'; save(); goDepth(1, viewHome); };
     el('t-adv').onclick = function () { S.track = 'advanced'; save(); goDepth(1, viewHome); };
@@ -139,17 +141,23 @@
     }).join('');
     var scen = deck.scenarios;
     var scenDone = scen.filter(function (s) { return S.scen[s.id]; }).length;
+    var overall = mastery(pool);
+    var dailyInner = due.length
+      ? '<div class="st-daily-row"><span class="st-daily-num">' + due.length + '</span><span class="st-daily-what">card' + (due.length !== 1 ? 's' : '') + ' due today</span></div>' +
+        '<span class="st-daily-sub">Spaced repetition picked these — the ones you’re about to forget, right before you forget them. Short and often beats long and rare.</span>'
+      : '<div class="st-daily-row"><span class="st-daily-what" style="font-size:19px">All caught up — nothing due today.</span></div>' +
+        '<span class="st-daily-sub">The scheduler has nothing urgent. Run a Deep Study shuffle or face a Board Sim scenario to stay sharp.</span>';
     render(
       '<div class="st-head"><div class="st-track-chip">' + (S.track === 'basic' ? 'Basic · Foundations' : 'Advanced · Board Prep') +
       ' <button class="st-link" id="st-switch">switch</button></div></div>' +
+      '<button class="st-daily" id="m-daily"><div class="st-daily-eyebrow">Today’s session · Daily Review</div>' + dailyInner + '<span class="st-daily-go" aria-hidden="true">→</span></button>' +
       '<div class="st-modes">' +
-      '<button class="st-mode st-mode-primary" id="m-daily"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg></span>Daily Review</b><span>' + due.length + ' card' + (due.length !== 1 ? 's' : '') + ' due — spaced repetition does the scheduling</span></button>' +
       '<button class="st-mode" id="m-deep"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Deep Study</b><span>Endless random cards, every topic in the mix — go as long as you want</span></button>' +
       '<button class="st-mode" id="m-sprint"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Threshold Sprint</b><span>Rapid-fire numbers · best streak ' + (S.sprint.best || 0) + '</span></button>' +
       (S.track === 'advanced' ?
         '<button class="st-mode" id="m-board"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Board Sim</b><span>' + scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups</span></button>' : '') +
       '</div>' +
-      '<h2 class="st-h2">Readiness by topic</h2>' +
+      '<div class="st-ready-head"><h2 class="st-h2">Readiness by topic</h2><span class="st-overall">' + overall + '% overall</span></div>' +
       '<p class="st-sub">Tap a topic to drill it directly, due or not.</p>' +
       '<div class="st-topics">' + rows + '</div>' +
       '<div class="st-foot-tools"><button class="st-link" id="st-export">Export progress</button> · ' +
