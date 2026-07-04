@@ -1296,8 +1296,6 @@ p.sec-sub-light{color:rgba(255,255,255,0.48);}
 .feat-desc{font-size:var(--fs-md);color:var(--muted);line-height:1.65;}
 .feat-stat-track{height:8px;border-radius:999px;background:rgba(135,101,28,0.1);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(135,101,28,0.08);margin:14px 0 10px;}
 .feat-stat-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#16a34a);transition:width 1.1s var(--ease-out);}
-.feat-stat-fill.blue{background:linear-gradient(90deg,#60a5fa,var(--accent));}
-.feat-stat-fill.green{background:linear-gradient(90deg,#22c55e,#16a34a);}
 .feat-stat-fill.dark{background:linear-gradient(90deg,var(--ink3),var(--ink));}
 .feat-stat-meta{display:flex;justify-content:space-between;gap:8px;font-size:var(--fs-2xs);font-weight:var(--fw-semibold);letter-spacing:0.03em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
 .feat-demo{border-radius:12px;background:linear-gradient(160deg,#f8fbff 0%,#eef4fb 100%);border:1px solid rgba(135,101,28,0.1);padding:12px;margin:18px 0 16px;}
@@ -1358,7 +1356,7 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .src-live{background:rgba(22,163,74,0.14);color:#4ade80;border:0.5px solid rgba(74,222,128,0.2);}
 .src-soon{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.28);border:0.5px solid rgba(255,255,255,0.1);}
 .callout{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-2xl);padding:40px 48px;margin-top:40px;text-align:center;}
-.callout-head{font-size:30px;font-weight:var(--fw-bold);letter-spacing:-0.04em;color:#fff;margin-bottom:10px;line-height:1.1;}
+.callout-head{font-family:var(--font-serif);font-size:31px;font-weight:700;letter-spacing:-0.02em;color:#fff;margin-bottom:10px;line-height:1.14;}
 .callout-sub{font-size:var(--fs-16);color:rgba(255,255,255,0.44);max-width:520px;margin-left:auto;margin-right:auto;line-height:var(--lh-loose);}
 
 /* (cta-strip removed — the page ends on content, not a pitch) */
@@ -1399,6 +1397,13 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .ql-brand-wau .ql-wau-mark{width:28px;height:30px;clip-path:polygon(52% 0,100% 100%,56% 78%,22% 100%);background:#b31b34;}
 .ql-brand-wau .ql-wordmark{font-size:var(--fs-sm);letter-spacing:var(--ls-widest);text-transform:uppercase;line-height:1.08;color:#111827;}
 .ql-brand-wau .ql-wordmark b{color:#b31b34;}
+.ql-brand-compass{gap:10px;}
+.ql-brand-compass .ql-compass-rose{width:28px;height:28px;flex-shrink:0;}
+.ql-brand-compass .ql-compass-rose svg{display:block;width:100%;height:100%;}
+.ql-brand-compass .ql-wordmark{font-family:var(--font-serif);font-size:21px;font-weight:700;letter-spacing:-0.015em;color:#f4f8fc;}
+.ql-brand-compass .ql-wordmark small{font-family:'Inter',system-ui,sans-serif;letter-spacing:0.04em;}
+/* 7 cards in the 3-col grid: center the lone last card so the bottom row reads deliberate */
+.quick-links-grid .ql-card:nth-child(7):last-child{grid-column:2;}
 .ql-action{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid rgba(135,101,28,0.08);font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--muted2);}
 .ql-arrow{font-size:var(--fs-base);color:var(--muted2);font-weight:var(--fw-heavy);opacity:0.8;transition:transform 0.15s,color 0.15s;}
 .ql-card:hover .ql-arrow{transform:translate(2px,-2px);color:var(--brass-ink);opacity:1;}
@@ -1599,7 +1604,7 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 
 /* Light treatment for the lower sources band, matching the opening hero. */
 #sources.sec-dark{background:var(--off);color:var(--ink);border-top:1px solid var(--brass-line);border-bottom:1px solid var(--brass-line);}
-#sources .eyebrow-light{color:var(--brass-bright);}
+#sources .eyebrow-light{color:var(--accent);} /* beige band — bright brass was 1.6:1, AA fail */
 #sources h2.sec-head{color:var(--ink);}
 #sources p.sec-sub-light{color:var(--muted);}
 #sources .srcs-label{color:var(--muted2);border-bottom-color:rgba(135,101,28,0.1);}
@@ -1810,6 +1815,7 @@ body.work-mode #quick-links{margin-top:0;}
   .source-status-label{padding-top:0;}
   .callout{padding:32px 20px;}
   .quick-links-grid{grid-template-columns:1fr 1fr;}
+  .quick-links-grid .ql-card:nth-child(7):last-child{grid-column:1/-1;}
   .market-shell{grid-template-columns:minmax(0,1fr);gap:14px;margin-top:30px;}
   .market-search-panel{padding:18px;}
   .market-query{min-height:54px;border-radius:15px;padding-left:14px;}

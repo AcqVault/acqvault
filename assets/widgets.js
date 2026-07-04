@@ -77,6 +77,7 @@
     'R-DFARS': ['R-DFARS', 'DoD deviation set replacing legacy DFARS material'],
     PGI: ['Procedures, Guidance, and Information', 'Legacy companion guidance'],
     DAF: ['Department of the Air Force'],
+    Compass: ['DAF Contracting Compass', 'The DAF contracting knowledge center on SharePoint — CAC required'],
     DoD: ['Department of Defense'],
     RFO: ['Revolutionary FAR Overhaul', 'The overhauled FAR — EO 14275'],
     SAT: ['Simplified Acquisition Threshold', '$350,000 since Oct 2025 (RFO 2.101)'],

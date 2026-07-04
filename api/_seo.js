@@ -101,7 +101,7 @@ function metaDescription(docs) {
 const STYLE = `@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
 @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
 @font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}
-:root{--ink:#13151b;--muted:#5e5d66;--line:#948b7c;--line2:#e8e5de;--accent:#155FBF;--bg:#fff;--brass:#87651c;--brass-ink:#5e4715;--brass-bright:#e4c477;--brass-deep:#6f521a;--brass-line:rgba(154,115,32,0.40);--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif}
+:root{--ink:#13151b;--muted:#5e5d66;--line:#948b7c;--line2:#e8e5de;--accent:#87651c;--bg:#fff;--brass:#87651c;--brass-ink:#5e4715;--brass-bright:#e4c477;--brass-deep:#6f521a;--brass-line:rgba(154,115,32,0.40);--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif}
 *{box-sizing:border-box}body{margin:0;font-family:'Inter',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
 .wrap{max-width:820px;margin:0 auto;padding:22px 20px 80px}
 .wrap--wide{max-width:1060px}
@@ -152,7 +152,7 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 /* feature "report cover" cards — matte federal-ink + brass seal + engraved vault emblem */
 .libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
 .libfeat{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 1px 2px rgba(13,17,23,.04);transition:box-shadow .2s,transform .18s,border-color .18s}
-.libfeat:hover{border-color:rgba(21,95,191,.3);box-shadow:0 16px 34px -16px rgba(15,37,64,.34);transform:translateY(-3px)}
+.libfeat:hover{border-color:rgba(135,101,28,.35);box-shadow:0 16px 34px -16px rgba(15,37,64,.34);transform:translateY(-3px)}
 .libcover{position:relative;height:120px;padding:14px 16px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;background:linear-gradient(158deg,#173a60,#0f2540 56%,#0a1c33)}
 .libcover::before{content:"";position:absolute;inset:0;opacity:.5;background:repeating-radial-gradient(circle at 84% 128%,rgba(202,168,95,.05) 0 1px,transparent 1px 9px)}
 .libcover::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#8a641d,#e4c477 50%,#8a641d)}
@@ -165,7 +165,7 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 .libfeat-body .desc{font-size:13px;color:#3d444d;line-height:1.5;margin:0;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .libfeat-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
 .libfeat-foot .m{font-size:12px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
-.libfeat-foot .dl{font-size:13px;font-weight:700;color:var(--accent);background:rgba(21,95,191,.07);border:1px solid rgba(21,95,191,.18);border-radius:999px;padding:5px 12px}
+.libfeat-foot .dl{font-size:13px;font-weight:700;color:var(--accent);background:rgba(135,101,28,.07);border:1px solid rgba(135,101,28,.18);border-radius:999px;padding:5px 12px}
 .libfeat:hover .libfeat-foot .dl{background:var(--accent);color:#fff}
 /* source-document cards, color-coded to the search UI */
 .libsrc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
@@ -230,7 +230,7 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed }) {
 <meta property="og:url" content="${canonical}">
 <meta property="og:site_name" content="AcqVault">
 <meta name="twitter:card" content="summary">
-<link rel="icon" href="/assets/acqvault-favicon-blue.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon-vault.svg" type="image/svg+xml">
 <style>${STYLE}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
