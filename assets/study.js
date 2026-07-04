@@ -100,8 +100,19 @@
   }
 
   /* ---- views ---- */
-  var app;
-  function render(html) { app.innerHTML = html; window.scrollTo({ top: app.offsetTop - 80, behavior: 'instant' }); }
+  var app, rendered = false;
+  function render(html) {
+    app.innerHTML = html;
+    // Anchor each new view just below the top of the drill container so every card
+    // lands in the same readable spot. NB: app.offsetTop is relative to the
+    // position:relative .st-wrap (~its padding), NOT the page — using it scrolled
+    // to y≈0 (the hero) on every question advance. Use the document-absolute top.
+    // Skip the very first paint so a cold page load stays on the hero instead of
+    // auto-scrolling past it.
+    if (!rendered) { rendered = true; return; }
+    var y = Math.max(0, app.getBoundingClientRect().top + window.scrollY - 20);
+    if (Math.abs(y - window.scrollY) > 2) window.scrollTo({ top: y, behavior: 'instant' });
+  }
 
   var VAULT_GLYPH = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="2"><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="10"/></g><g stroke="#cdb277" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="27" x2="50" y2="38"/><line x1="50" y1="73" x2="50" y2="62"/><line x1="27" y1="50" x2="38" y2="50"/><line x1="73" y1="50" x2="62" y2="50"/></g><circle cx="50" cy="50" r="3.6" fill="#cdb277"/></svg>';
   function viewTrack() {
