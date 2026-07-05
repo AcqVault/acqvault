@@ -324,9 +324,9 @@
           <label class="market-field"><span class="market-label">NAICS</span><input type="text" value="" placeholder="optional" aria-label="NAICS code" id="market-naics-input" /></label>
           <label class="market-field"><span class="market-label">PSC</span><input type="text" value="" placeholder="optional" aria-label="PSC code" id="market-psc-input" /></label>
           <label class="market-field"><span class="market-label">Agency</span><select aria-label="Agency" id="market-agency-input"><option value="">All agencies</option><option>Department of the Air Force</option><option>Department of the Army</option><option>Department of the Navy</option><option>Defense Logistics Agency</option><option>General Services Administration</option><option>Department of Homeland Security</option><option>Department of Veterans Affairs</option><option>National Aeronautics and Space Administration</option><option>Department of Energy</option><option>Department of Health and Human Services</option></select></label>
-          <label class="market-field"><span class="market-label">Window</span><select aria-label="Search window" id="market-window-select"><option value="365">Last 12 months</option><option value="90">Last 90 days</option><option value="1095">Last 3 years</option></select></label>
+          <label class="market-field"><span class="market-label">Window</span><select aria-label="Search window" id="market-window-select"><option value="90">Last 90 days</option><option value="365" selected>Last 12 months</option><option value="730">Last 2 years</option><option value="1095">Last 3 years</option></select></label>
           <label class="market-field"><span class="market-label">Set-aside</span><select aria-label="Set-aside" id="market-setaside-select"><option value="">Any</option><option value="SBA">Small business</option><option value="8A">8(a)</option><option value="HZC">HUBZone</option><option value="SDVOSBC">SDVOSB</option><option value="WOSB">WOSB</option><option value="EDWOSB">EDWOSB</option></select></label>
-          <label class="market-field"><span class="market-label">Results</span><select aria-label="Result limit" id="market-limit-select"><option value="12">12 opportunities</option><option value="24">24 opportunities</option><option value="48">48 opportunities</option></select></label>
+          <label class="market-field"><span class="market-label">Results</span><select aria-label="Result limit" id="market-limit-select"><option value="12">12 opportunities</option><option value="24">24 opportunities</option><option value="48">48 opportunities</option><option value="100">100 opportunities</option><option value="all">All matched</option></select></label>
         </div>
         <div class="market-selectable">
           <div class="market-selectable-head">
@@ -608,7 +608,7 @@
 
 <script defer src="/assets/app.js?v=48"></script>
 <script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=38"></script>
+<script defer src="/assets/widgets.js?v=39"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>

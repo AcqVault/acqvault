@@ -1064,7 +1064,7 @@
     const escAttr = (s) => esc(s).replace(/'/g, '&#39;');
     const filtersEl = $('#market-active-filters');
     const SETASIDE_LABELS = { SBA: 'Small business', '8A': '8(a)', HZC: 'HUBZone', SDVOSBC: 'SDVOSB', WOSB: 'WOSB', EDWOSB: 'EDWOSB' };
-    const WINDOW_LABELS = { '90': 'Last 90 days', '365': 'Last 12 months', '1095': 'Last 3 years' };
+    const WINDOW_LABELS = { '90': 'Last 90 days', '365': 'Last 12 months', '730': 'Last 2 years', '1095': 'Last 3 years' };
     const EXAMPLES = [
       { label: 'Base operations support', query: 'base operations support' },
       { label: 'Aircraft parts · PSC 1560', query: '', psc: '1560' },
@@ -1257,6 +1257,9 @@
       .t-title{font-weight:700;color:var(--ink);line-height:1.3;} .t-org{color:var(--muted);font-size:9px;margin-top:1px;}
       .t-mono{font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:var(--ink2);white-space:nowrap;}
       .t-award{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--brass-ink);font-size:9px;margin-top:2px;} .t-muted{color:var(--muted2);}
+      .narr{border:1px solid var(--brass-line);border-left:3px solid var(--brass-ink);border-radius:9px;padding:12px 15px;background:#fff;}
+      .narr p{font-size:10.5px;line-height:1.66;color:var(--ink2);margin:0 0 8px;} .narr p:last-child{margin-bottom:0;}
+      .narr-hint{font-size:8.5px;font-style:italic;color:var(--muted2);margin-top:5px;}
       .prompt{font-size:9.5px;color:var(--muted);font-style:italic;margin-bottom:9px;}
       .rl{border-bottom:1px solid var(--line);height:22px;}
       .signoff{display:flex;gap:34px;margin-top:16px;break-inside:avoid;}
@@ -1268,6 +1271,59 @@
       @media print{.no-print{display:none!important;} .wrap{padding:0;max-width:none;}}
     `;
     const MRMARK = '<svg class="mast-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="94" height="94" rx="20" fill="#0f2540"/><rect x="11" y="11" width="78" height="78" rx="14" fill="none" stroke="#87651c" stroke-width="2"/><circle cx="50" cy="50" r="24" fill="none" stroke="#e4c477" stroke-width="3.5"/><g stroke="#e4c477" stroke-width="4" stroke-linecap="round"><line x1="50" y1="29" x2="50" y2="39"/><line x1="50" y1="71" x2="50" y2="61"/><line x1="29" y1="50" x2="39" y2="50"/><line x1="71" y1="50" x2="61" y2="50"/></g><circle cx="50" cy="50" r="6" fill="#e4c477"/></svg>';
+    // ── Narrative summary — deterministic sentences computed from the pinned
+    // set + loaded award data (no AI, no paraphrase of reg text). Written to be
+    // lifted straight into the "results of market research" section of an MR
+    // report: factual counts first, one measured reading of the competitive
+    // signal, and a verify-before-filing close.
+    function mrNarrative() {
+      const n = board.length;
+      if (!n) return [];
+      const q = (query?.value || '').trim();
+      const today = new Date().toISOString().slice(0, 10);
+      const winSel = $('#market-window-select');
+      const winTxt = winSel && winSel.options[winSel.selectedIndex] ? winSel.options[winSel.selectedIndex].text.toLowerCase() : '';
+      const listTop = (entries, k) => entries.slice(0, k).map(([v, c]) => `${v} (${c})`).join(', ');
+      const noun = (c, s, p) => `${c} ${c === 1 ? s : p}`;
+      const paras = [];
+      const types = tally(o => o.type), offices = tally(o => o.organization);
+      const naics = mrDistinct(o => o.naicsCode), pscs = mrDistinct(o => o.classificationCode);
+      // 1 — scope & method
+      let p1 = `Market research was conducted on ${today} using SAM.gov opportunity data${winTxt ? `, covering the ${winTxt}` : ''}${q ? `, for “${q}”` : ''}. `;
+      p1 += `${noun(n, 'comparable notice was', 'comparable notices were')} reviewed in detail${mrSpan() !== '—' ? ` (postings ${mrSpan()})` : ''}`;
+      const scope = [];
+      if (naics.length) scope.push(`NAICS ${naics.slice(0, 4).join(', ')}`);
+      if (pscs.length) scope.push(`PSC ${pscs.slice(0, 4).join(', ')}`);
+      p1 += scope.length ? `, concentrated in ${scope.join(' and ')}.` : '.';
+      paras.push(p1);
+      // 2 — who is buying, and how
+      const bits = [];
+      if (types.length) bits.push(`Notice activity comprises ${listTop(types, 5)}${types.length > 5 ? ', among others' : ''}`);
+      if (offices.length) bits.push(offices.length === 1
+        ? `all issued by ${offices[0][0]}`
+        : `issued by ${offices.length} buying offices, led by ${offices[0][0]} (${offices[0][1]} of ${n})`);
+      if (bits.length) paras.push(bits.join(', ') + '.');
+      // 3 — competitive / set-aside signal
+      const saEntries = tally(o => o.setAside);
+      const saCount = board.filter(o => (o.setAside || '').trim()).length;
+      if (saCount) {
+        const pct = Math.round(100 * saCount / n);
+        paras.push(`${noun(saCount, 'notice', 'notices')} of the ${n} reviewed (${pct}%) carried a set-aside designation — ${listTop(saEntries, 3)} — indicating established small-business participation in this market. See RFO Part 19 for the set-aside determination.`);
+      } else {
+        paras.push(`None of the reviewed notices carried a set-aside designation; the set-aside determination under RFO Part 19 should rest on capable-source research beyond these postings.`);
+      }
+      // 4 — incumbency, when the award data is on screen
+      if (usaState === 'ready' && usaData && (usaData.recipients || []).length) {
+        const recs = usaData.recipients || [];
+        const total = recs.reduce((s, r) => s + (Number(r.total) || 0), 0);
+        const cnt = recs.reduce((s, r) => s + (Number(r.count) || 0), 0);
+        const top = recs[0];
+        const share = total > 0 ? Math.round(100 * (Number(top.total) || 0) / total) : 0;
+        paras.push(`Historical award data (USASpending.gov, last ${usaData.years} fiscal years) shows ${cnt ? noun(cnt, 'award', 'awards') + ' across ' : ''}the top ${noun(recs.length, 'recipient', 'recipients')} totaling ${usaFmt(total)}; ${top.name} leads at ${usaFmt(top.total)}${share ? ` (${share}% of that total)` : ''}. Award history is the stronger incumbency signal; the notices above are the demand signal.`);
+      }
+      paras.push('These observations are drawn mechanically from the records itemized below — verify each against the source notice or award record before relying on it in the file.');
+      return paras;
+    }
     function mrHTML() {
       const base = location.origin;
       const q = (query?.value || '').trim();
@@ -1280,6 +1336,8 @@
         return `<tr><td><div class="t-type">${esc(o.type || 'Opportunity')}</div><div class="t-mono t-muted">${esc(o.postedDate || '')}</div></td><td><div class="t-title">${esc(o.title || 'Untitled')}</div><div class="t-org">${esc(o.organization || '')}</div>${award}</td><td class="t-mono">${esc(np)}</td><td>${esc(o.setAside || '—')}</td><td class="t-mono">${esc(o.solicitationNumber || '—')}</td></tr>`;
       }).join('');
       const usaSec = usaNoteHTML();  // present only when award data loaded
+      const narr = mrNarrative();
+      const narrSec = narr.length ? `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Narrative summary</span></div><div class="narr">${narr.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="narr-hint no-print">Drafted from the records below — select, copy, and edit to fit the market research report.</div></div>` : '';
       return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><base href="${base}/"><title>AcqVault — Market Research Summary</title><style>${MRCSS}</style></head><body>
         <div class="toolbar no-print"><button onclick="window.print()">⤓ Save as PDF</button><span>Opens your browser's print dialog — choose “Save as PDF.”</span></div>
         <div class="wrap">
@@ -1294,6 +1352,7 @@
             <div class="meta-cell"><div class="meta-k">Posting window reviewed</div><div class="meta-v mono">${esc(mrSpan())}</div></div>
             <div class="meta-cell"><div class="meta-k">Notices reviewed</div><div class="meta-v">${board.length} pinned</div></div>
           </div>
+          ${narrSec}
           <div class="sec"><div class="sec-eyebrow"><span class="sec-title">Market landscape</span></div><div class="pat">${pats}</div></div>
           <div class="sec"><div class="sec-eyebrow"><span class="sec-title">Comparable notices reviewed</span></div>
             <table><thead><tr><th style="width:15%">Type / posted</th><th style="width:34%">Notice</th><th style="width:16%">NAICS · PSC</th><th style="width:20%">Set-aside</th><th style="width:15%">Notice #</th></tr></thead><tbody>${rows}</tbody></table>
@@ -1314,7 +1373,10 @@
       L.push(`PSC in scope: ${mrDistinct(o => o.classificationCode).join(' · ') || '—'}`);
       L.push(`Posting window reviewed: ${mrSpan()}`);
       L.push(`Notices reviewed: ${board.length} pinned`);
-      L.push(`Prepared: ${new Date().toISOString().slice(0, 10)}`, '', 'MARKET LANDSCAPE');
+      L.push(`Prepared: ${new Date().toISOString().slice(0, 10)}`);
+      const narr = mrNarrative();
+      if (narr.length) { L.push('', 'NARRATIVE SUMMARY'); narr.forEach(p => L.push('  ' + p)); }
+      L.push('', 'MARKET LANDSCAPE');
       [['Notice types', tally(o => o.type)], ['Buying offices', tally(o => o.organization)], ['NAICS observed', tally(o => o.naicsCode)], ['PSC observed', tally(o => o.classificationCode)], ['Set-aside signals', tally(o => o.setAside)]].forEach(([l, e]) => { const s = patLine(l, e); if (s) L.push(s); });
       L.push(`  Posting window: ${mrSpan()}`, '', 'COMPARABLE NOTICES REVIEWED');
       board.forEach(o => {

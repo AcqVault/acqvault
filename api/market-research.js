@@ -166,7 +166,11 @@ module.exports = async function handler(req, res) {
   try {
     const body = req.body || {};
     const ranges = buildDateRanges(body.windowDays);
-    const limit = Math.min(Math.max(Number(body.limit) || 12, 1), 48);
+    // 'all' returns every matched record — the pool is naturally bounded by
+    // FETCH_PAGE per bucket, so this is the same data we already ranked; the
+    // old hard cap of 48 made "100 matching · showing 48" a dead end.
+    const wantAll = String(body.limit || '').toLowerCase() === 'all';
+    const limit = wantAll ? Number.MAX_SAFE_INTEGER : Math.min(Math.max(Number(body.limit) || 12, 1), 500);
     const noticeTypes = Array.isArray(body.noticeTypes) ? body.noticeTypes.filter(Boolean) : [];
     const base = {
       query: normalizeInput(body.query),
