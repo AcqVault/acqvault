@@ -2743,6 +2743,11 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
 .mode-toggle.seg .mode-btn.active{background:transparent;box-shadow:none;border-color:transparent;}
 .mode-toggle.seg .mode-btn:hover:not(.active){background:transparent;border-color:transparent;}
 .mode-toggle.seg .mode-btn.on-glider{color:#fff;font-weight:750;}
+/* White text belongs to the glider, not the .active state — when the glider
+   slides to a hovered segment, the selected button is no longer on the navy
+   pill, so it must fall back to dark ink or it goes white-on-white (invisible)
+   against the light command dock. */
+.mode-toggle.seg .mode-btn.active:not(.on-glider){color:var(--ink2);font-weight:650;}
 
 /* Spending window toggle: a brass glider so it reads on the dark dashboard */
 #spending-dashboard .dash-window.seg .seg-glider{border-radius:999px;
