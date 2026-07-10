@@ -931,24 +931,29 @@ async function restoreBrowseState() {
     browseLabel = saved.label || '';
     await selectPart(null, saved.part, saved.label || '');  // tile arg is unused; fetches + renders the part
   } catch (e) { browseRestoring = false; return false; }
-  // The reader reflows async (content + xref decoration), so a single scrollTo can
-  // clamp to the top before the page is tall enough. Re-assert on a short interval,
-  // clamping to the current max, until we reach the saved spot or the page stops
-  // growing. Keep browseRestoring set throughout so nothing else scrolls or re-saves.
+  // Land on the saved position. The reader reflows async, and — crucially — this
+  // often runs in a BACKGROUNDED tab (Chrome discarded it; the user is flipping
+  // back). requestAnimationFrame is PAUSED while hidden, so we drive the landing
+  // with timers (which still run, throttled) — instant scrollTo works while hidden
+  // too. Re-assert until we reach the saved spot, and again on becoming visible.
   const land = () => {
     const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     window.scrollTo({ top: Math.min(targetY, maxY), behavior: 'instant' });
   };
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-  land();
+  const onVis = () => { if (!document.hidden) land(); };
+  document.addEventListener('visibilitychange', onVis);
   let tries = 0;
   const iv = setInterval(() => {
     land(); tries++;
     const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    if (tries >= 14 || Math.abs(window.scrollY - Math.min(targetY, maxY)) < 4 || maxY <= targetY) {
-      clearInterval(iv); browseRestoring = false;
+    const reached = Math.abs(window.scrollY - Math.min(targetY, maxY)) < 4 && maxY >= targetY - 4;
+    if (tries >= 25 || (!document.hidden && reached)) {
+      clearInterval(iv);
+      document.removeEventListener('visibilitychange', onVis);
+      browseRestoring = false;
     }
-  }, 90);
+  }, 100);
+  land();
   return true;
 }
 
