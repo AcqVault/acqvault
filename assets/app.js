@@ -306,6 +306,8 @@ let currentHit       = null;
 let currentMode      = 'search';
 let browseSrc        = 'rfo';
 let browseActivePart = null;
+let browseLabel = '';
+let browseRestoring = false; // suppress the browse auto-scrolls while re-entering a saved view
 let debounceTimer    = null;
 
 function closeBrowseSourceMenu() {
@@ -373,7 +375,7 @@ function setMode(mode) {
     // Move straight to the active browse workspace.
     setTimeout(() => {
       const browseEl = document.getElementById('browse-section');
-      if (browseEl) {
+      if (browseEl && !browseRestoring) {
         const y = browseEl.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
         window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       }
@@ -893,10 +895,48 @@ function brCopy(citation, btn) {
 }
 
 function scrollBrowseReaderToTop() {
+  if (browseRestoring) return; // a restore is about to land on the saved position
   const reader = document.getElementById('browse-reader');
   if (!reader) return;
   const y = reader.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
   window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+}
+
+// ── Browse view persistence — survive a tab discard/reload (Chrome Memory Saver
+// drops background tabs when many are open; the browse view is DOM-only, so a
+// reload would otherwise dump you back at the hero). Per-tab via sessionStorage,
+// so two tabs on different parts don't clobber each other. ──────────────────────
+function saveBrowseState() {
+  if (currentMode !== 'browse' || browseActivePart == null) return;
+  try {
+    sessionStorage.setItem('acq-browse-v1', JSON.stringify({
+      source: browseSrc, part: browseActivePart, label: browseLabel, y: Math.round(window.scrollY)
+    }));
+  } catch (e) {}
+}
+let _browseSaveTimer = 0;
+window.addEventListener('scroll', () => {
+  if (browseRestoring || currentMode !== 'browse' || browseActivePart == null) return;
+  clearTimeout(_browseSaveTimer);
+  _browseSaveTimer = setTimeout(saveBrowseState, 250);
+}, { passive: true });
+async function restoreBrowseState() {
+  let saved;
+  try { saved = JSON.parse(sessionStorage.getItem('acq-browse-v1') || 'null'); } catch (e) { return false; }
+  if (!saved || !saved.source || saved.part == null) return false;
+  browseRestoring = true;
+  try {
+    chooseBrowseSource(saved.source);         // enter browse + render the parts grid
+    browseLabel = saved.label || '';
+    await selectPart(null, saved.part, saved.label || '');  // tile arg is unused; fetches + renders the part
+  } catch (e) { browseRestoring = false; return false; }
+  // Wait past the reader's own post-render rAF scroll, then land on the saved spot.
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  const y = Math.max(0, saved.y || 0);
+  window.scrollTo({ top: y, behavior: 'instant' });
+  // Re-assert once more after any late reflow (fonts / async xref decoration).
+  setTimeout(() => { window.scrollTo({ top: y, behavior: 'instant' }); browseRestoring = false; }, 160);
+  return true;
 }
 
 function isBrowsePageNumberLine(line) {
@@ -1222,6 +1262,7 @@ function selectCategoryGuidePart(tile, partKey, partLabel) {
 
 async function selectPart(tile, partNum, partLabel) {
   browseActivePart = partNum;
+  browseLabel = partLabel || '';
   // Update active tile (part ids can be strings like FMR's "7A", so compare as strings)
   document.querySelectorAll('.part-tile').forEach(t => {
     const active = String(t.dataset.part) === String(partNum);
@@ -1270,6 +1311,7 @@ async function selectPart(tile, partNum, partLabel) {
     try {
       reader.innerHTML = buildReaderHTML(hits, browseSrc, partNum, partLabel, hits.length);
       requestAnimationFrame(scrollBrowseReaderToTop);
+      saveBrowseState(); // remember this part so a tab discard/reload can restore it
     } catch(buildErr) {
       console.error('buildReaderHTML error:', buildErr);
       reader.innerHTML = `<div class="browse-empty"><div class="browse-empty-icon">⚠</div><div class="browse-empty-title">Render error</div><div class="browse-empty-sub">${buildErr.message} — check console for details</div></div>`;
@@ -2793,6 +2835,9 @@ window.acqExitToLanding = exitToLanding;
   const q = params.get('q');
   const docId = params.get('doc');
   const readerMode = params.get('view') === 'reader';
+  // No shareable search/reader in the URL → this may be a discarded browse tab
+  // Chrome just reloaded. Re-enter the last browse view (source/part/scroll).
+  if (!q && !docId) { await restoreBrowseState(); return; }
   if (q && !readerMode) {
     const src = params.get('src');
     if (src) restoreFiltersFromParam(src);
