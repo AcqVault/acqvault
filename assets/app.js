@@ -361,6 +361,10 @@ window.addEventListener('resize', adjustNavForAboutBar);
 function setMode(mode) {
   closeBrowseSourceMenu();
   currentMode = mode;
+  // Remember which view this tab is showing (per-tab). On a discard-reload the boot
+  // restores THIS view — otherwise a stale ?q= left in the URL by an earlier search
+  // would hijack the boot back into search-at-top while the user was deep in browse.
+  try { sessionStorage.setItem('acq-view-v1', mode); } catch (e) {}
   document.body.classList.toggle('work-mode', mode !== 'search' || Boolean(document.getElementById('search-input')?.value.trim()));
   const hero = document.getElementById('hero');
   ['search','browse','fulltext'].forEach(m => {
@@ -2883,9 +2887,19 @@ window.acqExitToLanding = exitToLanding;
   const q = params.get('q');
   const docId = params.get('doc');
   const readerMode = params.get('view') === 'reader';
+  // The view the user LEFT OPEN wins over URL leftovers: an earlier search in the
+  // tab's life leaves ?q= behind, and on a discard-reload that stale q used to
+  // hijack the boot into search-at-top while the user was deep in the browse reader.
+  let savedView = null;
+  try { savedView = sessionStorage.getItem('acq-view-v1'); } catch (e) {}
+  if (savedView === 'browse' && !readerMode && await restoreBrowseState()) return;
   // No shareable search/reader in the URL → this may be a discarded browse tab
-  // Chrome just reloaded. Re-enter the last browse view (source/part/scroll).
-  if (!q && !docId) { await restoreBrowseState(); return; }
+  // Chrome just reloaded. Re-enter the last browse view (source/part/scroll) —
+  // unless the tab had explicitly moved on to another view (search/fulltext).
+  if (!q && !docId) {
+    if (savedView !== 'search' && savedView !== 'fulltext') await restoreBrowseState();
+    return;
+  }
   if (q && !readerMode) {
     const src = params.get('src');
     if (src) restoreFiltersFromParam(src);
