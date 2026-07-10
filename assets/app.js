@@ -310,6 +310,11 @@ let browseLabel = '';
 let browseRestoring = false; // suppress the browse auto-scrolls while re-entering a saved view
 let debounceTimer    = null;
 
+// We own scroll restoration for the browse reader (the content is rebuilt async on
+// reload, so the browser's automatic guess lands at the top). Take it off 'auto' so
+// the browser never fights our manual restore.
+try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+
 function closeBrowseSourceMenu() {
   const menu = document.getElementById('browse-source-menu');
   const btn = document.getElementById('mode-browse');
@@ -914,6 +919,16 @@ function saveBrowseState() {
     }));
   } catch (e) {}
 }
+// Cache the fully-rendered part HTML per-tab so a discard/reload can REPAINT it
+// synchronously — no network round-trip, so the reader never flashes to the top
+// before the fetch resolves. Rendered HTML == what selectPart produces (only inline
+// handlers, no post-render wiring), so re-injecting it is a faithful restore.
+function cacheBrowseHTML(source, part, label, html) {
+  try {
+    if (!html || html.length > 3000000) return; // skip pathological sizes; sessionStorage quota safety
+    sessionStorage.setItem('acq-browse-html-v1', JSON.stringify({ source, part, label, html }));
+  } catch (e) {}
+}
 let _browseSaveTimer = 0;
 window.addEventListener('scroll', () => {
   if (browseRestoring || currentMode !== 'browse' || browseActivePart == null) return;
@@ -929,7 +944,21 @@ async function restoreBrowseState() {
   try {
     chooseBrowseSource(saved.source);         // enter browse + render the parts grid
     browseLabel = saved.label || '';
-    await selectPart(null, saved.part, saved.label || '');  // tile arg is unused; fetches + renders the part
+    // Fast path: repaint the cached render synchronously (no fetch → no top-flash).
+    let cached = null;
+    try { cached = JSON.parse(sessionStorage.getItem('acq-browse-html-v1') || 'null'); } catch (e) {}
+    if (cached && cached.source === saved.source && String(cached.part) === String(saved.part) && cached.html) {
+      browseActivePart = saved.part;
+      const reader = document.getElementById('browse-reader-inner');
+      if (reader) reader.innerHTML = cached.html;
+      document.querySelectorAll('.part-tile').forEach(t => {
+        const active = String(t.dataset.part) === String(saved.part);
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-pressed', String(active));
+      });
+    } else {
+      await selectPart(null, saved.part, saved.label || '');  // no cache (e.g. FMR / other tab) → fetch + render
+    }
   } catch (e) { browseRestoring = false; return false; }
   // Land on the saved position. The reader reflows async, and — crucially — this
   // often runs in a BACKGROUNDED tab (Chrome discarded it; the user is flipping
@@ -1330,6 +1359,7 @@ async function selectPart(tile, partNum, partLabel) {
       reader.innerHTML = buildReaderHTML(hits, browseSrc, partNum, partLabel, hits.length);
       requestAnimationFrame(scrollBrowseReaderToTop);
       saveBrowseState(); // remember this part so a tab discard/reload can restore it
+      cacheBrowseHTML(browseSrc, partNum, browseLabel, reader.innerHTML); // repaint instantly on reload (no top-flash)
     } catch(buildErr) {
       console.error('buildReaderHTML error:', buildErr);
       reader.innerHTML = `<div class="browse-empty"><div class="browse-empty-icon">⚠</div><div class="browse-empty-title">Render error</div><div class="browse-empty-sub">${buildErr.message} — check console for details</div></div>`;
