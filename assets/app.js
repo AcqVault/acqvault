@@ -375,7 +375,7 @@ function setMode(mode) {
     // Move straight to the active browse workspace.
     setTimeout(() => {
       const browseEl = document.getElementById('browse-section');
-      if (browseEl && !browseRestoring) {
+      if (browseEl && !browseRestoring && !document.hidden) {
         const y = browseEl.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
         window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       }
@@ -385,7 +385,7 @@ function setMode(mode) {
     hero.classList.add('fulltext-active');
     setTimeout(() => {
       const ftEl = document.getElementById('fulltext-section');
-      if (ftEl) {
+      if (ftEl && !document.hidden) {
         const y = ftEl.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
         window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
       }
@@ -895,7 +895,7 @@ function brCopy(citation, btn) {
 }
 
 function scrollBrowseReaderToTop() {
-  if (browseRestoring) return; // a restore is about to land on the saved position
+  if (browseRestoring || document.hidden) return; // don't scroll during a restore, or in a backgrounded tab (a smooth scroll issued while hidden is deferred by the browser and fires — jumping the user — when they return)
   const reader = document.getElementById('browse-reader');
   if (!reader) return;
   const y = reader.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
@@ -907,7 +907,7 @@ function scrollBrowseReaderToTop() {
 // reload would otherwise dump you back at the hero). Per-tab via sessionStorage,
 // so two tabs on different parts don't clobber each other. ──────────────────────
 function saveBrowseState() {
-  if (currentMode !== 'browse' || browseActivePart == null) return;
+  if (browseRestoring || currentMode !== 'browse' || browseActivePart == null) return; // don't let a restore's own re-render overwrite the saved position with 0
   try {
     sessionStorage.setItem('acq-browse-v1', JSON.stringify({
       source: browseSrc, part: browseActivePart, label: browseLabel, y: Math.round(window.scrollY)
@@ -925,17 +925,30 @@ async function restoreBrowseState() {
   try { saved = JSON.parse(sessionStorage.getItem('acq-browse-v1') || 'null'); } catch (e) { return false; }
   if (!saved || !saved.source || saved.part == null) return false;
   browseRestoring = true;
+  const targetY = Math.max(0, saved.y || 0);
   try {
     chooseBrowseSource(saved.source);         // enter browse + render the parts grid
     browseLabel = saved.label || '';
     await selectPart(null, saved.part, saved.label || '');  // tile arg is unused; fetches + renders the part
   } catch (e) { browseRestoring = false; return false; }
-  // Wait past the reader's own post-render rAF scroll, then land on the saved spot.
+  // The reader reflows async (content + xref decoration), so a single scrollTo can
+  // clamp to the top before the page is tall enough. Re-assert on a short interval,
+  // clamping to the current max, until we reach the saved spot or the page stops
+  // growing. Keep browseRestoring set throughout so nothing else scrolls or re-saves.
+  const land = () => {
+    const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    window.scrollTo({ top: Math.min(targetY, maxY), behavior: 'instant' });
+  };
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-  const y = Math.max(0, saved.y || 0);
-  window.scrollTo({ top: y, behavior: 'instant' });
-  // Re-assert once more after any late reflow (fonts / async xref decoration).
-  setTimeout(() => { window.scrollTo({ top: y, behavior: 'instant' }); browseRestoring = false; }, 160);
+  land();
+  let tries = 0;
+  const iv = setInterval(() => {
+    land(); tries++;
+    const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    if (tries >= 14 || Math.abs(window.scrollY - Math.min(targetY, maxY)) < 4 || maxY <= targetY) {
+      clearInterval(iv); browseRestoring = false;
+    }
+  }, 90);
   return true;
 }
 
