@@ -1448,6 +1448,9 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .market-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(135,101,28,0.13);background:#fff;border-radius:999px;padding:6px 10px;font-size:var(--fs-2xs);font-weight:var(--fw-heavy);letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--muted2);}
 .market-chip.live{color:#047857;background:#ecfdf5;border-color:#bbf7d0;}
 .market-chip.live::before{content:'';width:6px;height:6px;border-radius:50%;background:#16a34a;}
+/* The vehicles chip is a real door, not a label — brass it and give it hover. */
+.market-chip-btn{cursor:pointer;color:#5e4715;background:rgba(135,101,28,0.07);border-color:var(--brass-line);font-family:inherit;transition:background .15s,border-color .15s,color .15s;}
+.market-chip-btn:hover{background:rgba(135,101,28,0.15);color:var(--accent);}
 .market-query{display:flex;align-items:center;gap:10px;min-height:60px;border:1px solid rgba(135,101,28,0.2);border-radius:17px;background:#fff;padding:0 12px 0 18px;box-shadow:0 12px 34px rgba(15,37,64,0.09),0 0 0 4px rgba(135,101,28,0.035);}
 .market-query span{color:var(--accent);font-size:var(--fs-17);}
 .market-query input{flex:1;border:none;outline:none;background:transparent;font-size:var(--fs-16);color:var(--ink);min-width:0;}

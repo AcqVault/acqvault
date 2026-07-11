@@ -1914,11 +1914,21 @@
       right.appendChild(count);
       right.appendChild(vehBtn);
       right.appendChild(boardBtn);
-      boardBtn.addEventListener('click', () => { trayOpen ? closeTray() : openTray(); });
-      vehBtn.addEventListener('click', () => {
-        if (!trayOpen) openTray();
-        setTimeout(() => { boardTray.querySelector('#market-veh')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
+      boardBtn.addEventListener('click', () => {
+        if (trayOpen) { closeTray(); return; }
+        vehShowAll = false; // Board opens on the pins, not mid-directory
+        openTray();
       });
+      // One click to the vehicles: with a market context, land on the matches;
+      // without one, go straight to the full browsable directory (no extra hop).
+      function openVehicles() {
+        const c = vehCodes();
+        vehShowAll = !(c.naics.length || c.psc.length);
+        if (!trayOpen) openTray(); else paintVeh();
+        setTimeout(() => { boardTray.querySelector('#market-veh')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
+      }
+      vehBtn.addEventListener('click', openVehicles);
+      document.getElementById('market-veh-chip')?.addEventListener('click', openVehicles);
     }
     updateBoardBtn();
     // First-run state: no default query — invite a search or a common market.
