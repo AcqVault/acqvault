@@ -315,11 +315,16 @@ let debounceTimer    = null;
 // the browser never fights our manual restore.
 try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
 
+// The source menu (z:760) lives inside hero containers stuck at z-index:2, so the
+// sticky source bar (z:40) paints OVER it. While the menu is open, body.src-menu-open
+// lifts those containers above the bar; closed, they stay low so the hero never
+// covers the pinned bars during normal scrolling.
 function closeBrowseSourceMenu() {
   const menu = document.getElementById('browse-source-menu');
   const btn = document.getElementById('mode-browse');
   if (menu) menu.classList.remove('open');
   if (btn) btn.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('src-menu-open');
 }
 
 function toggleBrowseSourceMenu(event) {
@@ -330,6 +335,7 @@ function toggleBrowseSourceMenu(event) {
   const open = !menu.classList.contains('open');
   menu.classList.toggle('open', open);
   btn.setAttribute('aria-expanded', String(open));
+  document.body.classList.toggle('src-menu-open', open);
 }
 
 function chooseBrowseSource(source) {
