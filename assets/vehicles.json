@@ -1507,6 +1507,389 @@
           "nfes"
         ]
       }
+    },
+    {
+      "id": "esi-palantir",
+      "name": "Palantir Army Enterprise Agreement IDIQ",
+      "sponsor": "Army (ACC-RI / CHESS)",
+      "type": "MAC",
+      "audience": "gov-wide",
+      "bic": false,
+      "ordering": "direct",
+      "dpa": false,
+      "fee": null,
+      "scope": "Federal-wide single-award IDIQ (W519TC-25-D-0039) for Palantir capabilities — ordering is decentralized; any organization places its own orders. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active — base period runs to 7/31/2030 (option to 2035).",
+      "ordering_end": "2030-07-31",
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5415",
+          "5182"
+        ],
+        "psc": [
+          "7A",
+          "7B",
+          "D3"
+        ],
+        "kw": [
+          "palantir",
+          "data platform",
+          "analytics"
+        ]
+      }
+    },
+    {
+      "id": "esi-salesforce",
+      "name": "Salesforce IDIQ (Army/DoW)",
+      "sponsor": "Army (ACC-RI)",
+      "type": "MAC",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "IDIQ (W519TC-26-D-A009) streamlining Salesforce licenses, subscriptions, and professional services for the Army and DoW. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5112",
+          "5182"
+        ],
+        "psc": [
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "salesforce",
+          "crm",
+          "licenses"
+        ]
+      }
+    },
+    {
+      "id": "esi-admc",
+      "name": "Army Desktop & Mobile Computing (ADMC)",
+      "sponsor": "Army CHESS",
+      "type": "MAC",
+      "audience": "gov-wide",
+      "bic": true,
+      "ordering": "direct",
+      "dpa": false,
+      "fee": "No CHESS fee",
+      "scope": "Desktop, laptop, and mobile end-user hardware — open to all federal, all DoW, and Army per DOW ESI; ordering via CHESS IT e-mart. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://chess.army.mil/",
+      "tags": {
+        "naics": [
+          "334",
+          "4234"
+        ],
+        "psc": [
+          "70",
+          "7C"
+        ],
+        "kw": [
+          "desktop",
+          "laptop",
+          "tablet",
+          "workstation",
+          "admc",
+          "end user"
+        ]
+      }
+    },
+    {
+      "id": "esi-adobe-jela",
+      "name": "Adobe JELA (Army, Air Force, DISA)",
+      "sponsor": "DISA",
+      "type": "BPA",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Joint Enterprise License Agreement for Adobe products across the Army, Air Force, DISA, and other DoW components. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5112"
+        ],
+        "psc": [
+          "7A"
+        ],
+        "kw": [
+          "adobe",
+          "acrobat",
+          "creative cloud",
+          "jela"
+        ]
+      }
+    },
+    {
+      "id": "esi-af-oracle",
+      "name": "Air Force Oracle ELA",
+      "sponsor": "Department of the Air Force",
+      "type": "BPA",
+      "audience": "restricted",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Air Force enterprise license agreement for Oracle. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5112"
+        ],
+        "psc": [
+          "7A"
+        ],
+        "kw": [
+          "oracle",
+          "air force",
+          "database"
+        ]
+      }
+    },
+    {
+      "id": "esi-army-oracle",
+      "name": "Army Oracle ELA",
+      "sponsor": "U.S. Army",
+      "type": "BPA",
+      "audience": "restricted",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Army enterprise license agreement for Oracle. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5112"
+        ],
+        "psc": [
+          "7A"
+        ],
+        "kw": [
+          "oracle",
+          "army",
+          "database"
+        ]
+      }
+    },
+    {
+      "id": "esi-army-sap",
+      "name": "Army SAP ELA",
+      "sponsor": "U.S. Army",
+      "type": "BPA",
+      "audience": "restricted",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Army enterprise license agreement — SAP Business Suite Expert User licenses and associated software maintenance. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5112"
+        ],
+        "psc": [
+          "7A"
+        ],
+        "kw": [
+          "sap",
+          "erp",
+          "army"
+        ]
+      }
+    },
+    {
+      "id": "esi-af-hardware",
+      "name": "Air Force Enterprise Hardware Programs",
+      "sponsor": "Department of the Air Force",
+      "type": "Program",
+      "audience": "restricted",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Air Force enterprise hardware buying programs (note: AF IT-product buys are mandatory via GSA 2GIT). Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active per DOW ESI listing.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "334"
+        ],
+        "psc": [
+          "70",
+          "7C"
+        ],
+        "kw": [
+          "air force",
+          "hardware"
+        ]
+      }
+    },
+    {
+      "id": "esi-dla-docsvcs",
+      "name": "DLA Document Services",
+      "sponsor": "DLA",
+      "type": "Program",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "direct",
+      "dpa": false,
+      "fee": null,
+      "scope": "DoW-wide printing, digital conversion, and document management services. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "3231",
+          "5614"
+        ],
+        "psc": [
+          "T0",
+          "76"
+        ],
+        "kw": [
+          "printing",
+          "document",
+          "scanning",
+          "publishing"
+        ]
+      }
+    },
+    {
+      "id": "esi-wireless-spiral4",
+      "name": "DoD Wireless Services Contracts (Spiral 4)",
+      "sponsor": "DoD (Navy-managed)",
+      "type": "MAC",
+      "audience": "gov-wide",
+      "bic": false,
+      "ordering": "direct",
+      "dpa": null,
+      "fee": null,
+      "scope": "Federal-wide IDIQs for cellular/wireless voice and data service and devices. Confirm ordering procedures on the agreement page. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5173",
+          "5172"
+        ],
+        "psc": [
+          "D304",
+          "58"
+        ],
+        "kw": [
+          "wireless",
+          "cellular",
+          "mobile",
+          "phone",
+          "smartphone"
+        ]
+      }
+    },
+    {
+      "id": "esi-nen-euhw",
+      "name": "Naval Enterprise Networks End User Hardware (NEN EUHW)",
+      "sponsor": "Department of the Navy",
+      "type": "BPA",
+      "audience": "don",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Navy/Marine Corps end-user hardware under the NEN program. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "334"
+        ],
+        "psc": [
+          "70",
+          "7C"
+        ],
+        "kw": [
+          "navy",
+          "hardware",
+          "nmci",
+          "end user"
+        ]
+      }
+    },
+    {
+      "id": "esi-army-veritas",
+      "name": "Veritas ELA (Army)",
+      "sponsor": "U.S. Army",
+      "type": "BPA",
+      "audience": "restricted",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Army enterprise license agreement for Veritas. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5112"
+        ],
+        "psc": [
+          "7A"
+        ],
+        "kw": [
+          "veritas",
+          "backup",
+          "army"
+        ]
+      }
+    },
+    {
+      "id": "esi-educause",
+      "name": "EDUCAUSE (DoW BPA)",
+      "sponsor": "DoD",
+      "type": "BPA",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "BPA listed by DOW ESI for EDUCAUSE-related services for DoW components. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "status": "Active per DOW ESI listing.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "6117"
+        ],
+        "psc": [
+          "U0"
+        ],
+        "kw": [
+          "educause",
+          "education"
+        ]
+      }
     }
   ]
 }
