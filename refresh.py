@@ -476,8 +476,8 @@ def vehicle_watch():
     today = datetime.date.today()
     expired, closing = [], []
     for v in data.get("vehicles", []):
-        if v.get("ordering") in ("closed", "pending"):
-            continue  # already labeled
+        if v.get("ordering") == "pending":
+            continue  # pre-award; listed under "On the horizon"
         end = v.get("ordering_end")
         if not end:
             continue
@@ -499,7 +499,8 @@ def vehicle_watch():
     if expired or closing or stale_dir:
         print("\n⚠ VEHICLE WATCH (assets/vehicles.json)")
         if expired:
-            print("  Entries whose ordering window has CLOSED — mark ordering:'closed' or replace with the successor:")
+            print("  Entries whose ordering window has CLOSED — REMOVE them (owner rule: closed vehicles")
+            print("  are never listed) and add the successor vehicle if one exists:")
             for s in expired:
                 print("    · " + s)
         if closing:

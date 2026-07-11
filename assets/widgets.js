@@ -1231,7 +1231,7 @@
     function loadVehDir() {
       if (vehDir) return Promise.resolve(vehDir);
       if (!vehDirPromise) {
-        vehDirPromise = fetch('/assets/vehicles.json?v=4').then(r => r.ok ? r.json() : null)
+        vehDirPromise = fetch('/assets/vehicles.json?v=5').then(r => r.ok ? r.json() : null)
           .then(d => { vehDir = d; return d; }).catch(() => null);
       }
       return vehDirPromise;
@@ -1325,11 +1325,13 @@
       const all = (vehDir && vehDir.vehicles) || [];
       const q = vehFilter.trim().toLowerCase();
       const hit = (v) => !q || [v.name, v.sponsor, v.type, v.scope, v.status, (v.tags && (v.tags.kw || []).join(' '))].join(' ').toLowerCase().includes(q);
+      // Closed vehicles are never listed (owner rule) — the directory carries only
+      // orderable vehicles plus pre-award successors a CO should plan around.
       const open = (v) => v.ordering !== 'closed' && v.ordering !== 'pending';
       const groups = [
         ['Government-wide', all.filter(v => v.audience === 'gov-wide' && open(v) && hit(v))],
         ['DoD & service-specific', all.filter(v => v.audience !== 'gov-wide' && open(v) && hit(v))],
-        ['Closed, cancelled & pre-award', all.filter(v => !open(v) && hit(v))]
+        ['On the horizon (pre-award)', all.filter(v => v.ordering === 'pending' && hit(v))]
       ];
       const blocks = groups.filter(([, list]) => list.length).map(([label, list]) =>
         `<div class="market-usa-lbl">${esc(label)} (${list.length})</div>` +

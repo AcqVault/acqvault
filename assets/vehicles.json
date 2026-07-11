@@ -321,36 +321,6 @@
       }
     },
     {
-      "id": "oasis-legacy",
-      "name": "GSA OASIS / OASIS SB (legacy)",
-      "sponsor": "GSA",
-      "type": "MAC",
-      "audience": "gov-wide",
-      "bic": false,
-      "ordering": "closed",
-      "dpa": true,
-      "fee": null,
-      "scope": "Predecessor to OASIS+ for complex professional services.",
-      "status": "ORDERING CLOSED — SB/8(a) ended 12/19/2024, Unrestricted ended 3/1/2025. New work goes to OASIS+.",
-      "ordering_end": "2025-03-01",
-      "url": "https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-and-oasis-small-business",
-      "tags": {
-        "naics": [
-          "5413",
-          "5416",
-          "5417"
-        ],
-        "psc": [
-          "R4",
-          "R5",
-          "B5"
-        ],
-        "kw": [
-          "professional services"
-        ]
-      }
-    },
-    {
       "id": "hcats",
       "name": "GSA HCaTS / HCaTS SB",
       "sponsor": "GSA + OPM",
@@ -559,32 +529,6 @@
           "software",
           "cloud",
           "commodities"
-        ]
-      }
-    },
-    {
-      "id": "cio-sp4",
-      "name": "NITAAC CIO-SP4",
-      "sponsor": "NIH (HHS)",
-      "type": "GWAC",
-      "audience": "gov-wide",
-      "bic": null,
-      "ordering": "closed",
-      "dpa": null,
-      "fee": null,
-      "scope": "Planned successor to CIO-SP3 — never stood up.",
-      "status": "CANCELLED (Feb 2026) after protest years; HHS retiring all NITAAC GWACs, requirements transition to GSA.",
-      "ordering_end": null,
-      "url": "https://nitaac.nih.gov/",
-      "tags": {
-        "naics": [
-          "5415"
-        ],
-        "psc": [
-          "D3"
-        ],
-        "kw": [
-          "cio-sp4"
         ]
       }
     },
@@ -800,34 +744,6 @@
           "air force",
           "eitaas",
           "enterprise it"
-        ]
-      }
-    },
-    {
-      "id": "netcents-2",
-      "name": "Air Force NETCENTS-2",
-      "sponsor": "Department of the Air Force",
-      "type": "MAC",
-      "audience": "dod",
-      "bic": false,
-      "ordering": "closed",
-      "dpa": null,
-      "fee": null,
-      "scope": "Former AF IT products/services vehicles.",
-      "status": "EXPIRED — AF IT-product buying is now mandatory via GSA 2GIT; enterprise IT services via EITaaS.",
-      "ordering_end": null,
-      "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/multiple-award-schedule-it/bpas-2git",
-      "tags": {
-        "naics": [
-          "5415"
-        ],
-        "psc": [
-          "D3",
-          "70"
-        ],
-        "kw": [
-          "netcents",
-          "air force"
         ]
       }
     },
@@ -1419,63 +1335,6 @@
           "office",
           "collaboration",
           "email"
-        ]
-      }
-    },
-    {
-      "id": "dhs-firstsource",
-      "name": "DHS FirstSource II / III",
-      "sponsor": "DHS",
-      "type": "MAC",
-      "audience": "gov-wide",
-      "bic": false,
-      "ordering": "closed",
-      "dpa": null,
-      "fee": null,
-      "scope": "Former DHS small-business IT products vehicles.",
-      "status": "CLOSED — FirstSource II expired; FirstSource III cancelled in 2025 (awards terminated) with work redirected to GSA (MAS/OneGov).",
-      "ordering_end": null,
-      "url": "https://www.dhs.gov/",
-      "tags": {
-        "naics": [
-          "334",
-          "5415"
-        ],
-        "psc": [
-          "70",
-          "7C"
-        ],
-        "kw": [
-          "dhs",
-          "firstsource"
-        ]
-      }
-    },
-    {
-      "id": "dhs-pacts-iii",
-      "name": "DHS PACTS III",
-      "sponsor": "DHS",
-      "type": "MAC",
-      "audience": "gov-wide",
-      "bic": false,
-      "ordering": "closed",
-      "dpa": null,
-      "fee": null,
-      "scope": "Planned DHS small-business professional-services vehicle.",
-      "status": "CANCELLED before award (June 2025) under procurement consolidation — DHS directs requirements to GSA OASIS+ and MAS.",
-      "ordering_end": null,
-      "url": "https://www.dhs.gov/",
-      "tags": {
-        "naics": [
-          "5416",
-          "5411"
-        ],
-        "psc": [
-          "R4"
-        ],
-        "kw": [
-          "dhs",
-          "pacts"
         ]
       }
     },
