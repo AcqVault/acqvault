@@ -147,8 +147,15 @@ async function fetchSamSafe(params, apiKey) {
 }
 
 module.exports = async function handler(req, res) {
+  // Rule-of-Two lookups ride GET so Vercel's edge cache actually holds them
+  // (s-maxage on POST responses is ignored by the CDN — every POST would burn
+  // SAM entity quota). GET /api/market-research?mode=sources&naics=XXXXXX
+  if (req.method === 'GET' && req.query && req.query.mode === 'sources') {
+    if (await enforce(req, res, { max: 20 })) return;
+    return sourcesMode({ body: { naics: req.query.naics } }, res, process.env.SAM_API_KEY);
+  }
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
+    res.setHeader('Allow', 'POST, GET');
     return res.status(405).json({ error: 'Method not allowed' });
   }
   if (await enforce(req, res, { max: 20 })) return;
@@ -260,7 +267,7 @@ const ENTITY_URL = 'https://api.sam.gov/entity-information/v3/entities';
 const CERT_BUCKETS = [
   ['eightA', '8(a)', { sbaBusinessTypeCode: 'A6' }],
   ['hubzone', 'HUBZone', { sbaBusinessTypeCode: 'XX' }],
-  ['sdvosb', 'SDVOSB', { sbaBusinessTypeCode: 'QF' }],
+  ['sdvosb', 'SDVOSB', { businessTypeCode: 'QF' }],
   ['wosb', 'WOSB', { businessTypeCode: '8W' }]
 ];
 
@@ -286,8 +293,12 @@ async function sourcesMode(req, res, apiKey) {
     return res.status(200).json({ configured: false, note: 'SAM_API_KEY not configured.' });
   }
   try {
+    // Apples-to-apples: naicsLimitedSB counts entities small under the NAICS in ANY
+    // position, so the companion total must be all registrants LISTING the NAICS
+    // (naicsCode), not primary-NAICS-only — validated live 2026-07-11 (primary-only
+    // came back SMALLER than the small count, which read as nonsense).
     const [total, small] = await Promise.all([
-      entityCount(apiKey, { primaryNaics: naics }),
+      entityCount(apiKey, { naicsCode: naics }),
       entityCount(apiKey, { naicsLimitedSB: naics })
     ]);
     // Cert buckets are best-effort: run in parallel, drop failures individually.

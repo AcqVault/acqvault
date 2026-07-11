@@ -1435,7 +1435,8 @@
       if (naics === r2Sig && (r2State === 'ready' || r2State === 'limited')) { paintR2(); return; }
       r2Sig = naics; r2State = 'loading'; paintR2();
       try {
-        const r = await fetch('/api/market-research', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'sources', naics }) });
+        // GET so the edge cache holds the result (POST is never edge-cached)
+        const r = await fetch('/api/market-research?mode=sources&naics=' + encodeURIComponent(naics));
         const data = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(data.error || 'lookup failed');
         r2Data = data;
@@ -1454,8 +1455,8 @@
       const certs = (d.certs || []).filter(c => c.count > 0);
       return head + `
         <div class="r2-head"><span class="r2-num">${Number(d.smallUnderNaics).toLocaleString()}</span>
-        <span class="r2-lede">active SAM registrants certify as <b>small</b> under NAICS ${esc(naics)}${d.totalRegistrants != null ? ` (of ${Number(d.totalRegistrants).toLocaleString()} with it as primary NAICS)` : ''}</span></div>
-        ${certs.length ? `<div class="market-usa-lbl">Socioeconomic certifications among them</div><div class="comp-sa">${certs.map(c => `<span class="comp-sa-chip">${esc(c.label)} <b>${Number(c.count).toLocaleString()}</b></span>`).join('')}</div>` : ''}
+        <span class="r2-lede">active SAM registrants certify as <b>small</b> under NAICS ${esc(naics)}${d.totalRegistrants != null ? ` (of ${Number(d.totalRegistrants).toLocaleString()} listing this NAICS)` : ''}</span></div>
+        ${certs.length ? `<div class="market-usa-lbl">Socioeconomic representations among them</div><div class="comp-sa">${certs.map(c => `<span class="comp-sa-chip">${esc(c.label)} <b>${Number(c.count).toLocaleString()}</b></span>`).join('')}</div>` : ''}
         <div class="veh-note">Registration signals — but does not prove — capability. Confirm through sources sought, <a class="r2-link" href="https://dsbs.sba.gov/search/dsp_dsbs.cfm" target="_blank" rel="noopener">DSBS</a>, and market outreach before the RFO Part 19 set-aside determination.</div>`;
     }
     // ── FAR/RFO Part 10 market research note (client-side print-to-PDF, CAC-safe) ──
@@ -1610,8 +1611,8 @@
       if (r2State !== 'ready' || !r2Data || r2Data.smallUnderNaics == null) return '';
       const certs = (r2Data.certs || []).filter(c => c.count > 0).map(c => `<span class="chip">${esc(c.label)} <b>${Number(c.count).toLocaleString()}</b></span>`).join('');
       return `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Capable sources — Rule of Two signal</span></div>
-        <div class="pat"><div class="pat-row"><div class="pat-k">NAICS ${esc(r2Data.naics)}</div><div class="pat-v"><span class="chip">Small registrants <b>${Number(r2Data.smallUnderNaics).toLocaleString()}</b></span>${r2Data.totalRegistrants != null ? `<span class="chip">All primary-NAICS registrants <b>${Number(r2Data.totalRegistrants).toLocaleString()}</b></span>` : ''}</div></div>
-        ${certs ? `<div class="pat-row"><div class="pat-k">Certifications</div><div class="pat-v">${certs}</div></div>` : ''}</div>
+        <div class="pat"><div class="pat-row"><div class="pat-k">NAICS ${esc(r2Data.naics)}</div><div class="pat-v"><span class="chip">Small registrants <b>${Number(r2Data.smallUnderNaics).toLocaleString()}</b></span>${r2Data.totalRegistrants != null ? `<span class="chip">All registrants listing this NAICS <b>${Number(r2Data.totalRegistrants).toLocaleString()}</b></span>` : ''}</div></div>
+        ${certs ? `<div class="pat-row"><div class="pat-k">Representations</div><div class="pat-v">${certs}</div></div>` : ''}</div>
         <div class="foot" style="margin-top:8px;border:none;padding:0;">Source: SAM.gov Entity Management — active registrations certifying small under this NAICS. Registration signals capability but does not establish it; confirm via sources sought, DSBS, and outreach before the RFO Part 19 determination.</div></div>`;
     }
     // Existing-vehicles section for the printable note
@@ -1721,7 +1722,7 @@
       }
       if (r2State === 'ready' && r2Data && r2Data.smallUnderNaics != null) {
         L.push('', `CAPABLE SOURCES — RULE OF TWO SIGNAL (SAM.gov, NAICS ${r2Data.naics})`);
-        L.push(`    ${Number(r2Data.smallUnderNaics).toLocaleString()} active registrants certify as small under this NAICS${r2Data.totalRegistrants != null ? ` (${Number(r2Data.totalRegistrants).toLocaleString()} total primary-NAICS registrants)` : ''}`);
+        L.push(`    ${Number(r2Data.smallUnderNaics).toLocaleString()} active registrants certify as small under this NAICS${r2Data.totalRegistrants != null ? ` (${Number(r2Data.totalRegistrants).toLocaleString()} total registrants listing this NAICS)` : ''}`);
         (r2Data.certs || []).filter(c => c.count > 0).forEach(c => L.push(`    ${c.label}: ${Number(c.count).toLocaleString()}`));
         L.push('    Registration signals capability but does not establish it — confirm via sources sought/DSBS before the Part 19 determination.');
       }
