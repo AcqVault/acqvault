@@ -1230,7 +1230,7 @@
     function loadVehDir() {
       if (vehDir) return Promise.resolve(vehDir);
       if (!vehDirPromise) {
-        vehDirPromise = fetch('/assets/vehicles.json?v=1').then(r => r.ok ? r.json() : null)
+        vehDirPromise = fetch('/assets/vehicles.json?v=2').then(r => r.ok ? r.json() : null)
           .then(d => { vehDir = d; return d; }).catch(() => null);
       }
       return vehDirPromise;
@@ -1310,8 +1310,10 @@
     }
     function vehInnerHTML() {
       const c = vehCodes();
-      if (!c.naics.length && !c.psc.length) return '';
       const head = `<div class="market-usa-head">Existing contract vehicles <span class="market-usa-src">USASpending · sponsor pages</span></div>`;
+      if (!c.naics.length && !c.psc.length) {
+        return head + '<div class="market-usa-msg">Search with a NAICS or PSC — or pin notices that carry them — and this panel shows the GWACs, IDIQs, BPAs, and schedules already covering that market: who sponsors them, the access fee, and whether your office can order directly.</div>';
+      }
       let live = '';
       if (vehState === 'loading') live = '<div class="market-usa-msg">Scanning recent ordering activity…</div>';
       else if (vehState === 'error') live = '<div class="market-usa-msg">Vehicle discovery unavailable right now.</div>';
@@ -1596,7 +1598,7 @@
           <button type="button" class="market-board-close" aria-label="Close board" title="Close">×</button>
         </div>
         <div class="market-board-intro">Your working set for a market research note. Pinned opportunities stay on this device.</div>
-        <div class="market-board-body">${n ? patternsHTML() + ((usaCodes().naics.length || usaCodes().psc.length) ? '<div class="market-usa" id="market-usa"></div>' : '') + ((vehCodes().naics.length || vehCodes().psc.length) ? '<div class="market-usa market-veh" id="market-veh"></div>' : '') + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>' + ((vehCodes().naics.length || vehCodes().psc.length) ? '<div class="market-usa market-veh" id="market-veh"></div>' : '')}</div>
+        <div class="market-board-body">${n ? patternsHTML() + ((usaCodes().naics.length || usaCodes().psc.length) ? '<div class="market-usa" id="market-usa"></div>' : '') + '<div class="market-usa market-veh" id="market-veh"></div>' + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>' + '<div class="market-usa market-veh" id="market-veh"></div>'}</div>
         ${n ? '<div class="market-board-foot"><div class="market-board-foot-actions"><button type="button" class="market-board-gen" data-mr-note="1">Generate report</button><button type="button" class="market-board-copy" data-mr-copy="1">Copy snapshot</button></div><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button></div>' : ''}`;
       if (n) loadUsa();
       loadVeh(); // works off searched codes even with an empty board
@@ -1844,10 +1846,24 @@
       boardBtn.type = 'button';
       boardBtn.className = 'market-board-btn';
       boardBtn.setAttribute('aria-haspopup', 'dialog');
+      // Vehicles — the discovery affordance for "what can I already order against?"
+      // Opens the tray and lands on the vehicles panel (which self-explains when
+      // there's no NAICS/PSC context yet).
+      const vehBtn = document.createElement('button');
+      vehBtn.type = 'button';
+      vehBtn.className = 'market-board-btn market-veh-btn';
+      vehBtn.setAttribute('aria-haspopup', 'dialog');
+      vehBtn.setAttribute('aria-label', 'Existing contract vehicles for this market');
+      vehBtn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="13" height="9" rx="1.5"/><path d="M16 11h3.2L21 14v3h-2"/><circle cx="7.5" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg><span>Vehicles</span>';
       resultsHead.appendChild(right);
       right.appendChild(count);
+      right.appendChild(vehBtn);
       right.appendChild(boardBtn);
       boardBtn.addEventListener('click', () => { trayOpen ? closeTray() : openTray(); });
+      vehBtn.addEventListener('click', () => {
+        if (!trayOpen) openTray();
+        setTimeout(() => { boardTray.querySelector('#market-veh')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
+      });
     }
     updateBoardBtn();
     // First-run state: no default query — invite a search or a common market.

@@ -16,7 +16,12 @@
       "status": "Active, evergreen — continuous open solicitation.",
       "ordering_end": null,
       "url": "https://www.gsa.gov/buy-through-us/purchasing-programs/multiple-award-schedule",
-      "tags": { "always": true, "naics": [], "psc": [], "kw": [] }
+      "tags": {
+        "always": true,
+        "naics": [],
+        "psc": [],
+        "kw": []
+      }
     },
     {
       "id": "sewp-v",
@@ -32,7 +37,37 @@
       "status": "Active — NASA intends to extend through 1/31/2027 to bridge to SEWP VI.",
       "ordering_end": "2027-01-31",
       "url": "https://www.sewp.nasa.gov/ordering.shtml",
-      "tags": { "naics": ["5415", "5182", "334", "4234", "42343", "5179"], "psc": ["70", "7A", "7B", "7C", "7G", "7H", "D3", "58"], "kw": ["hardware", "software", "cloud", "laptop", "server", "network", "audio", "video", "it "] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182",
+          "334",
+          "4234",
+          "42343",
+          "5179"
+        ],
+        "psc": [
+          "70",
+          "7A",
+          "7B",
+          "7C",
+          "7G",
+          "7H",
+          "D3",
+          "58"
+        ],
+        "kw": [
+          "hardware",
+          "software",
+          "cloud",
+          "laptop",
+          "server",
+          "network",
+          "audio",
+          "video",
+          "it "
+        ]
+      }
     },
     {
       "id": "sewp-vi",
@@ -48,7 +83,27 @@
       "status": "In transition — awards in process; anticipated period 11/1/2026–10/31/2036; not yet open for ordering.",
       "ordering_end": null,
       "url": "https://www.sewp.nasa.gov/",
-      "tags": { "naics": ["5415", "5182", "334", "4234", "5179"], "psc": ["70", "7A", "7B", "D3"], "kw": ["hardware", "software", "cloud", "it "] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182",
+          "334",
+          "4234",
+          "5179"
+        ],
+        "psc": [
+          "70",
+          "7A",
+          "7B",
+          "D3"
+        ],
+        "kw": [
+          "hardware",
+          "software",
+          "cloud",
+          "it "
+        ]
+      }
     },
     {
       "id": "alliant-2",
@@ -64,7 +119,28 @@
       "status": "Active — ordering period ends 6/30/2028; successor Alliant 3 now open.",
       "ordering_end": "2028-06-30",
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-2",
-      "tags": { "naics": ["5415", "5182", "5179"], "psc": ["D3", "7A", "7B", "7E", "7F", "7J"], "kw": ["it services", "cyber", "cloud", "software development", "systems"] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182",
+          "5179"
+        ],
+        "psc": [
+          "D3",
+          "7A",
+          "7B",
+          "7E",
+          "7F",
+          "7J"
+        ],
+        "kw": [
+          "it services",
+          "cyber",
+          "cloud",
+          "software development",
+          "systems"
+        ]
+      }
     },
     {
       "id": "alliant-3",
@@ -80,7 +156,28 @@
       "status": "OPEN — notice to proceed 3/10/2026; master contract runs to 3/9/2031 + one 5-yr option.",
       "ordering_end": "2036-03-09",
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
-      "tags": { "naics": ["5415", "5182", "5179"], "psc": ["D3", "7A", "7B", "7E", "7F", "7J"], "kw": ["it services", "cyber", "cloud", "software development", "systems"] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182",
+          "5179"
+        ],
+        "psc": [
+          "D3",
+          "7A",
+          "7B",
+          "7E",
+          "7F",
+          "7J"
+        ],
+        "kw": [
+          "it services",
+          "cyber",
+          "cloud",
+          "software development",
+          "systems"
+        ]
+      }
     },
     {
       "id": "stars-iii",
@@ -96,7 +193,23 @@
       "status": "Active — ordering period runs to 7/1/2029.",
       "ordering_end": "2029-07-01",
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/8a-stars-iii",
-      "tags": { "naics": ["5415", "5182"], "psc": ["D3", "7A", "7B"], "kw": ["8(a)", "small business", "it services", "cyber"] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182"
+        ],
+        "psc": [
+          "D3",
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "8(a)",
+          "small business",
+          "it services",
+          "cyber"
+        ]
+      }
     },
     {
       "id": "vets-2",
@@ -112,7 +225,22 @@
       "status": "Active — ordering period runs to 2/22/2028.",
       "ordering_end": "2028-02-22",
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/vets-2",
-      "tags": { "naics": ["5415", "5182"], "psc": ["D3", "7A", "7B"], "kw": ["sdvosb", "veteran", "it services"] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182"
+        ],
+        "psc": [
+          "D3",
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "sdvosb",
+          "veteran",
+          "it services"
+        ]
+      }
     },
     {
       "id": "polaris",
@@ -128,7 +256,24 @@
       "status": "NEWLY OPEN — all four pools open for ordering as of mid-2026; more awards expected through FY2026.",
       "ordering_end": null,
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/polarisr",
-      "tags": { "naics": ["5415", "5182"], "psc": ["D3", "7A", "7B"], "kw": ["small business", "wosb", "hubzone", "sdvosb", "it services"] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182"
+        ],
+        "psc": [
+          "D3",
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "small business",
+          "wosb",
+          "hubzone",
+          "sdvosb",
+          "it services"
+        ]
+      }
     },
     {
       "id": "oasis-plus",
@@ -144,7 +289,36 @@
       "status": "Active and open for ordering — 10-yr families; Phase II rolling awards underway.",
       "ordering_end": null,
       "url": "https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus",
-      "tags": { "naics": ["5413", "5416", "5417", "5419", "5411", "5412", "5629", "5619"], "psc": ["R4", "R5", "R7", "B5", "C1", "C2", "F"], "kw": ["professional services", "engineering", "logistics", "program management", "advisory", "analysis", "support services"] }
+      "tags": {
+        "naics": [
+          "5413",
+          "5416",
+          "5417",
+          "5419",
+          "5411",
+          "5412",
+          "5629",
+          "5619"
+        ],
+        "psc": [
+          "R4",
+          "R5",
+          "R7",
+          "B5",
+          "C1",
+          "C2",
+          "F"
+        ],
+        "kw": [
+          "professional services",
+          "engineering",
+          "logistics",
+          "program management",
+          "advisory",
+          "analysis",
+          "support services"
+        ]
+      }
     },
     {
       "id": "oasis-legacy",
@@ -160,7 +334,21 @@
       "status": "ORDERING CLOSED — SB/8(a) ended 12/19/2024, Unrestricted ended 3/1/2025. New work goes to OASIS+.",
       "ordering_end": "2025-03-01",
       "url": "https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-and-oasis-small-business",
-      "tags": { "naics": ["5413", "5416", "5417"], "psc": ["R4", "R5", "B5"], "kw": ["professional services"] }
+      "tags": {
+        "naics": [
+          "5413",
+          "5416",
+          "5417"
+        ],
+        "psc": [
+          "R4",
+          "R5",
+          "B5"
+        ],
+        "kw": [
+          "professional services"
+        ]
+      }
     },
     {
       "id": "hcats",
@@ -176,7 +364,24 @@
       "status": "SUNSETTING — 8(a) ordering ended 12/21/2025; Unrestricted ends 9/25/2026; SB ends 11/9/2026. Follow-on work → OASIS+ or MAS.",
       "ordering_end": "2026-11-09",
       "url": "https://www.gsa.gov/buy-through-us/products-and-services/human-capital/human-capital-and-training-solutions",
-      "tags": { "naics": ["6114", "5416", "5612"], "psc": ["U0", "R7", "R4"], "kw": ["training", "human capital", "workforce", "hr "] }
+      "tags": {
+        "naics": [
+          "6114",
+          "5416",
+          "5612"
+        ],
+        "psc": [
+          "U0",
+          "R7",
+          "R4"
+        ],
+        "kw": [
+          "training",
+          "human capital",
+          "workforce",
+          "hr "
+        ]
+      }
     },
     {
       "id": "eis",
@@ -192,7 +397,26 @@
       "status": "Active — all task orders must end by 7/30/2032; GSA researching the successor.",
       "ordering_end": "2032-07-30",
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/telecommunications-and-network-services/enterprise-infrastructure-solutions",
-      "tags": { "naics": ["5171", "5179", "5182"], "psc": ["D304", "58", "7G"], "kw": ["telecom", "network", "wireless", "internet", "voice", "circuits"] }
+      "tags": {
+        "naics": [
+          "5171",
+          "5179",
+          "5182"
+        ],
+        "psc": [
+          "D304",
+          "58",
+          "7G"
+        ],
+        "kw": [
+          "telecom",
+          "network",
+          "wireless",
+          "internet",
+          "voice",
+          "circuits"
+        ]
+      }
     },
     {
       "id": "2git",
@@ -208,7 +432,27 @@
       "status": "Active but ENDING — ordering period closes 9/30/2026; follow-on not yet announced.",
       "ordering_end": "2026-09-30",
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/multiple-award-schedule-it/bpas-2git",
-      "tags": { "naics": ["334", "5415", "4234", "5112"], "psc": ["70", "7A", "7B", "7C"], "kw": ["hardware", "software", "laptop", "cots", "air force"] }
+      "tags": {
+        "naics": [
+          "334",
+          "5415",
+          "4234",
+          "5112"
+        ],
+        "psc": [
+          "70",
+          "7A",
+          "7B",
+          "7C"
+        ],
+        "kw": [
+          "hardware",
+          "software",
+          "laptop",
+          "cots",
+          "air force"
+        ]
+      }
     },
     {
       "id": "astro",
@@ -224,7 +468,31 @@
       "status": "Active. Task orders are signed only by GSA AAS contracting officers — requiring activities go through GSA AAS.",
       "ordering_end": null,
       "url": "https://aas.gsa.gov/astro/",
-      "tags": { "naics": ["3364", "5413", "5417", "4881", "3339"], "psc": ["AC", "J0", "R4", "17"], "kw": ["uas", "uav", "drone", "aircraft", "unmanned", "robotics", "platform", "isr"] }
+      "tags": {
+        "naics": [
+          "3364",
+          "5413",
+          "5417",
+          "4881",
+          "3339"
+        ],
+        "psc": [
+          "AC",
+          "J0",
+          "R4",
+          "17"
+        ],
+        "kw": [
+          "uas",
+          "uav",
+          "drone",
+          "aircraft",
+          "unmanned",
+          "robotics",
+          "platform",
+          "isr"
+        ]
+      }
     },
     {
       "id": "cio-sp3",
@@ -240,7 +508,24 @@
       "status": "SUNSETTING — final day to award new orders 10/29/2026; orders awarded on/after 6/8/2026 end by 12/31/2028. HHS is retiring all NITAAC GWACs; work transitions to GSA vehicles.",
       "ordering_end": "2026-10-29",
       "url": "https://nitaac.nih.gov/gwacs/cio-sp3",
-      "tags": { "naics": ["5415", "5182", "6215"], "psc": ["D3", "7A", "7B"], "kw": ["it services", "health it", "biomedical", "cyber"] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182",
+          "6215"
+        ],
+        "psc": [
+          "D3",
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "it services",
+          "health it",
+          "biomedical",
+          "cyber"
+        ]
+      }
     },
     {
       "id": "cio-cs",
@@ -256,7 +541,26 @@
       "status": "SUNSETTING — extended through 10/29/2026 (final ordering day); same NITAAC-wide retirement.",
       "ordering_end": "2026-10-29",
       "url": "https://nitaac.nih.gov/gwacs/cio-cs",
-      "tags": { "naics": ["334", "5415", "5112", "4234"], "psc": ["70", "7A", "7B", "7C"], "kw": ["hardware", "software", "cloud", "commodities"] }
+      "tags": {
+        "naics": [
+          "334",
+          "5415",
+          "5112",
+          "4234"
+        ],
+        "psc": [
+          "70",
+          "7A",
+          "7B",
+          "7C"
+        ],
+        "kw": [
+          "hardware",
+          "software",
+          "cloud",
+          "commodities"
+        ]
+      }
     },
     {
       "id": "cio-sp4",
@@ -272,7 +576,17 @@
       "status": "CANCELLED (Feb 2026) after protest years; HHS retiring all NITAAC GWACs, requirements transition to GSA.",
       "ordering_end": null,
       "url": "https://nitaac.nih.gov/",
-      "tags": { "naics": ["5415"], "psc": ["D3"], "kw": ["cio-sp4"] }
+      "tags": {
+        "naics": [
+          "5415"
+        ],
+        "psc": [
+          "D3"
+        ],
+        "kw": [
+          "cio-sp4"
+        ]
+      }
     },
     {
       "id": "ites-3s",
@@ -285,10 +599,26 @@
       "dpa": false,
       "fee": "No fee",
       "scope": "IT services — cybersecurity, cloud, network/systems O&M, enterprise integration. Army's preferred source for IT services; open to DoD and other agencies via CHESS IT e-mart.",
-      "status": "Active but late-life — options run to ~9/25/2027; ITES-4S follow-on in source selection.",
+      "status": "Active but late-life — options run to ~9/25/2027; successor is Army MAPS (pre-award; the planned ITES-4S was scrapped and folded into MAPS).",
       "ordering_end": "2027-09-25",
       "url": "https://chess.army.mil/",
-      "tags": { "naics": ["5415", "5182"], "psc": ["D3", "7A", "7B"], "kw": ["army", "it services", "cyber", "network"] }
+      "tags": {
+        "naics": [
+          "5415",
+          "5182"
+        ],
+        "psc": [
+          "D3",
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "army",
+          "it services",
+          "cyber",
+          "network"
+        ]
+      }
     },
     {
       "id": "ites-sw2",
@@ -304,7 +634,24 @@
       "status": "Active — 5-yr option runs to 8/30/2030 (confirm option status on chess.army.mil).",
       "ordering_end": "2030-08-30",
       "url": "https://chess.army.mil/Contract/Program?Name=ITES-SW2",
-      "tags": { "naics": ["5112", "5132", "5415"], "psc": ["7A", "7B", "70"], "kw": ["software", "licenses", "army", "cots"] }
+      "tags": {
+        "naics": [
+          "5112",
+          "5132",
+          "5415"
+        ],
+        "psc": [
+          "7A",
+          "7B",
+          "70"
+        ],
+        "kw": [
+          "software",
+          "licenses",
+          "army",
+          "cots"
+        ]
+      }
     },
     {
       "id": "ites-4h",
@@ -320,7 +667,23 @@
       "status": "Active — awarded September 2025; runs to ~2035 with option.",
       "ordering_end": "2035-09-30",
       "url": "https://chess.army.mil/Contract/Program?Name=ITES-4H",
-      "tags": { "naics": ["334", "4234"], "psc": ["70", "7C", "7H"], "kw": ["hardware", "server", "storage", "army"] }
+      "tags": {
+        "naics": [
+          "334",
+          "4234"
+        ],
+        "psc": [
+          "70",
+          "7C",
+          "7H"
+        ],
+        "kw": [
+          "hardware",
+          "server",
+          "storage",
+          "army"
+        ]
+      }
     },
     {
       "id": "seaport-nxg",
@@ -336,7 +699,24 @@
       "status": "Active — ordering period runs to 1/1/2029; rolling admissions add primes.",
       "ordering_end": "2029-01-01",
       "url": "https://www.seaport.navy.mil/",
-      "tags": { "naics": ["5413", "5416", "5417"], "psc": ["R4", "B5", "AC"], "kw": ["navy", "engineering", "program management", "navsea"] }
+      "tags": {
+        "naics": [
+          "5413",
+          "5416",
+          "5417"
+        ],
+        "psc": [
+          "R4",
+          "B5",
+          "AC"
+        ],
+        "kw": [
+          "navy",
+          "engineering",
+          "program management",
+          "navsea"
+        ]
+      }
     },
     {
       "id": "encore-iii",
@@ -352,7 +732,20 @@
       "status": "Late-life — large task orders being recompeted in 2026; end date and successor not published (verify with DITCO before planning new orders).",
       "ordering_end": null,
       "url": "https://www.ditco.disa.mil/contracts/?vc=ENCOR3FO",
-      "tags": { "naics": ["5415"], "psc": ["D3", "7A"], "kw": ["disa", "dod it", "defense"] }
+      "tags": {
+        "naics": [
+          "5415"
+        ],
+        "psc": [
+          "D3",
+          "7A"
+        ],
+        "kw": [
+          "disa",
+          "dod it",
+          "defense"
+        ]
+      }
     },
     {
       "id": "site-iii",
@@ -368,7 +761,19 @@
       "status": "Active — option period runs to 3/1/2031.",
       "ordering_end": "2031-03-01",
       "url": "https://www.dia.mil/Business/SITE-III/",
-      "tags": { "naics": ["5415"], "psc": ["D3"], "kw": ["dia", "nga", "intelligence"] }
+      "tags": {
+        "naics": [
+          "5415"
+        ],
+        "psc": [
+          "D3"
+        ],
+        "kw": [
+          "dia",
+          "nga",
+          "intelligence"
+        ]
+      }
     },
     {
       "id": "eitaas",
@@ -384,7 +789,19 @@
       "status": "Active — work expected complete by August 2032.",
       "ordering_end": "2032-08-31",
       "url": "https://www.aflcmc.af.mil/NEWS/Article-Display/Article/3377799/eitaas-wave-1-services-awarded-in-57b-agreement/",
-      "tags": { "naics": ["5415"], "psc": ["D3"], "kw": ["air force", "eitaas", "enterprise it"] }
+      "tags": {
+        "naics": [
+          "5415"
+        ],
+        "psc": [
+          "D3"
+        ],
+        "kw": [
+          "air force",
+          "eitaas",
+          "enterprise it"
+        ]
+      }
     },
     {
       "id": "netcents-2",
@@ -400,7 +817,19 @@
       "status": "EXPIRED — AF IT-product buying is now mandatory via GSA 2GIT; enterprise IT services via EITaaS.",
       "ordering_end": null,
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/multiple-award-schedule-it/bpas-2git",
-      "tags": { "naics": ["5415"], "psc": ["D3", "70"], "kw": ["netcents", "air force"] }
+      "tags": {
+        "naics": [
+          "5415"
+        ],
+        "psc": [
+          "D3",
+          "70"
+        ],
+        "kw": [
+          "netcents",
+          "air force"
+        ]
+      }
     },
     {
       "id": "dla-soe",
@@ -416,7 +845,25 @@
       "status": "Active program of record.",
       "ordering_end": null,
       "url": "https://www.dla.mil/Troop-Support/Construction-and-Equipment/Spec-Ops-marine-lifesaving/",
-      "tags": { "naics": ["4242", "3399", "3169"], "psc": ["84", "42", "13"], "kw": ["tactical", "diving", "survival", "gear", "equipment"] }
+      "tags": {
+        "naics": [
+          "4242",
+          "3399",
+          "3169"
+        ],
+        "psc": [
+          "84",
+          "42",
+          "13"
+        ],
+        "kw": [
+          "tactical",
+          "diving",
+          "survival",
+          "gear",
+          "equipment"
+        ]
+      }
     },
     {
       "id": "dla-fese",
@@ -432,7 +879,21 @@
       "status": "Active.",
       "ordering_end": null,
       "url": "https://www.dla.mil/Portals/104/Documents/TroopSupport/ConstructionandEquipment/FESE/FESE%20CustomerGuidelines%20(February%202022).pdf",
-      "tags": { "naics": ["4242", "3399"], "psc": ["42"], "kw": ["fire", "emergency", "rescue", "wildland"] }
+      "tags": {
+        "naics": [
+          "4242",
+          "3399"
+        ],
+        "psc": [
+          "42"
+        ],
+        "kw": [
+          "fire",
+          "emergency",
+          "rescue",
+          "wildland"
+        ]
+      }
     },
     {
       "id": "dla-mro",
@@ -448,7 +909,506 @@
       "status": "Active.",
       "ordering_end": null,
       "url": "https://www.dla.mil/Portals/104/Documents/TroopSupport/ConstructionandEquipment/MRO_CustomerGuidance.pdf",
-      "tags": { "naics": ["2382", "5617", "4441"], "psc": ["S2", "51", "53", "56"], "kw": ["mro", "maintenance", "repair", "facilities", "supplies"] }
+      "tags": {
+        "naics": [
+          "2382",
+          "5617",
+          "4441"
+        ],
+        "psc": [
+          "S2",
+          "51",
+          "53",
+          "56"
+        ],
+        "kw": [
+          "mro",
+          "maintenance",
+          "repair",
+          "facilities",
+          "supplies"
+        ]
+      }
+    },
+    {
+      "id": "va-t4ng2",
+      "name": "VA T4NG2 (Transformation Twenty-One Total Technology NG2)",
+      "sponsor": "VA Technology Acquisition Center",
+      "type": "MAC",
+      "audience": "gov-wide",
+      "bic": false,
+      "ordering": "assisted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Full-range IT and health-IT services — $60.7B, 10 years, 33 primes (~17 SDVOSB). Ordering runs through VA TAC; OMB Tier 2 multi-agency designation.",
+      "status": "OPEN — cleared for task orders after the final protests were denied (Mar 2026); legacy T4NG winding down.",
+      "ordering_end": null,
+      "url": "https://www.va.gov/opal/tac/t4ng.asp",
+      "tags": {
+        "naics": [
+          "5415",
+          "5182",
+          "6215"
+        ],
+        "psc": [
+          "D3",
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "va",
+          "health it",
+          "ehr",
+          "veterans"
+        ]
+      }
+    },
+    {
+      "id": "va-fss",
+      "name": "VA Federal Supply Schedules (healthcare)",
+      "sponsor": "VA National Acquisition Center",
+      "type": "FSS",
+      "audience": "gov-wide",
+      "bic": null,
+      "ordering": "direct",
+      "dpa": false,
+      "fee": "IFF built into schedule prices",
+      "scope": "Nine healthcare schedules — pharmaceuticals (statutory Big-4 pricing), medical/dental/lab equipment and supplies, patient mobility, healthcare staffing. ~1,600 contracts, >$25B annual sales; open to all federal agencies.",
+      "status": "Active, continuous open season.",
+      "ordering_end": null,
+      "url": "https://department.va.gov/procurement-acquisition-and-logistics/national-acquisition-center/federal-supply-schedule-service/",
+      "tags": {
+        "naics": [
+          "3254",
+          "4242",
+          "3391",
+          "6215",
+          "5613",
+          "3345"
+        ],
+        "psc": [
+          "65",
+          "66",
+          "Q"
+        ],
+        "kw": [
+          "pharmaceutical",
+          "medical",
+          "dental",
+          "drug",
+          "lab",
+          "healthcare",
+          "staffing"
+        ]
+      }
+    },
+    {
+      "id": "army-rs3",
+      "name": "Army RS3 (Responsive Strategic Sourcing for Services)",
+      "sponsor": "Army ACC-APG",
+      "type": "MAC",
+      "audience": "gov-wide",
+      "bic": false,
+      "ordering": "direct-dpa",
+      "dpa": true,
+      "fee": "0.25% task-order admin fee for outside contracting offices",
+      "scope": "C4ISR-related services worldwide — engineering, RDT&E, logistics, acquisition support, training. $37.4B ceiling; open to DoD and federal agencies with in-scope requirements.",
+      "status": "Active but sunsetting — ordering period runs into 2027; successor is Army MAPS (pre-award).",
+      "ordering_end": null,
+      "url": "https://acc.army.mil/contractingcenters/acc-apg/RS3/",
+      "tags": {
+        "naics": [
+          "5415",
+          "5413",
+          "5417"
+        ],
+        "psc": [
+          "D3",
+          "R4",
+          "AC"
+        ],
+        "kw": [
+          "c4isr",
+          "intelligence",
+          "sensors",
+          "army",
+          "engineering"
+        ]
+      }
+    },
+    {
+      "id": "army-maps",
+      "name": "Army MAPS (Marketplace for the Acquisition of Professional Services)",
+      "sponsor": "Army ACC-APG",
+      "type": "MAC",
+      "audience": "dod",
+      "bic": null,
+      "ordering": "pending",
+      "dpa": null,
+      "fee": null,
+      "scope": "$50B, 10-yr consolidated successor to RS3 and ITES-3S (the scrapped ITES-4S/ACCESS plans folded in) — the future of Army services buying.",
+      "status": "PRE-AWARD — final RFP released Apr 2026, proposals were due May 2026; watch for awards.",
+      "ordering_end": null,
+      "url": "https://www.army.mil/article/278805/",
+      "tags": {
+        "naics": [
+          "5415",
+          "5413",
+          "5416",
+          "5417"
+        ],
+        "psc": [
+          "D3",
+          "R4"
+        ],
+        "kw": [
+          "army",
+          "professional services",
+          "maps"
+        ]
+      }
+    },
+    {
+      "id": "dod-esi",
+      "name": "DoD Enterprise Software Initiative (ESI)",
+      "sponsor": "DoD CIO",
+      "type": "BPA",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "Enterprise software agreements/BPAs for major COTS publishers (Microsoft, Oracle, SAP, VMware…). DFARS 208.74 makes checking ESI MANDATORY before DoD buys commercial software.",
+      "status": "Active.",
+      "ordering_end": null,
+      "url": "https://www.esi.mil/",
+      "tags": {
+        "naics": [
+          "5112",
+          "5132"
+        ],
+        "psc": [
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "software",
+          "license",
+          "microsoft",
+          "oracle",
+          "vmware",
+          "dod"
+        ]
+      }
+    },
+    {
+      "id": "dla-ecat",
+      "name": "DLA ECAT (medical Electronic Catalog)",
+      "sponsor": "DLA Troop Support Medical",
+      "type": "Program",
+      "audience": "gov-wide",
+      "bic": false,
+      "ordering": "direct",
+      "dpa": false,
+      "fee": "DLA cost-recovery built into catalog prices",
+      "scope": "~1.3M medical, dental, and lab items ordered through the ECAT web platform over DLA contracts — DoD plus other federal agencies (VA is a major customer).",
+      "status": "Active (25+ years running, ~$1B/yr).",
+      "ordering_end": null,
+      "url": "https://www.dla.mil/Troop-Support/Medical/ECAT/",
+      "tags": {
+        "naics": [
+          "3391",
+          "4242",
+          "3345"
+        ],
+        "psc": [
+          "65",
+          "66"
+        ],
+        "kw": [
+          "medical",
+          "dental",
+          "lab",
+          "supplies"
+        ]
+      }
+    },
+    {
+      "id": "gsa-comsatcom",
+      "name": "GSA COMSATCOM (MAS SIN 517410)",
+      "sponsor": "GSA ITC + DISA",
+      "type": "FSS",
+      "audience": "gov-wide",
+      "bic": true,
+      "ordering": "direct",
+      "dpa": false,
+      "fee": "0.75% (SIN ordering; legacy custom-solutions IDIQs carried 2.00%)",
+      "scope": "Commercial satellite communications — transponded capacity, subscription/managed services, satphones, terminals; any commercial band.",
+      "status": "Active as a MAS SIN (the legacy CS2/CS3 custom IDIQs have wound down).",
+      "ordering_end": null,
+      "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/telecommunications-and-network-services/satellite-communications/comsatcom",
+      "tags": {
+        "naics": [
+          "5174"
+        ],
+        "psc": [
+          "D3",
+          "58",
+          "7G"
+        ],
+        "kw": [
+          "satellite",
+          "satcom",
+          "bandwidth",
+          "comsatcom"
+        ]
+      }
+    },
+    {
+      "id": "disa-jwcc",
+      "name": "DISA JWCC (Joint Warfighting Cloud Capability)",
+      "sponsor": "DISA",
+      "type": "MAC",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "assisted",
+      "dpa": null,
+      "fee": null,
+      "scope": "$9B multi-vendor cloud IDIQ (AWS, Google, Microsoft, Oracle) for DoD — orders flow through DISA DITCO via the DAPPS portal.",
+      "status": "Active — ordering through June 2028; JWCC Next solicitation planned FY26 with awards targeted early 2027.",
+      "ordering_end": "2028-06-30",
+      "url": "https://www.disa.mil/",
+      "tags": {
+        "naics": [
+          "5182",
+          "5415"
+        ],
+        "psc": [
+          "7B",
+          "D3"
+        ],
+        "kw": [
+          "cloud",
+          "hosting",
+          "jwcc",
+          "aws",
+          "azure"
+        ]
+      }
+    },
+    {
+      "id": "dod-iac-mac",
+      "name": "DoD IAC MAC (Information Analysis Centers)",
+      "sponsor": "DTIC (ACC-APG contracting)",
+      "type": "MAC",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "assisted",
+      "dpa": null,
+      "fee": null,
+      "scope": "$48B IDIQ for DoD scientific/technical R&D analysis across 3 pools, with fully-assisted requirements development.",
+      "status": "Active — ordering period through 9/29/2027.",
+      "ordering_end": "2027-09-29",
+      "url": "https://dodiac.dtic.mil/",
+      "tags": {
+        "naics": [
+          "5417",
+          "5415"
+        ],
+        "psc": [
+          "AC",
+          "B5",
+          "D3"
+        ],
+        "kw": [
+          "research",
+          "analysis",
+          "r&d",
+          "technical",
+          "dtic"
+        ]
+      }
+    },
+    {
+      "id": "af-ewaac",
+      "name": "Air Force EWAAC (Enterprise Wide Agile Acquisition Contract)",
+      "sponsor": "AFLCMC/EB (Eglin)",
+      "type": "MAC",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "$46B multi-award IDIQ for agile weapons-system development and acquisition; repeated on-ramps have grown the vendor pool. Verify ordering rules with AFLCMC/EB.",
+      "status": "Active — ordering options run to 9/9/2031.",
+      "ordering_end": "2031-09-09",
+      "url": "https://www.eglin.af.mil/News/Article-Display/Article/2801006/",
+      "tags": {
+        "naics": [
+          "5417",
+          "3364",
+          "5415"
+        ],
+        "psc": [
+          "AC",
+          "D3"
+        ],
+        "kw": [
+          "weapons",
+          "agile",
+          "development",
+          "air force"
+        ]
+      }
+    },
+    {
+      "id": "gsa-onegov",
+      "name": "GSA OneGov agreements",
+      "sponsor": "GSA",
+      "type": "Program",
+      "audience": "gov-wide",
+      "bic": null,
+      "ordering": "direct",
+      "dpa": false,
+      "fee": null,
+      "scope": "Government-wide OEM-level agreements and discounts negotiated directly with major software makers (Google, Adobe, Salesforce, Microsoft…), generally delivered through MAS. Where cancelled agency vehicles (DHS FirstSource III, PACTS III) point their workload.",
+      "status": "Active and expanding (2025–26 GSA strategy).",
+      "ordering_end": null,
+      "url": "https://www.gsa.gov/",
+      "tags": {
+        "naics": [
+          "5112"
+        ],
+        "psc": [
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "adobe",
+          "google",
+          "salesforce",
+          "microsoft",
+          "oem",
+          "onegov"
+        ]
+      }
+    },
+    {
+      "id": "disa-deos",
+      "name": "DISA DEOS (Defense Enterprise Office Solutions)",
+      "sponsor": "DISA + GSA",
+      "type": "BPA",
+      "audience": "dod",
+      "bic": false,
+      "ordering": "restricted",
+      "dpa": null,
+      "fee": null,
+      "scope": "GSA-Schedule BPA for DoD-wide Microsoft 365 collaboration (~$4.4B). Confirm current status with DISA before planning orders.",
+      "status": "Active per last official reporting — verify current status.",
+      "ordering_end": null,
+      "url": "https://www.disa.mil/",
+      "tags": {
+        "naics": [
+          "5112",
+          "5182"
+        ],
+        "psc": [
+          "7A",
+          "7B"
+        ],
+        "kw": [
+          "microsoft 365",
+          "office",
+          "collaboration",
+          "email"
+        ]
+      }
+    },
+    {
+      "id": "dhs-firstsource",
+      "name": "DHS FirstSource II / III",
+      "sponsor": "DHS",
+      "type": "MAC",
+      "audience": "gov-wide",
+      "bic": false,
+      "ordering": "closed",
+      "dpa": null,
+      "fee": null,
+      "scope": "Former DHS small-business IT products vehicles.",
+      "status": "CLOSED — FirstSource II expired; FirstSource III cancelled in 2025 (awards terminated) with work redirected to GSA (MAS/OneGov).",
+      "ordering_end": null,
+      "url": "https://www.dhs.gov/",
+      "tags": {
+        "naics": [
+          "334",
+          "5415"
+        ],
+        "psc": [
+          "70",
+          "7C"
+        ],
+        "kw": [
+          "dhs",
+          "firstsource"
+        ]
+      }
+    },
+    {
+      "id": "dhs-pacts-iii",
+      "name": "DHS PACTS III",
+      "sponsor": "DHS",
+      "type": "MAC",
+      "audience": "gov-wide",
+      "bic": false,
+      "ordering": "closed",
+      "dpa": null,
+      "fee": null,
+      "scope": "Planned DHS small-business professional-services vehicle.",
+      "status": "CANCELLED before award (June 2025) under procurement consolidation — DHS directs requirements to GSA OASIS+ and MAS.",
+      "ordering_end": null,
+      "url": "https://www.dhs.gov/",
+      "tags": {
+        "naics": [
+          "5416",
+          "5411"
+        ],
+        "psc": [
+          "R4"
+        ],
+        "kw": [
+          "dhs",
+          "pacts"
+        ]
+      }
+    },
+    {
+      "id": "dla-wfpp",
+      "name": "DLA Wildland Fire Protection Program",
+      "sponsor": "DLA Troop Support",
+      "type": "Program",
+      "audience": "gov-wide",
+      "bic": false,
+      "ordering": "direct",
+      "dpa": false,
+      "fee": "DLA cost-recovery embedded in price",
+      "scope": "250+ NWCG/NFES wildland fire supplies and equipment via FedMall — federal, state, and local fire agencies (state/local pre-pay by card).",
+      "status": "Active at DLA since 2014 (transferred from GSA; no GSA wildland fire program remains).",
+      "ordering_end": null,
+      "url": "https://www.dla.mil/Troop-Support/",
+      "tags": {
+        "naics": [
+          "4242",
+          "3399"
+        ],
+        "psc": [
+          "42"
+        ],
+        "kw": [
+          "wildland",
+          "fire",
+          "nfes"
+        ]
+      }
     }
   ]
 }
