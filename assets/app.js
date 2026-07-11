@@ -815,7 +815,19 @@ function dafiNativeTableHTML(key) {
   </div>`;
 }
 
-function renderContentLine(line, baseCitation, source) {
+// Track the paragraph-token path within one section so nested paragraphs cite
+// their FULL path — a "(1)" under "(a)" is 15.404-1(a)(1), not 15.404-1(1). The
+// L{n} ingest levels are authoritative: a token at level n replaces everything
+// at n and deeper; a continuation line (no leading token) keeps the current path.
+function makeParaPath() {
+  let nodes = []; // [{level, token}] shallow→deep
+  return {
+    set(level, token) { nodes = nodes.filter(n => n.level < level); nodes.push({ level, token }); },
+    compose(level) { return nodes.filter(n => n.level <= level).map(n => `(${n.token})`).join(''); }
+  };
+}
+
+function renderContentLine(line, baseCitation, source, paraPath) {
   const lm = line.match(/^L(\d):(.*)/);
   if (lm) {
     const level   = parseInt(lm[1]);
@@ -825,13 +837,26 @@ function renderContentLine(line, baseCitation, source) {
     if (level === 0) return `<p class="br-p">${text}</p>`;
     let cite = baseCitation || '';
     if (cite) {
-      const tokM = content.match(/^\(([^)]+)\)/);
-      if (tokM) {
+      // Only real enumeration tokens — (a) (1) (i) (A) (S-90) — never a leading
+      // cross-reference like "(See 19.301-1(b))". A line may open with SEVERAL
+      // tokens at once ("(b)(1)(A) Every multiyear contract…"): they span the
+      // levels ENDING at this line's level, shallowest first.
+      const toksM = content.match(/^((?:\([A-Za-z0-9]{1,4}(?:-\d{1,3})?\))+)/);
+      const toks = toksM ? Array.from(toksM[1].matchAll(/\(([A-Za-z0-9]{1,4}(?:-\d{1,3})?)\)/g), m => m[1]) : [];
+      let path = '';
+      if (paraPath) {
+        const startLvl = Math.max(1, level - toks.length + 1);
+        toks.forEach((t, i) => paraPath.set(startLvl + i, t));
+        path = paraPath.compose(Math.max(level, startLvl + toks.length - 1));
+      } else if (toks.length) {
+        path = toks.map(t => `(${t})`).join('');
+      }
+      if (path) {
         const dashIdx = cite.indexOf(' — ');
         if (dashIdx !== -1) {
-          cite = cite.slice(0, dashIdx) + `(${tokM[1]})` + cite.slice(dashIdx);
+          cite = cite.slice(0, dashIdx) + path + cite.slice(dashIdx);
         } else {
-          cite = cite + `(${tokM[1]})`;
+          cite = cite + path;
         }
       }
     }
@@ -897,10 +922,20 @@ function renderContentLine(line, baseCitation, source) {
 }
 // ── CITE A SECTION ────────────────────────────────────────────────────────────
 function brCopy(citation, btn) {
-  navigator.clipboard.writeText(citation).catch(() => {});
-  btn.textContent = 'Copied!';
-  btn.classList.add('copied');
-  setTimeout(() => { btn.textContent = 'Cite'; btn.classList.remove('copied'); }, 2000);
+  // Flash "Copied!" only after the text actually lands on the clipboard — a silent
+  // writeText failure used to show success while the clipboard kept the PREVIOUS
+  // citation (pasting then produced the wrong section).
+  const orig = btn.textContent;
+  const flash = () => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(citation).then(flash).catch(() => fallbackCopy(citation, flash));
+  } else {
+    fallbackCopy(citation, flash);
+  }
 }
 
 function scrollBrowseReaderToTop() {
@@ -1206,9 +1241,10 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
     const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
     const visualFlags = {};
+    const paraPath = makeParaPath(); // fresh token path per section
     const bodyHTML = source === 'compass'
       ? formatCompassContent(content, hit, citation)
-      : lines.map(l => renderContentLine(l, citation, source) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
+      : lines.map(l => renderContentLine(l, citation, source, paraPath) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
 
     if (parsed.type === 'subpart') {
       return `<div id="${anchor}" class="br-section">
@@ -1397,8 +1433,10 @@ function generateCitation(hit) {
       : `${label} Subpart ${subM[1]}`;
   }
 
-  // FAR Companion: "FC X.XXX Title"
-  const fcM = title.match(/^FC\s+([\d.]+(?:-\d+)?)\s+(.*)/);
+  // FAR Companion: "FC X.XXX Title" — section numbers may carry paragraph tokens,
+  // e.g. "FC 6.103(b)(1) Use planning…" (79 titles); without the paren group the
+  // match fails and the cite degrades to the bare part ("FAR Companion Part 6").
+  const fcM = title.match(/^FC\s+([\d.]+(?:-\d+)?(?:\([^)]+\))*)\s+(.*)/);
   if (fcM && hit.source === 'far-companion') {
     const fcTitle = fcM[2].replace(/\.$/, '').trim();
     return fcTitle
@@ -1430,6 +1468,16 @@ function generateCitation(hit) {
     return secTitle
       ? `${label} ${levelLabel}${secNum} — ${secTitle}`
       : `${label} ${levelLabel}${secNum}`;
+  }
+
+  // FMR chapters: "Chapter N: Title" — cite volume + chapter, not just the volume
+  const chM = title.match(/^Chapter\s+([\w-]+)\s*[:.\-]?\s*(.*)/i);
+  if (chM && hit.source === 'fmr') {
+    const vol = hit.part ? `${partWord(hit.source)} ${displayPartForSource(hit.source, hit.part)}, ` : '';
+    const chTitle = chM[2].replace(/\.$/, '').trim();
+    return chTitle
+      ? `${label} ${vol}Chapter ${chM[1]} — ${chTitle}`
+      : `${label} ${vol}Chapter ${chM[1]}`;
   }
 
   // Part-level: "Part X — Title" stored as title
