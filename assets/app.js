@@ -952,6 +952,61 @@ function scrollBrowseReaderToTop() {
   window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
 }
 
+// ── Reading wayfinding: floating back-to-top + current-section crumb ──────────
+// Long parts run 90+ sections; the Contents card scrolls away and the inline
+// "Back to top" only exists at the part's very end. After ~2 screens of reading
+// (browse or the full-page reader) a floating ↑ appears, and on desktop the
+// sticky source bar shows which section you're in.
+(function initReadingWayfinding() {
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'float-top'; btn.textContent = '↑';
+  btn.setAttribute('aria-label', 'Back to the top of this document');
+  document.body.appendChild(btn);
+  btn.addEventListener('click', () => {
+    const anchorEl = document.body.classList.contains('reader-mode')
+      ? document.getElementById('reader-content')
+      : document.getElementById('browse-reader');
+    const y = anchorEl ? Math.max(0, anchorEl.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8) : 0;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+
+  const barInner = document.querySelector('.browse-source-bar-inner');
+  let crumb = null;
+  if (barInner) {
+    crumb = document.createElement('span');
+    crumb.className = 'browse-crumb';
+    crumb.setAttribute('aria-live', 'off');
+    barInner.appendChild(crumb);
+  }
+
+  let wayfindTimer = 0;
+  function update() {
+    const readerMode = document.body.classList.contains('reader-mode');
+    const inBrowse = currentMode === 'browse' && browseActivePart != null;
+    btn.classList.toggle('show', (readerMode || inBrowse) && window.scrollY > 1400);
+    if (!crumb) return;
+    if (!inBrowse || readerMode) { crumb.textContent = ''; return; }
+    // Current section = the last one whose top has crossed under the sticky chrome.
+    const secs = document.querySelectorAll('#browse-reader-inner .br-section');
+    const fold = getStickyOffset() + 120;
+    let cur = null;
+    for (const s of secs) {
+      if (s.getBoundingClientRect().top <= fold) cur = s; else break;
+    }
+    if (!cur) { crumb.textContent = ''; return; }
+    const num = cur.querySelector('.br-section-num')?.textContent.trim() || '';
+    const head = cur.querySelector('.br-section-heading')?.textContent.trim()
+      || cur.querySelector('.br-subpart-heading')?.textContent.trim() || '';
+    crumb.textContent = num && head ? `${num} — ${head}` : (num || head);
+  }
+  // Timer throttle, NOT requestAnimationFrame — rAF is paused in backgrounded
+  // tabs (this repo's recurring lesson), and a timer keeps state honest there.
+  window.addEventListener('scroll', () => {
+    if (wayfindTimer) return;
+    wayfindTimer = setTimeout(() => { wayfindTimer = 0; update(); }, 120);
+  }, { passive: true });
+})();
+
 // ── Browse view persistence — survive a tab discard/reload (Chrome Memory Saver
 // drops background tabs when many are open; the browse view is DOM-only, so a
 // reload would otherwise dump you back at the hero). Per-tab via sessionStorage,
@@ -2175,7 +2230,11 @@ function statusClass(status) {
 }
 function badgeTag(status) {
   if (!status || String(status).trim().toLowerCase() === 'unknown') return '';
-  return `<span class="rc-badge ${statusClass(status)}">${esc(status)}</span>`;
+  // Display-normalize the corpus's mixed casings ("active" vs "Active deviation"
+  // vs "Current") without touching the data.
+  const s = String(status).trim();
+  const label = s.charAt(0).toUpperCase() + s.slice(1);
+  return `<span class="rc-badge ${statusClass(status)}">${esc(label)}</span>`;
 }
 function sourceTag(source) {
   const safeSource = source || 'unknown';
