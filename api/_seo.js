@@ -103,6 +103,12 @@ const STYLE = `@font-face{font-family:'Inter';font-style:normal;font-weight:100 
 @font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}
 :root{--ink:#13151b;--muted:#5e5d66;--line:#948b7c;--line2:#e8e5de;--accent:#87651c;--bg:#fff;--brass:#87651c;--brass-ink:#5e4715;--brass-bright:#e4c477;--brass-deep:#6f521a;--brass-line:rgba(154,115,32,0.40);--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif}
 *{box-sizing:border-box}body{margin:0;font-family:'Inter',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(135,101,28,0.16);color:var(--ink)}
+mark{background:rgba(135,101,28,0.20);color:var(--ink);border-radius:2px;padding:0 1px}
+h1,h2,h3{text-wrap:balance}
+html{-webkit-tap-highlight-color:transparent}
+:root{accent-color:var(--accent)}
+:where(button,a,input,select):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wrap{max-width:820px;margin:0 auto;padding:22px 20px 80px}
 .wrap--wide{max-width:1060px}
 header.site{border-bottom:1px solid var(--line);margin-bottom:26px;padding-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}

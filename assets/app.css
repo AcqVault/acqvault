@@ -2042,6 +2042,47 @@ body.work-mode #quick-links{margin-top:0;}
 ::selection{background:rgba(135,101,28,0.16);color:var(--ink);}
 ::-moz-selection{background:rgba(135,101,28,0.16);color:var(--ink);}
 
+/* ── Craft details (2026-07-11): the small things that read as "finished" ── */
+/* Native form controls pick up the brass accent (checkboxes, radios, progress). */
+:root{accent-color:var(--accent);}
+/* Search highlights: one warm brass tint EVERYWHERE — result titles were falling
+   back to the browser's default yellow while snippets were already tinted. */
+mark{background:rgba(135,101,28,0.20);color:var(--ink);border-radius:2px;padding:0 1px;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+/* Headings never orphan a single word on their last line; regulation paragraphs
+   get the better greedy-fit wrap where supported. */
+h1,h2,h3,.br-part-title,.browse-empty-title,.nr-title{text-wrap:balance;}
+.br-p,.br-para-text,.dc-text,.dc-para-text{text-wrap:pretty;}
+/* Numbers that sit next to numbers align like a ledger. */
+.hero-statstrip-count strong,#search-count,.br-meta,.rc-part,.br-toc-link-num,.part-tile-num{font-variant-numeric:tabular-nums;}
+/* Touch: no gray tap flash; no 300ms double-tap delay on controls. */
+html{-webkit-tap-highlight-color:transparent;}
+button,a,[role="button"],input,select{touch-action:manipulation;}
+/* Keyboard baseline: anything interactive shows the brass ring unless a component
+   styles its own (:where keeps this at zero specificity so existing rules win). */
+:where(button,a,[role="button"],input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+/* Pressables give 1px of mechanical feedback. */
+.search-btn:active,.br-cite-btn:active,.br-para-cite:active,.browse-src-pill:active,.part-tile:active,.fpill:active,.mode-btn:active,.float-top.show:active{transform:translateY(1px);}
+/* Inner scrollers get the same thin warm rail in Firefox as in WebKit. */
+.browse-parts-panel,.browse-reader,#drawer .drawer-content,.market-board-tray{scrollbar-width:thin;scrollbar-color:var(--line) transparent;}
+#drawer .drawer-content::-webkit-scrollbar,.market-board-tray::-webkit-scrollbar{width:4px;}
+#drawer .drawer-content::-webkit-scrollbar-thumb,.market-board-tray::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+/* The loading spinner turns like a dial being worked, not a generic ring. */
+.spinner{border:2px solid rgba(135,101,28,0.15);border-top-color:var(--accent);border-right-color:var(--navy-700);animation:spin 0.8s cubic-bezier(0.55,0.15,0.45,0.85) infinite;}
+
+/* ── Print: a CO printing a section gets clean regulation text, not app chrome ── */
+@media print{
+  .about-bar,nav,.browse-source-bar,.browse-parts-panel,.br-part-search,
+  .br-cite-btn,.br-para-cite,.br-back-top,.br-fmr-back,.float-top,
+  .reader-topbar,.reader-aside,.reader-actions,#drawer,#drawer-backdrop,
+  footer,.update-toast,.offline-bar,.stale-bar,.feedback-modal{display:none !important;}
+  body{background:#fff;color:#000;}
+  .browse-reader-inner,.reader-content{max-width:100%;padding:0;}
+  .browse-reader{border:none;box-shadow:none;}
+  .br-section{break-inside:avoid-page;}
+  .br-toc-link{color:#000;}
+  a{text-decoration:none;color:inherit;}
+}
+
 @media (max-width:768px){.br-part-search{top:calc(var(--top-chrome) + 50px);margin-left:-2px;margin-right:-2px;}.br-part-search.compact{left:14px;right:14px;max-width:none;margin:0;}}
 
 /* Product polish */
