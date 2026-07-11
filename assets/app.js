@@ -2036,7 +2036,9 @@ function markOnly(s) {
 document.getElementById('drawer-filter-input').addEventListener('input', function() { filterDrawerContent(this.value); });
 
 function contentFilterRows(rootSelector) {
-  return document.querySelectorAll(`${rootSelector} .dc-section, ${rootSelector} .dc-subpart, ${rootSelector} .dc-para, ${rootSelector} .dc-text, ${rootSelector} .dc-part`);
+  // dc-* rows = drawer-style content; br-section blocks = browse-style content
+  // (the full-page reader now renders through buildReaderHTML).
+  return document.querySelectorAll(`${rootSelector} .dc-section, ${rootSelector} .dc-subpart, ${rootSelector} .dc-para, ${rootSelector} .dc-text, ${rootSelector} .dc-part, ${rootSelector} .br-section`);
 }
 
 function filterContentRows(rootSelector, q, countEl) {
@@ -2468,12 +2470,24 @@ function renderReaderPage(hit) {
   loadFullPartInReader(hit);
 }
 
+// Render hits into the full-page reader through the SAME pipeline as the browse
+// pane (buildReaderHTML) so "open in new tab" reads exactly like Browse by
+// Regulation — part banner, Contents, serif section headers, nested para cites.
+// The reader topbar has its own find-in-document, so drop the injected in-part
+// search bar (it would be unwired here — polish.js only watches the browse pane).
+function renderReaderAsBrowse(contentEl, hits, source, partNum, partLabel) {
+  contentEl.innerHTML = buildReaderHTML(hits, source, partNum, partLabel, hits.length);
+  contentEl.querySelector('#br-part-search')?.remove();
+}
+
 async function loadFullPartInReader(hit) {
   const contentEl = document.getElementById('reader-content');
   contentEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  const dispPart = displayPartForSource(hit.source, hit.part);
+  const partLabel = (PARTS_BY_SOURCE[hit.source] || []).find(([n]) => String(n) === String(dispPart))?.[1] || '';
   // FMR: render just the clicked chapter (the readable unit), not the whole large volume.
   if (hit.source === 'fmr') {
-    contentEl.innerHTML = `<div class="reader-full-section">${formatContent(hit.content || '', hit)}</div>`;
+    renderReaderAsBrowse(contentEl, [hit], 'fmr', dispPart, fmrChapterLabel(hit));
     return;
   }
   try {
@@ -2493,23 +2507,19 @@ async function loadFullPartInReader(hit) {
       offset += pageSize;
     }
     if (!allHits.length) {
-      contentEl.innerHTML = formatContent(hit.content || '', hit);
+      renderReaderAsBrowse(contentEl, [hit], hit.source, dispPart, partLabel);
       return;
     }
-    // Render all sections with anchors
-    let html = '';
-    allHits.forEach(h => {
-      html += `<div id="reader-sec-${h.id}" class="reader-full-section">`;
-      html += formatContent(h.content || '', h);
-      html += '</div>';
-    });
-    contentEl.innerHTML = html;
+    renderReaderAsBrowse(contentEl, allHits, hit.source, dispPart, partLabel);
     resetReaderSearch();
-    // Scroll to the clicked section after render
-    const target = document.getElementById(`reader-sec-${hit.id}`);
-    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    // Scroll to the clicked section after render (buildReaderHTML anchors are sec-<id>).
+    // "Open in new tab" often opens BACKGROUNDED (middle-click): smooth scrolls are
+    // deferred in hidden tabs, so land instantly there — the tab is already positioned
+    // on the section when the user switches to it.
+    const target = document.getElementById(`sec-${hit.id}`);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: document.hidden ? 'instant' : 'smooth', block: 'start' }), 100);
   } catch(e) {
-    contentEl.innerHTML = formatContent(hit.content || '', hit);
+    renderReaderAsBrowse(contentEl, [hit], hit.source, dispPart, partLabel);
     resetReaderSearch();
   }
 }
