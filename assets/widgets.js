@@ -1212,6 +1212,125 @@
         <table style="margin-top:10px"><thead><tr><th style="width:44%">Recipient / awarding agency</th><th style="width:16%">Start</th><th style="width:20%">Obligated</th><th style="width:20%">Type</th></tr></thead><tbody>${rows}</tbody></table>
         <div class="foot" style="margin-top:8px;border:none;padding:0;">Source: USASpending.gov (FPDS) — top contract awards by obligated amount, last ${usaData.years} FY. Authoritative for award $ and incumbent; SAM notices above are a weaker signal for award value.</div></div>`;
     }
+    // ── CONTRACT VEHICLES — "what can I already order against?" ─────────────
+    // Two lanes: (1) live IDV discovery via /api/vehicles (USASpending child-order
+    // grouping — ranks vehicles by actual recent ordering; agency count shows
+    // multi-agency use in practice), and (2) the curated named-vehicle directory
+    // (assets/vehicles.json — ordering model, DPA, access fee, sunset dates, all
+    // from official sponsor pages; facts we could not verify are omitted).
+    let vehData = null, vehState = 'idle', vehSig = '';
+    let vehDir = null, vehDirPromise = null;
+    // Codes: what the user SEARCHED wins; fall back to the pinned board's codes.
+    function vehCodes() {
+      const f = currentFilters();
+      const naics = f.naics ? [f.naics] : mrDistinct(o => o.naicsCode);
+      const psc = f.psc ? [f.psc] : mrDistinct(o => o.classificationCode);
+      return { naics, psc };
+    }
+    function loadVehDir() {
+      if (vehDir) return Promise.resolve(vehDir);
+      if (!vehDirPromise) {
+        vehDirPromise = fetch('/assets/vehicles.json?v=1').then(r => r.ok ? r.json() : null)
+          .then(d => { vehDir = d; return d; }).catch(() => null);
+      }
+      return vehDirPromise;
+    }
+    // Match directory entries to the market: NAICS/PSC prefix tags + query keywords.
+    function vehDirMatches(codes) {
+      if (!vehDir || !Array.isArray(vehDir.vehicles)) return { matched: [], always: [] };
+      const q = ((query?.value || '') + '').toLowerCase();
+      const score = (v) => {
+        const t = v.tags || {};
+        let s = 0;
+        (t.naics || []).forEach(p => codes.naics.forEach(c => { if (c.startsWith(p) || p.startsWith(c)) s += Math.min(p.length, c.length); }));
+        (t.psc || []).forEach(p => codes.psc.forEach(c => { if (c.startsWith(p) || p.startsWith(c)) s += Math.min(p.length, c.length) * 2; }));
+        (t.kw || []).forEach(k => { if (q && q.includes(k)) s += 3; });
+        return s;
+      };
+      const scored = vehDir.vehicles.filter(v => !(v.tags && v.tags.always))
+        .map(v => ({ v, s: score(v) })).filter(x => x.s > 0)
+        .sort((a, b) => b.s - a.s).slice(0, 6).map(x => x.v);
+      const always = vehDir.vehicles.filter(v => v.tags && v.tags.always);
+      return { matched: scored, always };
+    }
+    const VEH_MODEL = {
+      'direct': ['Direct ordering', 'veh-direct'],
+      'direct-dpa': ['Direct · DPA required', 'veh-dpa'],
+      'assisted': ['Assisted — sponsor places the order', 'veh-assisted'],
+      'restricted': ['Restricted community', 'veh-restricted'],
+      'pending': ['Not yet open', 'veh-pending'],
+      'closed': ['Ordering closed', 'veh-closed']
+    };
+    function vehSunset(iso) {
+      if (!iso) return null;
+      const days = Math.floor((new Date(iso) - Date.now()) / 86400000);
+      if (days < 0) return { cls: 'veh-closed', txt: 'ordering closed ' + iso };
+      if (days <= 180) return { cls: 'veh-sunsetting', txt: 'ordering ends ' + iso };
+      return { cls: '', txt: 'ordering to ' + iso };
+    }
+    function paintVeh() { const el = document.getElementById('market-veh'); if (el) el.innerHTML = vehInnerHTML(); }
+    async function loadVeh() {
+      const c = vehCodes();
+      if (!c.naics.length && !c.psc.length) { vehState = 'idle'; paintVeh(); return; }
+      loadVehDir().then(paintVeh); // directory renders as soon as it arrives
+      const sig = c.naics.slice().sort().join(',') + '|' + c.psc.slice().sort().join(',');
+      if (sig === vehSig && (vehState === 'ready' || vehState === 'empty')) { paintVeh(); return; }
+      vehSig = sig; vehState = 'loading'; paintVeh();
+      try {
+        const r = await fetch('/api/vehicles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ naics: c.naics, psc: c.psc }) });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || 'Vehicle discovery failed');
+        vehData = data;
+        vehState = (data.vehicles && data.vehicles.length) ? 'ready' : 'empty';
+      } catch (e) { vehState = 'error'; }
+      paintVeh();
+    }
+    function vehLiveRow(v) {
+      const name = (v.desc || '').replace(/^IGF::[A-Z]+::IGF\s*/i, '').trim() || v.piid || 'Vehicle';
+      const sun = vehSunset(v.lastOrder);
+      const badges = [
+        v.typeLabel ? `<span class="veh-badge">${esc(v.typeLabel)}</span>` : '',
+        v.orderingAgencies > 1 ? `<span class="veh-badge veh-multi">${v.orderingAgencies} agencies ordering</span>` : '',
+        sun ? `<span class="veh-badge ${sun.cls}">${esc(sun.txt)}</span>` : ''
+      ].filter(Boolean).join('');
+      const sub = [v.piid, v.agency, v.recipient].filter(Boolean).join(' · ');
+      const act = v.recentOrders ? `${v.recentOrders} order${v.recentOrders === 1 ? '' : 's'} · ${usaFmt(v.recentObligated)} (2 yrs)` : 'No recent orders sampled';
+      return `<a class="veh-row" href="${escAttr(v.link)}" target="_blank" rel="noopener">
+        <span class="veh-row-top"><span class="veh-name">${esc(name.length > 90 ? name.slice(0, 88) + '…' : name)}</span></span>
+        <span class="veh-row-sub">${esc(sub)}</span>
+        <span class="veh-row-foot">${badges}<span class="veh-act">${esc(act)}</span></span></a>`;
+    }
+    function vehDirRow(v) {
+      const model = VEH_MODEL[v.ordering] || ['', ''];
+      const sun = vehSunset(v.ordering_end);
+      return `<a class="veh-row veh-dirrow" href="${escAttr(v.url)}" target="_blank" rel="noopener">
+        <span class="veh-row-top"><span class="veh-name">${esc(v.name)}</span>${v.bic === true ? '<span class="veh-badge veh-bic">BIC</span>' : ''}</span>
+        <span class="veh-row-sub">${esc(v.sponsor)} · ${esc(v.type)}${v.fee ? ' · ' + esc(v.fee) : ''}</span>
+        <span class="veh-row-foot"><span class="veh-badge ${model[1]}">${esc(model[0])}</span>${sun && sun.cls ? `<span class="veh-badge ${sun.cls}">${esc(sun.txt)}</span>` : ''}</span></a>`;
+    }
+    function vehInnerHTML() {
+      const c = vehCodes();
+      if (!c.naics.length && !c.psc.length) return '';
+      const head = `<div class="market-usa-head">Existing contract vehicles <span class="market-usa-src">USASpending · sponsor pages</span></div>`;
+      let live = '';
+      if (vehState === 'loading') live = '<div class="market-usa-msg">Scanning recent ordering activity…</div>';
+      else if (vehState === 'error') live = '<div class="market-usa-msg">Vehicle discovery unavailable right now.</div>';
+      else if (vehState === 'empty') live = '<div class="market-usa-msg">No vehicles with recent ordering found for these codes.</div>';
+      else if (vehState === 'ready' && vehData) {
+        live = `<div class="market-usa-lbl">Where orders are flowing (last 2 yrs)</div>` + (vehData.vehicles || []).slice(0, 6).map(vehLiveRow).join('');
+      }
+      let dir = '';
+      if (vehDir) {
+        const m = vehDirMatches(c);
+        const rows = m.matched.map(vehDirRow).join('');
+        const always = m.always.map(vehDirRow).join('');
+        if (rows || always) {
+          dir = `<div class="market-usa-lbl">Named vehicles that may fit</div>${rows}${always ? `<div class="market-usa-lbl">Always available</div>${always}` : ''}
+            <div class="veh-note">Ordering rules and fees from official sponsor pages, verified ${esc(vehDir.verified_as_of || '')} — confirm against the linked ordering guide before relying on them. See RFO Part 8 for required sources and RFO 16.505 for fair opportunity on orders.</div>`;
+        }
+      }
+      return head + live + dir;
+    }
     // ── FAR/RFO Part 10 market research note (client-side print-to-PDF, CAC-safe) ──
     const mrDistinct = (getter) => [...new Set(board.map(getter).filter(Boolean))];
     const mrSpan = () => { const d = board.map(o => o.postedDate).filter(Boolean).sort(); return d.length ? (d.length > 1 ? `${d[0]} → ${d[d.length - 1]}` : d[0]) : '—'; };
@@ -1321,8 +1440,39 @@
         const share = total > 0 ? Math.round(100 * (Number(top.total) || 0) / total) : 0;
         paras.push(`Historical award data (USASpending.gov, last ${usaData.years} fiscal years) shows ${cnt ? noun(cnt, 'award', 'awards') + ' across ' : ''}the top ${noun(recs.length, 'recipient', 'recipients')} totaling ${usaFmt(total)}; ${top.name} leads at ${usaFmt(top.total)}${share ? ` (${share}% of that total)` : ''}. Award history is the stronger incumbency signal; the notices above are the demand signal.`);
       }
+      // 5 — existing vehicles, when discovery has run
+      if (vehState === 'ready' && vehData && (vehData.vehicles || []).length) {
+        const vs = vehData.vehicles || [];
+        const active = vs.filter(v => v.orderingAgencies > 1).length;
+        const top = vs[0];
+        const topName = (top.desc || top.piid || 'the leading vehicle').replace(/^IGF::[A-Z]+::IGF\s*/i, '').slice(0, 70);
+        paras.push(`Existing contract vehicles were considered (RFO Part 8; fair opportunity per RFO 16.505): ${vs.length} vehicle${vs.length === 1 ? '' : 's'} show recent ordering in this market${active ? `, ${active} with multi-agency ordering in practice` : ''}, led by ${topName} (${top.recentOrders} order${top.recentOrders === 1 ? '' : 's'}, ${usaFmt(top.recentObligated)} over the last 2 years). Vehicle access rules and fees should be confirmed with the sponsor before selecting an ordering vehicle.`);
+      }
       paras.push('These observations are drawn mechanically from the records itemized below — verify each against the source notice or award record before relying on it in the file.');
       return paras;
+    }
+    // Existing-vehicles section for the printable note
+    function vehNoteHTML() {
+      const c = vehCodes();
+      const hasLive = vehState === 'ready' && vehData && (vehData.vehicles || []).length;
+      const m = vehDir ? vehDirMatches(c) : { matched: [], always: [] };
+      if (!hasLive && !m.matched.length) return '';
+      let rows = '';
+      if (hasLive) {
+        rows = (vehData.vehicles || []).slice(0, 6).map(v => {
+          const name = (v.desc || '').replace(/^IGF::[A-Z]+::IGF\s*/i, '').trim() || v.piid || 'Vehicle';
+          const sun = vehSunset(v.lastOrder);
+          return `<tr><td><div class="t-title">${esc(name.slice(0, 80))}</div><div class="t-org">${esc([v.piid, v.agency].filter(Boolean).join(' · '))}</div></td><td class="t-mono">${esc(v.typeLabel || '—')}</td><td class="t-mono">${v.recentOrders} · ${esc(usaFmt(v.recentObligated))}</td><td class="t-mono">${v.orderingAgencies > 1 ? v.orderingAgencies + ' agencies' : 'sponsor only'}</td><td class="t-mono">${esc(sun ? sun.txt.replace(/^ordering /, '') : '—')}</td></tr>`;
+        }).join('');
+      }
+      const named = m.matched.slice(0, 5).map(v => {
+        const model = (VEH_MODEL[v.ordering] || [''])[0];
+        return `<span class="chip">${esc(v.name)} <b>${esc(model)}${v.fee ? ' · ' + esc(v.fee) : ''}</b></span>`;
+      }).join('');
+      return `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Existing contract vehicles considered</span></div>
+        ${named ? `<div class="pat"><div class="pat-row"><div class="pat-k">Named vehicles</div><div class="pat-v">${named}</div></div></div>` : ''}
+        ${rows ? `<table style="margin-top:10px"><thead><tr><th style="width:38%">Vehicle</th><th style="width:12%">Type</th><th style="width:18%">Orders · $ (2 yrs)</th><th style="width:16%">Ordering agencies</th><th style="width:16%">Ordering window</th></tr></thead><tbody>${rows}</tbody></table>` : ''}
+        <div class="foot" style="margin-top:8px;border:none;padding:0;">Live vehicle data: USASpending.gov (FPDS) order activity grouped by parent vehicle. Named-vehicle rules from official sponsor pages${vehDir && vehDir.verified_as_of ? `, verified ${esc(vehDir.verified_as_of)}` : ''} — confirm fees, DPA requirements, and ordering eligibility with the sponsor. See RFO Part 8 (required sources) and RFO 16.505 (fair opportunity).</div></div>`;
     }
     function mrHTML() {
       const base = location.origin;
@@ -1336,6 +1486,7 @@
         return `<tr><td><div class="t-type">${esc(o.type || 'Opportunity')}</div><div class="t-mono t-muted">${esc(o.postedDate || '')}</div></td><td><div class="t-title">${esc(o.title || 'Untitled')}</div><div class="t-org">${esc(o.organization || '')}</div>${award}</td><td class="t-mono">${esc(np)}</td><td>${esc(o.setAside || '—')}</td><td class="t-mono">${esc(o.solicitationNumber || '—')}</td></tr>`;
       }).join('');
       const usaSec = usaNoteHTML();  // present only when award data loaded
+      const vehSec = vehNoteHTML();  // present only when vehicle data/matches exist
       const narr = mrNarrative();
       const narrSec = narr.length ? `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Narrative summary</span></div><div class="narr">${narr.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="narr-hint no-print">Drafted from the records below — select, copy, and edit to fit the market research report.</div></div>` : '';
       return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><base href="${base}/"><title>AcqVault — Market Research Summary</title><style>${MRCSS}</style></head><body>
@@ -1359,7 +1510,8 @@
             <div class="foot" style="margin-top:8px;border:none;padding:0;">Source records retrieved from SAM.gov via AcqVault. Open each notice at <b>sam.gov</b> using its notice number for the authoritative file, attachments, and full description.</div>
           </div>
           ${usaSec}
-          <div class="guide"><div class="guide-k">Governing guidance</div><div class="guide-t">This market research supports <a href="/rfo/part-10">RFO Part 10</a> (Market Research). Small-business set-asides recur in this market — see <a href="/rfo/part-19">RFO Part 19</a> for the set-aside determination. For commercial-item treatment by PSC, see <a href="/rfo/part-12">RFO Part 12</a>.</div></div>
+          ${vehSec}
+          <div class="guide"><div class="guide-k">Governing guidance</div><div class="guide-t">This market research supports <a href="/rfo/part-10">RFO Part 10</a> (Market Research). Small-business set-asides recur in this market — see <a href="/rfo/part-19">RFO Part 19</a> for the set-aside determination. For commercial-item treatment by PSC, see <a href="/rfo/part-12">RFO Part 12</a>. Existing vehicles: <a href="/rfo/part-8">RFO Part 8</a> and <a href="/?q=16.505">RFO 16.505</a>.</div></div>
           <div class="foot"><b>Generated by AcqVault</b> (acqvault.com) on ${esc(today)} from SAM.gov opportunity data. AcqVault is an <b>unofficial research aid</b> — not legal advice and not an official source. Verify every notice and citation against the official record at sam.gov and the Revolutionary FAR Overhaul before relying on this summary in a contract file.</div>
         </div>
       </body></html>`;
@@ -1393,7 +1545,22 @@
         (usaData.awards || []).slice(0, 8).forEach(a => { L.push(`    ${a.recipient || '—'} — ${usaFmt(a.amount)} · ${a.agency || ''} · ${a.start || ''} · ${a.type || ''}`); if (a.link) L.push(`      ${a.link}`); });
         L.push('  Source: USASpending.gov (FPDS) — authoritative for award $ and incumbent; SAM notices are a weaker signal.');
       }
-      L.push('', 'GOVERNING GUIDANCE: RFO Part 10 (Market Research); RFO Part 19 (set-asides); RFO Part 12 (commercial by PSC).', '', `Generated by AcqVault (acqvault.com) on ${new Date().toISOString().slice(0, 10)} from SAM.gov data. Unofficial research aid — verify against the official record before filing.`);
+      if (vehState === 'ready' && vehData && (vehData.vehicles || []).length) {
+        L.push('', 'EXISTING CONTRACT VEHICLES CONSIDERED (USASpending.gov order activity, last 2 yrs)');
+        (vehData.vehicles || []).slice(0, 6).forEach(v => {
+          const name = (v.desc || '').replace(/^IGF::[A-Z]+::IGF\s*/i, '').trim() || v.piid || 'Vehicle';
+          const sun = vehSunset(v.lastOrder);
+          L.push(`    ${name.slice(0, 80)} — ${v.piid || ''} · ${v.typeLabel || ''} · ${v.recentOrders} orders / ${usaFmt(v.recentObligated)} · ${v.orderingAgencies > 1 ? v.orderingAgencies + ' agencies ordering' : 'sponsor-only ordering'}${sun ? ' · ' + sun.txt : ''}`);
+          if (v.link) L.push(`      ${v.link}`);
+        });
+        const m = vehDir ? vehDirMatches(vehCodes()) : { matched: [] };
+        if (m.matched.length) {
+          L.push('  Named vehicles that may fit (confirm with sponsor):');
+          m.matched.slice(0, 5).forEach(v => L.push(`    ${v.name} — ${(VEH_MODEL[v.ordering] || [''])[0]}${v.fee ? ' · ' + v.fee : ''} · ${v.url}`));
+        }
+        L.push('  See RFO Part 8 (required sources) and RFO 16.505 (fair opportunity on orders).');
+      }
+      L.push('', 'GOVERNING GUIDANCE: RFO Part 10 (Market Research); RFO Part 19 (set-asides); RFO Part 12 (commercial by PSC); RFO Part 8 / 16.505 (existing vehicles).', '', `Generated by AcqVault (acqvault.com) on ${new Date().toISOString().slice(0, 10)} from SAM.gov data. Unofficial research aid — verify against the official record before filing.`);
       return L.join('\n');
     }
     function generateMrNote() {
@@ -1429,9 +1596,10 @@
           <button type="button" class="market-board-close" aria-label="Close board" title="Close">×</button>
         </div>
         <div class="market-board-intro">Your working set for a market research note. Pinned opportunities stay on this device.</div>
-        <div class="market-board-body">${n ? patternsHTML() + ((usaCodes().naics.length || usaCodes().psc.length) ? '<div class="market-usa" id="market-usa"></div>' : '') + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>'}</div>
+        <div class="market-board-body">${n ? patternsHTML() + ((usaCodes().naics.length || usaCodes().psc.length) ? '<div class="market-usa" id="market-usa"></div>' : '') + ((vehCodes().naics.length || vehCodes().psc.length) ? '<div class="market-usa market-veh" id="market-veh"></div>' : '') + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>' + ((vehCodes().naics.length || vehCodes().psc.length) ? '<div class="market-usa market-veh" id="market-veh"></div>' : '')}</div>
         ${n ? '<div class="market-board-foot"><div class="market-board-foot-actions"><button type="button" class="market-board-gen" data-mr-note="1">Generate report</button><button type="button" class="market-board-copy" data-mr-copy="1">Copy snapshot</button></div><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button></div>' : ''}`;
       if (n) loadUsa();
+      loadVeh(); // works off searched codes even with an empty board
     }
     function openTray() {
       renderBoardTray();

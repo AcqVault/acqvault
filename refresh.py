@@ -459,6 +459,63 @@ def study_deck_watch(final_rfo, all_docs, modified):
     return {"broken_deck_cites": broken_out, "review_items": review_out}
 
 
+def vehicle_watch():
+    """Flag curated contract-vehicle entries (assets/vehicles.json) whose ordering
+    windows have closed or close soon, and remind the operator to spot-check the
+    sponsor pages. The directory is never auto-edited — updating it is a supervised
+    job, same as the study deck."""
+    import datetime
+    path = BASE_DIR / "assets" / "vehicles.json"
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text())
+    except Exception as e:
+        print("\n⚠ VEHICLE WATCH: assets/vehicles.json failed to parse ({}) — fix it.".format(e))
+        return {"parse_error": str(e)}
+    today = datetime.date.today()
+    expired, closing = [], []
+    for v in data.get("vehicles", []):
+        if v.get("ordering") in ("closed", "pending"):
+            continue  # already labeled
+        end = v.get("ordering_end")
+        if not end:
+            continue
+        try:
+            d = datetime.date.fromisoformat(end)
+        except ValueError:
+            continue
+        days = (d - today).days
+        if days < 0:
+            expired.append("{} (ordering ended {})".format(v.get("name", v.get("id", "?")), end))
+        elif days <= 180:
+            closing.append("{} (ordering ends {}, {}d)".format(v.get("name", v.get("id", "?")), end, days))
+    verified = data.get("verified_as_of", "")
+    stale_dir = False
+    try:
+        stale_dir = (today - datetime.date.fromisoformat(verified)).days > 120 if verified else True
+    except ValueError:
+        stale_dir = True
+    if expired or closing or stale_dir:
+        print("\n⚠ VEHICLE WATCH (assets/vehicles.json)")
+        if expired:
+            print("  Entries whose ordering window has CLOSED — mark ordering:'closed' or replace with the successor:")
+            for s in expired:
+                print("    · " + s)
+        if closing:
+            print("  Ordering windows closing within 180 days — verify successor/transition guidance:")
+            for s in closing:
+                print("    · " + s)
+        if stale_dir:
+            print("  Directory last verified {} — spot-check fees/status against the sponsor pages".format(verified or "(never)"))
+            print("  (GSA ITVMO it-vehicles list, sewp.nasa.gov, nitaac.nih.gov, chess.army.mil) and bump verified_as_of.")
+        print("  → Updating the directory is a supervised job — tell your assistant the vehicle")
+        print("    directory needs a review pass; new vehicles are added by hand, never scraped.")
+    else:
+        print("\n✓ VEHICLE WATCH: no expired/closing ordering windows; directory verified {}.".format(verified))
+    return {"expired": expired, "closing_soon": closing, "verified_as_of": verified, "stale": stale_dir}
+
+
 # ── documents.json merge + ship ───────────────────────────────────────────────
 
 def load_docs():
@@ -596,11 +653,13 @@ def main():
 
     watch = threshold_watch(existing_rfo, final_rfo, modified)
     deck_watch = study_deck_watch(final_rfo, all_docs, modified)
+    veh_watch = vehicle_watch()
 
     report = {
         "run_at": now_iso(),
         "threshold_watch": watch,
         "study_deck_watch": deck_watch,
+        "vehicle_watch": veh_watch,
         "rfo": {
             "unchanged": unchanged,
             "modified": [{"id": d["id"], "part": d["part"], "title": d["title"]} for d in modified],

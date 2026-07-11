@@ -1616,6 +1616,25 @@ button.market-pat-chip.refine .market-pat-ct{color:var(--accent);}
 .market-usa-aw-sub{font-size:var(--fs-3xs);color:var(--muted);}
 .market-usa-award:hover .market-usa-name{color:var(--accent);text-decoration:underline;}
 
+/* ── Contract vehicles panel (board tray) ── */
+.veh-row{display:flex;flex-direction:column;gap:3px;padding:8px 0;border-top:1px solid var(--line2);text-decoration:none;color:inherit;}
+.veh-row-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+.veh-name{font-size:var(--fs-base);font-weight:var(--fw-semibold);color:var(--ink2);line-height:1.35;}
+.veh-row:hover .veh-name{color:var(--accent);text-decoration:underline;}
+.veh-row-sub{font-size:var(--fs-xs);color:var(--muted);}
+.veh-row-foot{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.veh-act{font-size:var(--fs-xs);color:var(--muted2);margin-left:auto;font-variant-numeric:tabular-nums;}
+.veh-badge{display:inline-flex;align-items:center;font-size:var(--fs-3xs);font-weight:var(--fw-bold);letter-spacing:0.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--line2);background:var(--off);color:var(--muted);}
+.veh-badge.veh-multi{background:rgba(135,101,28,0.10);border-color:var(--brass-line);color:var(--brass-ink,#5e4715);}
+.veh-badge.veh-bic{background:rgba(135,101,28,0.14);border-color:var(--brass-line);color:#5e4715;}
+.veh-badge.veh-direct{background:#e9f5ec;border-color:rgba(22,101,52,0.25);color:#166534;}
+.veh-badge.veh-dpa{background:#eef4ec;border-color:rgba(63,98,18,0.25);color:#3f6212;}
+.veh-badge.veh-assisted{background:#f4f0e6;border-color:rgba(133,77,14,0.22);color:#854d0e;}
+.veh-badge.veh-restricted,.veh-badge.veh-pending{background:var(--off);color:var(--muted2);}
+.veh-badge.veh-sunsetting{background:#fdf3e7;border-color:rgba(154,52,18,0.28);color:#9a3412;}
+.veh-badge.veh-closed{background:#f6e9e7;border-color:rgba(153,27,27,0.24);color:#991b1b;}
+.veh-note{font-size:var(--fs-xs);color:var(--muted2);line-height:1.55;margin-top:10px;padding-top:8px;border-top:1px solid var(--line2);}
+
 footer{background:var(--off);color:var(--muted);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;padding:40px 0;position:relative;overflow:hidden;}
 /* guilloché through-line — a whisper-faint engraved watermark bookending the hero vault.
    Masked so the cyan source SVG renders in brand navy on the light footer. */
