@@ -1376,6 +1376,88 @@
       }
       return head + live + dir;
     }
+
+    // ── COMPETITION PROFILE — "how this market buys" (extent competed + set-asides) ──
+    let compData = null, compState = 'idle', compSig = '';
+    function paintComp() { const el = document.getElementById('market-comp'); if (el) el.innerHTML = compInnerHTML(); }
+    async function loadComp() {
+      const c = vehCodes();
+      if (!c.naics.length && !c.psc.length) { compState = 'idle'; paintComp(); return; }
+      const sig = c.naics.slice().sort().join(',') + '|' + c.psc.slice().sort().join(',');
+      if (sig === compSig && (compState === 'ready' || compState === 'empty')) { paintComp(); return; }
+      compSig = sig; compState = 'loading'; paintComp();
+      try {
+        const r = await fetch('/api/usaspending', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'competition', naics: c.naics, psc: c.psc }) });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || 'Competition profile failed');
+        compData = data;
+        compState = (data.totalDollars > 0) ? 'ready' : 'empty';
+      } catch (e) { compState = 'error'; }
+      paintComp();
+    }
+    const compFmtB = (v) => {
+      const n = Number(v) || 0;
+      if (n >= 1e9) return '$' + (n / 1e9).toFixed(n >= 1e10 ? 0 : 1) + 'B';
+      if (n >= 1e6) return '$' + (n / 1e6).toFixed(n >= 1e8 ? 0 : 1) + 'M';
+      return '$' + Math.round(n).toLocaleString();
+    };
+    function compInnerHTML() {
+      const head = `<div class="market-usa-head">How this market buys <span class="market-usa-src">USASpending · last 3 FY</span></div>`;
+      if (compState === 'idle') return '';
+      if (compState === 'loading') return head + '<div class="market-usa-msg">Profiling competition in this market…</div>';
+      if (compState === 'error') return head + '<div class="market-usa-msg">Competition profile unavailable right now.</div>';
+      if (compState === 'empty' || !compData) return head + '<div class="market-usa-msg">No obligations found for these codes in the last 3 FY.</div>';
+      const d = compData;
+      const cPct = d.competed.sharePct, ncPct = d.notCompeted.sharePct;
+      const bar = (cPct != null) ? `
+        <div class="comp-bar" role="img" aria-label="${cPct}% of labeled dollars competed, ${ncPct}% not competed">
+          <span class="comp-bar-c" style="width:${Math.max(2, Math.min(98, cPct))}%"></span>
+        </div>
+        <div class="comp-bar-legend"><span><i class="comp-dot comp-dot-c"></i>Competed ${cPct}% of $</span><span><i class="comp-dot comp-dot-nc"></i>Not competed ${ncPct}%</span></div>` : '';
+      const stats = `<div class="comp-stats">
+        <span class="comp-stat"><b>${compFmtB(d.totalDollars)}</b> obligated</span>
+        <span class="comp-stat"><b>${(d.totalActions || 0).toLocaleString()}</b> contract actions</span>
+        ${d.competed.actionSharePct != null ? `<span class="comp-stat"><b>${d.competed.actionSharePct}%</b> of actions competed</span>` : ''}
+      </div>`;
+      const sa = (d.setAsides || []).length
+        ? `<div class="market-usa-lbl">Set-aside share of dollars</div><div class="comp-sa">${d.setAsides.map(s => `<span class="comp-sa-chip">${esc(s.label)} <b>${s.sharePct}%</b></span>`).join('')}</div>`
+        : '';
+      return head + stats + bar + sa + `<div class="veh-note">Shares of obligated dollars over the last 3 fiscal years (competed shares are of extent-labeled dollars). Feeds the competition and set-aside picture for RFO Part 10 research and the Part 19 determination.</div>`;
+    }
+
+    // ── RULE-OF-TWO SIGNAL — capable-sources counts from SAM entity registrations ──
+    let r2Data = null, r2State = 'idle', r2Sig = '';
+    const r2Naics = () => (vehCodes().naics.find(n => String(n).replace(/[^0-9]/g, '').length === 6) || '');
+    function paintR2() { const el = document.getElementById('market-r2'); if (el) el.innerHTML = r2InnerHTML(); }
+    async function loadR2() {
+      const naics = r2Naics();
+      if (!naics) { r2State = 'idle'; paintR2(); return; }
+      if (naics === r2Sig && (r2State === 'ready' || r2State === 'limited')) { paintR2(); return; }
+      r2Sig = naics; r2State = 'loading'; paintR2();
+      try {
+        const r = await fetch('/api/market-research', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'sources', naics }) });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || 'lookup failed');
+        r2Data = data;
+        r2State = data.limited || data.configured === false ? 'limited' : (data.smallUnderNaics != null ? 'ready' : 'limited');
+      } catch (e) { r2State = 'error'; }
+      paintR2();
+    }
+    function r2InnerHTML() {
+      const naics = r2Naics();
+      const head = `<div class="market-usa-head">Capable sources — Rule of Two signal <span class="market-usa-src">SAM.gov registrations</span></div>`;
+      if (r2State === 'idle') return '';
+      if (r2State === 'loading') return head + '<div class="market-usa-msg">Counting registered sources…</div>';
+      if (r2State === 'error') return head + `<div class="market-usa-msg">Source lookup unavailable — <a class="r2-link" href="https://dsbs.sba.gov/search/dsp_dsbs.cfm" target="_blank" rel="noopener">search DSBS directly</a>.</div>`;
+      if (r2State === 'limited') return head + `<div class="market-usa-msg">${esc((r2Data && r2Data.note) || 'Lookup limited right now.')} <a class="r2-link" href="https://dsbs.sba.gov/search/dsp_dsbs.cfm" target="_blank" rel="noopener">Search DSBS →</a></div>`;
+      const d = r2Data;
+      const certs = (d.certs || []).filter(c => c.count > 0);
+      return head + `
+        <div class="r2-head"><span class="r2-num">${Number(d.smallUnderNaics).toLocaleString()}</span>
+        <span class="r2-lede">active SAM registrants certify as <b>small</b> under NAICS ${esc(naics)}${d.totalRegistrants != null ? ` (of ${Number(d.totalRegistrants).toLocaleString()} with it as primary NAICS)` : ''}</span></div>
+        ${certs.length ? `<div class="market-usa-lbl">Socioeconomic certifications among them</div><div class="comp-sa">${certs.map(c => `<span class="comp-sa-chip">${esc(c.label)} <b>${Number(c.count).toLocaleString()}</b></span>`).join('')}</div>` : ''}
+        <div class="veh-note">Registration signals — but does not prove — capability. Confirm through sources sought, <a class="r2-link" href="https://dsbs.sba.gov/search/dsp_dsbs.cfm" target="_blank" rel="noopener">DSBS</a>, and market outreach before the RFO Part 19 set-aside determination.</div>`;
+    }
     // ── FAR/RFO Part 10 market research note (client-side print-to-PDF, CAC-safe) ──
     const mrDistinct = (getter) => [...new Set(board.map(getter).filter(Boolean))];
     const mrSpan = () => { const d = board.map(o => o.postedDate).filter(Boolean).sort(); return d.length ? (d.length > 1 ? `${d[0]} → ${d[d.length - 1]}` : d[0]) : '—'; };
@@ -1485,6 +1567,17 @@
         const share = total > 0 ? Math.round(100 * (Number(top.total) || 0) / total) : 0;
         paras.push(`Historical award data (USASpending.gov, last ${usaData.years} fiscal years) shows ${cnt ? noun(cnt, 'award', 'awards') + ' across ' : ''}the top ${noun(recs.length, 'recipient', 'recipients')} totaling ${usaFmt(total)}; ${top.name} leads at ${usaFmt(top.total)}${share ? ` (${share}% of that total)` : ''}. Award history is the stronger incumbency signal; the notices above are the demand signal.`);
       }
+      // 4b — how the market buys, when the competition profile is on screen
+      if (compState === 'ready' && compData && compData.competed.sharePct != null) {
+        const cd = compData;
+        const saTxt = (cd.setAsides || []).slice(0, 3).map(s => `${s.label} ${s.sharePct}%`).join(', ');
+        paras.push(`Competition profile (USASpending.gov/FPDS, last 3 FY): of ${compFmtB(cd.totalDollars)} obligated across ${(cd.totalActions || 0).toLocaleString()} contract actions in this market, ${cd.competed.sharePct}% of extent-labeled dollars were competitively awarded${cd.competed.actionSharePct != null ? ` (${cd.competed.actionSharePct}% of actions)` : ''}.${saTxt ? ` Set-aside share of dollars: ${saTxt}.` : ''}`);
+      }
+      // 4c — capable-sources signal, when the Rule-of-Two lookup succeeded
+      if (r2State === 'ready' && r2Data && r2Data.smallUnderNaics != null) {
+        const certTxt = (r2Data.certs || []).filter(c => c.count > 0).map(c => `${c.label} ${Number(c.count).toLocaleString()}`).join(', ');
+        paras.push(`Capable-sources signal (SAM.gov registrations): ${Number(r2Data.smallUnderNaics).toLocaleString()} active registrants certify as small under NAICS ${r2Data.naics}${certTxt ? `, including ${certTxt}` : ''}. Registration signals capability but does not establish it — the RFO Part 19 determination should rest on sources-sought responses and market outreach.`);
+      }
       // 5 — existing vehicles, when discovery has run
       if (vehState === 'ready' && vehData && (vehData.vehicles || []).length) {
         const vs = vehData.vehicles || [];
@@ -1495,6 +1588,31 @@
       }
       paras.push('These observations are drawn mechanically from the records itemized below — verify each against the source notice or award record before relying on it in the file.');
       return paras;
+    }
+    // Competition-profile section for the printable note
+    function compNoteHTML() {
+      if (compState !== 'ready' || !compData || compData.competed.sharePct == null) return '';
+      const d = compData;
+      const chips = [
+        `<span class="chip">Obligated <b>${esc(compFmtB(d.totalDollars))}</b></span>`,
+        `<span class="chip">Actions <b>${(d.totalActions || 0).toLocaleString()}</b></span>`,
+        `<span class="chip">Competed $ <b>${d.competed.sharePct}%</b></span>`,
+        d.competed.actionSharePct != null ? `<span class="chip">Competed actions <b>${d.competed.actionSharePct}%</b></span>` : ''
+      ].filter(Boolean).join('');
+      const sa = (d.setAsides || []).map(s => `<span class="chip">${esc(s.label)} <b>${s.sharePct}%</b></span>`).join('');
+      return `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Competition profile</span></div>
+        <div class="pat"><div class="pat-row"><div class="pat-k">Market, last 3 FY</div><div class="pat-v">${chips}</div></div>
+        ${sa ? `<div class="pat-row"><div class="pat-k">Set-aside $ share</div><div class="pat-v">${sa}</div></div>` : ''}</div>
+        <div class="foot" style="margin-top:8px;border:none;padding:0;">Source: USASpending.gov (FPDS) — shares of obligated dollars, last 3 fiscal years; competed shares are of extent-labeled dollars. Supports the competition approach and the RFO Part 19 set-aside determination.</div></div>`;
+    }
+    // Capable-sources section for the printable note
+    function r2NoteHTML() {
+      if (r2State !== 'ready' || !r2Data || r2Data.smallUnderNaics == null) return '';
+      const certs = (r2Data.certs || []).filter(c => c.count > 0).map(c => `<span class="chip">${esc(c.label)} <b>${Number(c.count).toLocaleString()}</b></span>`).join('');
+      return `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Capable sources — Rule of Two signal</span></div>
+        <div class="pat"><div class="pat-row"><div class="pat-k">NAICS ${esc(r2Data.naics)}</div><div class="pat-v"><span class="chip">Small registrants <b>${Number(r2Data.smallUnderNaics).toLocaleString()}</b></span>${r2Data.totalRegistrants != null ? `<span class="chip">All primary-NAICS registrants <b>${Number(r2Data.totalRegistrants).toLocaleString()}</b></span>` : ''}</div></div>
+        ${certs ? `<div class="pat-row"><div class="pat-k">Certifications</div><div class="pat-v">${certs}</div></div>` : ''}</div>
+        <div class="foot" style="margin-top:8px;border:none;padding:0;">Source: SAM.gov Entity Management — active registrations certifying small under this NAICS. Registration signals capability but does not establish it; confirm via sources sought, DSBS, and outreach before the RFO Part 19 determination.</div></div>`;
     }
     // Existing-vehicles section for the printable note
     function vehNoteHTML() {
@@ -1531,6 +1649,8 @@
         return `<tr><td><div class="t-type">${esc(o.type || 'Opportunity')}</div><div class="t-mono t-muted">${esc(o.postedDate || '')}</div></td><td><div class="t-title">${esc(o.title || 'Untitled')}</div><div class="t-org">${esc(o.organization || '')}</div>${award}</td><td class="t-mono">${esc(np)}</td><td>${esc(o.setAside || '—')}</td><td class="t-mono">${esc(o.solicitationNumber || '—')}</td></tr>`;
       }).join('');
       const usaSec = usaNoteHTML();  // present only when award data loaded
+      const compSec = compNoteHTML();
+      const r2Sec = r2NoteHTML();
       const vehSec = vehNoteHTML();  // present only when vehicle data/matches exist
       const narr = mrNarrative();
       const narrSec = narr.length ? `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Narrative summary</span></div><div class="narr">${narr.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="narr-hint no-print">Drafted from the records below — select, copy, and edit to fit the market research report.</div></div>` : '';
@@ -1555,6 +1675,8 @@
             <div class="foot" style="margin-top:8px;border:none;padding:0;">Source records retrieved from SAM.gov via AcqVault. Open each notice at <b>sam.gov</b> using its notice number for the authoritative file, attachments, and full description.</div>
           </div>
           ${usaSec}
+          ${compSec}
+          ${r2Sec}
           ${vehSec}
           <div class="guide"><div class="guide-k">Governing guidance</div><div class="guide-t">This market research supports <a href="/rfo/part-10">RFO Part 10</a> (Market Research). Small-business set-asides recur in this market — see <a href="/rfo/part-19">RFO Part 19</a> for the set-aside determination. For commercial-item treatment by PSC, see <a href="/rfo/part-12">RFO Part 12</a>. Existing vehicles: <a href="/rfo/part-8">RFO Part 8</a> and <a href="/?q=16.505">RFO 16.505</a>.</div></div>
           <div class="foot"><b>Generated by AcqVault</b> (acqvault.com) on ${esc(today)} from SAM.gov opportunity data. AcqVault is an <b>unofficial research aid</b> — not legal advice and not an official source. Verify every notice and citation against the official record at sam.gov and the Revolutionary FAR Overhaul before relying on this summary in a contract file.</div>
@@ -1589,6 +1711,19 @@
         L.push('  Largest recent awards:');
         (usaData.awards || []).slice(0, 8).forEach(a => { L.push(`    ${a.recipient || '—'} — ${usaFmt(a.amount)} · ${a.agency || ''} · ${a.start || ''} · ${a.type || ''}`); if (a.link) L.push(`      ${a.link}`); });
         L.push('  Source: USASpending.gov (FPDS) — authoritative for award $ and incumbent; SAM notices are a weaker signal.');
+      }
+      if (compState === 'ready' && compData && compData.competed.sharePct != null) {
+        const cd = compData;
+        L.push('', 'COMPETITION PROFILE (USASpending.gov/FPDS, last 3 FY)');
+        L.push(`    Obligated: ${compFmtB(cd.totalDollars)} across ${(cd.totalActions || 0).toLocaleString()} contract actions`);
+        L.push(`    Competed: ${cd.competed.sharePct}% of extent-labeled dollars${cd.competed.actionSharePct != null ? ` · ${cd.competed.actionSharePct}% of actions` : ''}`);
+        (cd.setAsides || []).forEach(s => L.push(`    Set-aside — ${s.label}: ${s.sharePct}% of dollars`));
+      }
+      if (r2State === 'ready' && r2Data && r2Data.smallUnderNaics != null) {
+        L.push('', `CAPABLE SOURCES — RULE OF TWO SIGNAL (SAM.gov, NAICS ${r2Data.naics})`);
+        L.push(`    ${Number(r2Data.smallUnderNaics).toLocaleString()} active registrants certify as small under this NAICS${r2Data.totalRegistrants != null ? ` (${Number(r2Data.totalRegistrants).toLocaleString()} total primary-NAICS registrants)` : ''}`);
+        (r2Data.certs || []).filter(c => c.count > 0).forEach(c => L.push(`    ${c.label}: ${Number(c.count).toLocaleString()}`));
+        L.push('    Registration signals capability but does not establish it — confirm via sources sought/DSBS before the Part 19 determination.');
       }
       if (vehState === 'ready' && vehData && (vehData.vehicles || []).length) {
         L.push('', 'EXISTING CONTRACT VEHICLES CONSIDERED (USASpending.gov order activity, last 2 yrs)');
@@ -1641,10 +1776,12 @@
           <button type="button" class="market-board-close" aria-label="Close board" title="Close">×</button>
         </div>
         <div class="market-board-intro">Your working set for a market research note. Pinned opportunities stay on this device.</div>
-        <div class="market-board-body">${n ? patternsHTML() + ((usaCodes().naics.length || usaCodes().psc.length) ? '<div class="market-usa" id="market-usa"></div>' : '') + '<div class="market-usa market-veh" id="market-veh"></div>' + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>' + '<div class="market-usa market-veh" id="market-veh"></div>'}</div>
+        <div class="market-board-body">${n ? patternsHTML() + ((usaCodes().naics.length || usaCodes().psc.length) ? '<div class="market-usa" id="market-usa"></div>' : '') + ((vehCodes().naics.length || vehCodes().psc.length) ? '<div class="market-usa market-comp" id="market-comp"></div>' : '') + (r2Naics() ? '<div class="market-usa market-r2" id="market-r2"></div>' : '') + '<div class="market-usa market-veh" id="market-veh"></div>' + board.map(boardItemHTML).join('') : '<div class="market-board-empty"><strong>No pinned opportunities yet.</strong>Use the pin on any result card to start building your working set.</div>' + ((vehCodes().naics.length || vehCodes().psc.length) ? '<div class="market-usa market-comp" id="market-comp"></div>' : '') + (r2Naics() ? '<div class="market-usa market-r2" id="market-r2"></div>' : '') + '<div class="market-usa market-veh" id="market-veh"></div>'}</div>
         ${n ? '<div class="market-board-foot"><div class="market-board-foot-actions"><button type="button" class="market-board-gen" data-mr-note="1">Generate report</button><button type="button" class="market-board-copy" data-mr-copy="1">Copy snapshot</button></div><button type="button" class="market-board-clear" data-board-clear="1">Clear board</button></div>' : ''}`;
       if (n) loadUsa();
       loadVeh(); // works off searched codes even with an empty board
+      loadComp();
+      loadR2();
     }
     function openTray() {
       renderBoardTray();

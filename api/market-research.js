@@ -154,6 +154,7 @@ module.exports = async function handler(req, res) {
   if (await enforce(req, res, { max: 20 })) return;
 
   const apiKey = process.env.SAM_API_KEY;
+  if ((req.body || {}).mode === 'sources') return sourcesMode(req, res, apiKey);
   if (!apiKey) {
     return res.status(200).json({
       configured: false,
@@ -241,3 +242,82 @@ module.exports = async function handler(req, res) {
     return res.status(error.status || 500).json({ error: 'Market research request failed.' });
   }
 };
+
+
+// ═══ SOURCES MODE — Rule-of-Two capable-sources signal (RFO Part 19) ═══════════
+// Counts ACTIVE SAM registrants for a NAICS via the Entity Management API using
+// count-only queries (size=1, read totalRecords). naicsLimitedSB filters entities
+// that certified SMALL under that NAICS — the Rule-of-Two headline number.
+// Cert buckets use enum-validated codes: a wrong code errors (caught → bucket
+// omitted), it can never return a plausible-but-wrong count. Registration is a
+// capability SIGNAL, not proof — the panel says so.
+//
+// Key-tier caution: a personal SAM key with no role is limited to 10 entity
+// requests/day (a role raises it to 1,000). Each lookup = up to 6 requests,
+// cached hard at the edge for 7 days per NAICS, and every failure degrades to
+// an honest "try DSBS directly" message.
+const ENTITY_URL = 'https://api.sam.gov/entity-information/v3/entities';
+const CERT_BUCKETS = [
+  ['eightA', '8(a)', { sbaBusinessTypeCode: 'A6' }],
+  ['hubzone', 'HUBZone', { sbaBusinessTypeCode: 'XX' }],
+  ['sdvosb', 'SDVOSB', { sbaBusinessTypeCode: 'QF' }],
+  ['wosb', 'WOSB', { businessTypeCode: '8W' }]
+];
+
+async function entityCount(apiKey, params) {
+  const qs = new URLSearchParams({ api_key: apiKey, registrationStatus: 'A', size: '1', ...params });
+  const r = await fetch(`${ENTITY_URL}?${qs}`, { headers: { Accept: 'application/json' } });
+  if (!r.ok) {
+    const err = new Error(`entity API HTTP ${r.status}`);
+    err.status = r.status;
+    throw err;
+  }
+  const data = await r.json();
+  const n = Number(data.totalRecords);
+  return Number.isFinite(n) ? n : null;
+}
+
+async function sourcesMode(req, res, apiKey) {
+  const naics = String((req.body || {}).naics || '').replace(/[^0-9]/g, '').slice(0, 6);
+  if (naics.length !== 6) {
+    return res.status(200).json({ note: 'Provide a 6-digit NAICS for a capable-sources count.' });
+  }
+  if (!apiKey) {
+    return res.status(200).json({ configured: false, note: 'SAM_API_KEY not configured.' });
+  }
+  try {
+    const [total, small] = await Promise.all([
+      entityCount(apiKey, { primaryNaics: naics }),
+      entityCount(apiKey, { naicsLimitedSB: naics })
+    ]);
+    // Cert buckets are best-effort: run in parallel, drop failures individually.
+    const certs = (await Promise.all(CERT_BUCKETS.map(async ([key, label, extra]) => {
+      try {
+        const n = await entityCount(apiKey, { naicsLimitedSB: naics, ...extra });
+        return n == null ? null : { key, label, count: n };
+      } catch (e) { return null; }
+    }))).filter(Boolean);
+    // Rule-of-Two data changes slowly → cache a week at the edge, per NAICS.
+    res.setHeader('Cache-Control', 's-maxage=604800, stale-while-revalidate=1209600');
+    return res.status(200).json({
+      naics,
+      totalRegistrants: total,
+      smallUnderNaics: small,
+      certs,
+      note: 'Active SAM.gov registrants with this primary NAICS; "small" = entities certifying small under this NAICS in SAM. Registration signals — not proof of — capability: confirm through sources sought, DSBS, and market outreach before the RFO Part 19 determination.'
+    });
+  } catch (error) {
+    const status = error && error.status;
+    console.error('sources error:', error && error.message ? error.message : error);
+    // 429 = the key's daily entity quota is spent — degrade honestly, cache the
+    // failure only briefly so the panel recovers when the quota resets.
+    res.setHeader('Cache-Control', 's-maxage=3600');
+    return res.status(200).json({
+      naics,
+      limited: true,
+      note: status === 429
+        ? 'The capable-sources lookup hit its daily SAM.gov quota — try again later, or search DSBS directly.'
+        : 'Capable-sources lookup unavailable right now — search DSBS directly.'
+    });
+  }
+}

@@ -1649,6 +1649,28 @@ button.market-pat-chip.refine .market-pat-ct{color:var(--accent);}
 .veh-all-filter{width:100%;margin:8px 0 4px;padding:9px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--white);font:inherit;font-size:var(--fs-sm);color:var(--ink2);}
 .veh-all-filter:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--brass-line);}
 
+/* ── Competition profile panel ── */
+.comp-stats{display:flex;flex-wrap:wrap;gap:6px 14px;margin:2px 0 10px;}
+.comp-stat{font-size:var(--fs-xs);color:var(--muted);}
+.comp-stat b{color:var(--ink2);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;}
+.comp-bar{height:10px;border-radius:999px;background:var(--navy-900);overflow:hidden;display:flex;}
+.comp-bar-c{display:block;height:100%;background:linear-gradient(90deg,#a87f2b,var(--accent));border-radius:999px 0 0 999px;}
+.comp-bar-legend{display:flex;justify-content:space-between;gap:10px;margin:6px 0 10px;font-size:var(--fs-xs);color:var(--muted);}
+.comp-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0;}
+.comp-dot-c{background:var(--accent);}
+.comp-dot-nc{background:var(--navy-900);}
+.comp-sa{display:flex;flex-wrap:wrap;gap:6px;}
+.comp-sa-chip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-xs);font-weight:var(--fw-semibold);color:var(--muted);background:var(--off);border:1px solid var(--line2);border-radius:999px;padding:3px 9px;}
+.comp-sa-chip b{color:var(--ink2);font-variant-numeric:tabular-nums;}
+
+/* ── Rule-of-Two panel ── */
+.r2-head{display:flex;align-items:baseline;gap:10px;margin:2px 0 8px;}
+.r2-num{font-family:var(--font-serif);font-size:var(--fs-24);font-weight:var(--fw-bold);color:var(--ink);font-variant-numeric:tabular-nums;line-height:1;}
+.r2-lede{font-size:var(--fs-xs);color:var(--muted);line-height:1.5;}
+.r2-lede b{color:var(--ink2);}
+.r2-link{color:var(--accent);font-weight:var(--fw-semibold);text-decoration:none;}
+.r2-link:hover{text-decoration:underline;}
+
 footer{background:var(--off);color:var(--muted);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;padding:40px 0;position:relative;overflow:hidden;}
 /* guilloché through-line — a whisper-faint engraved watermark bookending the hero vault.
    Masked so the cyan source SVG renders in brand navy on the light footer. */

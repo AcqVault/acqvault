@@ -72,6 +72,7 @@ module.exports = async function handler(req, res) {
 
   const body0 = req.body || {};
   if (body0.mode === 'vehicles') return vehiclesMode(res, body0); // folded in — Hobby plan caps at 12 functions
+  if (body0.mode === 'competition') return competitionMode(res, body0); // same constraint
 
   try {
     const body = req.body || {};
@@ -292,3 +293,71 @@ async function vehiclesMode(res, body) {
     return res.status(error.status || 500).json({ error: 'Vehicle discovery failed.' });
   }
 };
+
+
+// ═══ COMPETITION MODE — "how this market buys" (RFO Part 10 → Part 6/19 signals) ═══
+// Bucket aggregation over spending_over_time + spending_by_award_count: per-row
+// competition fields are NOT exposed by the search endpoints (validated 2026-07-11 —
+// "Extent Competed" returns null award-level and doesn't exist transaction-level),
+// but extent_competed_type_codes and set_aside_type_codes work as INPUT filters, so
+// one cheap aggregate per bucket yields exact dollar/action shares. All keyless.
+const COMPETED_CODES = ['A', 'D', 'E', 'F', 'CDO'];      // full & open, after exclusion, follow-on to competed, SAP competed, competitive DO
+const NOT_COMPETED_CODES = ['B', 'C', 'G', 'NDO'];       // not available, not competed, SAP not competed, non-competitive DO
+const SETASIDE_BUCKETS = [
+  ['smallBusiness', 'Small business set-aside', ['SBA', 'SBP']],
+  ['eightA', '8(a)', ['8A', '8AN']],
+  ['sdvosb', 'SDVOSB', ['SDVOSBC', 'SDVOSBS']],
+  ['hubzone', 'HUBZone', ['HZC', 'HZS']],
+  ['wosb', 'WOSB/EDWOSB', ['WOSB', 'WOSBSS', 'EDWOSB', 'EDWOSBSS']]
+];
+
+async function sumOverTime(filters) {
+  const data = await post('/search/spending_over_time/', { group: 'fiscal_year', filters });
+  return (data.results || []).reduce((s, r) => s + (Number(r.aggregated_amount) || 0), 0);
+}
+async function contractCount(filters) {
+  const data = await post('/search/spending_by_award_count/', { filters });
+  return (data.results && Number(data.results.contracts)) || 0;
+}
+
+async function competitionMode(res, body) {
+  try {
+    const naics = vToArray(body.naics).map(s => s.replace(/[^0-9]/g, '')).filter(Boolean).slice(0, 6);
+    const psc = vToArray(body.psc).map(s => s.toUpperCase().replace(/[^A-Z0-9]/g, '')).filter(Boolean).slice(0, 6);
+    if (!naics.length && !psc.length) {
+      return res.status(200).json({ note: 'Provide a NAICS or PSC for a competition profile.' });
+    }
+    const base = { award_type_codes: ['A', 'B', 'C', 'D'], time_period: [{ start_date: vIsoDaysAgo(3 * 365), end_date: vToday() }] };
+    if (naics.length) base.naics_codes = naics;
+    if (psc.length) base.psc_codes = psc;
+
+    const [totalDollars, competedDollars, notCompetedDollars, totalActions, competedActions, ...setAsides] = await Promise.all([
+      sumOverTime(base),
+      sumOverTime({ ...base, extent_competed_type_codes: COMPETED_CODES }),
+      sumOverTime({ ...base, extent_competed_type_codes: NOT_COMPETED_CODES }),
+      contractCount(base),
+      contractCount({ ...base, extent_competed_type_codes: COMPETED_CODES }),
+      ...SETASIDE_BUCKETS.map(([, , codes]) => sumOverTime({ ...base, set_aside_type_codes: codes }))
+    ]);
+
+    const pct = (part, whole) => (whole > 0 ? Math.round(1000 * part / whole) / 10 : null);
+    // Data hygiene: extent-competed is unlabeled on some older actions, so the two
+    // buckets may not sum to the total. Report shares of LABELED dollars and say so.
+    const labeled = competedDollars + notCompetedDollars;
+    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
+    return res.status(200).json({
+      years: 3,
+      totalDollars: Math.round(totalDollars),
+      totalActions,
+      labeledDollars: Math.round(labeled),
+      competed: { dollars: Math.round(competedDollars), sharePct: pct(competedDollars, labeled), actions: competedActions, actionSharePct: pct(competedActions, totalActions) },
+      notCompeted: { dollars: Math.round(notCompetedDollars), sharePct: pct(notCompetedDollars, labeled) },
+      setAsides: SETASIDE_BUCKETS.map(([key, label], i) => ({ key, label, dollars: Math.round(setAsides[i]), sharePct: pct(setAsides[i], totalDollars) })).filter(s => s.dollars > 0),
+      naics, psc,
+      note: 'Shares of obligated dollars, last 3 FY (competed/not-competed shares are of extent-labeled dollars). Source: USASpending.gov (FPDS).'
+    });
+  } catch (error) {
+    console.error('competition error:', error && error.message ? error.message : error);
+    return res.status(error.status || 500).json({ error: 'Competition profile failed.' });
+  }
+}
