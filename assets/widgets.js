@@ -1220,6 +1220,7 @@
     // from official sponsor pages; facts we could not verify are omitted).
     let vehData = null, vehState = 'idle', vehSig = '';
     let vehDir = null, vehDirPromise = null;
+    let vehShowAll = false, vehFilter = ''; // "Browse all vehicles" mode inside the tray
     // Codes: what the user SEARCHED wins; fall back to the pinned board's codes.
     function vehCodes() {
       const f = currentFilters();
@@ -1271,8 +1272,8 @@
     function paintVeh() { const el = document.getElementById('market-veh'); if (el) el.innerHTML = vehInnerHTML(); }
     async function loadVeh() {
       const c = vehCodes();
+      loadVehDir().then(paintVeh); // directory renders as soon as it arrives (browse-all needs it even with no codes)
       if (!c.naics.length && !c.psc.length) { vehState = 'idle'; paintVeh(); return; }
-      loadVehDir().then(paintVeh); // directory renders as soon as it arrives
       const sig = c.naics.slice().sort().join(',') + '|' + c.psc.slice().sort().join(',');
       if (sig === vehSig && (vehState === 'ready' || vehState === 'empty')) { paintVeh(); return; }
       vehSig = sig; vehState = 'loading'; paintVeh();
@@ -1308,11 +1309,49 @@
         <span class="veh-row-sub">${esc(v.sponsor)} · ${esc(v.type)}${v.fee ? ' · ' + esc(v.fee) : ''}</span>
         <span class="veh-row-foot"><span class="veh-badge ${model[1]}">${esc(model[0])}</span>${sun && sun.cls ? `<span class="veh-badge ${sun.cls}">${esc(sun.txt)}</span>` : ''}</span></a>`;
     }
+    // Full-detail row for the browse-all view: adds the scope + status lines.
+    function vehDirRowFull(v) {
+      const model = VEH_MODEL[v.ordering] || ['', ''];
+      const sun = vehSunset(v.ordering_end);
+      return `<a class="veh-row veh-dirrow" href="${escAttr(v.url)}" target="_blank" rel="noopener">
+        <span class="veh-row-top"><span class="veh-name">${esc(v.name)}</span>${v.bic === true ? '<span class="veh-badge veh-bic">BIC</span>' : ''}</span>
+        <span class="veh-row-sub">${esc(v.sponsor)} · ${esc(v.type)}${v.fee ? ' · ' + esc(v.fee) : ''}</span>
+        <span class="veh-row-scope">${esc(v.scope || '')}</span>
+        ${v.status ? `<span class="veh-row-scope veh-row-status">${esc(v.status)}</span>` : ''}
+        <span class="veh-row-foot"><span class="veh-badge ${model[1]}">${esc(model[0])}</span>${sun && sun.cls ? `<span class="veh-badge ${sun.cls}">${esc(sun.txt)}</span>` : ''}</span></a>`;
+    }
+    // "Browse all vehicles" — the whole directory, in the tray, grouped and filterable.
+    function vehAllListHTML() {
+      const all = (vehDir && vehDir.vehicles) || [];
+      const q = vehFilter.trim().toLowerCase();
+      const hit = (v) => !q || [v.name, v.sponsor, v.type, v.scope, v.status, (v.tags && (v.tags.kw || []).join(' '))].join(' ').toLowerCase().includes(q);
+      const open = (v) => v.ordering !== 'closed' && v.ordering !== 'pending';
+      const groups = [
+        ['Government-wide', all.filter(v => v.audience === 'gov-wide' && open(v) && hit(v))],
+        ['DoD & service-specific', all.filter(v => v.audience !== 'gov-wide' && open(v) && hit(v))],
+        ['Closed, cancelled & pre-award', all.filter(v => !open(v) && hit(v))]
+      ];
+      const blocks = groups.filter(([, list]) => list.length).map(([label, list]) =>
+        `<div class="market-usa-lbl">${esc(label)} (${list.length})</div>` +
+        list.slice().sort((a, b) => a.name.localeCompare(b.name)).map(vehDirRowFull).join('')
+      ).join('');
+      return blocks || '<div class="market-usa-msg">No vehicles match that filter.</div>';
+    }
+    function vehAllHTML() {
+      const n = (vehDir && vehDir.vehicles || []).length;
+      return `<div class="market-usa-head">All contract vehicles <span class="market-usa-src">${n} tracked · verified ${esc((vehDir && vehDir.verified_as_of) || '')}</span></div>
+        <button type="button" class="veh-all-back" data-veh-back>← Back to this market</button>
+        <input type="text" class="veh-all-filter" id="veh-all-filter" placeholder="Filter — name, sponsor, scope (e.g. cloud, 8(a), medical)…" value="${escAttr(vehFilter)}" aria-label="Filter vehicles">
+        <div id="veh-all-list">${vehAllListHTML()}</div>
+        <div class="veh-note">Ordering rules and fees from official sponsor pages — confirm against the linked ordering guide before relying on them. See RFO Part 8 for required sources and RFO 16.505 for fair opportunity on orders.</div>`;
+    }
     function vehInnerHTML() {
+      if (vehShowAll && vehDir) return vehAllHTML();
       const c = vehCodes();
       const head = `<div class="market-usa-head">Existing contract vehicles <span class="market-usa-src">USASpending · sponsor pages</span></div>`;
+      const allLink = vehDir ? `<button type="button" class="veh-all-link" data-veh-all>Browse all ${(vehDir.vehicles || []).length} contract vehicles →</button>` : '';
       if (!c.naics.length && !c.psc.length) {
-        return head + '<div class="market-usa-msg">Search with a NAICS or PSC — or pin notices that carry them — and this panel shows the GWACs, IDIQs, BPAs, and schedules already covering that market: who sponsors them, the access fee, and whether your office can order directly.</div>';
+        return head + '<div class="market-usa-msg">Search with a NAICS or PSC — or pin notices that carry them — and this panel shows the GWACs, IDIQs, BPAs, and schedules already covering that market: who sponsors them, the access fee, and whether your office can order directly.</div>' + allLink;
       }
       let live = '';
       if (vehState === 'loading') live = '<div class="market-usa-msg">Scanning recent ordering activity…</div>';
@@ -1327,8 +1366,10 @@
         const rows = m.matched.map(vehDirRow).join('');
         const always = m.always.map(vehDirRow).join('');
         if (rows || always) {
-          dir = `<div class="market-usa-lbl">Named vehicles that may fit</div>${rows}${always ? `<div class="market-usa-lbl">Always available</div>${always}` : ''}
+          dir = `<div class="market-usa-lbl">Named vehicles that may fit</div>${rows}${always ? `<div class="market-usa-lbl">Always available</div>${always}` : ''}${allLink}
             <div class="veh-note">Ordering rules and fees from official sponsor pages, verified ${esc(vehDir.verified_as_of || '')} — confirm against the linked ordering guide before relying on them. See RFO Part 8 for required sources and RFO 16.505 for fair opportunity on orders.</div>`;
+        } else {
+          dir = allLink;
         }
       }
       return head + live + dir;
@@ -1631,7 +1672,21 @@
       const unpin = e.target.closest('[data-unpin]'); if (unpin) { removeFromBoard(unpin.dataset.unpin); return; }
       if (e.target.closest('[data-mr-note]')) { generateMrNote(); return; }
       const cp = e.target.closest('[data-mr-copy]'); if (cp) { copyMrNote(cp); return; }
+      if (e.target.closest('[data-veh-all]')) {
+        vehShowAll = true; paintVeh();
+        boardTray.querySelector('#market-veh')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      if (e.target.closest('[data-veh-back]')) { vehShowAll = false; vehFilter = ''; paintVeh(); return; }
       if (e.target.closest('[data-board-clear]')) { clearBoard(); }
+    });
+    // Browse-all filter: update only the list so the input keeps focus while typing.
+    boardTray.addEventListener('input', (e) => {
+      if (e.target && e.target.id === 'veh-all-filter') {
+        vehFilter = e.target.value;
+        const list = boardTray.querySelector('#veh-all-list');
+        if (list) list.innerHTML = vehAllListHTML();
+      }
     });
     boardBackdrop.addEventListener('click', closeTray);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && trayOpen) closeTray(); });

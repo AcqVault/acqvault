@@ -1637,6 +1637,14 @@ button.market-pat-chip.refine .market-pat-ct{color:var(--accent);}
 .veh-badge.veh-sunsetting{background:#fdf3e7;border-color:rgba(154,52,18,0.28);color:#9a3412;}
 .veh-badge.veh-closed{background:#f6e9e7;border-color:rgba(153,27,27,0.24);color:#991b1b;}
 .veh-note{font-size:var(--fs-xs);color:var(--muted2);line-height:1.55;margin-top:10px;padding-top:8px;border-top:1px solid var(--line2);}
+.veh-row-scope{font-size:var(--fs-xs);color:var(--muted);line-height:1.5;}
+.veh-row-status{color:var(--muted2);font-style:italic;}
+.veh-all-link{display:block;width:100%;margin-top:12px;padding:9px 12px;border:1px solid var(--brass-line);border-radius:10px;background:rgba(135,101,28,0.06);color:#5e4715;font-size:var(--fs-sm);font-weight:var(--fw-bold);text-align:center;cursor:pointer;transition:background .15s,border-color .15s;}
+.veh-all-link:hover{background:rgba(135,101,28,0.12);}
+.veh-all-back{display:inline-flex;align-items:center;gap:5px;margin:8px 0 4px;background:none;border:none;padding:0;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--muted2);cursor:pointer;transition:color .15s;}
+.veh-all-back:hover{color:var(--accent);}
+.veh-all-filter{width:100%;margin:8px 0 4px;padding:9px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--white);font:inherit;font-size:var(--fs-sm);color:var(--ink2);}
+.veh-all-filter:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--brass-line);}
 
 footer{background:var(--off);color:var(--muted);border-top:2px solid;border-image:linear-gradient(90deg,transparent 8%,var(--brass) 50%,transparent 92%) 1;padding:40px 0;position:relative;overflow:hidden;}
 /* guilloché through-line — a whisper-faint engraved watermark bookending the hero vault.
