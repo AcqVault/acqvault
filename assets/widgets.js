@@ -1277,7 +1277,7 @@
       if (sig === vehSig && (vehState === 'ready' || vehState === 'empty')) { paintVeh(); return; }
       vehSig = sig; vehState = 'loading'; paintVeh();
       try {
-        const r = await fetch('/api/vehicles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ naics: c.naics, psc: c.psc }) });
+        const r = await fetch('/api/usaspending', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'vehicles', naics: c.naics, psc: c.psc }) });
         const data = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(data.error || 'Vehicle discovery failed');
         vehData = data;
