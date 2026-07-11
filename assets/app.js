@@ -2996,6 +2996,20 @@ window.acqExitToLanding = exitToLanding;
     exitToLanding(); // sections are visible again before the browser's native anchor scroll runs
   });
 })();
+// Home, from anywhere in the app: the nav logo and the Home nav link exit the
+// active view in place (no reload) and land on the hero. Plain left-clicks are
+// handled here; modified clicks / new tabs fall through to the href (/?home=1),
+// which the boot code resolves to the hero regardless of this tab's saved view.
+(function () {
+  function goHome(e) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+    e.preventDefault();
+    exitToLanding();
+    try { history.replaceState(history.state, '', '/'); } catch (err) {}
+    window.scrollTo({ top: 0, behavior: document.hidden ? 'instant' : 'smooth' });
+  }
+  document.querySelectorAll('.nav-logo, #nav-home').forEach(el => el.addEventListener('click', goHome));
+})();
 (function () {
   const as = document.getElementById('acr-suggest');
   if (as) as.addEventListener('click', (e) => {
@@ -3007,6 +3021,15 @@ window.acqExitToLanding = exitToLanding;
 // ── Restore from URL on load: ?q= (+ ?src=) search, then ?doc= clause/reader ──
 (async function restoreFromUrl() {
   const params = new URLSearchParams(window.location.search);
+  // ?home=1 is the explicit "take me to the hero" signal (nav logo, the Home links
+  // on the server-rendered pages). It must beat every restore — a plain "/" boot
+  // re-enters whatever view this tab last had open, so without the signal clicking
+  // the logo from Browse would land right back in Browse.
+  if (params.has('home')) {
+    try { sessionStorage.setItem('acq-view-v1', 'search'); } catch (e) {}
+    try { history.replaceState(null, '', '/'); } catch (e) {}
+    return;
+  }
   const q = params.get('q');
   const docId = params.get('doc');
   const readerMode = params.get('view') === 'reader';

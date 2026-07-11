@@ -116,6 +116,9 @@ header.site a.brand{display:inline-flex;align-items:center;gap:9px;font-weight:8
 header.site a.brand svg{display:block;width:27px;height:27px;flex-shrink:0}
 header.site a.cta{font-weight:650;font-size:14px;color:#fff;background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));border:1px solid var(--brass-line);padding:8px 15px;border-radius:999px;text-decoration:none;transition:border-color .15s}
 header.site a.cta:hover{border-color:rgba(228,196,119,.55)}
+.hdr-links{display:inline-flex;align-items:center;gap:16px}
+.hlink{font-weight:650;font-size:14px;color:var(--muted);text-decoration:none}
+.hlink:hover{color:var(--accent);text-decoration:underline}
 /* federal-ink masthead — frames the page in the homepage's visual language */
 .lib-mast{position:relative;overflow:hidden;border-radius:18px;margin:0 0 34px;padding:42px 40px 36px;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8;box-shadow:inset 0 0 0 1px var(--brass-line),0 26px 54px -30px rgba(10,28,51,.62)}
 .lib-mast::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
@@ -246,7 +249,7 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed }) {
 </head>
 <body>
 ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
-<header class="site"><a class="brand" href="/"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><a class="cta" href="/?q=">Search all sources →</a></header>
+<header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></header>
 ${body}
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</footer>
 </div>`}
@@ -286,7 +289,7 @@ ${renderContent(d.content, d.title)}
     mainEntityOfPage: canonical
   };
 
-  const body = `<nav class="crumbs"><a href="/">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › Part ${esc(part)}</nav>
+  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › Part ${esc(part)}</nav>
 <h1>${esc(meta.name)} · Part ${esc(part)}</h1>
 <p class="lede">${esc(meta.desc)} Full text of Part ${esc(part)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${sections}`;
@@ -315,9 +318,9 @@ function renderHubPage(source) {
   const devLink = source === 'r-dfars'
     ? `<p class="lede" style="margin-top:-12px"><strong><a href="/deviations">→ R-DFARS Deviations Index</a></strong> — every deviation with effective date &amp; DARS tracking number.</p>`
     : '';
-  const body = `<nav class="crumbs"><a href="/">AcqVault</a> › ${esc(meta.name)}</nav>
+  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › ${esc(meta.name)}</nav>
 <h1>${esc(meta.name)}</h1>
-<p class="lede">${esc(meta.desc)} Browse all ${parts.length} parts below, or <a href="/">search the full text</a>.</p>
+<p class="lede">${esc(meta.desc)} Browse all ${parts.length} parts below, or <a href="/?home=1">search the full text</a>.</p>
 ${devLink}
 <div class="parts">${links}</div>`;
 
@@ -345,7 +348,7 @@ function renderDeviationsPage() {
     isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
   };
 
-  const body = `<nav class="crumbs"><a href="/">AcqVault</a> › <a href="/r-dfars">R-DFARS Deviations</a> › Index</nav>
+  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/r-dfars">R-DFARS Deviations</a> › Index</nav>
 <h1>R-DFARS Deviations Index</h1>
 <p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul (${rows.length} parts), with its RFO part, legacy DFARS reference, effective date, and DARS tracking number. Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
 <table class="devtable">
@@ -432,9 +435,9 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
 
-  const body = `<header class="lnav"><div class="lnav-inner"><a class="brand" href="/">${BRAND_SVG}AcqVault</a><a class="cta" href="/?q=">Search all sources →</a></div></header>
+  const body = `<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></div></header>
 <section class="lband lhero"><div class="lband-inner">
-<nav class="crumbs"><a href="/">AcqVault</a> › Library</nav>
+<nav class="crumbs"><a href="/?home=1">AcqVault</a> › Library</nav>
 <div class="eyebrow">AcqVault · Library</div>
 <h1>The reference shelf for federal&nbsp;acquisition</h1>
 <p class="lede">Field guides, templates, and the full text of every indexed source — one place to pull what you need.</p>
@@ -547,7 +550,7 @@ ul.chg-list a{color:var(--accent);text-decoration:none}ul.chg-list a:hover{text-
 ul.chg-other{font-size:13.5px;color:var(--muted);margin:4px 0 0;padding-left:22px}
 </style>`;
 
-  const body = `${CHG_STYLE}<nav class="crumbs"><a href="/">AcqVault</a> › What changed</nav>
+  const body = `${CHG_STYLE}<nav class="crumbs"><a href="/?home=1">AcqVault</a> › What changed</nav>
 <h1>What changed</h1>
 <p class="lede">AcqVault re-indexes its sources monthly and logs exactly which sections changed. This is that log — cite it when you need to show a regulation moved under you. Section links open the current full text; always verify against the signed deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on a result in a contract file.</p>
 ${runHtml}`;
@@ -711,10 +714,10 @@ function renderStudyPage() {
 
   const SEAL_SVG = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="st-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#st-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
 
-  const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/">${BRAND_SVG}AcqVault</a><a class="cta" href="/?q=">Search all sources →</a></div></header>
+  const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></div></header>
 <section class="lband lhero"><div class="lband-inner">
 ${SEAL_SVG}
-<nav class="crumbs"><a href="/">AcqVault</a> › Study</nav>
+<nav class="crumbs"><a href="/?home=1">AcqVault</a> › Study</nav>
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Drill it until it&rsquo;s reflex</h1>
 <p class="lede">Knowledge checks, threshold sprints, and board-style scenario drills built from the AcqVault Field Guides — spaced repetition decides what you see, you decide how honest your self-grade is.</p>
@@ -760,7 +763,7 @@ function renderExplainerPage() {
       '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }
   ]};
 
-  const body = `<nav class="crumbs"><a href="/">AcqVault</a> › What is the RFO?</nav>
+  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › What is the RFO?</nav>
 <h1>What is the Revolutionary FAR Overhaul?</h1>
 <p class="lede">The <strong>Revolutionary FAR Overhaul (RFO)</strong> is a restructuring of the Federal Acquisition Regulation directed by <strong>Executive Order 14275</strong>, "Restoring Common Sense to Federal Procurement." Agencies use the overhauled FAR text — published on the government’s Revolutionary FAR Overhaul web page — <em>in lieu of</em> the text codified at 48 CFR.</p>
 <section class="sec"><h2>How the Department of Defense implements it</h2>
@@ -768,7 +771,7 @@ function renderExplainerPage() {
 <section class="sec"><h2>When it took effect</h2>
 <p>For DoD, the class deviations became effective on <strong>February 1</strong>, <strong>February 17</strong>, and <strong>March 16, 2026</strong>, depending on the FAR part.</p></section>
 <section class="sec"><h2>Where to read it — and search it</h2>
-<p>The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov/far-overhaul</a>. AcqVault makes the <a href="/rfo">Revolutionary FAR Overhaul</a>, R-DFARS deviations, the <a href="/far-companion">FAR Companion</a>, and DAF guidance full-text searchable — <a href="/">start a search</a>.</p></section>
+<p>The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov/far-overhaul</a>. AcqVault makes the <a href="/rfo">Revolutionary FAR Overhaul</a>, R-DFARS deviations, the <a href="/far-companion">FAR Companion</a>, and DAF guidance full-text searchable — <a href="/?home=1">start a search</a>.</p></section>
 <h2 style="margin-top:32px">Frequently asked questions</h2>
 ${faqHtml}`;
 

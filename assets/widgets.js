@@ -1877,7 +1877,9 @@
     if (!btn || !menu || !backdrop || !list) return;
     let isOpen = false;
     function buildList() {
-      let html = '';
+      // Home leads the menu — it lives beside the logo on desktop (not in nav-center),
+      // so it must be added here explicitly. /?home=1 beats the per-tab view restore.
+      let html = `<a class="mm-link" href="/?home=1">Home<span class="mm-arrow" aria-hidden="true">→</span></a>`;
       document.querySelectorAll('nav .nav-center a').forEach((a) => {
         html += `<a class="mm-link" href="${esc(a.getAttribute('href') || '#')}">${esc(a.textContent.trim())}<span class="mm-arrow" aria-hidden="true">→</span></a>`;
       });
