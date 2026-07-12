@@ -704,7 +704,12 @@
         '<div class="st-card st-cb-card">' +
         (helping && !G.done ? helpHtml(firstTime) :
          G.done ? resultHtml() :
+          '<p class="st-cb-prompt">Guess the five-letter acquisition term — type or tap, then press <b>Enter</b>.</p>' +
           '<div class="st-cb-board" id="cb-board">' + boardHtml() + '</div>' +
+          '<div class="st-cb-legend" aria-label="What the colors mean">' +
+          '<span><i class="st-cb-tile st-cb-c"></i>right spot</span>' +
+          '<span><i class="st-cb-tile st-cb-p"></i>in the word, wrong spot</span>' +
+          '<span><i class="st-cb-tile st-cb-a"></i>not in the word</span></div>' +
           '<div class="st-cb-msg" id="cb-msg">' + (msg || '') + '</div>' +
           '<div class="st-cb-kb" id="cb-kb">' + kbHtml() + '</div>') +
         '</div>' +
