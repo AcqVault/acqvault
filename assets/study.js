@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=6';
+  var DECK_URL = '/assets/study-deck.json?v=7';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -50,13 +50,25 @@
   }
   function cardState(id) { return S.cards[id] || { box: 0, due: 0, lapses: 0 }; }
   function isDue(id) { var c = cardState(id); return c.box === 0 || c.due <= today(); }
+  function bumpStreak() { // consecutive days with at least one graded card
+    var t = today(), st = S.streak || { last: 0, run: 0 };
+    if (st.last === t) return;
+    st.run = (st.last === t - 1) ? st.run + 1 : 1;
+    st.last = t;
+    S.streak = st;
+  }
+  function streakRun() {
+    var st = S.streak;
+    if (!st || !st.run) return 0;
+    return (st.last >= today() - 1) ? st.run : 0; // a missed day quietly resets
+  }
   function grade(id, g) { // g: 1 missed, 2 shaky, 3 got it
     var c = cardState(id);
     if (g === 1) { c.box = 1; c.lapses++; }
     else if (g === 2) { c.box = Math.max(1, c.box); }
     else { c.box = Math.min(5, Math.max(1, c.box) + 1); }
     c.due = today() + INTERVALS[c.box - 1];
-    S.cards[id] = c; save();
+    S.cards[id] = c; bumpStreak(); save();
   }
   function topicsFor(pool) {
     var map = {};
@@ -77,16 +89,27 @@
     if (!card.d || card.d.length < 3) return null;
     return shuffle([card.a, card.d[0], card.d[1], card.d[2]]);
   }
-  // Post-answer debrief: the rule, the trap, and where the reference lives.
+  // Post-answer debrief: the rule, the trap, and where the reference lives — with the
+  // rulebook itself one click away (links resolved into the deck at build time).
   // right === true/false → verdict line (MCQ); right === null → no verdict (reveal cards).
+  var RIGHT_LINES = ['✓ Right', '✓ Clean', '✓ Locked in', '✓ That’s the rule', '✓ Board-ready'];
+  function citesHtml(links) {
+    if (!links || !links.length) return '';
+    return '<div class="st-cites"><span class="st-cites-lab">Read the actual rule</span>' +
+      links.map(function (l) {
+        return '<a class="st-cite" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) +
+          '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 1.5h7v7M10.5 1.5 1.5 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>';
+      }).join('') + '</div>';
+  }
   function explainHtml(card, right) {
-    if (!card.x && !card.ref) return '';
+    if (!card.x && !card.ref && !(card.links && card.links.length)) return '';
     var v = '';
-    if (right === true) v = '<div class="st-verdict st-verdict-right">✓ Right</div>';
+    if (right === true) v = '<div class="st-verdict st-verdict-right">' + RIGHT_LINES[Math.floor(Math.random() * RIGHT_LINES.length)] + '</div>';
     else if (right === false) v = '<div class="st-verdict st-verdict-wrong">✗ Not quite — the correct answer is highlighted above</div>';
     return '<div class="st-explain">' + v +
       (card.x ? '<p>' + esc(card.x) + '</p>' : '') +
       (card.ref ? '<div class="st-explain-ref">Where it lives: <b>' + esc(card.ref) + '</b></div>' : '') +
+      citesHtml(card.links) +
       '</div>';
   }
   function appendExplain(card, right) {
@@ -158,8 +181,13 @@
         '<span class="st-daily-sub">Spaced repetition picked these — the ones you’re about to forget, right before you forget them. Short and often beats long and rare.</span>'
       : '<div class="st-daily-row"><span class="st-daily-what" style="font-size:19px">All caught up — nothing due today.</span></div>' +
         '<span class="st-daily-sub">The scheduler has nothing urgent. Run a Deep Study shuffle or face a Board Sim scenario to stay sharp.</span>';
+    var run = streakRun();
     render(
-      '<div class="st-head"><div class="st-track-chip">' + (S.track === 'basic' ? 'Basic · Foundations' : 'Advanced · Board Prep') +
+      '<div class="st-head">' +
+      (run >= 2 ? '<div class="st-streak" title="Days in a row with at least one card answered">' +
+        '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' +
+        run + '-day streak</div>' : '') +
+      '<div class="st-track-chip">' + (S.track === 'basic' ? 'Basic · Foundations' : 'Advanced · Board Prep') +
       ' <button class="st-link" id="st-switch">switch</button></div></div>' +
       '<button class="st-daily" id="m-daily"><div class="st-daily-eyebrow">Today’s session · Daily Review</div>' + dailyInner + '<span class="st-daily-go" aria-hidden="true">→</span></button>' +
       '<div class="st-modes">' +
@@ -277,11 +305,17 @@
       render('<div class="st-card st-summary"><div class="st-chip">' + esc(label) + '</div>' +
         '<div class="st-sum-num">' + got + '<span> of ' + i + ' solid</span></div>' +
         '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
-        '<p class="st-sub">Missed cards come back tomorrow; solid ones stretch out. Come back daily — short and often beats long and rare.</p>' +
+        '<p class="st-sub">' + sumFlavor(pct, i) + '</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
       el('st-home').onclick = backHome;
     }
     step();
+  }
+  function sumFlavor(pct, n) {
+    if (!n) return 'Missed cards come back tomorrow; solid ones stretch out. Come back daily — short and often beats long and rare.';
+    if (pct >= 90) return 'Board-ready pace. What you nailed stretches out on the schedule — tomorrow brings the few that got away.';
+    if (pct >= 70) return 'Solid session. The misses come back tomorrow, right when they’re about to slip — that’s the system working.';
+    return 'Good reps — every miss you just took is a question the board can’t surprise you with. They’ll circle back tomorrow.';
   }
   function interleave(cards) { // avoid same-topic adjacency where possible
     for (var i = 1; i < cards.length; i++) {
@@ -373,7 +407,7 @@
       render('<div class="st-card st-summary"><div class="st-chip">Deep Study</div>' +
         '<div class="st-sum-num">' + got + '<span> of ' + seen + ' solid</span></div>' +
         '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
-        '<p class="st-sub">Every answer here also updated your spaced schedule — what you nailed stretches out, what you missed shows up in tomorrow’s Daily Review.</p>' +
+        '<p class="st-sub">' + (seen ? sumFlavor(pct, seen) + ' ' : '') + 'Every answer here also updated your spaced schedule.</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
       el('st-home').onclick = backHome;
     }
@@ -494,7 +528,8 @@
       ? 'End in your own voice — one concrete thing you would change on Monday. Perspective questions are scored on judgment and specifics, not recitation.'
       : 'Say where you\'d verify before acting — the live RFO/R-DFARS text, your Legal office — and what goes in the file. Never quote a threshold from memory.') + '</li>');
     return '<div class="st-walk"><div class="st-walk-head">How you should have answered — step by step</div><ol>' + steps.join('') + '</ol>' +
-      (co.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(co.cite) + '</b></div>' : '') + '</div>';
+      (co.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(co.cite) + '</b></div>' : '') +
+      citesHtml(co.links) + '</div>';
   }
   function viewBoard() {
     var pool = deck.scenarios.slice();
@@ -538,7 +573,8 @@
         body += '<div class="st-followup"><span>Panel follow-up ' + (k + 1) + ' of ' + fus.length + '</span><div class="st-q">' + esc(fq) + '</div></div>';
         if (fu.d && fuRevealed) {
           body += '<div class="st-fu-debrief"><div class="st-fu-debrief-head">Debrief</div><p>' + esc(fu.d) + '</p>' +
-            (sc.coach && sc.coach.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(sc.coach.cite) + '</b></div>' : '') + '</div>' +
+            (sc.coach && sc.coach.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(sc.coach.cite) + '</b></div>' : '') +
+            citesHtml(sc.coach && sc.coach.links) + '</div>' +
             '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (k + 1 < fus.length ? 'Next follow-up <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
         } else {
           body += '<p class="st-outloud">Answer <b>out loud</b>' + (fu.d ? ', then reveal the debrief.' : ', then continue.') + '</p>' +
@@ -614,9 +650,9 @@
         keyHandler(function (k) { if (k === ' ' || k === 'Enter') { stage++; fuRevealed = false; step(); return true; } });
       } else {
         ['g1', 'g2', 'g3'].forEach(function (id, gi) {
-          el(id).onclick = function () { S.scen[sc.id] = gi + 1; save(); keyHandler(null); viewBoard(); };
+          el(id).onclick = function () { S.scen[sc.id] = gi + 1; bumpStreak(); save(); keyHandler(null); viewBoard(); };
         });
-        keyHandler(function (k) { if (k === '1' || k === '2' || k === '3') { S.scen[sc.id] = +k; save(); keyHandler(null); viewBoard(); return true; } });
+        keyHandler(function (k) { if (k === '1' || k === '2' || k === '3') { S.scen[sc.id] = +k; bumpStreak(); save(); keyHandler(null); viewBoard(); return true; } });
       }
     }
     step();
