@@ -726,6 +726,16 @@ function renderStudyPage() {
 @keyframes st-right-pulse{0%{box-shadow:0 0 0 1px #1e6b43 inset,0 0 0 0 rgba(30,107,67,.35)}100%{box-shadow:0 0 0 1px #1e6b43 inset,0 0 0 9px rgba(30,107,67,0)}}
 .st-opt-right{animation:st-right-pulse .5s ease-out 1}
 @keyframes st-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+/* games hub: third track card + level toggle */
+.st-tracks-games{grid-template-columns:1fr;margin-top:14px}
+.st-tcover-games{color:#e4c477}
+.st-tcover-games svg{width:38px;height:38px}
+.st-trackcard-games .st-tc-kicker{color:var(--brass)}
+.st-lvl-seg{display:inline-flex;background:#fff;border:1px solid rgba(135,101,28,.35);border-radius:999px;padding:3px;gap:2px}
+.st-lvl-btn{border:none;background:none;border-radius:999px;padding:6px 16px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:background .15s,color .15s}
+.st-lvl-btn:hover{color:var(--ink)}
+.st-lvl-on{background:linear-gradient(158deg,#173a60,#0f2540);color:#f4f8fc!important}
+.st-lvl-btn:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
 /* quick rounds: game plates */
 .st-plates{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 8px}
 @media(max-width:640px){.st-plates{grid-template-columns:1fr}}
@@ -876,7 +886,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=17"></script>`;
+<script defer src="/assets/study.js?v=18"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }
