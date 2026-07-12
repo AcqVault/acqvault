@@ -135,9 +135,16 @@ nav.crumbs{font-size:13px;color:var(--muted);margin-bottom:8px}
 nav.crumbs a{color:var(--accent);text-decoration:none}nav.crumbs a:hover{text-decoration:underline}
 h1{font-size:30px;letter-spacing:-0.03em;margin:.2em 0 .1em}
 .lede{color:var(--muted);margin:0 0 26px;font-size:15px}
-section.sec{padding:18px 0;border-top:1px solid var(--line)}
+section.sec{padding:18px 0;border-top:1px solid var(--line);scroll-margin-top:14px}
 section.sec h2{font-size:18px;letter-spacing:-0.02em;margin:0 0 6px;scroll-margin-top:16px}
 section.sec h2 a{color:inherit;text-decoration:none}
+/* Landing from a deep link (study chips, TOC, copied anchors): bathe the exact section
+   in the house brass so the reader spots it without sweeping the page. The :target wash
+   stays as a resting emphasis; the stronger flash settles after a moment. */
+section.sec:target{background:linear-gradient(90deg,rgba(135,101,28,.07),rgba(135,101,28,.02) 62%,transparent);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding-left:16px;margin-left:-19px;animation:sec-found 2.8s ease-out 1}
+section.sec:target>h2{color:var(--accent)}
+@keyframes sec-found{0%,30%{background-color:rgba(228,196,119,.32)}100%{background-color:rgba(228,196,119,0)}}
+@media(prefers-reduced-motion:reduce){section.sec:target{animation:none}}
 .srcref{font-size:12.5px;color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
 .sec p{margin:.5em 0;font-size:15px}
