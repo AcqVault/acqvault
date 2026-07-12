@@ -151,7 +151,7 @@
     var day = comboToday();
     var gamesLine = (G.combo.day === day && G.combo.done)
       ? 'Today&rsquo;s combination: cracked. The 90-second round is always open.'
-      : 'Today&rsquo;s five-letter term is waiting — same word for everyone, new at 0000Z.';
+      : 'Today&rsquo;s five-letter term is waiting — same word for everyone, a new one every day.';
     render(
       '<h2 class="st-h2" style="margin-top:0">Pick your track</h2>' +
       '<p class="st-sub">Your progress is saved per card either way — switch tracks any time without losing it.</p>' +
@@ -163,9 +163,9 @@
       '</div>' +
       '<div class="st-tracks st-tracks-games">' +
       '<button class="st-trackcard st-trackcard-games" id="t-games">' +
-      '<span class="st-tcover st-tcover-games" aria-hidden="true">' + DIAL_SVG + '<span class="st-tcover-vol">0000Z</span></span>' +
+      '<span class="st-tcover st-tcover-games" aria-hidden="true">' + DIAL_SVG + '<span class="st-tcover-vol">DAILY</span></span>' +
       '<span class="st-tc-body"><span class="st-tc-kicker">Quick rounds · under 3 minutes</span><b>The Combination &amp; Which Part Governs</b>' +
-      '<p>' + gamesLine + ' Pick basic or advanced inside.</p></span></button>' +
+      '<p>' + gamesLine + '</p></span></button>' +
       '</div>');
     el('t-basic').onclick = function () { S.track = 'basic'; hub = 'study'; save(); goDepth(1, viewHome); };
     el('t-adv').onclick = function () { S.track = 'advanced'; hub = 'study'; save(); goDepth(1, viewHome); };
@@ -509,33 +509,22 @@
     st.last = day;
   }
   var DIAL_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="50" cy="50" r="34"/><circle cx="50" cy="50" r="12"/></g><g stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="8" x2="50" y2="20"/><line x1="50" y1="92" x2="50" y2="80"/><line x1="8" y1="50" x2="20" y2="50"/><line x1="92" y1="50" x2="80" y2="50"/><line x1="20.3" y1="20.3" x2="28.8" y2="28.8"/><line x1="79.7" y1="20.3" x2="71.2" y2="28.8"/><line x1="20.3" y1="79.7" x2="28.8" y2="71.2"/><line x1="79.7" y1="79.7" x2="71.2" y2="71.2"/></g><circle cx="50" cy="50" r="4" fill="currentColor"/></svg>';
-  function gamesLevel() {
-    var G = gamesState();
-    if (!G.level) G.level = (S.track === 'basic' ? 'basic' : 'advanced');
-    return G.level;
-  }
+
   function viewGamesHub() {
     hub = 'games';
     var G = gamesState();
-    var lvl = gamesLevel();
     var day = comboToday(), no = comboNo(day);
     var playedToday = G.combo.day === day && G.combo.done;
     var run = (G.combo.streak.last >= day - 3 || G.combo.streak.last === day) ? G.combo.streak.run : 0;
     var comboMeta = playedToday
-      ? (G.combo.win ? 'Cracked in ' + G.combo.rows.length + (run > 1 ? ' · ' + run + '-duty-day streak' : '') : 'Locked — new combination at 0000Z')
+      ? (G.combo.win ? 'Cracked in ' + G.combo.rows.length + (run > 1 ? ' · ' + run + '-duty-day streak' : '') : 'Locked — a new word drops at midnight')
       : 'Not cracked yet' + (run > 1 ? ' · ' + run + '-duty-day streak on the line' : '');
     var gv = G.governs;
-    var gvBest = gv['best_' + lvl] || (lvl === 'advanced' ? gv.best : 0) || 0;
-    var gvCombo = gv['bestCombo_' + lvl] || (lvl === 'advanced' ? gv.bestCombo : 0) || 0;
-    var poolN = deck.games.governs.filter(function (g) { return lvl === 'advanced' || g.lv === 'b'; }).length;
+    var gvBest = gv.best_advanced || gv.best || 0;
+    var gvCombo = gv.bestCombo_advanced || gv.bestCombo || 0;
     render(
-      '<div class="st-head"><div class="st-lvl-seg" role="group" aria-label="Difficulty">' +
-      '<button class="st-lvl-btn' + (lvl === 'basic' ? ' st-lvl-on' : '') + '" id="lvl-basic">Basic</button>' +
-      '<button class="st-lvl-btn' + (lvl === 'advanced' ? ' st-lvl-on' : '') + '" id="lvl-adv">Advanced</button>' +
-      '</div></div>' +
-      '<h2 class="st-h2" style="margin-top:4px">Quick rounds</h2>' +
-      '<p class="st-sub">Under three minutes each. One is a daily ritual; one is a race. ' +
-      (lvl === 'basic' ? 'Basic keeps the race on the foundations — the daily word is the same for everyone.' : 'Advanced runs the full rulebook — the daily word is the same for everyone.') + '</p>' +
+      '<h2 class="st-h2" style="margin-top:0">Quick rounds</h2>' +
+      '<p class="st-sub">Under three minutes each. One is a daily ritual; one is a race.</p>' +
       '<div class="st-plates">' +
       '<button class="st-plate" id="g-combo">' +
       '<span class="st-plate-eyebrow">Daily · No. ' + no + '</span>' +
@@ -544,18 +533,16 @@
         return '<span class="st-mini-tile' + (i === 1 || i === 4 ? ' st-mini-hit' : (i === 2 ? ' st-mini-near' : '')) + '">' + ch + '</span>';
       }).join('') + '</span>' +
       '<b>The Combination</b>' +
-      '<span class="st-plate-sub">Six tries at today&rsquo;s five-letter term of the trade. Same word for everyone, everywhere — new at 0000Z.</span>' +
+      '<span class="st-plate-sub">Six tries at today&rsquo;s five-letter term of the trade. Same word for everyone, everywhere — a new one every day.</span>' +
       '<span class="st-plate-meta">' + esc(comboMeta) + '</span></button>' +
       '<button class="st-plate" id="g-governs">' +
-      '<span class="st-plate-eyebrow">Tempo · 90 seconds · ' + lvl + '</span>' +
+      '<span class="st-plate-eyebrow">Tempo · 90 seconds</span>' +
       '<span class="st-plate-art st-plate-art-ring" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="rgba(228,196,119,.25)" stroke-width="4"/><circle cx="24" cy="24" r="19" fill="none" stroke="#e4c477" stroke-width="4" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="30" transform="rotate(-90 24 24)"/></svg><span class="st-plate-ring-n">90</span></span>' +
       '<b>Which Part Governs?</b>' +
-      '<span class="st-plate-sub">A situation flashes — call the governing part before the clock runs out. ' + poolN + ' situations in the ' + lvl + ' pool; combos multiply, misses teach.</span>' +
-      '<span class="st-plate-meta">' + (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' · top combo ×' + gvCombo : 'No ' + lvl + ' score on the board yet') + '</span></button>' +
+      '<span class="st-plate-sub">A situation flashes — call the governing part before the clock runs out. Combos multiply; misses teach.</span>' +
+      '<span class="st-plate-meta">' + (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' · top combo ×' + gvCombo : 'No score on the board yet') + '</span></button>' +
       '</div>' +
       '<button class="st-link st-quit" id="st-back">← All study tools</button>');
-    el('lvl-basic').onclick = function () { G.level = 'basic'; save(); viewGamesHub(); };
-    el('lvl-adv').onclick = function () { G.level = 'advanced'; save(); viewGamesHub(); };
     el('g-combo').onclick = function () { goDepth(2, viewCombo); };
     el('g-governs').onclick = function () { goDepth(2, viewGoverns); };
     el('st-back').onclick = function () { keyHandler(null); if (navDepth >= 1) history.back(); else viewTrack(); };
@@ -631,7 +618,7 @@
         '<div class="st-cb-help-row">' + exTile('S', 'c') + exTile('C', '') + exTile('O', '') + exTile('P', '') + exTile('E', '') + '<span><b>S</b> is in the word, in the right spot</span></div>' +
         '<div class="st-cb-help-row">' + exTile('A', '') + exTile('U', 'p') + exTile('D', '') + exTile('I', '') + exTile('T', '') + '<span><b>U</b> is in the word, in a different spot</span></div>' +
         '<div class="st-cb-help-row">' + exTile('C', '') + exTile('L', '') + exTile('A', '') + exTile('I', '') + exTile('M', 'a') + '<span><b>M</b> isn&rsquo;t in the word at all</span></div>' +
-        '<p>Same word for everyone, everywhere — a new one at 0000Z. Crack it and the vault teaches you the term.</p>' +
+        '<p>Same word for everyone, everywhere — a new one every day. Crack it and the vault teaches you the term.</p>' +
         '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="cb-help-go">' + (first ? 'Got it — open the board' : 'Back to the board') + '</button></div></div>';
     }
     function zuluCountdown() {
@@ -773,8 +760,7 @@
     return 'Buyer';
   }
   function viewGoverns() {
-    var lvl = gamesLevel();
-    var pool = shuffle(deck.games.governs.filter(function (g) { return lvl === 'advanced' || g.lv === 'b'; }));
+    var pool = shuffle(deck.games.governs.slice());
     var PN = deck.games.part_names;
     var i = 0, score = 0, combo = 0, bestCombo = 0, misses = [], answered = false, caseNo = 0;
     var endAt = 0, tick = null, qShownAt = 0, started = false;
@@ -790,11 +776,11 @@
     }
     function intro() {
       var G = gamesState().governs;
-      var pb = G['best_' + lvl] || (lvl === 'advanced' ? G.best : 0) || 0;
-      var pc = G['bestCombo_' + lvl] || (lvl === 'advanced' ? G.bestCombo : 0) || 0;
+      var pb = G.best_advanced || G.best || 0;
+      var pc = G.bestCombo_advanced || G.bestCombo || 0;
       render('<div class="st-card st-gv-intro">' +
         '<div class="st-gv-intro-ring">' + ringHtml() + '</div>' +
-        '<div class="st-chip">Which Part Governs? · ' + lvl + '</div>' +
+        '<div class="st-chip">Which Part Governs?</div>' +
         '<div class="st-q" style="text-align:center;margin-top:6px">Ninety seconds. A situation flashes — call the part of the rulebook that governs it.</div>' +
         '<div class="st-gv-rules">' +
         '<span><b>Chain</b> right answers — the multiplier climbs to ×5</span>' +
@@ -888,8 +874,8 @@
     function finish() {
       clearInterval(tick); keyHandler(null);
       var G = gamesState().governs;
-      var bk = 'best_' + lvl, ck = 'bestCombo_' + lvl;
-      if (lvl === 'advanced' && !G[bk] && G.best) { G[bk] = G.best; G[ck] = G.bestCombo; } // migrate pre-level best
+      var bk = 'best_advanced', ck = 'bestCombo_advanced'; // flat again — level split removed
+      if (!G[bk] && G.best) { G[bk] = G.best; G[ck] = G.bestCombo; }
       var isBest = score > (G[bk] || 0);
       if (isBest) G[bk] = score;
       if (bestCombo > (G[ck] || 0)) G[ck] = bestCombo;
