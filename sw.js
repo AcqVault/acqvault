@@ -1,6 +1,6 @@
 /* AcqVault service worker — offline shell + corpus, leaves live data network-only.
    Bump CACHE on any change here, or when the cached corpus must refresh. */
-const CACHE = 'acqvault-v48';
+const CACHE = 'acqvault-v49';
 const SHELL = [
   '/',
   '/assets/fonts/inter-latin.woff2',

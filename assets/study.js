@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=12';
+  var DECK_URL = '/assets/study-deck.json?v=13';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -493,6 +493,15 @@
     S.games.log = S.games.log || {}; // dayNum → true when any game was completed that day
     return S.games;
   }
+  var _comboDict = null;
+  function comboDictHas(w) { // Wordle-style accept list, shipped in the deck as one string
+    if (!_comboDict) {
+      _comboDict = new Set();
+      var d = (deck.games && deck.games.dict) || '';
+      for (var i = 0; i + 5 <= d.length; i += 5) _comboDict.add(d.slice(i, i + 5));
+    }
+    return _comboDict.has(w);
+  }
   function gamesMarkToday() { gamesState().log[comboToday()] = true; }
   function gamesHubStreak() { // consecutive active days, weekends never break it
     var log = gamesState().log, day = comboToday(), run = 0, d = day;
@@ -810,6 +819,12 @@
         if (m) m.textContent = 'Five letters.';
         var row = app.querySelector('.st-cb-row[data-r="' + G.rows.length + '"]');
         if (row && motion) { row.classList.add('st-cb-row-shake'); setTimeout(function () { row.classList.remove('st-cb-row-shake'); }, 350); }
+        return;
+      }
+      if (!comboDictHas(guess)) {
+        if (m) m.textContent = 'Not in the word list.';
+        var row2 = app.querySelector('.st-cb-row[data-r="' + G.rows.length + '"]');
+        if (row2 && motion) { row2.classList.add('st-cb-row-shake'); setTimeout(function () { row2.classList.remove('st-cb-row-shake'); }, 350); }
         return;
       }
       if (m) m.textContent = '';
