@@ -584,11 +584,23 @@
       var ks = keyStates();
       return KB_ROWS.map(function (row) {
         return '<div class="st-cb-kbrow">' + row.split('').map(function (k) {
-          if (k === '⏎') return '<button class="st-cb-key st-cb-key-wide" data-k="ENTER">enter</button>';
-          if (k === '⌫') return '<button class="st-cb-key st-cb-key-wide" data-k="BACK">⌫</button>';
+          if (k === '⏎') return '<button class="st-cb-key st-cb-key-wide st-cb-key-enter" data-k="ENTER">Enter</button>';
+          if (k === '⌫') return '<button class="st-cb-key st-cb-key-wide st-cb-key-back" data-k="BACK" aria-label="Delete letter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9L3 12l6-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9.5l5 5M17 9.5l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>';
           return '<button class="st-cb-key' + (ks[k] ? ' st-cb-key-' + ks[k] : '') + '" data-k="' + k + '">' + k + '</button>';
         }).join('') + '</div>';
       }).join('');
+    }
+    function exTile(ch, state) { return '<span class="st-cb-tile st-cb-tile-ex' + (state ? ' st-cb-' + state : '') + '">' + ch + '</span>'; }
+    function helpHtml(first) {
+      return '<div class="st-cb-help">' +
+        '<div class="st-cb-help-head">How to crack it</div>' +
+        '<p>Guess the day&rsquo;s <b>five-letter acquisition term</b> in six tries. Type on your keyboard or tap the keys below. <b>Enter</b> submits a row; the <b>⌫ key removes a letter</b> (tapping the row does too).</p>' +
+        '<p>After each guess, the tiles tell you how close you are:</p>' +
+        '<div class="st-cb-help-row">' + exTile('S', 'c') + exTile('C', '') + exTile('O', '') + exTile('P', '') + exTile('E', '') + '<span><b>S</b> is in the word, in the right spot</span></div>' +
+        '<div class="st-cb-help-row">' + exTile('A', '') + exTile('U', 'p') + exTile('D', '') + exTile('I', '') + exTile('T', '') + '<span><b>U</b> is in the word, in a different spot</span></div>' +
+        '<div class="st-cb-help-row">' + exTile('C', '') + exTile('L', '') + exTile('A', '') + exTile('I', '') + exTile('M', 'a') + '<span><b>M</b> isn&rsquo;t in the word at all</span></div>' +
+        '<p>Same word for everyone, everywhere — a new one at 0000Z. Crack it and the vault teaches you the term.</p>' +
+        '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="cb-help-go">' + (first ? 'Got it — open the board' : 'Back to the board') + '</button></div></div>';
     }
     function zuluCountdown() {
       var ms = 86400000 - (Date.now() % 86400000);
@@ -623,20 +635,35 @@
         '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="cb-share">Copy result</button></div>' +
         '<p class="st-sub" style="text-align:center">Next combination in ' + zuluCountdown() + ' · same word for everyone</p></div>';
     }
+    var helping = false;
     function paint(msg) {
-      render('<div class="st-session-head"><span>The Combination · No. ' + comboNo(day) + '</span><span>' + (G.done ? '' : (6 - G.rows.length) + ' tries left') + '</span></div>' +
+      var firstTime = !gamesState().combo.helpSeen;
+      if (firstTime && !G.done) helping = true;
+      render('<div class="st-session-head"><span>The Combination · No. ' + comboNo(day) + '</span><span>' +
+        (G.done ? '' : (helping ? '' : (6 - G.rows.length) + ' tries left · ') + '<button class="st-link st-cb-helpbtn" id="cb-help">how to play</button>') + '</span></div>' +
         '<div class="st-card st-cb-card">' +
-        (G.done ? resultHtml() :
+        (helping && !G.done ? helpHtml(firstTime) :
+         G.done ? resultHtml() :
           '<div class="st-cb-board" id="cb-board">' + boardHtml() + '</div>' +
           '<div class="st-cb-msg" id="cb-msg">' + (msg || '') + '</div>' +
           '<div class="st-cb-kb" id="cb-kb">' + kbHtml() + '</div>') +
         '</div>' +
         '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
       el('st-quit').onclick = backHome;
+      if (el('cb-help')) el('cb-help').onclick = function () { helping = true; paint(); };
+      if (el('cb-help-go')) el('cb-help-go').onclick = function () {
+        helping = false;
+        gamesState().combo.helpSeen = true; save();
+        paint();
+      };
       if (G.done) { wireShare(); keyHandler(null); return; }
+      if (helping) { keyHandler(function (key) { if (key === 'Enter' || key === ' ') { el('cb-help-go').onclick(); return true; } }); return; }
       Array.prototype.forEach.call(app.querySelectorAll('.st-cb-key'), function (b) {
         b.onclick = function () { input(b.getAttribute('data-k')); };
       });
+      // tapping the active row also erases — the board itself is a control
+      var active = app.querySelector('.st-cb-row[data-r="' + G.rows.length + '"]');
+      if (active) active.onclick = function () { input('BACK'); };
       keyHandler(function (key) {
         if (key === 'Enter') { input('ENTER'); return true; }
         if (key === 'Backspace') { input('BACK'); return true; }
@@ -716,15 +743,38 @@
   function viewGoverns() {
     var pool = shuffle(deck.games.governs.slice());
     var PN = deck.games.part_names;
-    var i = 0, score = 0, combo = 0, bestCombo = 0, misses = [], answered = false;
+    var i = 0, score = 0, combo = 0, bestCombo = 0, misses = [], answered = false, caseNo = 0;
     var endAt = 0, tick = null, qShownAt = 0, started = false;
     function mult() { return 1 + Math.min(4, Math.floor(combo / 2)); }
     function remaining() { return Math.max(0, (endAt - Date.now()) / 1000); }
     function ringHtml() {
       return '<span class="st-gv-ring" id="gv-ring"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="rgba(23,58,96,.14)" stroke-width="6"/><circle id="gv-arc" cx="40" cy="40" r="34" fill="none" stroke="#173a60" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + GV_RING_C.toFixed(1) + '" stroke-dashoffset="0" transform="rotate(-90 40 40)"/></svg><b id="gv-secs">' + GV_SECONDS + '</b></span>';
     }
-    function startClock() {
-      if (started) return; started = true;
+    function pipsHtml() {
+      var m = mult(), out = '';
+      for (var p = 1; p <= 5; p++) out += '<span class="st-gv-pip' + (p <= m ? ' st-gv-pip-on' : '') + '"></span>';
+      return '<span class="st-gv-pips' + (m >= 3 ? ' st-gv-pips-hot' : '') + '" id="gv-pips" title="Combo multiplier ×' + m + '">' + out + '<b id="gv-mult">×' + m + '</b></span>';
+    }
+    function intro() {
+      var G = gamesState().governs;
+      render('<div class="st-card st-gv-intro">' +
+        '<div class="st-gv-intro-ring">' + ringHtml() + '</div>' +
+        '<div class="st-chip">Which Part Governs?</div>' +
+        '<div class="st-q" style="text-align:center;margin-top:6px">Ninety seconds. A situation flashes — call the part of the rulebook that governs it.</div>' +
+        '<div class="st-gv-rules">' +
+        '<span><b>Chain</b> right answers — the multiplier climbs to ×5</span>' +
+        '<span><b>Fast calls</b> under 4 seconds earn a bonus</span>' +
+        '<span><b>Misses teach</b> — every one is reviewed with its cite</span></div>' +
+        (G.best ? '<p class="st-sub" style="text-align:center">Personal best ' + G.best.toLocaleString() + ' · top combo ×' + G.bestCombo + '</p>' : '') +
+        '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal st-gv-start" id="gv-start">Start the clock <kbd>space</kbd></button></div></div>' +
+        '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
+      el('st-quit').onclick = backHome;
+      el('gv-start').onclick = begin;
+      keyHandler(function (k) { if (k === ' ' || k === 'Enter') { begin(); return true; } });
+    }
+    function begin() {
+      keyHandler(null);
+      started = true;
       endAt = Date.now() + GV_SECONDS * 1000;
       tick = setInterval(function () {
         var arc = el('gv-arc'), secs = el('gv-secs'), ring = el('gv-ring');
@@ -738,30 +788,43 @@
         }
         if (rem <= 0) { clearInterval(tick); finish(); }
       }, 100);
+      next();
     }
     function next() {
       if (i >= pool.length) { shuffle(pool); i = 0; }
-      var q = pool[i]; answered = false;
+      var q = pool[i]; answered = false; caseNo++;
       var opts = shuffle([q.p].concat(q.d));
-      render('<div class="st-gv-head"><span class="st-gv-score"><b id="gv-score">' + score.toLocaleString() + '</b>' +
-        '<span class="st-gv-combo' + (mult() > 1 ? ' st-gv-combo-hot' : '') + '" id="gv-combo">×' + mult() + '</span></span>' + ringHtml() + '</div>' +
-        '<div class="st-card st-gv-card" id="gv-card">' +
-        '<div class="st-gv-kicker">What governs?</div>' +
+      render('<div class="st-gv-head"><span class="st-gv-score"><b id="gv-score">' + score.toLocaleString() + '</b>' + pipsHtml() + '</span>' + ringHtml() + '</div>' +
+        '<div class="st-card st-gv-card st-gv-card-in" id="gv-card">' +
+        '<div class="st-gv-docket"><span class="st-gv-kicker">Case ' + (caseNo < 10 ? '0' : '') + caseNo + '</span><span class="st-gv-stampline">What governs?</span></div>' +
         '<div class="st-gv-q">' + esc(q.s) + '</div>' +
         '<div class="st-gv-opts">' + opts.map(function (o, k) {
           return '<button class="st-gv-opt" data-p="' + esc(o) + '"><b>' + esc(o) + '</b><span>' + esc(PN[o] || '') + '</span></button>';
         }).join('') + '</div></div>' +
-        '<button class="st-link st-quit" id="st-quit">' + (started ? 'End round' : 'Back to dashboard') + '</button>');
-      el('st-quit').onclick = started ? finish : backHome;
+        '<button class="st-link st-quit" id="st-quit">End round</button>');
+      el('st-quit').onclick = finish;
+      // re-drive the clock instruments the render just rebuilt
+      var arc = el('gv-arc'), secs = el('gv-secs');
+      if (arc) { var frac = remaining() / GV_SECONDS; arc.style.strokeDashoffset = (GV_RING_C * (1 - frac)).toFixed(1); }
+      if (secs) secs.textContent = Math.ceil(remaining());
       qShownAt = Date.now();
       Array.prototype.forEach.call(app.querySelectorAll('.st-gv-opt'), function (b) {
         b.onclick = function () { call(b, q); };
       });
       keyHandler(null);
     }
+    function floatPoints(btn, pts) {
+      var f = document.createElement('span');
+      f.className = 'st-gv-float';
+      f.textContent = '+' + pts;
+      var r = btn.getBoundingClientRect();
+      f.style.left = (r.left + r.width / 2) + 'px';
+      f.style.top = r.top + 'px';
+      document.body.appendChild(f);
+      setTimeout(function () { f.remove(); }, 900);
+    }
     function call(btn, q) {
       if (answered) return; answered = true;
-      startClock();
       var right = btn.getAttribute('data-p') === q.p;
       var fast = (Date.now() - qShownAt) < 4000;
       Array.prototype.forEach.call(app.querySelectorAll('.st-gv-opt'), function (b) {
@@ -773,14 +836,15 @@
         var pts = 100 * mult() + (fast ? 50 : 0);
         score += pts;
         var sc = el('gv-score'); if (sc) sc.textContent = score.toLocaleString();
-        var cb = el('gv-combo'); if (cb) { cb.textContent = '×' + mult(); cb.classList.toggle('st-gv-combo-hot', mult() > 1); }
+        var pips = el('gv-pips'); if (pips) pips.outerHTML = pipsHtml();
+        if (!document.hidden) floatPoints(btn, pts);
         var card = el('gv-card'); if (card) card.classList.add('st-gv-card-hit');
         i++;
-        setTimeout(next, 320);
+        setTimeout(next, 340);
       } else {
         btn.classList.add('st-gv-opt-wrong');
         combo = 0;
-        var cb2 = el('gv-combo'); if (cb2) { cb2.textContent = '×1'; cb2.classList.remove('st-gv-combo-hot'); }
+        var pips2 = el('gv-pips'); if (pips2) pips2.outerHTML = pipsHtml();
         misses.push(q);
         i++;
         setTimeout(next, 1350);
@@ -800,8 +864,10 @@
               '<a class="st-cite" href="' + esc(q.link.u) + '" target="_blank" rel="noopener">' + esc(q.p) + ' — ' + esc(deck.games.part_names[q.p] || '') + '</a></div>';
           }).join('') + '</div>'
         : '<p class="st-sub" style="text-align:center">Nothing got away. Clean round.</p>';
+      var SEAL = '<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gv-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#gv-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="41" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity=".55"/><circle cx="50" cy="50" r="21" fill="none" stroke="#16263f" stroke-width="2.4" opacity=".9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity=".9"><line x1="50" y1="34" x2="50" y2="42"/><line x1="50" y1="66" x2="50" y2="58"/><line x1="34" y1="50" x2="42" y2="50"/><line x1="66" y1="50" x2="58" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#16263f" opacity=".9"/></svg>';
       render('<div class="st-card st-summary st-gv-end">' +
         '<div class="st-chip">Which Part Governs?</div>' +
+        '<div class="st-gv-seal' + (document.hidden ? '' : ' st-gv-seal-stamp') + '">' + SEAL + '</div>' +
         '<div class="st-sum-num" id="gv-final">0</div>' +
         '<div class="st-gv-tier">' + gvTier(score) + (isBest && score > 0 ? ' · new personal best' : (G.best ? ' · best ' + G.best.toLocaleString() : '')) + '</div>' +
         '<p class="st-sub">Top combo ×' + (1 + Math.min(4, Math.floor(bestCombo / 2))) + (bestCombo >= 2 ? '' : ' — chain answers to multiply') + '. Fast calls (under 4s) earn the bonus.</p>' +
@@ -820,7 +886,7 @@
         if (f < 1) requestAnimationFrame(up); else if (fin) fin.textContent = score.toLocaleString();
       })();
     }
-    next();
+    intro();
   }
 
   /* ---- board sim (out loud, with hints + a methodical model answer) ---- */

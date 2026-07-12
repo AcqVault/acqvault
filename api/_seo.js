@@ -816,7 +816,44 @@ function renderStudyPage() {
 .st-gv-miss{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed rgba(135,101,28,.25);font-size:13px;line-height:1.45;color:#3d444d}
 .st-gv-miss:last-child{border-bottom:none}
 .st-gv-miss .st-cite{flex:none}
-@media(prefers-reduced-motion:reduce){.st-opt-right,.st-gv-opt-wrong,.st-cb-row-shake,.st-cb-flip,.st-cb-dial-spin,.st-gv-ring-crit{animation:none}}
+/* Combination help + keys */
+.st-cb-helpbtn{font-size:11.5px;text-transform:none;letter-spacing:0}
+.st-cb-help{max-width:430px;margin:0 auto;padding:4px 2px}
+.st-cb-help-head{font-family:var(--serif);font-size:21px;color:var(--ink);letter-spacing:-.01em;margin-bottom:8px;text-align:center}
+.st-cb-help p{font-size:14px;line-height:1.6;color:#3d444d;margin:.5em 0}
+.st-cb-help-row{display:flex;align-items:center;gap:4px;margin:10px 0}
+.st-cb-help-row>span:last-child{margin-left:9px;font-size:12.5px;line-height:1.45;color:#3d444d}
+.st-cb-tile-ex{width:34px;height:34px;font-size:17px;flex:none}
+.st-cb-key-enter{font-size:11.5px;letter-spacing:.04em}
+.st-cb-key-back{background:#f6efdd;border-color:rgba(135,101,28,.4);color:#5e4715}
+.st-cb-key-back svg{width:22px;height:22px}
+/* Governs: intro, docket, pips, float, seal */
+.st-gv-intro{padding:26px 24px 22px}
+.st-gv-intro-ring{display:flex;justify-content:center;margin-bottom:10px}
+.st-gv-intro .st-chip{display:block;width:max-content;margin:0 auto 4px}
+.st-gv-rules{display:grid;gap:8px;max-width:380px;margin:16px auto 6px}
+.st-gv-rules span{position:relative;padding-left:22px;font-size:13.5px;line-height:1.5;color:#3d444d}
+.st-gv-rules span::before{content:"";position:absolute;left:2px;top:7px;width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#b8934a,#87651c)}
+.st-gv-rules b{color:var(--ink)}
+.st-gv-start{font-size:15.5px;padding:13px 26px}
+.st-gv-docket{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px dashed rgba(135,101,28,.35);padding-bottom:8px;margin-bottom:12px}
+.st-gv-stampline{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8c2b23;border:1.5px solid rgba(179,38,30,.55);border-radius:3px;padding:2px 7px;transform:rotate(1.6deg)}
+.st-gv-card{background:linear-gradient(180deg,#fffdf7,#fbf7ec);border-color:rgba(135,101,28,.3)}
+.st-gv-card::before{background:linear-gradient(90deg,#6f521a,#b8934a 50%,#6f521a)}
+.st-gv-card-in{animation:st-gv-in .2s ease-out 1}
+@keyframes st-gv-in{0%{opacity:0;transform:translateY(9px)}100%{opacity:1;transform:none}}
+.st-gv-pips{display:inline-flex;align-items:center;gap:3px;margin-left:2px}
+.st-gv-pip{width:9px;height:16px;border-radius:3px;background:#ece8dd;transition:background .15s,transform .15s}
+.st-gv-pip-on{background:linear-gradient(180deg,#b8934a,#87651c)}
+.st-gv-pips-hot .st-gv-pip-on{box-shadow:0 0 7px rgba(228,196,119,.8)}
+.st-gv-pips b{margin-left:5px;font-size:12.5px;font-weight:800;color:var(--brass-ink);font-variant-numeric:tabular-nums}
+.st-gv-float{position:fixed;z-index:900;transform:translateX(-50%);font-family:var(--serif);font-size:19px;font-weight:700;color:#1e6b43;pointer-events:none;animation:st-gv-float .85s ease-out forwards}
+@keyframes st-gv-float{0%{opacity:0;transform:translateX(-50%) translateY(4px)}18%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-30px)}}
+.st-gv-seal{width:86px;height:86px;margin:6px auto 2px}
+.st-gv-seal svg{width:100%;height:100%;filter:drop-shadow(0 6px 12px rgba(111,82,26,.35))}
+.st-gv-seal-stamp{animation:st-gv-stamp .5s cubic-bezier(.2,1.6,.35,1) 1}
+@keyframes st-gv-stamp{0%{opacity:0;transform:scale(1.7) rotate(-7deg)}60%{opacity:1;transform:scale(.96) rotate(1deg)}100%{transform:scale(1) rotate(0)}}
+@media(prefers-reduced-motion:reduce){.st-opt-right,.st-gv-opt-wrong,.st-cb-row-shake,.st-cb-flip,.st-cb-dial-spin,.st-gv-ring-crit,.st-gv-card-in,.st-gv-float,.st-gv-seal-stamp{animation:none}}
 </style>`;
 
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
@@ -839,7 +876,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=16"></script>`;
+<script defer src="/assets/study.js?v=17"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }
