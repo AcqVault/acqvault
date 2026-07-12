@@ -1222,7 +1222,14 @@
       history.replaceState({ st: 0 }, '');
       navDepth = 0;
       var qs = new URLSearchParams(location.search);
-      if (qs.get('play') === 'daily') { hub = 'games'; goDepth(2, viewCombo); return; }
+      if (qs.get('play') === 'daily') {
+        if (qs.get('fresh') === '1') { // replay today's word (streak & history untouched)
+          var gc = gamesState().combo;
+          gc.day = 0; gc.rows = []; gc.done = false; gc.win = false; save();
+          try { history.replaceState({ st: 0 }, '', '/study?play=daily'); } catch (e) {}
+        }
+        hub = 'games'; goDepth(2, viewCombo); return;
+      }
       viewTrack();
     }).catch(function () {
       app.innerHTML = '<p class="st-sub">Couldn’t load the question deck — check your connection and refresh. (Once loaded once, it works offline.)</p>';

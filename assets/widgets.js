@@ -2164,8 +2164,6 @@
   var strip = document.getElementById('daily-strip');
   if (!strip) return;
   fetch('/api/feedback?board=1').then(function (r) { return r.json(); }).then(function (b) {
-    var no = document.getElementById('daily-no');
-    if (no && b.no) no.textContent = '· No. ' + b.no;
     if (!b.configured || !b.top || !b.top.length) return; // strip stays CTA-only
     var list = document.getElementById('daily-board-list');
     var count = document.getElementById('daily-board-count');
