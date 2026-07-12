@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=8';
+  var DECK_URL = '/assets/study-deck.json?v=9';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -95,7 +95,7 @@
   var RIGHT_LINES = ['✓ Right', '✓ Clean', '✓ Locked in', '✓ That’s the rule', '✓ Board-ready'];
   function citesHtml(links) {
     if (!links || !links.length) return '';
-    return '<div class="st-cites"><span class="st-cites-lab">Read the actual rule</span>' +
+    return '<div class="st-cites"><span class="st-cites-lab">Described in</span>' +
       links.map(function (l) {
         return '<a class="st-cite" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) +
           '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 1.5h7v7M10.5 1.5 1.5 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>';
