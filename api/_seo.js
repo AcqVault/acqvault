@@ -725,7 +725,28 @@ function renderStudyPage() {
 .st-streak svg{width:12px;height:12px;fill:var(--brass)}
 @keyframes st-right-pulse{0%{box-shadow:0 0 0 1px #1e6b43 inset,0 0 0 0 rgba(30,107,67,.35)}100%{box-shadow:0 0 0 1px #1e6b43 inset,0 0 0 9px rgba(30,107,67,0)}}
 .st-opt-right{animation:st-right-pulse .5s ease-out 1}
-@media(prefers-reduced-motion:reduce){.st-opt-right{animation:none}}
+.st-tilegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+@media(max-width:560px){.st-tilegrid{grid-template-columns:repeat(2,1fr)}}
+.st-tile{display:flex;align-items:center;justify-content:center;text-align:center;min-height:74px;padding:10px 12px;background:#fff;border:1px solid var(--line2);border-radius:10px;font-size:13px;font-weight:600;line-height:1.35;color:#2a3140;cursor:pointer;transition:border-color .12s,transform .12s,box-shadow .12s,opacity .3s}
+.st-tile:hover:not(:disabled){border-color:rgba(135,101,28,.5);transform:translateY(-1px)}
+.st-tile-sel{border-color:#173a60!important;box-shadow:0 0 0 1px #173a60 inset;background:#f0f4f9}
+.st-tile-done{border-color:#1e6b43!important;background:#eef7f0;color:#155433;opacity:.45;cursor:default;transform:none!important}
+.st-tile-wrong{border-color:#b3261e!important;background:#fdf0ef;animation:st-shake .3s ease-in-out 1}
+@keyframes st-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+#mt-clock{font-variant-numeric:tabular-nums}
+.st-ladlist{display:grid;gap:8px;margin-top:12px}
+.st-ladrows{display:grid;gap:7px;margin-top:16px}
+.st-ladrow{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:9px 12px;font-size:14px;line-height:1.45;color:#2a3140}
+.st-ladnum{flex:none;width:22px;height:22px;border-radius:50%;background:#f6efdd;color:var(--brass-ink);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.st-ladtext{flex:1}
+.st-ladarrows{flex:none;display:flex;gap:5px}
+.st-ladarrows button{width:34px;height:34px;border:1px solid rgba(135,101,28,.35);border-radius:7px;background:#f6efdd;color:#5e4715;font-size:15px;font-weight:700;cursor:pointer}
+.st-ladarrows button:disabled{opacity:.3;cursor:default}
+.st-ladrow-ok{border-color:#1e6b43;background:#eef7f0}
+.st-ladrow-ok .st-ladnum{background:#1e6b43;color:#fff}
+.st-ladrow-bad{border-color:rgba(179,38,30,.45);background:#fdf6f5;animation:st-shake .3s ease-in-out 1}
+.st-bg-actions .st-btn{flex:1;justify-content:center;text-align:center;font-size:15.5px}
+@media(prefers-reduced-motion:reduce){.st-opt-right,.st-tile-wrong,.st-ladrow-bad{animation:none}}
 </style>`;
 
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
@@ -739,7 +760,7 @@ ${SEAL_SVG}
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Drill it until it&rsquo;s reflex</h1>
 <p class="lede">Knowledge checks, threshold sprints, and board-style scenario drills built from the AcqVault Field Guides — every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
-<div class="stats"><span class="stat"><b>500+</b> drills</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+<div class="stats"><span class="stat"><b>500+</b> drills</span><span class="stat"><b>3</b> quick games</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
 <div id="study-app"><noscript><p>AcqVault Study is an interactive drill tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
@@ -748,7 +769,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=14"></script>`;
+<script defer src="/assets/study.js?v=15"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }

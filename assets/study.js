@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=9';
+  var DECK_URL = '/assets/study-deck.json?v=10';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -196,6 +196,7 @@
       (S.track === 'advanced' ?
         '<button class="st-mode" id="m-board"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Board Sim</b><span>' + scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups</span></button>' : '') +
       '</div>' +
+      gamesRowHtml() +
       '<div class="st-ready-head"><h2 class="st-h2">Readiness by topic</h2><span class="st-overall">' + overall + '% overall</span></div>' +
       '<p class="st-sub">Tap a topic to drill it directly, due or not.</p>' +
       '<div class="st-topics">' + rows + '</div>' +
@@ -207,6 +208,9 @@
     el('m-deep').onclick = function () { goDepth(2, viewDeep); };
     el('m-sprint').onclick = function () { goDepth(2, viewSprint); };
     if (el('m-board')) el('m-board').onclick = function () { goDepth(2, viewBoard); };
+    if (el('g-match')) el('g-match').onclick = function () { goDepth(2, viewMatch); };
+    if (el('g-ladder')) el('g-ladder').onclick = function () { goDepth(2, viewLadderList); };
+    if (el('g-bait')) el('g-bait').onclick = function () { goDepth(2, viewBait); };
     el('st-switch').onclick = function () { goDepth(0, viewTrack); };
     el('st-export').onclick = doExport;
     el('st-import').onclick = function () { el('st-file').click(); };
@@ -463,6 +467,258 @@
       render('<div class="st-card st-summary"><div class="st-chip">Threshold Sprint</div>' +
         '<div class="st-sum-num">' + (S.sprint.best || 0) + '<span> best streak</span></div>' +
         '<p class="st-sub">Numbers rot fastest — sprint a few times a week and the board can’t rattle you with a dollar figure.</p>' +
+        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
+      el('st-home').onclick = backHome;
+    }
+    step();
+  }
+
+  /* ---- quick games: five minutes, real reps — professional, not a gaming site ----
+     Match the Numbers (timed pairs, personal best) · The Ladder (order the sequence)
+     · Bait or Governs (advanced: call the scenarios' planted facts, points to a target). */
+  function gamesState() {
+    if (!S.games) S.games = {};
+    S.games.match = S.games.match || {};
+    S.games.bait = S.games.bait || { bestStreak: 0, clears: 0 };
+    S.games.ladder = S.games.ladder || {};
+    return S.games;
+  }
+  function fmtSecs(s) { return s.toFixed(1) + 's'; }
+  function gamesRowHtml() {
+    var G = gamesState();
+    var best = G.match['best_' + S.track];
+    var ladders = deck.games.ladders.filter(function (l) { return S.track === 'advanced' || l.level === 'basic'; });
+    var cleared = ladders.filter(function (l) { return G.ladder[l.id]; }).length;
+    return '<h2 class="st-h2" style="margin-top:22px">Quick games</h2>' +
+      '<p class="st-sub">Five minutes, real reps — the highest-yield facts, playable.</p>' +
+      '<div class="st-modes">' +
+      '<button class="st-mode" id="g-match"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M13 7h8M3 17h8"/></svg></span>Match the Numbers</b><span>Pair each threshold with its figure, against the clock' + (best ? ' · best ' + fmtSecs(best) : '') + '</span></button>' +
+      '<button class="st-mode" id="g-ladder"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3v18M16 3v18M8 7h8M8 12h8M8 17h8"/></svg></span>The Ladder</b><span>Put the sequence in order — approval tiers, priority lists, runways · ' + cleared + ' of ' + ladders.length + ' cleared</span></button>' +
+      (S.track === 'advanced' ?
+        '<button class="st-mode" id="g-bait"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg></span>Bait or Governs?</b><span>Call each planted fact before the board does · best streak ' + (G.bait.bestStreak || 0) + '</span></button>' : '') +
+      '</div>';
+  }
+
+  /* Match the Numbers — six pairs on the board, tap a label then its figure. */
+  function viewMatch() {
+    var pool = deck.games.pairs.filter(function (p) { return S.track === 'advanced' || p.level === 'basic'; });
+    var picked = [], seenV = {};
+    shuffle(pool.slice()).forEach(function (p) {
+      if (picked.length >= 6 || seenV[p.v.toLowerCase()]) return;
+      seenV[p.v.toLowerCase()] = 1; picked.push(p);
+    });
+    var tiles = [];
+    picked.forEach(function (p, k) {
+      tiles.push({ k: k, kind: 'l', text: p.l });
+      tiles.push({ k: k, kind: 'v', text: p.v });
+    });
+    shuffle(tiles);
+    render('<div class="st-session-head"><span>Match the Numbers</span><span id="mt-clock">0.0s</span></div>' +
+      '<div class="st-card"><div class="st-chip">Quick game</div>' +
+      '<p class="st-sub" style="margin-top:0">Tap a threshold, then tap its figure. A wrong match costs 2 seconds. The clock starts on your first tap.</p>' +
+      '<div class="st-tilegrid">' + tiles.map(function (t, i) {
+        return '<button class="st-tile" data-i="' + i + '"><span>' + esc(t.text) + '</span></button>';
+      }).join('') + '</div></div>' +
+      '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
+    el('st-quit').onclick = backHome;
+    var sel = null, done = 0, penalty = 0, t0 = null, tick = null;
+    function clock() { return (Date.now() - t0) / 1000 + penalty; }
+    function startClock() {
+      if (t0) return; t0 = Date.now();
+      tick = setInterval(function () {
+        var c = el('mt-clock'); if (!c) { clearInterval(tick); return; }
+        c.textContent = fmtSecs(clock());
+      }, 100);
+    }
+    Array.prototype.forEach.call(app.querySelectorAll('.st-tile'), function (b) {
+      b.onclick = function () {
+        startClock();
+        var i = +b.getAttribute('data-i'), t = tiles[i];
+        if (b.classList.contains('st-tile-done')) return;
+        if (sel && +sel.getAttribute('data-i') === i) { sel.classList.remove('st-tile-sel'); sel = null; return; }
+        if (!sel) { sel = b; b.classList.add('st-tile-sel'); return; }
+        var st = tiles[+sel.getAttribute('data-i')];
+        if (st.k === t.k && st.kind !== t.kind) {
+          sel.classList.remove('st-tile-sel');
+          sel.classList.add('st-tile-done'); b.classList.add('st-tile-done');
+          sel = null; done++;
+          if (done === picked.length) finish();
+        } else {
+          penalty += 2;
+          var a = sel; sel = null;
+          a.classList.remove('st-tile-sel');
+          a.classList.add('st-tile-wrong'); b.classList.add('st-tile-wrong');
+          setTimeout(function () { a.classList.remove('st-tile-wrong'); b.classList.remove('st-tile-wrong'); }, 420);
+        }
+      };
+    });
+    function finish() {
+      clearInterval(tick);
+      var time = Math.round(clock() * 10) / 10;
+      var G = gamesState();
+      var key = 'best_' + S.track;
+      var isBest = !G.match[key] || time < G.match[key];
+      if (isBest) G.match[key] = time;
+      bumpStreak(); save();
+      render('<div class="st-card st-summary"><div class="st-chip">Match the Numbers</div>' +
+        '<div class="st-sum-num">' + fmtSecs(time) + (isBest ? '<span> new personal best</span>' : '<span> · best ' + fmtSecs(G.match[key]) + '</span>') + '</div>' +
+        '<p class="st-sub">' + (penalty ? penalty / 2 + ' wrong match' + (penalty > 2 ? 'es' : '') + ' cost ' + penalty + 's. ' : 'Clean board — no wrong matches. ') + 'Numbers rot fastest; a round a day keeps them cold-callable.</p>' +
+        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="mt-again">Play again</button>' +
+        '<button class="st-btn st-btn-hint" id="st-home">Dashboard</button></div></div>');
+      el('mt-again').onclick = viewMatch;
+      el('st-home').onclick = backHome;
+    }
+  }
+
+  /* The Ladder — put the sequence in the right order. */
+  function viewLadderList() {
+    var G = gamesState();
+    var ladders = deck.games.ladders.filter(function (l) { return S.track === 'advanced' || l.level === 'basic'; });
+    render('<div class="st-session-head"><span>The Ladder</span><span>&nbsp;</span></div>' +
+      '<div class="st-card"><div class="st-chip">Quick game</div>' +
+      '<p class="st-sub" style="margin-top:0">Boards love sequences — approval tiers, priority orders, process runways. Pick one and put it in order.</p>' +
+      '<div class="st-ladlist">' + ladders.map(function (l, i) {
+        var b = G.ladder[l.id];
+        return '<button class="st-topic st-ladpick" data-i="' + i + '"><span class="st-topic-name">' + esc(l.title) + '</span>' +
+          '<span class="st-topic-meta">' + (b ? (b === 1 ? 'cleared first try' : 'cleared · best ' + b + ' checks') : 'not yet cleared') + '</span></button>';
+      }).join('') + '</div></div>' +
+      '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
+    el('st-quit').onclick = backHome;
+    Array.prototype.forEach.call(app.querySelectorAll('.st-ladpick'), function (b) {
+      b.onclick = function () { viewLadder(ladders[+b.getAttribute('data-i')]); };
+    });
+  }
+  function viewLadder(lad) {
+    var order = lad.steps.map(function (_, i) { return i; });
+    do { shuffle(order); } while (order.every(function (v, i) { return v === i; }));
+    var tries = 0;
+    render('<div class="st-session-head"><span>The Ladder</span><span id="ld-tries">&nbsp;</span></div>' +
+      '<div class="st-card"><div class="st-chip">' + esc(lad.title) + '</div>' +
+      '<div class="st-q" style="font-size:19px">' + esc(lad.prompt) + '</div>' +
+      '<div class="st-ladrows" id="ld-rows"></div>' +
+      '<div class="st-actions"><button class="st-btn st-btn-reveal" id="ld-check">Check the order</button></div>' +
+      '<div id="ld-done"></div></div>' +
+      '<button class="st-link st-quit" id="st-quit">Pick another ladder</button>');
+    el('st-quit').onclick = viewLadderList;
+    var rows = el('ld-rows');
+    function paint() {
+      rows.innerHTML = order.map(function (stepIdx, pos) {
+        return '<div class="st-ladrow" data-pos="' + pos + '"><span class="st-ladnum">' + (pos + 1) + '</span>' +
+          '<span class="st-ladtext">' + esc(lad.steps[stepIdx]) + '</span>' +
+          '<span class="st-ladarrows"><button class="st-ladup" aria-label="Move up"' + (pos === 0 ? ' disabled' : '') + '>↑</button>' +
+          '<button class="st-laddn" aria-label="Move down"' + (pos === order.length - 1 ? ' disabled' : '') + '>↓</button></span></div>';
+      }).join('');
+      Array.prototype.forEach.call(rows.querySelectorAll('.st-ladrow'), function (r) {
+        var pos = +r.getAttribute('data-pos');
+        var up = r.querySelector('.st-ladup'), dn = r.querySelector('.st-laddn');
+        if (up) up.onclick = function () { if (pos > 0) { var t = order[pos]; order[pos] = order[pos - 1]; order[pos - 1] = t; paint(); } };
+        if (dn) dn.onclick = function () { if (pos < order.length - 1) { var t = order[pos]; order[pos] = order[pos + 1]; order[pos + 1] = t; paint(); } };
+      });
+    }
+    paint();
+    el('ld-check').onclick = function () {
+      tries++;
+      el('ld-tries').textContent = tries + ' check' + (tries > 1 ? 's' : '');
+      var right = 0;
+      Array.prototype.forEach.call(rows.querySelectorAll('.st-ladrow'), function (r, pos) {
+        r.classList.remove('st-ladrow-ok', 'st-ladrow-bad');
+        if (order[pos] === pos) { r.classList.add('st-ladrow-ok'); right++; }
+        else r.classList.add('st-ladrow-bad');
+      });
+      if (right === order.length) {
+        var G = gamesState();
+        if (!G.ladder[lad.id] || tries < G.ladder[lad.id]) G.ladder[lad.id] = tries;
+        bumpStreak(); save();
+        el('ld-check').style.display = 'none';
+        Array.prototype.forEach.call(rows.querySelectorAll('button'), function (b) { b.disabled = true; });
+        el('ld-done').innerHTML = '<div class="st-explain"><div class="st-verdict st-verdict-right">✓ In order — ' + tries + ' check' + (tries > 1 ? 's' : '') + '</div>' +
+          (lad.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(lad.cite) + '</b></div>' : '') +
+          citesHtml(lad.links) +
+          '<div class="st-actions"><button class="st-btn st-btn-reveal" id="ld-next">Another ladder</button></div></div>';
+        el('ld-next').onclick = viewLadderList;
+      }
+    };
+  }
+
+  /* Bait or Governs? — the scenarios' planted facts, called one at a time. */
+  var BAIT_TARGET = 1000;
+  function viewBait() {
+    var scens = shuffle(deck.scenarios.filter(function (s) { return s.facts && s.facts.length; }).slice());
+    var si = 0, fi = 0, score = 0, streak = 0, answered = false;
+    function head() {
+      return '<div class="st-session-head"><span>Bait or Governs?</span><span>' + score + ' / ' + BAIT_TARGET + (streak >= 2 ? ' · streak ' + streak : '') + '</span></div>' +
+        '<div class="st-prog" aria-hidden="true"><span style="width:' + Math.min(100, Math.round(100 * score / BAIT_TARGET)) + '%"></span></div>';
+    }
+    function step() {
+      if (score >= BAIT_TARGET) return win();
+      if (si >= scens.length) { shuffle(scens); si = 0; }
+      var sc = scens[si], f = sc.facts[fi];
+      answered = false;
+      render(head() +
+        '<div class="st-card">' +
+        '<div class="st-chip">Board Sim material</div>' +
+        '<div class="st-scenario st-scenario-sm">' + esc(sc.scenario) + '</div>' +
+        '<p class="st-sub" style="margin:10px 0 4px">Fact ' + (fi + 1) + ' of ' + sc.facts.length + ' — does it govern the answer, or is it bait?</p>' +
+        '<div class="st-q" style="font-size:19px">&ldquo;' + esc(f.fact) + '&rdquo;</div>' +
+        '<div class="st-actions st-bg-actions">' +
+        '<button class="st-btn st-g3" id="bg-gov">Governs <kbd>1</kbd></button>' +
+        '<button class="st-btn st-g1" id="bg-bait">Bait <kbd>2</kbd></button></div>' +
+        '<div id="bg-why"></div></div>' +
+        '<button class="st-link st-quit" id="st-quit">End game</button>');
+      el('st-quit').onclick = summary;
+      function call(saidBait) {
+        if (answered) return; answered = true;
+        var isBait = f.verdict === 'bait';
+        var right = saidBait === isBait;
+        if (right) { streak++; score += 100 + (streak >= 3 ? 50 : 0); }
+        else streak = 0;
+        var G = gamesState();
+        if (streak > (G.bait.bestStreak || 0)) { G.bait.bestStreak = streak; save(); }
+        el('bg-gov').disabled = true; el('bg-bait').disabled = true;
+        (isBait ? el('bg-bait') : el('bg-gov')).classList.add('st-opt-right');
+        if (!right) (saidBait ? el('bg-bait') : el('bg-gov')).classList.add('st-opt-wrong');
+        var hd = document.querySelector('.st-session-head span:last-child');
+        if (hd) hd.textContent = score + ' / ' + BAIT_TARGET + (streak >= 2 ? ' · streak ' + streak : '');
+        var bar = document.querySelector('.st-prog span');
+        if (bar) bar.style.width = Math.min(100, Math.round(100 * score / BAIT_TARGET)) + '%';
+        el('bg-why').innerHTML = '<div class="st-explain">' +
+          '<div class="st-verdict ' + (right ? 'st-verdict-right' : 'st-verdict-wrong') + '">' +
+          (right ? '✓ Called it — this one ' + (isBait ? 'is bait' : 'governs') + (streak >= 3 ? ' · +150' : ' · +100') : '✗ It actually ' + (isBait ? 'is bait' : 'governs')) + '</div>' +
+          '<p>' + esc(f.why) + '</p>' +
+          '<div class="st-actions"><button class="st-btn st-btn-reveal" id="bg-next">Next <kbd>space</kbd></button></div></div>';
+        el('bg-next').onclick = advance;
+        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { advance(); return true; } });
+      }
+      function advance() {
+        fi++;
+        if (fi >= sc.facts.length) { si++; fi = 0; }
+        step();
+      }
+      el('bg-gov').onclick = function () { call(false); };
+      el('bg-bait').onclick = function () { call(true); };
+      keyHandler(function (k) {
+        if (k === '1') { call(false); return true; }
+        if (k === '2') { call(true); return true; }
+      });
+    }
+    function win() {
+      keyHandler(null);
+      var G = gamesState();
+      G.bait.clears = (G.bait.clears || 0) + 1;
+      bumpStreak(); save();
+      render('<div class="st-card st-summary"><div class="st-chip">Bait or Governs?</div>' +
+        '<div class="st-sum-num">' + BAIT_TARGET + '<span> cleared · best streak ' + (G.bait.bestStreak || 0) + '</span></div>' +
+        '<p class="st-sub">That skill — asking of every planted fact “why is this in the scenario?” — is exactly what the panel is scoring. ' + (G.bait.clears > 1 ? 'Cleared ' + G.bait.clears + ' times.' : 'First clear.') + '</p>' +
+        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="bg-again">Run it again</button>' +
+        '<button class="st-btn st-btn-hint" id="st-home">Dashboard</button></div></div>');
+      el('bg-again').onclick = viewBait;
+      el('st-home').onclick = backHome;
+    }
+    function summary() {
+      keyHandler(null);
+      render('<div class="st-card st-summary"><div class="st-chip">Bait or Governs?</div>' +
+        '<div class="st-sum-num">' + score + '<span> points</span></div>' +
+        '<p class="st-sub">Every fact you called is one the board can’t plant on you. Come back for the full ' + BAIT_TARGET + '.</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
       el('st-home').onclick = backHome;
     }
