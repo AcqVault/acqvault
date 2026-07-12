@@ -490,7 +490,15 @@
     if (!S.games) S.games = {};
     S.games.combo = S.games.combo || { streak: { last: 0, run: 0 }, hist: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, X: 0 }, day: 0, rows: [], done: false, win: false };
     S.games.governs = S.games.governs || { best: 0, bestCombo: 0 };
+    S.games.log = S.games.log || {}; // dayNum → true when any game was completed that day
     return S.games;
+  }
+  function gamesMarkToday() { gamesState().log[comboToday()] = true; }
+  function gamesHubStreak() { // consecutive active days, weekends never break it
+    var log = gamesState().log, day = comboToday(), run = 0, d = day;
+    if (!log[d]) { d--; while (d > day - 4 && isWeekend(d)) d--; if (!log[d]) return 0; }
+    while (log[d] || isWeekend(d)) { if (log[d]) run++; d--; if (run > 400) break; }
+    return run;
   }
   var COMBO_EPOCH = Math.floor(Date.UTC(2026, 6, 12) / 86400000); // No. 1 = 12 Jul 2026 (Zulu)
   function comboToday() { return Math.floor(Date.now() / 86400000); }
@@ -510,37 +518,69 @@
   }
   var DIAL_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="50" cy="50" r="34"/><circle cx="50" cy="50" r="12"/></g><g stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="8" x2="50" y2="20"/><line x1="50" y1="92" x2="50" y2="80"/><line x1="8" y1="50" x2="20" y2="50"/><line x1="92" y1="50" x2="80" y2="50"/><line x1="20.3" y1="20.3" x2="28.8" y2="28.8"/><line x1="79.7" y1="20.3" x2="71.2" y2="28.8"/><line x1="20.3" y1="79.7" x2="28.8" y2="71.2"/><line x1="79.7" y1="79.7" x2="71.2" y2="71.2"/></g><circle cx="50" cy="50" r="4" fill="currentColor"/></svg>';
 
+  function nextRoundLine() {
+    var ms = 86400000 - (Date.now() % 86400000);
+    var h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000);
+    var at = new Date(Date.now() + ms);
+    var local = at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    return 'New round in ' + h + 'h ' + (m < 10 ? '0' : '') + m + 'm — ' + local + ' your time';
+  }
+  function comboGridMini(G) { // tiny result grid for the status card
+    var entry = comboWordFor(G.day), target = entry.w;
+    return G.rows.map(function (g) {
+      var res = [], left = {}, i;
+      for (i = 0; i < 5; i++) { if (g[i] === target[i]) res[i] = 'c'; else { res[i] = 'a'; left[target[i]] = (left[target[i]] || 0) + 1; } }
+      for (i = 0; i < 5; i++) if (res[i] === 'a' && left[g[i]]) { res[i] = 'p'; left[g[i]]--; }
+      return '<span class="st-hub-gridrow">' + res.map(function (r) { return '<i class="st-hub-cell st-hub-cell-' + r + '"></i>'; }).join('') + '</span>';
+    }).join('');
+  }
   function viewGamesHub() {
     hub = 'games';
     var G = gamesState();
     var day = comboToday(), no = comboNo(day);
-    var playedToday = G.combo.day === day && G.combo.done;
-    var run = (G.combo.streak.last >= day - 3 || G.combo.streak.last === day) ? G.combo.streak.run : 0;
-    var comboMeta = playedToday
-      ? (G.combo.win ? 'Cracked in ' + G.combo.rows.length + (run > 1 ? ' · ' + run + '-duty-day streak' : '') : 'Locked — a new word drops at midnight')
-      : 'Not cracked yet' + (run > 1 ? ' · ' + run + '-duty-day streak on the line' : '');
+    var comboDone = G.combo.day === day && G.combo.done;
+    var govToday = G.gov_day && G.gov_day.day === day && G.gov_day.plays > 0 ? G.gov_day : null;
+    var allDone = comboDone && govToday;
+    var run = gamesHubStreak();
     var gv = G.governs;
     var gvBest = gv.best_advanced || gv.best || 0;
-    var gvCombo = gv.bestCombo_advanced || gv.bestCombo || 0;
+    var donePanel = allDone
+      ? '<div class="st-hub-done"><div class="st-hub-done-mark">✓</div><div><b>That&rsquo;s today&rsquo;s round.</b>' +
+        '<span>' + (G.combo.win ? 'Combination cracked in ' + G.combo.rows.length : 'The combination held') + ' · tempo best today ' + govToday.best.toLocaleString() + '. ' + esc(nextRoundLine()) + '.</span></div></div>'
+      : '';
+    var comboCard = comboDone
+      ? '<button class="st-plate st-plate-done" id="g-combo">' +
+        '<span class="st-plate-eyebrow">Daily · No. ' + no + ' · ' + (G.combo.win ? 'Solved in ' + G.combo.rows.length : 'Sealed') + '</span>' +
+        '<span class="st-plate-art st-hub-grid" aria-hidden="true">' + comboGridMini(G.combo) + '</span>' +
+        '<b>The Combination</b>' +
+        '<span class="st-plate-sub">' + (G.combo.win ? 'Cracked. The word was worth knowing — the debrief has the cite.' : 'Sealed for today — see the word and its cite in the debrief.') + '</span>' +
+        '<span class="st-plate-meta">View result &amp; copy your grid →</span></button>'
+      : '<button class="st-plate" id="g-combo">' +
+        '<span class="st-plate-eyebrow">Daily · No. ' + no + '</span>' +
+        '<span class="st-plate-art" aria-hidden="true">' +
+        'VAULT'.split('').map(function (ch, i) {
+          return '<span class="st-mini-tile' + (i === 1 || i === 4 ? ' st-mini-hit' : (i === 2 ? ' st-mini-near' : '')) + '">' + ch + '</span>';
+        }).join('') + '</span>' +
+        '<b>The Combination</b>' +
+        '<span class="st-plate-sub">Six tries at today&rsquo;s five-letter term of the trade. Same word for everyone, everywhere — a new one every day.</span>' +
+        '<span class="st-plate-meta">Play today&rsquo;s word →</span></button>';
+    var govMeta = govToday
+      ? 'Today&rsquo;s best ' + govToday.best.toLocaleString() + (gvBest > govToday.best ? ' · record ' + gvBest.toLocaleString() : ' · that&rsquo;s your record') + ' · run it again →'
+      : (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' · play →' : 'No score on the board yet · play →');
     render(
+      '<div class="st-head">' +
+      (run >= 2 ? '<div class="st-streak" title="Days in a row with at least one round played — weekends don\u2019t break it"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' + run + '-day streak</div>' : '') +
+      '</div>' +
       '<h2 class="st-h2" style="margin-top:0">Quick rounds</h2>' +
       '<p class="st-sub">Under three minutes each. One is a daily ritual; one is a race.</p>' +
-      '<div class="st-plates">' +
-      '<button class="st-plate" id="g-combo">' +
-      '<span class="st-plate-eyebrow">Daily · No. ' + no + '</span>' +
-      '<span class="st-plate-art" aria-hidden="true">' +
-      'VAULT'.split('').map(function (ch, i) {
-        return '<span class="st-mini-tile' + (i === 1 || i === 4 ? ' st-mini-hit' : (i === 2 ? ' st-mini-near' : '')) + '">' + ch + '</span>';
-      }).join('') + '</span>' +
-      '<b>The Combination</b>' +
-      '<span class="st-plate-sub">Six tries at today&rsquo;s five-letter term of the trade. Same word for everyone, everywhere — a new one every day.</span>' +
-      '<span class="st-plate-meta">' + esc(comboMeta) + '</span></button>' +
-      '<button class="st-plate" id="g-governs">' +
-      '<span class="st-plate-eyebrow">Tempo · 90 seconds</span>' +
+      donePanel +
+      '<div class="st-plates">' + comboCard +
+      '<button class="st-plate' + (govToday ? ' st-plate-played' : '') + '" id="g-governs">' +
+      '<span class="st-plate-eyebrow">Tempo · 90 seconds' + (govToday ? ' · played today' : '') + '</span>' +
       '<span class="st-plate-art st-plate-art-ring" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="rgba(228,196,119,.25)" stroke-width="4"/><circle cx="24" cy="24" r="19" fill="none" stroke="#e4c477" stroke-width="4" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="30" transform="rotate(-90 24 24)"/></svg><span class="st-plate-ring-n">90</span></span>' +
       '<b>Which Part Governs?</b>' +
       '<span class="st-plate-sub">A situation flashes — call the governing part before the clock runs out. Combos multiply; misses teach.</span>' +
-      '<span class="st-plate-meta">' + (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' · top combo ×' + gvCombo : 'No score on the board yet') + '</span></button>' +
+      '<span class="st-plate-meta">' + govMeta + '</span></button>' +
       '</div>' +
       '<button class="st-link st-quit" id="st-back">← All study tools</button>');
     el('g-combo').onclick = function () { goDepth(2, viewCombo); };
@@ -736,6 +776,7 @@
         G.done = true; G.win = won;
         if (won) G.hist[G.rows.length]++; else G.hist.X++;
         comboBumpStreak(won);
+        gamesMarkToday();
         if (won) bumpStreak();
       }
       save();
@@ -876,6 +917,10 @@
       var G = gamesState().governs;
       var bk = 'best_advanced', ck = 'bestCombo_advanced'; // flat again — level split removed
       if (!G[bk] && G.best) { G[bk] = G.best; G[ck] = G.bestCombo; }
+      var gd = gamesState();
+      if (!gd.gov_day || gd.gov_day.day !== comboToday()) gd.gov_day = { day: comboToday(), plays: 0, best: 0 };
+      gd.gov_day.plays++; if (score > gd.gov_day.best) gd.gov_day.best = score;
+      if (score > 0) gamesMarkToday();
       var isBest = score > (G[bk] || 0);
       if (isBest) G[bk] = score;
       if (bestCombo > (G[ck] || 0)) G[ck] = bestCombo;

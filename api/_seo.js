@@ -735,6 +735,20 @@ function renderStudyPage() {
 
 
 
+/* hub v3: status cards + done panel */
+.st-hub-done{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(158deg,#173a60,#0f2540 62%,#0a1c33);border:1px solid rgba(228,196,119,.45);border-radius:14px;padding:16px 20px;margin:0 0 14px;box-shadow:0 18px 38px -22px rgba(15,37,64,.55)}
+.st-hub-done-mark{flex:none;width:34px;height:34px;border-radius:50%;background:#1e6b43;color:#fff;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.st-hub-done b{display:block;font-family:var(--serif);font-size:17px;color:#f4f8fc;margin-bottom:3px}
+.st-hub-done span{display:block;font-size:13px;line-height:1.55;color:rgba(221,233,246,.78);font-variant-numeric:tabular-nums}
+.st-plate-done{border-color:rgba(30,107,67,.65)}
+.st-plate-done::before{background:linear-gradient(90deg,#155433,#1e6b43 50%,#155433)}
+.st-plate-played .st-plate-eyebrow{color:#9fd4b4}
+.st-hub-grid{display:flex;flex-direction:column;gap:2px}
+.st-hub-gridrow{display:flex;gap:2px}
+.st-hub-cell{width:13px;height:13px;border-radius:2.5px;background:rgba(244,248,252,.14)}
+.st-hub-cell-c{background:#1e6b43}
+.st-hub-cell-p{background:#e4c477}
+.st-hub-cell-a{background:rgba(244,248,252,.22)}
 /* quick rounds: game plates */
 .st-plates{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 8px}
 @media(max-width:640px){.st-plates{grid-template-columns:1fr}}
@@ -885,7 +899,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=19"></script>`;
+<script defer src="/assets/study.js?v=20"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }
