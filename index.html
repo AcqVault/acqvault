@@ -33,7 +33,7 @@
 </script>
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=113">
+<link rel="stylesheet" href="/assets/app.css?v=114">
 </head>
 <body>
 
@@ -202,6 +202,24 @@
 
   </div>
 </section>
+
+<!-- THE COMBINATION — daily word strip (board loads via widgets.js; degrades to CTA-only) -->
+<section class="daily-strip" id="daily-strip" aria-label="The Combination — daily word">
+  <div class="daily-strip-inner">
+    <a class="daily-strip-main" href="/study?play=daily">
+      <span class="daily-tiles" aria-hidden="true"><i>V</i><i class="dt-hit">A</i><i class="dt-near">U</i><i>L</i><i class="dt-hit">T</i></span>
+      <span class="daily-copy"><b>The Combination <span id="daily-no"></span></b>
+      <span>The daily acquisition word — six tries, same word for everyone.</span></span>
+      <span class="daily-cta">Play today&rsquo;s word →</span>
+    </a>
+    <div class="daily-board" id="daily-board" hidden>
+      <span class="daily-board-head">Today&rsquo;s board</span>
+      <ol class="daily-board-list" id="daily-board-list"></ol>
+      <span class="daily-board-count" id="daily-board-count"></span>
+    </div>
+  </div>
+</section>
+
 
 <!-- SEARCH RESULTS -->
 <div id="results-section">
@@ -609,7 +627,7 @@
 
 <script defer src="/assets/app.js?v=63"></script>
 <script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=51"></script>
+<script defer src="/assets/widgets.js?v=52"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>

@@ -2158,3 +2158,24 @@
   else boot();
 })();
 
+
+/* ── THE COMBINATION: home-strip board loader ─────────────────────────────── */
+(function () {
+  var strip = document.getElementById('daily-strip');
+  if (!strip) return;
+  fetch('/api/feedback?board=1').then(function (r) { return r.json(); }).then(function (b) {
+    var no = document.getElementById('daily-no');
+    if (no && b.no) no.textContent = '· No. ' + b.no;
+    if (!b.configured || !b.top || !b.top.length) return; // strip stays CTA-only
+    var list = document.getElementById('daily-board-list');
+    var count = document.getElementById('daily-board-count');
+    var board = document.getElementById('daily-board');
+    if (!list || !board) return;
+    list.innerHTML = b.top.slice(0, 3).map(function (e, i) {
+      var name = String(e.n || 'Anonymous').replace(/[<>&"]/g, '');
+      return '<li><b>' + (i + 1) + '</b>' + name + '<span>' + (e.g === 'X' ? '—' : e.g + '/6') + '</span></li>';
+    }).join('');
+    if (count) count.textContent = b.count + ' on today\u2019s board';
+    board.hidden = false;
+  }).catch(function () {});
+})();

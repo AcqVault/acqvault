@@ -804,6 +804,19 @@ function renderStudyPage() {
 .st-cb-hbar{flex:1;height:16px;background:#ece8dd;border-radius:4px;overflow:hidden}
 .st-cb-hbar span{display:flex;align-items:center;justify-content:flex-end;padding-right:6px;height:100%;min-width:16px;background:#9aa3ad;border-radius:4px;color:#fff;font-size:10.5px}
 .st-cb-hbar span.st-cb-hbar-me{background:linear-gradient(90deg,#6f521a,#b8934a)}
+/* Combination: today's board (result view) */
+.st-cb-board-mod{max-width:330px;margin:16px auto 0}
+.st-lb-head{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);text-align:center;margin-bottom:8px}
+.st-lb-list{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.st-lb-list li{display:flex;align-items:baseline;gap:9px;padding:6px 11px;background:var(--off,#f7f6f2);border-radius:7px;font-size:13px;color:#2a3140}
+.st-lb-list li.st-lb-me{background:#f6efdd;box-shadow:0 0 0 1px rgba(135,101,28,.35) inset}
+.st-lb-rank{flex:none;width:18px;font-weight:800;color:var(--brass-ink);font-variant-numeric:tabular-nums}
+.st-lb-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.st-lb-g{flex:none;font-weight:800;color:#155433;font-variant-numeric:tabular-nums}
+.st-lb-post{display:flex;gap:8px;margin-top:10px}
+.st-lb-post input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit;color:var(--ink)}
+.st-lb-post input:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:1px}
+.st-lb-post .st-btn{white-space:nowrap;min-height:0;padding:9px 14px;font-size:13px}
 /* Which Part Governs */
 .st-gv-head{display:flex;justify-content:space-between;align-items:center;margin:2px 0 12px}
 .st-gv-score{display:flex;align-items:baseline;gap:10px}
@@ -899,7 +912,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=20"></script>`;
+<script defer src="/assets/study.js?v=21"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }

@@ -16,11 +16,105 @@ function clean(v, max) {
   return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
+// ── The Combination: daily leaderboard (rides this function — Vercel Hobby is at the
+//    12-function cap; new endpoints ride existing ones as modes). Store = Upstash Redis
+//    REST, the same env keys the rate limiter uses. Data held per entry: an OPTIONAL
+//    display name, guess count, day number — nothing else. Keys expire after ~28h, so
+//    the store only ever holds today's board. GET is edge-cached (s-maxage) so hero
+//    traffic doesn't hammer Redis.
+const U_URL = process.env.UPSTASH_REDIS_REST_URL;
+const U_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const COMBO_EPOCH = Date.UTC(2026, 6, 12) / 86400000; // must match assets/study.js
+const SEP = '';
+const NAME_RE = /[^A-Za-z0-9 ._\-]/g;
+const NAME_BLOCK = /\b(nigg|fagg|cunt|kike|spic|chink)\w*/i; // names are public on the homepage — hard floor
+
+function boardDayNo() { return Math.floor(Date.now() / 86400000) - COMBO_EPOCH + 1; }
+
+async function redis(cmds) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 1200);
+  try {
+    const r = await fetch(`${U_URL}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${U_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(cmds),
+      signal: ctrl.signal
+    });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (_e) { return null; } finally { clearTimeout(timer); }
+}
+
+function parseMember(m) {
+  const p = String(m).split(SEP);
+  return { n: p[1] || 'Anonymous', g: p[2] === 'X' ? 'X' : Number(p[2]) || 0 };
+}
+
+async function boardGet(req, res) {
+  const no = boardDayNo();
+  if (!U_URL || !U_TOKEN) {
+    res.setHeader('Cache-Control', 's-maxage=300');
+    return res.status(200).json({ configured: false, no: no, count: 0, top: [] });
+  }
+  const out = await redis([
+    ['ZRANGE', `lb:${no}`, '0', '24'],
+    ['ZCARD', `lb:${no}`]
+  ]);
+  if (!out) return res.status(200).json({ configured: true, no: no, count: 0, top: [], stale: true });
+  const members = (out[0] && out[0].result) || [];
+  const count = Number(out[1] && out[1].result) || 0;
+  res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=60');
+  return res.status(200).json({ configured: true, no: no, count: count, top: members.map(parseMember) });
+}
+
+async function boardPost(req, res, body) {
+  if (await enforce(req, res, { max: 6 })) return;
+  if (!U_URL || !U_TOKEN) {
+    return res.status(503).json({ configured: false, error: 'The board isn’t switched on yet.' });
+  }
+  const no = boardDayNo();
+  if (Number(body.day) !== no) {
+    return res.status(400).json({ error: 'That result isn’t for today’s round.' });
+  }
+  const g = body.guesses === 'X' ? 'X' : Number(body.guesses);
+  if (g !== 'X' && !(g >= 1 && g <= 6)) return res.status(400).json({ error: 'Bad result.' });
+  let name = clean(body.name, 18).replace(NAME_RE, '').trim() || 'Anonymous';
+  if (NAME_BLOCK.test(name)) name = 'Anonymous';
+  // one post per IP per day — an office board, not a spam wall
+  const ipHash = require('crypto').createHash('sha256')
+    .update(String((req.headers['x-forwarded-for'] || '').split(',')[0] || (req.socket && req.socket.remoteAddress) || '') + ':' + no)
+    .digest('hex').slice(0, 24);
+  const gate = await redis([['SET', `lbip:${no}:${ipHash}`, '1', 'NX', 'EX', '100000']]);
+  if (!gate) return res.status(502).json({ error: 'The board didn’t answer — try again.' });
+  if (gate[0] && gate[0].result === null) {
+    return res.status(409).json({ error: 'Today’s result is already on the board from this connection.' });
+  }
+  const secs = Math.floor((Date.now() % 86400000) / 1000);
+  const score = (g === 'X' ? 9 : g) * 1e6 + secs; // fewer guesses first; earlier post breaks ties
+  const member = Date.now().toString(36) + Math.random().toString(36).slice(2, 7) + SEP + name + SEP + g;
+  const out = await redis([
+    ['ZADD', `lb:${no}`, String(score), member],
+    ['EXPIRE', `lb:${no}`, '100000'],
+    ['ZRANK', `lb:${no}`, member],
+    ['ZCARD', `lb:${no}`]
+  ]);
+  if (!out) return res.status(502).json({ error: 'The board didn’t answer — try again.' });
+  const rank = Number(out[2] && out[2].result);
+  const count = Number(out[3] && out[3].result) || 0;
+  return res.status(200).json({ ok: true, rank: Number.isFinite(rank) ? rank + 1 : null, count: count, name: name });
+}
+
 module.exports = async function handler(req, res) {
+  if (req.method === 'GET' && req.query && req.query.board != null) {
+    return boardGet(req, res);
+  }
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
+    res.setHeader('Allow', 'POST, GET');
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  const preBody = req.body || {};
+  if (preBody.kind === 'board') return boardPost(req, res, preBody);
   // Feedback is infrequent — keep the limit tight to deter abuse.
   if (await enforce(req, res, { max: 5 })) return;
 

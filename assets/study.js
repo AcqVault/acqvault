@@ -692,6 +692,7 @@
         (G.streak.run > 1 ? '<div class="st-cb-streakline">' + G.streak.run + '-duty-day streak — weekends don&rsquo;t break it</div>' : '') +
         '<div class="st-cb-hist">' + bars + '</div>' +
         '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="cb-share">Copy result</button></div>' +
+        '<div class="st-cb-board-mod" id="cb-lb"></div>' +
         '<p class="st-sub" style="text-align:center">Next combination in ' + zuluCountdown() + ' · same word for everyone</p></div>';
     }
     var helping = false;
@@ -715,7 +716,7 @@
         gamesState().combo.helpSeen = true; save();
         paint();
       };
-      if (G.done) { wireShare(); keyHandler(null); return; }
+      if (G.done) { wireShare(); wireBoard(); keyHandler(null); return; }
       if (helping) { keyHandler(function (key) { if (key === 'Enter' || key === ' ') { el('cb-help-go').onclick(); return true; } }); return; }
       Array.prototype.forEach.call(app.querySelectorAll('.st-cb-key'), function (b) {
         b.onclick = function () { input(b.getAttribute('data-k')); };
@@ -743,6 +744,46 @@
       document.body.appendChild(ta); ta.select();
       try { if (document.execCommand('copy')) ok(); } catch (e) {}
       document.body.removeChild(ta);
+    }
+    function boardListHtml(top, mine) {
+      if (!top.length) return '<p class="st-sub" style="text-align:center;margin:6px 0 0">No one on the board yet — be first.</p>';
+      return '<ol class="st-lb-list">' + top.slice(0, 10).map(function (e, i) {
+        return '<li' + (mine && e.n === mine ? ' class="st-lb-me"' : '') + '><span class="st-lb-rank">' + (i + 1) + '</span><span class="st-lb-name">' + esc(e.n) + '</span><span class="st-lb-g">' + (e.g === 'X' ? '—' : e.g + '/6') + '</span></li>';
+      }).join('') + '</ol>';
+    }
+    function wireBoard() {
+      var box = el('cb-lb'); if (!box) return;
+      var posted = G.postedDay === day;
+      fetch('/api/feedback?board=1').then(function (r) { return r.json(); }).then(function (b) {
+        if (!b.configured) { box.innerHTML = ''; return; }
+        var head = '<div class="st-lb-head">Today&rsquo;s board · ' + b.count + ' on it</div>';
+        if (posted) {
+          box.innerHTML = head + boardListHtml(b.top, G.postedName) +
+            (G.postedRank ? '<p class="st-sub" style="text-align:center;margin-top:6px">You&rsquo;re #' + G.postedRank + ' today.</p>' : '');
+          return;
+        }
+        box.innerHTML = head + boardListHtml(b.top) +
+          '<div class="st-lb-post"><input id="lb-name" maxlength="18" placeholder="Anonymous — or add a name" aria-label="Display name">' +
+          '<button class="st-btn st-btn-hint" id="lb-go">Post to the board</button></div>' +
+          '<p class="st-sub" style="text-align:center;margin:5px 0 0">Just your result and the name you type — nothing else leaves this browser.</p>';
+        var go = el('lb-go');
+        if (go) go.onclick = function () {
+          go.disabled = true; go.textContent = 'Posting…';
+          fetch('/api/feedback', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ kind: 'board', day: comboNo(day), guesses: G.win ? G.rows.length : 'X', name: (el('lb-name') || {}).value || '' })
+          }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); }).then(function (o) {
+            if (o.ok && o.j.ok) {
+              G.postedDay = day; G.postedRank = o.j.rank; G.postedName = o.j.name; save();
+              wireBoard();
+            } else {
+              go.disabled = false; go.textContent = 'Post to the board';
+              var msg = el('cb-msg'); if (msg) msg.textContent = (o.j && o.j.error) || 'Couldn’t reach the board.';
+              else { var p = document.createElement('p'); p.className = 'st-sub'; p.style.textAlign = 'center'; p.textContent = (o.j && o.j.error) || 'Couldn’t reach the board.'; box.appendChild(p); }
+            }
+          }).catch(function () { go.disabled = false; go.textContent = 'Post to the board'; });
+        };
+      }).catch(function () { box.innerHTML = ''; });
     }
     function updateRow() {
       var row = app.querySelector('.st-cb-row[data-r="' + G.rows.length + '"]');
@@ -1180,6 +1221,8 @@
       deck = d;
       history.replaceState({ st: 0 }, '');
       navDepth = 0;
+      var qs = new URLSearchParams(location.search);
+      if (qs.get('play') === 'daily') { hub = 'games'; goDepth(2, viewCombo); return; }
       viewTrack();
     }).catch(function () {
       app.innerHTML = '<p class="st-sub">Couldn’t load the question deck — check your connection and refresh. (Once loaded once, it works offline.)</p>';
