@@ -725,28 +725,98 @@ function renderStudyPage() {
 .st-streak svg{width:12px;height:12px;fill:var(--brass)}
 @keyframes st-right-pulse{0%{box-shadow:0 0 0 1px #1e6b43 inset,0 0 0 0 rgba(30,107,67,.35)}100%{box-shadow:0 0 0 1px #1e6b43 inset,0 0 0 9px rgba(30,107,67,0)}}
 .st-opt-right{animation:st-right-pulse .5s ease-out 1}
-.st-tilegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
-@media(max-width:560px){.st-tilegrid{grid-template-columns:repeat(2,1fr)}}
-.st-tile{display:flex;align-items:center;justify-content:center;text-align:center;min-height:74px;padding:10px 12px;background:#fff;border:1px solid var(--line2);border-radius:10px;font-size:13px;font-weight:600;line-height:1.35;color:#2a3140;cursor:pointer;transition:border-color .12s,transform .12s,box-shadow .12s,opacity .3s}
-.st-tile:hover:not(:disabled){border-color:rgba(135,101,28,.5);transform:translateY(-1px)}
-.st-tile-sel{border-color:#173a60!important;box-shadow:0 0 0 1px #173a60 inset;background:#f0f4f9}
-.st-tile-done{border-color:#1e6b43!important;background:#eef7f0;color:#155433;opacity:.45;cursor:default;transform:none!important}
-.st-tile-wrong{border-color:#b3261e!important;background:#fdf0ef;animation:st-shake .3s ease-in-out 1}
 @keyframes st-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-#mt-clock{font-variant-numeric:tabular-nums}
-.st-ladlist{display:grid;gap:8px;margin-top:12px}
-.st-ladrows{display:grid;gap:7px;margin-top:16px}
-.st-ladrow{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:9px 12px;font-size:14px;line-height:1.45;color:#2a3140}
-.st-ladnum{flex:none;width:22px;height:22px;border-radius:50%;background:#f6efdd;color:var(--brass-ink);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
-.st-ladtext{flex:1}
-.st-ladarrows{flex:none;display:flex;gap:5px}
-.st-ladarrows button{width:34px;height:34px;border:1px solid rgba(135,101,28,.35);border-radius:7px;background:#f6efdd;color:#5e4715;font-size:15px;font-weight:700;cursor:pointer}
-.st-ladarrows button:disabled{opacity:.3;cursor:default}
-.st-ladrow-ok{border-color:#1e6b43;background:#eef7f0}
-.st-ladrow-ok .st-ladnum{background:#1e6b43;color:#fff}
-.st-ladrow-bad{border-color:rgba(179,38,30,.45);background:#fdf6f5;animation:st-shake .3s ease-in-out 1}
-.st-bg-actions .st-btn{flex:1;justify-content:center;text-align:center;font-size:15.5px}
-@media(prefers-reduced-motion:reduce){.st-opt-right,.st-tile-wrong,.st-ladrow-bad{animation:none}}
+/* quick rounds: game plates */
+.st-plates{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 8px}
+@media(max-width:640px){.st-plates{grid-template-columns:1fr}}
+.st-plate{position:relative;overflow:hidden;text-align:left;background:linear-gradient(158deg,#173a60,#0f2540 62%,#0a1c33);border:1px solid rgba(228,196,119,.4);border-radius:14px;padding:18px 20px 16px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .2s;box-shadow:0 18px 38px -22px rgba(15,37,64,.55)}
+.st-plate::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
+.st-plate:hover{border-color:rgba(228,196,119,.75);transform:translateY(-2px)}
+.st-plate:focus-visible{outline:3px solid rgba(228,196,119,.55);outline-offset:2px}
+.st-plate-eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-bright);margin-bottom:11px}
+.st-plate b{display:block;font-family:var(--serif);font-size:20px;letter-spacing:-.01em;color:#f4f8fc;margin:11px 0 5px}
+.st-plate-sub{display:block;font-size:12.5px;line-height:1.5;color:rgba(221,233,246,.72)}
+.st-plate-meta{display:block;margin-top:11px;padding-top:9px;border-top:1px solid rgba(228,196,119,.22);font-size:11.5px;font-weight:700;color:var(--brass-bright);font-variant-numeric:tabular-nums}
+.st-plate-art{display:flex;gap:4px}
+.st-mini-tile{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#f4f8fc;background:rgba(244,248,252,.08);border:1px solid rgba(244,248,252,.25);border-radius:5px}
+.st-mini-hit{background:#1e6b43;border-color:#1e6b43}
+.st-mini-near{background:#c9a44c;border-color:#c9a44c;color:#0f2540}
+.st-plate-art-ring{position:relative;width:46px;height:46px}
+.st-plate-art-ring svg{width:46px;height:46px}
+.st-plate-ring-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#f4f8fc;font-variant-numeric:tabular-nums}
+/* The Combination */
+.st-cb-card{padding:22px 18px 18px}
+.st-cb-board{display:flex;flex-direction:column;gap:6px;align-items:center}
+.st-cb-row{display:flex;gap:6px}
+.st-cb-row-shake{animation:st-shake .3s ease-in-out 1}
+.st-cb-tile{width:clamp(46px,11vw,58px);height:clamp(46px,11vw,58px);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:clamp(22px,5vw,27px);font-weight:700;color:var(--ink);background:#fff;border:2px solid var(--line2);border-radius:8px;transition:transform .16s,background .16s,border-color .16s,color .16s}
+.st-cb-fill{border-color:rgba(23,58,96,.55);transform:scale(1.04)}
+.st-cb-flip{animation:st-cb-flip .34s ease-in-out 1}
+@keyframes st-cb-flip{0%{transform:rotateX(0)}50%{transform:rotateX(88deg)}100%{transform:rotateX(0)}}
+.st-cb-c{background:#1e6b43;border-color:#1e6b43;color:#fff}
+.st-cb-p{background:#e4c477;border-color:#c9a44c;color:#3b2f10}
+.st-cb-a{background:#565e6b;border-color:#565e6b;color:#eef1f5}
+.st-cb-msg{min-height:20px;text-align:center;font-size:13px;font-weight:700;color:var(--brass-ink);margin:8px 0 2px}
+.st-cb-kb{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.st-cb-kbrow{display:flex;gap:5px;justify-content:center}
+.st-cb-key{min-width:clamp(26px,7.6vw,40px);height:50px;padding:0 6px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:7px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;text-transform:uppercase}
+.st-cb-key:active{transform:translateY(1px)}
+.st-cb-key-wide{min-width:clamp(44px,12vw,62px);font-size:11px}
+.st-cb-key-c{background:#1e6b43;border-color:#1e6b43;color:#fff}
+.st-cb-key-p{background:#e4c477;border-color:#c9a44c;color:#3b2f10}
+.st-cb-key-a{background:#565e6b;border-color:#565e6b;color:#eef1f5}
+.st-cb-result{text-align:center;padding:6px 4px}
+.st-cb-dial{width:74px;height:74px;margin:0 auto 6px;color:var(--brass)}
+.st-cb-dial svg{width:100%;height:100%}
+.st-cb-dial-spin{animation:st-cb-spin 1.4s cubic-bezier(0.55,0.15,0.45,0.85) 1}
+@keyframes st-cb-spin{0%{transform:rotate(0)}100%{transform:rotate(720deg)}}
+.st-cb-verdict{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-ink)}
+.st-cb-word{font-family:var(--serif);font-size:44px;font-weight:700;letter-spacing:.14em;color:var(--ink);margin:2px 0 6px}
+.st-cb-def{max-width:46ch;margin:0 auto 10px;font-size:14.5px;line-height:1.6;color:#3d444d}
+.st-cb-result .st-explain-ref{border-top:none;padding-top:0}
+.st-cb-result .st-cites{justify-content:center}
+.st-cb-streakline{margin-top:12px;font-size:13px;font-weight:700;color:var(--brass-ink)}
+.st-cb-hist{max-width:300px;margin:14px auto 0;display:grid;gap:4px}
+.st-cb-hrow{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.st-cb-hbar{flex:1;height:16px;background:#ece8dd;border-radius:4px;overflow:hidden}
+.st-cb-hbar span{display:flex;align-items:center;justify-content:flex-end;padding-right:6px;height:100%;min-width:16px;background:#9aa3ad;border-radius:4px;color:#fff;font-size:10.5px}
+.st-cb-hbar span.st-cb-hbar-me{background:linear-gradient(90deg,#6f521a,#b8934a)}
+/* Which Part Governs */
+.st-gv-head{display:flex;justify-content:space-between;align-items:center;margin:2px 0 12px}
+.st-gv-score{display:flex;align-items:baseline;gap:10px}
+.st-gv-score b{font-family:var(--serif);font-size:34px;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.st-gv-combo{font-size:13px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;transition:color .15s,transform .15s}
+.st-gv-combo-hot{color:var(--brass-ink);transform:scale(1.12)}
+.st-gv-ring{position:relative;width:58px;height:58px;flex:none}
+.st-gv-ring svg{width:58px;height:58px}
+.st-gv-ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+#gv-arc{transition:stroke-dashoffset .12s linear,stroke .4s}
+.st-gv-ring-low #gv-arc{stroke:#87651c}
+.st-gv-ring-crit #gv-arc{stroke:#b3261e}
+.st-gv-ring-crit b{color:#8c2b23}
+@keyframes st-gv-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.st-gv-ring-crit{animation:st-gv-pulse .9s ease-in-out infinite}
+.st-gv-card{padding:22px 24px 20px}
+.st-gv-card-hit{border-color:#1e6b43;box-shadow:0 0 0 1px #1e6b43 inset,0 24px 48px -26px rgba(15,37,64,.35)}
+.st-gv-kicker{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:8px}
+.st-gv-q{font-family:var(--serif);font-size:21px;line-height:1.35;color:var(--ink);letter-spacing:-.008em;min-height:58px}
+.st-gv-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+@media(max-width:480px){.st-gv-opts{grid-template-columns:1fr}}
+.st-gv-opt{text-align:left;background:#fff;border:1px solid var(--line2);border-radius:10px;padding:12px 14px;cursor:pointer;min-height:60px;transition:border-color .12s,transform .12s,box-shadow .12s}
+.st-gv-opt:hover:not(:disabled){border-color:rgba(135,101,28,.5);transform:translateY(-1px);box-shadow:0 8px 18px -12px rgba(15,37,64,.3)}
+.st-gv-opt:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
+.st-gv-opt b{display:block;font-family:var(--serif);font-size:17px;color:var(--ink)}
+.st-gv-opt span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+.st-gv-opt:disabled{cursor:default;opacity:.75}
+.st-gv-opt-right{border-color:#1e6b43!important;background:#eef7f0;opacity:1!important;box-shadow:0 0 0 1px #1e6b43 inset}
+.st-gv-opt-wrong{border-color:#b3261e!important;background:#fdf0ef;opacity:1!important;animation:st-shake .3s ease-in-out 1}
+.st-gv-tier{font-family:var(--serif);font-size:19px;color:var(--brass-ink);margin:2px 0 8px}
+.st-gv-end .st-sum-num{font-size:62px}
+.st-gv-misslist{max-width:520px;margin:14px auto 4px;text-align:left}
+.st-gv-miss{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed rgba(135,101,28,.25);font-size:13px;line-height:1.45;color:#3d444d}
+.st-gv-miss:last-child{border-bottom:none}
+.st-gv-miss .st-cite{flex:none}
+@media(prefers-reduced-motion:reduce){.st-opt-right,.st-gv-opt-wrong,.st-cb-row-shake,.st-cb-flip,.st-cb-dial-spin,.st-gv-ring-crit{animation:none}}
 </style>`;
 
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
@@ -760,7 +830,7 @@ ${SEAL_SVG}
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Drill it until it&rsquo;s reflex</h1>
 <p class="lede">Knowledge checks, threshold sprints, and board-style scenario drills built from the AcqVault Field Guides — every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
-<div class="stats"><span class="stat"><b>500+</b> drills</span><span class="stat"><b>3</b> quick games</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+<div class="stats"><span class="stat"><b>500+</b> drills</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
 <div id="study-app"><noscript><p>AcqVault Study is an interactive drill tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
@@ -769,7 +839,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=15"></script>`;
+<script defer src="/assets/study.js?v=16"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }
