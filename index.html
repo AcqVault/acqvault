@@ -37,7 +37,7 @@
 </head>
 <body>
 
-<a href="#search-input" class="skip-link" onclick="setTimeout(function(){var s=document.getElementById('search-input');if(s)s.focus();},0);">Skip to search</a>
+<a href="#search-input" class="skip-link" data-action="skip-to-search">Skip to search</a>
 
 <div class="offline-bar" id="offline-bar" role="status" aria-live="polite" hidden><b>Offline</b> — full-text search still works. Live spending &amp; SAM.gov data returns when you reconnect.</div>
 <div class="stale-bar" id="stale-bar" role="status" aria-live="polite" hidden></div>
@@ -45,15 +45,15 @@
 <!-- ABOUT BAR -->
 <div class="about-bar" id="about-bar">
   <div class="about-bar-inner">
-    <span class="about-text"><strong>Hi, I'm Iz.</strong> I built AcqVault after finding acquisition research needlessly cumbersome — fumbling through multiple sites for every reg. The site is in its early stages, so feedback genuinely helps.&ensp;<button class="about-feedback-btn" onclick="openFeedback()">Submit feedback →</button></span>
+    <span class="about-text"><strong>Hi, I'm Iz.</strong> I built AcqVault after finding acquisition research needlessly cumbersome — fumbling through multiple sites for every reg. The site is in its early stages, so feedback genuinely helps.&ensp;<button class="about-feedback-btn" data-action="open-feedback">Submit feedback →</button></span>
   </div>
-  <button class="about-dismiss" onclick="dismissAbout()" aria-label="Dismiss">✕</button>
+  <button class="about-dismiss" data-action="dismiss-about" aria-label="Dismiss">✕</button>
 </div>
 
 <!-- FEEDBACK MODAL -->
 <div class="modal-overlay" id="feedback-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Submit Feedback" inert>
   <div class="modal-box">
-    <div class="modal-header"><h3>Submit Feedback</h3><button class="modal-close" onclick="closeFeedback()" aria-label="Close">✕</button></div>
+    <div class="modal-header"><h3>Submit Feedback</h3><button class="modal-close" data-action="close-feedback" aria-label="Close">✕</button></div>
     <p class="modal-sub">Name and email are optional — only needed if you'd like a follow-up.</p>
     <form id="feedback-form">
       <div class="form-group"><label for="fb-name">Name <span class="optional">(optional)</span></label><input type="text" id="fb-name" placeholder="Your name" autocomplete="off" /></div>
@@ -81,8 +81,8 @@
     </div>
     <div class="nav-right">
       <button class="nav-saved-btn" id="nav-saved" type="button" aria-haspopup="dialog" aria-label="Open saved clauses and searches"><span class="nav-saved-star" aria-hidden="true">★</span><span class="nav-saved-label">Saved</span><span class="nav-saved-count" id="nav-saved-count" style="display:none"></span></button>
-      <button class="nav-feedback-btn" onclick="openFeedback()">Feedback</button>
-      <a href="#" class="nav-cta" onclick="document.getElementById('search-input').focus();return false;">Search</a>
+      <button class="nav-feedback-btn" data-action="open-feedback">Feedback</button>
+      <a href="#" class="nav-cta" data-action="focus-search">Search</a>
       <button class="nav-hamburger" id="nav-hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
         <span class="nav-hamburger-bars" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -117,40 +117,40 @@
           <span class="search-count" id="search-count"></span>
           <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
           <kbd class="search-kbd" aria-hidden="true">/</kbd>
-          <button type="button" class="search-go" id="search-go" onclick="setMode('search');var i=document.getElementById('search-input');i.focus();if(i.value.trim())runSearch();" aria-label="Search">Search<span class="search-go-arrow" aria-hidden="true">→</span></button>
+          <button type="button" class="search-go" id="search-go" data-action="search-go" aria-label="Search">Search<span class="search-go-arrow" aria-hidden="true">→</span></button>
         </div>
       </div>
 
       <div class="hero-trychips" aria-label="Example searches">
-        <button type="button" class="trychip" onclick="runExampleQuery('commercial item determination threshold')"><span class="trychip-k">Try</span>commercial item determination threshold</button>
-        <button type="button" class="trychip" onclick="runExampleQuery('R-DFARS 252.204')"><span class="trychip-k">Try</span>R-DFARS 252.204</button>
-        <button type="button" class="trychip" onclick="runExampleQuery('sole source justification')"><span class="trychip-k">Try</span>sole source justification</button>
-        <button type="button" class="trychip" onclick="runExampleQuery('commercial solutions opening')"><span class="trychip-k">Try</span>commercial solutions opening</button>
+        <button type="button" class="trychip" data-action="example-query" data-query="commercial item determination threshold"><span class="trychip-k">Try</span>commercial item determination threshold</button>
+        <button type="button" class="trychip" data-action="example-query" data-query="R-DFARS 252.204"><span class="trychip-k">Try</span>R-DFARS 252.204</button>
+        <button type="button" class="trychip" data-action="example-query" data-query="sole source justification"><span class="trychip-k">Try</span>sole source justification</button>
+        <button type="button" class="trychip" data-action="example-query" data-query="commercial solutions opening"><span class="trychip-k">Try</span>commercial solutions opening</button>
       </div>
 
       <!-- Newcomer orientation (dismissible once) -->
       <div class="hero-newhere" id="hero-newhere">
         <span class="hero-newhere-txt">New to the <strong>RFO</strong>? It's the Revolutionary FAR Overhaul — the rewritten FAR you cite for new acquisitions, in place of the legacy FAR/DFARS.</span>
         <a class="hero-newhere-link" href="/what-is-the-rfo">What changed →</a>
-        <button class="hero-newhere-x" type="button" aria-label="Dismiss" onclick="(function(b){var e=document.getElementById('hero-newhere');if(e)e.style.display='none';try{localStorage.setItem('acqvault_newhere_dismissed','1');}catch(x){}})(this)">✕</button>
+        <button class="hero-newhere-x" type="button" aria-label="Dismiss" data-action="dismiss-newhere">✕</button>
       </div>
 
       <!-- compact secondary mode row (Browse / Full Text) -->
       <div class="hero-command-dock hero-command-dock-b" aria-label="Search modes and live sources">
         <div class="mode-toggle">
-          <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" onclick="setMode('search')"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg> Search</button>
+          <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" data-action="set-mode" data-arg="search"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg> Search</button>
           <div class="browse-source-picker">
-            <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="true" aria-expanded="false" onclick="toggleBrowseSourceMenu(event)"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/></svg> <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
+            <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="true" aria-expanded="false" data-action="toggle-browse-menu"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/></svg> <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
             <div class="browse-source-menu" id="browse-source-menu" role="group" aria-label="Browse by source or regulation">
-              <button type="button" onclick="chooseBrowseSource('rfo')"><span>RFO</span><small>Live</small></button>
-              <button type="button" onclick="chooseBrowseSource('r-dfars')"><span>R-DFARS</span><small>Live</small></button>
-              <button type="button" onclick="chooseBrowseSource('far-companion')"><span>FAR Companion</span><small>Live</small></button>
-              <button type="button" onclick="chooseBrowseSource('category-management')"><span>Category Management Buying Guide</span><small>Live</small></button>
-              <button type="button" onclick="chooseBrowseSource('afi-63-138')"><span>DAFI 63-138</span><small>Live</small></button>
-              <button type="button" onclick="chooseBrowseSource('fmr')"><span>DoD FMR</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="rfo"><span>RFO</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="r-dfars"><span>R-DFARS</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="far-companion"><span>FAR Companion</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="category-management"><span>Category Management Buying Guide</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="afi-63-138"><span>DAFI 63-138</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="fmr"><span>DoD FMR</span><small>Live</small></button>
             </div>
           </div>
-          <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" onclick="setMode('fulltext')"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg> <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
+          <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" data-action="set-mode" data-arg="fulltext"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg> <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
         </div>
       </div>
 
@@ -249,12 +249,12 @@
   <div class="browse-source-bar">
     <div class="browse-source-bar-inner">
       <span class="browse-source-bar-label">Regulation</span>
-      <button type="button" class="browse-src-pill active" data-bsource="rfo" aria-pressed="true" onclick="setBrowseSource('rfo')">RFO</button>
-      <button type="button" class="browse-src-pill" data-bsource="r-dfars" aria-pressed="false" onclick="setBrowseSource('r-dfars')">R-DFARS</button>
-      <button type="button" class="browse-src-pill" data-bsource="far-companion" aria-pressed="false" onclick="setBrowseSource('far-companion')">FAR Companion</button>
-      <button type="button" class="browse-src-pill" data-bsource="category-management" aria-pressed="false" onclick="setBrowseSource('category-management')">Category Management Buying Guide</button>
-      <button type="button" class="browse-src-pill" data-bsource="afi-63-138" aria-pressed="false" onclick="setBrowseSource('afi-63-138')">DAFI 63-138</button>
-      <button type="button" class="browse-src-pill" data-bsource="fmr" aria-pressed="false" onclick="setBrowseSource('fmr')">DoD FMR</button>
+      <button type="button" class="browse-src-pill active" data-bsource="rfo" aria-pressed="true" data-action="set-browse-source" data-arg="rfo">RFO</button>
+      <button type="button" class="browse-src-pill" data-bsource="r-dfars" aria-pressed="false" data-action="set-browse-source" data-arg="r-dfars">R-DFARS</button>
+      <button type="button" class="browse-src-pill" data-bsource="far-companion" aria-pressed="false" data-action="set-browse-source" data-arg="far-companion">FAR Companion</button>
+      <button type="button" class="browse-src-pill" data-bsource="category-management" aria-pressed="false" data-action="set-browse-source" data-arg="category-management">Category Management Buying Guide</button>
+      <button type="button" class="browse-src-pill" data-bsource="afi-63-138" aria-pressed="false" data-action="set-browse-source" data-arg="afi-63-138">DAFI 63-138</button>
+      <button type="button" class="browse-src-pill" data-bsource="fmr" aria-pressed="false" data-action="set-browse-source" data-arg="fmr">DoD FMR</button>
     </div>
   </div>
   <div class="browse-layout">
@@ -296,7 +296,7 @@
     <div class="fulltext-note"><strong>How these are generated:</strong> A GitHub Actions workflow runs on the 1st of every month, compiles every indexed document in sequential part order, and commits fresh PDFs to the repository. Each page carries an AcqVault.com watermark. Files are served directly from GitHub — no server required.</div>
     <div class="fulltext-section-label">Browse-only sources</div>
     <div class="fulltext-cards">
-      <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--fmr-bg);color:var(--fmr-txt);">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>304 chapters · 16 volumes</span><span>In-app · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" onclick="setMode('browse');setBrowseSource('fmr')">Browse in-app</button></div>
+      <div class="fulltext-card"><span class="fulltext-card-tag" style="background:var(--fmr-bg);color:var(--fmr-txt);">DoD FMR</span><div class="fulltext-card-name">DoD Financial Management Regulation</div><div class="fulltext-card-meta"><span>304 chapters · 16 volumes</span><span>In-app · no CAC needed</span><span>Full text reproduced</span></div><button class="fulltext-dl-btn" type="button" data-action="go-browse-source" data-arg="fmr">Browse in-app</button></div>
     </div>
   </div>
 </div>
@@ -511,12 +511,12 @@
       <div class="source-status-row">
         <div class="source-status-label">Live</div>
         <div class="source-status-main">
-          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('rfo')">RFO</button>
-          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('r-dfars')">R-DFARS</button>
-          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('far-companion')">FAR Companion</button>
-          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('category-management')">Category Management Buying Guide</button>
-          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('afi-63-138')">DAFI 63-138</button>
-          <button type="button" class="source-status-chip live" onclick="setMode('browse');setBrowseSource('fmr')">DoD FMR</button>
+          <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="rfo">RFO</button>
+          <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="r-dfars">R-DFARS</button>
+          <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="far-companion">FAR Companion</button>
+          <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="category-management">Category Management Buying Guide</button>
+          <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="afi-63-138">DAFI 63-138</button>
+          <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="fmr">DoD FMR</button>
         </div>
       </div>
     </div>
@@ -547,7 +547,7 @@
       <a href="/changes">What Changed</a>
       <a href="/library">Library</a>
       <a href="/study">Study</a>
-      <a href="#" onclick="openFeedback();return false;">Feedback</a>
+      <a href="#" data-action="open-feedback">Feedback</a>
       <a href="https://github.com/AcqVault/acqvault" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
@@ -625,9 +625,9 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=63"></script>
+<script defer src="/assets/app.js?v=64"></script>
 <script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=53"></script>
+<script defer src="/assets/widgets.js?v=54"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>

@@ -351,6 +351,69 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeBrowseSourceMenu();
 });
 
+// ── DELEGATED ACTIONS ───────────────────────────────────────────────────────
+// Every formerly-inline onclick routes through here via data-action so the CSP
+// can drop script-src 'unsafe-inline'. Works for dynamically rendered markup too
+// (the listener lives on document, so re-renders never need re-binding).
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const arg = el.dataset.arg;
+  switch (el.dataset.action) {
+    case 'open-feedback': e.preventDefault(); openFeedback(); break;
+    case 'close-feedback': closeFeedback(); break;
+    case 'dismiss-about': dismissAbout(); break;
+    case 'set-mode': setMode(arg); break;
+    case 'set-browse-source': setBrowseSource(arg); break;
+    case 'choose-browse-source': chooseBrowseSource(arg); break;
+    case 'toggle-browse-menu': toggleBrowseSourceMenu(e); break;
+    case 'go-browse-source': setMode('browse'); setBrowseSource(arg); break;
+    case 'example-query': runExampleQuery(el.dataset.query || ''); break;
+    case 'focus-search': {
+      e.preventDefault();
+      const s = document.getElementById('search-input');
+      if (s) s.focus();
+      break;
+    }
+    case 'skip-to-search':
+      // href="#search-input" already lands there; re-focus after the jump.
+      setTimeout(() => { const s = document.getElementById('search-input'); if (s) s.focus(); }, 0);
+      break;
+    case 'search-go': {
+      setMode('search');
+      const i = document.getElementById('search-input');
+      if (i) { i.focus(); if (i.value.trim()) runSearch(); }
+      break;
+    }
+    case 'dismiss-newhere': {
+      const n = document.getElementById('hero-newhere');
+      if (n) n.style.display = 'none';
+      try { localStorage.setItem('acqvault_newhere_dismissed', '1'); } catch (x) {}
+      break;
+    }
+    case 'select-part': selectPart(el, el.dataset.part, el.dataset.label || ''); break;
+    case 'select-cat-part': selectCategoryGuidePart(el, el.dataset.part, el.dataset.label || ''); break;
+    case 'br-copy': brCopy(el.dataset.cite, el); break;
+    case 'copy-inline-cite': copyInlineCite(el, el.dataset.cite || ''); break;
+    case 'scroll-to': {
+      e.preventDefault();
+      const t = document.getElementById(el.dataset.anchor);
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      break;
+    }
+    case 'print': window.print(); break;
+  }
+});
+
+// Image load failures (formerly inline onerror). error events don't bubble, so
+// catch them in the capture phase at the document.
+document.addEventListener('error', (e) => {
+  const t = e.target;
+  if (t && t.tagName === 'IMG' && t.hasAttribute('data-fallback-figure')) {
+    t.closest('figure')?.classList.add('image-unavailable');
+  }
+}, true);
+
 // ── NAV OFFSET ────────────────────────────────────────────────────────────────
 function adjustNavForAboutBar() {
   const bar = document.getElementById('about-bar');
@@ -430,13 +493,13 @@ function renderPartsGrid(source) {
     const active = (key) => browseActivePart === key && browseSrc === source;
     const parent = (key, num, label) => `<button type="button" class="part-tile part-tile-parent${active(key) ? ' active' : ''}"
       data-part="${key}" data-label="${esc(label)}" aria-pressed="${active(key)}"
-      onclick="selectCategoryGuidePart(this,'${key}',this.dataset.label)">
+      data-action="select-cat-part">
       <span class="part-tile-num">${num}</span>
       <span class="part-tile-label">${esc(label)}</span>
     </button>`;
     const child = ([num, label]) => `<button type="button" class="part-tile part-tile-child${active(num) ? ' active' : ''}"
       data-part="${num}" data-label="${esc(label)}" aria-pressed="${active(num)}"
-      onclick="selectCategoryGuidePart(this,'${num}',this.dataset.label)">
+      data-action="select-cat-part">
       <span class="part-tile-num">${num}</span>
       <span class="part-tile-label">${esc(label)}</span>
     </button>`;
@@ -452,7 +515,7 @@ function renderPartsGrid(source) {
     const active = String(browseActivePart) === String(num) && browseSrc === source;
     return `<button type="button" class="part-tile${active ? ' active' : ''}"
       data-part="${num}" data-label="${esc(label)}" aria-pressed="${active}"
-      onclick="selectPart(this,'${num}',this.dataset.label)">
+      data-action="select-part">
       <span class="part-tile-num">${num}</span>
       <span class="part-tile-label">${esc(label)}</span>
     </button>`;
@@ -867,7 +930,7 @@ function renderContentLine(line, baseCitation, source, paraPath) {
       }
     }
     const citeBtn = cite
-      ? `<button class="br-para-cite" data-cite="${esc(cite)}" onclick="brCopy(this.dataset.cite,this)" title="Copy citation">CITE</button>`
+      ? `<button class="br-para-cite" data-cite="${esc(cite)}" data-action="br-copy" title="Copy citation">CITE</button>`
       : '';
     return `<div class="br-para-row br-l${Math.min(level,4)}">${citeBtn}<p class="br-para-text">${text}</p></div>`;
   }
@@ -1286,7 +1349,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
         if (item.type === 'subpart') {
           return `<li class="br-toc-subpart"><span class="br-toc-subpart-label">${esc(item.num)} — ${esc(item.label)}</span></li>`;
         }
-        return `<li><a class="br-toc-link" onclick="document.getElementById('${item.anchor}')?.scrollIntoView({behavior:'smooth',block:'start'});return false;" href="#">
+        return `<li><a class="br-toc-link" data-action="scroll-to" data-anchor="${esc(item.anchor)}" href="#">
           <span class="br-toc-link-num">${esc(item.num || '—')}</span>
           <span class="br-toc-link-title">${esc(item.label)}</span>
         </a></li>`;
@@ -1321,7 +1384,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
           ${parsed.num ? `<div class="br-section-num">${esc(parsed.num)}</div>` : ''}
           <div class="br-section-heading">${esc(parsed.label || title)}</div>
         </div>
-        <button class="br-cite-btn" data-cite="${esc(citation)}" onclick="brCopy(this.dataset.cite,this)">Cite</button>
+        <button class="br-cite-btn" data-cite="${esc(citation)}" data-action="br-copy">Cite</button>
       </div>
       <div class="br-body">${bodyHTML}</div>
     </div>`;
@@ -1353,7 +1416,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     </div>
     ${tocHTML}
     ${sectionsHTML}
-    <button class="br-back-top" onclick="document.getElementById('browse-reader').scrollIntoView({behavior:'smooth',block:'start'})">↑ Back to top</button>
+    <button class="br-back-top" data-action="scroll-to" data-anchor="browse-reader">↑ Back to top</button>
   `;
 }
 
@@ -1385,7 +1448,7 @@ function buildCategoryManagementLanding() {
       <div class="br-body">
         <p class="br-p">The guide groups the category-specific pathway primers under this parent section. Choose a category in the left panel to review its vehicles table, resources, pathway pointers, market research notes, and SIN references.</p>
         <div class="cm-category-index" aria-label="Category Management pathways">
-          ${categories.map(([num, label]) => `<button type="button" onclick="selectCategoryGuidePart(document.querySelector('.part-tile[data-part=&quot;${num}&quot;]'),'${num}','${esc(label)}')">${esc(label)}<span>Part ${num}</span></button>`).join('')}
+          ${categories.map(([num, label]) => `<button type="button" data-action="select-cat-part" data-part="${esc(String(num))}" data-label="${esc(label)}">${esc(label)}<span>Part ${num}</span></button>`).join('')}
         </div>
       </div>
     </div>`;
@@ -1558,8 +1621,7 @@ function generateCitation(hit) {
 }
 
 function citeBtnHTML(cite) {
-  const s = cite.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  return `<button class="dc-cite-btn" onclick="copyInlineCite(this,'${s}')" aria-label="Copy citation">cite</button>`;
+  return `<button class="dc-cite-btn" data-action="copy-inline-cite" data-cite="${esc(cite)}" aria-label="Copy citation">cite</button>`;
 }
 
 function copyInlineCite(btn, citation) {
@@ -2016,7 +2078,7 @@ function compassResourceHTML(line, isImage = false) {
       // users. Render a labeled placeholder instead.
       return `<figure class="dc-compass-visual image-cac"><figcaption><span>${esc(link.label)}</span><span class="dc-cac-note">Visual on the CAC-gated DAF site</span></figcaption></figure>`;
     }
-    return `<figure class="dc-compass-visual"><img src="${esc(link.url)}" alt="${esc(link.label)}" loading="lazy" onerror="this.closest('figure')?.classList.add('image-unavailable')"><figcaption><span>${esc(link.label)}</span><a href="${esc(link.url)}" target="_blank" rel="noopener">Open image</a></figcaption></figure>`;
+    return `<figure class="dc-compass-visual"><img src="${esc(link.url)}" alt="${esc(link.label)}" loading="lazy" data-fallback-figure><figcaption><span>${esc(link.label)}</span><a href="${esc(link.url)}" target="_blank" rel="noopener">Open image</a></figcaption></figure>`;
   }
   const note = link?.note ? ` <span class="dc-resource-note">— ${formatInlineLinks(link.note)}</span>` : '';
   const content = link ? `${formatInlineLinks(`[${link.label}](${link.url})`)}${note}` : formatInlineLinks(body);

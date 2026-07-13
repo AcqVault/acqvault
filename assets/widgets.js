@@ -1656,7 +1656,7 @@
       const narr = mrNarrative();
       const narrSec = narr.length ? `<div class="sec"><div class="sec-eyebrow"><span class="sec-title">Narrative summary</span></div><div class="narr">${narr.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="narr-hint no-print">Drafted from the records below — select, copy, and edit to fit the market research report.</div></div>` : '';
       return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><base href="${base}/"><title>AcqVault — Market Research Summary</title><style>${MRCSS}</style></head><body>
-        <div class="toolbar no-print"><button onclick="window.print()">⤓ Save as PDF</button><span>Opens your browser's print dialog — choose “Save as PDF.”</span></div>
+        <div class="toolbar no-print"><button data-action="print">⤓ Save as PDF</button><span>Opens your browser's print dialog — choose “Save as PDF.”</span></div>
         <div class="wrap">
           <div class="mast"><div class="mast-left">${MRMARK}<div class="mast-name">Acq<span>Vault</span></div></div><div class="mast-right">Market Research Summary<br>Working file · not an official record</div></div>
           <h1 class="doc-title">Market Research Summary</h1>
@@ -1749,6 +1749,10 @@
       const w = window.open('', '_blank');
       if (!w) { srAnnounceMR('Allow pop-ups to open the report, or use Copy snapshot.'); return; }
       w.document.open(); w.document.write(mrHTML()); w.document.close();
+      // The report window doesn't load app.js, so wire its print button from here
+      // (keeps the exported doc free of inline handlers for the strict CSP).
+      const printBtn = w.document.querySelector('[data-action="print"]');
+      if (printBtn) printBtn.addEventListener('click', () => w.print());
     }
     function copyMrNote(btn) {
       const text = mrText();
