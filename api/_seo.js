@@ -231,7 +231,8 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 .lfoot-legal a{color:var(--accent)}
 @media(max-width:560px){.lband-inner{padding:40px 18px}.lhero .lband-inner{padding:40px 18px 38px}.lhero h1{font-size:30px}}`;
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage }) {
+  const og = ogImage || 'og-home.png';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -245,11 +246,11 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed }) {
 <meta property="og:description" content="${description}">
 <meta property="og:url" content="${canonical}">
 <meta property="og:site_name" content="AcqVault">
-<meta property="og:image" content="${SITE}/assets/og-card-v6.png">
+<meta property="og:image" content="${SITE}/assets/${og}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="${SITE}/assets/og-card-v6.png">
+<meta name="twitter:image" content="${SITE}/assets/${og}">
 <link rel="icon" href="/assets/favicon-vault.svg" type="image/svg+xml">
 <style>${STYLE}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
@@ -301,7 +302,7 @@ ${renderContent(d.content, d.title)}
 <p class="lede">${esc(meta.desc)} Full text of Part ${esc(part)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${sections}`;
 
-  return shell({ title, description, canonical, jsonld, body });
+  return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}.png` });
 }
 
 function renderHubPage(source) {
@@ -331,7 +332,7 @@ function renderHubPage(source) {
 ${devLink}
 <div class="parts">${links}</div>`;
 
-  return shell({ title, description, canonical, jsonld, body });
+  return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}.png` });
 }
 
 function renderDeviationsPage() {
@@ -457,7 +458,7 @@ ${catHtml}
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</p>
 </div></footer>`;
 
-  return shell({ title, description, canonical, jsonld, body, bleed: true });
+  return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-library.png' });
 }
 
 // ── /changes — the corpus-refresh ledger, rendered as a citable change record ──
@@ -919,7 +920,7 @@ ${SEAL_SVG}
 </div></footer>
 <script defer src="/assets/study.js?v=28"></script>`;
 
-  return shell({ title, description, canonical, jsonld, body, bleed: true });
+  return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study.png' });
 }
 
 const RFO_FAQ = [
@@ -962,7 +963,7 @@ function renderExplainerPage() {
 <h2 style="margin-top:32px">Frequently asked questions</h2>
 ${faqHtml}`;
 
-  return shell({ title, description, canonical, jsonld, body });
+  return shell({ title, description, canonical, jsonld, body, ogImage: 'og-src-rfo.png' });
 }
 
 function renderSitemap() {
