@@ -88,6 +88,16 @@ function matchesAllTerms(item, terms) {
   return terms.every(term => hasWord(haystack, term));
 }
 
+// SAM.gov-supplied URLs are echoed straight into href attributes on the client, so
+// reject anything that isn't a real http(s) link (e.g. a javascript:/data: scheme).
+function safeHttpUrl(u, fallback) {
+  if (typeof u !== 'string' || !u || u === 'null') return fallback;
+  try {
+    const p = new URL(u);
+    return (p.protocol === 'http:' || p.protocol === 'https:') ? u : fallback;
+  } catch { return fallback; }
+}
+
 function compactOpportunity(item) {
   const org = item.fullParentPathName || [item.department, item.subTier, item.office].filter(Boolean).join(' · ');
   const award = item.award || item.data?.award || null;
@@ -106,10 +116,11 @@ function compactOpportunity(item) {
     awardAmount: award?.amount || '',
     awardee: award?.awardee?.name || award?.awardee || '',
     attachments: Array.isArray(item.resourceLinks) ? item.resourceLinks.length : 0,
-    additionalInfoLink: item.additionalInfoLink && item.additionalInfoLink !== 'null' ? item.additionalInfoLink : '',
-    uiLink: item.uiLink && item.uiLink !== 'null'
-      ? item.uiLink
-      : (item.noticeId ? `https://sam.gov/opp/${encodeURIComponent(item.noticeId)}/view` : 'https://sam.gov/search/?index=opp')
+    additionalInfoLink: safeHttpUrl(item.additionalInfoLink, ''),
+    uiLink: safeHttpUrl(
+      item.uiLink,
+      item.noticeId ? `https://sam.gov/opp/${encodeURIComponent(item.noticeId)}/view` : 'https://sam.gov/search/?index=opp'
+    )
   };
 }
 

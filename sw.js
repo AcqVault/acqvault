@@ -1,6 +1,6 @@
 /* AcqVault service worker — offline shell + corpus, leaves live data network-only.
    Bump CACHE on any change here, or when the cached corpus must refresh. */
-const CACHE = 'acqvault-v51';
+const CACHE = 'acqvault-v52';
 const SHELL = [
   '/',
   '/assets/fonts/inter-latin.woff2',
@@ -67,7 +67,11 @@ self.addEventListener('fetch', (event) => {
       const timer = setTimeout(() => caches.match('/').then(finish), 3000);
       fetch(req).then((res) => {
         clearTimeout(timer);
-        caches.open(CACHE).then((c) => c.put('/', res.clone()));   // always refresh cached shell
+        // Only cache a genuine same-origin 2xx shell — never poison '/' with an
+        // error page, redirect, or opaque response.
+        if (res && res.ok && res.type === 'basic') {
+          caches.open(CACHE).then((c) => c.put('/', res.clone()));
+        }
         finish(res);
       }).catch(() => { clearTimeout(timer); caches.match('/').then((c) => finish(c || Response.error())); });
     }));
