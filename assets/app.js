@@ -104,11 +104,15 @@ function acqHighlight(text, query){
 function acqLoadCorpus(){
   if(ACQ_INDEX) return Promise.resolve(ACQ_INDEX);
   if(acqCorpusPromise) return acqCorpusPromise;
+  // Only reached on the offline/API-down search fallback, and only once (guarded
+  // above). Tell AT users the (potentially slow) corpus download is happening so
+  // the quiet gap between submitting a search and seeing results isn't a mystery.
+  if (typeof srAnnounce === 'function') srAnnounce('Preparing offline search…');
   acqCorpusPromise = fetch(CORPUS_URL)
     .then(r => { if(!r.ok) throw new Error('corpus HTTP '+r.status); return r.json(); })
     // DAF Compass temporarily excluded from search (kept identical to the server
     // filter in api/search.js loadDocs) — docs remain in the corpus, just not indexed.
-    .then(docs => { ACQ_INDEX = docs.filter(Boolean).filter(doc => doc.source!=='compass').map(doc => ({ doc, titleLc:String(doc.title||'').toLowerCase(), contentLc:String(doc.content||'').toLowerCase() })); return ACQ_INDEX; })
+    .then(docs => { ACQ_INDEX = docs.filter(Boolean).filter(doc => doc.source!=='compass').map(doc => ({ doc, titleLc:String(doc.title||'').toLowerCase(), contentLc:String(doc.content||'').toLowerCase() })); if (typeof srAnnounce === 'function') srAnnounce('Offline search ready.'); return ACQ_INDEX; })
     .catch(e => { acqCorpusPromise = null; throw e; });
   return acqCorpusPromise;
 }
