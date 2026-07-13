@@ -32,12 +32,15 @@
     }
     renderFn();
   }
-  var hub = 'study'; // which depth-1 home the user is under: 'study' tracks · 'games' quick rounds
+  // Games and track-dashboards both live at history depth 1 now (games moved up from the
+  // old hub level so they sit right on the main page). depth1View remembers which one to
+  // re-render on a back/forward pop.
+  var depth1View = null;
   window.addEventListener('popstate', function (e) {
     var d = (e.state && typeof e.state.st === 'number') ? e.state.st : 0;
     navDepth = d; popping = true; keyHandler(null);
     if (!deck) { popping = false; return; }
-    if (d <= 0) viewTrack(); else (hub === 'games' ? viewGamesHub() : viewHome());
+    if (d <= 0) viewTrack(); else (depth1View || viewHome)();
     popping = false;
   });
 
@@ -147,11 +150,6 @@
         '<span class="st-tcover" aria-hidden="true">' + VAULT_GLYPH + '<span class="st-tcover-vol">' + vol + '</span></span>' +
         '<span class="st-tc-body"><span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
-    var G = gamesState();
-    var day = comboToday();
-    var gamesLine = (G.combo.day === day && G.combo.done)
-      ? 'Today&rsquo;s combination: cracked. The 90-second round is always open.'
-      : 'Today&rsquo;s five-letter term is waiting — same word for everyone, a new one every day.';
     render(
       '<h2 class="st-h2" style="margin-top:0">Pick your track</h2>' +
       '<p class="st-sub">Your progress is saved per card either way — switch tracks any time without losing it.</p>' +
@@ -161,15 +159,10 @@
       cardHtml('t-adv', 'Warrant board prep', 'Advanced — The Board',
         'Everything in Basic plus Vol. 2: board-probe questions, threshold drills, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
       '</div>' +
-      '<div class="st-tracks st-tracks-games">' +
-      '<button class="st-trackcard st-trackcard-games" id="t-games">' +
-      '<span class="st-tcover st-tcover-games" aria-hidden="true">' + DIAL_SVG + '<span class="st-tcover-vol">DAILY</span></span>' +
-      '<span class="st-tc-body"><span class="st-tc-kicker">Quick rounds · under 3 minutes</span><b>The Combination &amp; Which Part Governs</b>' +
-      '<p>' + gamesLine + '</p></span></button>' +
-      '</div>');
-    el('t-basic').onclick = function () { S.track = 'basic'; hub = 'study'; save(); goDepth(1, viewHome); };
-    el('t-adv').onclick = function () { S.track = 'advanced'; hub = 'study'; save(); goDepth(1, viewHome); };
-    el('t-games').onclick = function () { hub = 'games'; goDepth(1, viewGamesHub); };
+      gamesSectionHtml());
+    el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewHome; save(); goDepth(1, viewHome); };
+    el('t-adv').onclick = function () { S.track = 'advanced'; depth1View = viewHome; save(); goDepth(1, viewHome); };
+    wireGamesSection();
   }
 
   function viewHome() {
@@ -234,6 +227,8 @@
   }
 
   function backHome() { keyHandler(null); if (navDepth >= 2) history.back(); else viewHome(); }
+  // Games sit at depth 1 (on the main page), so their "back" returns to the tool select.
+  function backToTools() { keyHandler(null); if (navDepth >= 1) history.back(); else viewTrack(); }
 
   /* ---- recall session (mixed reveal + multiple-choice) ---- */
   function startSession(cards, label) {
@@ -543,8 +538,9 @@
       return '<span class="st-hub-gridrow">' + res.map(function (r) { return '<i class="st-hub-cell st-hub-cell-' + r + '"></i>'; }).join('') + '</span>';
     }).join('');
   }
-  function viewGamesHub() {
-    hub = 'games';
+  // The "Quick rounds" section — rendered straight onto the main tool-select page (no
+  // separate hub screen). Returns HTML; wireGamesSection() attaches the launch handlers.
+  function gamesSectionHtml() {
     var G = gamesState();
     var day = comboToday(), no = comboNo(day);
     var comboDone = G.combo.day === day && G.combo.done;
@@ -554,47 +550,45 @@
     var gv = G.governs;
     var gvBest = gv.best_advanced || gv.best || 0;
     var donePanel = allDone
-      ? '<div class="st-hub-done"><div class="st-hub-done-mark">✓</div><div><b>That&rsquo;s today&rsquo;s round.</b>' +
-        '<span>' + (G.combo.win ? 'Combination cracked in ' + G.combo.rows.length : 'The combination held') + ' · tempo best today ' + govToday.best.toLocaleString() + '. ' + esc(nextRoundLine()) + '.</span></div></div>'
+      ? '<div class="st-hub-done"><div class="st-hub-done-mark">\u2713</div><div><b>That\u2019s today\u2019s round.</b>' +
+        '<span>' + (G.combo.win ? 'Combination cracked in ' + G.combo.rows.length : 'The combination held') + ' \u00b7 tempo best today ' + govToday.best.toLocaleString() + '. ' + esc(nextRoundLine()) + '.</span></div></div>'
       : '';
     var comboCard = comboDone
       ? '<button class="st-plate st-plate-done" id="g-combo">' +
-        '<span class="st-plate-eyebrow">Daily · No. ' + no + ' · ' + (G.combo.win ? 'Solved in ' + G.combo.rows.length : 'Sealed') + '</span>' +
+        '<span class="st-plate-eyebrow">Daily \u00b7 No. ' + no + ' \u00b7 ' + (G.combo.win ? 'Solved in ' + G.combo.rows.length : 'Sealed') + '</span>' +
         '<span class="st-plate-art st-hub-grid" aria-hidden="true">' + comboGridMini(G.combo) + '</span>' +
         '<b>The Combination</b>' +
-        '<span class="st-plate-sub">' + (G.combo.win ? 'Cracked. The word was worth knowing — the debrief has the cite.' : 'Sealed for today — see the word and its cite in the debrief.') + '</span>' +
-        '<span class="st-plate-meta">View result &amp; copy your grid →</span></button>'
+        '<span class="st-plate-sub">' + (G.combo.win ? 'Cracked. The word was worth knowing \u2014 the debrief has the cite.' : 'Sealed for today \u2014 see the word and its cite in the debrief.') + '</span>' +
+        '<span class="st-plate-meta">View result &amp; copy your grid \u2192</span></button>'
       : '<button class="st-plate" id="g-combo">' +
-        '<span class="st-plate-eyebrow">Daily · No. ' + no + '</span>' +
+        '<span class="st-plate-eyebrow">Daily \u00b7 No. ' + no + '</span>' +
         '<span class="st-plate-art" aria-hidden="true">' +
         'VAULT'.split('').map(function (ch, i) {
           return '<span class="st-mini-tile' + (i === 1 || i === 4 ? ' st-mini-hit' : (i === 2 ? ' st-mini-near' : '')) + '">' + ch + '</span>';
         }).join('') + '</span>' +
         '<b>The Combination</b>' +
-        '<span class="st-plate-sub">Six tries at today&rsquo;s five-letter term of the trade. Same word for everyone, everywhere — a new one every day.</span>' +
-        '<span class="st-plate-meta">Play today&rsquo;s word →</span></button>';
+        '<span class="st-plate-sub">Guess today\u2019s five-letter term of the trade in six tries \u2014 Wordle, for the acquisition world. Same word for everyone.</span>' +
+        '<span class="st-plate-meta">Play today\u2019s word \u2192</span></button>';
     var govMeta = govToday
-      ? 'Today&rsquo;s best ' + govToday.best.toLocaleString() + (gvBest > govToday.best ? ' · record ' + gvBest.toLocaleString() : ' · that&rsquo;s your record') + ' · run it again →'
-      : (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' · play →' : 'No score on the board yet · play →');
-    render(
-      '<div class="st-head">' +
-      (run >= 2 ? '<div class="st-streak" title="Days in a row with at least one round played — weekends don\u2019t break it"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' + run + '-day streak</div>' : '') +
+      ? 'Today\u2019s best ' + govToday.best.toLocaleString() + (gvBest > govToday.best ? ' \u00b7 record ' + gvBest.toLocaleString() : ' \u00b7 that\u2019s your record') + ' \u00b7 run it again \u2192'
+      : (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' \u00b7 play \u2192' : 'No score on the board yet \u00b7 play \u2192');
+    return '<div class="st-games-head"><h2 class="st-h2" style="margin:26px 0 0">Quick rounds</h2>' +
+      (run >= 2 ? '<span class="st-streak" title="Days in a row with at least one round played \u2014 weekends don\u2019t break it"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' + run + '-day streak</span>' : '') +
       '</div>' +
-      '<h2 class="st-h2" style="margin-top:0">Quick rounds</h2>' +
-      '<p class="st-sub">Under three minutes each. One is a daily ritual; one is a race.</p>' +
+      '<p class="st-sub">A daily word and a 90-second round \u2014 under three minutes each, no studying required.</p>' +
       donePanel +
       '<div class="st-plates">' + comboCard +
       '<button class="st-plate' + (govToday ? ' st-plate-played' : '') + '" id="g-governs">' +
-      '<span class="st-plate-eyebrow">Tempo · 90 seconds' + (govToday ? ' · played today' : '') + '</span>' +
+      '<span class="st-plate-eyebrow">Tempo \u00b7 90 seconds' + (govToday ? ' \u00b7 played today' : '') + '</span>' +
       '<span class="st-plate-art st-plate-art-ring" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="rgba(228,196,119,.25)" stroke-width="4"/><circle cx="24" cy="24" r="19" fill="none" stroke="#e4c477" stroke-width="4" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="30" transform="rotate(-90 24 24)"/></svg><span class="st-plate-ring-n">90</span></span>' +
       '<b>Which Part Governs?</b>' +
-      '<span class="st-plate-sub">A situation flashes — call the governing part before the clock runs out. Combos multiply; misses teach.</span>' +
+      '<span class="st-plate-sub">A situation flashes \u2014 call the part of the rulebook that governs it before the clock runs out. Combos multiply; misses teach.</span>' +
       '<span class="st-plate-meta">' + govMeta + '</span></button>' +
-      '</div>' +
-      '<button class="st-link st-quit" id="st-back">← All study tools</button>');
-    el('g-combo').onclick = function () { goDepth(2, viewCombo); };
-    el('g-governs').onclick = function () { goDepth(2, viewGoverns); };
-    el('st-back').onclick = function () { keyHandler(null); if (navDepth >= 1) history.back(); else viewTrack(); };
+      '</div>';
+  }
+  function wireGamesSection() {
+    if (el('g-combo')) el('g-combo').onclick = function () { depth1View = viewCombo; goDepth(1, viewCombo); };
+    if (el('g-governs')) el('g-governs').onclick = function () { depth1View = viewGoverns; goDepth(1, viewGoverns); };
   }
 
   /* ---- The Combination — the daily vault word ---- */
@@ -723,8 +717,8 @@
           '<div class="st-cb-msg" id="cb-msg">' + (msg || '') + '</div>' +
           '<div class="st-cb-kb" id="cb-kb">' + kbHtml() + '</div>') +
         '</div>' +
-        '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
-      el('st-quit').onclick = backHome;
+        '<button class="st-link st-quit" id="st-quit">\u2190 Study menu</button>');
+      el('st-quit').onclick = backToTools;
       if (el('cb-help')) el('cb-help').onclick = function () { helping = true; paint(); };
       if (el('cb-help-go')) el('cb-help-go').onclick = function () {
         helping = false;
@@ -891,8 +885,8 @@
         '<span><b>Misses teach</b> — every one is reviewed with its cite</span></div>' +
         (pb ? '<p class="st-sub" style="text-align:center">Personal best ' + pb.toLocaleString() + ' · top combo ×' + pc + '</p>' : '') +
         '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal st-gv-start" id="gv-start">Start the clock <kbd>space</kbd></button></div></div>' +
-        '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
-      el('st-quit').onclick = backHome;
+        '<button class="st-link st-quit" id="st-quit">\u2190 Study menu</button>');
+      el('st-quit').onclick = backToTools;
       el('gv-start').onclick = begin;
       keyHandler(function (k) { if (k === ' ' || k === 'Enter') { begin(); return true; } });
     }
@@ -1003,9 +997,9 @@
         '<p class="st-sub">Top combo ×' + (1 + Math.min(4, Math.floor(bestCombo / 2))) + (bestCombo >= 2 ? '' : ' — chain answers to multiply') + '. Fast calls (under 4s) earn the bonus.</p>' +
         missHtml +
         '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="gv-again">Run it again</button>' +
-        '<button class="st-btn st-btn-hint" id="st-home">Dashboard</button></div></div>');
+        '<button class="st-btn st-btn-hint" id="st-home">Study menu</button></div></div>');
       el('gv-again').onclick = viewGoverns;
-      el('st-home').onclick = backHome;
+      el('st-home').onclick = backToTools;
       // score counts up — the end-screen moment (rAF is paused in hidden tabs: set the
       // value directly there so a backgrounded tab never shows 0)
       var fin = el('gv-final'), t0 = Date.now(), dur = Math.min(900, 200 + score / 8);
@@ -1249,7 +1243,7 @@
           gc.day = 0; gc.rows = []; gc.done = false; gc.win = false; save();
           try { history.replaceState({ st: 0 }, '', '/study?play=daily'); } catch (e) {}
         }
-        hub = 'games'; goDepth(2, viewCombo); return;
+        depth1View = viewCombo; goDepth(1, viewCombo); return;
       }
       viewTrack();
     }).catch(function () {
