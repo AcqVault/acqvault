@@ -140,6 +140,18 @@ body.reader-mode #spending-dashboard { display: none !important; }
   font-size: 20px; font-weight: 750; letter-spacing: -0.03em; color: var(--ink);
   font-variant-numeric: tabular-nums; padding: 12px 0;
 }
+/* Word-search mode: drop the $ affordance and the numeric type treatment. */
+.thr-calc-field.thr-searching .thr-calc-cur { display: none; }
+.thr-calc-field.thr-searching #thr-amount { letter-spacing: 0; font-variant-numeric: normal; font-weight: 600; font-size: 18px; }
+.thr-sr-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.thr-sr {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  padding: 11px 14px; background: var(--white); border: 1px solid var(--line2); border-radius: 10px;
+}
+.thr-sr-name { font-size: var(--fs-sm); font-weight: 650; color: var(--ink); }
+.thr-sr-note { font-size: var(--fs-2xs); color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.thr-sr .thr-trig-cite { display: inline-block; margin-top: 6px; }
+.thr-sr-val { flex-shrink: 0; font-size: var(--fs-md); font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
 .thr-calc-clear {
   border: none; background: var(--off); color: var(--muted); cursor: pointer;
   width: 24px; height: 24px; border-radius: 999px; font-size: 11px; flex-shrink: 0;

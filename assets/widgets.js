@@ -301,10 +301,10 @@
               </div>
               <div class="thr-scope-note" id="thr-scope-note"></div>
               <div class="thr-calc">
-                <label class="thr-calc-label" for="thr-amount">Check an amount</label>
+                <label class="thr-calc-label" for="thr-amount">Check an amount — or search by term</label>
                 <div class="thr-calc-field">
                   <span class="thr-calc-cur">$</span>
-                  <input type="text" id="thr-amount" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="e.g. 250,000" aria-label="Acquisition dollar amount" />
+                  <input type="text" id="thr-amount" autocomplete="off" spellcheck="false" placeholder="e.g. 250,000  —  or “commercial”, “bonds”, “TINA”" aria-label="Dollar amount or threshold term" />
                   <button type="button" class="thr-calc-clear" id="thr-amount-clear" aria-label="Clear amount" hidden>✕</button>
                 </div>
                 <div class="thr-calc-out" id="thr-calc-out" role="status" aria-live="polite"></div>
@@ -525,14 +525,64 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
+  // Extra search terms so a plain-language word finds the right row even when it
+  // isn't in the name (keyed by abbr, or by name for the abbr-less rows).
+  const THR_KW = {
+    'MPT': 'micropurchase micro purchase small buy convenience check card',
+    'SAT': 'simplified acquisition small business set aside reserve',
+    'SAP': 'commercial simplified acquisition procedures products services',
+    'TINA': 'truth in negotiations certified cost or pricing data truthful sweep',
+    'DBA': 'construction prevailing wage davis bacon labor site',
+    'SCA': 'service contract labor standards scls services wage employees',
+    'J&A': 'justification and approval sole source other than full open competition',
+    'Performance & payment bonds — construction': 'surety miller act payment performance guarantee',
+    'Walsh-Healey — supply contracts': 'supplies manufacturer dealer wages',
+    'Trafficking compliance plan': 'human trafficking persons compliance overseas',
+    'Subcontracting plan': 'small business subcontracting goals plan',
+  };
+  const thrSearchStr = (t) =>
+    `${t.abbr} ${t.name} ${t.note || ''} ${t.cite} ${THR_KW[t.abbr] || ''} ${THR_KW[t.name] || ''}`.toLowerCase();
+
+  function renderThrSearch(raw) {
+    const out = $('#thr-calc-out'), clr = $('#thr-amount-clear'), field = $('.thr-calc-field');
+    if (!out) return;
+    if (clr) clr.hidden = !raw;
+    if (field) field.classList.add('thr-searching');   // hide the $ affordance
+    const q = raw.trim().toLowerCase();
+    const words = q.split(/\s+/).filter(Boolean);
+    const matches = q ? THRESHOLDS.filter((t) => { const s = thrSearchStr(t); return words.every((w) => s.includes(w)); }) : [];
+    out.classList.add('on');
+    if (!matches.length) {
+      out.innerHTML = `<div class="thr-calc-hint">No threshold matches &ldquo;${esc(raw.trim())}&rdquo;. Try a dollar amount, or a term like <b>commercial</b>, <b>bonds</b>, <b>micro-purchase</b>, or <b>TINA</b>.</div>`;
+      return;
+    }
+    const rows = matches.map((t) => {
+      const val = thrScope === 'con' ? t.con : t.std;
+      const up = thrScope === 'con' && t.conNote ? `<span class="thr-up">${esc(t.conNote)}</span>` : '';
+      const nm = t.abbr ? `<span class="thr-row-abbr">${esc(t.abbr)}</span> · ${esc(t.name)}` : esc(t.name);
+      return `<div class="thr-sr">
+          <div class="thr-sr-main">
+            <div class="thr-sr-name">${nm}</div>
+            ${t.note ? `<div class="thr-sr-note">${esc(t.note)}</div>` : ''}
+            <button type="button" class="thr-trig-cite" data-cite="${esc(t.cite)}">${esc(t.cite)}</button>
+          </div>
+          <div class="thr-sr-val">${fmtExact(val)}${up}</div>
+        </div>`;
+    }).join('');
+    out.innerHTML = `<div class="thr-trig-head">${matches.length} threshold${matches.length !== 1 ? 's' : ''} matching &ldquo;${esc(raw.trim())}&rdquo;${thrScope === 'con' ? ' (contingency ceilings)' : ''}:</div>
+      <div class="thr-sr-list">${rows}</div>
+      <div class="thr-calc-foot-row"><span class="thr-calc-verify">Values are the current thresholds below — always verify against the live RFO and any class deviations before acting.</span></div>`;
+  }
+
   function renderThrCalc() {
-    const out = $('#thr-calc-out'), input = $('#thr-amount'), clr = $('#thr-amount-clear');
+    const out = $('#thr-calc-out'), input = $('#thr-amount'), clr = $('#thr-amount-clear'), field = $('.thr-calc-field');
     if (!out || !input) return;
+    if (field) field.classList.remove('thr-searching');
     const amt = parseAmount(input.value);
     if (clr) clr.hidden = !input.value;
     if (amt == null) {
       out.classList.remove('on');
-      out.innerHTML = `<div class="thr-calc-hint">Type a dollar amount to see which regime applies and which thresholds it crosses — each with its RFO citation.</div>`;
+      out.innerHTML = `<div class="thr-calc-hint">Type a <b>dollar amount</b> to see which regime applies and which thresholds it crosses — or a <b>term</b> like &ldquo;commercial&rdquo; or &ldquo;bonds&rdquo; to look one up. Each links to its RFO citation.</div>`;
       return;
     }
     const mpt = thrFind((t) => t.abbr === 'MPT'), sat = thrFind((t) => t.abbr === 'SAT'), sapC = thrFind((t) => t.abbr === 'SAP');
@@ -612,12 +662,20 @@
         const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-selected', on);
       });
       renderThresholds(true);
-      renderThrCalc();
+      const cur = $('#thr-amount');
+      if (cur && /[a-z]/i.test(cur.value)) renderThrSearch(cur.value); else renderThrCalc();
     });
     renderThresholds(false);
     const amt = $('#thr-amount'), clr = $('#thr-amount-clear'), out = $('#thr-calc-out');
     if (amt) {
-      amt.addEventListener('input', () => { amt.value = fmtAmountInput(amt.value); renderThrCalc(); });
+      amt.addEventListener('input', () => {
+        if (/[a-z]/i.test(amt.value)) {           // any letter → look up by term
+          renderThrSearch(amt.value);
+        } else {                                   // digits only → check an amount
+          amt.value = fmtAmountInput(amt.value);
+          renderThrCalc();
+        }
+      });
       amt.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
     }
     if (clr) clr.addEventListener('click', () => { amt.value = ''; amt.focus(); renderThrCalc(); });
