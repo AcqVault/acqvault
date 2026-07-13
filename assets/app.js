@@ -191,8 +191,21 @@ if ('serviceWorker' in navigator) {
       if (!acqUserUpdate || acqSwReloaded) return; acqSwReloaded = true; window.location.reload();
     });
     // Warm the corpus into the SW cache after first paint so search works offline
-    // next time — a plain fetch (SW caches it); online search still uses the server.
-    setTimeout(function () { fetch(CORPUS_URL).catch(function () {}); }, 1800);
+    // next time — a plain fetch (the SW's /output/ handler caches it); online search
+    // still uses the server. The corpus is ~6 MB on the wire, so only fetch when it
+    // actually lands somewhere useful and the connection can afford it:
+    //  - SW must CONTROL the page (first visit it doesn't yet — a plain fetch there
+    //    is discarded by the browser's max-age=0 cache and re-downloaded next visit);
+    //  - respect Data Saver and very slow connections;
+    //  - skip entirely if a previous session already cached it.
+    setTimeout(function () {
+      if (!navigator.serviceWorker.controller) return;
+      var conn = navigator.connection || {};
+      if (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) return;
+      caches.match(CORPUS_URL).then(function (hit) {
+        if (!hit) fetch(CORPUS_URL).catch(function () {});
+      }).catch(function () {});
+    }, 1800);
   });
 }
 var acqUserUpdate = false, acqSwReloaded = false;
