@@ -1387,6 +1387,13 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .stale-bar b{color:#fdba74;font-weight:var(--fw-heavy);}
 .update-toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);z-index:3200;display:flex;align-items:center;gap:14px;background:var(--navy-900);color:#eaf1fb;font-size:var(--fs-base);font-weight:var(--fw-semibold);padding:11px 12px 11px 18px;border-radius:999px;box-shadow:0 16px 40px -10px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.06);opacity:0;transition:transform .45s var(--ease-out),opacity .35s ease;max-width:calc(100vw - 32px);}
 .update-toast.show{transform:translate(-50%,0);opacity:1;}
+/* Narrow screens: the pill radius + wrapped text makes an egg — switch to a
+   full-width card anchored to the screen edges instead. */
+@media(max-width:480px){
+  .update-toast{left:16px;right:16px;max-width:none;transform:translateY(140%);border-radius:14px;justify-content:space-between;gap:12px;}
+  .update-toast span{flex:1;min-width:0;}
+  .update-toast.show{transform:translateY(0);}
+}
 .update-toast button{flex-shrink:0;background:var(--accent);color:#fff;border:none;font-weight:var(--fw-bold);font-size:var(--fs-base);padding:8px 16px;border-radius:999px;cursor:pointer;transition:background .15s,transform .15s;}
 .update-toast button:hover{background:var(--accent-h);transform:translateY(-1px);}
 .source-status-note{font-size:var(--fs-base);line-height:1.6;color:rgba(226,232,240,0.7);max-width:760px;}
