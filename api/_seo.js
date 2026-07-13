@@ -779,6 +779,8 @@ function renderStudyPage() {
 .st-cb-c{background:#1e6b43;border-color:#1e6b43;color:#fff}
 .st-cb-p{background:#e4c477;border-color:#c9a44c;color:#3b2f10}
 .st-cb-a{background:#565e6b;border-color:#565e6b;color:#eef1f5}
+.st-cb-cat{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 auto 10px;font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);text-align:center}
+.st-cb-cat span{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:linear-gradient(158deg,#173a60,#0f2540);border-radius:999px;padding:4px 10px}
 .st-cb-prompt{text-align:center;font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.5}
 .st-cb-prompt b{color:var(--ink);font-weight:700}
 .st-cb-legend{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:12px 0 2px}
@@ -917,7 +919,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=24"></script>`;
+<script defer src="/assets/study.js?v=25"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true });
 }

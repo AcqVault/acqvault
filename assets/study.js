@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=13';
+  var DECK_URL = '/assets/study-deck.json?v=14';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -713,6 +713,7 @@
         '<div class="st-card st-cb-card">' +
         (helping && !G.done ? helpHtml(firstTime) :
          G.done ? resultHtml() :
+          (entry.cat ? '<div class="st-cb-cat"><span>Category</span>' + esc(entry.cat) + '</div>' : '') +
           '<p class="st-cb-prompt">Guess the five-letter acquisition term — type or tap, then press <b>Enter</b>.</p>' +
           '<div class="st-cb-board" id="cb-board">' + boardHtml() + '</div>' +
           '<div class="st-cb-legend" aria-label="What the colors mean">' +

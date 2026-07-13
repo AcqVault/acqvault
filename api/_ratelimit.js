@@ -39,8 +39,9 @@ function inMemoryLimit(req, max, windowMs) {
 }
 
 // ── Upstash Redis (shared; enforced across instances) ─────────────────────────
-const U_URL = process.env.UPSTASH_REDIS_REST_URL;
-const U_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+// Accept the Upstash-branded vars or Vercel's KV-branded ones (same store, either name).
+const U_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+const U_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 const useRedis = !!(U_URL && U_TOKEN);
 
 // Fixed-window counter: key = rl:<ip>:<windowBucket>; INCR + EXPIRE in one pipeline.

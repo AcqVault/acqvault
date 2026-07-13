@@ -22,8 +22,10 @@ function clean(v, max) {
 //    display name, guess count, day number — nothing else. Keys expire after ~28h, so
 //    the store only ever holds today's board. GET is edge-cached (s-maxage) so hero
 //    traffic doesn't hammer Redis.
-const U_URL = process.env.UPSTASH_REDIS_REST_URL;
-const U_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+// Accept either the Upstash-branded env vars or Vercel's KV-branded ones — whichever the
+// owner's chosen Vercel storage integration injects, the board works with no code change.
+const U_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+const U_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 const COMBO_EPOCH = Date.UTC(2026, 6, 12) / 86400000; // must match assets/study.js
 const SEP = '';
 const NAME_RE = /[^A-Za-z0-9 ._\-]/g;
