@@ -459,6 +459,45 @@ def study_deck_watch(final_rfo, all_docs, modified):
     return {"broken_deck_cites": broken_out, "review_items": review_out}
 
 
+def grid_watch(all_docs):
+    """The Browse tile grid (PARTS_BY_SOURCE in assets/app.js) is hand-maintained
+    and can drift from the corpus — that's how RFO Part 35 went missing from
+    Browse for weeks while search and the hub served it fine (found 2026-07-16;
+    FAR Companion had 16 stranded parts the same day). Diff corpus parts against
+    the grid for every source, both directions, and yell about any gap."""
+    import re as _re
+    app = (BASE_DIR / "assets" / "app.js").read_text()
+    i = app.index("PARTS_BY_SOURCE")
+    corpus_parts = {}
+    for d in all_docs:
+        if not d:
+            continue
+        corpus_parts.setdefault(d["source"], set()).add(str(d.get("part")))
+    problems = {}
+    for src in ["rfo", "r-dfars", "far-companion", "category-management", "afi-63-138", "fmr"]:
+        m = _re.search(r"'%s'\s*:\s*\[(.*?)\n\s*\](?=,|\s*\})" % src, app[i:], _re.S)
+        if not m:
+            continue
+        tiles = {n for n, _ in _re.findall(r"\[\s*'?(\w+)'?\s*,\s*'([^']*)'\]", m.group(1))}
+        if src == "r-dfars":  # tiles say 2XX; the corpus stores XX
+            tiles = {str(int(n) - 200) if n.isdigit() and len(n) == 3 and n.startswith("2") else n for n in tiles}
+        cp = corpus_parts.get(src, set())
+        missing, dead = sorted(cp - tiles, key=str), sorted(tiles - cp, key=str)
+        if missing or dead:
+            problems[src] = {"corpus_parts_without_tile": missing, "tiles_without_corpus_content": dead}
+    if problems:
+        print("\n⚠ GRID WATCH (assets/app.js PARTS_BY_SOURCE)")
+        for src, p in problems.items():
+            if p["corpus_parts_without_tile"]:
+                print("  · {}: corpus parts with NO Browse tile: {}".format(src, ", ".join(p["corpus_parts_without_tile"])))
+            if p["tiles_without_corpus_content"]:
+                print("  · {}: DEAD tiles (no corpus content): {}".format(src, ", ".join(p["tiles_without_corpus_content"])))
+        print("  → Fix the tile list (labels come from the part's own scope text) — a supervised job.")
+    else:
+        print("\n✓ GRID WATCH: every Browse tile matches the corpus, both directions.")
+    return problems
+
+
 def vehicle_watch():
     """Flag curated contract-vehicle entries (assets/vehicles.json) whose ordering
     windows have closed or close soon, and remind the operator to spot-check the
@@ -655,12 +694,14 @@ def main():
     watch = threshold_watch(existing_rfo, final_rfo, modified)
     deck_watch = study_deck_watch(final_rfo, all_docs, modified)
     veh_watch = vehicle_watch()
+    tile_watch = grid_watch(all_docs)
 
     report = {
         "run_at": now_iso(),
         "threshold_watch": watch,
         "study_deck_watch": deck_watch,
         "vehicle_watch": veh_watch,
+        "grid_watch": tile_watch,
         "rfo": {
             "unchanged": unchanged,
             "modified": [{"id": d["id"], "part": d["part"], "title": d["title"]} for d in modified],
