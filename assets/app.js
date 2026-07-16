@@ -3068,9 +3068,12 @@ async function runAsk(q) {
     return;
   }
   if (data.configured === false) {
-    panel.innerHTML = `<div class="ai-card"><div class="ai-eyebrow">Ask the Vault · AI · beta</div>
-      <p class="ai-msg">AI answers aren’t switched on yet. Here are the authoritative results instead.</p></div>`;
+    // Flip back to authoritative FIRST (it clears the panel), then leave the
+    // explanation visible above the results we're about to load.
     setAnswerMode('auth');
+    panel.hidden = false;
+    panel.innerHTML = `<div class="ai-card"><div class="ai-eyebrow">Ask the Vault · AI · beta</div>
+      <p class="ai-msg" style="margin:0">AI answers aren’t switched on yet. Here are the authoritative results instead.</p></div>`;
     runSearch({ forceAuth: true });
     return;
   }
