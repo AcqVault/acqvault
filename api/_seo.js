@@ -232,7 +232,7 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 @media(max-width:560px){.lband-inner{padding:40px 18px}.lhero .lband-inner{padding:40px 18px 38px}.lhero h1{font-size:30px}}`;
 
 function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage }) {
-  const og = ogImage || 'og-home.png';
+  const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -302,7 +302,7 @@ ${renderContent(d.content, d.title)}
 <p class="lede">${esc(meta.desc)} Full text of Part ${esc(part)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${sections}`;
 
-  return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}.png` });
+  return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}-v2.png` });
 }
 
 function renderHubPage(source) {
@@ -332,7 +332,7 @@ function renderHubPage(source) {
 ${devLink}
 <div class="parts">${links}</div>`;
 
-  return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}.png` });
+  return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}-v2.png` });
 }
 
 function renderDeviationsPage() {
@@ -458,7 +458,7 @@ ${catHtml}
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</p>
 </div></footer>`;
 
-  return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-library.png' });
+  return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-library-v2.png' });
 }
 
 // ── /changes — the corpus-refresh ledger, rendered as a citable change record ──
@@ -570,7 +570,7 @@ ${runHtml}`;
 function renderStudyPage() {
   const canonical = `${SITE}/study`;
   const title = 'AcqVault Study — drills & spaced review for the acquisition community | AcqVault';
-  const description = esc('Free, no-login study drills for contracting professionals: spaced-repetition knowledge checks from the AcqVault Field Guides, rapid threshold sprints, and board-style scenario simulations with follow-up questions. Works offline. No AI, no account.');
+  const description = esc('Free, no-login study drills for contracting professionals: spaced-repetition knowledge checks from the AcqVault Field Guides, rapid threshold sprints, and board-style scenario simulations with follow-up questions. Works offline. No account needed.');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'WebApplication',
@@ -920,7 +920,7 @@ ${SEAL_SVG}
 </div></footer>
 <script defer src="/assets/study.js?v=28"></script>`;
 
-  return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study.png' });
+  return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }
 
 const RFO_FAQ = [
@@ -963,7 +963,7 @@ function renderExplainerPage() {
 <h2 style="margin-top:32px">Frequently asked questions</h2>
 ${faqHtml}`;
 
-  return shell({ title, description, canonical, jsonld, body, ogImage: 'og-src-rfo.png' });
+  return shell({ title, description, canonical, jsonld, body, ogImage: 'og-src-rfo-v2.png' });
 }
 
 function renderSitemap() {

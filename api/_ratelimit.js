@@ -19,8 +19,8 @@ function clientIp(req) {
 
 // ── In-memory fallback (per-instance; weak on Vercel) ─────────────────────────
 const hits = new Map();
-function inMemoryLimit(req, max, windowMs) {
-  const ip = clientIp(req);
+function inMemoryLimit(req, max, windowMs, name) {
+  const ip = (name ? name + ':' : '') + clientIp(req);
   const now = Date.now();
   let arr = hits.get(ip);
   if (!arr) { arr = []; hits.set(ip, arr); }
@@ -46,8 +46,8 @@ const useRedis = !!(U_URL && U_TOKEN);
 
 // Fixed-window counter: key = rl:<ip>:<windowBucket>; INCR + EXPIRE in one pipeline.
 // Fails OPEN on any error/timeout so a Redis blip never takes the API down.
-async function redisLimit(req, max, windowMs) {
-  const ip = clientIp(req);
+async function redisLimit(req, max, windowMs, name) {
+  const ip = (name ? name + ':' : '') + clientIp(req);
   const windowSec = Math.ceil(windowMs / 1000);
   const bucket = Math.floor(Date.now() / windowMs);
   const key = `rl:${ip}:${bucket}`;
@@ -77,8 +77,8 @@ async function redisLimit(req, max, windowMs) {
 }
 
 // Enforce and, if over the limit, write the 429. Returns true if it blocked.
-async function enforce(req, res, { max = 30, windowMs = WINDOW_MS } = {}) {
-  const r = useRedis ? await redisLimit(req, max, windowMs) : inMemoryLimit(req, max, windowMs);
+async function enforce(req, res, { max = 30, windowMs = WINDOW_MS, name = '' } = {}) {
+  const r = useRedis ? await redisLimit(req, max, windowMs, name) : inMemoryLimit(req, max, windowMs, name);
   if (r.limited) {
     res.setHeader('Retry-After', String(r.retryAfter));
     res.status(429).json({ error: 'Too many requests. Please slow down and try again shortly.' });

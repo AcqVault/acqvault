@@ -381,6 +381,8 @@ document.addEventListener('click', (e) => {
     case 'close-feedback': closeFeedback(); break;
     case 'dismiss-about': dismissAbout(); break;
     case 'set-mode': setMode(arg); break;
+    case 'set-answer-mode': setAnswerMode(arg); break;
+    case 'ask-see-auth': setAnswerMode('auth'); runSearch({ forceAuth: true }); break;
     case 'set-browse-source': setBrowseSource(arg); break;
     case 'choose-browse-source': chooseBrowseSource(arg); break;
     case 'toggle-browse-menu': toggleBrowseSourceMenu(e); break;
@@ -2999,10 +3001,103 @@ function restoreFiltersFromParam(srcStr) {
   });
 }
 
+// ── ASK THE VAULT (opt-in AI answers) ─────────────────────────────────────────
+// answerMode 'auth' (default) keeps search exactly as it has always been. 'ai'
+// routes submissions through /api/search action:'ask' — retrieval over the
+// site's own corpus + Field Guide material, answered by a model that may only
+// cite those excerpts. Deliberately NOT persisted: authoritative is always the
+// fresh-load default.
+let answerMode = 'auth';
+function setAnswerMode(mode) {
+  answerMode = mode === 'ai' ? 'ai' : 'auth';
+  document.querySelectorAll('.answer-mode-btn').forEach(b => {
+    const on = b.dataset.arg === answerMode;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+  const note = document.getElementById('answer-mode-note');
+  if (note) note.hidden = answerMode !== 'ai';
+  const panel = document.getElementById('ai-answer');
+  if (answerMode === 'auth' && panel) { panel.hidden = true; panel.innerHTML = ''; }
+  if (answerMode === 'ai') {
+    const q = searchInput.value.trim();
+    if (q) runAsk(q); else searchInput.focus();
+  }
+}
+// Minimal, safe renderer for the model's text: escape EVERYTHING first, then
+// re-introduce only bold + paragraphs + known-cite links (urls come from our
+// own API's source list, never from the model).
+function aiAnswerHTML(answer, sources) {
+  let html = esc(answer)
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+    .split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+  const seen = new Set();
+  for (const s of (sources || [])) {
+    if (!s.cite || seen.has(s.cite)) continue;
+    seen.add(s.cite);
+    const tok = esc(`[${s.cite}]`).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    html = html.replace(new RegExp(tok, 'g'), `<a class="ai-cite" href="${esc(s.url)}">${esc(s.cite)}</a>`);
+  }
+  return html;
+}
+async function runAsk(q) {
+  const panel = document.getElementById('ai-answer');
+  if (!panel) return;
+  if (currentMode !== 'search') setMode('search');
+  panel.hidden = false;
+  panel.innerHTML = `<div class="ai-card"><div class="ai-eyebrow">Ask the Vault · AI · beta</div>
+    <div class="ai-loading"><div class="spinner"></div><span>Reading the vault for “${esc(q)}”…</span></div></div>`;
+  let data = null, status = 0;
+  try {
+    const res = await fetch(SEARCH_API, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'ask', body: { q } })
+    });
+    status = res.status;
+    data = await res.json().catch(() => null);
+  } catch (_e) { /* network */ }
+  const fallBtn = `<button type="button" class="ai-fallback" data-action="ask-see-auth">See the authoritative results instead →</button>`;
+  if (status === 429) {
+    panel.innerHTML = `<div class="ai-card"><div class="ai-eyebrow">Ask the Vault · AI · beta</div>
+      <p class="ai-msg">Easy there — the AI lane is rate-limited to keep it free for everyone. Give it a minute, or use the authoritative search, which has no such limit.</p>${fallBtn}</div>`;
+    return;
+  }
+  if (!data) {
+    panel.innerHTML = `<div class="ai-card"><div class="ai-eyebrow">Ask the Vault · AI · beta</div>
+      <p class="ai-msg">Couldn’t reach the AI service. The authoritative search always works:</p>${fallBtn}</div>`;
+    return;
+  }
+  if (data.configured === false) {
+    panel.innerHTML = `<div class="ai-card"><div class="ai-eyebrow">Ask the Vault · AI · beta</div>
+      <p class="ai-msg">AI answers aren’t switched on yet. Here are the authoritative results instead.</p></div>`;
+    setAnswerMode('auth');
+    runSearch({ forceAuth: true });
+    return;
+  }
+  if (data.refusal || data.error) {
+    panel.innerHTML = `<div class="ai-card"><div class="ai-eyebrow">Ask the Vault · AI · beta</div>
+      <p class="ai-msg">${esc(data.refusal || data.error)}</p>${fallBtn}</div>`;
+    return;
+  }
+  const chips = (data.sources || []).map(s =>
+    `<a class="ai-src" href="${esc(s.url)}"><span class="ai-src-kind">${esc(s.kind)}</span>${esc(s.cite)}</a>`).join('');
+  panel.innerHTML = `<div class="ai-card">
+    <div class="ai-eyebrow">Ask the Vault · AI · beta · answers only from this site’s text</div>
+    <div class="ai-body">${aiAnswerHTML(data.answer, data.sources)}</div>
+    <div class="ai-src-head">Drawn from — verify before relying:</div>
+    <div class="ai-srcs">${chips}</div>
+    <div class="ai-foot"><span>AI-generated from the excerpts above. Not legal advice — the linked text is the authority.</span>${fallBtn}</div>
+  </div>`;
+}
+
 async function runSearch(options = {}) {
   const preserveScroll = Boolean(options.preserveScroll);
   const q = searchInput.value.trim();
   if (!q) { deactivateSearch(); return; }
+  // Opt-in AI lane: when the user has flipped the answer-mode toggle to AI,
+  // every search submission becomes an Ask instead (forceAuth escapes — used by
+  // the "see authoritative results" link inside the answer panel).
+  if (answerMode === 'ai' && !options.forceAuth) return runAsk(q);
   if (currentMode !== 'search') setMode('search');
   activateSearch({ scrollToTop: !preserveScroll });
   const resultsList = document.getElementById('results-list');
@@ -3045,6 +3140,7 @@ function deactivateSearch() {
   adjustNavForAboutBar(); // about-bar returns on the landing → restore its offset
   hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
   searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
+  var aiP = document.getElementById('ai-answer'); if (aiP) { aiP.hidden = true; aiP.innerHTML = ''; }
   var asEl = document.getElementById('acr-suggest'); if (asEl) { asEl.hidden = true; asEl.innerHTML = ''; }
   setSearchParams('');
   if (window.acqUpdateNav) window.acqUpdateNav(); // restore dark over-hero nav on the landing

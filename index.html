@@ -18,13 +18,13 @@
 <meta property="og:site_name" content="AcqVault">
 <meta property="og:title" content="AcqVault — Search the Revolutionary FAR Overhaul &amp; R-DFARS Deviations">
 <meta property="og:description" content="Full-text search across the RFO, R-DFARS, FAR Companion, and Category Management guidance. Built for the acquisition community.">
-<meta property="og:image" content="https://www.acqvault.com/assets/og-home.png">
+<meta property="og:image" content="https://www.acqvault.com/assets/og-home-v2.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AcqVault — Search the Revolutionary FAR Overhaul &amp; R-DFARS Deviations">
 <meta name="twitter:description" content="Full-text search across the RFO, R-DFARS, FAR Companion, and Category Management guidance.">
-<meta name="twitter:image" content="https://www.acqvault.com/assets/og-home.png">
+<meta name="twitter:image" content="https://www.acqvault.com/assets/og-home-v2.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"WebSite","url":"https://www.acqvault.com/","name":"AcqVault","description":"Free full-text search across the Revolutionary FAR Overhaul (RFO), R-DFARS deviations, FAR Companion, and Category Management guidance.","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.acqvault.com/?q={search_term_string}"},"query-input":"required name=search_term_string"}},
@@ -35,7 +35,7 @@
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
 <link rel="preconnect" href="https://www.federalregister.gov" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=116">
+<link rel="stylesheet" href="/assets/app.css?v=117">
 </head>
 <body>
 
@@ -108,7 +108,7 @@
     <div class="hero-left hero-content">
       <div class="hero-intro">
         <h1 class="hero-headline">The <em>Revolutionary FAR&nbsp;Overhaul</em> is here.<br><span class="hl-ink">Search every word of&nbsp;it.</span></h1>
-        <p class="hero-sub">Full-text search across all six official sources — free, no account, no AI summaries. Just the authoritative <strong>RFO</strong>, <strong>R-DFARS</strong>, and DoD acquisition text, kept current.</p>
+        <p class="hero-sub">Full-text search across all six official sources — free, no account. Just the authoritative <strong>RFO</strong>, <strong>R-DFARS</strong>, and DoD acquisition text, kept current. AI only if you ask for it — and it only cites this text.</p>
       </div>
 
       <div class="search-container" role="search">
@@ -121,7 +121,15 @@
           <kbd class="search-kbd" aria-hidden="true">/</kbd>
           <button type="button" class="search-go" id="search-go" data-action="search-go" aria-label="Search">Search<span class="search-go-arrow" aria-hidden="true">→</span></button>
         </div>
+        <div class="answer-mode" id="answer-mode" role="radiogroup" aria-label="Answer with">
+          <span class="answer-mode-k">Answer with</span>
+          <button type="button" class="answer-mode-btn active" data-action="set-answer-mode" data-arg="auth" aria-pressed="true">Authoritative text</button>
+          <button type="button" class="answer-mode-btn" data-action="set-answer-mode" data-arg="ai" aria-pressed="false">AI · cites the vault<span class="answer-mode-beta">beta</span></button>
+        </div>
+        <div class="answer-mode-note" id="answer-mode-note" hidden>Opt-in: your question and matching site excerpts go to Groq (a US model host) — don't include sensitive acquisition details. The answer draws only on this site's text and cites it; verify before relying on it.</div>
       </div>
+
+      <div class="ai-answer" id="ai-answer" role="region" aria-live="polite" aria-label="AI answer" hidden></div>
 
       <div class="hero-trychips" aria-label="Example searches">
         <button type="button" class="trychip" data-action="example-query" data-query="commercial item determination threshold"><span class="trychip-k">Try</span>commercial item determination threshold</button>
@@ -527,7 +535,7 @@
       <li>No account</li>
       <li>Saves to your device</li>
       <li>Works offline behind the CAC</li>
-      <li>No AI · no summaries</li>
+      <li>AI is opt-in · always cited</li>
     </ul>
     <div class="callout fade-up" style="transition-delay:0.15s;">
       <div class="callout-head">Built alongside the overhaul.<br>Updated as it evolves.</div>
@@ -627,7 +635,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=66"></script>
+<script defer src="/assets/app.js?v=67"></script>
 <script defer src="/assets/saved.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=56"></script>
 <script defer src="/assets/polish.js?v=3"></script>

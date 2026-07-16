@@ -93,7 +93,7 @@ def one_pill(name, color):
 def chip(text):
     return f'<div class="chip">{text}</div>'
 
-FOOT = '<div class="foot">acqvault.com<b> · </b>free · no login · no AI</div>'
+FOOT = '<div class="foot">acqvault.com<b> · </b>free · no login · no CAC</div>'
 
 SOURCE_PILLS = [
     ('RFO', '#2f5aa6'), ('R-DFARS', '#2c6a44'), ('FAR Companion', '#67508f'),
@@ -107,7 +107,7 @@ def source(head, sub, pill, color, parts=None):
 
 VARIANTS = {
   'home': dict(
-     eyebrow=eyebrow(['FREE', 'NO LOGIN', 'NO AI']),
+     eyebrow=eyebrow(['FREE', 'NO LOGIN', 'NO CAC']),
      head='AcqVault', headsize=104, headweight=600,
      sub='The federal acquisition rulebook — <b>fully searchable</b>. RFO, R-DFARS, and every official source in one place.',
      extra=pills(SOURCE_PILLS), foot=''),
@@ -152,10 +152,10 @@ def render(name):
         capture_output=True)
     os.unlink(htmlpath)
     img = Image.open(raw).convert('RGB').resize((1200, 630), Image.LANCZOS)
-    outp = os.path.join(ASSETS, f'og-{name}.png')
+    outp = os.path.join(ASSETS, f'og-{name}-v2.png')
     img.save(outp, optimize=True)
     os.unlink(raw)
-    print(f'og-{name}.png  {os.path.getsize(outp)//1024} KB')
+    print(f'og-{name}-v2.png  {os.path.getsize(outp)//1024} KB')
 
 if __name__ == '__main__':
     for name in (sys.argv[1:] or list(VARIANTS)):

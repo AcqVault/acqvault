@@ -139,6 +139,167 @@ function getDocument(id) {
   return loadDocs().find(doc => String(doc.id) === String(id)) || null;
 }
 
+/* ── ASK THE VAULT — opt-in AI answers, grounded in the site's own text ────────
+   action:'ask' retrieves the most relevant corpus sections + Field Guide study
+   material for the question, hands ONLY those excerpts to the model (Groq,
+   OpenAI-compatible), and returns the answer with the excerpt list so the
+   client can render verifiable citations. No GROQ_API_KEY → configured:false
+   (the client falls back to authoritative search). */
+
+const STOPWORDS = new Set(('a an and any are as at be but by can could did do does for from get had has have how i if in is it its just like make many me more most much my need new of on only or our should so some than that the their them then there these they this to under up us use using very was we what when where which who why will with would you your').split(' '));
+
+let deckEntriesCache = null;
+function loadDeckEntries() {
+  if (deckEntriesCache) return deckEntriesCache;
+  const out = [];
+  try {
+    const deck = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'assets', 'study-deck.json'), 'utf8'));
+    for (const c of [...(deck.recall_basic || []), ...(deck.recall_advanced || [])]) {
+      const text = `Q: ${c.q}\nA: ${c.a}${c.x ? `\n${c.x}` : ''}`;
+      const link = (c.links && c.links[0]) || null;
+      out.push({
+        cite: link ? link.t : `Field Guide — ${c.topic || 'card'}`,
+        title: `Field Guide card — ${c.topic || 'general'}`,
+        url: link ? link.u : '/study',
+        kind: 'Field Guide',
+        text, titleLc: String(c.q || '').toLowerCase(), contentLc: text.toLowerCase()
+      });
+    }
+    for (const s of (deck.scenarios || [])) {
+      const text = `Scenario: ${s.scenario || ''}\nBoard answer: ${s.board_answer || ''}`;
+      const link = (s.coach && s.coach.links && s.coach.links[0]) || null;
+      out.push({
+        cite: link ? link.t : 'Board scenario',
+        title: `Board scenario — ${(s.topics || []).join(', ') || 'general'}`,
+        url: link ? link.u : '/study',
+        kind: 'Board scenario',
+        text, titleLc: String(s.scenario || '').slice(0, 160).toLowerCase(), contentLc: text.toLowerCase()
+      });
+    }
+  } catch (_e) { /* deck missing in a build — corpus-only retrieval still works */ }
+  deckEntriesCache = out;
+  return deckEntriesCache;
+}
+
+// Natural-language retrieval: unlike searchDocs (strict AND), questions carry
+// filler words, so drop stopwords and rank by how many meaningful terms match.
+function askTerms(question) {
+  return [...new Set(queryTerms(question).filter(t => !STOPWORDS.has(t)))];
+}
+function softScore(titleLc, contentLc, terms, phrase) {
+  let matched = 0, score = 0;
+  for (const t of terms) {
+    const inT = titleLc.includes(t), inC = contentLc.includes(t);
+    if (!inT && !inC) continue;
+    matched++;
+    if (inT) score += 20;
+    if (inC) score += 2;
+  }
+  if (phrase && terms.length > 1 && contentLc.includes(phrase)) score += 25;
+  return { matched, score };
+}
+function excerptAround(content, terms, budget) {
+  const text = content.replace(/\s+/g, ' ').trim();
+  if (text.length <= budget) return text;
+  let idx = -1;
+  const lc = text.toLowerCase();
+  for (const t of terms) { idx = lc.indexOf(t); if (idx !== -1) break; }
+  if (idx === -1) return text.slice(0, budget);
+  const start = Math.max(0, idx - Math.floor(budget / 3));
+  return `${start > 0 ? '…' : ''}${text.slice(start, start + budget)}${start + budget < text.length ? '…' : ''}`;
+}
+function retrieve(question) {
+  const terms = askTerms(question);
+  if (!terms.length) return [];
+  const phrase = terms.join(' ');
+  const need = Math.max(1, Math.ceil(terms.length / 2));
+  const rank = (items, titleOf, contentOf) => items
+    .map(e => ({ e, ...softScore(titleOf(e), contentOf(e), terms, phrase) }))
+    .filter(x => x.matched >= need)
+    .sort((a, b) => b.matched - a.matched || b.score - a.score);
+
+  const SRC_LABEL = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management', 'afi-63-138': 'DAFI 63-138', 'fmr': 'DoD FMR' };
+  const docs = rank(loadIndex(), e => e.titleLc, e => e.contentLc).slice(0, 6).map(({ e }) => {
+    const d = e.doc;
+    const srcLabel = SRC_LABEL[d.source] || d.source;
+    return {
+      cite: /^\d/.test(String(d.title || '')) ? `${srcLabel} ${String(d.title).split(' ')[0]}` : `${srcLabel} — ${String(d.title || '').slice(0, 60)}`,
+      title: String(d.title || ''),
+      url: `/${d.source}/part-${d.part}#${d.anchor || d.id}`,
+      kind: srcLabel,
+      text: excerptAround(String(d.content || ''), terms, 1500)
+    };
+  });
+  const deck = rank(loadDeckEntries(), e => e.titleLc, e => e.contentLc).slice(0, 4).map(({ e }) => ({
+    cite: e.cite, title: e.title, url: e.url, kind: e.kind,
+    text: e.text.length > 1200 ? e.text.slice(0, 1200) + '…' : e.text
+  }));
+  return [...docs, ...deck];
+}
+
+async function askVault(question) {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) return { configured: false };
+  const q = String(question || '').trim().slice(0, 500);
+  if (!q) return { configured: true, error: 'Ask a question about federal acquisition.' };
+
+  const sources = retrieve(q);
+  if (!sources.length) {
+    return { configured: true, answer: null, sources: [],
+      refusal: 'Nothing on the site matches that question. Ask the Vault answers only from AcqVault’s own text — the RFO, R-DFARS, the other indexed sources, and the Field Guides. Try rephrasing with acquisition terms, or run an authoritative search.' };
+  }
+
+  const excerpts = sources.map((s, i) => `[${i + 1}] CITE: ${s.cite}\nTITLE: ${s.title}\n${s.text}`).join('\n\n---\n\n');
+  const system = [
+    'You are "Ask the Vault", the research assistant for AcqVault, a federal-acquisition reference site.',
+    'HARD RULES:',
+    '- Answer ONLY from the numbered excerpts provided. Never use outside knowledge, even when you are confident.',
+    '- Every factual claim must carry the citation of the excerpt it came from, in square brackets exactly as given after CITE:, e.g. [RFO 13.201].',
+    '- Dollar figures, thresholds, and section numbers must appear verbatim in an excerpt to be stated at all. Never estimate or recall them.',
+    '- If the excerpts do not contain the answer, say so plainly and suggest searching the site. Do not guess.',
+    '- Only answer questions about federal acquisition, contracting, or this site’s content. Politely decline anything else.',
+    '- You are a research aid, not legal advice. Do not add a disclaimer; the interface displays one.',
+    '- Be direct and concise: at most ~200 words, plain language a contracting professional would use.'
+  ].join('\n');
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 25000);
+  try {
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+        temperature: 0.2,
+        max_tokens: 700,
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: `Question: ${q}\n\nExcerpts from AcqVault:\n\n${excerpts}` }
+        ]
+      }),
+      signal: ctrl.signal
+    });
+    if (!resp.ok) {
+      const detail = await resp.text().catch(() => '');
+      console.error('ask upstream error:', resp.status, detail.slice(0, 300));
+      return { configured: true, error: 'The model host returned an error. Try again shortly, or use an authoritative search.' };
+    }
+    const data = await resp.json();
+    const answer = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if (!answer) return { configured: true, error: 'The model returned no answer. Try again, or use an authoritative search.' };
+    return {
+      configured: true,
+      answer: String(answer).trim(),
+      sources: sources.map((s, i) => ({ n: i + 1, cite: s.cite, title: s.title, url: s.url, kind: s.kind }))
+    };
+  } catch (e) {
+    console.error('ask error:', e && e.message ? e.message : e);
+    return { configured: true, error: 'The AI request timed out or failed. Try again, or use an authoritative search.' };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -160,6 +321,14 @@ module.exports = async function handler(req, res) {
       if (!doc) return res.status(404).json({ error: 'Document not found.' });
       res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
       return res.status(200).json(doc);
+    }
+
+    if (action === 'ask') {
+      // Model tokens cost real money on a free, no-login site — a much tighter
+      // per-IP budget than plain search (its own bucket, so search stays unaffected).
+      if (await enforce(req, res, { max: 6, name: 'ask' })) return;
+      const result = await askVault(body && body.q);
+      return res.status(200).json(result);
     }
 
     return res.status(400).json({ error: 'Unsupported search action.' });
