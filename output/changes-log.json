@@ -1062,5 +1062,95 @@
   "r_dfars": "current (46 memos, all sizes match)",
   "far_companion": "FAR Companion: current",
   "category_management": "Category Mgmt: current"
+ },
+ {
+  "run_at": "2026-07-16T19:23:55Z",
+  "threshold_watch": {
+   "dollar_drift": [],
+   "broken_widget_cites": []
+  },
+  "study_deck_watch": {
+   "broken_deck_cites": {},
+   "review_items": {
+    "recall_advanced:00a3e3b0f091": [
+     "RFO Part 16"
+    ],
+    "recall_advanced:09238d21878e": [
+     "RFO Part 16"
+    ],
+    "recall_advanced:16ab3e99a934": [
+     "RFO Part 16"
+    ],
+    "recall_advanced:27c7b7ae60aa": [
+     "RFO Part 16"
+    ],
+    "recall_advanced:914312282d4c": [
+     "RFO 16.104"
+    ],
+    "recall_advanced:b82e452c9214": [
+     "RFO Part 16"
+    ],
+    "recall_basic:ab16eded03ad": [
+     "RFO Part 16"
+    ],
+    "recall_basic:dcfba529b706": [
+     "RFO Part 16"
+    ],
+    "recall_basic:f16a2debc837": [
+     "RFO Part 16"
+    ],
+    "scenario:cfc77cdeb86e": [
+     "RFO 16.104",
+     "RFO Part 16"
+    ],
+    "scenario:d707f7ff05cc": [
+     "RFO 16.104",
+     "RFO Part 16"
+    ],
+    "scenario:f1c0af926c37": [
+     "RFO 16.104",
+     "RFO Part 16"
+    ],
+    "thresholds:6f92260c64f4": [
+     "RFO 16.104"
+    ]
+   }
+  },
+  "vehicle_watch": {
+   "expired": [],
+   "closing_soon": [
+    "GSA HCaTS / HCaTS SB (ordering ends 2026-11-09, 116d)",
+    "GSA 2GIT BPAs (ordering ends 2026-09-30, 76d)",
+    "NITAAC CIO-SP3 / CIO-SP3 SB (ordering ends 2026-10-29, 105d)",
+    "NITAAC CIO-CS (ordering ends 2026-10-29, 105d)"
+   ],
+   "verified_as_of": "2026-07-11",
+   "stale": false
+  },
+  "rfo": {
+   "unchanged": 3070,
+   "modified": [
+    {
+     "id": "12f686b1a79e7bcb",
+     "part": "16",
+     "title": "16.103 Documenting contract type"
+    },
+    {
+     "id": "cc637a938e84386d",
+     "part": "16",
+     "title": "16.104 Executive Order 14402 justification for covered contracts and orders"
+    },
+    {
+     "id": "df24de0d26fe55c7",
+     "part": "16",
+     "title": "16.301-2 Application"
+    }
+   ],
+   "added": [],
+   "removed": []
+  },
+  "r_dfars": "current (46 memos, all sizes match)",
+  "far_companion": "FAR Companion: current",
+  "category_management": "Category Mgmt: current"
  }
 ]
