@@ -12,7 +12,14 @@
 const WINDOW_MS = 60_000;
 
 function clientIp(req) {
-  const xff = (req.headers && (req.headers['x-forwarded-for'] || req.headers['x-real-ip'])) || '';
+  const h = req.headers || {};
+  // Production sits behind Cloudflare, so from Vercel's viewpoint the "client"
+  // is a ROTATING Cloudflare colo — x-forwarded-for/x-real-ip change request to
+  // request and per-IP buckets never accumulate (verified live 2026-07-16).
+  // cf-connecting-ip carries the real visitor and is set by Cloudflare itself.
+  const cf = h['cf-connecting-ip'];
+  if (cf) return String(cf).trim();
+  const xff = h['x-forwarded-for'] || h['x-real-ip'] || '';
   const first = String(xff).split(',')[0].trim();
   return first || (req.socket && req.socket.remoteAddress) || 'unknown';
 }
