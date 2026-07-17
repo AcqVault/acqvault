@@ -146,7 +146,77 @@ function getDocument(id) {
    client can render verifiable citations. No GROQ_API_KEY → configured:false
    (the client falls back to authoritative search). */
 
-const STOPWORDS = new Set(('a an and any are as at be but by can could did do does for from get had has have how i if in is it its just like make many me more most much my need new of on only or our should so some than that the their them then there these they this to under up us use using very was we what when where which who why will with would you your').split(' '));
+const STOPWORDS = new Set(('a an and any are as at be but by can could did do does for from get had has have how i if in is it its just like make many me more most much my need new of on only or our should so some than that the their them then there these they this to under up us use using very was we what when where which who why will with would you your'
+  // conversational filler — questions arrive as chat ("im curious about…", "my
+  // boss keeps telling me…"); these words must never count toward retrieval
+  + ' im ive id youre hes shes theyre whats hows curious wondering wonder interested asking asked ask boss supervisor keeps keep telling tell tells told saying says said wants want wanted trying tried help please thanks thing things stuff really always still even maybe actually basically currently right okay ok hey hi so um uh guys guy someone somebody anyone everybody about also into been being whether gets getting got gonna doing done going'
+).split(' '));
+
+/* Concept lexicon — bridges everyday phrasings to the regulation's own
+   vocabulary (a purely lexical match can't get from "sole source… compete" to
+   "other than full and open competition"). Each entry: a pattern tested against
+   the RAW lowercased question, and the corpus phrases it should light up.
+   Docs containing a lit phrase get a strong score boost and qualify for
+   retrieval even when the chatty query words themselves don't match. */
+const ASK_CONCEPTS = [
+  { re: /sole[- ]?sourc|single[- ]?sourc|only one (vendor|supplier|contractor|source)|no[- ]?bid|without competition/, add: ['other than full and open competition', 'only one responsible source', 'justification', 'sole source'] },
+  { re: /\bcompet/, add: ['full and open competition', 'competition requirement', 'competitive procedures'] },
+  { re: /j&a|justification/, add: ['justification', 'approval of justification'] },
+  { re: /set[- ]?aside|small business|8\(a\)|hubzone|sdvosb|wosb/, add: ['set-aside', 'small business', 'rule of two'] },
+  { re: /micro[- ]?purchase|mpt\b|gpc|purchase card/, add: ['micro-purchase threshold', 'micro-purchase'] },
+  { re: /simplified acquisition|\bsat\b|\bsap\b/, add: ['simplified acquisition threshold', 'simplified acquisition procedures'] },
+  { re: /tina|certified cost|cost or pricing data|truth in negotiation/, add: ['certified cost or pricing data', 'cost or pricing data'] },
+  { re: /commercial (item|product|service)|commerciality/, add: ['commercial products and commercial services', 'commercial acquisition'] },
+  { re: /\bidiq\b|indefinite[- ]delivery|task order|delivery order/, add: ['indefinite-delivery', 'task order', 'fair opportunity'] },
+  { re: /\bbpa\b|blanket purchase/, add: ['blanket purchase agreement'] },
+  { re: /\bota\b|other transaction/, add: ['other transaction'] },
+  { re: /best value|tradeoff|trade-off|lpta|lowest price/, add: ['best value', 'tradeoff process', 'lowest price technically acceptable'] },
+  { re: /past performance|cpars/, add: ['past performance'] },
+  { re: /debrief/, add: ['debriefing'] },
+  { re: /protest/, add: ['protest'] },
+  { re: /terminat/, add: ['termination for convenience', 'termination for default'] },
+  { re: /\brea\b|equitable adjustment/, add: ['equitable adjustment'] },
+  { re: /\bclaim\b|disputes?\b/, add: ['claim', 'disputes'] },
+  { re: /option (year|period)|exercise (an |the )?option/, add: ['exercise of option', 'option to extend'] },
+  { re: /market research/, add: ['market research'] },
+  { re: /data rights|technical data|intellectual property/, add: ['rights in technical data', 'data rights'] },
+  { re: /change order|modification|\bmod\b/, add: ['modification', 'changes clause'] },
+  { re: /fixed[- ]?price|\bffp\b|cost[- ]?(plus|reimburs)|cpff|\bt&m\b|time and materials/, add: ['contract type', 'firm-fixed-price', 'cost-reimbursement'] },
+  { re: /ratif/, add: ['ratification', 'unauthorized commitment'] },
+  { re: /synopsi|sam\.gov|advertis|posting|publiciz/, add: ['publicizing', 'contract actions'] }
+];
+function askConceptPhrases(qLc) {
+  const out = [];
+  for (const c of ASK_CONCEPTS) if (c.re.test(qLc)) for (const p of c.add) if (!out.includes(p)) out.push(p);
+  return out;
+}
+// Word-aware matching: substring matching let "im" hit inside "time"/"claim"
+// and junk outranked everything. hasWordExact requires word boundaries; hasTerm
+// lets long terms substring-match via a light stem so "compete" finds
+// "competition" and "debriefing" finds "debrief".
+function hasWordExact(text, word) {
+  let idx = text.indexOf(word);
+  while (idx !== -1) {
+    const b = idx > 0 ? text[idx - 1] : '';
+    const a = idx + word.length < text.length ? text[idx + word.length] : '';
+    if (!/[a-z0-9]/.test(b) && !/[a-z0-9]/.test(a)) return true;
+    idx = text.indexOf(word, idx + 1);
+  }
+  return false;
+}
+function hasTerm(text, term) {
+  if (term.length >= 5) {
+    if (text.includes(term)) return true;
+    const stem = term.replace(/(?:ing|ed|es|e|s)$/, '');
+    return stem.length >= 4 && text.includes(stem);
+  }
+  return hasWordExact(text, term);
+}
+// Concept phrases: multiword phrases are distinctive enough for substring;
+// single words must land exactly ("claim" must not fire inside "disclaimer").
+function hasPhrase(text, phrase) {
+  return phrase.includes(' ') ? text.includes(phrase) : hasWordExact(text, phrase);
+}
 
 let deckEntriesCache = null;
 function loadDeckEntries() {
@@ -189,17 +259,24 @@ function loadDeckEntries() {
 function askTerms(question) {
   return [...new Set(queryTerms(question).filter(t => !STOPWORDS.has(t)))];
 }
-function softScore(titleLc, contentLc, terms, phrase) {
-  let matched = 0, score = 0;
+function softScore(titleLc, contentLc, terms, phrase, concepts) {
+  let matched = 0, score = 0, conceptHits = 0;
   for (const t of terms) {
-    const inT = titleLc.includes(t), inC = contentLc.includes(t);
+    const inT = hasTerm(titleLc, t), inC = hasTerm(contentLc, t);
     if (!inT && !inC) continue;
     matched++;
     if (inT) score += 20;
     if (inC) score += 2;
   }
   if (phrase && terms.length > 1 && contentLc.includes(phrase)) score += 25;
-  return { matched, score };
+  for (const p of (concepts || [])) {
+    const inT = hasPhrase(titleLc, p), inC = hasPhrase(contentLc, p);
+    if (!inT && !inC) continue;
+    conceptHits++;
+    if (inT) score += 60;
+    if (inC) score += 30;
+  }
+  return { matched, score, conceptHits };
 }
 function excerptAround(content, terms, budget) {
   const text = content.replace(/\s+/g, ' ').trim();
@@ -213,13 +290,17 @@ function excerptAround(content, terms, budget) {
 }
 function retrieve(question) {
   const terms = askTerms(question);
-  if (!terms.length) return [];
+  const concepts = askConceptPhrases(String(question || '').toLowerCase());
+  if (!terms.length && !concepts.length) return [];
   const phrase = terms.join(' ');
   const need = Math.max(1, Math.ceil(terms.length / 2));
+  // A doc qualifies by matching enough of the question's own words OR by
+  // containing a concept phrase the lexicon mapped from the question — chatty
+  // wording must not disqualify the section that actually governs the topic.
   const rank = (items, titleOf, contentOf) => items
-    .map(e => ({ e, ...softScore(titleOf(e), contentOf(e), terms, phrase) }))
-    .filter(x => x.matched >= need)
-    .sort((a, b) => b.matched - a.matched || b.score - a.score);
+    .map(e => ({ e, ...softScore(titleOf(e), contentOf(e), terms, phrase, concepts) }))
+    .filter(x => x.matched >= need || x.conceptHits > 0)
+    .sort((a, b) => b.score - a.score || (b.matched + b.conceptHits) - (a.matched + a.conceptHits));
 
   const SRC_LABEL = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management', 'afi-63-138': 'DAFI 63-138', 'fmr': 'DoD FMR' };
   const docs = rank(loadIndex(), e => e.titleLc, e => e.contentLc).slice(0, 6).map(({ e }) => {
@@ -261,7 +342,7 @@ async function askVault(question) {
     '- Answer ONLY from the numbered excerpts provided. Never use outside knowledge, even when you are confident.',
     '- Every factual claim must carry the citation of the excerpt it came from, in square brackets exactly as given after CITE:, e.g. [RFO 13.201].',
     '- Dollar figures, thresholds, and section numbers must appear verbatim in an excerpt to be stated at all. Never estimate or recall them.',
-    '- If the excerpts do not contain the answer, say so plainly and suggest searching the site. Do not guess.',
+    '- If the excerpts do not contain the answer, reply with ONE short sentence saying the vault text retrieved for this question does not cover it, and suggest rephrasing with acquisition terms or running an authoritative search. Never list, count, describe, or refer to the excerpts by number.',
     '- Only answer questions about federal acquisition, contracting, or this site’s content. Politely decline anything else.',
     '- You are a research aid, not legal advice. Do not add a disclaimer; the interface displays one.',
     '- Be direct and concise: at most ~200 words, plain language a contracting professional would use.'
