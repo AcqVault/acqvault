@@ -231,7 +231,7 @@ function retrieve(question) {
       url: `/${d.source}/part-${d.part}#${d.anchor || d.id}`,
       kind: srcLabel,
       // L{n}: ingest level markers are structural metadata, not regulation
-      // text — strip them so neither the model nor the visible excerpt sees them
+      // text — strip them so the model never quotes one back
       text: excerptAround(String(d.content || '').replace(/\bL\d+:/g, ''), terms, 1500)
     };
   });
@@ -264,8 +264,7 @@ async function askVault(question) {
     '- If the excerpts do not contain the answer, say so plainly and suggest searching the site. Do not guess.',
     '- Only answer questions about federal acquisition, contracting, or this site’s content. Politely decline anything else.',
     '- You are a research aid, not legal advice. Do not add a disclaimer; the interface displays one.',
-    '- Be direct and concise: at most ~200 words, plain language a contracting professional would use.',
-    '- After the answer, add one final line in exactly this format: FOLLOW-UPS: first question | second question | third question — three short follow-on questions a contracting professional would naturally ask next, each answerable from federal-acquisition regulation text. The interface turns this line into clickable suggestions; never refer to it in the answer itself.'
+    '- Be direct and concise: at most ~200 words, plain language a contracting professional would use.'
   ].join('\n');
 
   const ctrl = new AbortController();
@@ -293,29 +292,13 @@ async function askVault(question) {
     const data = await resp.json();
     const answer = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
     if (!answer) return { configured: true, error: 'The model returned no answer. Try again, or use an authoritative search.' };
-    // The model appends "FOLLOW-UPS: q | q | q" as its last line (per the system
-    // prompt) — strip it out of the answer and hand it back as structured chips.
-    // If the tail is missing or malformed the answer ships without chips; never fail.
-    let answerText = String(answer).trim();
-    let followups = [];
-    const fuMatch = answerText.match(/\n?\s*FOLLOW-?UPS?\s*:\s*([^\n]+)\s*$/i);
-    if (fuMatch) {
-      followups = fuMatch[1].split('|').map(s => s.trim().replace(/^[-•\d.\s]+/, '').replace(/[\s—–|-]+$/, ''))
-        .filter(s => s.length >= 8 && s.length <= 160).slice(0, 3);
-      answerText = answerText.slice(0, fuMatch.index).trim();
-    }
     const seen = new Set();
     return {
       configured: true,
-      answer: answerText,
-      followups,
-      // excerpt = the exact text handed to the model, so the client can show
-      // "what the AI read" for verification without a second request.
-      // Dedupe BEFORE numbering — the n badges are user-visible now, and a
-      // dropped duplicate must not leave a gap in the sequence.
+      answer: String(answer).trim(),
       sources: sources
+        .map((s, i) => ({ n: i + 1, cite: s.cite, title: s.title, url: s.url, kind: s.kind }))
         .filter(s => { const key = s.cite + '|' + s.url; if (seen.has(key)) return false; seen.add(key); return true; })
-        .map((s, i) => ({ n: i + 1, cite: s.cite, title: s.title, url: s.url, kind: s.kind, excerpt: s.text }))
     };
   } catch (e) {
     console.error('ask error:', e && e.message ? e.message : e);

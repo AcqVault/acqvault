@@ -400,23 +400,6 @@ document.addEventListener('click', (e) => {
     case 'set-mode': setMode(arg); break;
     case 'set-answer-mode': setAnswerMode(arg); break;
     case 'ask-see-auth': setAnswerMode('auth'); runSearch({ forceAuth: true }); break;
-    case 'ai-src-toggle': {
-      const row = el.closest('.ai-srcrow');
-      const body = row && row.querySelector('.ai-src-body');
-      if (row && body) {
-        const open = !row.classList.contains('open');
-        row.classList.toggle('open', open);
-        body.hidden = !open;
-        el.setAttribute('aria-expanded', String(open));
-      }
-      break;
-    }
-    case 'ask-followup': {
-      const q = el.textContent.trim();
-      if (q && searchInput) { searchInput.value = q; runAsk(q); }
-      break;
-    }
-    case 'ai-copy-answer': copyAskAnswer(el); break;
     case 'set-browse-source': setBrowseSource(arg); break;
     case 'choose-browse-source': chooseBrowseSource(arg); break;
     case 'toggle-browse-menu': toggleBrowseSourceMenu(e); break;
@@ -3060,10 +3043,7 @@ function setAnswerMode(mode) {
 }
 // Minimal, safe renderer for the model's text: escape EVERYTHING first, then
 // re-introduce only bold + paragraphs + known-cite links (urls come from our
-// own API's source list, never from the model). Each cite link carries a small
-// excerpt popover (CSS hover/focus, desktop pointers only) so a reader can peek
-// at the source before committing to the jump — the click itself still goes
-// straight to the regulation text.
+// own API's source list, never from the model).
 function aiAnswerHTML(answer, sources) {
   let html = esc(answer)
     .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
@@ -3073,91 +3053,9 @@ function aiAnswerHTML(answer, sources) {
     if (!s.cite || seen.has(s.cite)) continue;
     seen.add(s.cite);
     const tok = esc(`[${s.cite}]`).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const peek = String(s.excerpt || '').replace(/\s+/g, ' ').slice(0, 200);
-    const pop = peek ? `<span class="ai-pop" aria-hidden="true"><span class="ai-pop-cite">${esc(s.cite)}</span><span class="ai-pop-x">“${esc(peek)}…”</span><span class="ai-pop-go">Click to read at the exact section ↗</span></span>` : '';
-    const link = `<a class="ai-cite" href="${esc(s.url)}">${esc(s.cite)}${pop}</a>`;
-    // function replacement — excerpt text may contain "$", which is special in
-    // string replacements
-    html = html.replace(new RegExp(tok, 'g'), () => link);
+    html = html.replace(new RegExp(tok, 'g'), `<a class="ai-cite" href="${esc(s.url)}">${esc(s.cite)}</a>`);
   }
   return html;
-}
-// Meaningful words from the question, for highlighting inside source excerpts.
-const AI_MARK_STOP = new Set(['the', 'and', 'for', 'are', 'can', 'does', 'what', 'when', 'where', 'which', 'who', 'why', 'how', 'is', 'a', 'an', 'of', 'to', 'in', 'on', 'with', 'under', 'my', 'do', 'must', 'should', 'about', 'between', 'from', 'that', 'this', 'there', 'their', 'they', 'you', 'your', 'has', 'have', 'was', 'will', 'would', 'or', 'be', 'it', 'its', 'not', 'than', 'amp', 'quot']);
-function aiMarkTerms(q) {
-  return [...new Set(String(q).toLowerCase().match(/[a-z0-9][a-z0-9.$-]{2,}/g) || [])]
-    .filter(t => !AI_MARK_STOP.has(t)).sort((a, b) => b.length - a.length).slice(0, 12);
-}
-// Escape first, then brass-mark the question's terms in ONE combined pass so a
-// replacement can never match inside another replacement's <mark> markup.
-function aiExcerptHTML(excerpt, terms) {
-  let html = esc(String(excerpt).replace(/\s+/g, ' ').trim());
-  if (terms.length) {
-    const re = new RegExp('(' + terms.map(t => esc(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi');
-    html = html.replace(re, '<mark>$1</mark>');
-  }
-  return html;
-}
-function aiSourceRowsHTML(sources, terms) {
-  return (sources || []).map(s => {
-    const isStudy = s.kind === 'Field Guide' || s.kind === 'Board scenario';
-    const openLabel = isStudy && String(s.url).startsWith('/study')
-      ? 'Open this in the Field Guide →'
-      : 'Read in full context — lands at the exact section ↗';
-    return `<div class="ai-srcrow">
-      <button type="button" class="ai-srcrow-head" data-action="ai-src-toggle" aria-expanded="false">
-        <span class="ai-src-n">${s.n}</span>
-        <span class="ai-src-cite">${esc(s.cite)}</span>
-        <span class="ai-src-title">${esc(s.title)}</span>
-        <span class="ai-src-kind">${esc(s.kind)}</span>
-        <span class="ai-src-caret" aria-hidden="true">▾</span>
-      </button>
-      <div class="ai-src-body" hidden>
-        <p class="ai-src-x">“${aiExcerptHTML(s.excerpt || '', terms)}”</p>
-        <a class="ai-src-open" href="${esc(s.url)}" target="_blank" rel="noopener">${openLabel}</a>
-      </div>
-    </div>`;
-  }).join('');
-}
-// "Go deeper" rail: quiet links derived from what was actually retrieved —
-// the dominant corpus part, the Field Guide when study material contributed,
-// and a memo-ready copy of the answer with its citations.
-function aiDeeperHTML(sources) {
-  const counts = {};
-  let hasStudy = false;
-  for (const s of (sources || [])) {
-    if (s.kind === 'Field Guide' || s.kind === 'Board scenario') { hasStudy = true; continue; }
-    const m = String(s.url || '').match(/^\/([a-z0-9-]+)\/part-([\w.-]+)/);
-    if (m) { const k = m[1] + '|' + m[2]; counts[k] = (counts[k] || 0) + 1; }
-  }
-  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-  const links = [];
-  if (top) {
-    const [src, part] = top[0].split('|');
-    links.push(`<a href="/${esc(src)}/part-${esc(part)}" target="_blank" rel="noopener">Open ${esc(SOURCE_LABELS[src] || src)} Part ${esc(part)} ↗</a>`);
-  }
-  if (hasStudy) links.push(`<a href="/study" target="_blank" rel="noopener">Study this in the Field Guide →</a>`);
-  links.push(`<button type="button" data-action="ai-copy-answer">⧉ Copy answer + citations</button>`);
-  return `<div class="ai-deeper">${links.join('')}</div>`;
-}
-function aiFollowupsHTML(followups) {
-  if (!followups || !followups.length) return '';
-  return `<div class="ai-fu-head">Ask next:</div><div class="ai-fu">${
-    followups.map(q => `<button type="button" class="ai-fu-chip" data-action="ask-followup">${esc(q)}</button>`).join('')
-  }</div>`;
-}
-// Memo-ready plain text: the answer plus a numbered source list with absolute
-// URLs — the "Copy with Reference" move professionals expect from research tools.
-let lastAsk = null;
-function copyAskAnswer(btn) {
-  if (!lastAsk) return;
-  const lines = [`Q: ${lastAsk.q}`, '', lastAsk.answer.replace(/\*\*([^*]+)\*\*/g, '$1'), '', 'Sources (verify before relying):'];
-  for (const s of lastAsk.sources) lines.push(`[${s.n}] ${s.cite} — ${s.title} — https://www.acqvault.com${s.url}`);
-  lines.push('', 'AI-generated from AcqVault excerpts. Not legal advice — the cited text is the authority.');
-  const text = lines.join('\n');
-  const flash = () => { const o = btn.textContent; btn.textContent = '✓ Copied'; srAnnounce('Answer and citations copied to clipboard'); setTimeout(() => { btn.textContent = o; }, 1800); };
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(flash).catch(() => fallbackCopy(text, flash));
-  else fallbackCopy(text, flash);
 }
 async function runAsk(q) {
   const panel = document.getElementById('ai-answer');
@@ -3201,15 +3099,13 @@ async function runAsk(q) {
       <p class="ai-msg">${esc(data.refusal || data.error)}</p>${fallBtn}</div>`;
     return;
   }
-  lastAsk = { q, answer: data.answer, sources: data.sources || [] };
-  const terms = aiMarkTerms(q);
+  const chips = (data.sources || []).map(s =>
+    `<a class="ai-src" href="${esc(s.url)}"><span class="ai-src-kind">${esc(s.kind)}</span>${esc(s.cite)}</a>`).join('');
   panel.innerHTML = `<div class="ai-card">
     <div class="ai-eyebrow">Ask the Vault · AI · beta · answers only from this site’s text</div>
     <div class="ai-body">${aiAnswerHTML(data.answer, data.sources)}</div>
-    <div class="ai-src-head">What the AI read — expand to verify:</div>
-    <div class="ai-srcrows">${aiSourceRowsHTML(data.sources, terms)}</div>
-    ${aiFollowupsHTML(data.followups)}
-    ${aiDeeperHTML(data.sources)}
+    <div class="ai-src-head">Drawn from — verify before relying:</div>
+    <div class="ai-srcs">${chips}</div>
     <div class="ai-foot"><span>AI-generated from the excerpts above. Not legal advice — the linked text is the authority.</span>${fallBtn}</div>
   </div>`;
 }
