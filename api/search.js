@@ -368,6 +368,9 @@ async function askVault(question) {
     if (!resp.ok) {
       const detail = await resp.text().catch(() => '');
       console.error('ask upstream error:', resp.status, detail.slice(0, 300));
+      // 429 = the free tier's per-minute or per-day cap — say so honestly
+      // instead of a generic "error" (the authoritative search never caps).
+      if (resp.status === 429) return { configured: true, error: 'The free AI lane is at capacity right now — the model host caps how much it serves per day. Try again later, or use the authoritative search, which is never limited.' };
       return { configured: true, error: 'The model host returned an error. Try again shortly, or use an authoritative search.' };
     }
     const data = await resp.json();
