@@ -67,17 +67,17 @@ async function redisLimit(req, max, windowMs, name) {
       body: JSON.stringify([['INCR', key], ['EXPIRE', key, String(windowSec)]]),
       signal: ctrl.signal
     });
-    if (!res.ok) return { limited: false, diag: 'http' + res.status };
+    if (!res.ok) return { limited: false };
     const data = await res.json();
     const count = Array.isArray(data) ? Number(data[0] && data[0].result) : NaN;
-    if (!Number.isFinite(count)) return { limited: false, diag: 'nan:' + JSON.stringify(data).slice(0, 60) };
+    if (!Number.isFinite(count)) return { limited: false };
     if (count > max) {
       const retryAfter = Math.ceil((windowMs - (Date.now() % windowMs)) / 1000);
       return { limited: true, retryAfter: Math.max(1, retryAfter) };
     }
-    return { limited: false, diag: 'ok:' + count };
+    return { limited: false };
   } catch (_e) {
-    return { limited: false, diag: 'err:' + String(_e && _e.message).slice(0, 40) }; // fail open
+    return { limited: false }; // fail open
   } finally {
     clearTimeout(timer);
   }
@@ -86,7 +86,6 @@ async function redisLimit(req, max, windowMs, name) {
 // Enforce and, if over the limit, write the 429. Returns true if it blocked.
 async function enforce(req, res, { max = 30, windowMs = WINDOW_MS, name = '' } = {}) {
   const r = useRedis ? await redisLimit(req, max, windowMs, name) : inMemoryLimit(req, max, windowMs, name);
-  try { res.setHeader('x-acq-rl-' + (name || 'g'), (useRedis ? 'redis' : 'mem') + '|' + (r.diag || 'na') + '|lim:' + r.limited); } catch (_h) {}
   if (r.limited) {
     res.setHeader('Retry-After', String(r.retryAfter));
     res.status(429).json({ error: 'Too many requests. Please slow down and try again shortly.' });
