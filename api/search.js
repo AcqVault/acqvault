@@ -230,7 +230,9 @@ function retrieve(question) {
       title: String(d.title || ''),
       url: `/${d.source}/part-${d.part}#${d.anchor || d.id}`,
       kind: srcLabel,
-      text: excerptAround(String(d.content || ''), terms, 1500)
+      // L{n}: ingest level markers are structural metadata, not regulation
+      // text — strip them so neither the model nor the visible excerpt sees them
+      text: excerptAround(String(d.content || '').replace(/\bL\d+:/g, ''), terms, 1500)
     };
   });
   const deck = rank(loadDeckEntries(), e => e.titleLc, e => e.contentLc).slice(0, 4).map(({ e }) => ({
