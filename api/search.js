@@ -298,7 +298,7 @@ async function askVault(question) {
     let followups = [];
     const fuMatch = answerText.match(/\n?\s*FOLLOW-?UPS?\s*:\s*([^\n]+)\s*$/i);
     if (fuMatch) {
-      followups = fuMatch[1].split('|').map(s => s.trim().replace(/^[-•\d.\s]+/, ''))
+      followups = fuMatch[1].split('|').map(s => s.trim().replace(/^[-•\d.\s]+/, '').replace(/[\s—–|-]+$/, ''))
         .filter(s => s.length >= 8 && s.length <= 160).slice(0, 3);
       answerText = answerText.slice(0, fuMatch.index).trim();
     }
