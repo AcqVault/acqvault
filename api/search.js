@@ -311,9 +311,11 @@ async function askVault(question) {
       followups,
       // excerpt = the exact text handed to the model, so the client can show
       // "what the AI read" for verification without a second request.
+      // Dedupe BEFORE numbering — the n badges are user-visible now, and a
+      // dropped duplicate must not leave a gap in the sequence.
       sources: sources
-        .map((s, i) => ({ n: i + 1, cite: s.cite, title: s.title, url: s.url, kind: s.kind, excerpt: s.text }))
         .filter(s => { const key = s.cite + '|' + s.url; if (seen.has(key)) return false; seen.add(key); return true; })
+        .map((s, i) => ({ n: i + 1, cite: s.cite, title: s.title, url: s.url, kind: s.kind, excerpt: s.text }))
     };
   } catch (e) {
     console.error('ask error:', e && e.message ? e.message : e);

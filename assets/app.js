@@ -3114,7 +3114,7 @@ function aiSourceRowsHTML(sources, terms) {
       </button>
       <div class="ai-src-body" hidden>
         <p class="ai-src-x">“${aiExcerptHTML(s.excerpt || '', terms)}”</p>
-        <a class="ai-src-open" href="${esc(s.url)}">${openLabel}</a>
+        <a class="ai-src-open" href="${esc(s.url)}" target="_blank" rel="noopener">${openLabel}</a>
       </div>
     </div>`;
   }).join('');
@@ -3134,9 +3134,9 @@ function aiDeeperHTML(sources) {
   const links = [];
   if (top) {
     const [src, part] = top[0].split('|');
-    links.push(`<a href="/${esc(src)}/part-${esc(part)}">Open ${esc(SOURCE_LABELS[src] || src)} Part ${esc(part)} ↗</a>`);
+    links.push(`<a href="/${esc(src)}/part-${esc(part)}" target="_blank" rel="noopener">Open ${esc(SOURCE_LABELS[src] || src)} Part ${esc(part)} ↗</a>`);
   }
-  if (hasStudy) links.push(`<a href="/study">Study this in the Field Guide →</a>`);
+  if (hasStudy) links.push(`<a href="/study" target="_blank" rel="noopener">Study this in the Field Guide →</a>`);
   links.push(`<button type="button" data-action="ai-copy-answer">⧉ Copy answer + citations</button>`);
   return `<div class="ai-deeper">${links.join('')}</div>`;
 }
