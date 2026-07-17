@@ -154,7 +154,10 @@ function loadDeckEntries() {
   const out = [];
   try {
     const deck = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'assets', 'study-deck.json'), 'utf8'));
-    for (const c of [...(deck.recall_basic || []), ...(deck.recall_advanced || [])]) {
+    // deck.thresholds carries the AUTHORED current dollar values — statute can lead
+    // the official FAR text (e.g. TINA $10M via NDAA FY26 while 15.403-3 still
+    // prints $2.5M), and these cards state the current figure with its date.
+    for (const c of [...(deck.recall_basic || []), ...(deck.recall_advanced || []), ...(deck.thresholds || [])]) {
       const text = `Q: ${c.q}\nA: ${c.a}${c.x ? `\n${c.x}` : ''}`;
       const link = (c.links && c.links[0]) || null;
       out.push({
@@ -287,10 +290,13 @@ async function askVault(question) {
     const data = await resp.json();
     const answer = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
     if (!answer) return { configured: true, error: 'The model returned no answer. Try again, or use an authoritative search.' };
+    const seen = new Set();
     return {
       configured: true,
       answer: String(answer).trim(),
-      sources: sources.map((s, i) => ({ n: i + 1, cite: s.cite, title: s.title, url: s.url, kind: s.kind }))
+      sources: sources
+        .map((s, i) => ({ n: i + 1, cite: s.cite, title: s.title, url: s.url, kind: s.kind }))
+        .filter(s => { const key = s.cite + '|' + s.url; if (seen.has(key)) return false; seen.add(key); return true; })
     };
   } catch (e) {
     console.error('ask error:', e && e.message ? e.message : e);
