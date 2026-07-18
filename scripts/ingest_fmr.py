@@ -141,8 +141,20 @@ def clean_title(first, follow):
     t = re.sub(r'\s*\.{2,}.*$', '', t)        # strip any dot-leader tail
     return smartcase(t)
 
+# Symbol/Wingdings fonts map em-dashes and bullets into the private-use area;
+# they render as tofu boxes (▯). Normalize on the way in — mirrors
+# scripts/scrub_pua_glyphs.py, which fixes any already in output/documents.json.
+_PUA_MAP = {'': '—', '': '—', '': '•', '': '•', '': '•'}
+
+
+def _scrub_pua(text):
+    for bad, good in _PUA_MAP.items():
+        text = text.replace(bad, good)
+    return text
+
+
 def parse(md_path):
-    lines = open(md_path, encoding='utf-8', errors='replace').read().split('\n')
+    lines = _scrub_pua(open(md_path, encoding='utf-8', errors='replace').read()).split('\n')
     # locate every chapter-heading occurrence
     heads = []
     for i, ln in enumerate(lines):

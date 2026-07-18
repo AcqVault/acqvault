@@ -276,6 +276,38 @@ def check_rdfars():
     return "; ".join(parts), True
 
 
+def check_rdfars_coverage():
+    """Every R-DFARS/*.pdf memo must actually have docs in the corpus. The
+    freshness check above only proves a memo was DOWNLOADED — it can't see a memo
+    that was downloaded yet never split into sections (Parts 24/34/35/40/41/50
+    sat un-ingested this way, invisible to every corpus-keyed check because a
+    part with zero docs has zero fragments to notice). This keys off the source
+    PDF inventory instead, so that gap can't hide again."""
+    # Memos with only a cover letter and no 2XX.y section text — nothing to
+    # ingest. Part 48's memo is 2,479 chars, zero section headings (verified).
+    BENIGN_NO_SECTIONS = {"48"}
+    docs = json.loads(DOCS_PATH.read_text(encoding="utf-8"))
+    have_parts = {str(d["part"]) for d in docs if d and d.get("source") == "r-dfars"}
+    missing = []
+    for pdf in sorted((BASE_DIR / "R-DFARS").glob("DoD_RFO_Deviation_Part-*.pdf")):
+        m = re.search(r"Part-(\d+)\.pdf$", pdf.name)
+        if not m:
+            continue
+        part = str(int(m.group(1)))
+        if part in BENIGN_NO_SECTIONS:
+            continue
+        # A memo with only a cover letter (no 2XX.y section text) legitimately
+        # yields no docs; flag only memos whose part is wholly absent from the
+        # corpus so a maintainer can confirm it's substantive before ingesting.
+        if part not in have_parts:
+            missing.append((part, pdf.name))
+    if missing:
+        return "⚠ {} memo(s) DOWNLOADED BUT NOT INGESTED: {}".format(
+            len(missing), ", ".join("Part {} ({})".format(p, n) for p, n in missing)), True
+    return "coverage OK ({} memos all have corpus docs)".format(
+        len(list((BASE_DIR / "R-DFARS").glob("DoD_RFO_Deviation_Part-*.pdf")))), False
+
+
 def check_static_pdf(label, url, local_glob, download=True):
     """Probe an acquisition.gov PDF; when it changed upstream, pull the new copy
     into the tracked source folder (validated as a real PDF first). The corpus
@@ -639,6 +671,8 @@ def main():
 
     rd_msg, rd_changed = check_rdfars()
     print("R-DFARS: " + rd_msg)
+    cov_msg, cov_gap = check_rdfars_coverage()
+    print("R-DFARS coverage: " + cov_msg)
     fc_msg, fc_changed = check_static_pdf(
         "FAR Companion", SITE + "/sites/default/files/page_file_uploads/far-companion.pdf",
         "FAR Companion/*.pdf", download=not args.check)

@@ -70,6 +70,28 @@ function partNum(doc) {
   return m ? parseInt(m[0], 10) : 9999;
 }
 
+// Order sections the way the rulebook reads: a "Subpart NN.M" heading sits just
+// before the NN.Mxx sections it introduces, instead of sorting to the very end
+// (plain alphabetical put every "Subpart …" title after the digit-led ones).
+// Returns null for titles that aren't numbered sections/subparts so other
+// sources fall back to the numeric-aware locale compare (their current order).
+// KEEP IDENTICAL to app.js regTitleCmp (scorer parity) and api/_seo.js.
+function regOrderKey(title) {
+  const t = String(title || '').trim();
+  const sub = t.match(/^Subpart\s+(\d+)\.(\d+)/i);
+  if (sub) return [parseInt(sub[1], 10), parseInt(sub[2], 10), 0, 0, 0, 0];
+  const sec = t.match(/^(\d+)\.(\d+)(?:-(\d+))?(?:-(\d+))?/);
+  if (sec) return [parseInt(sec[1], 10), Math.floor(parseInt(sec[2], 10) / 100), 1, parseInt(sec[2], 10), sec[3] ? parseInt(sec[3], 10) : 0, sec[4] ? parseInt(sec[4], 10) : 0];
+  const partOnly = t.match(/^(?:Part\s+)?(\d+)\b/i);
+  if (partOnly) return [parseInt(partOnly[1], 10), -1, 0, 0, 0, 0];
+  return null;
+}
+function regTitleCmp(a, b) {
+  const ka = regOrderKey(a), kb = regOrderKey(b);
+  if (ka && kb) { for (let i = 0; i < ka.length; i++) { if (ka[i] !== kb[i]) return ka[i] - kb[i]; } return 0; }
+  return String(a || '').localeCompare(String(b || ''), undefined, { numeric: true });
+}
+
 function cropContent(content, query, cropLength) {
   const text = String(content || '').replace(/\s+/g, ' ').trim();
   const limit = Number(cropLength) || 180;
@@ -118,7 +140,7 @@ function searchDocs(body = {}) {
       .map(x => x.entry);
   } else {
     entries = entries.sort((a, b) =>
-      partNum(a.doc) - partNum(b.doc) || String(a.doc.title || '').localeCompare(String(b.doc.title || '')));
+      partNum(a.doc) - partNum(b.doc) || regTitleCmp(a.doc.title, b.doc.title));
   }
 
   const total = entries.length;
@@ -399,8 +421,17 @@ module.exports = async function handler(req, res) {
   }
   if (await enforce(req, res, { max: 40 })) return;
 
+  // A malformed JSON body makes Vercel's parser throw the moment req.body is
+  // read — catch it here so the client gets a clean 400, not a generic 500.
+  let reqBody;
   try {
-    const { action, body, id } = req.body || {};
+    reqBody = req.body || {};
+  } catch (_e) {
+    return res.status(400).json({ error: 'Invalid JSON body.' });
+  }
+
+  try {
+    const { action, body, id } = reqBody;
 
     if (action === 'search') {
       res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');

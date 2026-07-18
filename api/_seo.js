@@ -63,6 +63,25 @@ function partNum(p) {
   return m ? parseInt(m[0], 10) : 9999;
 }
 
+// Subpart headings interleave before their sections — KEEP IDENTICAL to
+// api/search.js and app.js regTitleCmp so the SSR page and the in-app reader
+// present a part in the same order.
+function regOrderKey(title) {
+  const t = String(title || '').trim();
+  const sub = t.match(/^Subpart\s+(\d+)\.(\d+)/i);
+  if (sub) return [parseInt(sub[1], 10), parseInt(sub[2], 10), 0, 0, 0, 0];
+  const sec = t.match(/^(\d+)\.(\d+)(?:-(\d+))?(?:-(\d+))?/);
+  if (sec) return [parseInt(sec[1], 10), Math.floor(parseInt(sec[2], 10) / 100), 1, parseInt(sec[2], 10), sec[3] ? parseInt(sec[3], 10) : 0, sec[4] ? parseInt(sec[4], 10) : 0];
+  const partOnly = t.match(/^(?:Part\s+)?(\d+)\b/i);
+  if (partOnly) return [parseInt(partOnly[1], 10), -1, 0, 0, 0, 0];
+  return null;
+}
+function regTitleCmp(a, b) {
+  const ka = regOrderKey(a), kb = regOrderKey(b);
+  if (ka && kb) { for (let i = 0; i < ka.length; i++) { if (ka[i] !== kb[i]) return ka[i] - kb[i]; } return 0; }
+  return String(a || '').localeCompare(String(b || ''), undefined, { numeric: true });
+}
+
 // Docs for a source, grouped by part -> sorted parts -> sorted docs.
 function partsForSource(source) {
   const groups = new Map();
@@ -73,7 +92,7 @@ function partsForSource(source) {
     groups.get(p).push(d);
   }
   const parts = [...groups.keys()].sort((a, b) => partNum(a) - partNum(b) || a.localeCompare(b));
-  for (const p of parts) groups.get(p).sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), undefined, { numeric: true }));
+  for (const p of parts) groups.get(p).sort((a, b) => regTitleCmp(a.title, b.title));
   return { parts, groups };
 }
 
@@ -133,8 +152,9 @@ header.site a.cta:hover{border-color:rgba(228,196,119,.55)}
 @media(max-width:760px){.lib-seal{display:none}}
 nav.crumbs{font-size:13px;color:var(--muted);margin-bottom:8px}
 nav.crumbs a{color:var(--accent);text-decoration:none}nav.crumbs a:hover{text-decoration:underline}
-h1{font-size:30px;letter-spacing:-0.03em;margin:.2em 0 .1em}
+h1{font-family:var(--serif);font-weight:700;font-size:30px;letter-spacing:-0.02em;margin:.2em 0 .1em}
 .lede{color:var(--muted);margin:0 0 26px;font-size:15px}
+.lede a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
 section.sec{padding:18px 0;border-top:1px solid var(--line);scroll-margin-top:14px}
 section.sec h2{font-size:18px;letter-spacing:-0.02em;margin:0 0 6px;scroll-margin-top:16px}
 section.sec h2 a{color:inherit;text-decoration:none}
@@ -148,6 +168,7 @@ section.sec:target>h2{color:var(--accent)}
 .srcref{font-size:12.5px;color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
 .sec p{margin:.5em 0;font-size:15px}
+.sec p a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}.sec p a:hover{color:var(--brass-ink)}
 .parts{columns:2;gap:24px}.parts a{display:block;padding:7px 0;color:var(--accent);text-decoration:none;font-size:15px;break-inside:avoid}
 .parts a:hover{text-decoration:underline}
 footer{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;font-size:13px;color:var(--muted)}
@@ -155,7 +176,7 @@ footer a{color:var(--accent)}
 table.devtable{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
 table.devtable th,table.devtable td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 table.devtable th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:2px solid var(--line)}
-table.devtable tr:hover td{background:#f6f8fa}
+table.devtable tr:hover td{background:#f7f6f2}
 table.devtable td a{color:var(--accent);text-decoration:none}table.devtable td a:hover{text-decoration:underline}
 table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:nowrap}
 @media(max-width:560px){.parts{columns:1}table.devtable{font-size:12.5px}table.devtable th,table.devtable td{padding:7px 6px}}

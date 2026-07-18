@@ -2982,3 +2982,13 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
 .daily-board-count{font-size:11.5px;color:rgba(221,233,246,.6);white-space:nowrap;font-variant-numeric:tabular-nums;}
 @media(max-width:760px){.daily-board{display:none;}.daily-strip-inner{padding:12px 20px;gap:12px;}}
 @media(max-width:560px){.daily-copy>span{display:none;}.daily-copy b{font-size:15px;}.daily-cta{padding:8px 13px;font-size:12px;}.daily-strip-main{gap:11px;}}
+/* ≤430px: the tiles + title + CTA row ran out of room and the min-width:0 copy
+   box collapsed, painting the serif title UNDER the fixed-width CTA. Let the row
+   wrap — tiles+title share line 1 (title wraps instead of overflowing), the CTA
+   drops to its own full-width line below. */
+@media(max-width:430px){
+  .daily-strip-main{flex-wrap:wrap;row-gap:10px;}
+  .daily-copy{flex:1 1 0;}
+  .daily-copy b{white-space:normal;line-height:1.2;}
+  .daily-cta{flex:1 0 100%;text-align:center;}
+}

@@ -83,6 +83,23 @@ function acqScore(entry, terms, phrase){
   return score;
 }
 function acqPartNum(doc){ const m=String(doc.part||'').match(/\d+/); return m?parseInt(m[0],10):9999; }
+// Subpart headings interleave before their sections — KEEP IDENTICAL to
+// api/search.js regTitleCmp (scorer parity) and api/_seo.js.
+function regOrderKey(title){
+  const t=String(title||'').trim();
+  const sub=t.match(/^Subpart\s+(\d+)\.(\d+)/i);
+  if(sub) return [parseInt(sub[1],10),parseInt(sub[2],10),0,0,0,0];
+  const sec=t.match(/^(\d+)\.(\d+)(?:-(\d+))?(?:-(\d+))?/);
+  if(sec) return [parseInt(sec[1],10),Math.floor(parseInt(sec[2],10)/100),1,parseInt(sec[2],10),sec[3]?parseInt(sec[3],10):0,sec[4]?parseInt(sec[4],10):0];
+  const partOnly=t.match(/^(?:Part\s+)?(\d+)\b/i);
+  if(partOnly) return [parseInt(partOnly[1],10),-1,0,0,0,0];
+  return null;
+}
+function regTitleCmp(a,b){
+  const ka=regOrderKey(a),kb=regOrderKey(b);
+  if(ka&&kb){ for(let i=0;i<ka.length;i++){ if(ka[i]!==kb[i]) return ka[i]-kb[i]; } return 0; }
+  return String(a||'').localeCompare(String(b||''),undefined,{numeric:true});
+}
 function acqCrop(content, query, cropLength){
   const text=String(content||'').replace(/\s+/g,' ').trim();
   const limit=Number(cropLength)||180;
@@ -129,7 +146,7 @@ function acqLocalSearch(body){
   if(terms.length){
     entries=entries.map(e=>({e,s:acqScore(e,terms,phrase)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.e);
   } else {
-    entries=entries.sort((a,b)=>acqPartNum(a.doc)-acqPartNum(b.doc)||String(a.doc.title||'').localeCompare(String(b.doc.title||'')));
+    entries=entries.sort((a,b)=>acqPartNum(a.doc)-acqPartNum(b.doc)||regTitleCmp(a.doc.title,b.doc.title));
   }
   const total=entries.length, offset=Number(body.offset)||0, limit=Math.min(Number(body.limit)||20,100);
   const hits=entries.slice(offset,offset+limit).map(({doc})=>({ ...doc, _formatted:{ title:acqHighlight(doc.title,body.q), content:acqHighlight(acqCrop(doc.content,body.q,body.cropLength),body.q) } }));
@@ -280,13 +297,15 @@ const PARTS_BY_SOURCE = {
     [211,'Describing'],[212,'Commercial'],[213,'Simplified'],
     [214,'Sealed Bid'],[215,'Negotiation'],[216,'Types'],
     [217,'Special'],[218,'Acquisition Flexibilities'],[219,'Small Bus'],
-    [222,'Labor'],[223,'Environment'],[225,'Foreign'],
-    [226,'Socioeconomic'],[227,'IP'],[228,'Bonds'],
-    [229,'Taxes'],[230,'CAS'],[231,'Cost Prin'],
-    [232,'Financing'],[233,'Disputes'],[236,'Construction'],
-    [237,'Services'],[239,'IT'],[242,'Admin'],
-    [243,'Modifications'],[244,'Subcontracting'],[245,'GFP'],
-    [246,'Quality'],[247,'Transport'],[249,'Termination'],
+    [222,'Labor'],[223,'Environment'],[224,'Privacy'],
+    [225,'Foreign'],[226,'Socioeconomic'],[227,'IP'],
+    [228,'Bonds'],[229,'Taxes'],[230,'CAS'],
+    [231,'Cost Prin'],[232,'Financing'],[233,'Disputes'],
+    [234,'Major Systems'],[235,'R&D'],[236,'Construction'],
+    [237,'Services'],[239,'IT'],[240,'Supply Chain'],
+    [241,'Utilities'],[242,'Admin'],[243,'Modifications'],
+    [244,'Subcontracting'],[245,'GFP'],[246,'Quality'],
+    [247,'Transport'],[249,'Termination'],[250,'Extraordinary'],
     [252,'Clauses']
   ],
   'far-companion': [
@@ -1527,9 +1546,13 @@ async function selectPart(tile, partNum, partLabel) {
 
   try {
     const indexPart = indexPartForSource(browseSrc, partNum);
-    // Paginate to get ALL sections — some parts have 100+ sections
+    // Paginate to get ALL sections — big parts run 100s deep (RFO 52 = 768).
+    // pageSize MUST match the server's hard cap (api/search.js: limit maxes at
+    // 100); a larger value made every first page return <pageSize and the loop
+    // exited after ONE page, silently truncating the part. The estimatedTotalHits
+    // guard is the belt-and-suspenders so a future cap change can't reintroduce it.
     const allHits = [];
-    const pageSize = 200;
+    const pageSize = 100;
     let offset = 0;
     while (true) {
       const data = await meiliSearch({
@@ -1539,7 +1562,8 @@ async function selectPart(tile, partNum, partLabel) {
       });
       const page = data.hits || [];
       allHits.push(...page);
-      if (page.length < pageSize) break;
+      const total = data.estimatedTotalHits || 0;
+      if (!page.length || page.length < pageSize || allHits.length >= total) break;
       offset += pageSize;
     }
     const hits = allHits;
@@ -2649,8 +2673,11 @@ async function loadFullPartInReader(hit) {
   }
   try {
     const indexPart = indexPartForSource(hit.source, hit.part);
+    // pageSize MUST match the server's 100-hit cap (api/search.js) — a larger
+    // value made the first page return <pageSize and the loop exit after ONE
+    // page, silently truncating any part past 100 sections (RFO 52 = 768).
     const allHits = [];
-    const pageSize = 200;
+    const pageSize = 100;
     let offset = 0;
     while (true) {
       const data = await meiliSearch({
@@ -2660,7 +2687,8 @@ async function loadFullPartInReader(hit) {
       });
       const page = data.hits || [];
       allHits.push(...page);
-      if (page.length < pageSize) break;
+      const total = data.estimatedTotalHits || 0;
+      if (!page.length || page.length < pageSize || allHits.length >= total) break;
       offset += pageSize;
     }
     if (!allHits.length) {
@@ -2832,8 +2860,11 @@ async function loadFullPartInDrawer(hit) {
   }
   try {
     const indexPart = indexPartForSource(hit.source, hit.part);
+    // pageSize MUST match the server's 100-hit cap (api/search.js) — a larger
+    // value made the first page return <pageSize and the loop exit after ONE
+    // page, silently truncating any part past 100 sections (RFO 52 = 768).
     const allHits = [];
-    const pageSize = 200;
+    const pageSize = 100;
     let offset = 0;
     while (true) {
       const data = await meiliSearch({
@@ -2843,7 +2874,8 @@ async function loadFullPartInDrawer(hit) {
       });
       const page = data.hits || [];
       allHits.push(...page);
-      if (page.length < pageSize) break;
+      const total = data.estimatedTotalHits || 0;
+      if (!page.length || page.length < pageSize || allHits.length >= total) break;
       offset += pageSize;
     }
     if (activeDocId !== hit.id) return;   // user opened another clause while loading — don't clobber
