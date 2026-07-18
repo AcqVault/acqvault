@@ -82,8 +82,18 @@ def clean_title(raw):
     return t
 
 
+def _memo_pdf(part):
+    # some memos are zero-padded on disk (Part-04.pdf) though the corpus stores
+    # the filename unpadded — accept either.
+    for name in (f"DoD_RFO_Deviation_Part-{part}.pdf", f"DoD_RFO_Deviation_Part-{int(part):02d}.pdf"):
+        p = REPO / "R-DFARS" / name
+        if p.exists():
+            return p
+    raise FileNotFoundError(f"no memo PDF for part {part}")
+
+
 def parse_part(part):
-    pdf = REPO / "R-DFARS" / f"DoD_RFO_Deviation_Part-{part}.pdf"
+    pdf = _memo_pdf(part)
     raw = "\n".join((pg.extract_text() or "") for pg in PdfReader(str(pdf)).pages)
     lines = [ln.strip() for ln in raw.split("\n")]
     fam = family(part)
@@ -95,7 +105,9 @@ def parse_part(part):
     for i, ln in enumerate(lines):
         g = GROUP.match(ln)
         if g:
-            boundaries.append((i, "group", g.group(2).rstrip("."), clean_title(g.group(3))))
+            # some memos write "SUBPART 205.3--SYNOPSES" (double hyphen); the
+            # number regex eats the first one, so strip trailing dashes/dots too
+            boundaries.append((i, "group", g.group(2).rstrip(".-–— "), clean_title(g.group(3))))
             continue
         m = HEAD.match(ln)
         if m and re.match(r"^\d+\.\d", m.group(1)):
