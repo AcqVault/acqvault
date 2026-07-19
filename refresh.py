@@ -103,15 +103,28 @@ def block_lines(article):
     the doc's text is the FIRST run of paragraphs after its own heading —
     child headings encountered before any text are skipped (containers
     inherit their first child's text), and the run stops at the next
-    heading once text has started. Levels come from the ListLn classes."""
+    heading once text has started. Levels come from the ListLn classes.
+
+    ONE EXCEPTION: a container whose own heading says "[Reserved]" does not
+    inherit. Upstream nests the Part 52 clause groups as containers whose
+    heading reads "52.233 [Reserved]" and whose substance lives in the -1/-2
+    children, so inheriting handed 45 group headers a full clause they do not
+    own — "52.233 [Reserved]" carried the entire Disputes clause, duplicating
+    52.233-1. A reserved container keeps any text of its own (there is none
+    today) and stops at its first child heading. See
+    scripts/repair_rfo_reserved_swallow.py for the corpus-side repair."""
+    reserved_container = False
     started = False
     lines = []
     els = article.find_all(list(HEADINGS) + ["p", "li"])
+    if els and els[0].name in HEADINGS:
+        own_title = " ".join(els[0].get_text(" ", strip=True).split())
+        reserved_container = own_title.rstrip(".").endswith("[Reserved]")
     for el in els:
         if el.name in HEADINGS:
             if el is els[0]:
                 continue          # the article's own title
-            if started:
+            if started or reserved_container:
                 break             # next section begins — stop
             continue              # child heading before any text — skip
         txt = " ".join(el.get_text(" ", strip=True).split())

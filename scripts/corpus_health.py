@@ -16,6 +16,7 @@ production at least once:
   PGI attachments ..... 40 docs swallowed the whole PGI attachment (843K chars)
   PDF line breaks ..... r-dfars 43% / FC 57% of breaks fell mid-sentence
   memo coverage ....... 6 R-DFARS parts were downloaded but never ingested
+  [Reserved] swallow .. 45 Part 52 group headers held a child's clause (2026-07-19)
 """
 import json
 import re
@@ -27,6 +28,8 @@ REPO = Path(__file__).resolve().parent.parent
 DOCS = REPO / "output" / "documents.json"
 
 LMARK = re.compile(r"^L\d+:")
+# a clause-group container: bare section number, no -N child suffix
+RESERVED_GROUP = re.compile(r"^(\d+\.\d+) \[Reserved\]$")
 PGI_HEAD = re.compile(r"PGI\s+\d+(\.\d+)?\s*[—–]")
 FURNITURE = re.compile(
     r"^(Attachment [A-Z]\d?"
@@ -52,6 +55,15 @@ def check(name, ok, detail, fix=None):
 
 def lines_of(d):
     return [l for l in (d.get("content") or "").split("\n") if l.strip()]
+
+
+def body_of(d):
+    """The doc's content with its leading title line removed."""
+    content = d.get("content") or ""
+    title = d.get("title") or ""
+    if content.startswith(title):
+        content = content[len(title):]
+    return content.strip()
 
 
 def main():
@@ -105,6 +117,29 @@ def main():
     check("no PGI attachments", not pgi,
           f"{len(pgi)} doc(s) swallowed a PGI attachment (out of scope): {pgi[:3]}",
           "scripts/strip_pgi_attachments.py")
+
+    # ── [Reserved] headers that swallowed a child clause ──────────────────────
+    # A container titled "52.233 [Reserved]" that carries the full Disputes
+    # clause is lying twice: it says reserved while holding text, and it
+    # duplicates 52.233-1. The tell is structural — the body is byte-identical
+    # to one of its own numbered children, which is what inheritance produces.
+    # Genuine reserved leaves are untouched by this: they have no children, so
+    # sharing a stock "(Deviation Date)" line with a peer never trips it.
+    bodies = defaultdict(list)
+    for d in live:
+        bodies[body_of(d)].append(d)
+    swallow = []
+    for d in live:
+        m = RESERVED_GROUP.match(d.get("title") or "")
+        body = body_of(d)
+        if not m or not body:
+            continue
+        if any(o is not d and (o.get("title") or "").startswith(m.group(1) + "-")
+               for o in bodies[body]):
+            swallow.append(d["id"])
+    check("no [Reserved] header swallowed a clause", not swallow,
+          f"{len(swallow)} [Reserved] header(s) hold a child's clause text: {swallow[:3]}",
+          "scripts/repair_rfo_reserved_swallow.py")
 
     # ── largest docs, informational ───────────────────────────────────────────
     # Deliberately NOT a failure: size alone can't tell a swallow from a
