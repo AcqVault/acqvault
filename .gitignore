@@ -220,3 +220,6 @@ __marimo__/
 # Local workspace clutter
 .DS_Store
 _local_archive/
+
+# Claude Code agent squads / local strategy — keep private, never publish
+.claude/
