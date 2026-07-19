@@ -1027,6 +1027,14 @@ body.work-mode #spending-dashboard{display:none;}
 .br-cite-btn.copied{background:#16a34a;color:#fff;border-color:#16a34a;}
 .br-body{font-size:var(--fs-17);color:var(--ink2);line-height:1.8;min-width:0;}
 .br-body .br-p{margin-bottom:12px;}
+/* Clause variants (Basic / Alternate N) — jump strip + anchored headings.
+   252.225-7036 carries twelve near-identical variants across 160K of text. */
+.br-alt-nav{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 22px;padding:12px 14px;border:1px solid var(--line2);border-left:3px solid var(--accent);border-radius:var(--r-md);background:var(--off);}
+.br-alt-nav-lbl{font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wider);text-transform:uppercase;color:var(--muted2);margin-right:3px;}
+.br-alt-nav a{font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--accent);text-decoration:none;border:1px solid var(--line2);border-radius:999px;padding:3px 11px;white-space:nowrap;transition:background .15s,border-color .15s;}
+.br-alt-nav a:hover{background:rgba(135,101,28,.10);border-color:var(--accent);}
+.br-body .br-alt-head{scroll-margin-top:16px;font-size:17px;font-weight:var(--fw-bold);color:var(--ink);margin:30px 0 10px;padding-top:14px;border-top:1px solid var(--line2);}
+.br-body .br-alt-head:first-child{margin-top:0;padding-top:0;border-top:0;}
 .br-body .br-bullet,.br-body .br-numbered{display:flex;gap:9px;align-items:flex-start;margin:7px 0 7px 10px;line-height:1.65;}
 .br-body .br-bullet-marker,.br-body .br-num-marker{flex:0 0 auto;min-width:18px;color:var(--accent);font-weight:750;}
 .br-body .br-bullet-text,.br-body .br-num-text{flex:1;}

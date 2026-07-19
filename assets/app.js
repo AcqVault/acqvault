@@ -951,14 +951,58 @@ function makeParaPath() {
   };
 }
 
-function renderContentLine(line, baseCitation, source, paraPath) {
+// A clause published with variants opens each one with "Basic." or "Alternate N."
+// followed by its prescription ("As prescribed in 225.601…") or "[Reserved]".
+// Anchored so 252.225-7036 — twelve near-identical variants, 160K of text — can be
+// navigated instead of scrolled. Kept strict on purpose: prose cross-references
+// ("as in Alternate I of the clause") must NOT match, so the prescription verb or
+// [Reserved] is required. Mirrored in api/_seo.js — edit both.
+const ALT_BOUNDARY = /(?=(?:Basic|Alternate [IVXL]+)\.\s*(?:\[Reserved\.?\]|As prescribed))/;
+const ALT_HEAD = /^(Basic|Alternate [IVXL]+)\.\s*(?=\[Reserved\.?\]|As prescribed)/;
+
+function altSlug(label) {
+  return label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
+// Most docs open with a line echoing their own title, which the reader already shows
+// as the section heading. The old strip needed a blank line after it, which 2,703 docs
+// don't have, so they printed their title twice. Mirrored in api/_seo.js — edit both.
+function isTitleEcho(line, title) {
+  const norm = s => String(s || '').replace(/^L\d+:\s*/, '').replace(/\s+/g, ' ').trim()
+    .replace(/[.\s]+$/, '').toLowerCase();
+  const t = norm(title);
+  return t.length > 0 && norm(line) === t;
+}
+
+function renderContentLine(line, baseCitation, source, paraPath, altCtx) {
   const lm = line.match(/^L(\d):(.*)/);
   if (lm) {
     const level   = parseInt(lm[1]);
     const content = lm[2].trim();
     if (!content || isBrowsePageNumberLine(content)) return '';
     const text    = categoryGuideText(content, source);
-    if (level === 0) return `<p class="br-p">${text}</p>`;
+    if (level === 0) {
+      if (!altCtx) return `<p class="br-p">${text}</p>`;
+      // The source PDFs run reserved variants together on one line ("Alternate II.
+      // [Reserved] Alternate III. [Reserved] Alternate IV. As prescribed…"); give
+      // each its own heading rather than burying two of them mid-paragraph.
+      const segments = content.split(ALT_BOUNDARY).filter(x => x.trim());
+      const out = [];
+      for (const seg of segments) {
+        const t = seg.trim();
+        const m = t.match(ALT_HEAD);
+        if (!m) { out.push(`<p class="br-p">${categoryGuideText(t, source)}</p>`); continue; }
+        const label = m[1];
+        const id = `${altCtx.anchor}-${altSlug(label)}`;
+        altCtx.blocks.push({ label, id });
+        // Heading keeps the trailing period so the rendered page is character-for-
+        // character the source text — no punctuation quietly dropped.
+        out.push(`<h3 class="br-alt-head" id="${esc(id)}">${esc(label)}.</h3>`);
+        const rest = t.slice(m[0].length).trim();
+        if (rest) out.push(`<p class="br-p">${categoryGuideText(rest, source)}</p>`);
+      }
+      return out.join('');
+    }
     let cite = baseCitation || '';
     if (cite) {
       // Only real enumeration tokens — (a) (1) (i) (A) (S-90) — never a leading
@@ -1417,13 +1461,28 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const title   = hit.title || 'Untitled';
     const anchor  = parsed.anchor;
     const citation = generateCitation(hit);
-    const content  = (hit.content || '').replace(/^[^\n]+\n\n/, ''); // strip heading line
+    // Strip the leading line only when it echoes the title we're already showing.
+    const content  = (() => {
+      const raw = hit.content || '';
+      const nl = raw.indexOf('\n');
+      if (nl === -1) return raw;
+      return isTitleEcho(raw.slice(0, nl), title) ? raw.slice(nl + 1).replace(/^\n+/, '') : raw;
+    })();
     const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
     const visualFlags = {};
     const paraPath = makeParaPath(); // fresh token path per section
-    const bodyHTML = source === 'compass'
+    const altCtx = { anchor, blocks: [] }; // variant headings, scoped per section
+    let bodyHTML = source === 'compass'
       ? formatCompassContent(content, hit, citation)
-      : lines.map(l => renderContentLine(l, citation, source, paraPath) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
+      : lines.map(l => renderContentLine(l, citation, source, paraPath, altCtx) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
+    // One variant is just a clause; two or more is a document you have to navigate.
+    if (altCtx.blocks.length >= 2) {
+      // A <div role="navigation">, NOT <nav> — app.css styles bare `nav` as the
+      // fixed site header, which would rip this strip out of the document flow.
+      bodyHTML = `<div class="br-alt-nav" role="navigation" aria-label="Clause variants"><span class="br-alt-nav-lbl">Variants</span>${
+        altCtx.blocks.map(b => `<a href="#" data-action="scroll-to" data-anchor="${esc(b.id)}">${esc(b.label)}</a>`).join('')
+      }</div>` + bodyHTML;
+    }
 
     if (parsed.type === 'subpart') {
       return `<div id="${anchor}" class="br-section">

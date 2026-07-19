@@ -96,18 +96,74 @@ function partsForSource(source) {
   return { parts, groups };
 }
 
+// A clause published with variants opens each one with "Basic." or "Alternate N."
+// followed by its prescription ("As prescribed in 225.601…") or "[Reserved]".
+// Anchored so 252.225-7036 — twelve near-identical variants, 160K of text — can be
+// navigated instead of scrolled. Kept strict on purpose: prose cross-references
+// ("as in Alternate I of the clause") must NOT match, so the prescription verb or
+// [Reserved] is required. Mirrored in assets/app.js — edit both.
+const ALT_BOUNDARY = /(?=(?:Basic|Alternate [IVXL]+)\.\s*(?:\[Reserved\.?\]|As prescribed))/;
+const ALT_HEAD = /^(Basic|Alternate [IVXL]+)\.\s*(?=\[Reserved\.?\]|As prescribed)/;
+
+function altSlug(label) {
+  return label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
+// Most docs open with a line echoing their own title, which the page already shows
+// as the section heading. The old check was an exact match, so it missed the ~1,683
+// docs whose echo carries a trailing period ("…Payments Program." vs the bare title)
+// and they printed their title twice. Mirrored in assets/app.js — edit both.
+function isTitleEcho(line, title) {
+  const norm = s => String(s || '').replace(/^L\d+:\s*/, '').replace(/\s+/g, ' ').trim()
+    .replace(/[.\s]+$/, '').toLowerCase();
+  const t = norm(title);
+  return t.length > 0 && norm(line) === t;
+}
+
 // Render a doc's content into clean paragraphs (strip the "Ln:" level markers
 // and a leading line that just repeats the title).
-function renderContent(content, title) {
+function renderContent(content, title, anchorBase) {
   const lines = String(content || '').split('\n');
   const out = [];
+  const blocks = [];
   let first = true;
   for (let line of lines) {
+    const isTop = /^L0:/.test(line);
     let s = line.replace(/^L\d+:\s*/, '').trim();
     if (!s) { first = false; continue; }
-    if (first && title && s === String(title).trim()) { first = false; continue; }
+    if (first && title && isTitleEcho(s, title)) { first = false; continue; }
     first = false;
-    out.push('<p>' + esc(s) + '</p>');
+
+    // The source PDFs run reserved variants together on one line
+    // ("Alternate II. [Reserved] Alternate III. [Reserved] Alternate IV. As
+    // prescribed…"); give each its own heading rather than burying two of them.
+    const segments = isTop ? s.split(ALT_BOUNDARY).filter(x => x.trim()) : [s];
+    for (const seg of segments) {
+      const t = seg.trim();
+      const m = isTop ? t.match(ALT_HEAD) : null;
+      if (m) {
+        const label = m[1];
+        const id = `${anchorBase || 'doc'}-${altSlug(label)}`;
+        blocks.push({ label, id });
+        // Heading keeps the trailing period so the rendered page is character-for-
+        // character the source text — no punctuation quietly dropped.
+        out.push(`<h3 class="alt-head" id="${esc(id)}"><a href="#${esc(id)}">${esc(label)}.</a></h3>`);
+        const rest = t.slice(m[0].length).trim();
+        if (rest) out.push('<p>' + esc(rest) + '</p>');
+      } else {
+        out.push('<p>' + esc(t) + '</p>');
+      }
+    }
+  }
+
+  // One variant is just a clause; two or more is a document you have to navigate.
+  if (blocks.length >= 2) {
+    // A <div role="navigation">, NOT <nav> — kept identical to the client renderer,
+    // where app.css styles bare `nav` as the fixed site header.
+    const nav = `<div class="alt-nav" role="navigation" aria-label="Clause variants"><span class="alt-nav-lbl">Variants</span>${
+      blocks.map(b => `<a href="#${esc(b.id)}">${esc(b.label)}</a>`).join('')
+    }</div>`;
+    return nav + '\n' + out.join('\n');
   }
   return out.join('\n');
 }
@@ -167,6 +223,14 @@ section.sec:target>h2{color:var(--accent)}
 @media(prefers-reduced-motion:reduce){section.sec:target{animation:none}}
 .srcref{font-size:12.5px;color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
+/* Clause variants (Basic / Alternate N) — jump strip + anchored headings */
+.alt-nav{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 20px;padding:12px 14px;border:1px solid var(--line2);border-left:3px solid var(--brass);border-radius:10px;background:rgba(135,101,28,.04)}
+.alt-nav-lbl{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:3px}
+.alt-nav a{font-size:12.5px;font-weight:650;color:var(--brass-ink);text-decoration:none;border:1px solid var(--brass-line);border-radius:999px;padding:3px 11px;white-space:nowrap}
+.alt-nav a:hover{background:rgba(135,101,28,.10)}
+.alt-head{scroll-margin-top:18px;font-family:var(--serif);font-size:20px;font-weight:700;margin:34px 0 10px;padding-top:14px;border-top:1px solid var(--line2)}
+.alt-head a{color:var(--ink);text-decoration:none}
+.alt-head a:hover{color:var(--accent)}
 .sec p{margin:.5em 0;font-size:15px}
 .sec p a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}.sec p a:hover{color:var(--brass-ink)}
 .parts{columns:2;gap:24px}.parts a{display:block;padding:7px 0;color:var(--accent);text-decoration:none;font-size:15px;break-inside:avoid}
@@ -305,7 +369,7 @@ function renderPartPage(source, part) {
     return `<section class="sec" id="${anchor}">
 <h2><a href="#${anchor}">${esc(d.title)}</a></h2>
 ${src}
-${renderContent(d.content, d.title)}
+${renderContent(d.content, d.title, anchor)}
 </section>`;
   }).join('\n');
 
