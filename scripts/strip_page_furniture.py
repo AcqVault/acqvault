@@ -52,13 +52,20 @@ def main():
     docs = json.loads(DOCS.read_text(encoding="utf-8"))
     touched, total_lines = [], 0
     for d in docs:
-        if not d or d.get("source") != "r-dfars":
+        # every source: the memo-specific patterns can't match non-memo text, and
+        # "Page N of M" furniture also turns up in FMR chapters.
+        if not d:
             continue
-        new, removed = clean(d.get("content", ""))
+        content = d.get("content", "")
+        new, removed = clean(content)
         if not removed:
             continue
         assert new.strip(), f"{d['id']}: would empty the doc"
-        assert LMARK.match(new.split("\n")[0]), f"{d['id']}: broken L-format"
+        # marker style must survive: r-dfars lines are all L-marked, FMR/FC have
+        # none — assert the new first line matches the ORIGINAL style, don't
+        # assume a marker exists.
+        had = bool(LMARK.match(content.split("\n")[0]))
+        assert bool(LMARK.match(new.split("\n")[0])) == had, f"{d['id']}: marker style changed"
         touched.append((d["id"], removed, len(d["content"]) - len(new)))
         total_lines += removed
         if args.apply:

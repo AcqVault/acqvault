@@ -644,6 +644,17 @@ def ship(summary_line):
     print("\nShipping…")
     subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "gen_doc_hashes.py")],
                    cwd=str(BASE_DIR), check=True)
+    # Corpus health gate — every check here exists because the problem shipped
+    # to production once (tofu glyphs, literal "L1:" markers, page furniture
+    # wedged mid-section, swallowed PGI attachments, PDF lines broken
+    # mid-sentence, un-ingested memos). A non-zero exit stops the ship and the
+    # failing check names the repair script to run.
+    print("\nCorpus health…")
+    health = subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "corpus_health.py")],
+                            cwd=str(BASE_DIR))
+    if health.returncode != 0:
+        print("\n✗ SHIP ABORTED — fix the failing check(s) above, then re-run.")
+        sys.exit(1)
     new_cache = bump_service_worker()
     if new_cache:
         print("  service worker cache → " + new_cache)
