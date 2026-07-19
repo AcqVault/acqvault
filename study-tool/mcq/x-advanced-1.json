@@ -1,0 +1,310 @@
+{
+  "935ffc933d7a": {
+    "x": "The competitive-vs-sole-source call is an evidence question, and these five factors are the evidence: can others get the data, what does switching really cost, can the base perform, is the urgency honest, and do second-source economics close. The distractor lists are real considerations — but they're downstream execution details, not the strategy call.",
+    "ref": "Vol. 2, Acquisition Planning"
+  },
+  "d0361b53188e": {
+    "x": "Before deciding a sustainment competition, inventory what the Government actually holds: data rights, deliverables (source/build/interfaces), GFP and tooling, licenses, funding. CPARS and incumbent staffing tell you about the incumbent — the inventory tells you whether anyone else could realistically perform.",
+    "ref": "Vol. 2, Acquisition Planning"
+  },
+  "33042bd006cf": {
+    "x": "Protests, directed strategy changes, and regulatory shifts are genuinely unforeseeable — they can justify a bridge. 'We didn't plan' never can, by rule: rewarding late starts with sole-source continuations would make poor planning a strategy.",
+    "ref": "RFO Part 6 · Vol. 2, Acquisition Planning"
+  },
+  "053cbeea5e42": { "ref": "Vol. 2, Acquisition Planning" },
+  "079022ee3f6d": {
+    "x": "Finding other sources takes active outreach: fresh sources-sought and RFIs, industry days, capability analysis against the tech data package, and other services' experience. Passive moves — asking the incumbent, rereading last cycle's research — find exactly what they look for: nothing.",
+    "ref": "RFO Part 10 · Vol. 2, Market Research"
+  },
+  "abce5003908c": {
+    "x": "Truly one source → RFO 6.103-1 (one responsible source), a J&A at the right approval tier, and market research strong enough to survive hostile reading. Urgency (6.103-2) is a different exception with different proof, and SAP single-source rationale stops at the SAT.",
+    "ref": "RFO 6.103-1 · Vol. 2, Competition"
+  },
+  "27b9ce4d2c0e": {
+    "x": "Express (the warrant) and implied (what the warrant necessarily includes) are both real authority. Apparent authority — looking authorized without being authorized — binds nothing, and no amount of contractor good faith fixes it. That's the seam every UAC crawls out of.",
+    "ref": "Vol. 2, Authority · Vol. 1 §3"
+  },
+  "88dd62fee9f3": {
+    "x": "All six, every time: proper if a CO had done it, benefit received, ratifier holds actual authority, price fair and reasonable, funds available then and now, Legal concurs. The distractors swap in seductive near-elements (good faith, urgency, command endorsement) — none of which are on the list.",
+    "ref": "RFO 1.405 · Vol. 2, Authority"
+  },
+  "e982f0457dbb": {
+    "x": "Ratification approval tiers on the SAT: above it → HCA (delegable); at or under → COCO level. $500K is over the $350K SAT, $90K is under — the card is really testing whether you carry the SAT in your head.",
+    "ref": "RFO 1.405 · Vol. 2, Authority"
+  },
+  "2949d2327e73": {
+    "x": "Offer and acceptance, consideration, competency, legality, certainty of terms — contract law's foundation, service-agnostic. Funding, signatures, and warrants are how the GOVERNMENT contracts lawfully, but they aren't the five common-law elements this question asks for.",
+    "ref": "Vol. 2, Authority"
+  },
+  "355276c46d67": { "ref": "Vol. 2, Authority" },
+  "5b24c7798b4a": {
+    "x": "A refusal to write a statement doesn't stop a ratification — document the refusal, reconstruct the facts from correspondence and witnesses, and keep moving. The package needs the story; the refusal itself becomes part of the record (and a leadership conversation).",
+    "ref": "Vol. 2, Authority"
+  },
+  "70fbb68e0e19": {
+    "x": "Implied authority is real: what reasonably flows from a position's express authority is legally valid. The trap the question hunts is conflating implied with apparent — the lookalike that binds nothing. Say the distinction cleanly and you've answered like a CO.",
+    "ref": "Vol. 2, Authority · Vol. 1 §3"
+  },
+  "0998b7e6e642": {
+    "x": "RFO 3.104 protects exactly two classes: the Government's source selection information and contractors' bid/proposal data. CUI, PII, and CPARS live under other regimes — naming the right two shows you know which law you're operating.",
+    "ref": "RFO 3.104 · Vol. 2, Procurement Integrity"
+  },
+  "322937e75d22": {
+    "x": "First moves on a disclosure: Legal immediately, then identify and contain — the recipient deletes with signed confirmation. Cancelling the solicitation or briefing the whole team comes later, if at all, and only as the documented decision dictates.",
+    "ref": "RFO 3.104 · Vol. 2, Procurement Integrity"
+  },
+  "25228f00090d": {
+    "x": "When a disclosure impacts the procurement, the decision escalates to the HCA — disqualification and cancellation are HCA-level calls, with Legal driving the analysis. The SSA runs the selection; the HCA owns the integrity decision.",
+    "ref": "RFO 3.104 · Vol. 2, Procurement Integrity"
+  },
+  "c28f28ca63f2": { "ref": "Vol. 2, Procurement Integrity" },
+  "f78b31102ae4": {
+    "x": "A verbal 'I deleted it' closes nothing. The incident closes on paper: a signed affidavit confirming deletion of all copies, plus the CO's written determination. If it went to an offeror, you're in HCA territory instead — that's the fork that matters.",
+    "ref": "RFO 3.104 · Vol. 2, Procurement Integrity"
+  },
+  "99d0a01bede1": {
+    "x": "Disclosure to an actual offeror is the high-impact branch: presumptive taint. The HCA decides — disqualification and cancellation are both on the table — but it's a decision, not an automatic outcome. 'Delete and drive on' understates it; 'automatic cancellation' overstates it.",
+    "ref": "RFO 3.104 · Vol. 2, Procurement Integrity"
+  },
+  "f46f3249feba": {
+    "x": "ATTEMPTING to obtain source selection information is itself a PIA problem — the statute reaches the ask, not just the leak. Document it, report it, brief the team. The 'no harm until something was shared' instinct is exactly how probes escalate into disclosures.",
+    "ref": "RFO 3.104 · Vol. 2, Procurement Integrity"
+  },
+  "9602ba9c7412": {
+    "x": "Unequal access, impaired objectivity, biased ground rules — and ground rules is hardest, because once a contractor shaped the requirement, no firewall un-shapes it; exclusion is the usual outcome. Ranking the types by fixability is what boards actually probe.",
+    "ref": "RFO 9.5 pattern · Vol. 2, OCI"
+  },
+  "b25c39993384": {
+    "x": "Avoid, neutralize, mitigate — in that order of preference. Avoidance kills the conflict, neutralization structures it away, mitigation manages what remains. 'Disclose/firewall/exclude' are tools inside the framework, not the framework.",
+    "ref": "Vol. 2, OCI"
+  },
+  "491f47d224e6": {
+    "x": "OCI waivers belong to the HCA and are non-delegable — one of the few authorities that can't move down. If your answer to any waiver question starts below the HCA, stop and climb.",
+    "ref": "Vol. 2, OCI"
+  },
+  "57ce0f1a8517": {
+    "x": "False — unequal access is complete on the imbalance itself; you never have to show the contractor USED the information. Requiring proof of use would gut the protection, since use is nearly unprovable. The conflict is the access.",
+    "ref": "Vol. 2, OCI"
+  },
+  "74433b82312d": {
+    "x": "Biased ground rules — a contractor who shaped the requirement can't be firewalled out of its own influence; the spec IS the head start. That's why exclusion is the usual outcome, and why you screen for it before solicitation, not after proposals.",
+    "ref": "Vol. 2, OCI"
+  },
+  "735bd0bd5fe4": {
+    "x": "Type drives remedy: a firewall addresses unequal access going forward, but ground rules were written in the past — no wall reaches backward. Accepting a firewall certification without typing the conflict first is the classic OCI miss.",
+    "ref": "Vol. 2, OCI"
+  },
+  "ec763e1449e6": {
+    "x": "The PCO decides on the mitigation plan — panels, Legal, and reviewers advise, but the decision and the accountability sit with the contracting officer. (The HCA's role is the waiver, a different instrument for a different situation.)",
+    "ref": "Vol. 2, OCI"
+  },
+  "d146eee4b073": {
+    "x": "Finances, schedule, performance record, integrity, organization/experience/controls, equipment/facilities, and otherwise qualified & eligible. The distractor lists sound like proposal evaluation — responsibility is a different gate, about the FIRM, decided at award.",
+    "ref": "RFO 9.104 pattern · Vol. 2, Responsibility"
+  },
+  "00c9dd64b727": {
+    "x": "SAM exclusions get checked on every action, no floor; FAPIIS review kicks in over the SAT ($350K). Getting the pair backwards — or giving both a threshold — is the standard miss.",
+    "ref": "RFO Part 9 · Vol. 2, Responsibility"
+  },
+  "97fe9fa8f578": {
+    "x": "A small business found non-responsible goes to the SBA, and a Certificate of Competency conclusively establishes responsibility — the CO's finding doesn't stand against it. Skipping the referral is a protest waiting to happen.",
+    "ref": "RFO Part 9 · SBA CoC"
+  },
+  "389e9eb3be11": {
+    "x": "Doubt cuts in the Government's favor — doubt means no. There's no presumption of responsibility from SAM registration, and while pre-award surveys can inform the call, they don't reverse the default. The burden of demonstrating responsibility sits with the offeror.",
+    "ref": "Vol. 2, Responsibility"
+  },
+  "f5625f2376c1": { "ref": "Vol. 2, Responsibility · SBA CoC" },
+  "9a68017198a8": {
+    "x": "Responsibility screens on the seven standards and documented facts — nothing else. Distrust without documentation converts a defensible 'no' into a sustained protest, because the record (not your instinct) is what GAO reads.",
+    "ref": "Vol. 2, Responsibility"
+  },
+  "1e37736760b9": {
+    "x": "Ineligible = excluded (SAM/debarment): no award, full stop, any dollar value. Non-responsible = fails the standards for THIS award on today's facts — a firm can be responsible next quarter. Different tests, different durations, different remedies.",
+    "ref": "RFO Part 9 · Vol. 2, Responsibility"
+  },
+  "5fec57ac3832": {
+    "x": "The four: capable sources, commercial or not, small-business capability, and industry practices (plus whether bundling is justified). 'Best vendor and fair price' is what the COMPETITION determines — research builds the map, not the pick.",
+    "ref": "RFO Part 10 · Vol. 2, Market Research"
+  },
+  "602833ee075f": {
+    "x": "18 months — after that, research goes stale and downstream decisions citing it inherit the staleness. On long acquisitions, refresh before the J&A or set-aside decision, not after the protest.",
+    "ref": "RFO 10.001"
+  },
+  "e5a6fa168f8b": { "ref": "RFO Part 10 · Vol. 2, Market Research" },
+  "f4ad30db7f45": {
+    "x": "Downstream decisions cite the market research report — the J&A, the set-aside, the CID all lean on it. Research that was never documented can't hold that weight; a post-hoc memo is reconstruction, not research.",
+    "ref": "RFO Part 10 · Vol. 2, Market Research"
+  },
+  "fec7186d421c": { "ref": "Vol. 2, Market Research" },
+  "d98f94d84eac": { "ref": "Vol. 2, Market Research" },
+  "9364dd1a8da7": { "ref": "Vol. 2, Market Research" },
+  "094a9da4d668": {
+    "x": "Inventory → excess → UNICOR → AbilityOne → wholesale → mandatory FSS → commercial. The Government checks what it already owns, then statutory programs, then schedules, then the open market. Order matters — each rung must be cleared, not skipped.",
+    "ref": "RFO Part 8 · Vol. 2, Required Sources"
+  },
+  "3b8d75841b8f": {
+    "x": "For services, AbilityOne leads the ladder — the statutory program outranks convenience. UNICOR's mandatory position applies to supplies.",
+    "ref": "RFO Part 8 · Vol. 2, Required Sources"
+  },
+  "f923c906e0d0": {
+    "x": "The ordering CO owns the order-level fair-and-reasonable call. GSA negotiated ceiling prices across the whole government — not your quantity, configuration, or competitive moment. Comparing holder quotes and seeking discounts is the ordering CO's job, not a courtesy.",
+    "ref": "RFO Part 8 · Vol. 2, Required Sources"
+  },
+  "94b92b91c879": { "ref": "RFO Part 8 · Vol. 2, Required Sources" },
+  "f355210cde61": { "ref": "RFO Part 8 · Vol. 2, Required Sources" },
+  "fa14b528a799": {
+    "x": "Commercial = sold, leased, or licensed to the general public (or evolved and available in time), including minor mods that don't alter form, fit, or function. Government sales history and catalog pricing are EVIDENCE of commerciality — the definition itself runs on the public market.",
+    "ref": "RFO Part 2/12 · Vol. 2, Commercial"
+  },
+  "fe82a9fce34d": {
+    "x": "The CID is written over the SAT and approved one level above the CO. It's a documented determination, not a checkbox — and the one-level-up approval is the piece that separates it from ordinary file documentation.",
+    "ref": "RFO Part 12 · Vol. 2, Commercial"
+  },
+  "5a3c40a9312a": {
+    "x": "RFO 12.201-1, $9M — the streamlined commercial lane. Cite and ceiling travel together at a board; one without the other is half an answer.",
+    "ref": "RFO 12.201-1"
+  },
+  "49c3619626fe": {
+    "x": "Part 12 gives: freedom from certified data, streamlined terms with an FFP preference. It takes: you get only customary market data rights, and Part 49's termination machinery is replaced by the commercial clause. Knowing BOTH sides is what makes the commerciality call honest.",
+    "ref": "RFO Part 12 · Vol. 2, Commercial"
+  },
+  "dae423615094": { "ref": "RFO 15.404 · Vol. 2, Commercial" },
+  "6e762e558b4b": { "ref": "RFO Part 12 · Vol. 2, Commercial" },
+  "b80033fbefef": { "ref": "RFO Part 12 · Vol. 2, Commercial" },
+  "34673e1efe8e": {
+    "x": "GPC to $15K, purchase orders from $15K to the $350K SAT, BPAs for repetitive needs (an account, not a contract). The lanes are dollar-band-driven — mixing up the boundaries collapses the whole SAP structure.",
+    "ref": "RFO Part 13 · Vol. 1 §9"
+  },
+  "8b949db1e574": {
+    "x": "The MPT-to-SAT band is reserved for small business — unless capable small sources genuinely can't be found. The reservation comes from the dollar band, and the exception requires the documented absence, not just preference for a familiar vendor.",
+    "ref": "RFO Part 19 · Vol. 2, SAP"
+  },
+  "03458c10c23f": {
+    "x": "Under the SAT, a sole source needs a documented single-source rationale plus price reasonableness — the formal J&A machinery lives above the SAT. 'No formal J&A' never means 'no documentation'; the file still has to carry the decision.",
+    "ref": "RFO Part 13 · Vol. 2, SAP"
+  },
+  "3ad36f49ee18": {
+    "x": "$9M, RFO 12.201-1 — the streamlined commercial ceiling. It's the number that lets commercial buys keep SAP-like speed well past the SAT, and boards like pairing it against the $350K reflex.",
+    "ref": "RFO 12.201-1"
+  },
+  "2c3a46f79aaf": {
+    "x": "One known $210K requirement split across GPC swipes is threshold evasion — a bright-line violation regardless of cardholder limits or cost centers. The requirement's size is measured when it's KNOWN, and it points to one purchase order with small business first.",
+    "ref": "RFO Part 13 · Vol. 1 §9 GPC rules"
+  },
+  "9a7d7ce960be": {
+    "x": "A BPA is a charge account — no obligation exists until a call is placed. When needs become big, defined, and multi-year, the structure and the funding belong in a real contract vehicle (IDIQ). Treating a BPA like a contract is how ceilings and fiscal discipline quietly evaporate.",
+    "ref": "RFO Part 13 · Vol. 2, SAP"
+  },
+  "754298487c89": {
+    "x": "One quote can support award if the price is provably fair and reasonable — history, catalogs, the IGCE, documented. Reasonableness rides on evidence, not on the count of quotes; a three-quote rule exists nowhere but in office folklore.",
+    "ref": "RFO Part 13 · Vol. 2, SAP"
+  },
+  "f67eaf0a98e1": {
+    "x": "Precision matters: REASONABLE EXPECTATION of two or more CAPABLE small businesses submitting offers at FAIR MARKET prices. It's a forecast made at strategy time from research — not a post-receipt count, and not a two-quote rule.",
+    "ref": "RFO Part 19 · Vol. 2, Small Business"
+  },
+  "b23a98ab7ac6": {
+    "x": "HUBZone other: $5.5M. SDVOSB other: $5M. 8(a) DoD: $100M with no J&A (statutory basis). The half-million gap between HUBZone and SDVOSB 'other' caps is the deliberate confusable this card drills.",
+    "ref": "RFO Part 19 · Vol. 2, Small Business"
+  },
+  "91821da14882": {
+    "x": "DD Form 2579 documents small-business specialist coordination — the record that the set-aside analysis happened and who concurred. SF 1449 is the commercial award form; DD 1547 is weighted guidelines.",
+    "ref": "DD Form 2579 · Vol. 2, Small Business"
+  },
+  "7217434521d2": {
+    "x": "$900K standard, $2M construction — the thresholds where other-than-small primes owe a subcontracting plan. Small primes never owe one; the plan is how large business accounts for small-business opportunity below the prime level.",
+    "ref": "RFO Part 19 · Vol. 2, Small Business"
+  },
+  "fdfcedccde23": {
+    "x": "The Rule of Two tested your expectation — one responsive offer doesn't retroactively break it. If the price is fair-market, award, and document what changed between research and receipt. Withdrawing the set-aside because turnout disappointed is both unnecessary and protest bait.",
+    "ref": "RFO Part 19 · Vol. 2, Small Business"
+  },
+  "1658ed2fe51a": {
+    "x": "Once a requirement enters the 8(a) program, it stays unless SBA agrees to release it — the CO can't unilaterally take the follow-on full-and-open, and incumbent graduation doesn't undo the program's hold. It's the classic 8(a) follow-on trap.",
+    "ref": "SBA 8(a) regs · Vol. 2, Small Business"
+  },
+  "f10497ad0ee0": {
+    "x": "For DoD, 8(a) sole source needs no J&A below $100M — the program's statutory basis IS the competition exception ('authorized by statute'). The $30M figure is the civilian line; mixing the two is the standard miss.",
+    "ref": "RFO Part 19 · SBA 8(a)"
+  },
+  "a78f420d29c1": {
+    "x": "SAMO: Simplified acquisition, Authorized by statute, in-scope Modifications, Orders under existing vehicles — the four lanes where CICA's full-and-open machinery doesn't attach in the first place. Distinct from the seven exceptions, which excuse competition where it DOES attach.",
+    "ref": "RFO Part 6 · Vol. 2, Competition"
+  },
+  "8575184a4e67": {
+    "x": "One source · urgency · industrial mobilization/R&D · international agreement · statute · national security · public interest. The distractors plant 'logical follow-on' and 'best value' — fair-opportunity and source-selection concepts that don't live in Part 6.",
+    "ref": "RFO 6.103 · Vol. 2, Competition"
+  },
+  "2406b1119b1b": {
+    "x": "$18M → Competition Advocate (to $20M). $95M DoD → HPA/PEO (DoD tier runs to $150M). $160M DoD → SPE. The DoD $150M line is the tell — elsewhere the HPA tier tops at $90M.",
+    "ref": "RFO 6.104 · Vol. 2, Competition"
+  },
+  "c06634e050d7": {
+    "x": "14 days after award standard; 30 for urgency — urgency is the one case where posting trails longer, because the buy couldn't wait. Reversing the pair is the classic error.",
+    "ref": "RFO 6.301 · SAM.gov"
+  },
+  "6ca8add7db5e": { "ref": "RFO Part 6 · Vol. 2, Competition" },
+  "fba64c8b4c70": {
+    "x": "Exclusion (a set-aside is the everyday case) still COMPETES — among a deliberately narrowed field, no J&A needed. 'Other than full and open' means one or few sources under an RFO 6.103 exception with a J&A. Same statute, entirely different burdens.",
+    "ref": "RFO Part 6 · Vol. 2, Competition"
+  },
+  "e1ade89aced2": {
+    "x": "$40M → HPA/PEO; $15M → Competition Advocate. Boards ask the ladder twice in a row precisely to catch memorized-once answers — know the bands ($900K / $20M / $90M–$150M DoD / above), not just one rung.",
+    "ref": "RFO 6.104 · Vol. 2, Competition"
+  },
+  "6e1d02b83f70": { "ref": "RFO Part 6 · Vol. 2, Competition" },
+  "3d44b1b923cc": {
+    "x": "Clarifications: minor, no revisions. Communications: pre-competitive-range, to decide who's in — still no revisions. Discussions: post-range, must be meaningful, everyone in the range, revisions allowed. The revision line is what separates the lanes — cross it accidentally and you've opened discussions.",
+    "ref": "RFO Part 15 · Vol. 2, Source Selection"
+  },
+  "ef642dc89894": {
+    "x": "SSEB evaluates, SSA decides, PCO runs the business side. Three roles, three accountabilities — and the SSA deciding is exactly why the evaluators and the business channel stay in their lanes.",
+    "ref": "RFO Part 15 · Vol. 2, Source Selection"
+  },
+  "56466fa2b9dc": {
+    "x": "Award without discussions requires both halves: the solicitation preserved the right, AND the initial proposals support a clean award. 'Everyone was acceptable' isn't the test, and no dollar threshold or SSA urgency finding substitutes.",
+    "ref": "RFO Part 15 · Vol. 2, Source Selection"
+  },
+  "69f57fa773b3": {
+    "x": "A debrief includes the offeror's own evaluated result, its significant weaknesses, and the ranking/rationale — and excludes other offerors' proposal contents. A good debrief answers questions; a defensive one provokes the protest it feared.",
+    "ref": "RFO Part 15 · Vol. 2, Source Selection"
+  },
+  "8bba3e5c70c4": { "ref": "RFO Part 15 · Vol. 2, Source Selection" },
+  "5be0fb484cba": {
+    "x": "Pre-range contact to understand (not revise) a proposal is a communication — routed through the PCO, documented. The moment the exchange invites a revision it becomes discussions, with all of discussions' obligations. Evaluators never freelance contact.",
+    "ref": "RFO Part 15 · Vol. 2, Source Selection"
+  },
+  "a2ba32887821": {
+    "x": "Cost/price is evaluated — analyzed, realism-checked where applicable — but never adjectivally rated. It enters the tradeoff as a number with analysis behind it. Rating price like technical is a protest-sustainable process error.",
+    "ref": "RFO 15.404 · Vol. 2, Source Selection"
+  },
+  "31ebec1f7357": {
+    "x": "Meaningful = each offeror hears ITS OWN significant weaknesses and deficiencies with enough substance to respond — tailored, even-handed across the range. Identical question lists are the opposite of meaningful; revealing your price objective is a different violation entirely.",
+    "ref": "RFO Part 15 · Vol. 2, Source Selection"
+  },
+  "257067de1eaf": {
+    "x": "$10M for actions entered after 30 June 2026 (FY26 NDAA §1804); $2.5M for earlier contracts AND their mods. The date line matters more than the number — a mod to an old contract stays on the old trigger.",
+    "ref": "FY26 NDAA §1804 · RFO Part 15"
+  },
+  "d097b13b7eac": {
+    "x": "CLAWM: Commercial, Law/regulation set the price, Adequate price competition, Waiver (HCA), commercial Mods — at RFO 15.403-2. Run the exceptions BEFORE demanding certified data; most actions never need the certificate.",
+    "ref": "RFO 15.403-2 · Vol. 2, Pricing"
+  },
+  "37a864f423df": {
+    "x": "Price analysis always (15.404-1) — every action, every method. Cost realism applies on competitive cost-type source selections (15.404-3), where an unrealistically low estimate becomes the Government's overrun. Reversing 'always' onto cost analysis is the standard flip.",
+    "ref": "RFO 15.404 · Vol. 2, Pricing"
+  },
+  "9135a54de3d6": {
+    "x": "All five: it was cost/pricing data, it existed before agreement, it wasn't disclosed, the Government relied, the price increased. Intent is famously NOT an element — defective pricing is strict about facts, not motives. Each element the contractor can break defeats the remedy.",
+    "ref": "10 U.S.C. §3706 · Vol. 2, Pricing"
+  },
+  "dfb052112b10": {
+    "x": "15% R&D, 10% most others, 6% A&E — statutory CPFF fee ceilings. The A&E 6% rides on the design fee and is the one boards pull out when the first two come too easily.",
+    "ref": "10 U.S.C. §3322 · Vol. 2, Pricing"
+  },
+  "4882451c81b3": { "ref": "RFO 15.403 · Vol. 2, Pricing" },
+  "e9eebb79ec77": { "ref": "10 U.S.C. §§3701–3708 · Vol. 2, Pricing" },
+  "bb5d54c6428b": { "ref": "RFO 15.404 · Vol. 2, Pricing" },
+  "23a76094f31e": { "ref": "DCMA/DCAA support thresholds · Vol. 2, Pricing" }
+}

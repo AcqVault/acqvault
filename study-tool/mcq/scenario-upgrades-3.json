@@ -1,0 +1,534 @@
+{
+  "75832160934e": {
+    "ask": "Five interested firms, three of them small, and a nervous customer. What's your set-aside call?",
+    "fu": [
+      {
+        "h": "The socioeconomic programs get their look before the plain set-aside.",
+        "d": "Before a total small-business set-aside, consider the socioeconomic lanes — 8(a), HUBZone, SDVOSB, WOSB — against their program conditions and caps; the plain set-aside is the default posture once the Rule of Two is met, and the program lanes are checked in coordination with your Small Business Professional (DD 2579). There's no universal mandatory ranking among the programs — what's mandatory is considering them deliberately and documenting the path chosen."
+      },
+      {
+        "h": "The expectation breaks on evidence, not anxiety.",
+        "d": "A Rule-of-Two expectation legitimately breaks when documented research shows fewer than two capable small businesses likely to offer at fair market prices — capability gaps proven against the actual requirement, not presumed from size; past small-business failure on THIS work; or market changes since research. Customer nervousness, clearance myths, and incumbent preference break nothing. If the expectation stands, the set-aside posture is required — and the file carries the evidence either way."
+      }
+    ],
+    "script": "This is a small-business question — the RFO Part 19 Rule of Two on documented capability. My help: my Small Business Professional and the SBA, with the DD 2579 papering the coordination. The rule: a reasonable expectation of two or more capable small businesses at fair market prices means set-aside — and three interested small firms with relevant past performance is a textbook expectation. The customer's clearance worry died in the facility-clearance database; I'd record it as resolved, not let it haunt the strategy. Before the plain set-aside, the program lanes get their look — 8(a), WOSB — against their conditions. Then we compete it small, and the record carries any protest. Nervousness isn't evidence; the research is."
+  },
+  "62e1e0c2b3b7": {
+    "ask": "SBA is slow and the PM wants it competed full-and-open. What controls this follow-on?",
+    "fu": [
+      {
+        "h": "Release is SBA's call — when would the Government even ask?",
+        "d": "Requesting release from 8(a) is appropriate when the requirement has genuinely outgrown the program's purpose — mandatory sources changed, the requirement transformed, or long-term strategy (like consolidations) needs the flexibility — and SBA weighs the program's development interest in the incumbent community. It's a deliberate, documented request through your Small Business Professional and the district office — not a workaround for slow email, and never a unilateral CO decision."
+      },
+      {
+        "h": "Find the line the $5.8M estimate crosses.",
+        "d": "Competitive 8(a) begins at $8.5M for manufacturing and $5.5M for everything else. At $5.8M, this services follow-on exceeds the competitive threshold — so it competes among eligible 8(a) firms rather than going sole source. Sole-source 8(a) below the thresholds needs no J&A (DoD's statutory lane runs to $100M); above them, competition inside the program is the design. Know the family: $8.5M/$5.5M is the same pair that caps HUBZone and WOSB sole source."
+      }
+    ],
+    "script": "This is a small-business programs question — RFO 19.8, the 8(a) follow-on trap. My help: my Small Business Professional and the SBA district office, escalated past the slow inbox. The rule: once a requirement enters 8(a), it stays unless SBA agrees to release it — six years and two in-program awards make this unmistakably an 8(a) requirement, and full-and-open without a release letter is a program violation, not extra competition. At $5.8M we're over the $5.5M services line, so the lawful path is competitive 8(a) among eligible firms. If the program genuinely wants out of 8(a) someday, that's a deliberate release request with a rationale — not a decision made by an unanswered email."
+  },
+  "072216f32652": {
+    "ask": "Three identical J&As in the file and a fourth on your desk. What does this year's have to say?",
+    "fu": [
+      {
+        "h": "The J&A has a required section about knocking the barrier down — read the last three.",
+        "d": "A one-source justification must describe the actions the agency will take to overcome the barriers to competition — data purchases, qualification of second sources, organic capability. When three consecutive J&As promised the same actions and nothing happened, this year's justification must confront that record honestly: what was promised, why it didn't occur, and what concrete funded steps change it now. Reviewers and protesters both read the file backward — a fourth copy-paste is where sole-source cases go to die."
+      },
+      {
+        "h": "$480K sits in a specific rung of the ladder.",
+        "d": "At $480K the J&A is above the SAT and below $900K — approval by the contracting officer's certification at the COCO tier (the CO's certification constitutes approval in the lowest band). Know the whole ladder anyway, because the panel will climb it: CA to $20M, HPA/PEO to $90M ($150M DoD), SPE above. Tier questions are the board's favorite second ask."
+      }
+    ],
+    "script": "This is a competition question — RFO 6.103-1 — about repetition. My help: Legal, the Competition Advocate's office, and the program on the barrier itself. The rule: each J&A must be true when written — and repetition weakens rather than grandfathers it. Three identical justifications each promised barrier-removal that never happened; a fourth copy-paste is protest bait. So this year's J&A confronts the record: what was promised, why it didn't happen, and the funded, dated plan that actually attacks the barrier — buying the calibration data or licensing, qualifying a second source, or building organic capability. At $480K the approval sits low, but the credibility question sits high. The OEM can win this year honestly; the Government just can't keep buying the same excuse."
+  },
+  "bfcb0cd1824f": {
+    "ask": "A sole-source 'study extension' that reads like prototype development. What instrument — and what process?",
+    "fu": [
+      {
+        "h": "Who principally benefits — the public purpose or the Government's own need?",
+        "d": "The test is principal purpose: assistance instruments (grants, cooperative agreements) transfer support for a public purpose — the Government stimulates research it doesn't primarily consume. Acquisition (a contract) obtains supplies or services for the Government's direct benefit. Deliverable prototypes serving a Government capability need are acquisition, whatever the paperwork was last time — and acquisition brings CICA, competition, and Part 6 with it."
+      },
+      {
+        "h": "The BAA's lane is ideas competed against a standard — could this work have started there?",
+        "d": "Yes — applied research with varying technical approaches is the BAA's home turf: broad announcement, stated criteria, independent scientific merit review, proposals evaluated against the standard rather than head-to-head. A BAA from the start would have made every award competitive by design, including follow-on phases within its scope. The lesson to say out loud: instrument choice at the beginning determines the competition posture years later."
+      }
+    ],
+    "script": "This is an R&D-authorities question — RFO Part 35 against the assistance instruments — name the instrument before anything else. My help: Legal, the agreements officer channel, and the lab's program office. The test: principal purpose. Deliverable prototypes for a Government capability need are acquisition — a contract — no matter how the last award was papered; and acquisition means CICA attaches. So the $2M 'extension' either competes or stands on a real RFO 6.103-1 justification with market research behind it — 'research continuity' is an argument, not an authority. Going forward, I'd point the lab at the BAA lane: applied research with varied approaches competed against a published standard is exactly what BAAs exist for, and starting there makes the follow-on question disappear."
+  },
+  "d84503ac71ff": {
+    "ask": "Every offeror priced coverage the Government never wanted. The SSA says evaluate as-is and fix it with the winner. Your call?",
+    "fu": [
+      {
+        "h": "Materiality decides between a clarifying answer and an amendment with revisions.",
+        "d": "An amendment requires proposal revisions when it changes what offerors priced or how they'd technically respond — a materially different coverage requirement is exactly that. Minor clarifications that don't affect price or approach can be answered without revisions. Here, every offeror priced 24/7 coverage the Government doesn't want: the amendment changes the deal, so offerors get the amendment and the chance to revise — anything less evaluates proposals against a requirement nobody was asked to meet."
+      },
+      {
+        "h": "Post-award, the same fix becomes a scope-and-competition problem.",
+        "d": "If the ambiguity surfaced after award, the 'fix' becomes a modification reducing coverage — a price-relevant change the losers never got to compete. That invites the descoping protest ('we'd have bid differently at 12-hour coverage') and a scope analysis with an honest consideration adjustment. The comparison is instructive for the panel: pre-award, an amendment cures it cleanly; post-award, the same facts become protest exposure plus a negotiated mod. Timing is everything — which is why you fix it now."
+      }
+    ],
+    "script": "This is a source-selection question — RFO Part 15 — about a defective solicitation. My help: Legal and the SSA — who I'd respectfully redirect. The rule: proposals are evaluated against the solicitation as written, and this solicitation misstates the requirement — every offeror priced 24/7 coverage the Government never intended. Consistent confusion doesn't cure a defect; it proves it. 'Fix it with the winner' is negotiating scope after award: the price shifts, the losers protest, and they'd be right. So: amend the solicitation, state the real coverage requirement, and give all offerors the chance to revise. It costs two weeks now. The alternative costs a sustained protest, a descoping mod, and the program's credibility later."
+  },
+  "7caf06e9444c": {
+    "ask": "The loser wants the winner's staffing plan and CLIN prices. What does their debrief contain?",
+    "fu": [
+      {
+        "h": "The debrief discloses their evaluation and the outcome's rationale — whose proposal stays sealed?",
+        "d": "A post-award debrief must include: the requester's own evaluation — significant weaknesses and deficiencies — the overall evaluated cost/price and technical rating of requester and awardee, past-performance conclusions on the requester, rankings where used, the award rationale, and answers to reasonable questions about whether procedures were followed. It's a real accounting of THEIR result and WHY the winner won — described at the level of the SSDD's reasoning, not the winner's papers."
+      },
+      {
+        "h": "The winner's information has an owner.",
+        "d": "About the awardee, releasable: identity, total evaluated price, overall ratings, and the comparative rationale for selection. Not releasable: their staffing plan, technical approach, CLIN-level pricing, or anything revealing proposal content — that's contractor bid and proposal information, protected, and over-disclosure creates the next integrity problem (the winner's own protest, or a PIA issue). The discipline: explain the decision, guard the proposals."
+      }
+    ],
+    "script": "This is a debrief question — RFO Part 15's disclosure lines — and a good debrief is protest prevention, not a document fight. My help: Legal on the disclosure lines, the SSEB record for the substance. The rule: the loser gets a full, honest accounting of their own evaluation — weaknesses, deficiencies, their ratings and evaluated price, the rankings, and the rationale for the award — plus the winner's identity, total evaluated price, and overall ratings. What they don't get: the winner's staffing plan, approach, or CLIN pricing — that's protected proposal information, and releasing it trades one protest for another. So I'd run the debrief generously inside those lines: answer questions, show the process was fair, take feedback. Offerors protest mysteries far more often than they protest explanations."
+  },
+  "c9a0025d6ad4": {
+    "ask": "The sweep surfaced a 22% cheaper vendor quote after agreement but before signature. What happens to the price?",
+    "fu": [
+      {
+        "h": "Six months post-award, the same quote becomes a different animal with a remedy attached.",
+        "d": "Discovered after award, that undisclosed quote is defective pricing: the certified data wasn't accurate, complete, and current at agreement. The Government becomes entitled to a price reduction plus interest (and profit on the delta) through the defective-pricing clause — with Legal driving, and a unilateral mod if the contractor won't settle. Same facts, different timing: before signature it's a correction; after award it's a remedy. That contrast is the whole lesson."
+      },
+      {
+        "h": "Run the five elements against these exact facts.",
+        "d": "The five: (1) the vendor quote is cost or pricing data — yes; (2) it existed before agreement on price — yes, the sweep found it in their files; (3) it wasn't disclosed to the CO — yes; (4) the Government relied on the data submitted — yes, the negotiation priced the higher quote; (5) reliance increased the price — yes, by the delta. All five hold, which is what makes the pre-signature correction so valuable: it resolves cleanly what would otherwise be a textbook defective-pricing case."
+      }
+    ],
+    "script": "This is a pricing question — the 10 U.S.C. §§3701–3708 certified-data machinery at the sweep seam. My help: my pricing office and Legal on the exposure math. The rule: the certificate speaks as of the date of agreement on price, and we haven't signed — so the corrected data gets used now. The price adjusts downward for the 22% quote before signature, the PNM is updated to tell the true story, and the certificate is executed against accurate, complete, current data. I'd also credit the contractor's sweep — that's the system working. And I'd say the contrast out loud for the panel: caught today, it's a correction; caught six months after award, it's defective pricing — price reduction plus interest, with Legal. Same quote, different day, very different meeting."
+  },
+  "ae6156d42798": {
+    "ask": "FFP in exchange for skipping certified data — 'the fixed price transfers all the risk anyway.' Deal?",
+    "fu": [
+      {
+        "h": "Recite the exceptions — is contract type on the list?",
+        "d": "CLAWM: Commercial items; prices set by Law or regulation; Adequate price competition; Waiver by the HCA; commercial-item Modifications. That's the list. Contract type appears nowhere on it — FFP is a risk allocation, not a data exception. Over the threshold, sole source, non-commercial: certified cost or pricing data is required regardless of type, and offering FFP doesn't buy out of it."
+      },
+      {
+        "h": "What does the fixed price actually lock in if nobody analyzed the number?",
+        "d": "An unanalyzed FFP locks in an unanalyzed number — if it's padded 30%, the Government pays the padding with certainty, every unit, no remedy. Analyzed cost-type at least buys visibility: costs are auditable, fee is negotiated on known risk, and overruns are seen as they happen. Risk transfer only has value when the price transferring the risk was priced right — which is precisely what the data exists to establish. 'FFP protects us' without analysis protects the contractor's margin."
+      }
+    ],
+    "script": "This is a pricing question wearing a contract-type disguise. My help: my pricing office, DCMA on rates, Legal if this gets creative. The rule: RFO 15.403-2's CLAWM — commercial, law, adequate competition, waiver, commercial mods — and contract type is not on the list. A $14M sole-source, non-commercial development action over the threshold requires certified cost or pricing data whatever the type. And I'd dismantle the pitch itself: an FFP priced without analysis just locks in an unanalyzed number — if it's padded, we pay the padding with certainty. Risk transfer has value only when the transferring price was priced right. So: certified data comes in, we analyze, we negotiate — and then FFP may well be the right answer, at a defensible number."
+  },
+  "f1c0af926c37": {
+    "ask": "CPFF for a proven production lot because 'material prices are volatile.' What type does this work actually take?",
+    "fu": [
+      {
+        "h": "An EPA clause prices a named risk — name it, index it, bound it.",
+        "d": "A defensible EPA clause: identifies the specific cost elements exposed (the two volatile commodities), ties adjustment to named published indices, sets a trigger band so routine noise doesn't adjust anything, applies ceilings and floors, and defines the adjustment math and timing. It surgically prices the actual risk while everything else stays firm — protecting both parties from the named volatility without converting the whole lot to cost-plus."
+      },
+      {
+        "h": "When would production honestly need cost-type?",
+        "d": "Rarely — and only when genuine cost uncertainty pervades the effort: first articles after major redesign, production restart after a long break with a broken supplier base, or configuration instability that makes quantities and processes honestly unpriceable. Mature, stable, repeatedly-priced production is the opposite of that. The type question always returns to requirement definition: uncertainty you can name and bound gets priced with an instrument; uncertainty that pervades gets cost-type. Two commodities have names."
+      }
+    ],
+    "script": "This is a contract-type question — RFO Part 16: match the type to where the risk actually lives. My help: my pricing office and the cost history from three prior lots. The facts: mature production, deep stable actuals, and the named risk is two commodities — not the effort. That's fixed-price territory: FFP with an economic price adjustment clause scoped to those two indices — named elements, published indices, trigger bands, ceilings. CPFF would hand back the entire cost risk of a proven production line to cure a problem two indices can carry — and the accounting-system and D&F gates would have to be cleared for a type the work doesn't need. Price the real risk surgically; keep the rest firm. The contractor's volatility concern is legitimate; their prescription isn't."
+  },
+  "cfc77cdeb86e": {
+    "ask": "The contractor quietly moved the ceiling from 125% to 135%. What did that change, and what's your response?",
+    "fu": [
+      {
+        "h": "Run PTA = (Ceiling − Target Price) ÷ Gov share + Target Cost, both ways.",
+        "d": "Target price is $21.6M (target cost $20M + target profit $1.6M). At a 125% ceiling ($25M): PTA = (25 − 21.6) ÷ 0.8 + 20 = $24.25M. At 135% ($27M): PTA = (27 − 21.6) ÷ 0.8 + 20 = $26.75M. The quiet edit moved the point of total assumption $2.5M to the right and raised the Government's maximum exposure by $2M — the contractor stays on the shared-risk gravy longer before bearing full cost risk. Run the math at the board; the delta IS the argument."
+      },
+      {
+        "h": "After PTA, whose money funds each additional dollar of cost?",
+        "d": "Past the PTA, every additional cost dollar comes out of the contractor's profit until the ceiling, where the contractor bears everything — effectively FFP from PTA to ceiling. That's why PTA placement drives behavior: a contractor operating below PTA shares overruns with the Government (20 cents on the dollar here); past it, cost discipline suddenly gets personal. Raising the ceiling delays that discipline — which is exactly why they proposed it quietly."
+      }
+    ],
+    "script": "This is a contract-type question — RFO Part 16 FPIF mechanics, and the ceiling is the Government's hard protection. My help: my pricing office, with the PTA math on one page. The move: raising the ceiling from 125% to 135% shifts the PTA from $24.25M to $26.75M and adds $2M of Government exposure — the contractor rides the 80/20 share longer before cost discipline gets personal. 'Supply-chain reality' may be genuine, but the cure isn't a quiet ceiling raise — if there's a real, nameable risk, we price it explicitly: adjust the target cost on evidence, or scope an EPA-style protection to the named exposure. My response: the ceiling stays, the math goes on the table, and any real risk gets priced in daylight."
+  },
+  "3f06fb9f3c9d": {
+    "ask": "The order names Holder C's proprietary tool by name. How do you handle the requirement — and the demo-driven enthusiasm?",
+    "fu": [
+      {
+        "h": "The D&A for a genuinely unique tool still has required content — evidence, not enthusiasm.",
+        "d": "A defensible only-one-capable D&A documents: the performance need the tool satisfies, the market check across the OTHER holders (what they were asked, what they answered), why alternatives genuinely can't meet the need in time, the price-reasonableness plan absent competition, and — like a J&A — what the Government will do to open future orders. Approved at the tier the dollars demand, posted. 'Their engineer demoed it and it's exactly what we need' appears nowhere in that outline."
+      },
+      {
+        "h": "Same disease, different venue — how does the open-market version of this get justified?",
+        "d": "In open competition, naming a product is a brand-name justification: a documented explanation of the particular feature-need only that product meets, with market research behind it, approved and made public with the solicitation. The fair-opportunity D&A is its vehicle-level cousin — narrower field, same discipline. The shared lesson: requirements stated as performance outcomes preserve competition in both venues; requirements stated as product names must earn the restriction in writing."
+      }
+    ],
+    "script": "This is an RFO 16.507 fair-opportunity question — a requirement written around one holder's product. My help: the vehicle PCO, Legal, and the program engineers on what the mission actually needs. The rule: fair opportunity is the default, and a spec that names Holder C's tool is steering wearing a requirements costume. First move: restate the requirement in performance terms — what must the modeling produce, to what fidelity, by when — and ask all four other holders the capability question directly. If the honest answer is that only the tool satisfies the need in time, then the exception is real: an only-one-capable D&A on evidence, approved at tier, posted. The demo enthusiasm goes in a drawer; the performance requirement and the market answers go in the file."
+  },
+  "e05dd5a0d1c5": {
+    "ask": "Ceiling room exists and the clock is running. Can the migration work ride this task order?",
+    "fu": [
+      {
+        "h": "An improper order is a competition someone was denied — who complains, and to whom?",
+        "d": "An out-of-scope order is effectively a sole-source award of new work: the other vehicle holders (denied fair opportunity) complain to the task-order ombudsman at any dollar value — and at GAO, an order that exceeds the scope, period, or ceiling of the underlying contract is protestable at ANY value, by holders or even by contractors outside the vehicle whose competitive universe was bypassed. Scope growth is the exception that unlocks GAO's door below the dollar thresholds."
+      },
+      {
+        "h": "The in-scope memo has two layers — the vehicle's four corners and this order's.",
+        "d": "The analysis documents both levels: does the work fit the IDIQ's scope statement (the enterprise every holder signed up to compete within), and does it fit THIS order's scope (what this order's competition anticipated)? Corners: nature of the work versus the scope statement, period, cumulative value, and what the original order competition reasonably anticipated. A different PEO's unrelated system fails at both levels — and writing the honest analysis now is cheaper than writing the protest response later."
+      }
+    ],
+    "script": "This is an RFO 16.507 fair-opportunity question about scope — and ceiling is capacity, not permission. My help: the vehicle PCO and Legal on the scope analysis. The test runs at two levels: does data migration for a different PEO's unrelated system fit the IDIQ's scope statement, and does it fit this order's own scope? On these facts it fails both — it's a new requirement, not growth of this one. So the lawful paths: compete it among the vehicle's holders as a new order if the vehicle's scope truly covers it, or take it to its proper vehicle or a new competition if it doesn't. Riding the ceiling because 'the contractor knows our environment' is a sole source without a justification — and out-of-scope orders are protestable at any dollar value. That's a door I'm not opening."
+  },
+  "ffc2bef72b93": {
+    "ask": "The option CLIN says 'TBD.' The COR already promised exercise. Where does this leave you?",
+    "fu": [
+      {
+        "h": "An option's power comes from what happened at award — what has to have happened?",
+        "d": "A real option was priced at award and evaluated in the source selection — that's what makes later exercise a unilateral right and shields it from being a new sole-source procurement. 'TBD, to be negotiated' fails the pricing half: there's nothing to exercise, only something to negotiate. And a negotiated continuation with the incumbent is a new procurement action wearing an option's label — its competition posture needs Legal immediately."
+      },
+      {
+        "h": "Continuity tools exist — each with its own clock and justification.",
+        "d": "The lawful kit: negotiate a bilateral extension with the incumbent supported by an honest justification and price analysis; use the extension-of-services mechanism (up to 6 months) if the clause is in the contract; or bridge via a properly justified short sole-source while competing the follow-on. In parallel: start the recompete NOW, because every continuity tool is a rented month, not a strategy — and document why the defective option wasn't caught at award, because that finding is coming."
+      }
+    ],
+    "script": "This is an RFO Part 17 options question where the option turns out not to exist. My help: Legal, immediately, and FM on the continuity gap. The rule: an option is a unilateral right because it was priced and evaluated at award — a 'TBD' CLIN was never an option, just an agreement to negotiate later. So there's nothing to exercise: continuing with the incumbent is a negotiation, and its competition posture has to be sorted with Legal before anything is signed. The COR's email binds nothing — but I correct that channel today in writing. Then continuity honestly: a justified bilateral extension or the extension-of-services clause buys months, the recompete starts now, and the award-time failure that let 'TBD' through gets documented so it never recurs."
+  },
+  "25034f52840f": {
+    "ask": "Exercise is due 15 September; the money arrives 1 October. Is the PM right that you're stuck?",
+    "fu": [
+      {
+        "h": "The clause promises obligation when funds arrive — what does it let you do before?",
+        "d": "The availability-of-funds mechanism lets the Government exercise on time, subject to availability — the exercise preserves the unilateral right and the contractor's obligation to perform, while the Government's obligation attaches when funds become available. It exists precisely for option cycles straddling the fiscal seam. The notice says what it must: exercised subject to availability, obligation upon funds — and FM coordinates the funding document the moment the appropriation lands."
+      },
+      {
+        "h": "If the appropriation never comes, what protects each party?",
+        "d": "If funds never materialize, the Government isn't obligated — that's the clause's core protection; no Anti-Deficiency exposure, and the contractor was on notice from the exercise language. The contractor's protection is honesty and speed: prompt notice if availability fails, so it isn't holding capacity for a ghost. The Government then faces the real consequences — no option year, a continuity gap, possibly a T4C of the exercised period — which is why availability exercises ride actual appropriation expectations, not hope."
+      }
+    ],
+    "script": "This is an RFO Part 17 options question at the fiscal seam — and the PM has it backwards. My help: FM on the funding mechanics and Legal on the notice language. The rule: missing the 15 September date kills the unilateral right — after that, continuation is a bilateral negotiation where the contractor holds the leverage. The seam is exactly what the availability-of-funds mechanism exists for: exercise on time, expressly subject to availability, with the obligation attaching when the new year's money arrives. So: run the gates, issue the notice by the 15th with the availability language, and have FM ready to obligate on 1 October. Waiting for the money to feel real is how the Government converts its own right into the contractor's negotiation."
+  },
+  "de2a59ebf22f": {
+    "ask": "$3.2M to a 'rapid-tech marketplace' promising 30-day awards. What has to be true before that MIPR moves?",
+    "fu": [
+      {
+        "h": "A fee buys services — which ones, at what value?",
+        "d": "The fee question is answered by the D&F's analysis: what does 6% buy — real acquisition expertise, vehicle access, administration — and is that value reasonable against alternatives, including buying it ourselves? A fee isn't inherently improper; an unexamined fee is. If the marketplace's value is speed we could achieve in-house, the fee fails the best-procurement-approach test; if it's genuine capability we lack on a real timeline, it can pass — documented, not assumed."
+      },
+      {
+        "h": "Who awards the eventual contract decides which lane you're in.",
+        "d": "This is assisted acquisition: the marketplace office would award and administer on our behalf — which triggers the written interagency agreement (roles, responsibilities, unique terms) signed before funds move, plus the D&F for non-DoD orders over the SAT. Direct acquisition would be our CO placing orders on their vehicles ourselves — no agreement required, but then their office isn't doing the work. The flyer's vagueness about who actually awards is itself the first question to resolve."
+      }
+    ],
+    "script": "This is an interagency question — RFO Part 17 assisted acquisition — and a one-page flyer isn't an acquisition strategy. My help: FM, Legal, and the servicing office itself, on the record. Before a dollar moves: identify the actual underlying vehicles and their authority — 'marketplace' is marketing, and I can't verify scope, competition posture, or fee reasonableness against a brochure. Then the lane: they'd award for us, so it's assisted acquisition — written interagency agreement, signed, defining roles, before funds transfer. Over the SAT to a non-DoD shop, the best-procurement-approach D&F has to honestly conclude they beat our alternatives — schedule, cost including the 6% fee, and compliance. If the vehicles are real and the analysis holds, fine, we proceed with eyes open. If it's a flyer and a fee, we just bought ourselves a finding."
+  },
+  "889ac661f351": {
+    "ask": "$410K will go unspent, and the servicing agency suggests 'rolling it into' a new task. Your answer?",
+    "fu": [
+      {
+        "h": "Whose money is it once the task ends?",
+        "d": "Unobligated MIPR balances return to the requesting agency — they don't become the servicing agency's working capital. And the returning funds keep their identity: FY25 O&M, now expiring or expired, available only for adjustments to the original obligations, not for new work. 'Rolling it forward' converts prior-year money into a new-year need — a Time violation dressed as efficiency. Recover the balance, report it to FM, and let the new need compete for current-year funds honestly."
+      },
+      {
+        "h": "This surprise was avoidable — what does routine interagency management look like?",
+        "d": "The requesting agency tracks its own interagency balances: the agreement should require periodic financial reporting; the PCO or program office reconciles obligation and expenditure status quarterly at minimum (monthly near year-end), asks for burn-rate data, and triggers early recovery of excess. Discovering $410K in July for an August-ending task means nobody was watching for three quarters — the finding isn't the balance, it's the silence."
+      }
+    ],
+    "script": "This is an interagency-fiscal question — 31 U.S.C. 1535 machinery — and the money comes home. My help: FM immediately, and the servicing agency's CO for the reconciliation. The rules: unobligated MIPR balances return to us, and they return as what they are — FY25 O&M, expiring, good for adjustments to the original task and nothing new. A 'rolled' follow-on task is a new need, and new needs take current-year money; the suggestion fails Time no matter how efficient it sounds. So: recover the $410K now, reconcile the task's final costs, and if the follow-on is real, fund it properly and compete it properly. Then I'd fix the process — quarterly balance reconciliation in the agreement — because finding this in July means we weren't watching."
+  },
+  "9816f21a82dd": {
+    "ask": "Max progress-payment rates plus financing for a stockpile 'for future orders.' What do you approve?",
+    "fu": [
+      {
+        "h": "Walk the ladder — where do progress payments sit and what outranks them?",
+        "d": "Order of preference: private financing first; then customary contract financing — where progress payments and performance-based payments live, approvable by the CO in the normal course; then unusual financing (requires higher approval); and advance payments last, the least preferred, most heavily approved. PBPs are preferred over cost-based progress payments where events can be defined. The rates themselves come from the clause and current class deviations — they're set, not negotiated upward on request."
+      },
+      {
+        "h": "The Government pays early — what does it hold in exchange?",
+        "d": "Two protections: title — under the progress-payments clause, title to work-in-process, materials, and inventory allocable to the contract vests in the Government as payments are made; and liquidation — progress payments are recovered by liquidation against delivery invoices, so the financing unwinds as performance completes. Both attach to THIS contract's performance, which is exactly why financing a stockpile for hoped-for FUTURE orders doesn't fit: no contract, no allocability, no title, no liquidation path."
+      }
+    ],
+    "script": "This is a contract-finance question — RFO Part 32 customary financing, at clause rates, for this contract's work. My help: FM, DCMA on the payment administration, and the clause itself. The rules: progress payments ride the clause and the current class deviation — as a DoD small business they already get the favorable rate; 'raise it to the max' isn't a negotiation, the rate is the rate. The stockpile ask fails differently: progress payments finance costs allocable to this contract, with title vesting and liquidation against deliveries. Materials for hoped-for future orders have no contract, no allocability, no title path — that's asking the Government to bank speculation. If cash flow is the real issue, performance-based payments on defined events are the preferred structure — and I'd offer to build exactly that."
+  },
+  "7120cb3d8b78": {
+    "ask": "Every drawing arrived stamped limited-rights — including ones we watched them create on contract. What now?",
+    "fu": [
+      {
+        "h": "Challenge in writing, honor the markings meanwhile — walk the clock.",
+        "d": "The sequence: written challenge notice stating the grounds; contractor has 60 days to respond with justification; unresolved, the CO issues a final decision; contractor may appeal (COFC or the Board, 90 days). Challenges can issue up to 3 years after contract completion. Critical discipline: until appeals resolve, honor the markings — using challenged data as if unrestricted converts your challenge into their claim. The Government's leverage is the process, not self-help."
+      },
+      {
+        "h": "Mixed heritage doesn't rescue a blanket stamp.",
+        "d": "If some drawings genuinely mix private-expense heritage, rights resolve at the component level: the contractor identifies which elements derive from private development — with records proving it, since the burden of supporting restrictions is theirs — and those elements carry limited rights while Government-funded portions stay unlimited. The blanket stamp fails precisely because it asserts nothing specific: an assertion list with evidence, drawing by drawing, is what the challenge process forces into existence."
+      }
+    ],
+    "script": "This is an R-DFARS 227 data-rights question — nonconforming markings on Government-funded work. My help: IP counsel in Legal and DCMA on assertions administration. The rule: development funded entirely by the Government yields unlimited rights, and legends don't rewrite funding history — but the remedy is process, not self-help. So: written challenge now, stating the grounds — this was Government-funded development under this contract; the contractor gets their 60 days to justify with records, because the burden of proving any restriction is theirs. Where genuine private-expense heritage exists at the component level, those pieces get their proper legends; everything else gets corrected. And until it resolves, we honor the markings — because sorting this at sustainment competition time means competing against our own paid-for drawings."
+  },
+  "c4521547f681": {
+    "ask": "SBIR rights on the module, and your engineer wants to 'just reverse-engineer it.' What's your counsel?",
+    "fu": [
+      {
+        "h": "During the protection window, what can the Government do with SBIR data?",
+        "d": "During the SBIR protection period, the Government holds SBIR rights — it can use the data for Government purposes within the Government, but cannot release it for competitive procurement or disclose it outside without the firm's permission. The window is long (20 years under current policy) and runs from defined trigger dates in the contract. It exists to let small firms commercialize without the Government handing their innovation to competitors — that's the program's bargain."
+      },
+      {
+        "h": "When the window closes, the default rights story resumes.",
+        "d": "After the SBIR period ends, the Government's rights transition toward the ordinary framework — the protection lapses and the Government's license broadens per the clause. Verify the actual window and trigger dates from the contract and delivery records before planning anything. And the planning lesson: if second-sourcing was foreseeable, the time to negotiate specially-tailored rights or buy a license was when the Government had leverage — at Phase III award — not years later at the sustainment cliff."
+      }
+    ],
+    "script": "This is a data-rights question — R-DFARS 227 SBIR rights, the long-protection species. My help: IP counsel and the contract file for the actual trigger dates. The rules: SBIR protection runs long — verify the real window from the contract before anyone acts on a guess — and during it, the Government can't release the data for competitive reprocurement without the firm's agreement. On reverse-engineering: it has its own legal limits and real costs, and 'engineering around' data we hold under restriction is litigation bait — that path gets sized honestly with counsel, not tossed off in a meeting. The constructive paths: negotiate a license or specially-tailored rights with the firm — they may sell what we can't take — or plan the second source for when the window actually closes. Leverage lives at award time; we spend what's left of it deliberately."
+  },
+  "a3a7624f2b7f": {
+    "ask": "Forty percent more content for 'no cost' — in exchange for schedule and metric relief. How do you paper this?",
+    "fu": [
+      {
+        "h": "Consideration isn't only money — price what the Government is giving up.",
+        "d": "Consideration is anything of value exchanged: schedule extensions, relaxed performance metrics, waived remedies — all are Government givings with real value. A 'no-cost' mod that trades 40% more work for schedule and metric relief is a priced exchange with the price hidden. Papering it honestly means valuing both sides: what the added work is worth, what the relief costs the Government, and whether the exchange is fair — documented, so the file shows a bargain, not a favor swap."
+      },
+      {
+        "h": "Would the original competitors have bid differently on a three-language contract?",
+        "d": "The anticipation test asks what the original competition reasonably contemplated. A courseware contract competed in English, growing 40% in content-hours to add two languages, is at least at the scope boundary: translation and localization could change who would have bid and how they'd have priced. Run the four corners — competition anticipation, type, period, cumulative cost — and if the honest answer is 'this is new work,' it competes or rides a justification. The contractor's cheerfulness doesn't move the scope line."
+      }
+    ],
+    "script": "This is a modifications question — RFO Part 43: scope first, then honest consideration. My help: Legal on the scope analysis and my pricing office on valuing the exchange. Two rules: nothing here is 'no cost' — schedule relief and relaxed metrics ARE consideration, and the exchange gets priced and papered as the bargain it is. And scope: 40% more content-hours adding two languages gets the four-corner test against the original competition — would the field have bid differently on a trilingual contract? If it's in scope, we negotiate a bilateral mod that values both sides honestly. If it's beyond, it's new work: competed or justified, not absorbed. Cheerful offers deserve the same analysis as hostile ones — sometimes more."
+  },
+  "457016c02cef": {
+    "ask": "Bad Government maps, a COR's 'keep moving,' and a $310K consolidated claim. How do you work it?",
+    "fu": [
+      {
+        "h": "If this stalls unresolved, which lane's consequences attach?",
+        "d": "As a certified claim, the CDA machinery runs: interest accrues from receipt, the CO owes a written final decision on a statutory clock (or a deemed denial arises), and appeal rights follow — Board in 90 days, COFC in 12 months. If it had stayed an REA, none of those clocks run and prep costs are allowable. Once converted, delay costs the Government interest and initiative — which is why working entitlement promptly beats hoping it goes away."
+      },
+      {
+        "h": "Authority analysis changes the theory, not the entitlement.",
+        "d": "The COR lacked authority to direct changes — but Government conduct is bigger than one email: defective Government-furnished maps plus continued direction to perform is a constructive-change theory that doesn't depend on the COR's warrant. The authority failure changes the Government's internal story (channel discipline broke) more than the contractor's entitlement. What the COR's role does affect: your prevention plan — direction flows through the CO, and that gets fixed in writing regardless of how the claim resolves."
+      }
+    ],
+    "script": "This is a disputes question — the Contract Disputes Act — built on our own paperwork failure. My help: Legal early, the COR's records, and DCMA if the quantum needs support. The frame: defective Government maps plus 'keep moving' direction is a constructive-change case — the missing mods are the Government's failure, not the contractor's entitlement bar. As a certified claim, interest is already running and my output is a final decision or a settlement. So: entitlement element by element — the reroutes trace to the bad maps; quantum gets a real technical and cost review rather than resentment; and I'd negotiate hard toward a global settlement with a release. Then the internal fix: direction flows through the CO, in writing, and the mapping failure gets reported where it can't recur. The contractor did the work; the Government does the honest math."
+  },
+  "443b2d02e1b1": {
+    "ask": "212 items furnished, 168 found, and the contractor wants closeout. What happens first?",
+    "fu": [
+      {
+        "h": "The clause has a process and a standard — who runs it and against what?",
+        "d": "Property loss runs through the clause machinery: the contractor reports and investigates each loss; the property administrator manages the process; and the CO determines liability under the contract's risk allocation — on a cost-type contract the contractor typically bears loss only where its managers were at fault or the property system failed. 'Consumed in testing, no records' isn't an outcome — it's an unproven claim the investigation either substantiates or converts into liability."
+      },
+      {
+        "h": "The property system's approval status shifts the burden.",
+        "d": "An approved property management system creates confidence records exist and losses were managed — individual determinations proceed against a working system. A disapproved or deficient system flips the posture: systemic recordkeeping failure is itself contractor fault, supporting broader liability and corrective demands. Forty-four unaccounted items out of 212 suggests the system, not just the items, needs the look — and DCMA's property specialists are the ones to give it."
+      }
+    ],
+    "script": "This is an RFO Part 45 Government-property question at the worst possible moment — closeout, where the leverage ends. My help: the property administrator, DCMA's property specialists, and Legal on liability. The rule: no closeout with an open property reconciliation. Each of the 44 missing items runs the clause machinery — report, investigate, liability determination under the contract's risk allocation. 'Consumed in testing, no records' gets tested against the property system's records, and if the system itself failed, that failure is contractor fault with broader consequences. Scrap sold 'to offset costs' without authorization is disposal outside the process — its own liability. Closeout happens when the record is reconciled and liabilities are resolved — not when the contractor is tired of the contract."
+  },
+  "a322f19f5597": {
+    "ask": "An informal loan of a Government CNC machine 'for a few months.' What do you tell the PM?",
+    "fu": [
+      {
+        "h": "Mid-run failure with no clause set — trace where every cost lands.",
+        "d": "If the informal machine breaks mid-run: no property clause allocates the loss, so the Government and contractor litigate ownership of the damage from a paperwork vacuum; the contractor claims Government-caused delay on the FFP schedule (the machine was the Government's, informally provided); the part run stops; and nobody's insurance clearly answers. The 'few months informal' loan becomes an REA, a property dispute, and a schedule slip — all purchasable for the price of one modification."
+      },
+      {
+        "h": "GFP hands the Government a role in an FFP story it wasn't supposed to have.",
+        "d": "FFP's clean allocation — contractor bears cost risk, Government pays the price — assumes the contractor controls its means of production. Furnish property and the Government joins the performance path: late, faulty, or broken GFP is Government-caused delay and REA exposure, and the four-part justification plus clause set exists to make that trade deliberate. Helping a struggling FFP contractor with Government property can be right — but it's a priced, papered decision, because it moves risk back to the Government that FFP had transferred away."
+      }
+    ],
+    "script": "This is an RFO Part 45 Government-property question — and 'informal' is the problem, not the timeline. My help: the property administrator and the PM, who owes the justification if we do this at all. The rule: no informal property loans, ever — on contract with the full clause set, or not at all. If lending the CNC machine is genuinely in the Government's interest, the PM documents the four findings, the machine goes on contract with marking, condition baselined, and the property clauses allocating risk. And I'd tell the PM what the shortcut actually costs: furnishing property to an FFP contractor moves schedule risk back to us — if that machine breaks mid-run with no clause set, we own a dispute, a delay claim, and a stopped part run simultaneously. The mod takes days. The vacuum takes a year."
+  },
+  "9606983a87e6": {
+    "ask": "The proposal came in at $41M against a $30M NTE, and the contractor wants the ceiling raised. What's your negotiating position?",
+    "fu": [
+      {
+        "h": "An NTE increase is a deliberate Government decision with a chain — whose?",
+        "d": "Raising a UCA's NTE isn't a negotiating concession — it's a formal Government decision requiring the UCA approval authority's action (HCA delegable to SCO; lower for smaller actions), supported by a documented scope analysis: is the 'extra damage' in-scope growth of this repair or new work needing its own action and justification? Funds must exist for any increase, and the definitization schedule presses on regardless. The contractor's proposal doesn't move the ceiling; the Government's deliberate process might."
+      },
+      {
+        "h": "The caps ride the NTE — run the arithmetic through the fight.",
+        "d": "The obligation caps key to the NTE: 50% before the qualifying proposal, 75% after. On a $30M NTE, that's $15M and $22.5M — and they don't float with the contractor's $41M number. If actual in-scope work genuinely exceeds the NTE, the Government's deliberate increase would move the caps with it; until then, obligations stay inside the existing arithmetic, which is precisely the leverage that makes the contractor negotiate rather than perform indefinitely on an open tab."
+      }
+    ],
+    "script": "This is a UCA question — R-DFARS 217.74: the NTE is the Government's liability ceiling, and it doesn't float. My help: my pricing office on the actuals, the UCA approval authority, and Legal on scope. The position: the qualifying proposal starts definitization; it doesn't reprice the ceiling. First, scope: is the 'extra damage' growth of this repair — negotiable within a deliberately, formally increased NTE if the evidence supports it — or new work needing its own action? Second, the caps hold: 75% of thirty million, not of forty-one. Third, the actuals cut our way on fee — months of incurred cost mean burned-down risk, and weighted guidelines will show it. We definitize on evidence, on schedule, at a ceiling the Government chooses deliberately — not one proposed to us."
+  },
+  "ff18caab6ec5": {
+    "ask": "The contractor resists providing incurred costs — 'the certified proposal covers everything going forward.' What do you require?",
+    "fu": [
+      {
+        "h": "Definitization prices two different time zones — which one has facts instead of estimates?",
+        "d": "Fee drops at definitization because weighted guidelines price RISK, and months of performance burned much of it down: the cost uncertainty the fee would have compensated has partly become known actuals. Pricing the performed portion on estimates when facts exist would pay risk premium for risk already retired. The forward work keeps its honest risk pricing; the performed work gets priced on what happened — that split is the intellectual core of definitizing a mature UCA."
+      },
+      {
+        "h": "Match the audit tool to the dollars and the dispute.",
+        "d": "For incurred-cost visibility on a UCA definitization: DCMA field pricing support for rates and forward-pricing positions, DCAA for incurred-cost and proposal audits at the dollar thresholds — and the contractor's resistance itself is a flag worth an auditor's attention. The ask is targeted: actuals for the performed months, current rate agreements, and reconciliation of the proposal's forward estimates against the performance record to date. No visibility, no agreement — and the caps hold while they decide."
+      }
+    ],
+    "script": "This is a UCA-pricing question — R-DFARS 217.74 meeting RFO 15.403: actuals versus estimates. My help: DCMA on rates, DCAA if the audit thresholds or the resistance warrant, my pricing office throughout. The rule: certified cost or pricing data spans the whole action, and incurred costs for nine months of performed work ARE cost or pricing data — 'the proposal covers going forward' is a scope argument against their own certificate. So I require the actuals: the performed portion gets priced on facts, the remaining work on honestly-priced estimates, and fee follows the risk actually remaining — which the actuals will show has burned down. If they won't open the books, the caps hold, the definitization clock presses, and no agreement happens on estimates where facts exist. That's not hardball; that's what definitization means."
+  },
+  "bcd3199183a2": {
+    "ask": "Handshake Friday, CEO wants it papered this week, clearance is 12 days out. What do you tell everyone?",
+    "fu": [
+      {
+        "h": "The PNM is the reviewer's window — what story must it tell?",
+        "d": "The clearance authority reads the PNM for the whole negotiation: objectives versus outcome and why they moved, the facts behind each significant position change, price analysis supporting fair-and-reasonable, profit basis, data relied on, and compliance. A handshake inside the objective still needs the story told — 'we did well' isn't documentation. The PNM is finished and honest BEFORE clearance, because the review is of the record, not the vibe."
+      },
+      {
+        "h": "A directed change after handshake tests your professionalism, not your loyalty.",
+        "d": "If clearance directs a position change, the handshake yields — the deal was always subject to approval, and the negotiation reopens on the directed point with the contractor told honestly that final Government approval required it. This is why you never let a contractor believe a handshake is an award: manage that expectation up front ('agreement subject to clearance'), and the CEO's quarter-close pressure becomes his planning problem, not your integrity problem."
+      }
+    ],
+    "script": "This is a clearance question — DAF clearance procedures: independent review before commitment, and a calendar can't override it. My help: the clearance authority's shop, my chief, and a finished PNM. The rule: no award before contract clearance — the review is the approval, not a receipt stamp. And a handshake was always 'agreement subject to Government approval'; I'd confirm the contractor understood that Friday. What I can do honestly: ask the clearance shop to accommodate an earlier review if the file is truly ready — the PNM telling the full story, inside-objective or not. What I won't do is invert the design and paper first, ratify later. The CEO's quarter is real; so is the reason an independent set of eyes comes before the Government commits sixty million dollars."
+  },
+  "17c3ac278de8": {
+    "ask": "Day 40, real defect found, decision 60 days away. Ride it out or act — and how?",
+    "fu": [
+      {
+        "h": "Corrective action is the Government prescribing its own remedy — what's on the menu?",
+        "d": "The menu scales to the defect: reopen the evaluation and re-score against stated criteria; amend the solicitation and take revised proposals if the criteria themselves were defective; reopen discussions if they were flawed; terminate the award and re-award if the outcome changed. The Government chooses the narrowest action that genuinely cures the defect — controlled, scoped, and documented — versus a sustain where GAO recommends and the agency implements under a deadline anyway."
+      },
+      {
+        "h": "GAO's response to mid-protest correction is the system working.",
+        "d": "When the agency takes corrective action addressing the protest's core, GAO typically dismisses the protest as academic — the remedy is happening without a decision. Timing matters for costs: correcting promptly after the defect became clear avoids reimbursing protest costs; riding a known defect to a sustain invites paying the protester's costs and attorney fees on top of the same corrective action. Early, honest correction is both cheaper and faster — and it keeps the remedy in the agency's hands."
+      }
+    ],
+    "script": "This is an RFO Part 33 protest question where our own record failed. My help: agency counsel — who found it — plus the SSA and the evaluation team for the fix. The math: riding out a known defect for 60 more days buys a probable sustain, GAO-directed remedy on GAO's terms, protest costs on top, and a program 60 days later than honest correction would put it. So: voluntary corrective action now — scoped to the actual defect. One factor was scored against an unstated standard, so we reopen that evaluation and re-score against the stated criteria, amending only if the criteria themselves were the problem. GAO dismisses as academic, we control the remedy, and the program moves. The PM's 'we might win' is hope arguing with a record — and the record already told us who wins."
+  },
+  "20e32891eb7b": {
+    "ask": "A $4M order 'protest' lands, below GAO's threshold, CC'd to your SCO. How do you handle it?",
+    "fu": [
+      {
+        "h": "Two doors to GAO for orders — dollars, or growth.",
+        "d": "A task or delivery order reaches GAO two ways: value over the threshold ($35M DoD / $10M civilian), or an allegation that the order exceeds the scope, period, or maximum value of the underlying contract — the growth theory, protestable at any dollar value because it alleges work escaped the vehicle's competed boundaries. This complaint alleges neither growth nor crosses the threshold, so GAO's door is closed — which makes the ombudsman the lane, not a loophole."
+      },
+      {
+        "h": "The ombudsman is review, not decoration.",
+        "d": "The task-order ombudsman — senior, independent of the PCO — reviews complaints that holders weren't afforded fair opportunity: examines the order file, the evaluation, and the consideration record, and can recommend corrective action to the contracting activity. It's the deliberate substitute Congress built for order-level GAO protests. Engage it seriously: a real review with a documented response either fixes an actual fairness failure or creates the record that ends the complaint."
+      }
+    ],
+    "script": "This is a protest-jurisdiction question — the RFO 16.508 order-protest rules — and the answer is a lane, not a shrug. My help: Legal, the vehicle's ombudsman, and my own order file. The rule: under $35M with no scope-growth allegation, GAO lacks jurisdiction over a DoD task-order complaint — the lane Congress built is the task-order ombudsman. So I'd respond in writing, correctly and respectfully: naming the right lane, committing to a genuine ombudsman review, and meaning it — the order file, the evaluation, the consideration record all get an honest look, because if fair opportunity actually failed, I want to fix it before the ombudsman tells me to. The SCO on copy gets a heads-up from me first with the facts. Jurisdiction answers the venue question; it doesn't answer the fairness question — I owe both."
+  },
+  "e639009b6943": {
+    "ask": "A seven-month-old REA just converted to a claim demanding interest back to the REA. What's right, and what's owed?",
+    "fu": [
+      {
+        "h": "Silence past the decision deadline is itself a decision — what starts?",
+        "d": "For claims over $100K, the CO must decide within 60 days or state when the decision will issue; failure to respond becomes a deemed denial — silence operating as a denial — and the contractor's appeal clock starts: Board within 90 days, COFC within 12 months. A deemed denial surrenders the Government's chance to shape the outcome. The lesson in this file: the seven silent months were free only in appearance; the machinery was always going to start, with or without us."
+      },
+      {
+        "h": "The six-year clock runs from accrual — where do seven months fit?",
+        "d": "The CDA's six-year limit runs from claim accrual — when the events fixing liability occurred — not from REA submission or conversion. Seven months of administrative silence consumes calendar inside that window but doesn't threaten it here. What the delay does cost: goodwill, negotiating position, and now interest from the certified claim's receipt. Accrual math matters most on old, slow-developing disputes — know where the clock started before assuming how much remains."
+      }
+    ],
+    "script": "This is a disputes question our own silence made worse. My help: Legal now, and the file my predecessor left. First, the classification: as submitted — certified, sum certain, decision demanded — it's a CDA claim, and the machinery runs regardless of the seven embarrassing months. Second, the math: interest runs from receipt of the certified CLAIM, not the earlier REA — I'd correct that respectfully while owning the delay honestly. Under $100K the certification wasn't required, but they've certified it and the substance controls. Then I work it on merits: Government-caused test-range delays have real entitlement; quantum gets an honest review; and I'd move fast toward settlement or a written final decision — because this file has already demonstrated what silence costs."
+  },
+  "f40d9fc54cb7": {
+    "ask": "The partial-T4C settlement asks for unabsorbed overhead, lost anticipated profit, and prep costs. What survives?",
+    "fu": [
+      {
+        "h": "Settlement expenses ride a different rule than claim prep — why?",
+        "d": "T4C settlement proposal costs — accounting, legal, preparation — are generally allowable as settlement expenses: the Government chose convenience, and making the contractor whole includes the cost of unwinding. CDA claim prep costs are unallowable because the claim is adversarial litigation posture, not performance or settlement of the Government's own choice. Same invoice category, different lane, opposite answers — a favorite board seam."
+      },
+      {
+        "h": "Unabsorbed overhead is a real theory with a real proof burden.",
+        "d": "Unabsorbed overhead compensates fixed costs that continued while the terminated work no longer absorbed its share. The proof: the termination actually idled capacity (not backfilled by other work), the overhead pools and allocation bases showing the under-absorption, and a causal link to the partial termination — auditable accounting, not assertion. DCAA support fits here. It can be allowable when proven; it's routinely claimed and rarely proven well."
+      }
+    ],
+    "script": "This is an RFO Part 49 terminations-settlement question — the frame decides every line item. My help: the termination CO channel, DCAA on the overhead math, Legal throughout. The frame: costs incurred on the terminated work, reasonable profit on work PERFORMED, plus settlement expenses — never anticipatory profit on work the convenience termination cancelled. So: the terminated site's costs, fine. Settlement prep costs, generally allowable — the Government chose convenience and pays for the unwinding. Anticipated profit on the cancelled balance: no, categorically. Unabsorbed overhead: a real theory with a real burden — prove the idle capacity, the pools, the causation, with DCAA's help; assertion isn't absorption. We negotiate the honest package and paper it with a release."
+  },
+  "4f318705f708": {
+    "ask": "Novate to the asset buyer, or T4C 'so nobody looks bad'? What actually governs?",
+    "fu": [
+      {
+        "h": "Subcontractor failure is excusable only through a specific chain of proof.",
+        "d": "A subcontractor's failure excuses the prime only when the cause was beyond the control and without the fault of BOTH prime and sub — and the prime couldn't obtain the supplies elsewhere in time. A supplier bankruptcy may qualify; the analysis asks whether the prime managed the risk (second sources, inventory, diligence) and whether substitute performance was truly unavailable. Excusable delay defeats default; it doesn't create entitlement to Government rescue."
+      },
+      {
+        "h": "A non-excusable nine-month slip still demands the full runway.",
+        "d": "If the delay proves non-excusable, T4D still requires the record: for this anticipatory failure, a demand for adequate assurances / show-cause posture, the excusability analysis documented, Legal engaged, and the final-decision notice with its required contents. Skipping steps because the outcome seems obvious is how defaults convert to convenience terminations on appeal — with the Government paying settlement instead of collecting reprocurement costs."
+      }
+    ],
+    "script": "This is an RFO Part 49 terminations question with a novation offer riding shotgun. My help: Legal, mandatory, and the novation office for the corporate side. Order of operations: first, the excusability analysis — an upstream bankruptcy may excuse the delay if it was beyond the control and without the fault of both prime and sub, and no substitute existed; that record gets built before any termination posture. Second, the novation: a transfer to the asset buyer is a deliberate Government decision — successor capability, responsibility, terms — not a rescue reflex. Third, the 'T4C so nobody looks bad' idea dies on contact: convenience isn't a record-laundering service; the termination decision follows the Government's interest, honestly labeled. Nine months of non-delivery deserves a real analysis, not a face-saving exit."
+  },
+  "511b3e71ff48": {
+    "ask": "Crews gone, phones dead, surety says the firm ceased operations. Do you still owe a cure notice — and what next?",
+    "fu": [
+      {
+        "h": "The performance bond exists for this exact morning.",
+        "d": "Upon default, the surety's obligations under the performance bond activate: it can complete the work itself, finance the contractor's completion, or pay the Government's cost to complete up to the penal sum (100% of the original contract price on construction). Notify the surety formally and early — their letter already signals engagement — and coordinate the completion path through them, because the bond is the Government's primary financial protection on this job now."
+      },
+      {
+        "h": "Excess costs and the surety's checkbook meet in the completion math.",
+        "d": "Excess reprocurement costs — the delta between the defaulted contract price and the completion cost — are the defaulted contractor's liability, and on bonded construction the surety stands behind that liability up to the penal sum. Document the reprocurement diligently (competed or justified, mitigated, reasonable) because the surety scrutinizes completion costs like the adversary it partially is. The Government's job: honest completion at a defensible cost, papered for two audiences."
+      }
+    ],
+    "script": "This is an RFO Part 49 termination question where the contractor already answered it. My help: Legal, the surety, and a documented abandonment record. On the cure notice: abandonment — crews gone, three weeks of silence, the surety's own ceased-operations letter — is anticipatory failure; the notice posture follows the facts, and with Legal I'd move on a show-cause/final-decision footing built on the documented record of attempts to reach them. When in doubt, send the notice — it costs days and forecloses arguments. Then the real machinery: formal notice to the surety, whose RFO Part 28 performance bond now owns completion — they finish it, fund it, or pay our cost to complete. Reprocurement gets documented like the surety will audit it, because they will. The roof gets built; the record gets built with it."
+  },
+  "a121607dcbba": {
+    "ask": "A novel white paper, a weak cost volume, and an IP ultimatum. Does the OT lane fit — and on what terms?",
+    "fu": [
+      {
+        "h": "Nontraditional has a definition, not a vibe.",
+        "d": "A nontraditional defense contractor is one that hasn't performed (for a defined preceding period) work subject to full cost accounting standards coverage — the startups, commercial firms, and labs the OT authority exists to attract. Verify status rather than assume it: the OT's justification often rides on nontraditional participation (or cost share, or exceptional circumstances), so the definition is load-bearing, not paperwork."
+      },
+      {
+        "h": "Prototype rights are negotiated — what's the floor the transition plan demands?",
+        "d": "An OT can tailor IP terms freely — that's its power — but the Government still needs rights sufficient for the prototype's PURPOSE: enough license to evaluate, integrate, test, and — critically — transition to production or sustainment per the transition plan. The floor is defined by the roadmap: what the Government must be able to do with the design, data, and interfaces at the next phase. 'You get nothing' fails the floor; 'we take everything' kills the deal the authority exists to enable. Negotiate to the plan."
+      }
+    ],
+    "script": "This is an R&D-authorities question — the 10 U.S.C. 4022 OT lane, used for its actual purpose. My help: the agreements officer, Legal, and the lab on the transition plan. The fit: a genuinely novel approach from a nontraditional performer is exactly what OT authority exists for — verify their nontraditional status, because the justification rides on it. The weak cost volume gets fixed in negotiation, not held against the science. On IP: an OT can tailor terms, but 'the Government gets nothing' isn't tailoring — it's failing the transition plan. So we negotiate to the floor the roadmap defines: rights sufficient to evaluate, integrate, and transition the prototype. Flexibility is the OT's gift; purpose is its discipline. We use both."
+  },
+  "1499cade705d": {
+    "ask": "Phase III to a firm now owned by a large prime — the competitor says the program is small-business-only. Who's right?",
+    "fu": [
+      {
+        "h": "The derivation chain is the eligibility document.",
+        "d": "Document the derivation: the competed Phase I/II awards, the technology developed under them, and how the Phase III work derives from, extends, or completes that SBIR effort — a traceable technical lineage in the file. That derivation is what carries the statutory sole-source basis ('authorized by statute'), so it's written like it will be challenged: because as this competitor demonstrates, it will be."
+      },
+      {
+        "h": "The rights were earned during SBIR — what does the acquisition change?",
+        "d": "SBIR data rights attach to the data developed under the SBIR awards and survive corporate transactions — the acquiring prime steps into the rights the small firm earned, for the protection period the contract defines. What changes with acquisition: future SBIR participation (size matters for new Phase I/II awards), not the earned rights or Phase III eligibility of work already derived. Verify the specific window and scope from the contracts rather than assuming either extreme."
+      }
+    ],
+    "script": "This is an SBIR-statute question — Phase III mechanics under new ownership. My help: Legal, the SBIR program office, and the contract file for the derivation record. The rule the competitor missed: Phase III has no size requirement and no dollar cap — eligibility follows DERIVATION from the competed Phase I/II work, and that eligibility survives acquisition. The competition happened in the early phases; Phase III harvests it, by statute, no J&A. So my job is the record: document the derivation chain — awards, technology, lineage to this production work — like it will be challenged, because it just was. And the SBIR data rights the firm earned ride through the acquisition for their defined window. The competitor gets a courteous, correct answer; the file gets the proof."
+  },
+  "f9eb9f7bedb1": {
+    "ask": "The draft solicitation discloses the $8.4M IGCE, drops the performance bond, and sets LDs 'high to motivate.' Fix it.",
+    "fu": [
+      {
+        "h": "An LD rate survives review when it estimates something.",
+        "d": "Liquidated damages must be a reasonable forecast of the Government's probable ACTUAL costs of late completion — extended inspection and administration, alternate facility costs, mission impacts — computed and documented per day. Punitive rates ('high to motivate') are legally unenforceable as penalties: the contractor attacks the rate, and an unsupported number can collapse entirely. The derivation memo in the file is what makes the clause collectible."
+      },
+      {
+        "h": "Follow who can't lien a federal building.",
+        "d": "The payment bond protects subcontractors and suppliers — who cannot place mechanics' liens on Government property, so the bond replaces the security a lien would give them on a commercial job. It's not protection for the Government or a cost to 'save' the contractor; it's what lets subs extend credit on federal construction at all. Dropping it above the threshold isn't kindness — it's unlawful, and it dries up the very subcontractor base the project needs."
+      }
+    ],
+    "script": "This is an RFO Part 36 construction question — three fixes before this solicitation moves. My help: civil engineering on the LD math, Legal, and the labor advisor. One: never disclose the estimate — the solicitation states the magnitude RANGE; publishing $8.4M verbatim hands every offeror our negotiating position. Two: over the RFO Part 28 bonding threshold, performance AND payment bonds are both required — the payment bond protects subs who can't lien Government property; dropping it is unlawful, not thrifty. Three: liquidated damages must forecast probable actual costs of delay — computed, documented, per day; 'high to motivate' is a penalty, and penalties don't survive review. Construction runs on specialized rails. This draft missed three of them; that's what review is for."
+  },
+  "4c134150cccb": {
+    "ask": "The flight chief is running the contractor's crew — standups, tasking, even leave approval. What's broken, and how do you fix it?",
+    "fu": [
+      {
+        "h": "The test is the relationship, not the location.",
+        "d": "Personal services exist when Government personnel exercise relatively continuous supervision and control over contractor employees — the employer-employee pattern: assigning daily tasks, directing how work is done, approving leave. That relationship requires specific statutory authority the contract doesn't have. Proximity, embedded seating, and long duration don't create the violation; supervision does — and daily standups with leave approval is supervision by any definition."
+      },
+      {
+        "h": "The contract already has a lever for the manager gap.",
+        "d": "The key-personnel clause lets the Government demand what the vacancy actually requires: a qualified replacement for the departed site manager within the clause's timeline, Government approval rights over the substitution, and interim management arrangements THE CONTRACTOR provides. The gap that invited the drift is a contractor performance obligation — enforce it as one, rather than back-filling with Government supervision that violates the services statute."
+      }
+    ],
+    "script": "This is an RFO Part 37 services question — personal-services drift, in full bloom. My help: Legal and the squadron's leadership, because the fix is behavioral. The test: continuous Government supervision of contractor employees creates an employer-employee relationship that's unlawful without specific authority — and daily tasking plus leave approval is textbook. So, today, in writing: the flight chief stops directing the crew; all tasking flows through the PWS and the contractor's own management. Then enforce the contract: the key-personnel clause demands a qualified site-manager replacement on the clause's timeline — the vacancy is the contractor's obligation to cure, not the Government's invitation to supervise. And I'd check whether the PWS itself invites this drift, because clauses don't fix what habits recreate weekly."
+  },
+  "bf80a26beb90": {
+    "ask": "A $38K double payment, eight months quiet, and a PM proposing quiet deduction. What's the lawful path?",
+    "fu": [
+      {
+        "h": "Offset is a real tool with formal clothes.",
+        "d": "The Government can offset — but through the debt process, not informal netting: a written demand establishing the debt, the contractor's opportunity to respond, interest per the debt rules, FM and the payment office executing formally so both ledgers reconcile. A quiet deduction leaves the debt unestablished, the interest uncollected, the accounting records false, and invites a dispute over an 'unexplained' short payment. Same money, lawful clothes."
+      },
+      {
+        "h": "Silence about known overpayments is a data point about the partner.",
+        "d": "Contractors have obligations to report known overpayments — eight months of silence on a $38K windfall goes to integrity and business ethics, and belongs in the relationship record: raised with the contractor directly, documented, and weighed in future responsibility and past-performance contexts. One quiet windfall isn't debarment material, but the pattern it might reveal is exactly what the integrity standard exists to catch."
+      }
+    ],
+    "script": "This is a fiscal question — Government debt collection under 31 U.S.C. 3711 — with an integrity thread. My help: FM first — this is their machinery — plus Legal and the payment office. The rule: an overpayment is a Government debt with a process: written demand establishing the $38K, interest per the debt rules, and recovery by payment or formal offset — executed so both sides' books reconcile. The PM's quiet deduction fails audit, forfeits interest, and manufactures a dispute. Separately, the contractor's eight months of silence on a known double payment is an integrity data point: I'd raise it directly, document the conversation, and let it inform the relationship record. Recover the money formally; remember the silence professionally."
+  },
+  "ce2e0c0afc63": {
+    "ask": "An offeror's rates run 30% under their own DCMA-recognized rates. Score them down, or something else?",
+    "fu": [
+      {
+        "h": "The SSDD compares offers at the cost the Government will actually pay.",
+        "d": "On cost-type competitions, the SSA's tradeoff uses most-probable cost — the Government's realism-adjusted estimate of what each offeror will actually cost — not the proposed number. Proposed cost is the offeror's claim; probable cost is the evaluation's finding; the delta between them is itself a risk signal documented in the record. An SSDD trading off against lowball proposed numbers compares fictions — and GAO reads SSDDs for exactly this."
+      },
+      {
+        "h": "Fixed-price flips who owns the overrun — what's left to evaluate?",
+        "d": "On FFP competitions, cost realism isn't used to adjust price — the contractor owns any overrun, so the price stands as proposed. Realism analysis may still appear for a different purpose: assessing whether an unrealistically low price reflects misunderstanding of the requirement or performance risk (documented in risk ratings, responsibility analysis) — but the evaluated price doesn't move. Know both regimes; the panel loves the contrast."
+      }
+    ],
+    "script": "This is a source-selection pricing question — RFO 15.404-3 cost realism, not ratings. My help: my pricing office, DCMA's rate data, and the SSEB chair on keeping lanes clean. The rule: on a competitive cost-type selection, unrealistically low cost gets a cost-realism adjustment — we evaluate at most-probable cost, because on cost-type the Government eats the overrun. Rates 30% under the offeror's own DCMA-recognized rates get adjusted upward on that evidence, and the proposal competes at what it will actually cost. Technical ratings stay technical — scoring merit down to punish pricing corrupts both records. If the strong technical volume survives the honest cost picture, they can still win. They just can't win with arithmetic we know is fiction."
+  }
+}

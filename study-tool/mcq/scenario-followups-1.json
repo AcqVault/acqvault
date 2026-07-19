@@ -1,0 +1,284 @@
+{
+  "d98a4561f069": [
+    {
+      "q": "You said data rights decide what you can compete. Walk me through the rights levels for technical data.",
+      "h": "Three levels, keyed to who paid for the development.",
+      "d": "R-DFARS 227: development entirely with Government funds → unlimited rights — use, modify, disclose to anyone for any purpose. Mixed funding → Government Purpose Rights — internal use plus release for Government purposes (including competitive reprocurement under protections), converting to unlimited after the period. Entirely private expense → limited rights — internal use and emergency repair/overhaul only. The contractor asserts and proves restrictions through the assertion list; unasserted, unmarked data defaults toward the Government."
+    },
+    {
+      "q": "If you conclude only the incumbent can perform, what authority do you use — and who approves it?",
+      "h": "One of the seven, plus a ladder that runs on dollars.",
+      "d": "RFO 6.103-1, only one responsible source — a J&A built on market research that would survive a competitor's lawyer. Approval rides the RFO 6.104 ladder: the CO's certification to $900K, Competition Advocate to $20M, HPA/PEO to $90M ($150M DoD), SPE above. Post to SAM.gov within 14 days of award. For a sustainment effort of this size, expect the Competition Advocate or higher — and expect the market-research section to carry the whole document."
+    },
+    {
+      "q": "And if the follow-on can't award in time — what makes a bridge contract justifiable?",
+      "h": "The cause has to be one the Government couldn't foresee.",
+      "d": "A bridge stands on genuinely unforeseen causes — a protest, a directed strategy change, a regulatory shift — never lack of advance planning. It takes a rigorous justification: the need, the purpose and duration of the bridge, and the concrete steps that prevent the next one, in a decision memorandum. Repeat bridges escalate to higher approval each round, which is the system making planning failures progressively more expensive."
+    }
+  ],
+  "4cb5ceacd90a": [
+    {
+      "q": "Recite all six ratification elements for me.",
+      "h": "Proper-if… benefit… authority… price… funds… and one more signature.",
+      "d": "RFO 1.405: (1) the action would have been proper if a contracting officer had done it; (2) the Government accepted or benefited from the supplies or services; (3) the ratifying official has actual contractual authority; (4) the price is fair and reasonable; (5) funds were available at the time of the commitment AND remain available now; (6) Legal concurs. All six, every time — the one that most often fails is funds availability at the time of the commitment."
+    },
+    {
+      "q": "Who ratifies, at what dollar levels?",
+      "h": "The SAT is the split.",
+      "d": "Over the SAT ($350K): the HCA, delegable. At or under the SAT: the COCO level. This $95K commitment ratifies at the COCO. And note who never ratifies: the person who made the commitment, or anyone in their chain trying to paper their own problem — ratification is deliberately an independent decision."
+    },
+    {
+      "q": "Three types of authority — which ones bind the Government?",
+      "h": "Two are real; one only looks real.",
+      "d": "Express authority — written and explicit, the warrant (SF 1402) — binds. Implied authority — what reasonably flows from a position's express authority — is legally valid and binds. Apparent authority — someone acting as if authorized when they aren't — binds nothing, and a contractor cannot rely on it. The colonel's command authority is real authority over his unit and zero contracting authority; that seam is where every UAC is born."
+    }
+  ],
+  "4907e4079ef8": [
+    {
+      "q": "What exactly does RFO 3.104 protect?",
+      "h": "Two classes — one belongs to the Government, one to the offerors.",
+      "d": "Source selection information — proposed rankings, evaluation results, the source selection plan, competitive-range lists, the Government estimate — and contractor bid and proposal information: an offeror's proprietary pricing, costs, and proposal contents. Disclosing either, or attempting to obtain it, is a violation. The PCO is the conduit and control point for all of it."
+    },
+    {
+      "q": "Walk me through your response steps on a suspected violation.",
+      "h": "Legal first — then facts, containment, and a written determination.",
+      "d": "Notify Legal immediately; gather the facts and documents; have any recipient delete all copies and confirm with signed affidavits and NDAs; notify affected parties; get an MFR from the person who disclosed; then write the determination of whether the disclosure impacts the procurement. No impact: the record goes forward for concurrence and the procurement proceeds. Impact: it goes to the HCA, who can proceed, investigate further, cancel, or disqualify an offeror."
+    },
+    {
+      "q": "Where do the post-Government-employment rules bite in this scenario?",
+      "h": "The clock started at the employment contact, not the resignation.",
+      "d": "The moment the evaluator began employment discussions with an offeror, disqualification duties attached — recusal from anything affecting that firm and prompt disclosure. His danger window isn't when he told the team; it's everything he touched after the contact began. That's why the investigation reconstructs the contact date first, then maps what protected information he accessed after it."
+    }
+  ],
+  "b034ddbb2029": [
+    {
+      "q": "Name the three OCI types — and which is hardest to mitigate.",
+      "h": "Access, objectivity, and the one where the requirement itself is shaped.",
+      "d": "RFO 9.5: unequal access to nonpublic information — the imbalance itself is the conflict, no bad act required; impaired objectivity — the contractor would evaluate its own work; and biased ground rules — the contractor shaped the requirement it now wants to compete on. Biased ground rules is hardest: no firewall un-writes a spec, so exclusion is the usual outcome. Impaired objectivity is the type most likely to be waived."
+    },
+    {
+      "q": "What are your three handling tools, in order of preference?",
+      "h": "Kill it, structure it away, or manage it.",
+      "d": "Avoid — exclude the source or remove the conflicted work from the requirement; neutralize — remove the contractor from the specific conflicted activity; mitigate — reduce the impact to an acceptable level through a formal, enforceable mitigation plan. In that order. If none works and the benefit still outweighs the conflict, the waiver lane exists — HCA approval, non-delegable."
+    },
+    {
+      "q": "Who has final say on the mitigation plan?",
+      "h": "Panels advise. One signature decides.",
+      "d": "The PCO. The review machinery — Legal review, the OCI panel with its recommendations — advises, but the decision and the accountability sit with the contracting officer. Say that plainly at the board: 'the panel recommends; I decide, and I own it.' It's exactly the kind of authority question panels probe to see if you know where your own signature sits."
+    }
+  ],
+  "994ae910af13": [
+    {
+      "q": "Recite the seven responsibility standards.",
+      "h": "Money, time, record, character, organization, gear, and eligibility.",
+      "d": "RFO 9.104: adequate financial resources or the ability to obtain them; ability to comply with the delivery or performance schedule; a satisfactory performance record; a satisfactory record of integrity and business ethics; the necessary organization, experience, accounting and operational controls, and technical skills; the necessary equipment and facilities; and otherwise qualified and eligible under applicable laws."
+    },
+    {
+      "q": "What system checks precede award, and at what threshold?",
+      "h": "One always; one over the SAT.",
+      "d": "SAM exclusions on every action, no floor — an excluded contractor is ineligible, period. FAPIIS review for actions over the SAT ($350K) — the integrity and performance record system where things like that prior default live. This scenario is exactly why the FAPIIS check exists: it surfaces history a clean SAM search and a fresh CAGE code won't."
+    },
+    {
+      "q": "SBA issues the CoC — can you appeal it?",
+      "h": "There's a dollar band where you can.",
+      "d": "A Certificate of Competency conclusively establishes responsibility — you award. The CO may appeal a CoC for actions between $100K and $25M, worked through channels with Legal and SBA. Above $25M there's no appeal, only a request for SBA Headquarters review. And either way, the Government's protection shifts to administration: a hard QASP, milestone surveillance, early engagement at the first slip."
+    }
+  ],
+  "0f4c23c21c0d": [
+    {
+      "q": "What questions must market research answer?",
+      "h": "Sources, commerciality, small business, practices — and one about consolidation.",
+      "d": "RFO Part 10: are there capable sources; is the requirement commercial (or satisfiable by non-developmental items); can small businesses perform; what are the industry's customary practices and terms; and is any bundling or consolidation justified. Those answers drive the set-aside call, the commerciality determination, the competition strategy, and how the requirement itself gets defined."
+    },
+    {
+      "q": "How long is research current, and what document carries it?",
+      "h": "A shelf life and a report.",
+      "d": "Current within 18 months under RFO 10.001 — this file's 26-month-old research fails on its face. And the market research report is the document every downstream decision cites: the J&A, the set-aside determination, the CID. Research that was never documented can't support any of them — a post-hoc memo is reconstruction, not research."
+    },
+    {
+      "q": "Name five research methods you'd actually run here in the next two weeks.",
+      "h": "Active outreach beats passive posting.",
+      "d": "A properly shaped sources-sought (right NAICS, real title, adequate window); direct RFIs to the two small firms and known integrators; prior-procurement review in FPDS for who's winning similar work; SME and vendor engagement — actual conversations, documented; and a compressed industry day or one-on-ones if responses warrant. Depth scales to the dollar value: $4.5M with a sole-source question hanging on it deserves all five."
+    }
+  ],
+  "380ad1822833": [
+    {
+      "q": "Recite the supplies priority ladder, top to bottom.",
+      "h": "What the Government owns, then statute, then schedules, then market.",
+      "d": "RFO Part 8: (1) existing Government inventory; (2) excess property from other agencies; (3) Federal Prison Industries — UNICOR; (4) AbilityOne procurement-list items; (5) wholesale supply sources; (6) mandatory Federal Supply Schedules; (7) commercial sources. In order, each rung checked and documented before moving past it."
+    },
+    {
+      "q": "How does the ladder change for services?",
+      "h": "The statutory program leads.",
+      "d": "For services: AbilityOne first, then Federal Supply Schedules, then Federal Prison Industries, then commercial sources. Shorter ladder, same discipline — and the same rule that being on the AbilityOne procurement list makes the source mandatory, with price alone never unlocking the open market."
+    },
+    {
+      "q": "If this lands on a schedule buy — who determines the order price fair and reasonable?",
+      "h": "GSA priced the schedule. Who prices the order?",
+      "d": "The ordering contracting officer. GSA's determination established schedule-level ceiling prices — not your quantity, your configuration, or your competitive moment. Compare quotes among schedule holders carrying the item, seek discounts (schedule prices are ceilings), and document the comparison as your price analysis. That documentation is the difference between an order and a defensible order."
+    }
+  ],
+  "760c637d2966": [
+    {
+      "q": "Recite the commercial-item definition for me.",
+      "h": "Who it's sold to, plus the evolution and minor-mod branches.",
+      "d": "RFO 2.101: an item sold, leased, or licensed to the general public — or evolved from such an item and available in time to meet the Government's need — including minor modifications that don't alter the item's form, fit, or function. For services: installation, maintenance, repair, or training for commercial products, or services sold competitively at catalog or market prices. The general-public element is what one foreign military sale and an affiliate transaction both fail."
+    },
+    {
+      "q": "What does the written CID require, and who approves it?",
+      "h": "Over the SAT, one level up, with a comparison behind it.",
+      "d": "For DoD actions over the SAT ($350K): a written Commercial Item Determination approved one level above the contracting officer — describing the item, stating the basis for meeting the definition with a comparison analysis, signed and dated. Relying on a prior CID requires addressing how current market conditions affect the earlier finding. The determination is the Government's call, made on evidence the vendor supplies."
+    },
+    {
+      "q": "Say it holds up as commercial — what pricing data can you still demand?",
+      "h": "The exception excepts the certificate, not the data.",
+      "d": "Data other than certified cost or pricing data, sufficient to determine the price fair and reasonable: sales history to other customers, catalog and market prices, quantity-discount structures, and supporting quotes. Commerciality removes the certification requirement and the defective-pricing remedy — it never removes the CO's duty to price the action on evidence. No data, no deal applies to commercial buys too."
+    }
+  ],
+  "df05a1cf3a0d": [
+    {
+      "q": "What are the three SAP buying methods, and their dollar boundaries?",
+      "h": "A card, an order, and an account.",
+      "d": "RFO Part 13: the Government Purchase Card for micro-purchases at or under $15K; purchase orders from $15K up to the $350K SAT — a Government order the contractor accepts in writing or by performance; and Blanket Purchase Agreements for repetitive needs from established sources — an account, not a contract, with no obligation until a call is placed."
+    },
+    {
+      "q": "What competition does SAP actually require at these values?",
+      "h": "Reserved band, local solicitation, synopsis line.",
+      "d": "The MPT-to-SAT band is reserved for small business under the Rule of Two. Under $25K, solicit at least three vendors; over $25K, synopsize on SAM.gov. Award can be made on price alone, but price reasonableness must always be supportable — quotes, history, catalogs, the IGCE. Streamlined never means standard-free; it means proportionate documentation."
+    },
+    {
+      "q": "When does an under-SAT sole source need a J&A?",
+      "h": "It doesn't — but it needs something.",
+      "d": "Never — the formal J&A machinery starts above the SAT. Under it, a sole source needs a documented single-source rationale (why only Vendor Z's generator meets the need) plus price-reasonableness support. That's the generator's lane here: no J&A, but real documentation. The trap is hearing 'no J&A' as 'no file' — the rationale still has to survive a reviewer."
+    }
+  ],
+  "35844b460455": [
+    {
+      "q": "When does an 8(a) sole source need a J&A?",
+      "h": "There's a dollar line, and it's high for DoD.",
+      "d": "For DoD, not below $100M ($30M for civilian agencies) — below those lines the program's statutory basis is the competition authority, the 'authorized by statute' lane, no J&A required. SBA must approve the contract. Above the lines, a J&A enters. Know the pair: $100M DoD / $30M civilian is a favorite board number."
+    },
+    {
+      "q": "Where does competitive 8(a) begin?",
+      "h": "Same number family as the HUBZone and WOSB caps.",
+      "d": "Competitive 8(a) when at least two eligible firms are expected and the value exceeds $8.5M for manufacturing or $5.5M for everything else. Below those, sole source within the program is available. The $8.5M/$5.5M pair recurs across HUBZone and WOSB sole-source caps (SDVOSB runs $8.5M/$5M) — learn it once as a family and the board can't rattle you with any of them."
+    },
+    {
+      "q": "One more wrinkle: what changed in the 8(a) program recently that you'd verify before relying on it?",
+      "h": "Eligibility standards shifted in early 2026.",
+      "d": "As of January 2026, SBA moved the program to strictly race-neutral eligibility standards following litigation — admissions dropped sharply and many participants were affected. Before building a strategy on 8(a), verify the firm's current program status with SBA and your Small Business Professional. It's also a model board answer: naming a live regulatory shift shows you're current, and 'I'd verify before relying' is always the right closing note."
+    }
+  ],
+  "8747b956fb28": [
+    {
+      "q": "By the way — name all seven exceptions to full and open competition.",
+      "h": "One source, urgency, mobilization… keep going to seven.",
+      "d": "RFO 6.103: (1) only one responsible source; (2) unusual and compelling urgency; (3) industrial mobilization, or engineering/developmental/research capability; (4) international agreement; (5) authorized or required by statute — UNICOR, AbilityOne, 8(a); (6) national security; (7) public interest — extremely rare, agency-head level. Recite them cold: this is the single most-asked list at the board."
+    },
+    {
+      "q": "Walk me up the J&A approval ladder.",
+      "h": "Four rungs, and the DoD line at the top differs.",
+      "d": "RFO 6.104, at October 2025 values: to $900K, the contracting officer's certification is the approval; above $900K to $20M, the Competition Advocate; above $20M to $90M — $150M for DoD — the Head of the Procuring Activity or PEO; above that, the Senior Procurement Executive. Post the J&A to SAM.gov within 14 days of award, 30 for urgency. This $2.8M action, if it goes sole source, sits with the Competition Advocate."
+    },
+    {
+      "q": "And when does CICA not apply at all?",
+      "h": "Four carve-outs — the mod lane is the one in play here.",
+      "d": "CICA doesn't govern: simplified acquisitions under Part 13; actions under statutory authorities like the Federal Supply Schedules; in-scope modifications under Part 43; and task or delivery orders under existing IDIQs, which run on RFO 16.507 fair opportunity instead (Other Transactions also sit outside). That's why the scope review comes first in this scenario — if the module is in scope, we're in the mod lane and the whole exceptions conversation never starts."
+    },
+    {
+      "q": "Say urgency is real — what must the J&A quantify, and what limits ride with it?",
+      "h": "Harm, breadth, duration, and a posting clock.",
+      "d": "An RFO 6.103-2 urgency J&A quantifies the serious harm to the Government — mission failure, safety, unacceptable operational delay — not the commander's interest level. Limits: solicit as many sources as practicable even under urgency; duration limited to about one year; and the J&A may follow the award but must be posted within 30 days. Urgency buys speed, never silence."
+    }
+  ],
+  "edfd9e105252": [
+    {
+      "q": "Define the three exchange types and the lines between them.",
+      "h": "The competitive range is the boundary; revisions are the tell.",
+      "d": "RFO Part 15: clarifications — minor or clerical issues, no proposal revisions; communications — before the competitive range, to understand proposals well enough to set the range, still no revisions; discussions — after the range is established, with every offeror in the range, and offerors may revise. The moment an exchange invites a revision, it's discussions — with all of discussions' obligations attached."
+    },
+    {
+      "q": "What makes discussions 'meaningful'?",
+      "h": "Each offeror hears its own weaknesses — with enough substance to act.",
+      "d": "Each offeror in the range must be told its own significant weaknesses and deficiencies with enough substance to respond — tailored to that proposal, not a generic list, and even-handed across the range. What the SSA did here fails every element: one offeror, after close, fed the Government's cost position. Meaningful discussions are the protest-proofing of a source selection; unequal ones are the protest."
+    },
+    {
+      "q": "Who does what — SSA, SSEB, SSAC, PCO?",
+      "h": "Decide, evaluate, compare, run the business.",
+      "d": "The SSA is the decision-maker — appoints the boards, approves the range, can award without discussions if the solicitation allowed it; under $10M the PCO typically serves as SSA. The SSEB evaluates each proposal against Section M — individually, never comparing offerors. The SSAC (required over $100M) does the comparative analysis and recommends. The PCO runs the business side: the range determination, exchanges, award, debriefs — and protects proposal confidentiality."
+    }
+  ],
+  "c530d151efa8": [
+    {
+      "q": "Recite the exceptions to certified cost or pricing data.",
+      "h": "Five letters: CLAWM.",
+      "d": "RFO 15.403-2 — CLAWM: Commercial products and services (including qualifying minor modifications); prices set by Law or regulation; Adequate price competition; a Waiver granted by the HCA; and commercial Modifications. Run the exceptions before demanding the certificate — most actions never need one. Here, none applies to the prime's $14M sole-source non-commercial action, so certification attaches."
+    },
+    {
+      "q": "What are the four proposal analysis types, and when does each apply?",
+      "h": "Price always — then cost, technical, and profit.",
+      "d": "Price analysis — always, every action (RFO 15.404-1): comparison of offers, history, catalogs, the IGCE. Cost analysis — element by element when certified data is required or realism must be judged: labor, materials, indirects, rates verified through DCMA. Technical analysis — engineers assessing hours, skill mix, BOMs, bases of estimate. Profit/fee analysis — DoD's weighted guidelines when certified data is required, with the statutory fee ceilings (15% R&D, 10% most cost-type, 6% A&E)."
+    },
+    {
+      "q": "All five elements of defective pricing — go.",
+      "h": "Data, timing, disclosure, reliance, effect.",
+      "d": "(1) The information fits the definition of cost or pricing data; (2) accurate and complete data existed before the agreement on price; (3) it was not disclosed to the contracting officer; (4) the Government relied on the defective data in negotiations; (5) that reliance increased the contract price. All five must hold — intent is famously not an element. Remedy: price reduction plus interest, and profit on the delta."
+    },
+    {
+      "q": "What dollar thresholds bring in DCMA and DCAA?",
+      "h": "Field pricing versus audit — two ladders.",
+      "d": "DCMA field pricing assistance: over $2.5M fixed-price, over $10M cost-type (over $2.5M cost-type with system deficiencies). DCAA audits: over $10M fixed-price, over $100M cost-type. This $14M sole-source FPIF action sits squarely in DCMA field-pricing territory with DCAA audit available — and the $6M subcontract's rates ride the same support."
+    }
+  ],
+  "d707f7ff05cc": [
+    {
+      "q": "What factors drive contract-type selection?",
+      "h": "Definition, estimate, risk, competition, systems, history.",
+      "d": "RFO Part 16: how well-defined the requirement is; how accurate the cost estimate can be; the technical risk; the competition available; whether the contractor has an adequate accounting system; and the acquisition history for similar work. The answers tell you how much cost risk the Government should retain versus transfer — type selection is a risk decision wearing a form number."
+    },
+    {
+      "q": "What gates must every cost-type contract clear?",
+      "h": "A system and a signature.",
+      "d": "An adequate contractor accounting system — because the Government pays incurred costs, the system that captures them must be trustworthy — and a D&F justifying the type. No system, no cost-type award, whatever the mission pressure. That's why this scenario's accounting-system question comes before any structure conversation."
+    },
+    {
+      "q": "If they push T&M for the improvement work — what does the D&F have to say?",
+      "h": "Five findings, and approval scales with dollars and years.",
+      "d": "A T&M D&F addresses: market research was conducted; it's genuinely impossible to estimate the extent or duration of the work; no other contract type is appropriate; the contract minimizes T&M use; and the steps that will reduce T&M on future requirements. Approval: COCO to $10M, SCO above, HCA for periods over three years. T&M is the careful exception — a ceiling, active surveillance, and an exit plan, never a standing convenience."
+    }
+  ],
+  "04903e87f71d": [
+    {
+      "q": "What are ALL the exceptions to fair opportunity under RFO 16.507-6?",
+      "h": "Six — urgency, uniqueness, follow-on, minimum, statute, and a set-aside lane.",
+      "d": "RFO 16.507-6: (1) unacceptable delay in meeting an urgent need; (2) only one awardee is capable — unique or highly specialized circumstances; (3) logical follow-on to an order already competed under fair opportunity — use with caution, especially stacked; (4) necessary to satisfy the minimum guarantee; (5) authorized or required by statute; (6) order-level small business set-aside — which needs no D&A. Recite all six cold; it's the 16.5 counterpart to the seven CICA exceptions."
+    },
+    {
+      "q": "What does an over-SAT exception require, and who approves it?",
+      "h": "Same ladder as the J&A, different document.",
+      "d": "A Determination and Approval — structured like a J&A, riding the same tiers: COCO to $900K, Competition Advocate to $20M, HPA/PEO to $90M ($150M DoD), SPE above — posted to SAM.gov (redacted) within 14 days, 30 for urgency. This $260K order sits below the SAT, so no D&A is required — but the fair-opportunity obligation itself never goes away; the file still shows genuine consideration."
+    },
+    {
+      "q": "What are the order-protest rules on this vehicle?",
+      "h": "A dollar door and a growth door.",
+      "d": "GAO hears task-order protests over $35M for DoD ($10M civilian) — or at ANY value where the protest alleges the order exceeds the scope, period, or ceiling of the underlying contract. Below those doors, the lane is the task-order ombudsman, who reviews whether holders got fair consideration and can recommend corrective action. A steered $260K order can't reach GAO — but the SDVOSB absolutely gets the ombudsman, which is why the consideration record matters at every dollar value."
+    }
+  ],
+  "7b84a1011fa7": [
+    {
+      "q": "Recite every gate you clear before exercising an option.",
+      "h": "Seven checks, then a timely signature.",
+      "d": "RFO Part 17: price still fair and reasonable — a fresh market look; funds available; the option serves an existing need and is the best method for it; the option was synopsized or is exempt; the contractor isn't excluded in SAM; performance has been considered; and written notice by the date in the contract. Miss the notice date and the unilateral right dies — continuation becomes a bilateral negotiation."
+    },
+    {
+      "q": "What duration limits cap a services structure?",
+      "h": "Five, ten, and six months.",
+      "d": "Service contracts: five years total, base plus all options (DFARS 217.204). DoD task and delivery order contracts: ten years without a Head of Agency determination, SPE approval beyond that. The extension-of-services clause adds at most six months — a transition bridge, not a strategy. And any period bought with the extension clause counts against the honest answer to 'why wasn't the recompete ready?'"
+    },
+    {
+      "q": "The contractor flatly refuses to perform at the option price. What are your lawful paths?",
+      "h": "You can't negotiate an option — but you can bridge and recompete.",
+      "d": "An option exercises at its evaluated, awarded price or not at all — 'exercise plus 9%' is a new agreement, not an option, and it forfeits the competitive pricing the option preserved. Paths: exercise anyway if they're bluffing (refusal to perform an exercised option is anticipatory repudiation with T4D exposure); or don't exercise, use a short justified extension for continuity, and recompete immediately — with the record showing exactly who refused what. Either way, the refusal enters their performance record."
+    }
+  ]
+}

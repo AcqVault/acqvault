@@ -1,0 +1,1132 @@
+{
+  "_readme": "Quick-round authoring, v2 (v1 pairs/ladders retired 2026-07-12 — owner verdict: not fun). Two games. combination: the daily vault word — 5-letter acquisition terms, one per Zulu day (date-seeded index, same word for every visitor); each carries a one-line definition ('def') and a cite resolved to Described-in chips. governs: Which Part Governs — one-line situations ('s'), the governing part label ('p'), three hand-set adjacent-plausible distractor part labels ('d'); 'cite' resolves the review link. Part names live in 'part_names' for the button subtitles. Figures/rules must trace to the deck/corpus — a wrong game answer is a credibility incident, not a bug.",
+  "part_names": {
+    "Part 1": "The System",
+    "Part 2": "Definitions",
+    "Part 3": "Integrity & Ethics",
+    "Part 4": "Administrative Matters",
+    "Part 5": "Publicizing",
+    "Part 6": "Competition",
+    "Part 7": "Acquisition Planning",
+    "Part 8": "Required Sources",
+    "Part 9": "Contractor Qualifications",
+    "Part 10": "Market Research",
+    "Part 11": "Describing Needs",
+    "Part 12": "Commercial Products & Services",
+    "Part 13": "Simplified Acquisition",
+    "Part 14": "Sealed Bidding",
+    "Part 15": "Negotiation",
+    "Part 16": "Contract Types",
+    "Part 17": "Options & Interagency",
+    "Part 19": "Small Business",
+    "Part 22": "Labor Laws",
+    "Part 25": "Foreign Acquisition",
+    "Part 28": "Bonds & Insurance",
+    "Part 31": "Cost Principles",
+    "Part 32": "Contract Financing",
+    "Part 33": "Protests & Disputes",
+    "Part 35": "R&D Contracting",
+    "Part 36": "Construction & A-E",
+    "Part 37": "Service Contracting",
+    "Part 39": "Acquiring ICT",
+    "Part 43": "Modifications",
+    "Part 45": "Government Property",
+    "Part 49": "Terminations",
+    "Part 52": "Clauses",
+    "R-DFARS 217": "UCAs & Special Ordering",
+    "R-DFARS 227": "Data Rights",
+    "24": "Privacy & FOIA",
+    "34": "Major System Acquisition",
+    "40": "Security & Supply Chain",
+    "41": "Utility Services",
+    "48": "Value Engineering",
+    "50": "Extraordinary Actions"
+  },
+  "combination": [
+    {
+      "w": "SCOPE",
+      "def": "The boundary of the bargain — modifications live inside it or become new procurements.",
+      "cite": "RFO 43.3",
+      "cat": "Contract changes"
+    },
+    {
+      "w": "CLAIM",
+      "def": "A written demand for payment as a matter of right — certified over $100K, and the clocks start running.",
+      "cite": "RFO 33.2",
+      "cat": "Disputes & appeals"
+    },
+    {
+      "w": "AWARD",
+      "def": "Acceptance of an offer — the moment the Government is bound.",
+      "cite": "RFO 13.203 · RFO Part 15",
+      "cat": "Getting on contract"
+    },
+    {
+      "w": "OFFER",
+      "def": "A response the Government can accept to form a binding contract — quotes aren't one.",
+      "cite": "RFO 2.101",
+      "cat": "Forming the contract"
+    },
+    {
+      "w": "PRICE",
+      "def": "What analysis must prove fair and reasonable — on every single action.",
+      "cite": "RFO 15.404-1",
+      "cat": "Cost & pricing"
+    },
+    {
+      "w": "AUDIT",
+      "def": "The examination of contractor records that backs up cost analysis on the big ones.",
+      "cite": "RFO 15.404",
+      "cat": "Cost & pricing"
+    },
+    {
+      "w": "BONDS",
+      "def": "Performance and payment protection — required on construction over $150,000.",
+      "cite": "RFO 28.102",
+      "cat": "Construction & sureties"
+    },
+    {
+      "w": "QUOTE",
+      "def": "Information, not an offer — the Government's order is the offer; the vendor can still walk.",
+      "cite": "RFO 13.2",
+      "cat": "Simplified buys"
+    },
+    {
+      "w": "DELAY",
+      "def": "Excusable or not — the fork that decides whether a default termination survives.",
+      "cite": "RFO 52.249-14",
+      "cat": "Performance problems"
+    },
+    {
+      "w": "FUNDS",
+      "def": "No money, no contract — obligation without appropriation is an Antideficiency Act problem.",
+      "cite": "RFO 32.7 · DoD FMR",
+      "cat": "Fiscal law"
+    },
+    {
+      "w": "WAIVE",
+      "def": "Giving up a known right — like the HCA waiving certified cost or pricing data.",
+      "cite": "RFO 15.403",
+      "cat": "Cost & pricing"
+    },
+    {
+      "w": "TERMS",
+      "def": "The clauses that allocate risk — read them before the contractor does.",
+      "cite": "RFO Part 52",
+      "cat": "Clauses"
+    },
+    {
+      "w": "COSTS",
+      "def": "Allowable, allocable, and reasonable — a cost must clear all three to be paid.",
+      "cite": "RFO Part 31",
+      "cat": "Cost principles"
+    },
+    {
+      "w": "FINAL",
+      "def": "The contracting officer's final decision — the document that starts every appeal clock.",
+      "cite": "RFO 33.205-6",
+      "cat": "Disputes & appeals"
+    },
+    {
+      "w": "VALUE",
+      "def": "Best value — the basis of every source selection, tradeoff or lowest-price-technically-acceptable.",
+      "cite": "RFO 15.103",
+      "cat": "Source selection"
+    },
+    {
+      "w": "TITLE",
+      "def": "Who owns the property — it passes by the clause, not by who paid.",
+      "cite": "RFO 45.401",
+      "cat": "Government property"
+    },
+    {
+      "w": "BOARD",
+      "def": "The Board of Contract Appeals — 90 days from the final decision, or 12 months to the COFC.",
+      "cite": "RFO 33.2",
+      "cat": "Disputes & appeals"
+    },
+    {
+      "w": "AGENT",
+      "def": "Only a warranted agent binds the United States — apparent authority binds nothing.",
+      "cite": "RFO 1.402",
+      "cat": "Authority"
+    },
+    {
+      "w": "ORDER",
+      "def": "A task or delivery order — fair opportunity governs who gets it.",
+      "cite": "RFO 16.507",
+      "cat": "Task & delivery orders"
+    },
+    {
+      "w": "DEBAR",
+      "def": "Exclusion from Government contracting — check SAM before every award.",
+      "cite": "RFO 9.406",
+      "cat": "Responsibility"
+    },
+    {
+      "w": "TRADE",
+      "def": "Trade agreements open foreign sources above their thresholds — Buy American below.",
+      "cite": "RFO Part 25",
+      "cat": "Foreign acquisition"
+    },
+    {
+      "w": "GOALS",
+      "def": "Small-business participation targets — the subcontracting plan carries them past $900K.",
+      "cite": "RFO 19.109",
+      "cat": "Small business"
+    },
+    {
+      "w": "FRAUD",
+      "def": "Procurement integrity's hard edge — report it, never negotiate around it.",
+      "cite": "RFO Part 3",
+      "cat": "Ethics & integrity"
+    },
+    {
+      "w": "SPECS",
+      "def": "Describe the need, not the vendor — restrictive specifications kill competition.",
+      "cite": "RFO Part 11",
+      "cat": "Describing the need"
+    },
+    {
+      "w": "WAGES",
+      "def": "Service and construction labor standards — wage determinations ride the contract.",
+      "cite": "RFO Part 22",
+      "cat": "Labor standards"
+    },
+    {
+      "w": "HOURS",
+      "def": "Labor-hour and T&M contracting — the ceiling and surveillance are the safeguards.",
+      "cite": "RFO 16.601",
+      "cat": "Contract types"
+    },
+    {
+      "w": "FIXED",
+      "def": "Firm-fixed-price — one price, whatever it costs; the contractor owns the risk.",
+      "cite": "RFO 16.202",
+      "cat": "Contract types"
+    },
+    {
+      "w": "GRANT",
+      "def": "Assistance, not acquisition — if the purpose is public benefit, it isn't a contract at all.",
+      "cite": "RFO 2.101",
+      "cat": "Types of agreements"
+    },
+    {
+      "w": "LIMIT",
+      "def": "Limitation of Cost and Funds — the ~75% notice that keeps cost-type work funded.",
+      "cite": "RFO 32.706-2",
+      "cat": "Contract financing"
+    },
+    {
+      "w": "INDEX",
+      "def": "Economic price adjustment rides a published index — protection, not speculation.",
+      "cite": "RFO 16.203",
+      "cat": "Contract types"
+    },
+    {
+      "w": "RATIO",
+      "def": "The share ratio — how incentive contracts split every dollar of overrun and underrun.",
+      "cite": "RFO 16.404-1",
+      "cat": "Incentive contracts"
+    },
+    {
+      "w": "EQUAL",
+      "def": "'Brand name or equal' — the salient characteristics define what equal means.",
+      "cite": "RFO Part 11",
+      "cat": "Describing the need"
+    },
+    {
+      "w": "CURES",
+      "def": "The cure notice gives 10 days to fix a failure — skip it only for pure late delivery.",
+      "cite": "RFO 49.402-3",
+      "cat": "Terminations"
+    },
+    {
+      "w": "MERGE",
+      "def": "A novation moves the contract when companies do — the Government must recognize the successor.",
+      "cite": "RFO Part 42",
+      "cat": "Contractor changes"
+    },
+    {
+      "w": "BUYER",
+      "def": "The GPC holder's lane — micro-purchases to $15K, spread fairly, never split.",
+      "cite": "RFO 13.4",
+      "cat": "Purchase cards"
+    },
+    {
+      "w": "RATED",
+      "def": "DPAS-rated orders jump the queue — DO and DX ratings are mandatory to accept.",
+      "cite": "RFO Part 11",
+      "cat": "Priorities & allocations"
+    },
+    {
+      "w": "RIGHT",
+      "def": "Data rights follow the money — who funded development decides what the Government may do.",
+      "cite": "R-DFARS 227",
+      "cat": "Data rights"
+    },
+    {
+      "w": "YEARS",
+      "def": "Multiyear and options stretch a contract — about five is the services rail.",
+      "cite": "RFO 17.101",
+      "cat": "Options & duration"
+    },
+    {
+      "w": "NEEDS",
+      "def": "The bona fide need — this year's money buys this year's requirement.",
+      "cite": "RFO 32.703-3 · DoD FMR",
+      "cat": "Fiscal law"
+    },
+    {
+      "w": "STAYS",
+      "def": "The CICA stay — file at GAO within 10 days of award or 5 of debrief, and performance stops.",
+      "cite": "RFO 33.105-3",
+      "cat": "Protests"
+    },
+    {
+      "w": "PLANS",
+      "def": "Think before you buy — the written strategy that lines up requirement, market, and schedule before a dollar moves.",
+      "cite": "RFO 7.1",
+      "cat": "Acquisition planning"
+    },
+    {
+      "w": "LEASE",
+      "def": "Rent or buy? The lease-versus-purchase analysis you run before committing the government to owning something.",
+      "cat": "Acquisition planning"
+    },
+    {
+      "w": "DRAFT",
+      "def": "Float it before you fix it — the pre-solicitation version you circulate so industry can sharpen the requirement.",
+      "cite": "RFO 15.101",
+      "cat": "Getting on contract"
+    },
+    {
+      "w": "BASIS",
+      "def": "The legal reason you're competing less than fully — one of the named exceptions, each carrying its own justification.",
+      "cite": "RFO 6.103",
+      "cat": "Competition"
+    },
+    {
+      "w": "SCORE",
+      "def": "How evaluation turns judgment into a rating — adjectival, color, or number, but always tied to the factors you published.",
+      "cite": "RFO 15.104",
+      "cat": "Source selection"
+    },
+    {
+      "w": "RANGE",
+      "def": "The short list after the first cut — the offerors still realistically in the running, the ones you hold discussions with.",
+      "cat": "Source selection"
+    },
+    {
+      "w": "CLASS",
+      "def": "One determination covering a whole category of actions, so you don't re-justify the same thing buy after buy.",
+      "cite": "RFO 1.503",
+      "cat": "Authority"
+    },
+    {
+      "w": "LEVEL",
+      "def": "You're buying the effort, not a deliverable — a set level of labor aimed at a broadly stated task.",
+      "cite": "RFO 16.206",
+      "cat": "Contract types"
+    },
+    {
+      "w": "RISKS",
+      "def": "Who bears the cost of the unknown — fixed-price puts it on the contractor, cost-reimbursement on the government.",
+      "cite": "RFO 16.102",
+      "cat": "Contract types"
+    },
+    {
+      "w": "SHARE",
+      "def": "The split that decides how much of an overrun or underrun each side eats — the heart of an incentive arrangement.",
+      "cite": "RFO 16.404",
+      "cat": "Incentive contracts"
+    },
+    {
+      "w": "RATES",
+      "def": "Labor and indirect rates — the multipliers that turn hours into a bill, and exactly what DCAA shows up to audit.",
+      "cite": "RFO 42.5",
+      "cat": "Cost & pricing"
+    },
+    {
+      "w": "CLOSE",
+      "def": "The paperwork endgame — final invoice paid, property disposed, releases signed, file closed.",
+      "cite": "RFO 4.308",
+      "cat": "Contract closeout"
+    },
+    {
+      "w": "DEBTS",
+      "def": "Money the contractor owes back — overpayments, unliquidated advances, financing the government will collect.",
+      "cite": "RFO 32.6",
+      "cat": "Contract financing"
+    },
+    {
+      "w": "VENUE",
+      "def": "Where the protest goes — the agency, GAO, or the Court of Federal Claims, each with its own forum and clock.",
+      "cite": "RFO 33.1",
+      "cat": "Protests"
+    },
+    {
+      "w": "COURT",
+      "def": "The Court of Federal Claims — where a contractor can take a claim instead of, or after, the board of contract appeals.",
+      "cite": "RFO 33.2",
+      "cat": "Disputes & appeals"
+    },
+    {
+      "w": "PRIME",
+      "def": "The one holding the contract with the government — every subcontractor below flows their work up through them.",
+      "cat": "Subcontracting"
+    },
+    {
+      "w": "GIFTS",
+      "def": "What you can't accept from someone doing business with the government — the line between a courtesy and a bribe.",
+      "cat": "Ethics & integrity"
+    },
+    {
+      "w": "WASTE",
+      "def": "The quiet sibling of fraud and abuse — not criminal, just money spent with nothing to show for it.",
+      "cat": "Ethics & integrity"
+    },
+    {
+      "w": "SEALS",
+      "def": "Sealed bidding — price only, no negotiation: bids come in sealed, open in public, and the low responsive bidder wins.",
+      "cite": "RFO 14",
+      "cat": "Sealed bidding"
+    },
+    {
+      "w": "AMEND",
+      "def": "Changed the requirement mid-solicitation? Amend it — in writing, to every offeror, before proposals are due.",
+      "cite": "RFO 15.106",
+      "cat": "Getting on contract"
+    },
+    {
+      "w": "WORTH",
+      "def": "Best value is about worth, not just price — what the government actually gets for the money, tradeoffs and all.",
+      "cite": "RFO 15.103",
+      "cat": "Source selection"
+    },
+    {
+      "w": "MERIT",
+      "def": "How R&D gets picked — scientific and technical merit through a Broad Agency Announcement, not lowest price.",
+      "cite": "RFO 35.102",
+      "cat": "Research & development"
+    },
+    {
+      "w": "VALID",
+      "def": "A binding contract needs a contracting officer with actual authority — without it you have an unauthorized commitment, not a deal.",
+      "cite": "RFO 1.4",
+      "cat": "Authority"
+    },
+    {
+      "w": "LABOR",
+      "def": "Wages the government makes you pay — Service Contract Labor Standards set the floor for the people doing the work.",
+      "cite": "RFO 22.10",
+      "cat": "Labor standards"
+    },
+    {
+      "w": "LIENS",
+      "def": "You can't lien federal property, so payment bonds stand in — the surety pays the subs and suppliers a prime stiffs.",
+      "cite": "RFO 28.1",
+      "cat": "Construction & sureties"
+    },
+    {
+      "w": "SPLIT",
+      "def": "Splitting one requirement into smaller buys to duck a threshold or competition — a classic prohibited move.",
+      "cat": "Simplified buys"
+    },
+    {
+      "w": "BRAND",
+      "def": "'Brand name or equal' — when only a specific product will do, and the written justification that unlocks it.",
+      "cat": "Describing the need"
+    },
+    {
+      "w": "ABUSE",
+      "def": "The third of fraud-waste-abuse — authority or resources bent to the wrong ends, even when no crime is charged.",
+      "cat": "Ethics & integrity"
+    }
+  ],
+  "governs": [
+    {
+      "s": "Your customer insists only one vendor can possibly do the work.",
+      "p": "Part 6",
+      "d": [
+        "Part 13",
+        "Part 15",
+        "Part 10"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "An offeror protests your award decision to the GAO.",
+      "p": "Part 33",
+      "d": [
+        "Part 15",
+        "Part 6",
+        "Part 19"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The contractor submits a certified written demand for $180K over Government-caused delays.",
+      "p": "Part 33",
+      "d": [
+        "Part 43",
+        "Part 49",
+        "Part 32"
+      ]
+    },
+    {
+      "s": "The program manager wants to add a new test requirement mid-performance.",
+      "p": "Part 43",
+      "d": [
+        "Part 15",
+        "Part 17",
+        "Part 52"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The mission changed — the Government no longer needs the last 40 units.",
+      "p": "Part 49",
+      "d": [
+        "Part 43",
+        "Part 17",
+        "Part 12"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Performance is strong and the base year ends in 60 days.",
+      "p": "Part 17",
+      "d": [
+        "Part 43",
+        "Part 16",
+        "Part 32"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Market research just found exactly two capable small businesses.",
+      "p": "Part 19",
+      "d": [
+        "Part 10",
+        "Part 6",
+        "Part 13"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "A $180K commercial buy the office needs fast.",
+      "p": "Part 13",
+      "d": [
+        "Part 12",
+        "Part 15",
+        "Part 8"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The item sells in the commercial marketplace with only minor modifications.",
+      "p": "Part 12",
+      "d": [
+        "Part 10",
+        "Part 13",
+        "Part 2"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Before drafting anything, you need to know who out there can actually perform.",
+      "p": "Part 10",
+      "d": [
+        "Part 7",
+        "Part 5",
+        "Part 11"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "A $30M requirement needs its documented strategy before you solicit.",
+      "p": "Part 7",
+      "d": [
+        "Part 10",
+        "Part 16",
+        "Part 15"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Competitive proposals are in — exchanges, competitive range, discussions.",
+      "p": "Part 15",
+      "d": [
+        "Part 6",
+        "Part 13",
+        "Part 14"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Choosing between firm-fixed-price and cost-plus for a risky development effort.",
+      "p": "Part 16",
+      "d": [
+        "Part 15",
+        "Part 35",
+        "Part 32"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Check AbilityOne and Federal Prison Industries before the open market.",
+      "p": "Part 8",
+      "d": [
+        "Part 10",
+        "Part 12",
+        "Part 13"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Your apparent awardee was indicted for fraud last week.",
+      "p": "Part 9",
+      "d": [
+        "Part 3",
+        "Part 19",
+        "Part 33"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "A vendor rep offers your technical evaluator playoff tickets.",
+      "p": "Part 3",
+      "d": [
+        "Part 9",
+        "Part 15",
+        "Part 1"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The contractor requests progress payments on a long production run.",
+      "p": "Part 32",
+      "d": [
+        "Part 16",
+        "Part 52",
+        "Part 31"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Is the contractor's holiday party an allowable cost?",
+      "p": "Part 31",
+      "d": [
+        "Part 32",
+        "Part 15",
+        "Part 16"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The contractor will use Government-owned test equipment for the effort.",
+      "p": "Part 45",
+      "d": [
+        "Part 52",
+        "Part 8",
+        "Part 32"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "A $2M construction award — what protects the subs and guarantees completion?",
+      "p": "Part 28",
+      "d": [
+        "Part 36",
+        "Part 52",
+        "Part 32"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Buying design and construction of a new maintenance hangar.",
+      "p": "Part 36",
+      "d": [
+        "Part 37",
+        "Part 28",
+        "Part 7"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Writing a services PWS with measurable performance outcomes.",
+      "p": "Part 37",
+      "d": [
+        "Part 11",
+        "Part 12",
+        "Part 39"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Wage determinations for the janitorial services contract.",
+      "p": "Part 22",
+      "d": [
+        "Part 37",
+        "Part 19",
+        "Part 31"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The lowest quote is on foreign-made end items.",
+      "p": "Part 25",
+      "d": [
+        "Part 12",
+        "Part 14",
+        "Part 11"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Funding university research through a broad agency announcement.",
+      "p": "Part 35",
+      "d": [
+        "Part 6",
+        "Part 15",
+        "Part 16"
+      ]
+    },
+    {
+      "s": "Describing the requirement without naming the incumbent's product.",
+      "p": "Part 11",
+      "d": [
+        "Part 10",
+        "Part 12",
+        "Part 2"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Where the upcoming solicitation must be announced, and for how long.",
+      "p": "Part 5",
+      "d": [
+        "Part 6",
+        "Part 13",
+        "Part 15"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "You and the lawyer disagree about what 'commercial product' means.",
+      "p": "Part 2",
+      "d": [
+        "Part 1",
+        "Part 12",
+        "Part 52"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Who may sign for the Government — and within what dollar limits.",
+      "p": "Part 1",
+      "d": [
+        "Part 4",
+        "Part 3",
+        "Part 9"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Where the signed contract file lives, and what must be in it.",
+      "p": "Part 4",
+      "d": [
+        "Part 1",
+        "Part 52",
+        "Part 13"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Which clause goes in the contract — and whether you may tailor it.",
+      "p": "Part 52",
+      "d": [
+        "Part 12",
+        "Part 16",
+        "Part 2"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The unit needs work started tonight — the price gets negotiated later.",
+      "p": "R-DFARS 217",
+      "d": [
+        "Part 16",
+        "Part 6",
+        "Part 43"
+      ]
+    },
+    {
+      "s": "The deliverable software arrived with restrictive markings on every file.",
+      "p": "R-DFARS 227",
+      "d": [
+        "Part 52",
+        "Part 45",
+        "Part 12"
+      ]
+    },
+    {
+      "s": "An unauthorized commitment just landed on your desk for ratification.",
+      "p": "Part 1",
+      "d": [
+        "Part 33",
+        "Part 43",
+        "Part 3"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Two responsible sources exist but the J&A cites 'unusual and compelling urgency.'",
+      "p": "Part 6",
+      "d": [
+        "Part 13",
+        "Part 35",
+        "Part 19"
+      ]
+    },
+    {
+      "s": "The 8(a) firm wants the follow-on sole source at $28M (DoD).",
+      "p": "Part 19",
+      "d": [
+        "Part 6",
+        "Part 8",
+        "Part 13"
+      ]
+    },
+    {
+      "s": "Your GPC holder wants to split a $28K buy across two months.",
+      "p": "Part 13",
+      "d": [
+        "Part 32",
+        "Part 4",
+        "Part 3"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "An offeror demands to know why they lost — within three days of notice.",
+      "p": "Part 15",
+      "d": [
+        "Part 33",
+        "Part 5",
+        "Part 6"
+      ]
+    },
+    {
+      "s": "The awardee's SAM registration lapsed between proposal and award.",
+      "p": "Part 9",
+      "d": [
+        "Part 4",
+        "Part 19",
+        "Part 52"
+      ]
+    },
+    {
+      "s": "Consolidating five base services contracts into one — small businesses object.",
+      "p": "Part 19",
+      "d": [
+        "Part 7",
+        "Part 37",
+        "Part 10"
+      ]
+    },
+    {
+      "s": "The contractor claims constructive changes from the COR's 'suggestions.'",
+      "p": "Part 43",
+      "d": [
+        "Part 33",
+        "Part 1",
+        "Part 37"
+      ]
+    },
+    {
+      "s": "Exercising the option, but the price now looks 15% above market.",
+      "p": "Part 17",
+      "d": [
+        "Part 15",
+        "Part 31",
+        "Part 43"
+      ]
+    },
+    {
+      "s": "A commercial item termination — cause, not default.",
+      "p": "Part 12",
+      "d": [
+        "Part 49",
+        "Part 52",
+        "Part 33"
+      ]
+    },
+    {
+      "s": "The IGCE says $95M — certified cost or pricing data or an exception?",
+      "p": "Part 15",
+      "d": [
+        "Part 31",
+        "Part 16",
+        "Part 12"
+      ]
+    },
+    {
+      "s": "The incumbent wrote the requirements document for the follow-on.",
+      "p": "Part 9",
+      "d": [
+        "Part 3",
+        "Part 15",
+        "Part 11"
+      ]
+    },
+    {
+      "s": "The contractor stopped paying its subs — they're calling you.",
+      "p": "Part 32",
+      "d": [
+        "Part 28",
+        "Part 49",
+        "Part 9"
+      ]
+    },
+    {
+      "s": "Adding 90 days to the schedule after a hurricane — no cost change.",
+      "p": "Part 43",
+      "d": [
+        "Part 49",
+        "Part 52",
+        "Part 32"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "Ordering off another agency's IDIQ — what document and what fee?",
+      "p": "Part 17",
+      "d": [
+        "Part 16",
+        "Part 8",
+        "Part 13"
+      ]
+    },
+    {
+      "s": "The requirement is inherently governmental — can a contractor do it at all?",
+      "p": "Part 37",
+      "d": [
+        "Part 7",
+        "Part 1",
+        "Part 9"
+      ]
+    },
+    {
+      "s": "A quote came in under the IGCE by 40% — award it?",
+      "p": "Part 13",
+      "d": [
+        "Part 15",
+        "Part 31",
+        "Part 9"
+      ]
+    },
+    {
+      "s": "The awardee wants to swap in a different (cheaper) subcontractor.",
+      "p": "Part 43",
+      "d": [
+        "Part 9",
+        "Part 19",
+        "Part 52"
+      ]
+    },
+    {
+      "s": "Buying laptops — accessibility standards apply to the acquisition.",
+      "p": "Part 39",
+      "d": [
+        "Part 11",
+        "Part 12",
+        "Part 25"
+      ]
+    },
+    {
+      "s": "The security deposit question: performance bond or letter of credit?",
+      "p": "Part 28",
+      "d": [
+        "Part 32",
+        "Part 9",
+        "Part 52"
+      ]
+    },
+    {
+      "s": "Sealed bids, public opening, award to the low responsive bidder.",
+      "p": "Part 14",
+      "d": [
+        "Part 15",
+        "Part 13",
+        "Part 6"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The contractor's cost proposal buries unallowable lobbying costs.",
+      "p": "Part 31",
+      "d": [
+        "Part 3",
+        "Part 15",
+        "Part 32"
+      ]
+    },
+    {
+      "s": "Terminating for convenience — what does the settlement include?",
+      "p": "Part 49",
+      "d": [
+        "Part 33",
+        "Part 31",
+        "Part 43"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "A HUBZone firm claims the price evaluation preference in full and open.",
+      "p": "Part 19",
+      "d": [
+        "Part 6",
+        "Part 15",
+        "Part 25"
+      ]
+    },
+    {
+      "s": "The Government furnished the tooling late — the contractor wants money.",
+      "p": "Part 45",
+      "d": [
+        "Part 43",
+        "Part 33",
+        "Part 32"
+      ]
+    },
+    {
+      "s": "Defining 'day,' 'shall,' and 'may' for the whole rulebook.",
+      "p": "Part 2",
+      "d": [
+        "Part 1",
+        "Part 4",
+        "Part 52"
+      ]
+    },
+    {
+      "s": "Synopsizing the award itself — when is that required?",
+      "p": "Part 5",
+      "d": [
+        "Part 4",
+        "Part 15",
+        "Part 13"
+      ]
+    },
+    {
+      "s": "An IDIQ holder complains the last three orders skipped fair opportunity.",
+      "p": "Part 16",
+      "d": [
+        "Part 33",
+        "Part 6",
+        "Part 17"
+      ]
+    },
+    {
+      "s": "The prime wants Government property title transferred at contract end.",
+      "p": "Part 45",
+      "d": [
+        "Part 4",
+        "Part 49",
+        "Part 52"
+      ]
+    },
+    {
+      "s": "Progress payments vs. performance-based payments — which is preferred?",
+      "p": "Part 32",
+      "d": [
+        "Part 16",
+        "Part 31",
+        "Part 52"
+      ]
+    },
+    {
+      "s": "The A-E firm must be selected on qualifications, not price.",
+      "p": "Part 36",
+      "d": [
+        "Part 15",
+        "Part 37",
+        "Part 6"
+      ]
+    },
+    {
+      "s": "A first-tier sub on the hangar job never got paid — payment bond claim.",
+      "p": "Part 28",
+      "d": [
+        "Part 36",
+        "Part 32",
+        "Part 33"
+      ]
+    },
+    {
+      "s": "Setting the NAICS code and size standard for the solicitation.",
+      "p": "Part 19",
+      "d": [
+        "Part 10",
+        "Part 5",
+        "Part 11"
+      ],
+      "lv": "b"
+    },
+    {
+      "s": "The contractor invoked the Excusable Delays clause after a supplier fire.",
+      "p": "Part 52",
+      "d": [
+        "Part 49",
+        "Part 43",
+        "Part 33"
+      ]
+    },
+    {
+      "s": "Undefinitized work hit 50% of the not-to-exceed — what stops?",
+      "p": "R-DFARS 217",
+      "d": [
+        "Part 32",
+        "Part 16",
+        "Part 43"
+      ]
+    },
+    {
+      "s": "The small business was found non-responsible — SBA gets a shot.",
+      "p": "Part 19",
+      "d": [
+        "Part 9",
+        "Part 33",
+        "Part 6"
+      ]
+    },
+    {
+      "s": "Locking the option price at award vs. negotiating it at exercise.",
+      "p": "Part 17",
+      "d": [
+        "Part 15",
+        "Part 16",
+        "Part 31"
+      ]
+    },
+    {
+      "s": "Publicizing a J&A after award — the transparency requirement.",
+      "p": "Part 6",
+      "d": [
+        "Part 5",
+        "Part 4",
+        "Part 33"
+      ]
+    },
+    {
+      "s": "The data was developed entirely at private expense — what may the Government do?",
+      "p": "R-DFARS 227",
+      "d": [
+        "Part 45",
+        "Part 12",
+        "Part 31"
+      ]
+    }
+  ]
+}

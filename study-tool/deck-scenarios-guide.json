@@ -1,0 +1,1134 @@
+[
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Acquisition Planning & Strategy"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Eight months before a satellite-imagery software sustainment need begins, the PM tells you she's unhappy with the incumbent developer and \"wants competition this time — put out an RFP next month.\" The system was built on the incumbent's commercial platform; the development contract delivered binaries and user manuals; the Government \"probably has rights to something, nobody's checked.\" Two integrators have expressed informal interest, \"assuming they can get the code.\"",
+  "facts": [
+   {
+    "fact": "\"Wants competition — RFP next month\"",
+    "verdict": "bait",
+    "why": "Desire isn't feasibility. An RFP before the rights-and-deliverables inventory is a solicitation you may have to cancel — strategy first, paper second."
+   },
+   {
+    "fact": "Binaries and manuals delivered",
+    "verdict": "governs",
+    "why": "The competition's real constraint: without source, build environments, and interface data, \"assuming they can get the code\" is doing tectonic work. What we hold decides what we can compete."
+   },
+   {
+    "fact": "Commercial platform underneath",
+    "verdict": "governs",
+    "why": "The platform rides its commercial license — a competitor needs lawful access. That's a licensing workstream inside the strategy, not a footnote."
+   },
+   {
+    "fact": "Two interested integrators",
+    "verdict": "governs",
+    "why": "Real market signal — formalize it with a sources-sought shaped around what the Government can actually furnish, and let their responses size the feasible competition."
+   }
+  ],
+  "board_answer": "Eight months is enough if we spend it right: first the data-rights and deliverables inventory — what we hold decides what we can compete; then a sources-sought built on what we can actually furnish; then the strategy call. If the inventory says competition isn't feasible yet, the honest plan may be a shorter incumbent bridge while we buy the deliverables that make next cycle competitive — and that gets written down as the strategy.",
+  "id": "d98a4561f069"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Authority, Unauthorized Commitments & Ratification"
+  ],
+  "source": "vol2-drill",
+  "scenario": "During a staff visit you learn the fuels flight has been getting weekly analytics reports from a small software vendor since January. The squadron commander \"approved it on a trial basis\" after a vendor demo; the vendor now wants a PO for $95K covering the trial \"as agreed.\" The commander points out he's a colonel with command authority, the unit genuinely uses the reports, and \"there's end-of-year money to cover it.\" He asks you to just issue the purchase order this week.",
+  "facts": [
+   {
+    "fact": "\"Colonel with command authority\"",
+    "verdict": "bait",
+    "why": "Rank and command authority are not contracting authority. Only a warranted CO binds the Government — this is apparent authority, which binds nothing."
+   },
+   {
+    "fact": "The unit genuinely uses the reports",
+    "verdict": "governs",
+    "why": "Government benefit is real — that's one ratification element satisfied, and it's why ratification (not refusal) is the likely path."
+   },
+   {
+    "fact": "\"End-of-year money can cover it\"",
+    "verdict": "bait",
+    "why": "The test is funds available when the commitment was made (January) and now — and the right color/year of money for what was actually received. \"There's money lying around\" isn't the test."
+   },
+   {
+    "fact": "\"Just issue the PO this week\"",
+    "verdict": "bait",
+    "why": "A PO now would paper over the violation. The path is a ratification package at the right level ($95K ≤ SAT → COCO), with the commander's signed statement in it."
+   }
+  ],
+  "board_answer": "That's an unauthorized commitment — command authority isn't contracting authority. I'd stop further performance, investigate, and build the RFO 1.405 ratification package: benefit's there, so it turns on fund availability in January and a fair-and-reasonable price; at $95K my COCO can ratify. And then I'd train that unit, because prevention is the real fix.",
+  "id": "4cb5ceacd90a"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Procurement Integrity"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Your SSEB chair calls: a technical evaluator just accepted a job with one of the three offerors — starting next month. The evaluator \"hasn't told the team anything,\" has already recused himself from this week's consensus meetings, and says his new employer \"only knows the program exists, nothing else.\" The PM wants to press on: \"he recused himself, we're good — we can't slip the award for HR paperwork.\"",
+  "facts": [
+   {
+    "fact": "Evaluator accepting employment with an offeror",
+    "verdict": "governs",
+    "why": "Employment contacts between an offeror and a Government official with access to protected information are the PIA's second front. Self-recusal isn't self-clearing — this goes to Legal now, with a facts review of everything he touched and when the employment contact began."
+   },
+   {
+    "fact": "\"Hasn't told the team anything\"",
+    "verdict": "bait",
+    "why": "His assurance isn't the standard. The question is what he had access to while employment discussions were live — that's established by record review, not by promise."
+   },
+   {
+    "fact": "\"He recused himself\"",
+    "verdict": "bait",
+    "why": "Recusal was right — but timing governs. Recusal after discussions began doesn't cure access that already happened."
+   },
+   {
+    "fact": "\"Can't slip the award\"",
+    "verdict": "bait",
+    "why": "Schedule pressure never outranks integrity of the selection. An award made on a tainted record invites protest and worse."
+   }
+  ],
+  "board_answer": "Recusal was step one, not the answer. I'd get Legal in immediately, establish when the employment contact started and what protected information he accessed after that, document it, and make the written determination whether the selection is compromised — and if it reached the offeror, that's the HCA's decision on how the procurement proceeds.",
+  "id": "4907e4079ef8"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Organizational Conflict of Interest"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Source selection for a logistics IT modernization is two weeks from FPRs. An offeror's capture manager, at an industry event, mentions to your COCO that a rival offeror \"has our staffing rates — their teaming partner processes our subcontract invoices.\" The rival's proposal did come in with suspiciously well-aimed pricing. The SSEB chair suggests quietly normalizing the evaluated rates \"so no one's advantaged,\" and notes that pausing now \"looks bad for the program.\"",
+  "facts": [
+   {
+    "fact": "Teaming partner processes the competitor's invoices",
+    "verdict": "governs",
+    "why": "Classic unequal access to non-public information — a structural pipeline to a competitor's cost data. No intent needed; the imbalance is the conflict."
+   },
+   {
+    "fact": "\"Quietly normalize the rates\"",
+    "verdict": "bait",
+    "why": "Evaluators can't launder an OCI through the evaluation. The conflict is investigated and resolved on the record, not adjusted away."
+   },
+   {
+    "fact": "\"Pausing looks bad\"",
+    "verdict": "bait",
+    "why": "An award over an unresolved, documented OCI allegation looks worse — that's a sustained protest with the remedy chosen by someone else."
+   },
+   {
+    "fact": "Well-aimed pricing",
+    "verdict": "bait",
+    "why": "Suggestive but not proof. It justifies the inquiry; the determination rests on what access actually existed."
+   }
+  ],
+  "board_answer": "That allegation is unequal access — I'd get Legal in, establish the facts of what data actually flowed, and make a written determination. If access is real, I need avoidance, neutralization, or an enforceable mitigation before this selection proceeds — and note that handling an OCI during source selection isn't 'discussions,' so I can work it without opening exchanges.",
+  "id": "b034ddbb2029"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Contractor Qualifications — Responsibility"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Award week on a grounds-maintenance IDIQ set-aside. Your apparent awardee — a small business — was terminated for default by another base fourteen months ago; their proposal explains new ownership and a rebuilt crew. The PM forwards a rumor from the old contract's COR that \"these guys always bail mid-summer.\" Your specialist notes they're clean in SAM. The customer wants award Friday because the mowing season \"won't wait for paperwork.\"",
+  "facts": [
+   {
+    "fact": "Prior T4D fourteen months ago",
+    "verdict": "governs",
+    "why": "A recent default squarely engages the performance-record standard. It's not automatically disqualifying — but it must be weighed on the record against the new-ownership facts."
+   },
+   {
+    "fact": "\"New ownership, rebuilt crew\"",
+    "verdict": "governs",
+    "why": "Exactly the kind of countervailing fact the determination exists to evaluate. Verify it — org charts, key personnel, financing — don't just quote the proposal."
+   },
+   {
+    "fact": "The COR's rumor",
+    "verdict": "bait",
+    "why": "Hearsay isn't a finding. Chase it to documented performance history (CPARS, the T4D record) or drop it."
+   },
+   {
+    "fact": "Clean in SAM",
+    "verdict": "bait",
+    "why": "Necessary, not sufficient — exclusions and responsibility are different gates."
+   },
+   {
+    "fact": "Small business + Friday pressure",
+    "verdict": "governs",
+    "why": "If the facts add to non-responsible, the SBA referral happens regardless of the mowing season — and the CoC may still direct award."
+   }
+  ],
+  "board_answer": "I'd make the determination on documented facts — the default record versus verified evidence of new ownership and capacity. Clean SAM isn't the test, and rumors don't count. If I land on non-responsible, they're small, so it goes to SBA for the CoC decision — and Friday moves if it has to.",
+  "id": "994ae910af13"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Market Research"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A depot needs specialized corrosion-inspection services, estimated $4.5M over three years. The incumbent's contract ends in five months. The PM hands you last cycle's market research — dated 26 months ago — showing \"only the incumbent responded,\" plus an email from the incumbent's BD lead helpfully listing why competitors \"can't meet the certification requirements.\" Your specialist mentions two small firms recently won similar work at another command.",
+  "facts": [
+   {
+    "fact": "26-month-old research",
+    "verdict": "governs",
+    "why": "Past the 18-month currency line — it can inform, but it can't carry a new strategy. Fresh research is step one."
+   },
+   {
+    "fact": "Incumbent's list of why competitors can't perform",
+    "verdict": "bait",
+    "why": "Market intelligence authored by the party that benefits from no competition is not market research. Verify independently or discard."
+   },
+   {
+    "fact": "Two small firms winning similar work elsewhere",
+    "verdict": "governs",
+    "why": "Live evidence of capability — chase it: scope comparability, certifications, capacity. It bears directly on the Rule of Two."
+   },
+   {
+    "fact": "Five months to expiration",
+    "verdict": "bait",
+    "why": "Tight but workable — and \"no time to research\" is how bad bridges get born. The timeline argues for starting now, not skipping it."
+   }
+  ],
+  "board_answer": "That research is stale and the most persuasive document in the file was written by the incumbent — I'd run a fresh sources-sought now, engage the two small firms directly, and let the results drive the set-aside and competition decisions. Five months is enough if we start today; if it slips, a short bridge with a real cause beats a sole source built on a competitor's brochure.",
+  "id": "0f4c23c21c0d"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Required Sources of Supplies & Services"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A squadron wants 400 task chairs \"identical to the ones facilities bought last year from a local dealer — we already have a quote.\" Your inventory manager mentions a warehouse annex holding surplus furniture from a recently consolidated unit. The dealer's quote is 8% below the GSA schedule price for a comparable chair, and the squadron notes AbilityOne \"only makes the fabric panels, not the chairs.\"",
+  "facts": [
+   {
+    "fact": "Surplus furniture in the annex",
+    "verdict": "governs",
+    "why": "Agency inventory and excess sit at the top of the ladder — before anyone's quote matters, that annex gets checked and the result documented."
+   },
+   {
+    "fact": "Dealer quote 8% under schedule",
+    "verdict": "bait",
+    "why": "Attractive, but the ladder isn't priced-ordered — it's priority-ordered. The quote matters only when the buy legitimately reaches the commercial rung (and then it's useful pricing evidence)."
+   },
+   {
+    "fact": "AbilityOne makes panels, not chairs",
+    "verdict": "governs",
+    "why": "Fine — check the procurement list for what's actually covered and document the non-fit. That's the rung working as designed."
+   }
+  ],
+  "board_answer": "Ladder first: inventory and that annex, then UNICOR and AbilityOne against the procurement list, then schedules — and only then the dealer, whose quote becomes price-comparison data, not a shortcut. The file shows each rung and why we moved past it.",
+  "id": "380ad1822833"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Commercial Products & Services"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A prime's $22M avionics upgrade proposal includes an $8M subsystem the prime bought \"commercially\" from its own subsidiary. Support: a one-page assertion citing \"regular commercial sales,\" a catalog page with no prices, and a note that \"per Part 12, no cost data is required.\" The subsidiary has sold the subsystem to exactly two customers — both foreign militaries — and your engineer says the Government's configuration adds a hardened chassis and MIL-STD wiring.",
+  "facts": [
+   {
+    "fact": "Two customers, both foreign militaries",
+    "verdict": "governs",
+    "why": "\"Sold to the general public\" is the definition's spine — military-only sales history undercuts the assertion at its root. This is the fact to chase first."
+   },
+   {
+    "fact": "Hardened chassis + MIL-STD wiring",
+    "verdict": "governs",
+    "why": "Modifications get tested against form/fit/function. Militarization of this scale strains \"minor.\""
+   },
+   {
+    "fact": "Catalog page with no prices",
+    "verdict": "bait",
+    "why": "A catalog proves a brochure exists. Commerciality pricing runs on actual sales at market prices — demand the sales data."
+   },
+   {
+    "fact": "Prime bought from its own subsidiary",
+    "verdict": "governs",
+    "why": "An affiliated \"commercial sale\" deserves double scrutiny — the arms-length pricing discipline isn't there."
+   },
+   {
+    "fact": "\"Per Part 12, no cost data required\"",
+    "verdict": "bait",
+    "why": "Backwards — the exception applies only after the determination holds. Assertion isn't determination."
+   }
+  ],
+  "board_answer": "The Government makes the commerciality call, not the proposal. On these facts — military-only sales, an affiliated seller, and militarizing mods — I'd likely find it non-commercial; and even if some element qualifies, I still require data sufficient to price it, certified or otherwise. The one-page assertion gets returned with a data demand attached.",
+  "id": "760c637d2966"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Simplified Acquisition Procedures"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Friday, end of September. The CE squadron brings you four \"urgent\" buys: $14,800 of hand tools (GPC-ready, they say), another $14,600 of the same catalog's power tools, a $95K generator \"only Vendor Z sells with the right output curve,\" and a request to \"set up something so we stop doing paperwork every month\" for HVAC filters. The GPC holder mentions the two tool buys \"are from the same order the shop chief wrote up — we just split it to keep it simple.\"",
+  "facts": [
+   {
+    "fact": "\"Split it to keep it simple\"",
+    "verdict": "governs",
+    "why": "Same requirement, same catalog, same write-up: that's a ~$29K buy split to stay under the $15K MPT — the textbook violation. Recombine it into a purchase order, small business first."
+   },
+   {
+    "fact": "$95K \"only Vendor Z\" generator",
+    "verdict": "governs",
+    "why": "Under-SAT sole source: document the single-source rationale (the output-curve requirement) and the price reasonableness — no J&A, but the reasoning goes on paper."
+   },
+   {
+    "fact": "Monthly HVAC filters",
+    "verdict": "governs",
+    "why": "Repetitive, predictable, small: a BPA with established sources is the designed answer."
+   },
+   {
+    "fact": "End-of-September urgency",
+    "verdict": "bait",
+    "why": "Fiscal-year pressure doesn't change any lane's rules — it's why the lanes exist. Fast is fine; splitting isn't."
+   }
+  ],
+  "board_answer": "The tool buys are one requirement — recombining them puts it in the purchase-order lane, reserved for small business. The generator is a documented under-SAT sole source. The filters become a BPA. And September doesn't amend Part 13.",
+  "id": "df05a1cf3a0d"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Small Business Programs"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A $4.7M base supply-chain analytics requirement is ready to solicit. Your predecessor's file shows it was once an 8(a) award \"years ago,\" then competed full-and-open last cycle after \"SBA released it\" (no release letter in the file). Research finds one very capable WOSB and one small firm whose capability statement is generic. The PM suggests a WOSB sole source \"since she's clearly the best,\" and notes the incumbent large business \"will protest anything we do anyway.\"",
+  "facts": [
+   {
+    "fact": "Missing SBA release letter",
+    "verdict": "governs",
+    "why": "If the requirement was never properly released from 8(a), its current posture is built on sand — confirm with SBA before any strategy is chosen. The paper matters."
+   },
+   {
+    "fact": "One strong WOSB + one generic small firm",
+    "verdict": "governs",
+    "why": "The Rule of Two needs a reasonable expectation of two capable offerors — a generic capability statement gets probed, not presumed. The set-aside call turns on this."
+   },
+   {
+    "fact": "\"WOSB sole source, she's clearly the best\"",
+    "verdict": "bait",
+    "why": "WOSB sole source has conditions and a ceiling — \"best\" isn't the test, and at $4.7M it must actually fit the program's sole-source lane ($5.5M other) and its conditions."
+   },
+   {
+    "fact": "\"They'll protest anything\"",
+    "verdict": "bait",
+    "why": "Protest fear is not a strategy input — a defensible record is the protest strategy."
+   }
+  ],
+  "board_answer": "First I'd confirm the 8(a) release with SBA — that decides whose requirement this even is. Then the Rule of Two on real capability evidence: if the second small firm doesn't hold up, a WOSB sole source is only available if the program's conditions and ceiling genuinely fit at $4.7M — otherwise compete it and let the record carry the protest.",
+  "id": "35844b460455"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Competition (CICA)"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A PM bursts in: her ground-station modernization needs a new encryption module integrated \"immediately — the wing commander is asking weekly.\" The incumbent integrator says it can start Monday. She's drafted a memo titled \"Sole Source Justification — Urgent\" for your signature, and adds that since the module rides on the incumbent's existing $60M integration contract, \"we can probably just add it as a mod anyway.\" The module work is estimated at $2.8M. The existing contract's SOW covers \"integration of communications and crypto subsystems as identified in the modernization baseline\" — and this module is in the approved baseline.",
+  "facts": [
+   {
+    "fact": "\"Immediately / commander asking weekly\"",
+    "verdict": "bait",
+    "why": "Pressure language pulling you toward a 6.103-2 urgency J&A. Command interest is not unusual and compelling urgency — no quantified harm, no mission stoppage."
+   },
+   {
+    "fact": "The drafted \"Sole Source Justification — Urgent\" memo",
+    "verdict": "bait",
+    "why": "Someone else picked your authority before you analyzed the action. The board wants you to re-derive it."
+   },
+   {
+    "fact": "SOW covers crypto subsystems in the approved baseline",
+    "verdict": "governs",
+    "why": "This is the fact that decides it: the work is arguably in scope of the existing contract. Run the scope analysis (Part 43 thinking: would offerors have anticipated it? cumulative impact?). If it's in scope, it's the M in SAMO — CICA doesn't apply and there is no J&A to write."
+   },
+   {
+    "fact": "$2.8M value",
+    "verdict": "governs",
+    "why": "If scope analysis says it's new work, the action is over SAT → full and open unless a 6.103 exception holds, and at $2.8M your J&A approver would be the Competition Advocate."
+   }
+  ],
+  "board_answer": "Before I talk exceptions, I'd do a scope review with Legal — if this module is within the existing contract's scope, CICA doesn't govern and we execute a mod. If it's out of scope, competition is the default at $2.8M, and I'd need market research to support any 6.103-1 justification — command interest alone won't carry a 6.103-2 urgency.",
+  "id": "8747b956fb28"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Contracting by Negotiation — Source Selection"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Tradeoff selection, $45M, discussions closed, FPRs in. Offeror A: slightly lower rated, price well below the Government's probable cost. Offeror B: modestly better ratings, much higher price. The SSEB chair worries B \"will protest if they lose.\" Then you learn the SSA — without you — called Offeror A, told them their price \"is way out of line with our probable cost,\" flagged conflicts between their EN responses and their FPR, and \"gave them three ways to fix it.\"",
+  "facts": [
+   {
+    "fact": "The SSA's solo phone call",
+    "verdict": "governs",
+    "why": "That call was discussions — after FPRs, with one offeror, inviting revision. Unequal exchanges with a single offeror after close is about as serious as Part 15 problems get. Stop everything; Legal now."
+   },
+   {
+    "fact": "\"Three ways to fix it\" — compounds it",
+    "verdict": "bait",
+    "why": "Coaching one offeror toward award is disparate treatment on the record — the remedy has to be structural, not cosmetic."
+   },
+   {
+    "fact": "Price far below probable cost",
+    "verdict": "governs",
+    "why": "Legitimately handled through the evaluation itself (realism on cost-type; risk assessment otherwise) — it never justified an off-record call."
+   },
+   {
+    "fact": "\"B will protest\"",
+    "verdict": "bait",
+    "why": "Protest fear caused this mess. The cure is a clean record, and now likely: document the breach, reopen discussions with all offerors in the range, fresh FPRs — done with Legal's hand on the wheel."
+   }
+  ],
+  "board_answer": "My concerns are unequal discussions after close and disclosure of our probable cost to one offeror. I'd halt award, document the exchange, and with Legal likely reopen discussions with every offeror in the range and take new FPRs — the only fix for unequal treatment is restored equal treatment, on the record.",
+  "id": "edfd9e105252"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Certified Cost or Pricing Data & Proposal Analysis"
+  ],
+  "source": "vol2-drill",
+  "scenario": "July 2026. You're the PCO for a sole-source $14M FPIF production add-on to a fielded ground radar — a new contract action, proposal in hand. The prime's proposal includes a $6M subcontract for RF amplifier modules with a ground rule: \"the subcontract is commercial — pricing detail cannot be provided.\" The PM notes the original radar contract \"was competed three years ago, so pricing's already been scrubbed,\" and finance wants award before the fiscal year closes. The prime's cover letter offers \"summary-level cost data in the interest of schedule.\"",
+  "facts": [
+   {
+    "fact": "July 2026 + new $14M sole-source action",
+    "verdict": "governs",
+    "why": "Post-cutover action over $10M, sole source, no exception on its face → certified cost or pricing data is required. \"Summary-level in the interest of schedule\" doesn't satisfy the statute."
+   },
+   {
+    "fact": "\"Competed three years ago\"",
+    "verdict": "bait",
+    "why": "Adequate price competition excepts the action that was competed. This action wasn't. The exception fails at the action level."
+   },
+   {
+    "fact": "$6M \"commercial\" subcontract ground rule",
+    "verdict": "bait",
+    "why": "A commercial determination, if it holds, excepts the subcontract from certified data — it does not excuse the prime's obligation, and I still need data other than certified sufficient to find the subcontract price fair and reasonable. First question: does the commercial assertion actually survive scrutiny?"
+   },
+   {
+    "fact": "Fiscal-year pressure",
+    "verdict": "bait",
+    "why": "Schedule never waives the statute. If time is truly critical, the honest tools are a properly supported proposal now, or leadership accepting the risk path with eyes open — not thin data."
+   }
+  ],
+  "board_answer": "This is a $14M sole-source action after the June 2026 cutover, so certified cost or pricing data is required — prior competition excepted the old action, not this one. I'd evaluate the commercial assertion on the $6M sub; if it holds, the sub is excepted from certification but I still need enough data to find its price fair and reasonable. Then price analysis plus element-by-element cost analysis with a real technical eval, weighted guidelines for profit, PNM and certificate at agreement — and the fiscal calendar doesn't change any of it.",
+  "id": "c530d151efa8"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Contract Types"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A PM wants to award a $28M \"FFP\" contract for operating and continuously improving a legacy data-processing pipeline — the improvement work is \"whatever the ops tempo surfaces, we can't predict it.\" The contractor proposed a 12% fee \"to cover the unknowns,\" and offers to \"convert to T&M whenever things get fuzzy.\" The contractor has never had a Government cost-type contract and its accounting system has never been reviewed.",
+  "facts": [
+   {
+    "fact": "\"Whatever the ops tempo surfaces\"",
+    "verdict": "governs",
+    "why": "The improvement scope is genuinely unestimable — that half of the work can't carry FFP. Structure it: FFP the defined operations, and put the unpredictable work in a separately typed lane sized to its risk."
+   },
+   {
+    "fact": "12% fee \"to cover the unknowns\"",
+    "verdict": "bait",
+    "why": "Padding fee to absorb risk is the FFP failure mode in miniature — price risk through structure (type, incentive, ceiling), not through fee."
+   },
+   {
+    "fact": "\"Convert to T&M when fuzzy\"",
+    "verdict": "bait",
+    "why": "T&M is a last resort with a D&F, ceiling, and exit plan — not a convenience valve. An open conversion promise is an invitation to never estimate anything."
+   },
+   {
+    "fact": "No reviewed accounting system",
+    "verdict": "governs",
+    "why": "Whatever cost-type or T&M lane emerges, the accounting-system gate comes first — that fact constrains the whole menu."
+   }
+  ],
+  "board_answer": "I'd split the requirement: FFP the well-defined operations, and for the unpredictable improvement work pick a type that matches its risk — which first means dealing with the accounting-system gate. Fee doesn't absorb risk, structure does; and T&M only enters with a D&F and an exit plan, not as a standing escape hatch.",
+  "id": "d707f7ff05cc"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "IDIQ Ordering & Fair Opportunity"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Calibration-services MA-IDIQ, two holders: a large business at $7.1M of its $7.5M ceiling, and an SDVOSB at $2.6M of its ceiling, both minimums satisfied, three ordering years left. A $260K Phase II repair requirement arrives; the customer wants it awarded to the large business \"as a logical follow-on to their Phase I win.\" The SDVOSB was rated technically acceptable in the Phase I competition. The large business's BD lead has already emailed you a draft SOW \"to save time.\"",
+  "facts": [
+   {
+    "fact": "$7.1M of $7.5M ceiling consumed",
+    "verdict": "governs",
+    "why": "The \"logical follow-on\" would nearly exhaust the large holder's ceiling with three years left — steering an order into a nearly-full ceiling is bad vehicle management even before fairness enters."
+   },
+   {
+    "fact": "SDVOSB rated acceptable in Phase I",
+    "verdict": "governs",
+    "why": "A capable second holder guts \"only one capable\" and weakens \"logical follow-on\" — fair opportunity (or an order-level set-aside) is available and defensible."
+   },
+   {
+    "fact": "Contractor-drafted SOW",
+    "verdict": "bait",
+    "why": "A holder writing the order's SOW is a biased-ground-rules OCI in miniature — decline it, write our own, and note the contact in the file."
+   },
+   {
+    "fact": "\"Save time\" framing",
+    "verdict": "bait",
+    "why": "A $260K order competition between two holders costs days, not months — the time argument doesn't survive arithmetic."
+   }
+  ],
+  "board_answer": "I'd compete it between the holders — the SDVOSB proved capability in Phase I, so no exception honestly fits; and steering it would nearly max the large holder's ceiling anyway. The vendor-drafted SOW goes unused, and if the customer insists, the exception needs a D&A I don't think survives review.",
+  "id": "04903e87f71d"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Options"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A depot-support contract's option two is due; notice date in 21 days. The COR's file: two quality escapes, both closed with corrective action, CPARS \"satisfactory.\" The contractor emails: they'll \"need a 9% price adjustment to keep performing\" because of wage pressure — \"or we'd understand a no-cost mutual walk-away.\" The PM says funding for the option year arrives in the new fiscal year, three weeks after the notice date.",
+  "facts": [
+   {
+    "fact": "\"9% adjustment to keep performing\"",
+    "verdict": "governs",
+    "why": "An option exercises at its priced terms — a contractor conditioning performance on a raise is refusing the option and inviting a negotiation. Exercise unilaterally at the option price, or don't; there's no \"exercise at +9%.\""
+   },
+   {
+    "fact": "Closed quality escapes, satisfactory CPARS",
+    "verdict": "governs",
+    "why": "The performance gate: documented, considered, and here probably passable — flags with completed corrective action are a judgment call to make on the record."
+   },
+   {
+    "fact": "Funding arrives after the notice date",
+    "verdict": "governs",
+    "why": "Availability-of-funds mechanics exist for exactly this seam — align the exercise with the funds clause rather than obligating money that isn't there (the fiscal-law follow-up is coming)."
+   },
+   {
+    "fact": "\"Mutual walk-away\" offer",
+    "verdict": "bait",
+    "why": "That's the contractor negotiating against your leverage. The Government's alternatives — exercise, extend short, or recompete — get evaluated on their merits, not on the emailed menu."
+   }
+  ],
+  "board_answer": "The option exercises at its price or not at all — the 9% ask is a refusal dressed as a condition. I'd run the gates: performance is documented and arguably passes; the funding seam is handled through availability-of-funds mechanics; and if the contractor truly won't perform at the option price, my paths are a short extension while I recompete — with the record showing exactly why.",
+  "id": "7b84a1011fa7"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Interagency Acquisitions & the Economy Act"
+  ],
+  "source": "vol2-drill",
+  "scenario": "September 12th. A PM arrives with a signed MIPR for $1.9M of current-year O&M to a civilian agency's assisted-acquisition shop for a \"12-month analytics support task\" — award expected \"by December, they're backed up.\" The PM says the funds \"are good because we're sending them before September 30th,\" and there's no interagency agreement on file yet, \"but they say their standard one covers everything.\"",
+  "facts": [
+   {
+    "fact": "O&M sent now, award \"by December\"",
+    "verdict": "governs",
+    "why": "Sending expiring funds cross-agency doesn't extend their life — the bona fide need and obligation rules follow the money. A December award of FY-expiring O&M for services starting then is the parking scheme fiscal lawyers feast on."
+   },
+   {
+    "fact": "\"Good because we send them before Sep 30\"",
+    "verdict": "bait",
+    "why": "Transfer isn't obligation. The clock runs until a qualifying obligation exists — moving money to another agency's account doesn't stop it."
+   },
+   {
+    "fact": "No interagency agreement on file",
+    "verdict": "governs",
+    "why": "Assisted acquisition requires the signed agreement — roles, terms, fees — before performance. \"Their standard one covers everything\" is not an agreement in our file."
+   },
+   {
+    "fact": "Over-SAT, non-DoD servicing agency",
+    "verdict": "governs",
+    "why": "The best-procurement-approach D&F is required — and \"they're backed up until December\" is evidence against this being the best approach."
+   }
+  ],
+  "board_answer": "Three problems: the funds question — expiring O&M doesn't gain life by traveling, so a December award likely fails bona fide need; the missing interagency agreement, which must be signed before we proceed; and the D&F, which has to honestly conclude a backed-up shop is our best approach. As written, I'd pull the MIPR back and either buy it ourselves or fix all three on the record.",
+  "id": "170ab2e15c28"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Contract Finance & Fiscal Law"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A CPFF software-integration contract runs 1 March to 28 February, funded with one year's O&M. On 12 February the contractor emails: costs will hit the ceiling in ten days because Government-furnished test rigs \"were down for repairs half the year\" — they request additional funds and note \"we already told the COR about the rigs back in June.\" The PM wants to add this year's O&M \"since the work slid into this year anyway.\"",
+  "facts": [
+   {
+    "fact": "Notice on 12 Feb for a ceiling 10 days out",
+    "verdict": "governs",
+    "why": "The limitation clause's 75% rhythm exists to prevent exactly this ambush. Late notice weakens any entitlement to more funds — establish what they knew and when."
+   },
+   {
+    "fact": "Faulty GFP \"reported to the COR in June\"",
+    "verdict": "bait",
+    "why": "Defective GFP can ground a legitimate equitable adjustment — but telling the COR isn't notifying the CO, and an REA has its own lane. It doesn't convert into \"send money\" at the ceiling."
+   },
+   {
+    "fact": "\"Add this year's O&M\"",
+    "verdict": "governs",
+    "why": "Which year's need is this? Work performed against last year's requirement is last year's bona fide need — funding it with this year's O&M is a Time violation. Expired funds from the proper year handle proper adjustments."
+   }
+  ],
+  "board_answer": "Three lanes, kept separate: the limitation-of-cost mechanics — late notice means no automatic entitlement; the GFP issue — a potential REA, evaluated on its own record; and the money — any adjustment funds from the appropriation that bore the need, likely the prior year's expired O&M, not this year's. And the contractor isn't obligated to perform past funding while we sort it.",
+  "id": "a901361401a3"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Data Rights"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Sustainment planning for a mission-planning suite. The development contract file shows: module A built under the contract with program funds; module B adapted from the contractor's commercial product; module C built \"on contractor IR&D, matured on contract\" per the contractor. Deliverables: binaries only — source \"available under a separate license, price on request.\" The assertion list from award names only module B. The PM proposes just emailing the whole package to two potential competitors \"under NDA, to gauge interest.\"",
+  "facts": [
+   {
+    "fact": "Assertion list names only module B",
+    "verdict": "governs",
+    "why": "Restrictions live or die on the assertion list. Module C's \"IR&D then matured on contract\" story was never asserted — the Government's default position on C is strong, and the burden of proving otherwise is theirs."
+   },
+   {
+    "fact": "Module A: program-funded",
+    "verdict": "governs",
+    "why": "Entirely Government-funded → unlimited rights. That's the clean core of any competition package."
+   },
+   {
+    "fact": "Module B: commercial adaptation",
+    "verdict": "governs",
+    "why": "The commercial base rides its customary license; the adaptation's rights follow the adaptation's funding. Component-level mapping, not system-level slogans."
+   },
+   {
+    "fact": "Binaries only, source \"price on request\"",
+    "verdict": "governs",
+    "why": "Rights without deliverables are theoretical — if source and build artifacts weren't contract deliverables, competing sustainment may require buying them now. That's negotiating posture, budget, and schedule."
+   },
+   {
+    "fact": "\"Email it all under NDA\"",
+    "verdict": "bait",
+    "why": "Not until the rights map is settled — releasing B or C prematurely hands the contractor a claim and the competition a taint."
+   }
+  ],
+  "board_answer": "Component by component: A is unlimited — Government-funded; B rides its commercial license with the adaptation's rights following its funding; and C was never asserted, so the contractor carries the burden if they want restrictions now. Before anything leaves the building, we settle that map — and the real constraint may be deliverables, since rights to source we never took delivery of don't compete a sustainment contract.",
+  "id": "4833bd501bdf"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Contract Modifications & Scope"
+  ],
+  "source": "vol2-drill",
+  "scenario": "An FFP contract delivers 120 vehicle-mounted jammers. Mod history: mod 3 added winterization kits (+$1.8M), mod 7 upgraded the power amplifier (+$4.2M), mod 11 added 20 units (+$6M). Now the PM wants mod 14: swap the jamming waveform suite for a new-generation library the vendor \"already developed for another customer\" (+$9.5M on an original $38M). \"Each mod passed scope review individually,\" the file notes. The contractor hints that if mod 14 is competed instead, \"the REA for disruption will be substantial.\"",
+  "facts": [
+   {
+    "fact": "\"Each mod passed individually\"",
+    "verdict": "governs",
+    "why": "The test is cumulative against the original: $38M has become $59.5M+ with materially different capability. Individually-blessed mods don't immunize the sum."
+   },
+   {
+    "fact": "New-generation waveform library",
+    "verdict": "governs",
+    "why": "Anticipation test: did the original competition's offerors bid expecting a next-gen capability swap? A vendor-proprietary library \"from another customer\" reads like new work other vendors could compete."
+   },
+   {
+    "fact": "FFP contract type",
+    "verdict": "governs",
+    "why": "The tightest scope perimeter of all types — cumulative drift on FFP is judged harshly."
+   },
+   {
+    "fact": "The REA threat",
+    "verdict": "bait",
+    "why": "A disruption REA is priced and defended on its merits — it isn't a toll that buys out competition. Decisions made to avoid asserted REAs are decisions made for you."
+   }
+  ],
+  "board_answer": "Cumulatively this contract has grown more than half again and is about to change capability generations — judged against the original award, mod 14 is out-of-scope new work. It gets competed or carried on a real J&A; and the REA threat gets evaluated as an REA, not as leverage over my scope call.",
+  "id": "d4c7bcd10160"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Government Property"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Mid-way through a CPFF sensor-integration effort, the contractor requests the Government furnish a $700K calibrated antenna range \"like the one we let them use informally last year through the lab.\" The PM supports it: \"we own one that's idle, it obviously saves the contract money.\" The lab chief mentions the informal arrangement ended after \"some damage nobody ever sorted out.\"",
+  "facts": [
+   {
+    "fact": "\"Idle asset, obviously saves money\"",
+    "verdict": "bait",
+    "why": "Savings speaks to best-interest — one of four. Burden, risk, and can't-otherwise-be-met still need answers on the record, from the requiring activity."
+   },
+   {
+    "fact": "Informal use \"through the lab\"",
+    "verdict": "governs",
+    "why": "Property in contractor hands without contract coverage is the anti-pattern: no clause, no risk allocation, no accountability. Whatever happens next happens on contract."
+   },
+   {
+    "fact": "Unresolved prior damage",
+    "verdict": "governs",
+    "why": "Exhibit A for why informality fails — and a live input to the risk prong of the four-part test now."
+   }
+  ],
+  "board_answer": "Possibly yes — but properly: the PM documents all four justifications, the property goes on contract with the full clause set and marking, condition is baselined on delivery, and the old damage gets resolved first — because the last informal loan ended with damage nobody owned, which is exactly what the clause machinery exists to prevent.",
+  "id": "2b7ae5c2864c"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Undefinitized Contract Actions"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Day 210 after qualifying proposal on an urgent airfield-defense UCA. Obligations sit at 72% of NTE. Negotiations stalled over overhead rates; the contractor proposes \"rolling the remaining scope into a follow-on UCA to keep momentum\" and notes their proposed fee \"shouldn't move — we took all the risk when we started without a price.\" The PM asks you to obligate \"the last 28% now\" so the funding doesn't expire.",
+  "facts": [
+   {
+    "fact": "Day 210, still undefinitized",
+    "verdict": "governs",
+    "why": "The 180-day clock is blown — this is now a reportable discipline failure. Definitization becomes the commanding priority, with any extension papered deliberately, not assumed."
+   },
+   {
+    "fact": "\"Follow-on UCA to keep momentum\"",
+    "verdict": "bait",
+    "why": "Chaining UCAs to avoid negotiating is the exact abuse the limits exist for — a second UCA needs its own justification and senior approval, and \"we couldn't close the first one\" isn't it."
+   },
+   {
+    "fact": "\"Fee shouldn't move — we took all the risk\"",
+    "verdict": "bait",
+    "why": "Backwards: with 72% obligated and actuals visible, the remaining cost risk is small — weighted guidelines should price the risk that remains, which argues fee down."
+   },
+   {
+    "fact": "\"Obligate the last 28% before funds expire\"",
+    "verdict": "governs",
+    "why": "The 75% post-proposal cap says no — and obligating to rescue expiring funds is a Time problem stacked on a cap violation."
+   }
+  ],
+  "board_answer": "We're past the definitization clock, so closing the negotiation is now the mission — no follow-on UCA, no obligations past the 75% cap, and no year-end money parked in an unpriced action. On fee, the actuals cut the other way: risk already burned down, and the weighted guidelines will show it.",
+  "id": "92cf433e8e97"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Clearance — Independent Review & Approval"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Negotiations on a $40M sole-source engine-overhaul action closed Thursday, $2.1M above the Government's objective. The PM wants award signed Monday \"since we already had business clearance and the delta is only 5%.\" Your PNM draft explains the movement in two sentences: \"positions converged after productive discussion; price determined fair and reasonable.\"",
+  "facts": [
+   {
+    "fact": "\"We already had business clearance\"",
+    "verdict": "bait",
+    "why": "Business clearance authorized opening negotiations — the result needs contract clearance. Two gates, two purposes; the first doesn't waive the second."
+   },
+   {
+    "fact": "$2.1M above objective",
+    "verdict": "governs",
+    "why": "Movement from the objective is precisely what the PNM must explain — what changed, what facts emerged, why the final position is still fair and reasonable."
+   },
+   {
+    "fact": "The two-sentence PNM",
+    "verdict": "governs",
+    "why": "\"Productive discussion\" documents nothing. The PNM tells the negotiation's full story — that draft wouldn't survive the clearance meeting, and shouldn't."
+   }
+  ],
+  "board_answer": "Monday isn't the gate — contract clearance is. And before I take it there, the PNM has to actually explain the $2.1M: which cost elements moved, on what new facts, and why the result is still fair and reasonable. Business clearance opened the negotiation; it doesn't bless the deal.",
+  "id": "182bb3002d18"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Protests"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Award posted Monday for a base-communications recompete. The incumbent — who lost — requests a debrief Tuesday; you hold it the following Monday. Wednesday after the debrief, they file at GAO. The PM erupts: \"That's day 9 after award for a required debrief held day 7 — they missed the 5-day window, right? Keep the new contractor working.\" Meanwhile the awardee offers to \"keep going unpaid until it sorts out, as a good-faith gesture.\" Your Legal advisor is TDY until Friday.",
+  "facts": [
+   {
+    "fact": "Debrief held day 7, protest filed 2 days later",
+    "verdict": "governs",
+    "why": "The rule is 10 days from award or 5 from the required debrief — whichever is later. Two days post-debrief is timely; the stay attaches. The PM's arithmetic uses the wrong rule."
+   },
+   {
+    "fact": "\"Keep working unpaid, good faith\"",
+    "verdict": "bait",
+    "why": "Performance is performance — paid or not, it violates the stay and taints the corrective-action space. Direct a stop in writing."
+   },
+   {
+    "fact": "Legal TDY until Friday",
+    "verdict": "bait",
+    "why": "The stay isn't optional pending counsel's return — execute it now, reach whatever Legal coverage exists, and start the agency-report clock."
+   }
+  ],
+  "board_answer": "The protest is timely — five days from the required debrief controls, not ten from award — so I stop performance in writing today, awardee's goodwill notwithstanding. Then notifications, the agency report, and my statement of facts; and if the fielding schedule genuinely can't absorb 100 days, the HCA override gets considered on real urgency facts, not frustration.",
+  "id": "1793b05f993b"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "REAs & Claims"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A services contractor submits a certified \"claim\" for $128K: $67K for extra reporting a departed Government analyst \"required weekly for five months,\" $38K for a two-week facility-access lockout during an exercise, and $23K in \"claim preparation and outside counsel fees.\" The COR \"vaguely remembers the reports being briefed.\" The PM wants to \"pay the access piece to make it go away and deny the rest verbally.\"",
+  "facts": [
+   {
+    "fact": "Certified, $128K",
+    "verdict": "governs",
+    "why": "Over $100K and certified — the CDA clock and interest are running. This gets a written CO final decision, not a verbal anything."
+   },
+   {
+    "fact": "Analyst-directed weekly reports",
+    "verdict": "governs",
+    "why": "Constructive-change candidate: unauthorized direction, performed, arguably benefiting the Government. Entitlement analysis (who directed, was it beyond the PWS) before any quantum talk."
+   },
+   {
+    "fact": "Exercise lockout",
+    "verdict": "governs",
+    "why": "Government-caused suspension of access is classic delay entitlement — evaluate honestly; it may be the strongest element."
+   },
+   {
+    "fact": "$23K claim-prep and counsel fees",
+    "verdict": "governs",
+    "why": "In the claim lane those costs are unallowable — the element fails as pleaded."
+   },
+   {
+    "fact": "\"Pay one piece, deny the rest verbally\"",
+    "verdict": "bait",
+    "why": "Piecemeal cash without findings plus a verbal denial = interest still running and no appealable decision. One written final decision (or a negotiated global settlement with release) closes it."
+   }
+  ],
+  "board_answer": "It's a certified CDA claim, so interest is running and my output is a written final decision — or a settlement. Element by element: the lockout has real entitlement; the reports need a constructive-change analysis; the prep and counsel fees are unallowable in the claim lane. I'd negotiate a global resolution with a release if the facts support it, and decide formally what doesn't settle.",
+  "id": "f1d79eb178f7"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Terminations"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A grounds-keeping contractor has missed QASP standards three months running. The COR's log is thorough. The PM demands \"default them today — we have it all documented.\" The contract runs seven more months; the next-best source's rates are 22% higher; and the contractor's owner calls you personally: her equipment was destroyed in a hangar fire last month — \"give me six weeks and a schedule adjustment and I'll be back on my feet.\" The fire is confirmed; the performance failures predate it by two months.",
+  "facts": [
+   {
+    "fact": "Three documented months of QASP failure",
+    "verdict": "governs",
+    "why": "Real grounds — but for a performance-failure default the runway is cure notice first, not \"today.\" The documentation makes the cure notice strong; it doesn't replace it."
+   },
+   {
+    "fact": "The hangar fire",
+    "verdict": "governs",
+    "why": "An excusable cause — for what it actually caused. It explains the last month, not the two before it. Slice the failure timeline in the analysis."
+   },
+   {
+    "fact": "Replacement rates +22%",
+    "verdict": "bait",
+    "why": "Reprocurement economics inform the business judgment (and excess-cost recovery math) — they don't decide excusability or entitlement to default."
+   },
+   {
+    "fact": "The personal appeal",
+    "verdict": "bait",
+    "why": "Compassion isn't a contract action — but a cure notice with a realistic cure period is lawful, humane, and strategically sound all at once."
+   }
+  ],
+  "board_answer": "Cure notice today — the documented failures support it — with a cure period that acknowledges the fire's genuine impact on recent weeks. If performance doesn't recover, show cause, excusability analysis slicing pre-fire from post-fire failure, then the default decision with Legal. And the 22% figure waits for the reprocurement math, where it belongs.",
+  "id": "e9a973de709d"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "R&D Contracting — BAAs, SBIR & OTs"
+  ],
+  "source": "vol2-drill",
+  "scenario": "A lab team wants to \"BAA\" a requirement to build 40 ruggedized sensor pods \"to the attached ICD, delivered within 14 months, evaluated on price and past performance.\" Separately, they want to hand a Phase III production contract to a firm whose Phase II was performed for another service — \"SBIR is SBIR, right?\" — and a colonel asks why you can't \"just OT the whole thing since OTs skip the rules.\"",
+  "facts": [
+   {
+    "fact": "\"BAA... to the attached ICD, price and past performance\"",
+    "verdict": "governs",
+    "why": "That's a production buy with a spec and comparative factors — an RFP wearing a BAA nametag. BAAs buy research toward broadly stated objectives with merit review; this gets the Part 15 treatment it actually is."
+   },
+   {
+    "fact": "Phase III off another service's Phase II",
+    "verdict": "governs",
+    "why": "Phase III derives from the work, not the agency — a competed Phase I/II anywhere in the program can carry Phase III. Verify the derivation and document it."
+   },
+   {
+    "fact": "\"OTs skip the rules\"",
+    "verdict": "bait",
+    "why": "OTs exchange the FAR framework for negotiated terms — they don't suspend fiscal law, ethics, or the need for disciplined agreements; and their best use case (nontraditionals, prototypes) has to actually be present."
+   }
+  ],
+  "board_answer": "Three answers: the pod buy is a specification-driven production requirement — that's an RFP, not a BAA; the Phase III is likely fine because derivation follows the SBIR work, not the sponsoring service — we verify and paper it; and OTs don't skip rules, they trade frameworks — I'd use one where nontraditional participation genuinely needs it, not as a bypass.",
+  "id": "781fc79ab088"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Construction & Service Contracting"
+  ],
+  "source": "vol2-drill",
+  "scenario": "Week three of a $900K taxiway-repair contract: the contractor's excavator uncovers a buried debris field of old construction rubble not on any drawing, keeps digging \"to stay on schedule,\" and a week later submits a $210K REA with photos. Meanwhile your facilities customer, thrilled with the same contractor's site crew, asks you to \"add a clause so their foreman can take daily direction from our shop lead on small stuff — it'll save everyone emails.\"",
+  "facts": [
+   {
+    "fact": "Kept digging, notice a week later",
+    "verdict": "governs",
+    "why": "The differing-site-conditions clause demands notice before disturbance so the Government can verify. Late notice doesn't automatically kill recovery, but it damages it — and the photos don't substitute for the investigation we never got to do. Entitlement analysis with that lens."
+   },
+   {
+    "fact": "Debris not on any drawing",
+    "verdict": "governs",
+    "why": "A genuine Type-condition candidate — materially different from the indications. The merits may be real even while the notice failure discounts them."
+   },
+   {
+    "fact": "\"Daily direction from our shop lead\"",
+    "verdict": "bait",
+    "why": "That clause would write personal services into the contract — Government supervision of contractor employees. Direction goes to the contractor's foreman through the contract's terms, period."
+   }
+  ],
+  "board_answer": "Two answers: the REA gets an honest differing-site-conditions analysis — real merits, discounted by the notice failure that cost us our investigation; and no, we don't write a daily-direction clause — that's personal services. The shop lead's needs route through the PWS and the contractor's own supervisor.",
+  "id": "eeb37836c1b8"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "Options",
+   "contractor performance/service administration",
+   "unauthorized commitments & ratification",
+   "authority."
+  ],
+  "source": "vol2-bank",
+  "scenario": "You inherit a services contract supporting a munitions test range: three-year base, two one-year options, option year one begins in 60 days. The COR emails you: performance has been \"shaky since spring\" — two missed surveillance reports and a near-miss safety writeup — but the PM \"already told the contractor we're picking up the option, since re-competing would take a year.\" Meanwhile the contractor's program manager mentions on a call that they've been \"doing a little extra environmental monitoring the range officer asked for back in March — we'll square up the cost later.\"",
+  "frameworks": [
+   {
+    "framework": "Option exercise (RFO Part 17)",
+    "why": "Before exercising: price still fair and reasonable · funds available · option still meets the need and is the best method · contractor eligible in SAM · performance considered. Two missed reports and a safety writeup go straight into that determination — an option is a unilateral right, never an obligation."
+   },
+   {
+    "framework": "Contractor performance (service contract admin)",
+    "why": "Document the deficiencies now, engage the COR's surveillance records against the QASP, consider a letter of concern or cure path — the record you build is what makes any downstream decision (option, extension, termination) defensible."
+   },
+   {
+    "framework": "Unauthorized commitment (the \"extra monitoring\")",
+    "why": "The range officer had no authority to direct new work. The Government isn't bound — this is ratification territory: investigate, get the facts and a statement from whoever directed it, confirm funds were and are available, and route to the ratifying authority. Train the range officer — direction flows through the PCO only."
+   },
+   {
+    "framework": "The PM's promise — bait",
+    "why": "\"Already told the contractor\" binds nothing — only the PCO commits the Government. But it does create a communication problem you now manage deliberately."
+   }
+  ],
+  "id": "370f23a93603"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "fiscal law (severable services, Time)",
+   "options structure",
+   "acquisition planning."
+  ],
+  "source": "vol2-bank",
+  "scenario": "A lab complex needs custodial and preventive-maintenance support for the next five years, starting this October. FM says the requirement will be funded annually with O&M. The facility manager wants \"one award covering all five years so we never re-do this,\" and suggests obligating the first two years now \"since this year's money is healthy.\"",
+  "frameworks": [
+   {
+    "framework": "Fiscal law — severability",
+    "why": "Recurring custodial/PM support is severable — benefit delivered as performed. Annual O&M funds a period generally ≤12 months; two years of obligation from one year's O&M fails Time."
+   },
+   {
+    "framework": "Structure — base plus options",
+    "why": "The five-year need is met by a base year plus four one-year options (services rail: base+options ≈ 5 years), each option exercised with the 17.204-1 gates and funded by its own year's money — continuity without violating the appropriation clock."
+   },
+   {
+    "framework": "\"Obligate two years now\" — bait",
+    "why": "Healthy money isn't the test; bona fide need of the appropriation's period is."
+   }
+  ],
+  "id": "3141b8cd4cf5"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "competition",
+   "price analysis",
+   "documentation."
+  ],
+  "source": "vol2-bank",
+  "scenario": "You solicited a $1.7M simulator-maintenance requirement full-and-open, 30-day response period, healthy industry-day attendance. One proposal arrives — from Meridian Support Group, priced 6% under the IGCE. The PM is delighted: \"award it before they change their mind.\"",
+  "frameworks": [
+   {
+    "framework": "Competition — one offer after full and open",
+    "why": "The competition was full and open — one responsive offer doesn't undo that. Find out why the field passed (debrief the no-bids informally; the answers improve the next solicitation) and document it."
+   },
+   {
+    "framework": "Pricing the single offer",
+    "why": "With one offer, \"adequate price competition\" needs care — price analysis against the IGCE, history, and market data carries the fair-and-reasonable determination. At $1.7M, no certified data (under threshold, and it's a competitive solicitation); other-than-certified data if the analysis needs it."
+   },
+   {
+    "framework": "\"Before they change their mind\" — bait",
+    "why": "Speed is fine — skipping the price-reasonableness record isn't."
+   }
+  ],
+  "id": "9ebdcf249c43"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "terminations",
+   "excusable delay",
+   "authority/waiver",
+   "reprocurement."
+  ],
+  "source": "vol2-bank",
+  "scenario": "A fixed-price contractor is 45 days late delivering deployable generator sets. Three weeks ago the COR emailed the contractor \"keep at it — we need these units.\" The contractor now says the delay stems from a subcontractor's plant fire, \"so it's excusable,\" and adds that since the Government \"told us to keep working, you can't default us anyway.\" The PM wants them terminated today and the units bought elsewhere.",
+  "frameworks": [
+   {
+    "framework": "Terminations — default posture after late delivery",
+    "why": "Late delivery on FP supplies supports T4D without a cure notice — but the intervening \"keep at it\" message raises schedule waiver. Re-establish a firm delivery date in writing (show cause framing) before any default."
+   },
+   {
+    "framework": "Excusability — the sub's fire",
+    "why": "Fires can be excusable if beyond control and without fault at both prime and sub tiers — test whether the prime could have mitigated (second sources, schedule buffer). Slice entitlement by timeline."
+   },
+   {
+    "framework": "Authority — the COR's email — bait, with teeth",
+    "why": "The COR can't modify the schedule — but the Government's conduct (through any agent) can still create waiver facts. Both things are true; fix the record."
+   },
+   {
+    "framework": "Reprocurement",
+    "why": "If T4D holds, excess reprocurement costs are recoverable — buy the replacement reasonably and mitigate."
+   }
+  ],
+  "id": "5ecfeace5e45"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "fair opportunity exceptions",
+   "D&A mechanics",
+   "scope."
+  ],
+  "source": "vol2-bank",
+  "scenario": "A cyber vulnerability in runway-lighting controllers must be patched fleet-wide \"within 60 days\" per an operational order. One holder on your five-vendor infrastructure MA-IDIQ built the original controller firmware; the other four have never touched it. The program wants a $1.4M direct task order to the builder today, and asks whether you can \"skip the paperwork given the threat.\"",
+  "frameworks": [
+   {
+    "framework": "Fair opportunity — exception analysis",
+    "why": "Two candidate exceptions: urgency (unacceptable delay in meeting the 60-day order) and only one capable (unique firmware knowledge). Pick the one the facts actually support — probably both braid together here — and write the D&A (over SAT), approved at the right tier ($1.4M → Competition Advocate), posted."
+   },
+   {
+    "framework": "\"Skip the paperwork\" — bait",
+    "why": "The exception is the paperwork lane — a D&A takes hours, not weeks, when the facts are real. Skipping it converts a defensible urgent award into a finding."
+   },
+   {
+    "framework": "Scope check",
+    "why": "Confirm cyber-patch work is within the IDIQ's scope — an out-of-scope order is a new procurement no exception can save."
+   }
+  ],
+  "id": "e131654f29c2"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "PIA",
+   "source selection integrity",
+   "protests (the one you're preventing)."
+  ],
+  "source": "vol2-bank",
+  "scenario": "During a source selection for base network services, your cost analyst mentions at a staff meeting — with two support contractors in the room — that \"the incumbent's past-performance rating came back weaker than expected.\" Four days later, the incumbent's capture lead emails the PM asking to \"discuss addressing any performance concerns before FPRs.\" The PM forwards it to you with: \"harmless, they obviously heard nothing specific.\"",
+  "frameworks": [
+   {
+    "framework": "Procurement integrity — disclosure",
+    "why": "A past-performance evaluation in an active selection is source selection information; saying it in front of support contractors is a disclosure. Legal now · facts · affidavits on what was heard and where it went · MFR from the analyst · written impact determination."
+   },
+   {
+    "framework": "The capture lead's email",
+    "why": "Evidence the information may have reached an offeror — that's the high-impact branch of the determination (and their \"discuss before FPRs\" ask is itself an improper exchange to decline in writing)."
+   },
+   {
+    "framework": "\"Harmless, nothing specific\" — bait",
+    "why": "Impact is determined on the record, not presumed by the PM. If the selection is compromised, the HCA decides the path — and unequal-information problems can force reopened discussions or corrective action."
+   }
+  ],
+  "id": "e2a8b964dfec"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "fiscal law (Purpose, incremental funding)",
+   "acquisition planning",
+   "contract structure/type."
+  ],
+  "source": "vol2-bank",
+  "scenario": "A PM has $6M of this year's RDT&E and wants to start a four-year, ~$40M sensor-fusion prototype effort immediately. Her plan: award the whole effort now, fund it incrementally \"as money shows up,\" and if RDT&E runs short in the out-years, \"O&M can cover integration and test since that's kind of operations.\" She wants the strategy meeting tomorrow.",
+  "frameworks": [
+   {
+    "framework": "Purpose — the O&M plan fails now",
+    "why": "Development integration and test is development — RDT&E work can't ride O&M \"later.\" Kill that branch in the strategy meeting, on the record."
+   },
+   {
+    "framework": "Structure — incremental funding on a cost-type development",
+    "why": "A cost-type effort can be incrementally funded with Limitation of Funds discipline — but the award must match honest funding expectations, and unfunded out-years are program risk to surface, not paper over."
+   },
+   {
+    "framework": "Severability lens",
+    "why": "A prototype producing a single outcome leans non-severable — check whether discrete fundable phases (design → build → test) can structure the effort honestly instead."
+   },
+   {
+    "framework": "\"Money shows up\" — bait",
+    "why": "Hope is not a funding profile — the strategy documents what's programmed, and the contract's ceiling and clauses reflect it."
+   }
+  ],
+  "id": "6a46384cf480"
+ },
+ {
+  "type": "scenario",
+  "level": "advanced",
+  "topics": [
+   "differing site conditions",
+   "REA mechanics",
+   "modifications/descoping",
+   "T4C (partial)."
+  ],
+  "source": "vol2-bank",
+  "scenario": "A $780K interior-renovation contractor opens a wall and finds friable asbestos wrap on piping — none of the specs or drawings mention it. He stops work, photographs everything, notifies you in writing the same day, and states he \"cannot finish the job at this price and wants to be paid for work done and released.\" The customer asks if you can \"just make the scope smaller so he finishes the safe rooms and we call it complete.\"",
+  "frameworks": [
+   {
+    "framework": "Differing site conditions — done right",
+    "why": "Immediate written notice before further disturbance: textbook. The condition (latent, materially different from the documents) supports an equitable adjustment for the changed work — abatement, schedule, price."
+   },
+   {
+    "framework": "The contractor's exit demand",
+    "why": "A DSC entitles him to an adjustment, not to walk away — performance continues under the adjusted terms once directed. If the Government's need truly changed, we hold the T4C/partial-termination pen, not him."
+   },
+   {
+    "framework": "\"Shrink the scope, call it complete\" — bait, partially",
+    "why": "Descoping is legitimate — as a deliberate partial termination for convenience or deductive change, priced and papered — not as an informal handshake that leaves asbestos in the walls and entitlements unresolved."
+   }
+  ],
+  "id": "95e08834394b"
+ }
+]
