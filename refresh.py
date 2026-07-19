@@ -99,33 +99,28 @@ HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
 
 
 def block_lines(article):
-    """Reproduce the original ingestion's content rule, byte-for-byte:
-    the doc's text is the FIRST run of paragraphs after its own heading —
-    child headings encountered before any text are skipped (containers
-    inherit their first child's text), and the run stops at the next
-    heading once text has started. Levels come from the ListLn classes.
+    """A doc's text is the run of paragraphs between its own heading and the
+    next heading of any kind. Levels come from the ListLn classes.
 
-    ONE EXCEPTION: a container whose own heading says "[Reserved]" does not
-    inherit. Upstream nests the Part 52 clause groups as containers whose
-    heading reads "52.233 [Reserved]" and whose substance lives in the -1/-2
-    children, so inheriting handed 45 group headers a full clause they do not
-    own — "52.233 [Reserved]" carried the entire Disputes clause, duplicating
-    52.233-1. A reserved container keeps any text of its own (there is none
-    today) and stops at its first child heading. See
-    scripts/repair_rfo_reserved_swallow.py for the corpus-side repair."""
-    reserved_container = False
+    A CONTAINER NEVER INHERITS. The original rule skipped child headings that
+    came before any text, so a container absorbed its first child's paragraphs
+    and ended up holding a verbatim copy of it — 463 rfo docs, 731K chars:
+    "52.233 [Reserved]" carried the whole Disputes clause (duplicating
+    52.233-1), and "Subpart 2.1 Definitions" carried all 98K of 2.101. A
+    container that genuinely has prose of its own still keeps it, because that
+    prose precedes its first child heading; six containers rely on this.
+
+    Corpus-side repairs: scripts/repair_rfo_reserved_swallow.py (the 45 whose
+    title also contradicted the body) and
+    scripts/repair_rfo_container_inheritance.py (the other 418)."""
     started = False
     lines = []
     els = article.find_all(list(HEADINGS) + ["p", "li"])
-    if els and els[0].name in HEADINGS:
-        own_title = " ".join(els[0].get_text(" ", strip=True).split())
-        reserved_container = own_title.rstrip(".").endswith("[Reserved]")
     for el in els:
         if el.name in HEADINGS:
             if el is els[0]:
                 continue          # the article's own title
-            if started or reserved_container:
-                break             # next section begins — stop
+            break                 # a child or the next section begins — stop
             continue              # child heading before any text — skip
         txt = " ".join(el.get_text(" ", strip=True).split())
         if not txt:

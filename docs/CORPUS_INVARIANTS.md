@@ -99,16 +99,45 @@ Don't "fix" these:
 
 - **Huge docs.** Size alone can't distinguish a swallow from a legitimately large
   unit. `252.225-7036` is 160K because it carries **15 Alternates**; FMR stores
-  one doc per **chapter** (Housing Allowances = 257K); RFO `Subpart 2.1
-  Definitions` is 98K of real definitions. The health check reports the largest
-  doc per source as *information only*. The precise swallow detector is the PGI
-  check.
-- **`[Reserved]` sections.** ~343 are genuine.
+  one doc per **chapter** (Housing Allowances = 257K). The health check reports
+  the largest doc per source as *information only*. The precise swallow detectors
+  are the PGI check and the container-inheritance check.
+- **`[Reserved]` sections.** ~343 are genuine — they carry **no body at all**.
+  A `[Reserved]` doc that carries text is NOT one of them; see below.
 - **Same-number siblings.** Some memos really do carry two sections under one
   number (233.170, 233.205-70, 205.302). Both are kept, the later one with a
   numeric-suffixed id. Never merge texts whose content contradicts.
-- **Thin parent headings.** A section header whose body lives entirely in its
-  numbered children is legitimate.
+- **Empty parent headings.** A section or subpart header with **no body**, whose
+  substance lives in its numbered children, is correct and expected. R-DFARS has
+  ~80 of these. Contrast with the inheritance bug below — the difference is
+  whether the parent is empty or is holding a *copy of its child*.
+
+## The container-inheritance bug (fixed 2026-07-19 — do not re-dismiss)
+
+Three entries above used to wave this off, and it survived four corpus audits as
+a result. Recording it precisely so that can't happen again.
+
+`block_lines()` in `refresh.py` let a container article skip its child's heading
+and absorb that child's paragraphs. The result was a parent whose body is a
+**byte-identical copy of a numbered child's body** — 463 rfo docs, 731K chars:
+
+- 45 Part 52 clause groups, where the title also contradicted the body
+  (`52.233 [Reserved]` held the whole Disputes clause). Fixed in `1fb0260`.
+- 418 subpart and section containers, where the title merely *matched* the body
+  so the duplication read as plausible (`Subpart 2.1 Definitions` ≡
+  `2.101 Definitions`, 98K). This is why the "huge docs" entry above once cited
+  `Subpart 2.1 Definitions` as an example of a legitimately large doc — it was
+  the single largest instance of the bug.
+
+**Do not detect this by size, by title, or by "looks duplicated".** The only safe
+signal is body identity with a doc whose section number is a descendant of this
+one. Validated against upstream ground truth over parts 1/3/15/33/52: 46/46
+inherited containers caught, 6/6 containers that genuinely own their text spared,
+zero false positives. Six containers really do have their own prose ahead of
+their first child — a blunter rule would have emptied them.
+
+Guarded by the `no container inherited a child's text` health check and by
+`scripts/repair_rfo_container_inheritance.py`.
 
 ## When writing a corpus-rewriting script
 
