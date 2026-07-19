@@ -1,0 +1,741 @@
+{
+  "items": [
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contracting Authority",
+      "q": "Before signing any contract, what two assurances must the contracting officer make?",
+      "a": "That the contract meets all requirements of law, Executive orders, regulations, and applicable procedures (including clearances and approvals), and that funds are available for obligation.",
+      "cite": {
+        "src": "rfo",
+        "sec": "1.402-2",
+        "quote": "Ensuring it meets all requirements of law, Executive orders, regulations, and all other applicable procedures, including clearances and approvals; and (2) Ensuring funds are available for obligation"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contracting Authority",
+      "q": "What standard of treatment does a contracting officer owe offerors and contractors?",
+      "a": "Impartial, fair, and equitable treatment.",
+      "cite": {
+        "src": "rfo",
+        "sec": "1.402-2",
+        "quote": "Ensuring offerors and contractors receive impartial, fair, and equitable treatment"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contracting Authority",
+      "q": "May a contracting officer's representative commit the Government to a change in contract terms?",
+      "a": "No. A COR has no authority to make any commitments or changes affecting price, quality, quantity, delivery, or other terms and conditions of the contract.",
+      "cite": {
+        "src": "rfo",
+        "sec": "1.404",
+        "quote": "A COR has no authority to make any commitments or changes that affect price, quality, quantity, delivery, or other terms and conditions of the contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Authority, Unauthorized Commitments & Ratification",
+      "q": "What is an unauthorized commitment?",
+      "a": "An agreement that is not binding solely because the Government representative who made it lacked the authority to enter into it on behalf of the Government.",
+      "cite": {
+        "src": "rfo",
+        "sec": "1.405",
+        "quote": "Unauthorized commitment means an agreement that is not binding solely because the Government representative who made it lacked the authority to enter into that agreement on behalf of the Government."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Authority, Unauthorized Commitments & Ratification",
+      "q": "Who may ratify an unauthorized commitment, and how far down may that authority be delegated?",
+      "a": "The head of the contracting activity; agencies may delegate the authority, but never below the chief of the contracting office.",
+      "cite": {
+        "src": "rfo",
+        "sec": "1.405",
+        "quote": "Agencies cannot delegate this authority below the level of the chief of the contracting office."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Authority, Unauthorized Commitments & Ratification",
+      "q": "Can an unauthorized commitment be ratified if funds were not available at the time the commitment was made?",
+      "a": "No. Funds must be available now and must also have been available when the unauthorized commitment was made.",
+      "cite": {
+        "src": "rfo",
+        "sec": "1.405",
+        "quote": "Funds are available and were available at the time the unauthorized commitment was made."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Thresholds",
+      "q": "What does the simplified acquisition threshold become for acquisitions supporting a contingency operation?",
+      "a": "$1 million for contracts awarded and performed inside the United States; $2 million outside the United States.",
+      "cite": {
+        "src": "rfo",
+        "sec": "2.101",
+        "quote": "$1 million for any contract to be awarded and performed, or purchase to be made, inside the United States; and (ii) $2 million for any contract to be awarded and performed, or purchase to be made, outside the United States",
+        "amount": "$1 million"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Thresholds",
+      "q": "What does the micro-purchase threshold become for acquisitions supporting a contingency operation?",
+      "a": "$25,000 for contracts awarded and performed inside the United States; $40,000 outside the United States.",
+      "cite": {
+        "src": "rfo",
+        "sec": "2.101",
+        "quote": "$25,000 in the case of any contract to be awarded and performed, or purchase to be made, inside the United States; and (ii) $40,000 in the case of any contract to be awarded and performed, or purchase to be made, outside the United States",
+        "amount": "$25,000"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "Which acquisitions does RFO part 13 cover?",
+      "a": "Noncommercial products and services valued at or below the SAT. Commercial acquisitions use the part 12 procedures instead.",
+      "cite": {
+        "src": "rfo",
+        "sec": "13.000",
+        "quote": "This part implements simplified procedures for the acquisition of noncommercial products and services valued at or below the simplified acquisition threshold (SAT)"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "May you split a requirement into smaller pieces to stay under the SAT?",
+      "a": "No. Requirements whose aggregate value exceeds the SAT must not be divided merely to permit use of simplified procedures.",
+      "cite": {
+        "src": "rfo",
+        "sec": "13.001",
+        "quote": "Do not divide requirements, the aggregate value of which exceeds the SAT, merely to permit use of the procedures in this part."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "What is the competition standard for noncommercial buys at or below the SAT?",
+      "a": "Promote competition to the maximum extent practicable.",
+      "cite": {
+        "src": "rfo",
+        "sec": "13.101",
+        "quote": "Agencies must promote competition to the maximum extent practicable when procuring noncommercial products and services valued at or below the SAT."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "What document supports soliciting from only one source under simplified procedures?",
+      "a": "A determination and findings (subpart 1.5) that only one source is reasonably available — for example urgency, exclusive licensing agreements, brand-name, or industrial mobilization.",
+      "cite": {
+        "src": "rfo",
+        "sec": "13.101",
+        "quote": "Contracting officers may solicit from a single source based on a determination and findings (see subpart 1.5) that only one source is reasonably available (e.g., urgency, exclusive licensing agreements, brand-name or industrial mobilization)."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "Does a quotation bind the vendor? Does the purchase order bind the Government?",
+      "a": "Neither forms a contract by itself. A quotation is not an offer, and the purchase order is only the Government's offer to buy.",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.201-1",
+        "quote": "Neither a quotation nor the purchase order issued by the Government in response to a quotation form a binding contract. The purchase order is the Government’s offer to a supplier to buy certain products or services upon specified terms and conditions."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "When is a binding contract formed under RFQ and purchase-order procedures?",
+      "a": "When the supplier accepts the Government's offer — by written acceptance of the purchase order or by substantial performance.",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.201-1",
+        "quote": "A binding contract is formed when the supplier accepts the Government’s offer, either by written acceptance of the purchase order or substantial performance of the purchase order."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "When soliciting quotations directly from suppliers at or below the SAT, how many sources must you solicit?",
+      "a": "At least three — and whenever practicable, two sources not included in the previous solicitation.",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.201-1",
+        "quote": "Solicit quotations from at least three sources; and (iii) Whenever practicable, solicit quotations from two sources not included in the previous solicitation."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "On what should price reasonableness be based when awarding under part 13?",
+      "a": "Competitive quotations, whenever possible.",
+      "cite": {
+        "src": "rfo",
+        "sec": "13.203",
+        "quote": "The contracting officer must determine the price to be fair and reasonable. Whenever possible, base price reasonableness on competitive quotations."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "What is the cap on each individual purchase under a blanket purchase agreement?",
+      "a": "The SAT.",
+      "cite": {
+        "src": "rfo",
+        "sec": "13.201",
+        "quote": "if using blanket purchase agreements (BPAs), the maximum value of each individual purchase under a BPA may not exceed the SAT."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "Must micro-purchases be competed?",
+      "a": "No. They may be awarded without soliciting competitive quotations if the price is considered reasonable.",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.402",
+        "quote": "Micro-purchases may be awarded without soliciting competitive quotations if the contracting officer or individual appointed in accordance with 1.403-2(b) considers the price to be reasonable."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Small Business Programs",
+      "q": "When must a contract be set aside for small business (the Rule of Two)?",
+      "a": "Above the micro-purchase threshold, when there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery.",
+      "cite": {
+        "src": "rfo",
+        "sec": "19.104-1",
+        "quote": "For contracts above the micro-purchase threshold, the contracting officer must set the contract aside for small business if there is a reasonable expectation of obtaining offers— (1) From two or more responsible small business concerns; and (2) That are competitive in terms of fair market prices, quality, and delivery."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Small Business Programs",
+      "q": "What must the contracting officer do when a contract is not set aside for small business?",
+      "a": "Document the reason.",
+      "cite": {
+        "src": "rfo",
+        "sec": "19.104-1",
+        "quote": "The contracting officer must document the reason when a contract is not set aside for small business as required."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Commercial Products & Services",
+      "q": "When must an agency buy commercial?",
+      "a": "Whenever the agency determines commercial products or services are available to meet its needs.",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.101",
+        "quote": "Agencies must acquire commercial products or commercial services when the agency determines that they are available to meet the agency’s needs (see part 10)."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Commercial Products & Services",
+      "q": "A customer insists on a brand-name item at or below the SAT. What documentation does restricting competition require?",
+      "a": "Document the decision that only one source is available and the basis for the decision. (Over the SAT it takes a written justification approved under 6.104.)",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.102",
+        "quote": "For acquisitions valued at or below the simplified acquisition threshold (SAT), document the decision that only one source is available and the basis for the decision."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Commercial Products & Services",
+      "q": "Up to what value do the commercial simplified procedures (RFQ followed by a purchase order) apply?",
+      "a": "$9 million.",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.201-1",
+        "quote": "For acquisitions valued up to $9 million, issue a request for quotations (RFQ) followed by a purchase order.",
+        "amount": "$9 million"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Market Research",
+      "q": "When is market research required?",
+      "a": "Appropriate to the circumstances, before developing new requirements documents and before soliciting offers or awarding task or delivery orders valued over the SAT.",
+      "cite": {
+        "src": "rfo",
+        "sec": "10.001",
+        "quote": "Agencies must conduct market research appropriate to the circumstances before— (1) Developing new requirements documents; (2) Soliciting offers for acquisitions with an estimated value over the simplified acquisition threshold; or (3) Awarding a task or delivery order over the simplified acquisition threshold."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Types",
+      "q": "What defines a firm-fixed-price contract?",
+      "a": "A price not subject to any adjustment on the basis of the contractor's cost experience in performing the contract — the contractor bears the cost risk.",
+      "cite": {
+        "src": "rfo",
+        "sec": "16.202-1",
+        "quote": "A firm-fixed-price contract provides for a price that is not subject to any adjustment on the basis of the contractor’s experience in performing the contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Types",
+      "q": "When may a cost-reimbursement contract be used?",
+      "a": "Only when the requirements cannot be defined well enough for a fixed-price contract, or performance uncertainties prevent sufficiently accurate cost estimates.",
+      "cite": {
+        "src": "rfo",
+        "sec": "16.301-2",
+        "quote": "The contracting officer must use cost-reimbursement contracts only when- (a) The requirements cannot be sufficiently defined to allow for a fixed-price type contract (see part 7); or (b) Uncertainties involved in contract performance do not permit costs to be estimated with sufficient accuracy to use any type of fixed-price contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Types",
+      "q": "May a cost-reimbursement contract be used to buy commercial products or services?",
+      "a": "No — it is not allowed.",
+      "cite": {
+        "src": "rfo",
+        "sec": "16.301-3",
+        "quote": "The use of cost-reimbursement contracts is not allowed for the purchase of commercial products and commercial services (see part 12)."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "What is price analysis?",
+      "a": "Examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.404-1",
+        "quote": "Price analysis is the process of examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "Which two price analysis techniques are preferred?",
+      "a": "Comparing proposed prices received in response to the solicitation, and comparing proposed prices to historical prices paid for the same or similar items.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.404-1",
+        "quote": "The techniques at 15.404-1(b)(1) and (2) are the preferred methods for price analysis."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "Does a catalog listing prove a price is fair and reasonable?",
+      "a": "No. A price appearing in a catalog does not, in and of itself, make it fair and reasonable.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.404-1",
+        "quote": "The fact that a price is included in a catalog does not, in and of itself, make it fair and reasonable."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "What establishes adequate price competition?",
+      "a": "Two or more responsible offerors, competing independently, submit priced offers satisfying the requirement; award goes to the best-value offeror with price a substantial factor; and there is no finding that the price is unreasonable.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.403-2",
+        "quote": "Two or more responsible offerors, competing independently, submit priced offers that satisfy the Government's expressed requirement"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "Only one offer arrives under a competitive DoD solicitation. Can you claim adequate price competition based on the expectation of competition?",
+      "a": "No. That one-offer path applies only to agencies other than DoD, NASA, and the Coast Guard — a DoD contracting officer needs another basis to find the price fair and reasonable.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.403-2",
+        "quote": "For agencies other than DoD, NASA, and the Coast Guard, a price is also based on adequate price competition when"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "May certified cost or pricing data be obtained at or below the SAT?",
+      "a": "No — it must not be obtained.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.403-2",
+        "quote": "Certified cost or pricing data must not be obtained for acquisitions at or below the simplified acquisition threshold."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Terminations",
+      "q": "What is a termination for convenience?",
+      "a": "The Government's right to completely or partially terminate performance when it is in the Government's interest. Unlike default, no contractor fault is involved.",
+      "cite": {
+        "src": "rfo",
+        "sec": "2.101",
+        "quote": "Termination for convenience means the exercise of the Government’s right to completely or partially terminate performance of work under a contract when it is in the Government’s interest."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Terminations",
+      "q": "How must a termination be communicated to the contractor?",
+      "a": "Only by written notice, stating the reason (convenience or default), the effective date, the extent, and any special instructions.",
+      "cite": {
+        "src": "rfo",
+        "sec": "49.102",
+        "quote": "Contracting officers must terminate contracts only with a written notice to the contractor."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Terminations",
+      "q": "What is the contractor's first duty after receiving a convenience termination notice?",
+      "a": "Stop work immediately on the terminated portion and stop placing subcontracts for that work — then terminate related subcontracts and promptly submit a settlement proposal.",
+      "cite": {
+        "src": "rfo",
+        "sec": "49.104",
+        "quote": "Stop work immediately on the terminated portion of the contract and stop placing subcontracts for that work"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Terminations",
+      "q": "What should a convenience-termination settlement pay the contractor for?",
+      "a": "Work completed, preparations made for the terminated portion, and a reasonable profit amount.",
+      "cite": {
+        "src": "rfo",
+        "sec": "49.201",
+        "quote": "Settlements should pay contractors fairly for— (1) Work they have completed; (2) Preparations they made for terminated portions of the contract; and (3) A reasonable profit amount."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Terminations",
+      "q": "Is profit paid on work the contractor never performed?",
+      "a": "No. No profit is paid for unperformed work, settlement costs, or consequential damages.",
+      "cite": {
+        "src": "rfo",
+        "sec": "49.202",
+        "quote": "Do not pay profit for- (i) Settlement costs (the costs of working out the final payment); (ii) To cover the profit amount the contractor expected to make on work they never did; or (iii) Consequential damages."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Terminations",
+      "q": "When should a contracting officer not bother terminating for convenience?",
+      "a": "When the remaining work is worth less than $5,000.",
+      "cite": {
+        "src": "rfo",
+        "sec": "49.101",
+        "quote": "Contracting officers should not terminate a contract for convenience when the remaining work is worth less than $5,000.",
+        "amount": "$5,000"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Terminations",
+      "q": "What makes a delay excusable under a commercial purchase order?",
+      "a": "Nonperformance caused by an occurrence beyond the contractor's reasonable control and without its fault or negligence.",
+      "cite": {
+        "src": "rfo",
+        "sec": "52.212-4",
+        "quote": "The Contractor shall be liable for default unless nonperformance is caused by an occurrence beyond the reasonable control of the Contractor and without its fault or negligence."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Terminations",
+      "q": "A vendor misses delivery because its truck broke down. Excusable delay?",
+      "a": "No. Equipment failure is within the contractor's control. Excusable causes are events like acts of God, Government acts, fires, floods, epidemics, strikes, unusually severe weather, and common-carrier delays.",
+      "cite": {
+        "src": "rfo",
+        "sec": "52.212-4",
+        "quote": "Examples of occurrences include acts of God or the public enemy, acts of the Government in either its sovereign or contractual capacity, fires, floods, epidemics, quarantine restrictions, strikes, unusually severe weather, and delays of common carriers."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Construction & Service Contracting",
+      "q": "What are the two types of differing site conditions?",
+      "a": "Type I — latent or subsurface conditions differing materially from those indicated in the contract. Type II — unknown, unusual physical conditions differing materially from those ordinarily encountered in that kind of work.",
+      "cite": {
+        "src": "rfo",
+        "sec": "52.236-2",
+        "quote": "(1) Latent physical conditions or subsurface conditions at the site which differ materially from those indicated in this contract; or (2) Unknown physical conditions at the site, of an unusual nature, which differ materially from those ordinarily encountered and generally recognized as inherent in work of the character provided for in the contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Construction & Service Contracting",
+      "q": "When must a contractor give notice of a differing site condition?",
+      "a": "Promptly, in writing, and before the conditions are disturbed.",
+      "cite": {
+        "src": "rfo",
+        "sec": "52.236-2",
+        "quote": "The Contractor shall promptly, and before the conditions are disturbed, give a written notice to the Contracting Officer"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Construction & Service Contracting",
+      "q": "What happens if the contractor disturbs a differing site condition without giving the written notice?",
+      "a": "No equitable adjustment is allowed under the clause without the required written notice — and none at all after final payment.",
+      "cite": {
+        "src": "rfo",
+        "sec": "52.236-2",
+        "quote": "No request for an equitable adjustment to the contract under this clause will be allowed, unless the Contractor has given the written notice required."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Construction & Service Contracting",
+      "q": "May contractors perform inherently governmental functions?",
+      "a": "No. Contracts must not be used for them — examples include awarding contracts, approving contractual documents, and voting on source selection boards.",
+      "cite": {
+        "src": "rfo",
+        "sec": "7.503",
+        "quote": "Contracts must not be used to perform inherently governmental functions."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Construction & Service Contracting",
+      "q": "A flight chief wants a contractor employee in the office taking daily tasking under his direct supervision. What is the key indicator that this is a prohibited personal services arrangement?",
+      "a": "The Government exercising relatively continuous supervision and control over contractor personnel — making them appear, in effect, Government employees. Personal services contracts are barred unless specifically authorized by statute.",
+      "cite": {
+        "src": "rfo",
+        "sec": "37.201-2",
+        "quote": "The Government exercising relatively continuous supervision and control over multiple contractor personnel is frequently a key indicator of a personal services contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Inspection & Acceptance",
+      "q": "What is the difference between a latent and a patent defect?",
+      "a": "A latent defect exists at the time of acceptance but cannot be discovered by a reasonable inspection. A patent defect is any defect existing at acceptance that is not latent.",
+      "cite": {
+        "src": "rfo",
+        "sec": "2.101",
+        "quote": "Latent defect means a defect that exists at the time of acceptance but cannot be discovered by a reasonable inspection."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Inspection & Acceptance",
+      "q": "Is Government acceptance final?",
+      "a": "Generally conclusive — except for latent defects, fraud, gross mistakes amounting to fraud, or as otherwise provided in the contract.",
+      "cite": {
+        "src": "rfo",
+        "sec": "52.246-2",
+        "quote": "Acceptance shall be conclusive, except for latent defects, fraud, gross mistakes amounting to fraud, or as otherwise provided in the contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Inspection & Acceptance",
+      "q": "What inspection does the Government normally perform for contracts at or below the SAT?",
+      "a": "Inspection at destination, and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking.",
+      "cite": {
+        "src": "rfo",
+        "sec": "46.404",
+        "quote": "the Government must inspect contracts at or below the simplified acquisition threshold at destination and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking, if applicable."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "REAs & Claims",
+      "q": "What is a claim?",
+      "a": "A written demand or assertion by a contracting party seeking, as a matter of right, payment of money in a sum certain, adjustment or interpretation of contract terms, or other relief arising under or relating to the contract.",
+      "cite": {
+        "src": "rfo",
+        "sec": "2.101",
+        "quote": "Claim means a written demand or written assertion by one of the contracting parties seeking, as a matter of right, the payment of money in a sum certain, the adjustment or interpretation of contract terms, or other relief arising under or relating to the contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "REAs & Claims",
+      "q": "At what dollar value must a contractor certify a claim?",
+      "a": "Over $100,000 — a money demand exceeding $100,000 is not even a claim under the Disputes statute until certified.",
+      "cite": {
+        "src": "rfo",
+        "sec": "52.233-1",
+        "quote": "a written demand or written assertion by the Contractor seeking the payment of money exceeding $100,000 is not a claim under 41 U.S.C. chapter 71 until certified",
+        "amount": "$100,000"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "REAs & Claims",
+      "q": "A contractor threatens to stop work until a dispute is resolved. What does the Disputes clause require?",
+      "a": "The contractor must proceed diligently with performance pending final resolution, and comply with the contracting officer's decision.",
+      "cite": {
+        "src": "rfo",
+        "sec": "52.233-1",
+        "quote": "The Contractor must proceed diligently with performance of this contract, pending final resolution of any request for relief, claim, appeal, or action arising under the contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "REAs & Claims",
+      "q": "Where should contract controversies be resolved first?",
+      "a": "By mutual agreement at the contracting officer's level, before a claim is submitted.",
+      "cite": {
+        "src": "rfo",
+        "sec": "33.204",
+        "quote": "As a matter of policy, the Government tries to resolve all contractual issues in controversy by mutual agreement at the contracting officer's level."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Modifications & Scope",
+      "q": "Who may execute contract modifications?",
+      "a": "Only contracting officers acting within the scope of their authority. Other Government personnel must not act in a way that makes the contractor believe they can bind the Government.",
+      "cite": {
+        "src": "rfo",
+        "sec": "43.202",
+        "quote": "Only contracting officers acting within the scope of their authority may execute contract modifications on behalf of the Government."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Modifications & Scope",
+      "q": "What is the difference between a bilateral and a unilateral modification?",
+      "a": "Bilateral (supplemental agreement) — signed by both the contractor and the contracting officer, e.g., negotiated equitable adjustments. Unilateral — signed only by the contracting officer, e.g., administrative changes, change orders, termination notices.",
+      "cite": {
+        "src": "rfo",
+        "sec": "43.203",
+        "quote": "A bilateral modification (supplemental agreement) is a contract modification that is signed by the contractor and the contracting officer."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Modifications & Scope",
+      "q": "Does an in-scope modification require a new competition?",
+      "a": "No. Part 6 competition requirements do not apply to modifications within the scope of the contract, including exercising priced options evaluated in the original competition.",
+      "cite": {
+        "src": "rfo",
+        "sec": "6.001",
+        "quote": "Contract modifications that are within the scope of the contract, including exercising priced options that were evaluated as part of the original competition (see part 17)"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Modifications & Scope",
+      "q": "What factors drive a scope determination on a proposed modification (the FACT PoP memory aid)?",
+      "a": "Whether offerors Fairly and reasonably Anticipated the work, the Cost relative to the original value, the Type or nature of the work, and the effect on the Period of Performance. Work outside the existing scope is a new contract action that must be competed or justified.",
+      "cite": {
+        "src": "rfo",
+        "sec": "5.001",
+        "quote": "Contract action means an action resulting in a contract, including actions for additional supplies or services outside the existing contract scope."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Options",
+      "q": "What is an option?",
+      "a": "A unilateral right by which, for a specified time, the Government may purchase additional supplies or services called for by the contract, or extend its term.",
+      "cite": {
+        "src": "rfo",
+        "sec": "2.101",
+        "quote": "Option means a unilateral right in a contract by which, for a specified time, the Government may elect to purchase additional supplies or services called for by the contract, or may elect to extend the term of the contract."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Options",
+      "q": "Before exercising an option, what must the contracting officer determine about the price?",
+      "a": "That the option price is fair and reasonable based on current market conditions and that exercising the option is in the Government's best interest — after written notice to the contractor and confirming funds are available.",
+      "cite": {
+        "src": "rfo",
+        "sec": "17.204-1",
+        "quote": "After reviewing price and other factors, the option price is fair and reasonable based on current market conditions and exercise of the option is in the Government's best interest"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Finance & Fiscal Law",
+      "q": "What does the Anti-Deficiency Act prohibit?",
+      "a": "Creating or authorizing an obligation in excess of available funds, or in advance of appropriations, unless otherwise authorized by law.",
+      "cite": {
+        "src": "rfo",
+        "sec": "32.702",
+        "quote": "No officer or employee of the Government may create or authorize an obligation in excess of the funds available, or in advance of appropriations (Anti-Deficiency Act, 31 U.S.C. 1341), unless otherwise authorized by law."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Finance & Fiscal Law",
+      "q": "May a severable services contract cross fiscal years?",
+      "a": "Yes — a contract, option, or order for severable services may begin in one fiscal year and end in the next if the period does not exceed one year, funded with the first year's funds.",
+      "cite": {
+        "src": "rfo",
+        "sec": "32.703-3",
+        "quote": "for severable services for a period that begins in one fiscal year and ends in the next fiscal year if the period of the contract awarded, option exercised, or order placed does not exceed one year"
+      }
+    }
+  ]
+}

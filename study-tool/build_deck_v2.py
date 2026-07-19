@@ -13,7 +13,7 @@ Card contract for the runtime (assets/study.js):
   topic-normalization table below — study.js builds the "how you should have answered"
   walkthrough and the hint ladder from it.
 """
-import json, hashlib, sys, os, re
+import json, hashlib, sys, os, re, glob
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DECK = os.path.join(ROOT, 'assets', 'study-deck.json')
@@ -271,6 +271,74 @@ def part_link(src, part):
     return {'t': ('RFO' if src == 'rfo' else 'R-DFARS') + ' Part ' + label_part,
             'u': '/' + src + '/part-' + part}
 
+# ---- 2f-L. ladder pool (warrant-level track) — STRICT build-time citation gate ----
+# Every ladder card carries a cite that is corpus-verified under stricter rules than
+# cite_links: EXACT section lookup only (find_sec's shortest-extension prefix match is
+# deliberately NOT used here — "6.30" must fail, not silently resolve to 6.301), the
+# section must be real prose (not [Reserved]/stub), the quote must appear verbatim
+# (whitespace-normalized), and any asserted dollar amount must live inside the quote
+# itself (bare amounts recur in unrelated statute names — the quote is the anchor).
+# On success each card ships with cite.link resolved the same way sec_link builds URLs,
+# so the runtime never needs the corpus.
+LADDER_RUNGS = ('sat', '5m', '25m', 'unlimited')
+
+def _norm(t):
+    t = re.sub(r'\bL\d+:', ' ', t)     # strip ingest level markers
+    return re.sub(r'\s+', ' ', t).strip()
+
+def ladder_gate(items):
+    out = {r: [] for r in LADDER_RUNGS}
+    seen = set()
+    for it in items:
+        tag = (it.get('q') or '(no q)')[:60]
+        for f in ('rung', 'type', 'topic', 'q', 'a', 'cite'):
+            if not it.get(f): sys.exit(f'FATAL: ladder {tag}: missing required field "{f}"')
+        cite = it['cite']
+        for f in ('src', 'sec', 'quote'):
+            if not cite.get(f): sys.exit(f'FATAL: ladder {tag}: missing required field "cite.{f}"')
+        if it['rung'] not in LADDER_RUNGS:
+            sys.exit(f'FATAL: ladder {tag}: unknown rung "{it["rung"]}"')
+        # 1. exists — exact section index hit ONLY, no prefix fallback
+        d = sec_idx.get((cite['src'], cite['sec']))
+        if not d:
+            sys.exit(f'FATAL: ladder {tag}: no such section {cite["src"]} {cite["sec"]} (exact match required)')
+        # 2. not reserved / empty
+        if '[Reserved]' in d['title'] or len(_norm(d['content'])) < 200:
+            sys.exit(f'FATAL: ladder {tag}: section {cite["src"]} {cite["sec"]} is [Reserved]/empty — not citable')
+        # 3. quote verbatim in the section
+        if _norm(cite['quote']) not in _norm(d['content']):
+            sys.exit(f'FATAL: ladder {tag}: quote not verbatim in {cite["src"]} {cite["sec"]}: "{cite["quote"][:80]}"')
+        # 4. asserted amount must sit inside the quote itself
+        if cite.get('amount') and cite['amount'] not in cite['quote']:
+            sys.exit(f'FATAL: ladder {tag}: amount {cite["amount"]} not inside the quote')
+        card = {'type': it['type'], 'topic': it['topic'], 'q': it['q'], 'a': it['a']}
+        cid = card_id(card)
+        if cid in seen: sys.exit(f'FATAL: ladder {tag}: duplicate generated id {cid}')
+        seen.add(cid)
+        card['id'] = cid
+        card['rung'] = it['rung']
+        part = str(d.get('part') or '').strip()
+        if not part: sys.exit(f'FATAL: ladder {tag}: section {cite["src"]} {cite["sec"]} has no part — link unbuildable')
+        frag = d.get('anchor') or d['id']
+        card['cite'] = dict(cite)
+        card['cite']['link'] = {'t': ('RFO ' if cite['src'] == 'rfo' else 'R-DFARS ') + cite['sec'],
+                                'u': '/' + cite['src'] + '/part-' + part + '#' + str(frag)}
+        out[it['rung']].append(card)
+    return out
+
+# ACQVAULT_LADDER_FILE: test hook (scripts/test_ladder_gate.py) — pins to a single file.
+# Default authors one file per rung (deck-ladder-*.json) so batches never race the same file;
+# plain deck-ladder.json is still picked up. Sorted for a stable build.
+_here = os.path.dirname(os.path.abspath(__file__))
+_pin = os.environ.get('ACQVAULT_LADDER_FILE')
+_ladder_paths = [_pin] if _pin else sorted(
+    glob.glob(os.path.join(_here, 'deck-ladder.json')) +
+    glob.glob(os.path.join(_here, 'deck-ladder-*.json')))
+if not _ladder_paths: sys.exit('FATAL: ladder: no deck-ladder*.json authoring file found')
+_ladder_items = []
+for _p in _ladder_paths: _ladder_items.extend(load(_p)['items'])
+deck['ladder'] = ladder_gate(_ladder_items)
+
 SRC_WORD = {'RFO': 'rfo', 'R-DFARS': 'r-dfars'}
 def cite_links(cite):
     """Parse a cite string ('RFO 6.103/6.104 · R-DFARS 217.74 · Vol. 2, Competition') into
@@ -486,3 +554,5 @@ print(f'board sim: {len(scen)} scenarios (+{new_sc} new) · asks {len(scen)-len(
 print(f'follow-ups: {fu_total} total · {fu_helped} with hint+debrief')
 if no_ask: print(f'  MISSING ask: {no_ask[:6]}')
 if no_script: print(f'  MISSING script: {no_script[:6]}')
+print('ladder: ' + ' · '.join(f'{r} {len(deck["ladder"][r])}' for r in LADDER_RUNGS)
+      + f' — all {sum(len(v) for v in deck["ladder"].values())} cites corpus-verified (exact-section, verbatim-quote)')
