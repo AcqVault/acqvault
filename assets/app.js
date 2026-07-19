@@ -964,14 +964,31 @@ function altSlug(label) {
   return label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 
-// Most docs open with a line echoing their own title, which the reader already shows
-// as the section heading. The old strip needed a blank line after it, which 2,703 docs
-// don't have, so they printed their title twice. Mirrored in api/_seo.js — edit both.
-function isTitleEcho(line, title) {
-  const norm = s => String(s || '').replace(/^L\d+:\s*/, '').replace(/\s+/g, ' ').trim()
+// Most docs open with a line echoing their own title, which the page already shows
+// as the section heading. Two ways that echo hides from an exact match: it often
+// carries a trailing period ("…Payments Program." vs the bare title), and in the
+// PDF-derived sources the heading WRAPS across two stored lines ("…acquired by
+// educational" / "institutions.") so no single line ever equals the title.
+// titleEchoLines() walks the leading lines, accumulating while they stay a prefix
+// of the title, and reports how many to drop. Mirrored in assets/app.js — edit both.
+function normEcho(s) {
+  return String(s || '').replace(/^L\d+:\s*/, '').replace(/\s+/g, ' ').trim()
     .replace(/[.\s]+$/, '').toLowerCase();
-  const t = norm(title);
-  return t.length > 0 && norm(line) === t;
+}
+
+function titleEchoLines(lines, title) {
+  const want = normEcho(title);
+  if (!want) return 0;
+  let acc = '';
+  // A wrapped heading is 1-3 stored lines; past that we are into body text.
+  for (let i = 0; i < lines.length && i < 4; i++) {
+    const s = normEcho(lines[i]);
+    if (!s) return 0;
+    acc = acc ? acc + ' ' + s : s;
+    if (acc === want) return i + 1;
+    if (!want.startsWith(acc + ' ')) return 0;
+  }
+  return 0;
 }
 
 function renderContentLine(line, baseCitation, source, paraPath, altCtx) {
@@ -1461,12 +1478,12 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const title   = hit.title || 'Untitled';
     const anchor  = parsed.anchor;
     const citation = generateCitation(hit);
-    // Strip the leading line only when it echoes the title we're already showing.
+    // Strip the leading line(s) only when they echo the title we're already showing
+    // — a heading wrapped by the source PDF spans more than one stored line.
     const content  = (() => {
-      const raw = hit.content || '';
-      const nl = raw.indexOf('\n');
-      if (nl === -1) return raw;
-      return isTitleEcho(raw.slice(0, nl), title) ? raw.slice(nl + 1).replace(/^\n+/, '') : raw;
+      const raw = (hit.content || '').split('\n');
+      const skip = titleEchoLines(raw, title);
+      return skip ? raw.slice(skip).join('\n').replace(/^\n+/, '') : raw.join('\n');
     })();
     const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
     const visualFlags = {};

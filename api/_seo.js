@@ -110,14 +110,30 @@ function altSlug(label) {
 }
 
 // Most docs open with a line echoing their own title, which the page already shows
-// as the section heading. The old check was an exact match, so it missed the ~1,683
-// docs whose echo carries a trailing period ("…Payments Program." vs the bare title)
-// and they printed their title twice. Mirrored in assets/app.js — edit both.
-function isTitleEcho(line, title) {
-  const norm = s => String(s || '').replace(/^L\d+:\s*/, '').replace(/\s+/g, ' ').trim()
+// as the section heading. Two ways that echo hides from an exact match: it often
+// carries a trailing period ("…Payments Program." vs the bare title), and in the
+// PDF-derived sources the heading WRAPS across two stored lines ("…acquired by
+// educational" / "institutions.") so no single line ever equals the title.
+// titleEchoLines() walks the leading lines, accumulating while they stay a prefix
+// of the title, and reports how many to drop. Mirrored in assets/app.js — edit both.
+function normEcho(s) {
+  return String(s || '').replace(/^L\d+:\s*/, '').replace(/\s+/g, ' ').trim()
     .replace(/[.\s]+$/, '').toLowerCase();
-  const t = norm(title);
-  return t.length > 0 && norm(line) === t;
+}
+
+function titleEchoLines(lines, title) {
+  const want = normEcho(title);
+  if (!want) return 0;
+  let acc = '';
+  // A wrapped heading is 1-3 stored lines; past that we are into body text.
+  for (let i = 0; i < lines.length && i < 4; i++) {
+    const s = normEcho(lines[i]);
+    if (!s) return 0;
+    acc = acc ? acc + ' ' + s : s;
+    if (acc === want) return i + 1;
+    if (!want.startsWith(acc + ' ')) return 0;
+  }
+  return 0;
 }
 
 // Render a doc's content into clean paragraphs (strip the "Ln:" level markers
@@ -126,13 +142,12 @@ function renderContent(content, title, anchorBase) {
   const lines = String(content || '').split('\n');
   const out = [];
   const blocks = [];
-  let first = true;
-  for (let line of lines) {
+  const skip = titleEchoLines(lines, title);
+  for (let li = skip; li < lines.length; li++) {
+    const line = lines[li];
     const isTop = /^L0:/.test(line);
     let s = line.replace(/^L\d+:\s*/, '').trim();
-    if (!s) { first = false; continue; }
-    if (first && title && isTitleEcho(s, title)) { first = false; continue; }
-    first = false;
+    if (!s) continue;
 
     // The source PDFs run reserved variants together on one line
     // ("Alternate II. [Reserved] Alternate III. [Reserved] Alternate IV. As
