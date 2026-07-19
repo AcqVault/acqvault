@@ -2182,7 +2182,10 @@ button,a,[role="button"],input,select{touch-action:manipulation;}
 .search-icon{display:inline-flex;width:26px;height:26px;border-radius:999px;align-items:center;justify-content:center;background:rgba(135,101,28,0.07);color:var(--accent);font-size:var(--fs-lg);}
 .hero-command-dock{background:linear-gradient(180deg,rgba(255,255,255,0.82),rgba(250,249,245,0.64));border-color:var(--brass-line);box-shadow:0 1px 0 rgba(255,255,255,0.86) inset,0 16px 42px rgba(20,16,10,0.1),0 2px 8px rgba(20,16,10,0.05);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);}
 .mode-btn.active{box-shadow:0 7px 18px rgba(15,37,64,0.3),inset 0 1px 0 rgba(255,255,255,0.12);}
-.hero-source-strip{background:rgba(255,255,255,0.34);border-radius:0 0 14px 14px;}
+/* A 34% white wash here lightened the navy to a muddy grey-blue band AND dropped
+   the pill labels to ~3.5:1 (below AA 4.5:1). A faint panel keeps the pills
+   reading as one group without washing out the federal-ink ground. */
+.hero-source-strip{background:rgba(255,255,255,0.07);border-radius:0 0 14px 14px;}
 .side-ticker{background:linear-gradient(180deg,rgba(255,255,255,0.76),rgba(251,250,247,0.58));box-shadow:0 1px 0 rgba(255,255,255,0.8) inset,0 16px 36px rgba(15,37,64,0.08),0 2px 8px rgba(13,17,23,0.05);}
 .source-tiles-section{background:linear-gradient(180deg,#edf3fa 0%,#f7f9fc 100%);}
 .source-tiles-label{justify-content:space-between;}
@@ -2798,7 +2801,9 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
 .hero-eyebrow-sep,#hero-asof{color:rgba(228,238,250,.86);}
 .hero-statstrip,.hero-statstrip-count,.hero-source-strip{color:rgba(228,238,250,.86);}
 .hero-statstrip-count strong{color:#f3f7fc;}
-.hero-source-strip b{color:#f3f7fc;}
+/* Source pills: brass-tinted chips on the navy ground (was near-white text on a
+   white wash — off-identity and ~3.5:1). Now ~6.2:1, comfortably AA. */
+.hero-source-strip b{color:#f3f7fc;background:rgba(228,196,119,0.10);border-color:rgba(228,196,119,0.28);}
 .trychip-k{color:rgba(228,238,250,.78);}
 .hero-sub,.hero-inner-b .hero-sub{color:rgba(232,240,250,.92);}
 
