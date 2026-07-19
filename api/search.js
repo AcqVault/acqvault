@@ -345,6 +345,34 @@ function retrieve(question) {
   return [...docs, ...deck];
 }
 
+// A question that retrieves NOTHING is the signal for growing ASK_CONCEPTS: it means
+// the asker's everyday vocabulary has no bridge to the regulation's wording (the
+// "sole source" → "other than full and open competition" problem). Only misses are
+// logged — an answered question leaves no trace.
+//
+// The site keeps nothing about its users, so this logs the stopword-filtered TERMS
+// rather than the question. That is also the more useful artifact: the filler is what
+// buries the signal ("im curious about sole source my boss keeps telling me" → "sole
+// source compete"). Order is preserved so multi-word concepts stay readable. Tokens
+// carrying a run of digits are dropped — contract numbers and dollar figures are the
+// part most likely to identify someone, and they are worthless as concept vocabulary.
+// Goes to the ephemeral Vercel runtime log; nothing is persisted, no IP, no question.
+function logRetrievalMiss(question) {
+  try {
+    // Scrub before tokenizing: an address survives tokenization as its own words
+    // ("bob@example.com" → bob example com), which the digit filter never sees.
+    const scrubbed = String(question || '')
+      .replace(/[\w.+-]+@[\w.-]+\.\w+/g, ' ')
+      .replace(/\b(?:https?:\/\/|www\.)\S+/gi, ' ');
+    const terms = askTerms(scrubbed)
+      .filter(t => !/\d{3,}/.test(t))
+      .slice(0, 12)
+      .join(' ')
+      .slice(0, 200);
+    if (terms) console.log('ask miss:', terms);
+  } catch (e) { /* logging must never break an answer */ }
+}
+
 async function askVault(question) {
   const key = process.env.GROQ_API_KEY;
   if (!key) return { configured: false };
@@ -353,6 +381,7 @@ async function askVault(question) {
 
   const sources = retrieve(q);
   if (!sources.length) {
+    logRetrievalMiss(q);
     return { configured: true, answer: null, sources: [],
       refusal: 'Nothing on the site matches that question. Ask the Vault answers only from AcqVault’s own text — the RFO, R-DFARS, the other indexed sources, and the Field Guides. Try rephrasing with acquisition terms, or run an authoritative search.' };
   }
