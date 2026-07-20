@@ -30,6 +30,8 @@ DOCS = REPO / "output" / "documents.json"
 LMARK = re.compile(r"^L\d+:")
 # a clause-group container: bare section number, no -N child suffix
 RESERVED_GROUP = re.compile(r"^(\d+\.\d+) \[Reserved\]$")
+# leading section/subpart number of any RFO title
+SECTION_NUM = re.compile(r"^(Subpart\s+[\d.]+|[\d.]+(?:-\d+)*)")
 PGI_HEAD = re.compile(r"PGI\s+\d+(\.\d+)?\s*[—–]")
 FURNITURE = re.compile(
     r"^(Attachment [A-Z]\d?"
@@ -64,6 +66,25 @@ def body_of(d):
     if content.startswith(title):
         content = content[len(title):]
     return content.strip()
+
+
+def is_descendant(child_num, parent_num):
+    """True when child_num sits strictly under parent_num in FAR numbering.
+
+    Must match scripts/repair_rfo_container_inheritance.py exactly. A plain
+    string prefix is wrong: "52.204-10" prefixes "52.204-1" but is its sibling,
+    and 2.101 belongs to Subpart 2.1 rather than Subpart 2.10 because FAR
+    numbers a section as its subpart digits plus two more.
+    """
+    if not child_num or not parent_num or child_num == parent_num:
+        return False
+    kid = child_num.replace("Subpart ", "")
+    if parent_num.startswith("Subpart "):
+        m = re.match(r"^(\d+)\.(\d+)", kid)
+        if not m or len(m.group(2)) <= 2:
+            return False
+        return "{}.{}".format(m.group(1), m.group(2)[:-2]) == parent_num[len("Subpart "):]
+    return kid.startswith(parent_num + "-")
 
 
 def main():
@@ -140,6 +161,32 @@ def main():
     check("no [Reserved] header swallowed a clause", not swallow,
           f"{len(swallow)} [Reserved] header(s) hold a child's clause text: {swallow[:3]}",
           "scripts/repair_rfo_reserved_swallow.py")
+
+    # ── containers holding a verbatim copy of a child ─────────────────────────
+    # The general form of the same inheritance bug, where the title MATCHES the
+    # body so the duplication reads as plausible ("Subpart 2.1 Definitions" ≡
+    # "2.101 Definitions", 98K). Detect by body identity with a numbered
+    # DESCENDANT only — never by size or title. Six containers legitimately own
+    # prose ahead of their first child and must keep it; body identity is what
+    # separates them. See docs/CORPUS_INVARIANTS.md.
+    inherited = []
+    for d in live:
+        if d.get("source") != "rfo":
+            continue
+        num = SECTION_NUM.match(d.get("title") or "")
+        body = body_of(d)
+        if not num or not body or RESERVED_GROUP.match(d.get("title") or ""):
+            continue                      # [Reserved] groups: previous check owns them
+        for o in bodies[body]:
+            if o is d:
+                continue
+            onum = SECTION_NUM.match(o.get("title") or "")
+            if onum and is_descendant(onum.group(1), num.group(1)):
+                inherited.append(d["id"])
+                break
+    check("no container inherited a child's text", not inherited,
+          f"{len(inherited)} container(s) hold a verbatim copy of a child: {inherited[:3]}",
+          "scripts/repair_rfo_container_inheritance.py")
 
     # ── largest docs, informational ───────────────────────────────────────────
     # Deliberately NOT a failure: size alone can't tell a swallow from a

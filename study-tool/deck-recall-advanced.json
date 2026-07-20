@@ -1,1640 +1,1640 @@
 [
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Acquisition Planning & Strategy",
-  "q": "Five factors in the competitive-vs-sole-source call.",
-  "a": "Data rights sufficiency · switching/qualification costs · industrial base capability · honest urgency · second-source economics.",
-  "id": "935ffc933d7a"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Acquisition Planning & Strategy",
-  "q": "What inventory precedes a sustainment competition decision?",
-  "a": "Data rights, deliverables (source/build/interfaces), GFP/tooling, licenses, funding.",
-  "id": "d0361b53188e"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Acquisition Planning & Strategy",
-  "q": "What can never justify a bridge?",
-  "a": "Lack of advance planning.",
-  "id": "33042bd006cf"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Acquisition Planning & Strategy",
-  "q": "What factors drive competitive vs. sole-source for the follow-on?",
-  "a": "Data rights and technical data sufficiency · qualification/switching costs and time · industrial base capability · urgency honestly assessed · lifecycle economics of a second source. Facts on each, in the file.",
-  "style": "board-probe",
-  "id": "053cbeea5e42"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Acquisition Planning & Strategy",
-  "q": "How do you find out if other sources can perform?",
-  "a": "Fresh sources-sought and RFIs · industry days · capability analysis against the tech data package · other services'/agencies' experience with similar builds.",
-  "style": "board-probe",
-  "id": "079022ee3f6d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Acquisition Planning & Strategy",
-  "q": "And if truly no one else can?",
-  "a": "RFO 6.103-1, one responsible source — with the J&A at the right approval tier and market research that would survive a competitor's lawyer reading it.",
-  "style": "board-probe",
-  "id": "abce5003908c"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Authority, Unauthorized Commitments & Ratification",
-  "q": "Three types of authority — which one binds nothing?",
-  "a": "Express, implied, apparent — apparent binds nothing.",
-  "id": "27b9ce4d2c0e"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Authority, Unauthorized Commitments & Ratification",
-  "q": "All six ratification elements.",
-  "a": "Proper-if-CO · benefit · ratifier's actual authority · fair & reasonable price · funds then and now · Legal.",
-  "id": "88dd62fee9f3"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Authority, Unauthorized Commitments & Ratification",
-  "q": "Who ratifies a $500K unauthorized commitment? A $90K one?",
-  "a": "$500K → HCA (delegable); $90K → COCO.",
-  "id": "e982f0457dbb"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Authority, Unauthorized Commitments & Ratification",
-  "q": "Five elements of a valid contract.",
-  "a": "Offer/acceptance · consideration · competency · legality · certainty of terms.",
-  "id": "2949d2327e73"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Authority, Unauthorized Commitments & Ratification",
-  "q": "What if the Government received no benefit?",
-  "a": "Then it can't be ratified — a ratification requires acceptance or benefit. The contractor's remedy shifts to a claim (or quantum meruit through Legal); my job is the documented record either way.",
-  "style": "board-probe",
-  "id": "355276c46d67"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Authority, Unauthorized Commitments & Ratification",
-  "q": "The person who did it refuses to write a statement.",
-  "a": "Document the refusal, reconstruct the facts from correspondence and witnesses, and proceed — the package needs the story, and the refusal itself goes in the record.",
-  "style": "board-probe",
-  "id": "5b24c7798b4a"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Authority, Unauthorized Commitments & Ratification",
-  "q": "Is implied authority real authority?",
-  "a": "Yes — authority reasonably inferred from a position's duties is legally valid. Apparent authority is the trap: looking authorized isn't being authorized.",
-  "style": "board-probe",
-  "id": "70fbb68e0e19"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Procurement Integrity",
-  "q": "Two categories of protected information under RFO 3.104.",
-  "a": "Source selection information; contractor bid/proposal data.",
-  "id": "0998b7e6e642"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Procurement Integrity",
-  "q": "Your first two containment actions on a bad disclosure.",
-  "a": "Legal immediately; identify/contain — recipient deletes with signed confirmation.",
-  "id": "322937e75d22"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Procurement Integrity",
-  "q": "Where does the decision go if the disclosure impacts the procurement?",
-  "a": "The HCA.",
-  "id": "25228f00090d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Procurement Integrity",
-  "q": "Name three prevention practices you'd brief a new source selection team.",
-  "a": "Two-person review before release · encryption with separate passwords · disable auto-complete · SSI cover sheets (any three).",
-  "id": "c28f28ca63f2"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Procurement Integrity",
-  "q": "The recipient says she deleted it — done?",
-  "a": "Not on her word: signed affidavit confirming deletion of all copies, and the determination still has to be written. The record closes it, not the reply email.",
-  "style": "board-probe",
-  "id": "f78b31102ae4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Procurement Integrity",
-  "q": "What if it went to an actual offeror?",
-  "a": "That's the high-impact branch: presumptive taint of the competition. HCA decision territory — disqualification or cancellation are on the table, with Legal driving.",
-  "style": "board-probe",
-  "id": "99d0a01bede1"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Procurement Integrity",
-  "q": "A contractor employee asks your evaluator how the ratings look — violation?",
-  "a": "Attempting to obtain source selection information is itself a PIA problem. Document it, report it, brief the team — silence is how small probes become disclosures.",
-  "style": "board-probe",
-  "id": "f46f3249feba"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Organizational Conflict of Interest",
-  "q": "The three OCI types — and which is hardest to mitigate?",
-  "a": "Biased ground rules (hardest) · unequal access · impaired objectivity.",
-  "id": "9602ba9c7412"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Organizational Conflict of Interest",
-  "q": "The three handling tools, in order of preference.",
-  "a": "Avoid · neutralize · mitigate.",
-  "id": "b25c39993384"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Organizational Conflict of Interest",
-  "q": "Who approves an OCI waiver, and is it delegable?",
-  "a": "HCA; non-delegable.",
-  "id": "491f47d224e6"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Organizational Conflict of Interest",
-  "q": "True or false: unequal access requires showing the contractor acted on the information.",
-  "a": "False — the access imbalance itself is the conflict.",
-  "id": "57ce0f1a8517"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Organizational Conflict of Interest",
-  "q": "Which type is hardest to mitigate and why?",
-  "a": "Biased ground rules — once the requirement itself is shaped, a firewall can't un-shape it. Exclusion is the usual outcome.",
-  "style": "board-probe",
-  "id": "74433b82312d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Organizational Conflict of Interest",
-  "q": "The contractor firewall says the proposal team never saw anything. Enough?",
-  "a": "A firewall can address unequal access going forward — it does nothing for ground rules already written. Type drives remedy.",
-  "style": "board-probe",
-  "id": "735bd0bd5fe4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Organizational Conflict of Interest",
-  "q": "Who has final say on the mitigation plan?",
-  "a": "The PCO. Panels and reviewers advise; the decision and the accountability are mine.",
-  "style": "board-probe",
-  "id": "ec763e1449e6"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contractor Qualifications — Responsibility",
-  "q": "Recite the seven responsibility standards.",
-  "a": "Finances · schedule · performance · integrity · organization/experience/controls · equipment/facilities · qualified & eligible.",
-  "id": "d146eee4b073"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contractor Qualifications — Responsibility",
-  "q": "Which two system checks precede award, and at what threshold does the second apply?",
-  "a": "SAM exclusions always; FAPIIS over SAT ($350K).",
-  "id": "00c9dd64b727"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contractor Qualifications — Responsibility",
-  "q": "What happens when a small business is found non-responsible?",
-  "a": "Referral to SBA — a CoC conclusively establishes responsibility.",
-  "id": "97fe9fa8f578"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contractor Qualifications — Responsibility",
-  "q": "Doubt about capability cuts in whose favor?",
-  "a": "The Government's — doubt means no.",
-  "id": "389e9eb3be11"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contractor Qualifications — Responsibility",
-  "q": "SBA issues the CoC but you still think they'll fail. Now what?",
-  "a": "A CoC is conclusive as to responsibility — I award, then protect the Government with administration: a solid QASP, milestone surveillance, and early engagement at the first sign of trouble. (Appeal paths exist in a dollar band — worked with Legal and SBA, not solo.)",
-  "style": "board-probe",
-  "id": "f5625f2376c1"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contractor Qualifications — Responsibility",
-  "q": "Can you use responsibility to screen out a contractor you distrust?",
-  "a": "Only on the standards, only on facts. Distrust without documentation is how a defensible \"no\" becomes a sustained protest.",
-  "style": "board-probe",
-  "id": "9a68017198a8"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contractor Qualifications — Responsibility",
-  "q": "What's the difference between non-responsible and ineligible?",
-  "a": "Ineligible = excluded (SAM/debarment) — no award, period. Non-responsible = fails the standards for this award, on today's facts.",
-  "style": "board-probe",
-  "id": "1e37736760b9"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Market Research",
-  "q": "Four questions market research must answer.",
-  "a": "Capable sources · commercial or not · small business capability · industry practices (also: bundling justified?).",
-  "id": "5fec57ac3832"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Market Research",
-  "q": "How long is research treated as current?",
-  "a": "18 months.",
-  "id": "602833ee075f"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Market Research",
-  "q": "Name five research methods.",
-  "a": "Sources sought · RFI · industry day · SME/vendor engagement · prior-buy history · catalogs (any five).",
-  "id": "e5a6fa168f8b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Market Research",
-  "q": "What document downstream decisions cite — and what happens if it was never written?",
-  "a": "The market research report; undocumented research can't support the J&A/set-aside/CID that relies on it.",
-  "id": "f4ad30db7f45"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Market Research",
-  "q": "Your sources-sought got one response. Sole source it?",
-  "a": "One response to one notice isn't market absence — it's a data point. Widen the net (direct outreach, industry channels, adjacent NAICS) before concluding only one source exists; the J&A will be judged on the effort.",
-  "style": "board-probe",
-  "id": "fec7186d421c"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Market Research",
-  "q": "How is market research different from a competition requirement?",
-  "a": "Research is the evidence; competition is the decision. Research tells me whether the Rule of Two is met, whether full-and-open is realistic, whether commercial procedures fit — it doesn't replace any of them.",
-  "style": "board-probe",
-  "id": "d98f94d84eac"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Market Research",
-  "q": "The PM wrote the spec around Vendor X's product. Fix it with research?",
-  "a": "Backwards — research should shape the requirement, not justify it after the fact. I'd push for a performance-based restatement and use the research to show what the market can actually deliver.",
-  "style": "board-probe",
-  "id": "9364dd1a8da7"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Required Sources of Supplies & Services",
-  "q": "The supplies priority order, top to bottom.",
-  "a": "Inventory → excess → UNICOR → AbilityOne → wholesale → mandatory FSS → commercial.",
-  "id": "094a9da4d668"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Required Sources of Supplies & Services",
-  "q": "What leads the services ladder?",
-  "a": "AbilityOne.",
-  "id": "3b8d75841b8f"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Required Sources of Supplies & Services",
-  "q": "On an FSS order, who determines the order price fair and reasonable?",
-  "a": "The ordering contracting officer — GSA's schedule pricing doesn't substitute.",
-  "id": "f923c906e0d0"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Required Sources of Supplies & Services",
-  "q": "The AbilityOne item is pricier than the commercial one. Buy commercial?",
-  "a": "Mandatory means mandatory — if the item is on the procurement list and meets the need, price alone doesn't unlock the open market. Work fit/availability issues through the program, on the record.",
-  "style": "board-probe",
-  "id": "94b92b91c879"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Required Sources of Supplies & Services",
-  "q": "Why isn't a schedule buy automatically fair and reasonable?",
-  "a": "Because GSA negotiated a ceiling across the government, not my quantity, configuration, or competitive moment. Comparing quotes among holders and asking for discounts is the ordering CO's job.",
-  "style": "board-probe",
-  "id": "f355210cde61"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Commercial Products & Services",
-  "q": "The commercial definition in one sentence, including the mod rule.",
-  "a": "Sold/leased/licensed to the general public (or evolved and available in time), including minor mods that don't alter form, fit, or function.",
-  "id": "fa14b528a799"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Commercial Products & Services",
-  "q": "CID: at what threshold is it written, and who approves it?",
-  "a": "Over SAT ($350K); one level above the CO.",
-  "id": "fe82a9fce34d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Commercial Products & Services",
-  "q": "Streamlined commercial procedures — cite and ceiling?",
-  "a": "RFO 12.201-1; $9M.",
-  "id": "5a3c40a9312a"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Commercial Products & Services",
-  "q": "Name two things Part 12 gives you and two things it takes away.",
-  "a": "Gets: no certified data, streamlined terms/FFP preference. Takes: only customary market data rights; Part 49 termination machinery.",
-  "id": "49c3619626fe"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Commercial Products & Services",
-  "q": "How do you price it fair and reasonable without cost data?",
-  "a": "Market evidence: competition first, then catalog/published prices, sales history to other customers, parametric comparisons — and I can require data other than certified where the market evidence is thin.",
-  "style": "board-probe",
-  "id": "dae423615094"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Commercial Products & Services",
-  "q": "The mod adds an encrypted military datalink. Still minor?",
-  "a": "Test it against form, fit, and function of the base item — a modification that changes what the item fundamentally is or does takes you out of \"minor.\" That's a facts-and-engineering call, documented in the CID.",
-  "style": "board-probe",
-  "id": "6e762e558b4b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Commercial Products & Services",
-  "q": "Termination for cause vs. T4D?",
-  "a": "Commercial contracts use the commercial clause's cause/convenience framework — Part 49's default machinery (cure notices per 49.x, excess reprocurement) doesn't apply as such. Chain warning: boards love this seam.",
-  "style": "board-probe",
-  "id": "b80033fbefef"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Simplified Acquisition Procedures",
-  "q": "The three SAP lanes and their dollar boundaries.",
-  "a": "GPC ≤$15K · POs $15K–$350K · BPAs for repetitive needs.",
-  "id": "34673e1efe8e"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Simplified Acquisition Procedures",
-  "q": "Who is the MPT-to-SAT band reserved for?",
-  "a": "Small business, unless capable small sources can't be found.",
-  "id": "8b949db1e574"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Simplified Acquisition Procedures",
-  "q": "What documentation does an under-SAT sole source need?",
-  "a": "A documented single-source rationale + price reasonableness — no formal J&A.",
-  "id": "03458c10c23f"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Simplified Acquisition Procedures",
-  "q": "Commercial streamlined ceiling and cite?",
-  "a": "$9M · RFO 12.201-1.",
-  "id": "3ad36f49ee18"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Simplified Acquisition Procedures",
-  "q": "Why not spread the tool-crib buy across three GPC swipes?",
-  "a": "That's splitting a known requirement to evade the MPT — a bright-line violation. One $210K requirement is one purchase-order action with small business first.",
-  "style": "board-probe",
-  "id": "2c3a46f79aaf"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Simplified Acquisition Procedures",
-  "q": "BPA vs. IDIQ — when does the small path stop fitting?",
-  "a": "A BPA is an account, not a contract — no obligation until a call. When needs get big, defined, and multi-year, the structure (and the money) belongs in a real vehicle.",
-  "style": "board-probe",
-  "id": "9a7d7ce960be"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Simplified Acquisition Procedures",
-  "q": "One quote came back on your $80K buy — award?",
-  "a": "I can, if I can call the price fair and reasonable — compare to history, catalogs, IGCE, and document it. Reasonableness rides on evidence, not on the count of quotes.",
-  "style": "board-probe",
-  "id": "754298487c89"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Small Business Programs",
-  "q": "State the Rule of Two precisely.",
-  "a": "Reasonable expectation of two or more capable small businesses submitting offers at fair market prices → set aside.",
-  "id": "f67eaf0a98e1"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Small Business Programs",
-  "q": "Sole-source ceilings: HUBZone other? SDVOSB other? 8(a) DoD?",
-  "a": "$5.5M · $5M · $100M (no J&A).",
-  "id": "b23a98ab7ac6"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Small Business Programs",
-  "q": "What form documents specialist coordination?",
-  "a": "DD Form 2579.",
-  "id": "91821da14882"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Small Business Programs",
-  "q": "Subcontracting plan thresholds?",
-  "a": "$900K; $2M construction.",
-  "id": "7217434521d2"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Small Business Programs",
-  "q": "Only one small business responds to your set-aside — now what?",
-  "a": "If the offer is fair-market priced, award — the Rule of Two tests the expectation, not the final count. Document what changed between research and offers.",
-  "style": "board-probe",
-  "id": "fdfcedccde23"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Small Business Programs",
-  "q": "The requirement's been in the 8(a) program — can you compete it full-and-open now?",
-  "a": "Not unilaterally: once in 8(a), it stays unless SBA agrees to release it. That's the follow-on trap on 8(a) requirements.",
-  "style": "board-probe",
-  "id": "1658ed2fe51a"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Small Business Programs",
-  "q": "When does 8(a) sole source need a J&A?",
-  "a": "DoD: not below $100M. The program's statutory basis covers it — that's the 'authorized by statute' lane.",
-  "style": "board-probe",
-  "id": "f10497ad0ee0"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Competition (CICA)",
-  "q": "Recite the four SAMO carve-outs.",
-  "a": "SAP · statute · in-scope mods · orders under existing vehicles.",
-  "id": "a78f420d29c1"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Competition (CICA)",
-  "q": "Name all seven RFO 6.103 exceptions, in any order.",
-  "a": "One source · urgency · industrial mobilization/R&D · international agreement · statute · national security · public interest.",
-  "id": "8575184a4e67"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Competition (CICA)",
-  "q": "Your J&A is $18M — who approves? $95M (DoD)? $160M (DoD)?",
-  "a": "$18M → Competition Advocate; $95M DoD → HPA/PEO (DoD line is $150M); $160M DoD → SPE.",
-  "id": "2406b1119b1b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Competition (CICA)",
-  "q": "How long do you have to post a J&A to SAM.gov after award? After an urgency award?",
-  "a": "14 days; 30 days for urgency.",
-  "id": "c06634e050d7"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Competition (CICA)",
-  "q": "Only one offer came in on your competitive solicitation — now what?",
-  "a": "If the solicitation allowed under 30 days for offers, consult the requiring activity and resolicit for at least 30. If interest was real but only one firm bid, find out why — get feedback, document it, and use it to open the next competition. The award can still be made if the price is fair and reasonable.",
-  "style": "board-probe",
-  "id": "6ca8add7db5e"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Competition (CICA)",
-  "q": "What's the difference between full-and-open after exclusion of sources and other than full-and-open?",
-  "a": "Exclusion still competes — among a deliberately narrowed field (a set-aside is the everyday example). \"Other than\" means one or very few sources under an RFO 6.103 exception.",
-  "style": "board-probe",
-  "id": "fba64c8b4c70"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Competition (CICA)",
-  "q": "Who approves your $40M J&A? …and a $15M one?",
-  "a": "$40M → HPA/PEO. $15M → Competition Advocate. (Know your ladder cold — boards love the second ask.)",
-  "style": "board-probe",
-  "id": "e1ade89aced2"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Competition (CICA)",
-  "q": "The program wants a bridge while the follow-on catches up. Fine?",
-  "a": "Only for a genuinely unforeseen cause — a protest, a directed strategy change, a regulatory change. \"We didn't plan\" is never a valid basis, and repeat bridges escalate to higher approval each time.",
-  "style": "board-probe",
-  "id": "6e1d02b83f70"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contracting by Negotiation — Source Selection",
-  "q": "The three exchange types and the line between them.",
-  "a": "Clarifications (minor, no revisions) · communications (pre-range) · discussions (post-range, meaningful, all in range).",
-  "id": "3d44b1b923cc"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contracting by Negotiation — Source Selection",
-  "q": "Who evaluates, who decides, who runs the business side?",
-  "a": "SSEB · SSA · PCO.",
-  "id": "ef642dc89894"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contracting by Negotiation — Source Selection",
-  "q": "When can you award without discussions?",
-  "a": "Solicitation said so and initial proposals support it.",
-  "id": "56466fa2b9dc"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contracting by Negotiation — Source Selection",
-  "q": "What must a post-award debrief include — and exclude?",
-  "a": "Include: evaluated result, significant weaknesses, ranking/rationale. Exclude: other offerors' proposal contents.",
-  "id": "69f57fa773b3"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contracting by Negotiation — Source Selection",
-  "q": "Award without discussions — when is that OK?",
-  "a": "If the solicitation preserved it and the initial proposals support a clean award. On large, complex actions, discussions usually earn their keep — say you'd weigh it, not autopilot it.",
-  "style": "board-probe",
-  "id": "8bba3e5c70c4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contracting by Negotiation — Source Selection",
-  "q": "An evaluator wants to ping an offeror about an ambiguity before the range.",
-  "a": "That's a communication — through me, documented, no proposal revisions. The moment it invites a revision, it's discussions, and discussions have rules.",
-  "style": "board-probe",
-  "id": "5be0fb484cba"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contracting by Negotiation — Source Selection",
-  "q": "Can price be a rating like technical?",
-  "a": "No — cost/price is evaluated (analysis, realism where applicable) but never adjectivally rated. It competes in the tradeoff as a number with analysis behind it.",
-  "style": "board-probe",
-  "id": "a2ba32887821"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contracting by Negotiation — Source Selection",
-  "q": "What makes discussions 'meaningful'?",
-  "a": "Each offeror hears its own significant weaknesses and deficiencies with enough substance to respond — tailored, not generic, and even-handed across the range.",
-  "style": "board-probe",
-  "id": "31ebec1f7357"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "Current certified-data threshold, and the date line that changed it?",
-  "a": "$10M for actions entered after 30 Jun 2026 (FY26 NDAA §1804); $2.5M for earlier contracts and their mods.",
-  "id": "257067de1eaf"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "Recite CLAWM — and where do the exceptions live in the RFO?",
-  "a": "Commercial · Law/regulation · Adequate price competition · Waiver (HCA) · commercial Mods — RFO 15.403-2.",
-  "id": "d097b13b7eac"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "Which analysis is always required? When does cost realism apply?",
-  "a": "Price analysis, always (15.404-1); cost realism on competitive cost-type source selections (15.404-3).",
-  "id": "37a864f423df"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "All five elements of defective pricing.",
-  "a": "Was cost/pricing data · existed pre-agreement · not disclosed · relied upon · increased the price.",
-  "id": "9135a54de3d6"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "CPFF fee ceilings for R&D, most others, A&E.",
-  "a": "15% · 10% · 6%.",
-  "id": "dfb052112b10"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "What's the difference between certified and other-than-certified cost or pricing data?",
-  "a": "The data can be identical — the certificate is the difference. Other-than-certified is what you request to determine price reasonableness when an exception applies; no certificate, no defective-pricing remedy.",
-  "style": "board-probe",
-  "id": "4882451c81b3"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "The contractor did a 'sweep' after agreement and found new data — now what?",
-  "a": "Sweeps are recommended, not required. Before award: incorporate — if the corrected price is lower, adjust down; if higher, the contractor generally eats it unless it's unreasonable, and you may reopen. After award: that's defective pricing — the Government is entitled to a price reduction plus interest; bring in Legal.",
-  "style": "board-probe",
-  "id": "e9eebb79ec77"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "The contractor refuses to provide further support during fact-finding.",
-  "a": "Document exactly what was requested and refused, use DCMA/DCAA to press the field organization, elevate through the contractor's management — and remember I can't award without determining the price fair and reasonable. No data, no deal, and the file shows why.",
-  "style": "board-probe",
-  "id": "bb5d54c6428b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-  "q": "When would you get DCAA vs. DCMA support?",
-  "a": "Field pricing support scales with dollars and type — DCMA forward-pricing rate support around $2.5M+ (fixed-price) / $10M+ (cost-type); DCAA audit at $10M+ (fixed-price) / $100M+ (cost-type). Below those, my pricing office and I work it.",
-  "style": "board-probe",
-  "id": "23a76094f31e"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Types",
-  "q": "Five type-selection factors.",
-  "a": "Requirement definition · estimate confidence · technical risk · competition · accounting system · acquisition history (any five).",
-  "id": "16ab3e99a934"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Types",
-  "q": "The PTA formula.",
-  "a": "PTA = (Ceiling − Target Price) ÷ Gov share + Target Cost.",
-  "id": "14098e56ac12"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Types",
-  "q": "Two gates every cost-type contract must clear.",
-  "a": "Adequate accounting system; D&F.",
-  "id": "27c7b7ae60aa"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Types",
-  "q": "E.O. 14402 justification thresholds — DoD and most agencies.",
-  "a": "DoD $100M; most agencies $10M.",
-  "id": "914312282d4c"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Types",
-  "q": "Walk me through the PTA.",
-  "a": "The point where the ceiling takes over: (ceiling price minus target price) divided by the Government's share, plus target cost. Past it, each cost dollar comes out of profit — the contractor is effectively on FFP from there to the ceiling.",
-  "style": "board-probe",
-  "id": "4a53dd3a86a4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Types",
-  "q": "Why not FFP the development effort — doesn't it protect us?",
-  "a": "A contractor forced to price the unknowable pads the price or fails trying — both cost the Government more. FFP on high-uncertainty work is risk denial, not risk transfer.",
-  "style": "board-probe",
-  "id": "00a3e3b0f091"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Types",
-  "q": "CPFF vs. CPIF in one sentence each?",
-  "a": "CPFF: fee fixed at award regardless of cost outcome — buys effort under uncertainty. CPIF: fee slides with cost performance inside a min/max — buys cost discipline when a credible target exists.",
-  "style": "board-probe",
-  "id": "09238d21878e"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "IDIQ Ordering & Fair Opportunity",
-  "q": "All six fair-opportunity exceptions.",
-  "a": "Urgency · only-one-capable · logical follow-on · minimum guarantee · statute · order-level small business set-aside.",
-  "id": "cbfaf59067d1"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "IDIQ Ordering & Fair Opportunity",
-  "q": "Order-debrief breakpoint? GAO order-protest thresholds?",
-  "a": "$7.5M; $35M DoD / $10M civilian (or scope/period/ceiling growth at any value).",
-  "id": "371dd965aeaf"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "IDIQ Ordering & Fair Opportunity",
-  "q": "What document supports an over-SAT exception, and who approves at $12M?",
-  "a": "A D&A; $12M → Competition Advocate.",
-  "id": "e55b451c54d0"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "IDIQ Ordering & Fair Opportunity",
-  "q": "What makes a follow-on 'logical' enough to use the exception?",
-  "a": "Genuine continuity economics — the original order was competed (or properly excepted), and switching performers mid-stream would cost duplication the Government can't recover. Used sparingly, documented hard, and it weakens every time you stack it.",
-  "style": "board-probe",
-  "id": "7f8ae2a073cc"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "IDIQ Ordering & Fair Opportunity",
-  "q": "A holder complains the last three orders all went to one firm.",
-  "a": "They get the ombudsman, and I get a look in the mirror: consideration has to be real — rotating \"considered but lost\" paperwork isn't fair opportunity.",
-  "style": "board-probe",
-  "id": "411383984316"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "IDIQ Ordering & Fair Opportunity",
-  "q": "Can you set aside an order for small business on a mixed vehicle?",
-  "a": "Yes — order-level set-asides are a recognized exception lane; document the Rule-of-Two logic among holders.",
-  "style": "board-probe",
-  "id": "a84f89841e2d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Options",
-  "q": "The exercise gates, all of them.",
-  "a": "Funds · existing need · most advantageous (fresh market/price look) · not excluded in SAM · performance considered.",
-  "id": "d3ad752c3a10"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Options",
-  "q": "What happens legally if the notice date passes?",
-  "a": "The unilateral right lapses — continuation is bilateral.",
-  "id": "6c5a58ff220f"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Options",
-  "q": "The services duration rail and the extension-clause cap.",
-  "a": "~5 years base+options; 6-month extension cap.",
-  "id": "601bc4a3f51d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Options",
-  "q": "Three situations where you shouldn't use options at all.",
-  "a": "No realistic exercise chance · volatile pricing · full requirement already known and funded.",
-  "id": "b44fe61a6e11"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Options",
-  "q": "Market prices dropped 15% since award. Exercise anyway?",
-  "a": "Only if I can still call the option price the most advantageous path after an informal market check — otherwise the honest answer may be a new competition. The option price was reasonable then; the gate asks about now.",
-  "style": "board-probe",
-  "id": "475b34081f6a"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Options",
-  "q": "You missed the notice window by a week.",
-  "a": "The unilateral right is gone. If continuing is still best, it's a bilateral agreement — negotiated, documented, and the contractor holds leverage. Then I fix the suspense system that let it slip.",
-  "style": "board-probe",
-  "id": "ba30d92e9d08"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Options",
-  "q": "Performance is shaky — exercise and 'manage it'?",
-  "a": "The performance gate exists for exactly this. Options are leverage: a contractor renewed despite flags learns the flags don't matter. Decide with the record, not with inertia.",
-  "style": "board-probe",
-  "id": "f97057872250"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Interagency Acquisitions & the Economy Act",
-  "q": "Direct vs. assisted — the one-sentence difference and the document assisted requires.",
-  "a": "Direct: our CO orders on their vehicle; assisted: their shop buys for us — signed interagency agreement required.",
-  "id": "1a7280063aa0"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Interagency Acquisitions & the Economy Act",
-  "q": "When does the Economy Act apply, and what paperwork rides with it?",
-  "a": "Only absent a more specific authority; MIPR + D&F (Government's interest, not better from private sector).",
-  "id": "03912734ae0e"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Interagency Acquisitions & the Economy Act",
-  "q": "Does sending funds to another agency stop the fiscal clock?",
-  "a": "No — purpose, time, and amount rules travel with the money.",
-  "id": "81c22ad0ff0e"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Interagency Acquisitions & the Economy Act",
-  "q": "Why not just MIPR it and let them worry about it?",
-  "a": "Because accountability doesn't transfer with the money — the requirement, the fiscal rules, and the outcome are still ours. The D&F exists to prove we chose this lane deliberately.",
-  "style": "board-probe",
-  "id": "1c73eb1e13f9"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Interagency Acquisitions & the Economy Act",
-  "q": "Direct vs. assisted — who's the contracting officer?",
-  "a": "Direct: our CO places the order under their contract's terms. Assisted: their CO acts for us under the interagency agreement — which is why that agreement must define roles before a dollar moves.",
-  "style": "board-probe",
-  "id": "d47826054011"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Interagency Acquisitions & the Economy Act",
-  "q": "When is the Economy Act the wrong cite?",
-  "a": "Whenever a more specific authority exists — schedules and GWACs carry their own authority. Citing the Economy Act for a schedule order tells the board you memorized a name, not a framework.",
-  "style": "board-probe",
-  "id": "31fa4c1d65e4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Finance & Fiscal Law",
-  "q": "TPA — say what each letter tests.",
-  "a": "Time = availability + bona fide need; Purpose = appropriated use; Amount = ADA limits.",
-  "id": "865c5b59889b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Finance & Fiscal Law",
-  "q": "Colors and clocks: O&M, RDT&E, procurement.",
-  "a": "1 · 2 · 3 years.",
-  "id": "f811078a5729"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Finance & Fiscal Law",
-  "q": "Severable vs. non-severable funding rules.",
-  "a": "Severable ≤12 months, may cross FYs, current funds; non-severable fully funded up front.",
-  "id": "92137dc41e3b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Finance & Fiscal Law",
-  "q": "LoC vs. LoF — which contract, what notice?",
-  "a": "LoC on fully funded cost contracts, LoF on incremental — ~75% notice.",
-  "id": "206519197f54"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Finance & Fiscal Law",
-  "q": "The financing order of preference.",
-  "a": "Private → customary (PBP preferred) → unusual → advance payments.",
-  "id": "bf3e0d2d35a5"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Finance & Fiscal Law",
-  "q": "The contractor blew past the ceiling without notice and wants more money.",
-  "a": "The limitation clause allocates that risk: no timely notice, no entitlement to overrun funding — the Government may fund, but doesn't have to. Facts first: when did they know, when did they tell.",
-  "style": "board-probe",
-  "id": "0940c9e30eca"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Finance & Fiscal Law",
-  "q": "Why are performance-based payments preferred over progress payments?",
-  "a": "They pay for demonstrated events, not incurred cost — better incentive alignment, recoverable in default, and less administration on costs.",
-  "style": "board-probe",
-  "id": "4786456e7df2"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Finance & Fiscal Law",
-  "q": "Can expired funds pay a claim on an old contract?",
-  "a": "Yes — within their 5-year expired window, for adjustments to obligations properly made when current. After cancellation, no.",
-  "style": "board-probe",
-  "id": "5287299658a9"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Data Rights",
-  "q": "The three funding scenarios and the rights each produces.",
-  "a": "All Government $ → unlimited; mixed → GPR (converting to unlimited after the period); all private $ → limited (tech data)/restricted (software).",
-  "id": "10d9176e0623"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Data Rights",
-  "q": "Who bears the burden of proving a restriction?",
-  "a": "The contractor.",
-  "id": "dc9d63e216de"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Data Rights",
-  "q": "What may the Government do with GPR data?",
-  "a": "Any Government purpose — including competitive reprocurement under protections; no commercial use.",
-  "id": "1897287818e5"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Data Rights",
-  "q": "The challenge sequence, and what you must not do while it runs.",
-  "a": "Written challenge → contractor response (60 days) → CO final decision → appeal; honor the markings until resolved.",
-  "id": "1e541a005b1d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Data Rights",
-  "q": "Deliverables arrived unmarked. What rights do we have?",
-  "a": "Unmarked data delivered under the clause is effectively unrestricted in the Government's hands — but confirm through Legal before acting on it; the honest move is verifying, not pouncing.",
-  "style": "board-probe",
-  "id": "032b56dd9559"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Data Rights",
-  "q": "Can GPR data go to a competitor for the sustainment RFP?",
-  "a": "Yes — Government purposes include competitive reprocurement, with recipients under nondisclosure protections. That's exactly what GPR is for.",
-  "style": "board-probe",
-  "id": "aec2a5f0d5a4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Data Rights",
-  "q": "The contractor says the whole system is proprietary because it 'integrates' their private-expense modules.",
-  "a": "Integration doesn't launder rights — map component by component. Mixed funding at the component level yields component-level rights, and the assertion list has to be that granular.",
-  "style": "board-probe",
-  "id": "d9728d22f03d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Modifications & Scope",
-  "q": "The four scope-test corners.",
-  "a": "Competition anticipation · contract type · period · cumulative cost.",
-  "id": "6a11574a91ff"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Modifications & Scope",
-  "q": "Unilateral vs. bilateral — which actions belong to each?",
-  "a": "Unilateral: admin, in-scope change orders, option exercise; bilateral: substantive negotiated changes.",
-  "id": "9a4b9a27a8a7"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Modifications & Scope",
-  "q": "Define constructive change and cardinal change in one sentence each.",
-  "a": "Constructive: Government conduct changes work without formal direction; cardinal: change so profound it exceeds what was competed — potential breach.",
-  "id": "586079a92783"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Modifications & Scope",
-  "q": "Against what baseline is mod 100 judged?",
-  "a": "The original contract, all mods cumulative.",
-  "id": "9bc383dbae8c"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Modifications & Scope",
-  "q": "Who decides if it's in scope?",
-  "a": "The PCO, with Legal — documented. It's a judgment call with a test, not a vibe: anticipation, type, period, cumulative cost.",
-  "style": "board-probe",
-  "id": "8aa5f01751f6"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Modifications & Scope",
-  "q": "A competitor found out about a big unpublicized mod and complained. Your answer?",
-  "a": "If my scope analysis is in the file and honest, I walk them (and my boss) through it. If the analysis was never done — that's the finding. Publicity follows scope: in-scope mods aren't competed or synopsized; new work is.",
-  "style": "board-probe",
-  "id": "31c163317cef"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Contract Modifications & Scope",
-  "q": "PM directed extra testing verbally; contractor performed. What is that?",
-  "a": "A constructive change candidate — Government conduct changed the work. Contractor asserts its costs; I sort entitlement and get the direction channel fixed (all direction through the PCO).",
-  "style": "board-probe",
-  "id": "6504b5459390"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Government Property",
-  "q": "The default rule and the four-part exception test.",
-  "a": "Contractor furnishes; GFP only if best interest · benefit > burden · no substantial risk increase · not otherwise met — all four.",
-  "id": "0dfb17f96311"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Government Property",
-  "q": "Who writes the GFP justification?",
-  "a": "The requiring activity (PM), to the PCO.",
-  "id": "b28157767da0"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Government Property",
-  "q": "Name three clause functions that ride with the property clause.",
-  "a": "Marking/IUID · loss reporting · property-system administration · disposal (any three).",
-  "id": "3158001b7994"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Government Property",
-  "q": "Consequence of delivering GFP late or faulty?",
-  "a": "Government-caused delay — schedule/equitable-adjustment exposure.",
-  "id": "341dd8c15189"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Government Property",
-  "q": "Contractor reports a Government-furnished test set stolen.",
-  "a": "The loss-reporting clause machinery runs: report, investigate, determine liability under the risk allocation, and adjust the property record — with the property administrator carrying the process.",
-  "style": "board-probe",
-  "id": "d65fd276392a"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Government Property",
-  "q": "Why not furnish property freely if it lowers proposed prices?",
-  "a": "Because price isn't the only ledger: administration, risk shift, and Government performance obligations all cost. The four-part test is that ledger.",
-  "style": "board-probe",
-  "id": "6ca80abcd3f9"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Government Property",
-  "q": "When is no justification needed?",
-  "a": "Property furnished for repair/modification/overhaul work — the property is the requirement there.",
-  "style": "board-probe",
-  "id": "73f5d430e209"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Undefinitized Contract Actions",
-  "q": "The obligation caps, before and after the qualifying proposal.",
-  "a": "50% of NTE before; 75% after.",
-  "id": "a3f545156ece"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Undefinitized Contract Actions",
-  "q": "The definitization clock and its other trigger.",
-  "a": "180 days from qualifying proposal; also when obligations reach the caps.",
-  "id": "2681c1606b97"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Undefinitized Contract Actions",
-  "q": "Two reasons that never justify a UCA.",
-  "a": "Lack of planning; administrative convenience.",
-  "id": "9da327c97058"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Undefinitized Contract Actions",
-  "q": "UCO vs. UCA in one sentence.",
-  "a": "UCO = unpriced unilateral change within an existing contract's scope; UCA = new undefinitized contract action.",
-  "id": "1ea9123b0f07"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Undefinitized Contract Actions",
-  "q": "The contractor is slow-rolling the qualifying proposal. Why might that be?",
-  "a": "Every month undefinitized is a month of cost-reimbursement-like comfort at negotiation leverage. My tools: the obligation caps bite, progress-payment posture tightens, and the definitization schedule is a contract term — enforce it.",
-  "style": "board-probe",
-  "id": "1a7f42afd631"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Undefinitized Contract Actions",
-  "q": "Why does fee usually come down at definitization?",
-  "a": "Weighted guidelines price risk. With actuals on the books, the cost risk the fee would have paid for has partly evaporated — fee follows the remaining risk, not the original unknowns.",
-  "style": "board-probe",
-  "id": "8cb02d32afa8"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Undefinitized Contract Actions",
-  "q": "Do UCAs need clearance? A J&A?",
-  "a": "Clearance at definitization (award-stage clearance isn't the gate). And the circumstances driving a UCA usually drive a Part 6 exception too — urgency or one-source — so the J&A rides in parallel.",
-  "style": "board-probe",
-  "id": "5ec5181c0dc4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Clearance — Independent Review & Approval",
-  "q": "Business vs. contract clearance — what each approves.",
-  "a": "Business = release the solicitation / open negotiations; contract = the award/negotiated result.",
-  "id": "228ce47e2920"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Clearance — Independent Review & Approval",
-  "q": "Why must the reviewer be independent?",
-  "a": "The selector can't approve the selection — independent senior review before commitment.",
-  "id": "75e3e1529066"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Clearance — Independent Review & Approval",
-  "q": "When does a UCA clear?",
-  "a": "At definitization.",
-  "id": "9bc237c6018b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Clearance — Independent Review & Approval",
-  "q": "Why two clearances instead of one?",
-  "a": "Because a sound strategy can still yield a bad deal, and a good deal can implement an unapproved strategy — the gates catch different failures.",
-  "style": "board-probe",
-  "id": "6094599fbe8c"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Clearance — Independent Review & Approval",
-  "q": "What does the clearance authority actually check?",
-  "a": "That the action implements the approved strategy · the price/result is fair and reasonable and supported · the file complies — statute, regulation, policy — before the Government commits.",
-  "style": "board-probe",
-  "id": "dab112eccc73"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Clearance — Independent Review & Approval",
-  "q": "Clearance said no. Now?",
-  "a": "Fix what they flagged — position, support, or strategy — and return. Clearance friction is cheaper than any failure it prevents; treat the authority as a teammate with veto power.",
-  "style": "board-probe",
-  "id": "0f9e4ecf763b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Protests",
-  "q": "The post-award stay rule, precisely.",
-  "a": "Stay if filed within 10 days of award or 5 days of the required debrief, whichever is later.",
-  "id": "8b9c7e3d137c"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Protests",
-  "q": "Three venues and one distinguishing feature each.",
-  "a": "Agency — fastest/self-correcting; GAO — 100-day, automatic stay; COFC — binding, injunction instead of stay.",
-  "id": "1780c6714f52"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Protests",
-  "q": "Who authorizes an override, and on what two bases?",
-  "a": "HCA, written: urgent & compelling circumstances, or best interests of the United States.",
-  "id": "947a8f844e14"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Protests",
-  "q": "Task-order protest thresholds.",
-  "a": "$35M DoD / $10M civilian, or scope/period/ceiling growth at any value.",
-  "id": "4fdb9f60ae5d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Protests",
-  "q": "Protest filed on day 9 after award, but the debrief was never requested. Stay?",
-  "a": "Day 9 is inside the 10-day award window — stay applies. The 5-day debrief branch only substitutes when a required debrief was requested and given later.",
-  "style": "board-probe",
-  "id": "6e8893851cd4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Protests",
-  "q": "GAO recommendations are 'advisory' — so ignore one?",
-  "a": "Legally advisory, practically followed — non-compliance is reported to Congress and torches agency credibility. Treat a sustain as a to-do list with a deadline.",
-  "style": "board-probe",
-  "id": "18e23264741c"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Protests",
-  "q": "How do you protest-proof a source selection?",
-  "a": "You don't — you record-proof it: criteria stated and followed, evaluations contemporaneous and even-handed, meaningful discussions, an SSDD with real comparative reasoning, and a debrief that answers questions instead of provoking them.",
-  "style": "board-probe",
-  "id": "0a27e0de658c"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "REAs & Claims",
-  "q": "Four differences between an REA and a claim.",
-  "a": "Interest (claim only) · decision deadlines (claim) · prep costs (allowable REA / unallowable claim) · formality-certification.",
-  "id": "44ae24d63ca8"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "REAs & Claims",
-  "q": "Claim certification threshold and the accrual limit.",
-  "a": "$100K; 6 years from accrual.",
-  "id": "150d636afcc2"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "REAs & Claims",
-  "q": "What is a deemed denial, and what does it start?",
-  "a": "CO silence past the decision deadline operates as denial — the appeal clock starts.",
-  "id": "48a719c5e4a9"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "REAs & Claims",
-  "q": "The two appeal routes and their clocks.",
-  "a": "Board of Contract Appeals, 90 days; COFC, 12 months.",
-  "id": "75398b17ddc6"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "REAs & Claims",
-  "q": "The contractor titled it 'REA' but demands a sum certain, certified, 'decision requested.'",
-  "a": "Substance over label — that's functionally a claim, and the CDA machinery (interest, deadlines) may already be running. Classify with Legal, fast.",
-  "style": "board-probe",
-  "id": "b98328fb0570"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "REAs & Claims",
-  "q": "Why would a contractor choose the REA lane at all?",
-  "a": "Relationship preservation, allowable prep costs, speed, and settlement flexibility — the claim lane is leverage, but it burns goodwill and time.",
-  "style": "board-probe",
-  "id": "581360f06c10"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "REAs & Claims",
-  "q": "What must a differing-site-conditions recovery show first?",
-  "a": "Notice — the clause requires prompt written notice before conditions are disturbed, so the Government can investigate. No notice, weakened recovery.",
-  "style": "board-probe",
-  "id": "6f4312b0e4da"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Terminations",
-  "q": "T4C settlement contents — and the profit rule.",
-  "a": "Costs incurred + reasonable profit on work performed + settlement expenses; no anticipatory profit.",
-  "id": "c8626d42c415"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Terminations",
-  "q": "The T4D runway, in order.",
-  "a": "Cure notice → show cause → excusability analysis → T4D notice as final decision.",
-  "id": "05859e980773"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Terminations",
-  "q": "Three classic excusable causes.",
-  "a": "Acts of God · sovereign/Government acts · fires/epidemics/similar events beyond control without fault.",
-  "id": "83222d5bfd4d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Terminations",
-  "q": "What happens to a T4D later found wrongful?",
-  "a": "Converts to a T4C — settlement owed instead of costs recovered.",
-  "id": "448ba74b0aca"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Terminations",
-  "q": "What does the contractor get in a T4C settlement?",
-  "a": "Costs incurred on the terminated work, reasonable profit on what was done, and settlement expenses — not the profit they hoped to earn on work never performed.",
-  "style": "board-probe",
-  "id": "47b904708b93"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Terminations",
-  "q": "You defaulted them; the board later finds the failure excusable. Now?",
-  "a": "The T4D converts to a T4C — with the Government paying settlement instead of collecting reprocurement costs. That's why the excusability record precedes the notice.",
-  "style": "board-probe",
-  "id": "dc324798e91b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Terminations",
-  "q": "When would you skip the cure notice?",
-  "a": "A pure failure to deliver on time — the schedule was the cure period. But when facts are mixed, send it; a needless cure notice costs ten days, a missing one can cost the termination.",
-  "style": "board-probe",
-  "id": "2112ab63ad7b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "R&D Contracting — BAAs, SBIR & OTs",
-  "q": "What makes BAA evaluation lawful competition?",
-  "a": "Public announcement + stated criteria + independent scientific merit review — selection against the standard, not between offerors.",
-  "id": "b1cc73cb77fe"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "R&D Contracting — BAAs, SBIR & OTs",
-  "q": "The three SBIR phases and Phase III's special property.",
-  "a": "I feasibility · II prototype · III production — no cap, sole-source eligible off competed early phases, SBIR rights persist.",
-  "id": "5088aa5be62d"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "R&D Contracting — BAAs, SBIR & OTs",
-  "q": "Two honest reasons to choose an OT — and one dishonest one.",
-  "a": "Honest: nontraditional participation; terms flexibility a prototype genuinely needs. Dishonest: \"skipping the rules.\".",
-  "id": "c7271e26f78b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "R&D Contracting — BAAs, SBIR & OTs",
-  "q": "How is funding one BAA proposal 'competition' without comparing proposals?",
-  "a": "The BAA is a recognized competitive procedure: broad public announcement, stated criteria, independent merit review. The market competed by proposing; selection is merit against the standard, not against each other.",
-  "style": "board-probe",
-  "id": "b500c514c03b"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "R&D Contracting — BAAs, SBIR & OTs",
-  "q": "Phase III SBIR sole source — really no J&A?",
-  "a": "The statutory program carries it when the work derives from competed Phase I/II — that's the authorized-by- statute lane. Document the derivation.",
-  "style": "board-probe",
-  "id": "7c66b5157704"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "R&D Contracting — BAAs, SBIR & OTs",
-  "q": "When would you steer away from an OT?",
-  "a": "Traditional performers, well-understood requirements, or when the flexibilities aren't actually needed — OTs trade a mature protections framework for agility; spend that trade only when it buys something.",
-  "style": "board-probe",
-  "id": "b3c52e3b00a7"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Construction & Service Contracting",
-  "q": "The two Miller-Act-style bonds and whom each protects.",
-  "a": "Performance bond — the Government's work; payment bond — subs/suppliers who can't lien Government property.",
-  "id": "aabfa1cb40d8"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Construction & Service Contracting",
-  "q": "The differing-site-conditions notice rule and its reason.",
-  "a": "Written notice before disturbing the condition, so the Government can investigate.",
-  "id": "2af78ede4e1a"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Construction & Service Contracting",
-  "q": "The personal-services test in one sentence.",
-  "a": "Continuous Government supervision of contractor employees creates an employer-employee relationship — unlawful absent specific authority.",
-  "id": "5f664e95e8b3"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Construction & Service Contracting",
-  "q": "PBA's required elements.",
-  "a": "PWS (or SOO) · measurable standards · QASP · incentives where appropriate.",
-  "id": "f5668d4fac43"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Construction & Service Contracting",
-  "q": "Why can't you pick the A&E firm on price like everything else?",
-  "a": "Statutory design: qualifications-based selection, then negotiate a fair price with the most qualified — design quality drives lifecycle cost far more than design fee does.",
-  "style": "board-probe",
-  "id": "060e325f1be2"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Construction & Service Contracting",
-  "q": "What's the difference between a PWS and a SOO?",
-  "a": "PWS: the Government defines outcomes and standards. SOO: the Government states objectives and offerors propose their own PWS — competition on approach, with the winning PWS becoming the yardstick.",
-  "style": "board-probe",
-  "id": "0f741a1992a4"
- },
- {
-  "type": "recall",
-  "level": "advanced",
-  "topic": "Construction & Service Contracting",
-  "q": "The COR is assigning daily tasks to contractor staff 'for efficiency.'",
-  "a": "That's the personal-services drift in action — direction flows to the contractor's manager against PWS outcomes. Fix the practice, retrain the COR, and check whether the PWS invites it.",
-  "style": "board-probe",
-  "id": "65de9d8587af"
- }
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Acquisition Planning & Strategy",
+    "q": "Five factors in the competitive-vs-sole-source call.",
+    "a": "Data rights sufficiency · switching/qualification costs · industrial base capability · honest urgency · second-source economics.",
+    "id": "935ffc933d7a"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Acquisition Planning & Strategy",
+    "q": "What inventory precedes a sustainment competition decision?",
+    "a": "Data rights, deliverables (source/build/interfaces), GFP/tooling, licenses, funding.",
+    "id": "d0361b53188e"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Acquisition Planning & Strategy",
+    "q": "What can never justify a bridge?",
+    "a": "Lack of advance planning.",
+    "id": "33042bd006cf"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Acquisition Planning & Strategy",
+    "q": "What factors drive competitive vs. sole-source for the follow-on?",
+    "a": "Data rights and technical data sufficiency · qualification/switching costs and time · industrial base capability · urgency honestly assessed · lifecycle economics of a second source. Facts on each, in the file.",
+    "style": "board-probe",
+    "id": "053cbeea5e42"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Acquisition Planning & Strategy",
+    "q": "How do you find out if other sources can perform?",
+    "a": "Fresh sources-sought and RFIs · industry days · capability analysis against the tech data package · other services'/agencies' experience with similar builds.",
+    "style": "board-probe",
+    "id": "079022ee3f6d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Acquisition Planning & Strategy",
+    "q": "And if truly no one else can?",
+    "a": "RFO 6.103-1, one responsible source — with the J&A at the right approval tier and market research that would survive a competitor's lawyer reading it.",
+    "style": "board-probe",
+    "id": "abce5003908c"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Authority, Unauthorized Commitments & Ratification",
+    "q": "Three types of authority — which one binds nothing?",
+    "a": "Express, implied, apparent — apparent binds nothing.",
+    "id": "27b9ce4d2c0e"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Authority, Unauthorized Commitments & Ratification",
+    "q": "All six ratification elements.",
+    "a": "Proper-if-CO · benefit · ratifier's actual authority · fair & reasonable price · funds then and now · Legal.",
+    "id": "88dd62fee9f3"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Authority, Unauthorized Commitments & Ratification",
+    "q": "Who ratifies a $500K unauthorized commitment? A $90K one?",
+    "a": "$500K → HCA (delegable); $90K → COCO.",
+    "id": "e982f0457dbb"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Authority, Unauthorized Commitments & Ratification",
+    "q": "Five elements of a valid contract.",
+    "a": "Offer/acceptance · consideration · competency · legality · certainty of terms.",
+    "id": "2949d2327e73"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Authority, Unauthorized Commitments & Ratification",
+    "q": "What if the Government received no benefit?",
+    "a": "Then it can't be ratified — a ratification requires acceptance or benefit. The contractor's remedy shifts to a claim (or quantum meruit through Legal); my job is the documented record either way.",
+    "style": "board-probe",
+    "id": "355276c46d67"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Authority, Unauthorized Commitments & Ratification",
+    "q": "The person who did it refuses to write a statement.",
+    "a": "Document the refusal, reconstruct the facts from correspondence and witnesses, and proceed — the package needs the story, and the refusal itself goes in the record.",
+    "style": "board-probe",
+    "id": "5b24c7798b4a"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Authority, Unauthorized Commitments & Ratification",
+    "q": "Is implied authority real authority?",
+    "a": "Yes — authority reasonably inferred from a position's duties is legally valid. Apparent authority is the trap: looking authorized isn't being authorized.",
+    "style": "board-probe",
+    "id": "70fbb68e0e19"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Procurement Integrity",
+    "q": "Two categories of protected information under RFO 3.104.",
+    "a": "Source selection information; contractor bid/proposal data.",
+    "id": "0998b7e6e642"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Procurement Integrity",
+    "q": "Your first two containment actions on a bad disclosure.",
+    "a": "Legal immediately; identify/contain — recipient deletes with signed confirmation.",
+    "id": "322937e75d22"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Procurement Integrity",
+    "q": "Where does the decision go if the disclosure impacts the procurement?",
+    "a": "The HCA.",
+    "id": "25228f00090d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Procurement Integrity",
+    "q": "Name three prevention practices you'd brief a new source selection team.",
+    "a": "Two-person review before release · encryption with separate passwords · disable auto-complete · SSI cover sheets (any three).",
+    "id": "c28f28ca63f2"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Procurement Integrity",
+    "q": "The recipient says she deleted it — done?",
+    "a": "Not on her word: signed affidavit confirming deletion of all copies, and the determination still has to be written. The record closes it, not the reply email.",
+    "style": "board-probe",
+    "id": "f78b31102ae4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Procurement Integrity",
+    "q": "What if it went to an actual offeror?",
+    "a": "That's the high-impact branch: presumptive taint of the competition. HCA decision territory — disqualification or cancellation are on the table, with Legal driving.",
+    "style": "board-probe",
+    "id": "99d0a01bede1"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Procurement Integrity",
+    "q": "A contractor employee asks your evaluator how the ratings look — violation?",
+    "a": "Attempting to obtain source selection information is itself a PIA problem. Document it, report it, brief the team — silence is how small probes become disclosures.",
+    "style": "board-probe",
+    "id": "f46f3249feba"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Organizational Conflict of Interest",
+    "q": "The three OCI types — and which is hardest to mitigate?",
+    "a": "Biased ground rules (hardest) · unequal access · impaired objectivity.",
+    "id": "9602ba9c7412"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Organizational Conflict of Interest",
+    "q": "The three handling tools, in order of preference.",
+    "a": "Avoid · neutralize · mitigate.",
+    "id": "b25c39993384"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Organizational Conflict of Interest",
+    "q": "Who approves an OCI waiver, and is it delegable?",
+    "a": "HCA; non-delegable.",
+    "id": "491f47d224e6"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Organizational Conflict of Interest",
+    "q": "True or false: unequal access requires showing the contractor acted on the information.",
+    "a": "False — the access imbalance itself is the conflict.",
+    "id": "57ce0f1a8517"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Organizational Conflict of Interest",
+    "q": "Which type is hardest to mitigate and why?",
+    "a": "Biased ground rules — once the requirement itself is shaped, a firewall can't un-shape it. Exclusion is the usual outcome.",
+    "style": "board-probe",
+    "id": "74433b82312d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Organizational Conflict of Interest",
+    "q": "The contractor firewall says the proposal team never saw anything. Enough?",
+    "a": "A firewall can address unequal access going forward — it does nothing for ground rules already written. Type drives remedy.",
+    "style": "board-probe",
+    "id": "735bd0bd5fe4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Organizational Conflict of Interest",
+    "q": "Who has final say on the mitigation plan?",
+    "a": "The PCO. Panels and reviewers advise; the decision and the accountability are mine.",
+    "style": "board-probe",
+    "id": "ec763e1449e6"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contractor Qualifications — Responsibility",
+    "q": "Recite the seven responsibility standards.",
+    "a": "Finances · schedule · performance · integrity · organization/experience/controls · equipment/facilities · qualified & eligible.",
+    "id": "d146eee4b073"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contractor Qualifications — Responsibility",
+    "q": "Which two system checks precede award, and at what threshold does the second apply?",
+    "a": "SAM exclusions always; FAPIIS over SAT ($350K).",
+    "id": "00c9dd64b727"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contractor Qualifications — Responsibility",
+    "q": "What happens when a small business is found non-responsible?",
+    "a": "Referral to SBA — a CoC conclusively establishes responsibility.",
+    "id": "97fe9fa8f578"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contractor Qualifications — Responsibility",
+    "q": "Doubt about capability cuts in whose favor?",
+    "a": "The Government's — doubt means no.",
+    "id": "389e9eb3be11"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contractor Qualifications — Responsibility",
+    "q": "SBA issues the CoC but you still think they'll fail. Now what?",
+    "a": "A CoC is conclusive as to responsibility — I award, then protect the Government with administration: a solid QASP, milestone surveillance, and early engagement at the first sign of trouble. (Appeal paths exist in a dollar band — worked with Legal and SBA, not solo.)",
+    "style": "board-probe",
+    "id": "f5625f2376c1"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contractor Qualifications — Responsibility",
+    "q": "Can you use responsibility to screen out a contractor you distrust?",
+    "a": "Only on the standards, only on facts. Distrust without documentation is how a defensible \"no\" becomes a sustained protest.",
+    "style": "board-probe",
+    "id": "9a68017198a8"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contractor Qualifications — Responsibility",
+    "q": "What's the difference between non-responsible and ineligible?",
+    "a": "Ineligible = excluded (SAM/debarment) — no award, period. Non-responsible = fails the standards for this award, on today's facts.",
+    "style": "board-probe",
+    "id": "1e37736760b9"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Market Research",
+    "q": "Four questions market research must answer.",
+    "a": "Capable sources · commercial or not · small business capability · industry practices (also: bundling justified?).",
+    "id": "5fec57ac3832"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Market Research",
+    "q": "How long is research treated as current?",
+    "a": "18 months.",
+    "id": "602833ee075f"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Market Research",
+    "q": "Name five research methods.",
+    "a": "Sources sought · RFI · industry day · SME/vendor engagement · prior-buy history · catalogs (any five).",
+    "id": "e5a6fa168f8b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Market Research",
+    "q": "What document downstream decisions cite — and what happens if it was never written?",
+    "a": "The market research report; undocumented research can't support the J&A/set-aside/CID that relies on it.",
+    "id": "f4ad30db7f45"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Market Research",
+    "q": "Your sources-sought got one response. Sole source it?",
+    "a": "One response to one notice isn't market absence — it's a data point. Widen the net (direct outreach, industry channels, adjacent NAICS) before concluding only one source exists; the J&A will be judged on the effort.",
+    "style": "board-probe",
+    "id": "fec7186d421c"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Market Research",
+    "q": "How is market research different from a competition requirement?",
+    "a": "Research is the evidence; competition is the decision. Research tells me whether the Rule of Two is met, whether full-and-open is realistic, whether commercial procedures fit — it doesn't replace any of them.",
+    "style": "board-probe",
+    "id": "d98f94d84eac"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Market Research",
+    "q": "The PM wrote the spec around Vendor X's product. Fix it with research?",
+    "a": "Backwards — research should shape the requirement, not justify it after the fact. I'd push for a performance-based restatement and use the research to show what the market can actually deliver.",
+    "style": "board-probe",
+    "id": "9364dd1a8da7"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Required Sources of Supplies & Services",
+    "q": "The supplies priority order, top to bottom.",
+    "a": "Inventory → excess → UNICOR → AbilityOne → wholesale → mandatory FSS → commercial.",
+    "id": "094a9da4d668"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Required Sources of Supplies & Services",
+    "q": "What leads the services ladder?",
+    "a": "AbilityOne.",
+    "id": "3b8d75841b8f"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Required Sources of Supplies & Services",
+    "q": "On an FSS order, who determines the order price fair and reasonable?",
+    "a": "The ordering contracting officer — GSA's schedule pricing doesn't substitute.",
+    "id": "f923c906e0d0"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Required Sources of Supplies & Services",
+    "q": "The AbilityOne item is pricier than the commercial one. Buy commercial?",
+    "a": "Mandatory means mandatory — if the item is on the procurement list and meets the need, price alone doesn't unlock the open market. Work fit/availability issues through the program, on the record.",
+    "style": "board-probe",
+    "id": "94b92b91c879"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Required Sources of Supplies & Services",
+    "q": "Why isn't a schedule buy automatically fair and reasonable?",
+    "a": "Because GSA negotiated a ceiling across the government, not my quantity, configuration, or competitive moment. Comparing quotes among holders and asking for discounts is the ordering CO's job.",
+    "style": "board-probe",
+    "id": "f355210cde61"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Commercial Products & Services",
+    "q": "The commercial definition in one sentence, including the mod rule.",
+    "a": "Sold/leased/licensed to the general public (or evolved and available in time), including minor mods that don't alter form, fit, or function.",
+    "id": "fa14b528a799"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Commercial Products & Services",
+    "q": "CID: at what threshold is it written, and who approves it?",
+    "a": "Over SAT ($350K); one level above the CO.",
+    "id": "fe82a9fce34d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Commercial Products & Services",
+    "q": "Streamlined commercial procedures — cite and ceiling?",
+    "a": "RFO 12.201-1; $9M.",
+    "id": "5a3c40a9312a"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Commercial Products & Services",
+    "q": "Name two things Part 12 gives you and two things it takes away.",
+    "a": "Gets: no certified data, streamlined terms/FFP preference. Takes: only customary market data rights; Part 49 termination machinery.",
+    "id": "49c3619626fe"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Commercial Products & Services",
+    "q": "How do you price it fair and reasonable without cost data?",
+    "a": "Market evidence: competition first, then catalog/published prices, sales history to other customers, parametric comparisons — and I can require data other than certified where the market evidence is thin.",
+    "style": "board-probe",
+    "id": "dae423615094"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Commercial Products & Services",
+    "q": "The mod adds an encrypted military datalink. Still minor?",
+    "a": "Test it against form, fit, and function of the base item — a modification that changes what the item fundamentally is or does takes you out of \"minor.\" That's a facts-and-engineering call, documented in the CID.",
+    "style": "board-probe",
+    "id": "6e762e558b4b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Commercial Products & Services",
+    "q": "Termination for cause vs. T4D?",
+    "a": "Commercial contracts use the commercial clause's cause/convenience framework — Part 49's default machinery (cure notices per 49.x, excess reprocurement) doesn't apply as such. Chain warning: boards love this seam.",
+    "style": "board-probe",
+    "id": "b80033fbefef"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Simplified Acquisition Procedures",
+    "q": "The three SAP lanes and their dollar boundaries.",
+    "a": "GPC ≤$15K · POs $15K–$350K · BPAs for repetitive needs.",
+    "id": "34673e1efe8e"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Simplified Acquisition Procedures",
+    "q": "Who is the MPT-to-SAT band reserved for?",
+    "a": "Small business, unless capable small sources can't be found.",
+    "id": "8b949db1e574"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Simplified Acquisition Procedures",
+    "q": "What documentation does an under-SAT sole source need?",
+    "a": "A documented single-source rationale + price reasonableness — no formal J&A.",
+    "id": "03458c10c23f"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Simplified Acquisition Procedures",
+    "q": "Commercial streamlined ceiling and cite?",
+    "a": "$9M · RFO 12.201-1.",
+    "id": "3ad36f49ee18"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Simplified Acquisition Procedures",
+    "q": "Why not spread the tool-crib buy across three GPC swipes?",
+    "a": "That's splitting a known requirement to evade the MPT — a bright-line violation. One $210K requirement is one purchase-order action with small business first.",
+    "style": "board-probe",
+    "id": "2c3a46f79aaf"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Simplified Acquisition Procedures",
+    "q": "BPA vs. IDIQ — when does the small path stop fitting?",
+    "a": "A BPA is an account, not a contract — no obligation until a call. When needs get big, defined, and multi-year, the structure (and the money) belongs in a real vehicle.",
+    "style": "board-probe",
+    "id": "9a7d7ce960be"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Simplified Acquisition Procedures",
+    "q": "One quote came back on your $80K buy — award?",
+    "a": "I can, if I can call the price fair and reasonable — compare to history, catalogs, IGCE, and document it. Reasonableness rides on evidence, not on the count of quotes.",
+    "style": "board-probe",
+    "id": "754298487c89"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Small Business Programs",
+    "q": "State the Rule of Two precisely.",
+    "a": "Reasonable expectation of two or more capable small businesses submitting offers at fair market prices → set aside.",
+    "id": "f67eaf0a98e1"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Small Business Programs",
+    "q": "Sole-source ceilings: HUBZone other? SDVOSB other? 8(a) DoD?",
+    "a": "$5.5M · $5M · $100M (no J&A).",
+    "id": "b23a98ab7ac6"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Small Business Programs",
+    "q": "What form documents specialist coordination?",
+    "a": "DD Form 2579.",
+    "id": "91821da14882"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Small Business Programs",
+    "q": "Subcontracting plan thresholds?",
+    "a": "$900K; $2M construction.",
+    "id": "7217434521d2"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Small Business Programs",
+    "q": "Only one small business responds to your set-aside — now what?",
+    "a": "If the offer is fair-market priced, award — the Rule of Two tests the expectation, not the final count. Document what changed between research and offers.",
+    "style": "board-probe",
+    "id": "fdfcedccde23"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Small Business Programs",
+    "q": "The requirement's been in the 8(a) program — can you compete it full-and-open now?",
+    "a": "Not unilaterally: once in 8(a), it stays unless SBA agrees to release it. That's the follow-on trap on 8(a) requirements.",
+    "style": "board-probe",
+    "id": "1658ed2fe51a"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Small Business Programs",
+    "q": "When does 8(a) sole source need a J&A?",
+    "a": "DoD: not below $100M. The program's statutory basis covers it — that's the 'authorized by statute' lane.",
+    "style": "board-probe",
+    "id": "f10497ad0ee0"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Competition (CICA)",
+    "q": "Recite the four SAMO carve-outs.",
+    "a": "SAP · statute · in-scope mods · orders under existing vehicles.",
+    "id": "a78f420d29c1"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Competition (CICA)",
+    "q": "Name all seven RFO 6.103 exceptions, in any order.",
+    "a": "One source · urgency · industrial mobilization/R&D · international agreement · statute · national security · public interest.",
+    "id": "8575184a4e67"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Competition (CICA)",
+    "q": "Your J&A is $18M — who approves? $95M (DoD)? $160M (DoD)?",
+    "a": "$18M → Competition Advocate; $95M DoD → HPA/PEO (DoD line is $150M); $160M DoD → SPE.",
+    "id": "2406b1119b1b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Competition (CICA)",
+    "q": "How long do you have to post a J&A to SAM.gov after award? After an urgency award?",
+    "a": "14 days; 30 days for urgency.",
+    "id": "c06634e050d7"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Competition (CICA)",
+    "q": "Only one offer came in on your competitive solicitation — now what?",
+    "a": "If the solicitation allowed under 30 days for offers, consult the requiring activity and resolicit for at least 30. If interest was real but only one firm bid, find out why — get feedback, document it, and use it to open the next competition. The award can still be made if the price is fair and reasonable.",
+    "style": "board-probe",
+    "id": "6ca8add7db5e"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Competition (CICA)",
+    "q": "What's the difference between full-and-open after exclusion of sources and other than full-and-open?",
+    "a": "Exclusion still competes — among a deliberately narrowed field (a set-aside is the everyday example). \"Other than\" means one or very few sources under an RFO 6.103 exception.",
+    "style": "board-probe",
+    "id": "fba64c8b4c70"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Competition (CICA)",
+    "q": "Who approves your $40M J&A? …and a $15M one?",
+    "a": "$40M → HPA/PEO. $15M → Competition Advocate. (Know your ladder cold — boards love the second ask.)",
+    "style": "board-probe",
+    "id": "e1ade89aced2"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Competition (CICA)",
+    "q": "The program wants a bridge while the follow-on catches up. Fine?",
+    "a": "Only for a genuinely unforeseen cause — a protest, a directed strategy change, a regulatory change. \"We didn't plan\" is never a valid basis, and repeat bridges escalate to higher approval each time.",
+    "style": "board-probe",
+    "id": "6e1d02b83f70"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contracting by Negotiation — Source Selection",
+    "q": "The three exchange types and the line between them.",
+    "a": "Clarifications (minor, no revisions) · communications (pre-range) · discussions (post-range, meaningful, all in range).",
+    "id": "3d44b1b923cc"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contracting by Negotiation — Source Selection",
+    "q": "Who evaluates, who decides, who runs the business side?",
+    "a": "SSEB · SSA · PCO.",
+    "id": "ef642dc89894"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contracting by Negotiation — Source Selection",
+    "q": "When can you award without discussions?",
+    "a": "Solicitation said so and initial proposals support it.",
+    "id": "56466fa2b9dc"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contracting by Negotiation — Source Selection",
+    "q": "What must a post-award debrief include — and exclude?",
+    "a": "Include: evaluated result, significant weaknesses, ranking/rationale. Exclude: other offerors' proposal contents.",
+    "id": "69f57fa773b3"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contracting by Negotiation — Source Selection",
+    "q": "Award without discussions — when is that OK?",
+    "a": "If the solicitation preserved it and the initial proposals support a clean award. On large, complex actions, discussions usually earn their keep — say you'd weigh it, not autopilot it.",
+    "style": "board-probe",
+    "id": "8bba3e5c70c4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contracting by Negotiation — Source Selection",
+    "q": "An evaluator wants to ping an offeror about an ambiguity before the range.",
+    "a": "That's a communication — through me, documented, no proposal revisions. The moment it invites a revision, it's discussions, and discussions have rules.",
+    "style": "board-probe",
+    "id": "5be0fb484cba"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contracting by Negotiation — Source Selection",
+    "q": "Can price be a rating like technical?",
+    "a": "No — cost/price is evaluated (analysis, realism where applicable) but never adjectivally rated. It competes in the tradeoff as a number with analysis behind it.",
+    "style": "board-probe",
+    "id": "a2ba32887821"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contracting by Negotiation — Source Selection",
+    "q": "What makes discussions 'meaningful'?",
+    "a": "Each offeror hears its own significant weaknesses and deficiencies with enough substance to respond — tailored, not generic, and even-handed across the range.",
+    "style": "board-probe",
+    "id": "31ebec1f7357"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "Current certified-data threshold, and the date line that changed it?",
+    "a": "$10M for actions entered after 30 Jun 2026 (FY26 NDAA §1804); $2.5M for earlier contracts and their mods.",
+    "id": "257067de1eaf"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "Recite CLAWM — and where do the exceptions live in the RFO?",
+    "a": "Commercial · Law/regulation · Adequate price competition · Waiver (HCA) · commercial Mods — RFO 15.403-2.",
+    "id": "d097b13b7eac"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "Which analysis is always required? When does cost realism apply?",
+    "a": "Price analysis, always (15.404-1); cost realism on competitive cost-type source selections (15.404-3).",
+    "id": "37a864f423df"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "All five elements of defective pricing.",
+    "a": "Was cost/pricing data · existed pre-agreement · not disclosed · relied upon · increased the price.",
+    "id": "9135a54de3d6"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "CPFF fee ceilings for R&D, most others, A&E.",
+    "a": "15% R&D · 10% most others · 6% A-E under RFO 15.404-9. But for the Army, Navy, and Air Force, R-DFARS 236.202-371 raises A-E to 10% of estimated construction cost — know which one your board is asking about.",
+    "id": "dfb052112b10"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "What's the difference between certified and other-than-certified cost or pricing data?",
+    "a": "The data can be identical — the certificate is the difference. Other-than-certified is what you request to determine price reasonableness when an exception applies; no certificate, no defective-pricing remedy.",
+    "style": "board-probe",
+    "id": "4882451c81b3"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "The contractor did a 'sweep' after agreement and found new data — now what?",
+    "a": "Sweeps are recommended, not required. Before award: incorporate — if the corrected price is lower, adjust down; if higher, the contractor generally eats it unless it's unreasonable, and you may reopen. After award: that's defective pricing — the Government is entitled to a price reduction plus interest; bring in Legal.",
+    "style": "board-probe",
+    "id": "e9eebb79ec77"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "The contractor refuses to provide further support during fact-finding.",
+    "a": "Document exactly what was requested and refused, use DCMA/DCAA to press the field organization, elevate through the contractor's management — and remember I can't award without determining the price fair and reasonable. No data, no deal, and the file shows why.",
+    "style": "board-probe",
+    "id": "bb5d54c6428b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+    "q": "When would you get DCAA vs. DCMA support?",
+    "a": "Field pricing support scales with dollars and type — DCMA forward-pricing rate support around $2.5M+ (fixed-price) / $10M+ (cost-type); DCAA audit at $10M+ (fixed-price) / $100M+ (cost-type). Below those, my pricing office and I work it.",
+    "style": "board-probe",
+    "id": "23a76094f31e"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Types",
+    "q": "Five type-selection factors.",
+    "a": "Requirement definition · estimate confidence · technical risk · competition · accounting system · acquisition history (any five).",
+    "id": "16ab3e99a934"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Types",
+    "q": "The PTA formula.",
+    "a": "PTA = (Ceiling − Target Price) ÷ Gov share + Target Cost.",
+    "id": "14098e56ac12"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Types",
+    "q": "Two gates every cost-type contract must clear.",
+    "a": "Adequate accounting system; D&F.",
+    "id": "27c7b7ae60aa"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Types",
+    "q": "E.O. 14402 justification thresholds — DoD and most agencies.",
+    "a": "DoD $100M; most agencies $10M.",
+    "id": "914312282d4c"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Types",
+    "q": "Walk me through the PTA.",
+    "a": "The point where the ceiling takes over: (ceiling price minus target price) divided by the Government's share, plus target cost. Past it, each cost dollar comes out of profit — the contractor is effectively on FFP from there to the ceiling.",
+    "style": "board-probe",
+    "id": "4a53dd3a86a4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Types",
+    "q": "Why not FFP the development effort — doesn't it protect us?",
+    "a": "A contractor forced to price the unknowable pads the price or fails trying — both cost the Government more. FFP on high-uncertainty work is risk denial, not risk transfer.",
+    "style": "board-probe",
+    "id": "00a3e3b0f091"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Types",
+    "q": "CPFF vs. CPIF in one sentence each?",
+    "a": "CPFF: fee fixed at award regardless of cost outcome — buys effort under uncertainty. CPIF: fee slides with cost performance inside a min/max — buys cost discipline when a credible target exists.",
+    "style": "board-probe",
+    "id": "09238d21878e"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "IDIQ Ordering & Fair Opportunity",
+    "q": "All six fair-opportunity exceptions.",
+    "a": "Urgency · only-one-capable · logical follow-on · minimum guarantee · statute · order-level small business set-aside.",
+    "id": "cbfaf59067d1"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "IDIQ Ordering & Fair Opportunity",
+    "q": "Order-debrief breakpoint? GAO order-protest thresholds?",
+    "a": "$7.5M; $35M DoD / $10M civilian (or scope/period/ceiling growth at any value).",
+    "id": "371dd965aeaf"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "IDIQ Ordering & Fair Opportunity",
+    "q": "What document supports an over-SAT exception, and who approves at $12M?",
+    "a": "A D&A; $12M → Competition Advocate.",
+    "id": "e55b451c54d0"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "IDIQ Ordering & Fair Opportunity",
+    "q": "What makes a follow-on 'logical' enough to use the exception?",
+    "a": "Genuine continuity economics — the original order was competed (or properly excepted), and switching performers mid-stream would cost duplication the Government can't recover. Used sparingly, documented hard, and it weakens every time you stack it.",
+    "style": "board-probe",
+    "id": "7f8ae2a073cc"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "IDIQ Ordering & Fair Opportunity",
+    "q": "A holder complains the last three orders all went to one firm.",
+    "a": "They get the ombudsman, and I get a look in the mirror: consideration has to be real — rotating \"considered but lost\" paperwork isn't fair opportunity.",
+    "style": "board-probe",
+    "id": "411383984316"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "IDIQ Ordering & Fair Opportunity",
+    "q": "Can you set aside an order for small business on a mixed vehicle?",
+    "a": "Yes — order-level set-asides are a recognized exception lane; document the Rule-of-Two logic among holders.",
+    "style": "board-probe",
+    "id": "a84f89841e2d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Options",
+    "q": "The exercise gates, all of them.",
+    "a": "Funds · existing need · most advantageous (fresh market/price look) · not excluded in SAM · performance considered.",
+    "id": "d3ad752c3a10"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Options",
+    "q": "What happens legally if the notice date passes?",
+    "a": "The unilateral right lapses — continuation is bilateral.",
+    "id": "6c5a58ff220f"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Options",
+    "q": "The services duration rail and the extension-clause cap.",
+    "a": "~5 years base+options; 6-month extension cap.",
+    "id": "601bc4a3f51d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Options",
+    "q": "Three situations where you shouldn't use options at all.",
+    "a": "No realistic exercise chance · volatile pricing · full requirement already known and funded.",
+    "id": "b44fe61a6e11"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Options",
+    "q": "Market prices dropped 15% since award. Exercise anyway?",
+    "a": "Only if I can still call the option price the most advantageous path after an informal market check — otherwise the honest answer may be a new competition. The option price was reasonable then; the gate asks about now.",
+    "style": "board-probe",
+    "id": "475b34081f6a"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Options",
+    "q": "You missed the notice window by a week.",
+    "a": "The unilateral right is gone. If continuing is still best, it's a bilateral agreement — negotiated, documented, and the contractor holds leverage. Then I fix the suspense system that let it slip.",
+    "style": "board-probe",
+    "id": "ba30d92e9d08"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Options",
+    "q": "Performance is shaky — exercise and 'manage it'?",
+    "a": "The performance gate exists for exactly this. Options are leverage: a contractor renewed despite flags learns the flags don't matter. Decide with the record, not with inertia.",
+    "style": "board-probe",
+    "id": "f97057872250"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Interagency Acquisitions & the Economy Act",
+    "q": "Direct vs. assisted — the one-sentence difference and the document assisted requires.",
+    "a": "Direct: our CO orders on their vehicle; assisted: their shop buys for us — signed interagency agreement required.",
+    "id": "1a7280063aa0"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Interagency Acquisitions & the Economy Act",
+    "q": "When does the Economy Act apply, and what paperwork rides with it?",
+    "a": "Only absent a more specific authority; MIPR + D&F (Government's interest, not better from private sector).",
+    "id": "03912734ae0e"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Interagency Acquisitions & the Economy Act",
+    "q": "Does sending funds to another agency stop the fiscal clock?",
+    "a": "No — purpose, time, and amount rules travel with the money.",
+    "id": "81c22ad0ff0e"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Interagency Acquisitions & the Economy Act",
+    "q": "Why not just MIPR it and let them worry about it?",
+    "a": "Because accountability doesn't transfer with the money — the requirement, the fiscal rules, and the outcome are still ours. The D&F exists to prove we chose this lane deliberately.",
+    "style": "board-probe",
+    "id": "1c73eb1e13f9"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Interagency Acquisitions & the Economy Act",
+    "q": "Direct vs. assisted — who's the contracting officer?",
+    "a": "Direct: our CO places the order under their contract's terms. Assisted: their CO acts for us under the interagency agreement — which is why that agreement must define roles before a dollar moves.",
+    "style": "board-probe",
+    "id": "d47826054011"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Interagency Acquisitions & the Economy Act",
+    "q": "When is the Economy Act the wrong cite?",
+    "a": "Whenever a more specific authority exists — schedules and GWACs carry their own authority. Citing the Economy Act for a schedule order tells the board you memorized a name, not a framework.",
+    "style": "board-probe",
+    "id": "31fa4c1d65e4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Finance & Fiscal Law",
+    "q": "TPA — say what each letter tests.",
+    "a": "Time = availability + bona fide need; Purpose = appropriated use; Amount = ADA limits.",
+    "id": "865c5b59889b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Finance & Fiscal Law",
+    "q": "Colors and clocks: O&M, RDT&E, procurement.",
+    "a": "1 · 2 · 3 years.",
+    "id": "f811078a5729"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Finance & Fiscal Law",
+    "q": "Severable vs. non-severable funding rules.",
+    "a": "Severable ≤12 months, may cross FYs, current funds; non-severable fully funded up front.",
+    "id": "92137dc41e3b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Finance & Fiscal Law",
+    "q": "LoC vs. LoF — which contract, what notice?",
+    "a": "LoC on fully funded cost contracts, LoF on incremental — ~75% notice.",
+    "id": "206519197f54"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Finance & Fiscal Law",
+    "q": "The financing order of preference.",
+    "a": "Private → customary (PBP preferred) → unusual → advance payments.",
+    "id": "bf3e0d2d35a5"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Finance & Fiscal Law",
+    "q": "The contractor blew past the ceiling without notice and wants more money.",
+    "a": "The limitation clause allocates that risk: no timely notice, no entitlement to overrun funding — the Government may fund, but doesn't have to. Facts first: when did they know, when did they tell.",
+    "style": "board-probe",
+    "id": "0940c9e30eca"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Finance & Fiscal Law",
+    "q": "Why are performance-based payments preferred over progress payments?",
+    "a": "They pay for demonstrated events, not incurred cost — better incentive alignment, recoverable in default, and less administration on costs.",
+    "style": "board-probe",
+    "id": "4786456e7df2"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Finance & Fiscal Law",
+    "q": "Can expired funds pay a claim on an old contract?",
+    "a": "Yes — within their 5-year expired window, for adjustments to obligations properly made when current. After cancellation, no.",
+    "style": "board-probe",
+    "id": "5287299658a9"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Data Rights",
+    "q": "The three funding scenarios and the rights each produces.",
+    "a": "All Government $ → unlimited; mixed → GPR (converting to unlimited after the period); all private $ → limited (tech data)/restricted (software).",
+    "id": "10d9176e0623"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Data Rights",
+    "q": "Who bears the burden of proving a restriction?",
+    "a": "The contractor.",
+    "id": "dc9d63e216de"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Data Rights",
+    "q": "What may the Government do with GPR data?",
+    "a": "Any Government purpose — including competitive reprocurement under protections; no commercial use.",
+    "id": "1897287818e5"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Data Rights",
+    "q": "The challenge sequence, and what you must not do while it runs.",
+    "a": "Written challenge → contractor response (60 days) → CO final decision → appeal; honor the markings until resolved.",
+    "id": "1e541a005b1d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Data Rights",
+    "q": "Deliverables arrived unmarked. What rights do we have?",
+    "a": "Unmarked data delivered under the clause is effectively unrestricted in the Government's hands — but confirm through Legal before acting on it; the honest move is verifying, not pouncing.",
+    "style": "board-probe",
+    "id": "032b56dd9559"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Data Rights",
+    "q": "Can GPR data go to a competitor for the sustainment RFP?",
+    "a": "Yes — Government purposes include competitive reprocurement, with recipients under nondisclosure protections. That's exactly what GPR is for.",
+    "style": "board-probe",
+    "id": "aec2a5f0d5a4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Data Rights",
+    "q": "The contractor says the whole system is proprietary because it 'integrates' their private-expense modules.",
+    "a": "Integration doesn't launder rights — map component by component. Mixed funding at the component level yields component-level rights, and the assertion list has to be that granular.",
+    "style": "board-probe",
+    "id": "d9728d22f03d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Modifications & Scope",
+    "q": "The four scope-test corners.",
+    "a": "Competition anticipation · contract type · period · cumulative cost.",
+    "id": "6a11574a91ff"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Modifications & Scope",
+    "q": "Unilateral vs. bilateral — which actions belong to each?",
+    "a": "Unilateral: admin, in-scope change orders, option exercise; bilateral: substantive negotiated changes.",
+    "id": "9a4b9a27a8a7"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Modifications & Scope",
+    "q": "Define constructive change and cardinal change in one sentence each.",
+    "a": "Constructive: Government conduct changes work without formal direction; cardinal: change so profound it exceeds what was competed — potential breach.",
+    "id": "586079a92783"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Modifications & Scope",
+    "q": "Against what baseline is mod 100 judged?",
+    "a": "The original contract, all mods cumulative.",
+    "id": "9bc383dbae8c"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Modifications & Scope",
+    "q": "Who decides if it's in scope?",
+    "a": "The PCO, with Legal — documented. It's a judgment call with a test, not a vibe: anticipation, type, period, cumulative cost.",
+    "style": "board-probe",
+    "id": "8aa5f01751f6"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Modifications & Scope",
+    "q": "A competitor found out about a big unpublicized mod and complained. Your answer?",
+    "a": "If my scope analysis is in the file and honest, I walk them (and my boss) through it. If the analysis was never done — that's the finding. Publicity follows scope: in-scope mods aren't competed or synopsized; new work is.",
+    "style": "board-probe",
+    "id": "31c163317cef"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Contract Modifications & Scope",
+    "q": "PM directed extra testing verbally; contractor performed. What is that?",
+    "a": "A constructive change candidate — Government conduct changed the work. Contractor asserts its costs; I sort entitlement and get the direction channel fixed (all direction through the PCO).",
+    "style": "board-probe",
+    "id": "6504b5459390"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Government Property",
+    "q": "The default rule and the four-part exception test.",
+    "a": "Contractor furnishes; GFP only if best interest · benefit > burden · no substantial risk increase · not otherwise met — all four.",
+    "id": "0dfb17f96311"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Government Property",
+    "q": "Who writes the GFP justification?",
+    "a": "The requiring activity (PM), to the PCO.",
+    "id": "b28157767da0"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Government Property",
+    "q": "Name three clause functions that ride with the property clause.",
+    "a": "Marking/IUID · loss reporting · property-system administration · disposal (any three).",
+    "id": "3158001b7994"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Government Property",
+    "q": "Consequence of delivering GFP late or faulty?",
+    "a": "Government-caused delay — schedule/equitable-adjustment exposure.",
+    "id": "341dd8c15189"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Government Property",
+    "q": "Contractor reports a Government-furnished test set stolen.",
+    "a": "The loss-reporting clause machinery runs: report, investigate, determine liability under the risk allocation, and adjust the property record — with the property administrator carrying the process.",
+    "style": "board-probe",
+    "id": "d65fd276392a"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Government Property",
+    "q": "Why not furnish property freely if it lowers proposed prices?",
+    "a": "Because price isn't the only ledger: administration, risk shift, and Government performance obligations all cost. The four-part test is that ledger.",
+    "style": "board-probe",
+    "id": "6ca80abcd3f9"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Government Property",
+    "q": "When is no justification needed?",
+    "a": "Property furnished for repair/modification/overhaul work — the property is the requirement there.",
+    "style": "board-probe",
+    "id": "73f5d430e209"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Undefinitized Contract Actions",
+    "q": "The obligation caps, before and after the qualifying proposal.",
+    "a": "50% of NTE before; 75% after.",
+    "id": "a3f545156ece"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Undefinitized Contract Actions",
+    "q": "The definitization clock and its other trigger.",
+    "a": "180 days from qualifying proposal; also when obligations reach the caps.",
+    "id": "2681c1606b97"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Undefinitized Contract Actions",
+    "q": "Two reasons that never justify a UCA.",
+    "a": "Lack of planning; administrative convenience.",
+    "id": "9da327c97058"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Undefinitized Contract Actions",
+    "q": "UCO vs. UCA in one sentence.",
+    "a": "UCO = unpriced unilateral change within an existing contract's scope; UCA = new undefinitized contract action.",
+    "id": "1ea9123b0f07"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Undefinitized Contract Actions",
+    "q": "The contractor is slow-rolling the qualifying proposal. Why might that be?",
+    "a": "Every month undefinitized is a month of cost-reimbursement-like comfort at negotiation leverage. My tools: the obligation caps bite, progress-payment posture tightens, and the definitization schedule is a contract term — enforce it.",
+    "style": "board-probe",
+    "id": "1a7f42afd631"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Undefinitized Contract Actions",
+    "q": "Why does fee usually come down at definitization?",
+    "a": "Weighted guidelines price risk. With actuals on the books, the cost risk the fee would have paid for has partly evaporated — fee follows the remaining risk, not the original unknowns.",
+    "style": "board-probe",
+    "id": "8cb02d32afa8"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Undefinitized Contract Actions",
+    "q": "Do UCAs need clearance? A J&A?",
+    "a": "Clearance at definitization (award-stage clearance isn't the gate). And the circumstances driving a UCA usually drive a Part 6 exception too — urgency or one-source — so the J&A rides in parallel.",
+    "style": "board-probe",
+    "id": "5ec5181c0dc4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Clearance — Independent Review & Approval",
+    "q": "Business vs. contract clearance — what each approves.",
+    "a": "Business = release the solicitation / open negotiations; contract = the award/negotiated result.",
+    "id": "228ce47e2920"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Clearance — Independent Review & Approval",
+    "q": "Why must the reviewer be independent?",
+    "a": "The selector can't approve the selection — independent senior review before commitment.",
+    "id": "75e3e1529066"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Clearance — Independent Review & Approval",
+    "q": "When does a UCA clear?",
+    "a": "At definitization.",
+    "id": "9bc237c6018b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Clearance — Independent Review & Approval",
+    "q": "Why two clearances instead of one?",
+    "a": "Because a sound strategy can still yield a bad deal, and a good deal can implement an unapproved strategy — the gates catch different failures.",
+    "style": "board-probe",
+    "id": "6094599fbe8c"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Clearance — Independent Review & Approval",
+    "q": "What does the clearance authority actually check?",
+    "a": "That the action implements the approved strategy · the price/result is fair and reasonable and supported · the file complies — statute, regulation, policy — before the Government commits.",
+    "style": "board-probe",
+    "id": "dab112eccc73"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Clearance — Independent Review & Approval",
+    "q": "Clearance said no. Now?",
+    "a": "Fix what they flagged — position, support, or strategy — and return. Clearance friction is cheaper than any failure it prevents; treat the authority as a teammate with veto power.",
+    "style": "board-probe",
+    "id": "0f9e4ecf763b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Protests",
+    "q": "The post-award stay rule, precisely.",
+    "a": "Stay if filed within 10 days of award or 5 days of the required debrief, whichever is later.",
+    "id": "8b9c7e3d137c"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Protests",
+    "q": "Three venues and one distinguishing feature each.",
+    "a": "Agency — fastest/self-correcting; GAO — 100-day, automatic stay; COFC — binding, injunction instead of stay.",
+    "id": "1780c6714f52"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Protests",
+    "q": "Who authorizes an override, and on what two bases?",
+    "a": "HCA, written: urgent & compelling circumstances, or best interests of the United States.",
+    "id": "947a8f844e14"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Protests",
+    "q": "Task-order protest thresholds.",
+    "a": "$35M DoD / $10M civilian, or scope/period/ceiling growth at any value.",
+    "id": "4fdb9f60ae5d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Protests",
+    "q": "Protest filed on day 9 after award, but the debrief was never requested. Stay?",
+    "a": "Day 9 is inside the 10-day award window — stay applies. The 5-day debrief branch only substitutes when a required debrief was requested and given later.",
+    "style": "board-probe",
+    "id": "6e8893851cd4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Protests",
+    "q": "GAO recommendations are 'advisory' — so ignore one?",
+    "a": "Legally advisory, practically followed — non-compliance is reported to Congress and torches agency credibility. Treat a sustain as a to-do list with a deadline.",
+    "style": "board-probe",
+    "id": "18e23264741c"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Protests",
+    "q": "How do you protest-proof a source selection?",
+    "a": "You don't — you record-proof it: criteria stated and followed, evaluations contemporaneous and even-handed, meaningful discussions, an SSDD with real comparative reasoning, and a debrief that answers questions instead of provoking them.",
+    "style": "board-probe",
+    "id": "0a27e0de658c"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "REAs & Claims",
+    "q": "Four differences between an REA and a claim.",
+    "a": "Interest (claim only) · decision deadlines (claim) · prep costs (allowable REA / unallowable claim) · formality-certification.",
+    "id": "44ae24d63ca8"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "REAs & Claims",
+    "q": "Claim certification threshold and the accrual limit.",
+    "a": "$100K; 6 years from accrual.",
+    "id": "150d636afcc2"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "REAs & Claims",
+    "q": "What is a deemed denial, and what does it start?",
+    "a": "CO silence past the decision deadline operates as denial — the appeal clock starts.",
+    "id": "48a719c5e4a9"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "REAs & Claims",
+    "q": "The two appeal routes and their clocks.",
+    "a": "Board of Contract Appeals, 90 days; COFC, 12 months.",
+    "id": "75398b17ddc6"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "REAs & Claims",
+    "q": "The contractor titled it 'REA' but demands a sum certain, certified, 'decision requested.'",
+    "a": "Substance over label — that's functionally a claim, and the CDA machinery (interest, deadlines) may already be running. Classify with Legal, fast.",
+    "style": "board-probe",
+    "id": "b98328fb0570"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "REAs & Claims",
+    "q": "Why would a contractor choose the REA lane at all?",
+    "a": "Relationship preservation, allowable prep costs, speed, and settlement flexibility — the claim lane is leverage, but it burns goodwill and time.",
+    "style": "board-probe",
+    "id": "581360f06c10"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "REAs & Claims",
+    "q": "What must a differing-site-conditions recovery show first?",
+    "a": "Notice — the clause requires prompt written notice before conditions are disturbed, so the Government can investigate. No notice, weakened recovery.",
+    "style": "board-probe",
+    "id": "6f4312b0e4da"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Terminations",
+    "q": "T4C settlement contents — and the profit rule.",
+    "a": "Costs incurred + reasonable profit on work performed + settlement expenses; no anticipatory profit.",
+    "id": "c8626d42c415"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Terminations",
+    "q": "The T4D runway, in order.",
+    "a": "Cure notice → show cause → excusability analysis → T4D notice as final decision.",
+    "id": "05859e980773"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Terminations",
+    "q": "Three classic excusable causes.",
+    "a": "Acts of God · sovereign/Government acts · fires/epidemics/similar events beyond control without fault.",
+    "id": "83222d5bfd4d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Terminations",
+    "q": "What happens to a T4D later found wrongful?",
+    "a": "Converts to a T4C — settlement owed instead of costs recovered.",
+    "id": "448ba74b0aca"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Terminations",
+    "q": "What does the contractor get in a T4C settlement?",
+    "a": "Costs incurred on the terminated work, reasonable profit on what was done, and settlement expenses — not the profit they hoped to earn on work never performed.",
+    "style": "board-probe",
+    "id": "47b904708b93"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Terminations",
+    "q": "You defaulted them; the board later finds the failure excusable. Now?",
+    "a": "The T4D converts to a T4C — with the Government paying settlement instead of collecting reprocurement costs. That's why the excusability record precedes the notice.",
+    "style": "board-probe",
+    "id": "dc324798e91b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Terminations",
+    "q": "When would you skip the cure notice?",
+    "a": "A pure failure to deliver on time — the schedule was the cure period. But when facts are mixed, send it; a needless cure notice costs ten days, a missing one can cost the termination.",
+    "style": "board-probe",
+    "id": "2112ab63ad7b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "R&D Contracting — BAAs, SBIR & OTs",
+    "q": "What makes BAA evaluation lawful competition?",
+    "a": "Public announcement + stated criteria + independent scientific merit review — selection against the standard, not between offerors.",
+    "id": "b1cc73cb77fe"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "R&D Contracting — BAAs, SBIR & OTs",
+    "q": "The three SBIR phases and Phase III's special property.",
+    "a": "I feasibility · II prototype · III production — no cap, sole-source eligible off competed early phases, SBIR rights persist.",
+    "id": "5088aa5be62d"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "R&D Contracting — BAAs, SBIR & OTs",
+    "q": "Two honest reasons to choose an OT — and one dishonest one.",
+    "a": "Honest: nontraditional participation; terms flexibility a prototype genuinely needs. Dishonest: \"skipping the rules.\".",
+    "id": "c7271e26f78b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "R&D Contracting — BAAs, SBIR & OTs",
+    "q": "How is funding one BAA proposal 'competition' without comparing proposals?",
+    "a": "The BAA is a recognized competitive procedure: broad public announcement, stated criteria, independent merit review. The market competed by proposing; selection is merit against the standard, not against each other.",
+    "style": "board-probe",
+    "id": "b500c514c03b"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "R&D Contracting — BAAs, SBIR & OTs",
+    "q": "Phase III SBIR sole source — really no J&A?",
+    "a": "The statutory program carries it when the work derives from competed Phase I/II — that's the authorized-by- statute lane. Document the derivation.",
+    "style": "board-probe",
+    "id": "7c66b5157704"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "R&D Contracting — BAAs, SBIR & OTs",
+    "q": "When would you steer away from an OT?",
+    "a": "Traditional performers, well-understood requirements, or when the flexibilities aren't actually needed — OTs trade a mature protections framework for agility; spend that trade only when it buys something.",
+    "style": "board-probe",
+    "id": "b3c52e3b00a7"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Construction & Service Contracting",
+    "q": "The two Miller-Act-style bonds and whom each protects.",
+    "a": "Performance bond — the Government's work; payment bond — subs/suppliers who can't lien Government property.",
+    "id": "aabfa1cb40d8"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Construction & Service Contracting",
+    "q": "The differing-site-conditions notice rule and its reason.",
+    "a": "Written notice before disturbing the condition, so the Government can investigate.",
+    "id": "2af78ede4e1a"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Construction & Service Contracting",
+    "q": "The personal-services test in one sentence.",
+    "a": "Continuous Government supervision of contractor employees creates an employer-employee relationship — unlawful absent specific authority.",
+    "id": "5f664e95e8b3"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Construction & Service Contracting",
+    "q": "PBA's required elements.",
+    "a": "PWS (or SOO) · measurable standards · QASP · incentives where appropriate.",
+    "id": "f5668d4fac43"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Construction & Service Contracting",
+    "q": "Why can't you pick the A&E firm on price like everything else?",
+    "a": "Statutory design: qualifications-based selection, then negotiate a fair price with the most qualified — design quality drives lifecycle cost far more than design fee does.",
+    "style": "board-probe",
+    "id": "060e325f1be2"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Construction & Service Contracting",
+    "q": "What's the difference between a PWS and a SOO?",
+    "a": "PWS: the Government defines outcomes and standards. SOO: the Government states objectives and offerors propose their own PWS — competition on approach, with the winning PWS becoming the yardstick.",
+    "style": "board-probe",
+    "id": "0f741a1992a4"
+  },
+  {
+    "type": "recall",
+    "level": "advanced",
+    "topic": "Construction & Service Contracting",
+    "q": "The COR is assigning daily tasks to contractor staff 'for efficiency.'",
+    "a": "That's the personal-services drift in action — direction flows to the contractor's manager against PWS outcomes. Fix the practice, retrain the COR, and check whether the PWS invites it.",
+    "style": "board-probe",
+    "id": "65de9d8587af"
+  }
 ]
