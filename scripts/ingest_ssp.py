@@ -63,8 +63,17 @@ DOTLEADER = re.compile(r'\.{4,}\s*[\dA-E-]+\s*$')   # Contents / appendix TOC ro
 BLANKPAGE = re.compile(r'^\s*THIS PAGE INTENTIONALLY LEFT BLANK\s*$', re.I)
 ROMAN = re.compile(r'^\s*(i|ii|iii|iv|v)\s*$')
 
-# A table starts at its caption and runs until a numbered paragraph resumes.
-TABLE_CAPTION = re.compile(r'^\s*Table\s+\d[A-B]?\.\s+\S')
+# A table starts at its caption and runs until a numbered paragraph resumes. The caption
+# must be TITLE CASE to the end of the line — the discriminator against wrapped prose that
+# merely opens with a cross-reference: "Table 5. Performance Confidence Assessments Rating
+# Method" is a caption; "Table 5. For those source selections requiring less…" is a sentence
+# ("those" is lowercase) and must reflow as prose, not be held literal. Earlier the loose
+# `\S` after the number matched both and swept one prose sentence into the table region.
+TABLE_CAPTION = re.compile(r'^\s*Table\s+\d+[AB]?\.\s+[A-Z]\S*(?:\s+(?:[A-Z]\S*|and|of|the))*\s*$')
+# The seven captions this document is known to contain; asserted present so a re-ingest of a
+# changed source fails loudly instead of silently mis-flagging.
+EXPECTED_CAPTIONS = {'Table 1', 'Table 2A', 'Table 2B', 'Table 3', 'Table 4', 'Table 5', 'Table 6'}
+CAPTIONS_SEEN = set()   # populated during reflow(), asserted against EXPECTED in main()
 FIGURE_CAPTION = re.compile(r'^\s*Figure\s+\d\.\s+\S')
 PARA_RESUME = re.compile(r'^\s*\d+\.\d+(\.\d+)*\.?\s')
 
@@ -257,6 +266,7 @@ def reflow(lines):
     tbuf = []
     table_words = []          # words that came out of reshaped/held table blocks
     tables_rebuilt = 0
+    captions_seen = CAPTIONS_SEEN   # module-level union across every doc's reflow
     in_table = False
     table_lines = 0
 
@@ -286,6 +296,9 @@ def reflow(lines):
             flush_table()
             in_table = True
             out.append(t)
+            m = re.match(r'^(Table \d+[AB]?)\b', t)
+            if m:
+                captions_seen.add(m.group(1))
             continue
         if in_table:
             # ONLY a numbered paragraph closes a table. An earlier version also broke on
@@ -440,7 +453,15 @@ def main():
     assert len(ids) == len(set(ids)), 'duplicate ids: %s' % [i for i in ids if ids.count(i) > 1][:5]
     assert all(len(d['content'].strip()) > 40 for d in docs), 'a doc came out effectively empty'
 
+    # ASSERTION 4: every known caption was recognized as one. If a source revision renamed
+    # or dropped a table, this fails rather than silently letting the caption reflow as prose.
+    missing_caps = EXPECTED_CAPTIONS - CAPTIONS_SEEN
+    extra_caps = CAPTIONS_SEEN - EXPECTED_CAPTIONS
+    assert not missing_caps, 'expected table caption(s) never matched: %s' % sorted(missing_caps)
+    assert not extra_caps, 'unexpected line matched as a table caption: %s' % sorted(extra_caps)
+
     print('SSP ingest — %d docs' % len(docs))
+    print('  table captions recognized: %s' % ', '.join(sorted(CAPTIONS_SEEN)))
     print('  furniture lines dropped: %d' % len(dropped))
     print('  table/figure lines held literal: %d' % total_tbl)
     print('  word sequence: IDENTICAL to source (%d words)' % len(norm(src_words)))
