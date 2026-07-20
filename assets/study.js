@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=18';
+  var DECK_URL = '/assets/study-deck.json?v=19';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -598,6 +598,12 @@
      only once ?ladder=1 has set S.ladderBeta. The four rungs are legal authority levels —
      all always available, never gated. Ladder ids are globally unique and share the same
      per-card scheduler (grade/cardState) but the pools stay out of recallPool() entirely. */
+  /* KILL SWITCH. Set to false and the ladder disappears for everyone, including people
+     holding the ?ladder=1 link — no other edit required, no deck rebuild, nothing else on
+     /study affected. Flip it, bump the study.js ?v in api/_seo.js and the sw.js cache, push.
+     To remove the feature outright rather than hide it, see docs/WARRANT_LADDER.md. */
+  var LADDER_ENABLED = true;
+
   var RUNGS = [
     { k: 'sat', label: 'SAT · $350K' },
     { k: '5m', label: '$5M' },
@@ -618,8 +624,17 @@
   function ladderCiteHtml(c) { // the point of the feature: the regulation's own words, in the card body
     if (!c.cite || !c.cite.quote) return '';
     var l = c.cite.link;
-    return '<div class="st-lad-quote">“' + esc(c.cite.quote) + '”' +
+    var out = '<div class="st-lad-quote">“' + esc(c.cite.quote) + '”' +
       (l ? ' — <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+    // Where DoD deviates, the deviation is the operative rule for this audience — so it
+    // gets the same treatment as the baseline, not a footnote.
+    var d = c.dod;
+    if (d && d.quote && d.link) {
+      out += '<div class="st-lad-quote st-lad-dod"><span class="st-lad-dod-tag">DoD</span> “' +
+        esc(d.quote) + '” — <a class="st-lad-quote-link" href="' + esc(d.link.u) + '">' +
+        esc(d.link.t) + '</a></div>';
+    }
+    return out;
   }
   function rungStripHtml(sel) {
     return '<div class="st-rungs">' + RUNGS.map(function (r) {
@@ -629,7 +644,7 @@
   }
   function ladderCountLine(pool) { return '<p class="st-lad-count">' + pool.length + ' cards, every one cited to the rulebook.</p>'; }
   function ladderSectionHtml() {
-    if (!S.ladderBeta || !deck.ladder) return '';
+    if (!LADDER_ENABLED || !S.ladderBeta || !deck.ladder) return '';
     var sel = ladderRung();
     return '<h2 class="st-h2">The Warrant Ladder</h2>' +
       '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +

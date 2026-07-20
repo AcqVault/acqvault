@@ -1008,7 +1008,7 @@ function renderStudyPage() {
 .st-lad-ready .st-bar{flex:1}
 .st-lad-ready-lab{flex:none;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .st-lad-quote{margin-top:14px;border-left:3px solid var(--brass);padding:2px 0 2px 14px;font-size:14.5px;line-height:1.65;color:#3d444d}
-.st-lad-quote-link{color:var(--brass-ink);font-weight:700;text-decoration:underline}
+.st-lad-dod{margin-top:10px}.st-lad-dod-tag{display:inline-block;font:700 10px/1.4 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--ink);opacity:.62;margin-right:6px;vertical-align:1px}.st-lad-quote-link{color:var(--brass-ink);font-weight:700;text-decoration:underline}
 .st-lad-sink{margin-top:24px}
 .st-lad-head{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:8px}
 .st-lad-sink-item{font-size:14px;line-height:1.6;color:#2a3140;padding:8px 0;border-top:1px solid var(--line2)}
@@ -1034,7 +1034,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=30"></script>`;
+<script defer src="/assets/study.js?v=31"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

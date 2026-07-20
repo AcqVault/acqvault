@@ -331,6 +331,17 @@ def ladder_gate(items):
         card['cite'] = dict(cite)
         card['cite']['link'] = {'t': ('RFO ' if cite['src'] == 'rfo' else 'R-DFARS ') + cite['sec'],
                                 'u': '/' + cite['src'] + '/part-' + part + '#' + str(frag)}
+        # Carry the DoD deviation through to the runtime. It was being validated and then
+        # dropped, so 58 cards asserted a DoD rule in prose with nothing to click — the
+        # half of the card that matters most to this audience was the unlinked half.
+        _dd = it.get('dod')
+        if isinstance(_dd, dict):
+            _doc = sec_idx.get((_dd['src'], _dd['sec']))
+            _p = str((_doc or {}).get('part') or '').strip()
+            if _doc and _p:
+                card['dod'] = dict(_dd)
+                card['dod']['link'] = {'t': 'R-DFARS ' + _dd['sec'],
+                                       'u': '/' + _dd['src'] + '/part-' + _p + '#' + str(_doc.get('anchor') or _doc['id'])}
         out[it['rung']].append(card)
     _dod_overlay_check(items, fatal=True)
     return out
