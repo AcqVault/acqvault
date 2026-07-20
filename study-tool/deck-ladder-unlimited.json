@@ -4,18 +4,6 @@
       "rung": "unlimited",
       "type": "recall",
       "topic": "Contract Types",
-      "q": "What system of contracting is prohibited outright, and what must every non-firm-fixed-price prime contract do about it at the subcontract level?",
-      "a": "Cost-plus-a-percentage-of-cost. Prime contracts other than firm-fixed-price (including letter contracts) must include a clause prohibiting cost-plus-a-percentage-of-cost subcontracts.",
-      "cite": {
-        "src": "rfo",
-        "sec": "16.101",
-        "quote": "The cost-plus-a-percentage-of-cost system of contracting must not be used (see 10 U.S.C. 3322(a) and 41 U.S.C. 3905(a)). Prime contracts (including letter contracts) other than firm-fixed-price contracts must, by an appropriate clause, prohibit cost-plus-a-percentage-of-cost subcontracts"
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Contract Types",
       "q": "How is the fee determined under a cost-plus-incentive-fee contract?",
       "a": "It is a cost-reimbursement contract with a target cost, target fee, minimum and maximum fees, and a formula that adjusts the fee based on total allowable costs versus target costs; outside the formula range the contractor receives allowable costs plus the minimum or maximum fee.",
       "cite": {
@@ -29,47 +17,16 @@
       "type": "recall",
       "topic": "Contract Types",
       "q": "What two pieces make up the fee on a cost-plus-award-fee contract?",
-      "a": "A base amount fixed at inception (if used, at the contracting officer's discretion) and an award fee the contractor may earn in whole or in part to motivate excellence in cost, schedule, and technical performance. The amount earned each evaluation period is decided by the Fee-Determining Official on the Award-Fee Board's recommendations.",
+      "a": "A base amount fixed at inception (if used, at the contracting officer's discretion) and an award fee the contractor may earn in whole or in part to motivate excellence in cost, schedule, and technical performance — decided each evaluation period by the Fee-Determining Official on the Award-Fee Board's recommendations. DoD adds hard guardrails: base fee capped at 3 percent of the estimated cost exclusive of fee, at least 40 percent of the award fee held for the final evaluation (going lower takes nondelegable HCA approval), award-fee payments outside the end-of-period evaluation prohibited, and the FDO's rating due to the contractor within 45 calendar days of the end of the period.",
       "cite": {
         "src": "rfo",
         "sec": "16.402-4",
         "quote": "A cost-plus-award-fee contract is a cost-reimbursement contract that provides a fee consisting of (1) a base amount fixed at inception of the contract, if applicable and at the discretion of the contracting officer, and (2) an award fee that the contractor may earn in whole or in part to provide motivation for excellence in the areas of cost, schedule, and technical performance."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Undefinitized Contract Actions",
-      "q": "What is an undefinitized contract action?",
-      "a": "Any contract action for which the contract terms, specifications, or price are not agreed upon before performance begins — for example letter contracts, orders under basic ordering agreements, and provisioned item orders priced after performance starts.",
-      "cite": {
+      },
+      "dod": {
         "src": "r-dfars",
-        "sec": "217.7401",
-        "quote": "any contract action for which the contract terms, specifications, or price are not agreed upon before performance is begun under the action. Examples are letter contracts, orders under basic ordering agreements, and provisioned item orders"
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Undefinitized Contract Actions",
-      "q": "When is DoD allowed to use an undefinitized contract action at all?",
-      "a": "Only when a definitive contract action cannot be negotiated in time to meet the Government's requirements and the Government's interest demands a binding commitment so performance can begin immediately — and even then it must be as complete and definite as practicable.",
-      "cite": {
-        "src": "r-dfars",
-        "sec": "217.7403",
-        "quote": "(1) The negotiation of a definitive contract action is not possible in sufficient time to meet the Government's requirements; and (2) The Government's interest demands that the contractor be given a binding commitment so that contract performance can begin immediately."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Undefinitized Contract Actions",
-      "q": "Whose approval must the contracting officer obtain before entering into a UCA?",
-      "a": "The head of the contracting activity — the request must fully explain the need to begin performance before definitization, including the adverse impact of delay.",
-      "cite": {
-        "src": "r-dfars",
-        "sec": "217.7404-1",
-        "quote": "The contracting officer will obtain approval from the head of the contracting activity before— (a) Entering into a UCA."
+        "sec": "216.402-4",
+        "quote": "The base fee must not exceed three percent of the estimated cost of the contract exclusive of the fee."
       }
     },
     {
@@ -111,37 +68,54 @@
     {
       "rung": "unlimited",
       "type": "recall",
-      "topic": "Contracting by Negotiation — Source Selection",
-      "q": "When is the tradeoff approach to source selection appropriate?",
-      "a": "When it may be in the Government's best interest to award to other than the lowest priced or other than the highest technically rated offeror. It permits tradeoffs among price and non-price factors, but the benefits of a higher-priced proposal must merit the additional cost.",
+      "topic": "Undefinitized Contract Actions",
+      "q": "A UCA definitizes after the 180-day window from the qualifying proposal has run. What does that do to the contractor's profit?",
+      "a": "Normally the profit on a late-definitized UCA reflects the contractor's reduced cost risk for costs already incurred. But when the contracting officer definitizes after the 180-day period from the qualifying proposal, the allowed profit must accurately reflect the contractor's cost risk as it existed on the date the qualifying proposal was submitted — the Government's own delay cannot be used to ratchet profit down further. The HCA ensures it, and the risk assessment is documented in the price negotiation memorandum.",
       "cite": {
-        "src": "rfo",
-        "sec": "15.103-1",
-        "quote": "The tradeoff approach to source selection is appropriate when it may be in the Government’s best interest to consider award to other than the lowest priced offeror or other than the highest technically rated offeror. This process permits tradeoffs among cost or price and non-cost or non-price factors. The anticipated benefits of a higher priced proposal must merit the additional cost."
+        "src": "r-dfars",
+        "sec": "217.7404-6",
+        "quote": "the profit allowed on the contract must accurately reflect the cost risk of the contractor as such risk existed on the date the contractor submitted the qualifying proposal"
       }
     },
     {
       "rung": "unlimited",
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
-      "q": "Name the DoD prohibitions on using LPTA.",
-      "a": "LPTA must not be used to procure personal protective equipment or aviation critical safety items where failure could cause combat casualties, engineering and manufacturing development for a major defense acquisition program, or auditing services — and it must be avoided for knowledge-based professional services like IT and cybersecurity.",
+      "q": "R-DFARS splits its LPTA restrictions into limitations and prohibitions. What falls on each side of the line?",
+      "a": "Limitations — avoid to the maximum extent practicable: acquisitions predominantly for information technology, cybersecurity, systems engineering and technical assistance, advanced electronic testing, or other knowledge-based professional services; personal protective equipment generally; and knowledge-based training or logistics services in contingency or other overseas operations. Prohibitions — do not use, period: PPE or aviation critical safety items where quality failure could cause combat casualties; engineering and manufacturing development for a major defense acquisition program; and auditing services. Mixing the two lists is the classic board trap — \"avoid\" is judgment, \"do not use\" is absolute.",
       "cite": {
         "src": "r-dfars",
         "sec": "215.103-270",
-        "quote": "Do not use the lowest price technically acceptable source selection approach to procure— (1) Items designated by the requiring activity as personal protective equipment or as an aviation critical safety item, for which the level of quality or failure of the equipment or item could result in combat casualties."
+        "quote": "Avoid using the lowest price technically acceptable source selection approach, to the maximum extent practicable, for acquisitions that are predominately for— (i) Information technology services, cybersecurity services, systems engineering and technical assistance services, advanced electronic testing, or other knowledge-based professional services; (ii) Items designated by the requiring activity as personal protective equipment (except see paragraph (b)(1) of this section); or (iii) Services designated by the requiring activity as knowledge-based training or logistics services in contingency operations or other operations outside the United States. (b) Prohibitions. Do not use the lowest price technically acceptable source selection approach to procure— (1) Items designated by the requiring activity as personal protective equipment or as an aviation critical safety item, for which the level of quality or failure of the equipment or item could result in combat casualties."
       }
     },
     {
       "rung": "unlimited",
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
-      "q": "An offeror wants to \"clarify\" its proposal by fixing a deficiency and lowering its price. Allowed as a clarification?",
-      "a": "No. Clarifications resolve minor or clerical errors and enhance understanding; they cannot cure deficiencies or material omissions, and cannot materially alter the technical or cost elements of the proposal — that takes negotiations with the competitive range.",
+      "q": "The Government decides it will pay any fair and reasonable price for the highest quality performance, with no tradeoffs. What source selection approach is that, and how does award actually work?",
+      "a": "Highest technically rated with a fair and reasonable price. All proposals are evaluated on the non-price factors in the solicitation; the source selection authority identifies the highest technically rated proposal and only then evaluates that proposal's price for fair-and-reasonableness under subpart 15.4. If the price passes, that proposal is selected — no tradeoffs. If it does not, the SSA moves to the next highest technically rated proposal and repeats until award. The RFP must tell offerors up front that tradeoffs between price and non-price factors will not be considered.",
       "cite": {
         "src": "rfo",
-        "sec": "15.202",
-        "quote": "Clarifications do not permit offerors to revise their proposal and cannot be used to cure proposal deficiencies or material omissions or materially alter the technical or cost elements of the proposal."
+        "sec": "15.103-3",
+        "quote": "If the highest technically rated proposal’s price is fair and reasonable, the proposal is selected for award. If the price is not fair and reasonable, the source selection authority must determine the next highest technically rated proposal and evaluate whether the price is fair and reasonable in accordance with subpart 15.4. This process continues until a contract is awarded to the highest technically rated responsible offeror with a fair and reasonable price."
+      }
+    },
+    {
+      "rung": "unlimited",
+      "type": "recall",
+      "topic": "Contracting by Negotiation — Source Selection",
+      "q": "Who is the source selection authority by default, and what must the SSA lock down before the RFP goes out?",
+      "a": "The contracting officer is the SSA unless the agency head appoints another individual for a particular acquisition or group of acquisitions. Before RFP release the SSA approves the source selection approach or acquisition plan, and establishes an evaluation team tailored to the acquisition with contracting, legal, logistics, technical, and other expertise. The SSA must ensure proposals are evaluated solely on the RFP's factors and subfactors, and may reject all proposals when that serves the Government's best interest. In DoD, high-dollar acquisitions also require SSA approval of a source selection plan before the solicitation issues.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.201",
+        "quote": "Agency heads are responsible for source selection. A contracting officer is designated as the source selection authority (SSA), unless the agency head appoints another individual for a particular acquisition or group of acquisitions."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.201",
+        "quote": "For high-dollar value and other acquisitions, as prescribed by agency procedures, the source selection authority must approve a source selection plan before the solicitation is issued."
       }
     },
     {
@@ -149,35 +123,40 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "How are forward pricing rate agreement rates used once established?",
-      "a": "As the bases for pricing all contracts, modifications, and other contractual actions performed during the period the agreement covers; conditions affecting the agreement's validity must be promptly reported to the administrative contracting officer.",
+      "a": "As the bases for pricing all contracts, modifications, and other contractual actions performed during the period the agreement covers; conditions affecting the agreement's validity must be promptly reported to the administrative contracting officer. In DoD the rates are not optional: use FPRA rates whenever they are available unless the head of the contracting activity waives them on a case-by-case basis — and advise the ACO of each case waived.",
       "cite": {
         "src": "rfo",
         "sec": "15.405-3",
         "quote": "Contracting officers will use FPRA rates as bases for pricing all contracts, modifications, and other contractual actions to be performed during the period covered by the agreement."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.405-3",
+        "quote": "Use forward pricing rate agreement (FPRA) rates when such rates are available, unless waived on a case-by-case basis by the head of the contracting activity."
+      }
+    },
+    {
+      "rung": "unlimited",
+      "type": "recall",
+      "topic": "Contract Financing",
+      "q": "What are DoD's customary progress payment rates — and when should progress payments not be the first choice?",
+      "a": "80 percent for large business concerns and 90 percent for small business concerns — the same rates apply to contracts carrying foreign military sales requirements. Progress payments are not the default, though: performance-based payments are the preferred financing method when practical and the contractor agrees, and in DoD they must be conditioned on the achievement of performance outcomes, never on costs incurred.",
+      "cite": {
+        "src": "r-dfars",
+        "sec": "232.501-1",
+        "quote": "The customary progress payment rates for DoD contracts, including contracts that contain foreign military sales (FMS) requirements, are 80 percent for large business concerns and 90 percent for small business concerns."
       }
     },
     {
       "rung": "unlimited",
       "type": "recall",
       "topic": "Cost Principles & CAS",
-      "q": "When is a cost \"reasonable,\" and is an incurred cost presumed reasonable?",
-      "a": "A cost is reasonable if, in nature and amount, it does not exceed what a reasonable person in the conduct of competitive business would incur — and no presumption of reasonableness attaches merely because the cost was incurred.",
+      "q": "When is a cost \"reasonable,\" and who carries the burden when the contracting officer challenges one?",
+      "a": "A cost is reasonable if, in nature and amount, it does not exceed what a reasonable person in the conduct of competitive business would incur. No presumption of reasonableness attaches merely because the cost was incurred — and if the contracting officer or the contracting officer's representative challenges a specific cost, the burden of proof is on the contractor to prove the cost is reasonable.",
       "cite": {
         "src": "rfo",
         "sec": "31.201-3",
-        "quote": "A cost is reasonable if, in its nature and amount, it does not exceed that which would be incurred by a reasonable person in the conduct of competitive business. (1) No presumption of reasonableness must be attached to the incurrence of costs."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Cost Principles & CAS",
-      "q": "What do the Cost Accounting Standards require of covered contractors?",
-      "a": "To comply with CAS and to disclose in writing — and follow consistently — their cost accounting practices, under 41 U.S.C. chapter 15.",
-      "cite": {
-        "src": "rfo",
-        "sec": "30.101",
-        "quote": "Cost Accounting Standards, requires certain contractors and subcontractors to comply with Cost Accounting Standards (CAS) and to disclose in writing and follow consistently their cost accounting practices."
+        "quote": "A cost is reasonable if, in its nature and amount, it does not exceed that which would be incurred by a reasonable person in the conduct of competitive business. (1) No presumption of reasonableness must be attached to the incurrence of costs. (2) If the contracting officer, or the contracting officer’s representative, challenges a specific cost, the burden of proof is on the contractor to prove that the cost is reasonable."
       }
     },
     {
@@ -197,11 +176,11 @@
       "type": "recall",
       "topic": "Data Rights",
       "q": "Mixed Government and private funding produced the technical data. What rights arise, and for how long?",
-      "a": "Government purpose rights. The period is negotiable with a five-year period nominal; when it expires the Government's rights become unlimited, including authorizing commercial use by others.",
+      "a": "Government purpose rights. The period is negotiable with a five-year period nominal, and it begins upon execution of the contract, subcontract, or similar instrument that required the development — not at delivery. When it expires the Government's rights become unlimited, including the right to authorize others to use the data or software for commercial purposes.",
       "cite": {
         "src": "r-dfars",
         "sec": "227.7103-5",
-        "quote": "The period during which government purpose rights are effective is negotiable. A five year period is nominal."
+        "quote": "The period during which government purpose rights are effective is negotiable. A five year period is nominal. Either the Government or the contractor may request a different period. (3) The government purpose rights period begins upon execution of the contract, subcontract, or similar contractual instrument that required the development. Upon expiration of the Government rights period, the Government has unlimited rights in the data or software including the right to authorize others to use the data or software for commercial purposes."
       }
     },
     {
@@ -209,11 +188,23 @@
       "type": "recall",
       "topic": "Data Rights",
       "q": "Development was exclusively at private expense. What rights does the Government get in the technical data versus the noncommercial software?",
-      "a": "Limited rights in the technical data; restricted rights in the noncommercial computer software.",
+      "a": "Limited rights in the technical data; restricted rights in the noncommercial computer software. Limited rights data cannot be used, released, or disclosed outside the Government without the asserting contractor's permission — except when necessary for emergency repair and overhaul, to a covered Government support contractor, or to a foreign government (other than detailed manufacturing or process data) for evaluational or informational purposes in the interest of the United States.",
       "cite": {
         "src": "r-dfars",
         "sec": "227.7103-5",
-        "quote": "The Government obtains restricted rights in other than commercial computer software the contractor must deliver or otherwise provide to the Government under a contract that was developed exclusively at private expense."
+        "quote": "Do not use, release, or disclose data in which the Government has limited rights outside the Government without the permission of the contractor asserting the restriction except when it is— (i) Necessary for emergency repair and overhaul; (ii) To a covered Government support contractor; or (iii) To a foreign government, other than detailed manufacturing or process data, when use, release, or disclosure is in the interest of the United States and is required for evaluational or informational purposes."
+      }
+    },
+    {
+      "rung": "unlimited",
+      "type": "recall",
+      "topic": "Data Rights",
+      "q": "Delivered technical data arrives marked with restrictive legends the program doubts. What is the Government's recourse, and how long does it have?",
+      "a": "A contractor's assertions do not, by themselves, determine the Government's rights. Review asserted restrictions before accepting the deliverable, and the contracting officer may challenge an assertion when reasonable grounds exist to believe it is invalid — within six years after final payment or six years after delivery of the data or software, whichever is later. Commercial products are presumed developed exclusively at private expense, so challenging one takes specifically stated reasonable grounds; and a contractor's failure to respond to a challenge notice cannot be the sole basis for a final decision denying the restriction.",
+      "cite": {
+        "src": "r-dfars",
+        "sec": "227.7103-13",
+        "quote": "Challenge assertions within six years after final payment under the contract or six years after delivery of the data or software, whichever is later."
       }
     },
     {
@@ -231,25 +222,13 @@
     {
       "rung": "unlimited",
       "type": "recall",
-      "topic": "Protests",
-      "q": "Who qualifies as an \"interested party\" to file a protest?",
-      "a": "An actual or prospective offeror whose direct economic interest would be affected by the award of a contract or by the failure to award a contract.",
+      "topic": "Organizational Conflict of Interest",
+      "q": "The agency wants to waive an OCI rule. Who can, and how far down may that authority travel?",
+      "a": "The agency head or a designee may waive any general rule or procedure of the OCI subpart by determining that its application in the particular situation would not be in the Government's interest. The request must be in writing and set forth the extent of the conflict — and waiver authority must not be delegated below the head of a contracting activity.",
       "cite": {
         "src": "rfo",
-        "sec": "33.102",
-        "quote": "Interested Party for the purpose of filing a protest means an actual or prospective offeror whose direct economic interest would be affected by the award of a contract or by the failure to award a contract."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Protests",
-      "q": "GAO notifies the agency of a protest eight days after award. What must the contracting officer do?",
-      "a": "Immediately suspend performance or terminate the awarded contract — the stay triggers when GAO notice arrives within 10 days after award or within 5 days after an offered required debriefing, whichever is later. Only the head of the contracting activity, on a nondelegable written finding, may authorize continued performance.",
-      "cite": {
-        "src": "rfo",
-        "sec": "33.105-3",
-        "quote": "If the agency receives notice of a protest from the GAO within 10 days after contract award or within 5 days after a debriefing date offered to the protester for any debriefing that is required by 15.505 or 15.506, whichever is later, then the contracting officer must immediately suspend performance or terminate the awarded contract, unless the head of the contracting activity authorizes contract performance."
+        "sec": "9.503",
+        "quote": "Agency heads must not delegate waiver authority below the level of head of a contracting activity."
       }
     },
     {
@@ -257,7 +236,7 @@
       "type": "recall",
       "topic": "REAs & Claims",
       "q": "How long does the contracting officer have to issue a final decision on a certified claim over $100,000?",
-      "a": "60 days after receiving the certified claim — or, within those 60 days, notify the contractor of the time within which a decision will be issued.",
+      "a": "60 days after receiving the certified claim — or, within those 60 days, notify the contractor of the time within which a decision will be issued. One senior-level escape hatch: if a claim over $100,000 carries a defective certification, the contracting officer has no obligation to render a final decision at all, provided the contractor is notified in writing, within 60 days of receiving the claim, of the reasons the attempted certification was found defective.",
       "cite": {
         "src": "rfo",
         "sec": "33.205-6",
@@ -287,18 +266,6 @@
         "src": "rfo",
         "sec": "33.205-6",
         "quote": "Any failure of the contracting officer to issue a decision within the required time periods will be deemed a decision by the contracting officer denying the claim and will authorize the contractor to file an appeal or suit on the claim."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Terminations",
-      "q": "What is a termination for default?",
-      "a": "The Government's exercise of its right to completely or partially terminate a contract because of the contractor's actual or anticipated failure to perform its contractual obligations.",
-      "cite": {
-        "src": "rfo",
-        "sec": "2.101",
-        "quote": "Termination for default means the exercise of the Government’s right to completely or partially terminate a contract because of the contractor’s actual or anticipated failure to perform its contractual obligations."
       }
     },
     {
@@ -340,13 +307,30 @@
     {
       "rung": "unlimited",
       "type": "recall",
+      "topic": "Terminations",
+      "q": "The Government terminates a contract for convenience. How does the contractor get paid, and on what clock?",
+      "a": "Through settlement with the termination contracting officer. The final settlement proposal is due within one year of the termination date unless the TCO allows more time, and it covers all cost elements including subcontract settlements and proposed profit. The TCO negotiates a fair and prompt settlement where possible, settling by determination only when agreement fails; a no-cost settlement closes it out when no costs were incurred or the contractor waives them and nothing is owed the Government. Partial payments may flow before settlement when the contract authorizes them. And if a default termination is later found improper or excusable, the parties' rights and obligations convert to those of a convenience termination.",
+      "cite": {
+        "src": "rfo",
+        "sec": "49.206-1",
+        "quote": "The final settlement proposal must be submitted within one year from the termination date, unless the TCO allows more time."
+      }
+    },
+    {
+      "rung": "unlimited",
+      "type": "recall",
       "topic": "Contract Administration",
-      "q": "When may the Government recognize a third party as successor in interest to a contract, given that transfers are statutorily prohibited?",
-      "a": "Through a novation agreement, when it is in the Government's interest and the third party's interest arises from the transfer of all the contractor's assets or the entire portion involved in performing the contract. A name-only change with rights and obligations unaffected takes a change-of-name agreement instead.",
+      "q": "Transfers of Government contracts are statutorily prohibited. When does recognizing a successor in interest require a novation agreement — and when is a novation unnecessary?",
+      "a": "A novation is the vehicle when it is in the Government's interest and the third party's interest arises from the transfer of all the contractor's assets, or the entire portion involved in performing the contract. It is unnecessary for a change in ownership by stock purchase with no legal change in the contracting party, where that party remains in control of the assets and keeps performing — the ownership changed, the contractor did not. A name-only change with rights and obligations unaffected takes a change-of-name agreement instead.",
       "cite": {
         "src": "rfo",
         "sec": "42.903",
-        "quote": "The Government may, when in its interest, recognize a third party as the successor in interest to a Government contract when the third party’s interest in the contract arises out of the transfer of- (1) All the contractor’s assets; or (2) The entire portion of the assets involved in performing the contract."
+        "quote": "A novation agreement is unnecessary when there is a change in the ownership of a contractor as a result of a stock purchase, with no legal change in the contracting party, and when that contracting party remains in control of the assets and is the party performing the contract."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "242.903",
+        "quote": "Restructuring costs are prohibited on novated contracts unless there is an audit of the restructuring proposal; a determination by the contracting officer of overall reduced costs to DoD/NASA; and an Advance Agreement setting forth a cumulative cost ceiling for restructuring projects and the period to which such costs shall be assigned"
       }
     },
     {
@@ -365,12 +349,29 @@
       "rung": "unlimited",
       "type": "recall",
       "topic": "Contract Administration",
+      "q": "A final determination disapproves one of a contractor's business systems. Which systems are covered, and what happens to the contractor's payments?",
+      "a": "Six systems: accounting, earned value management, estimating, material management and accounting, property management, and purchasing. On a final determination with a notice to withhold, the contracting officer withholds 5 percent from progress payments and performance-based payments and directs a 5 percent withhold on interim cost vouchers until all material weaknesses are corrected. An acceptable corrective action plan submitted within 45 days and effectively implemented drops the withhold to 2 percent. Ceilings: 5 percent for material weaknesses in any single system, 10 percent across multiple systems.",
+      "cite": {
+        "src": "r-dfars",
+        "sec": "252.242-7005",
+        "quote": "the Contracting Officer will withhold 5 percent of amounts due from progress payments and performance-based payments, and direct the Contractor, in writing, to withhold 5 percent from its billings on interim cost vouchers on cost-reimbursement, labor-hour, and time-and-materials contracts"
+      }
+    },
+    {
+      "rung": "unlimited",
+      "type": "recall",
+      "topic": "Contract Administration",
       "q": "Are liquidated damages a penalty for late delivery?",
-      "a": "No. They are not punitive and not negative performance incentives — the rate must be a reasonable forecast of just compensation for the harm caused by late delivery or untimely performance, used only when timely performance is critical and actual damage would be hard to prove.",
+      "a": "No. They are not punitive and not negative performance incentives — the rate must be a reasonable forecast of just compensation for the harm caused by late delivery or untimely performance, used when timely performance is critical and actual damage would be hard to prove. For DoD construction the liquidated-damages clause (52.211-12) is mandatory in every contract exceeding $900,000 — except cost-plus-fixed-fee contracts or where the contractor cannot control the pace of the work — and optional at or below that figure.",
       "cite": {
         "src": "rfo",
         "sec": "11.401",
         "quote": "Liquidated damages are not punitive and are not negative performance incentives (see 16.403-2). Liquidated damages are used to compensate the Government for probable damages. Therefore, the liquidated damages rate must be a reasonable forecast of just compensation for the harm that is caused by late delivery or untimely performance of the particular contract."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "211.403",
+        "quote": "Insert the clause at FAR 52.211-12, Liquidated Damages—Construction, in all construction contracts exceeding $900,000, except cost-plus-fixed-fee contracts or contracts where the contractor cannot control the pace of the work. Use of the clause in contracts of $900,000 or less is optional."
       }
     },
     {
@@ -395,18 +396,24 @@
         "src": "rfo",
         "sec": "45.102",
         "quote": "Contractors are ordinarily required to furnish all property necessary to perform Government contracts."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "unlimited",
       "type": "recall",
       "topic": "Government Property",
       "q": "Under which contract types is the contractor generally not held liable for loss of Government property?",
-      "a": "Cost-reimbursement, time-and-material, labor-hour, and fixed-price contracts awarded on the basis of certified cost or pricing data.",
+      "a": "Cost-reimbursement, time-and-material, labor-hour, and fixed-price contracts awarded on the basis of certified cost or pricing data. DoD extends the shield to negotiated fixed-price contracts awarded on a basis other than certified cost or pricing data — so in DoD practice the carve-out reaches essentially every negotiated fixed-price award, leaving sealed-bid fixed-price as the main place full liability survives.",
       "cite": {
         "src": "rfo",
         "sec": "45.104",
         "quote": "Generally, contractors are not held liable for loss of Government property under the following types of contracts: (1) Cost-reimbursement contracts. (2) Time-and-material contracts. (3) Labor-hour contracts. (4) Fixed-price contracts awarded on the basis of submission of certified cost or pricing data."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "245.104",
+        "quote": "In addition to the contract types listed at FAR 45.104, contractors are not held liable for loss of Government property under negotiated fixed-price contracts awarded on a basis other than submission of certified cost or pricing data."
       }
     },
     {
@@ -426,11 +433,16 @@
       "type": "recall",
       "topic": "Foreign Acquisition",
       "q": "What two-part test makes a manufactured end product \"domestic\" under the Buy American statute?",
-      "a": "The article must be manufactured in the United States, and the cost of domestic components must exceed the applicable content threshold — 60 percent, rising to 65 percent for 2024-2028 deliveries and 75 percent from 2029 (with a separate rule for predominantly iron or steel products).",
+      "a": "The article must be manufactured in the United States, and the cost of domestic components must exceed the applicable content threshold — 60 percent, rising to 65 percent for 2024-2028 deliveries and 75 percent from 2029 (with a separate less-than-5-percent foreign iron and steel rule for predominantly iron or steel products). Per 41 U.S.C. 1907 the domestic content test is waived for COTS items — though not for the iron/steel test, except COTS fasteners. For DoD, the content test counts U.S. and qualifying country components toward the threshold.",
       "cite": {
         "src": "rfo",
         "sec": "25.101",
-        "quote": "The article must be manufactured in the United States; and (2) (i) Except for an end product that consists wholly or predominantly of iron or steel or a combination of both, the cost of domestic components must exceed 60 percent of the cost of all the components"
+        "quote": "The article must be manufactured in the United States; and (2) (i) Except for an end product that consists wholly or predominantly of iron or steel or a combination of both, the cost of domestic components must exceed 60 percent of the cost of all the components, except that the percentage is 65 percent for items delivered in calendar years 2024 through 2028 and 75 percent for items delivered starting in calendar year 2029. But see paragraph (d) of this section. In accordance with 41 U.S.C. 1907, this domestic content test of the Buy American statute has been waived for acquisitions of COTS items (but see paragraph (a)(2)(ii) of this section)."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "225.101",
+        "quote": "the cost of its U.S. and qualifying country components exceeds 60 percent of the cost of all its components, except that the percentage will be 65 percent for items delivered in calendar years 2024 through 2028 and 75 percent for items delivered starting in calendar year 2029"
       }
     },
     {
@@ -450,11 +462,16 @@
       "type": "recall",
       "topic": "Foreign Acquisition",
       "q": "In an acquisition covered by the WTO Government Procurement Agreement, what end products may be acquired?",
-      "a": "Only U.S.-made or designated country end products (or U.S. or designated country services), unless offers for them are not received or are insufficient to fulfill the requirements.",
+      "a": "Only U.S.-made or designated country end products (or U.S. or designated country services), unless offers for them are not received or are insufficient to fulfill the requirements. DoD narrows the field twice: trade agreements apply only to end products in the product service groups enumerated at 225.401-70 — if the end product is not in a listed group, the trade agreements do not apply — and in covered acquisitions DoD buys only U.S.-made, qualifying country, or designated country end products unless such offers are not received or are insufficient, or a national interest waiver is granted.",
       "cite": {
         "src": "rfo",
         "sec": "25.403",
         "quote": "in acquisitions covered by the WTO GPA, acquire only U.S.-made or designated country end products or U.S. or designated country services, unless offers for such end products or services are either not received or are insufficient to fulfill the requirements."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "225.401-70",
+        "quote": "If an end product is not in one of the listed groups, the trade agreements do not apply."
       }
     },
     {
@@ -491,18 +508,24 @@
         "src": "rfo",
         "sec": "17.102",
         "quote": "Multiyear contract means a contract for the purchase of supplies or services for more than 1, but not more than 5 program years. A multiyear contract may provide that performance under the contract during the second and subsequent years of the contract is contingent upon the appropriation of funds, and (if it does so provide) may provide for a cancellation payment to be made to the contractor if appropriations are not made."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "unlimited",
       "type": "recall",
       "topic": "Acquisition Planning & Strategy",
       "q": "When is an Earned Value Management System required?",
-      "a": "In major acquisitions for development, per OMB Circular A-11 — with monthly EVMS reports and the same rules flowing to subcontractors.",
+      "a": "The civilian baseline is major acquisitions for development, per OMB Circular A-11. DoD replaces that wholesale with thresholds: on cost or incentive contracts, EIA-748 compliance is required at $50 million or more, and at $100 million or more the contractor must have a system the cognizant Federal agency has validated against EIA-748. Below $50 million, applying EVM is optional and a risk-based decision; on firm-fixed-price contracts of any value it is discouraged (waiver procedures apply); and the subpart does not apply to contracts primarily for software.",
       "cite": {
         "src": "rfo",
         "sec": "34.201",
         "quote": "In accordance with OMB Circular A-11, agencies must require an Earned Value Management System (EVMS) in major acquisitions for development."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "234.201",
+        "quote": "For cost or incentive contracts and subcontracts valued at $50 million or more, the clause at 252.234-7999, Earned Value Management System, requires the contractor’s earned value management system to comply with the guidelines in Electronic Industries Alliance Standard 748, Earned Value Management Systems"
       }
     }
   ]

@@ -350,15 +350,35 @@ def _dod_overlay_check(items, fatal=False):
         if _m: idx.setdefault(_m.group(1), _d)
     missing = []
     for it in items:
+        # a dod object must itself be verbatim — nothing else checks it
+        _dd = it.get('dod')
+        if isinstance(_dd, dict):
+            _t = (it.get('q') or '')[:56]
+            for f in ('src', 'sec', 'quote'):
+                if not _dd.get(f): sys.exit(f'FATAL: ladder {_t}: dod.{f} missing')
+            _doc = sec_idx.get((_dd['src'], _dd['sec'])) or idx.get(_dd['sec'])
+            if not _doc: sys.exit(f'FATAL: ladder {_t}: dod cites no such section {_dd["sec"]}')
+            if _norm(_dd['quote']) not in _norm(_doc['content']):
+                sys.exit(f'FATAL: ladder {_t}: dod quote not verbatim in {_dd["sec"]}')
+        elif _dd is not None and _dd != 'n/a':
+            sys.exit(f'FATAL: ladder {(it.get("q") or "")[:56]}: dod must be an object or "n/a"')
+
         c = it.get('cite', {})
-        if c.get('src') != 'rfo': continue
+        if c.get('src') != 'rfo' or it.get('dod'): continue
         head, _, tail = c.get('sec', '').partition('.')
         if not head.isdigit() or not tail: continue
-        key = '2%02d.%s' % (int(head), tail)
-        dod = idx.get(key)
-        if not dod or len(_norm(dod['content'])) < 160: continue   # no supplement, or a stub
-        if not it.get('dod'):
-            missing.append((it['rung'], key, it['q'][:56]))
+        base = '2%02d.%s' % (int(head), tail)
+        # DoD-unique sections carry -70/-170/-970 suffixes and do NOT mirror the RFO
+        # number; an exact-match lookup misses them, which hid a brand-name card that
+        # told DoD readers the opposite of their own rule.
+        for key in sorted(idx):
+            if key != base and not key.startswith(base + '-'): continue
+            if key != base:
+                suf = key[len(base) + 1:]
+                if not (suf.isdigit() and int(suf) >= 70): continue
+            if len(_norm(idx[key]['content'])) >= 160:
+                missing.append((it['rung'], key, it['q'][:56]))
+                break
     if missing:
         print('  ladder DoD-overlay: %d card(s) cite an RFO section R-DFARS supplements, unreviewed:' % len(missing))
         for r, s, q in missing[:60]:

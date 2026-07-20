@@ -71,13 +71,40 @@ def main(path):
         if cite.get('amount') and cite['amount'] not in cite['quote']:
             fails.append(f'{tag}: amount {cite["amount"]} not inside the quote')
 
+        # A `dod` object must itself be verbatim — nothing else checks it, and an
+        # unverified DoD quote is exactly the claim a reader would most rely on.
+        dod = it.get('dod')
+        if isinstance(dod, dict):
+            for f in ('src', 'sec', 'quote'):
+                if not dod.get(f):
+                    fails.append(f'{tag}: dod.{f} missing')
+            if dod.get('sec'):
+                dd = sec_idx.get((dod.get('src', 'r-dfars'), dod['sec'])) or dod_idx.get(dod['sec'])
+                if not dd:
+                    fails.append(f'{tag}: dod cites no such section {dod["sec"]}')
+                elif norm(dod.get('quote', '')) not in norm(dd['content']):
+                    fails.append(f'{tag}: dod quote not verbatim in {dod["sec"]}')
+        elif dod is not None and dod != 'n/a':
+            fails.append(f'{tag}: dod must be an object or the string "n/a", got {dod!r}')
+
         # DoD overlay: does an RFO cite sit on a section R-DFARS supplements?
-        if cite['src'] == 'rfo':
+        # DoD-unique sections carry -70/-170/-270/-970 suffixes and do NOT mirror the
+        # RFO number, so an exact-match lookup silently misses them. That hole hid a
+        # brand-name card that told DoD readers the opposite of their own rule.
+        if cite['src'] == 'rfo' and not it.get('dod'):
             head, _, tail = cite['sec'].partition('.')
             if head.isdigit() and tail:
-                sup = dod_idx.get('2%02d.%s' % (int(head), tail))
-                if sup and len(norm(sup['content'])) >= 160 and not it.get('dod'):
-                    unreviewed.append(('2%02d.%s' % (int(head), tail), tag))
+                base = '2%02d.%s' % (int(head), tail)
+                for key in sorted(dod_idx):
+                    if key != base and not key.startswith(base + '-'):
+                        continue
+                    if key != base:
+                        suf = key[len(base) + 1:]
+                        if not (suf.isdigit() and int(suf) >= 70):
+                            continue          # a normal child section, not a DoD-unique one
+                    if len(norm(dod_idx[key]['content'])) >= 160:
+                        unreviewed.append((key, tag))
+                        break
 
     print(f'{os.path.basename(path)}: {len(items)} cards')
     if fails:

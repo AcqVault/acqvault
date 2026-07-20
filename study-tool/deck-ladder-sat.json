@@ -28,12 +28,42 @@
       "rung": "sat",
       "type": "recall",
       "topic": "Contracting Authority",
+      "q": "How is a contracting officer appointed?",
+      "a": "In writing, on a Standard Form 1402, Certificate of Appointment — and the certificate must state any limits on the contracting officer's authority beyond those already in law or regulation. Individuals given micro-purchase authority are also appointed in writing, but an SF 1402 is not required for them.",
+      "cite": {
+        "src": "rfo",
+        "sec": "1.403-2",
+        "quote": "Contracting officers must be appointed in writing, using a Standard Form (SF) 1402, Certificate of Appointment. The certificate must state any limitations placed on the contracting officer’s scope of authority, other than limitations contained in applicable law or regulation."
+      },
+      "dod": "n/a"
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contracting Authority",
+      "q": "What must a person have to qualify as a DoD contracting officer with authority above the SAT?",
+      "a": "Under 10 U.S.C. 1724: completion of all contracting courses required for the grade, at least 2 years of experience in a contracting position, and a baccalaureate degree — plus any additional requirements the Secretary of Defense sets based on dollar value and complexity. The degree requirement does not reach legacy pre-2000 incumbents, the contingency contracting force, or 3-year developmental appointees.",
+      "cite": {
+        "src": "r-dfars",
+        "sec": "201.403-1",
+        "quote": "In accordance with 10 U.S.C. 1724, in order to qualify to serve as a contracting officer with authority to award or administer contracts for amounts above the simplified acquisition threshold, a person must— (i) Have completed all contracting courses required for a contracting officer to serve in the grade in which the employee or member of the armed forces will serve; (ii) Have at least 2 years experience in a contracting position; (iii) Have received a baccalaureate degree from an accredited educational institution;"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contracting Authority",
       "q": "May a contracting officer's representative commit the Government to a change in contract terms?",
-      "a": "No. A COR has no authority to make any commitments or changes affecting price, quality, quantity, delivery, or other terms and conditions of the contract.",
+      "a": "No. A COR has no authority to make any commitments or changes affecting price, quality, quantity, delivery, or other terms and conditions of the contract. DoD adds an eligibility rule: a COR must be a Government employee — military or civilian (or foreign-government, NATO, or coalition-partner personnel) — and contractor personnel must never serve as CORs.",
       "cite": {
         "src": "rfo",
         "sec": "1.404",
         "quote": "A COR has no authority to make any commitments or changes that affect price, quality, quantity, delivery, or other terms and conditions of the contract."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "201.404",
+        "quote": "A COR must be an employee, military or civilian, of the U.S. Government, a foreign government, or a North Atlantic Treaty Organization or coalition partner. Contractor personnel must never serve as CORs."
       }
     },
     {
@@ -101,6 +131,19 @@
     {
       "rung": "sat",
       "type": "recall",
+      "topic": "Thresholds",
+      "q": "The micro-purchase threshold is $15,000 — when is it actually lower?",
+      "a": "Two labor-standards sub-tiers: $2,000 for construction subject to the Wage Rate Requirements (Construction) statute, and $2,500 for services subject to Service Contract Labor Standards. Miss the sub-tier and a $10,000 construction buy you treated as a micro-purchase was really a simplified acquisition owing labor-standards clauses.",
+      "cite": {
+        "src": "rfo",
+        "sec": "2.101",
+        "quote": "Micro-purchase threshold means $15,000, except it means- (1) For acquisitions of construction subject to 40 U.S.C. chapter 31, subchapter IV, Wage Rate Requirements (Construction), $2,000; (2) For acquisitions of services subject to 41 U.S.C. chapter 67, Service Contract Labor Standards, $2,500;",
+        "amount": "$2,000"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
       "topic": "Simplified Acquisition Procedures",
       "q": "Which acquisitions does RFO part 13 cover?",
       "a": "Noncommercial products and services valued at or below the SAT. Commercial acquisitions use the part 12 procedures instead.",
@@ -114,24 +157,24 @@
       "rung": "sat",
       "type": "recall",
       "topic": "Simplified Acquisition Procedures",
-      "q": "May you split a requirement into smaller pieces to stay under the SAT?",
-      "a": "No. Requirements whose aggregate value exceeds the SAT must not be divided merely to permit use of simplified procedures.",
+      "q": "Before you reach for part 13 simplified procedures, what two checks gate their use?",
+      "a": "First, no commercial product or service can satisfy the need — commercial buys run under part 12. Second, the supplies or services are not available from a required source under part 8. Only when both checks clear are part 13 procedures on the table.",
       "cite": {
         "src": "rfo",
         "sec": "13.001",
-        "quote": "Do not divide requirements, the aggregate value of which exceeds the SAT, merely to permit use of the procedures in this part."
+        "quote": "The procedures in this part may be used only if— (1) There are no commercial products or commercial services that can satisfy the agency’s needs (see part 12); and (2) The supplies or services are not available from a required source (see part 8)."
       }
     },
     {
       "rung": "sat",
       "type": "recall",
       "topic": "Simplified Acquisition Procedures",
-      "q": "What is the competition standard for noncommercial buys at or below the SAT?",
-      "a": "Promote competition to the maximum extent practicable.",
+      "q": "May you split a requirement into smaller pieces to stay under the SAT?",
+      "a": "No. Requirements whose aggregate value exceeds the SAT must not be divided merely to permit use of simplified procedures.",
       "cite": {
         "src": "rfo",
-        "sec": "13.101",
-        "quote": "Agencies must promote competition to the maximum extent practicable when procuring noncommercial products and services valued at or below the SAT."
+        "sec": "13.001",
+        "quote": "Do not divide requirements, the aggregate value of which exceeds the SAT, merely to permit use of the procedures in this part."
       }
     },
     {
@@ -221,13 +264,52 @@
     {
       "rung": "sat",
       "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "What is the primary method for making micro-purchases?",
+      "a": "The Governmentwide commercial purchase card — authorized for purchases of supplies, services, or construction, and only for purchases authorized by law or regulation. Purchase orders are the other primary method. DoD goes further: use the purchase card as the method of purchase and/or payment for everything at or below the MPT unless a 212.403 exception applies.",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.403",
+        "quote": "The Governmentwide commercial purchase card is authorized for use in making purchases of supplies, services, or construction."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "212.403",
+        "quote": "Use the Governmentwide commercial purchase card as the method of purchase and/or method of payment for purchases valued at or below the micro- purchase threshold."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Simplified Acquisition Procedures",
+      "q": "When may you use an SF 44, Purchase Order-Invoice-Voucher?",
+      "a": "It is a pocket-size form for on-the-spot, over-the-counter buys away from the purchasing office or at isolated activities — and only when every condition holds: the agency authorizes it, the amount is at or below the MPT (or an agency-set ceiling for urgency or contingency support), the supplies or services are immediately available with one delivery and one payment, and it beats the purchase card on economy and efficiency. In DoD the purchase card is the mandated micro-purchase method, so an SF 44 rides on a 212.403 exception — a Standard Form 44 purchase for aviation fuel is the listed example.",
+      "cite": {
+        "src": "rfo",
+        "sec": "12.403",
+        "quote": "The SF 44, Purchase Order-Invoice-Voucher, is a multipurpose pocket-size purchase order form designed primarily for on-the-spot, over-the-counter purchases of supplies and nonpersonal services while away from the purchasing office or at isolated activities."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "212.403",
+        "quote": "The purchase is a Standard Form 44 purchase for aviation fuel"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
       "topic": "Small Business Programs",
       "q": "When must a contract be set aside for small business (the Rule of Two)?",
-      "a": "When there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery. But do not reach for the test too early: between the MPT and the SAT the set-aside is categorical under 13.102 — no expectation analysis needed. The Rule of Two is the test you actually run above the SAT.",
+      "a": "When there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery. But do not reach for the test too early: between the MPT and the SAT the set-aside is categorical under 13.102 — no expectation analysis needed. The Rule of Two is the test you actually run above the SAT. For DoD, R-DFARS bounds the requirement in certain lines of work — it applies to construction (including maintenance and repair) under $3.5 million, dredging under $2 million, and A-E services for military construction or family housing under $1 million — and it does not apply to supplies developed and financed by Canadian sources under the U.S.-Canadian Defense Development Sharing Program.",
       "cite": {
         "src": "rfo",
         "sec": "19.104-1",
         "quote": "For contracts above the micro-purchase threshold, the contracting officer must set the contract aside for small business if there is a reasonable expectation of obtaining offers— (1) From two or more responsible small business concerns; and (2) That are competitive in terms of fair market prices, quality, and delivery."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "219.104-1",
+        "quote": "The requirements at FAR 19.104-1(a) and (b) apply to acquisitions for— (i) Construction, including maintenance and repairs, under $3.5 million; (ii) Dredging under $2 million; and (iii) Architect-engineer services for military construction or family housing projects under $1 million (10 U.S.C. 2855)."
       }
     },
     {
@@ -245,13 +327,18 @@
     {
       "rung": "sat",
       "type": "recall",
-      "topic": "Small Business Programs",
-      "q": "What must the contracting officer do when a contract is not set aside for small business?",
-      "a": "Document the reason.",
+      "topic": "Contractor Qualifications — Responsibility",
+      "q": "What must a prospective contractor demonstrate to be found responsible?",
+      "a": "Adequate financial resources (or the ability to obtain them); ability to meet the delivery or performance schedule given all existing commitments; a satisfactory performance record — though never nonresponsible solely for lacking one; a satisfactory record of integrity and business ethics; the necessary organization, experience, controls, and technical skills; the necessary equipment and facilities; and otherwise qualified and eligible under law. DoD adds one for cost-type, incentive, and progress-payment work: the accounting system and internal controls must give reasonable assurance the cost data are reliable.",
       "cite": {
         "src": "rfo",
-        "sec": "19.104-1",
-        "quote": "The contracting officer must document the reason when a contract is not set aside for small business as required."
+        "sec": "9.104-1",
+        "quote": "To demonstrate responsibility, a prospective contractor must— (a) Have adequate financial resources to perform the contract, or the ability to obtain them (see 9.104-3(a));"
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "209.104-1",
+        "quote": "For cost-reimbursement or incentive type contracts, or contracts that provide for progress payments based on costs or on a percentage or stage of completion, the prospective contractor’s accounting system and related internal controls must provide reasonable assurance that—"
       }
     },
     {
@@ -296,11 +383,29 @@
       "type": "recall",
       "topic": "Market Research",
       "q": "When is market research required?",
-      "a": "Appropriate to the circumstances, before developing new requirements documents and before soliciting offers or awarding task or delivery orders valued over the SAT.",
+      "a": "Appropriate to the circumstances, before developing new requirements documents and before soliciting offers or awarding task or delivery orders valued over the SAT. DoD adds triggers: conduct market research before issuing any solicitation with tiered evaluation of offers, and use the results to make the part 19 set-aside call and to inform price reasonableness.",
       "cite": {
         "src": "rfo",
         "sec": "10.001",
         "quote": "Agencies must conduct market research appropriate to the circumstances before— (1) Developing new requirements documents; (2) Soliciting offers for acquisitions with an estimated value over the simplified acquisition threshold; or (3) Awarding a task or delivery order over the simplified acquisition threshold."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "210.001",
+        "quote": "Agencies must conduct market research appropriate to the circumstances before issuing a solicitation with tiered evaluation of offers"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Publicizing Contract Actions",
+      "q": "When must you post a presolicitation notice, and what lets a SAT-level buy skip it?",
+      "a": "Post a presolicitation notice to the GPE for any proposed contract action expected to be greater than $20,000. At or below the SAT you may skip it if the solicitation itself will be posted to the GPE under 5.201 and the public can respond to it electronically.",
+      "cite": {
+        "src": "rfo",
+        "sec": "5.101",
+        "quote": "For proposed contract actions expected to be greater than $20,000, post a presolicitation notice to the GPE unless an exemption in paragraph (b) applies.",
+        "amount": "$20,000"
       }
     },
     {
@@ -332,95 +437,16 @@
       "type": "recall",
       "topic": "Contract Types",
       "q": "May a cost-reimbursement contract be used to buy commercial products or services?",
-      "a": "No — it is not allowed.",
+      "a": "No — it is not allowed. DoD stacks a second hard stop on the same section: for military construction or military family housing projects, cost-plus-fixed-fee, cost-plus-award-fee, and cost-plus-incentive-fee types are barred — even under a declaration of war or national emergency.",
       "cite": {
         "src": "rfo",
         "sec": "16.301-3",
         "quote": "The use of cost-reimbursement contracts is not allowed for the purchase of commercial products and commercial services (see part 12)."
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-      "q": "What is price analysis?",
-      "a": "Examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit.",
-      "cite": {
-        "src": "rfo",
-        "sec": "15.404-1",
-        "quote": "Price analysis is the process of examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit."
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-      "q": "Which two price analysis techniques are preferred?",
-      "a": "Comparing proposed prices received in response to the solicitation, and comparing proposed prices to historical prices paid for the same or similar items.",
-      "cite": {
-        "src": "rfo",
-        "sec": "15.404-1",
-        "quote": "The techniques at 15.404-1(b)(1) and (2) are the preferred methods for price analysis."
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-      "q": "Does a catalog listing prove a price is fair and reasonable?",
-      "a": "No. A price appearing in a catalog does not, in and of itself, make it fair and reasonable.",
-      "cite": {
-        "src": "rfo",
-        "sec": "15.404-1",
-        "quote": "The fact that a price is included in a catalog does not, in and of itself, make it fair and reasonable."
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-      "q": "What establishes adequate price competition?",
-      "a": "Two or more responsible offerors, competing independently, submit priced offers satisfying the requirement; award goes to the best-value offeror with price a substantial factor; and there is no finding that the price is unreasonable.",
-      "cite": {
-        "src": "rfo",
-        "sec": "15.403-2",
-        "quote": "Two or more responsible offerors, competing independently, submit priced offers that satisfy the Government's expressed requirement"
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-      "q": "Only one offer arrives under a competitive DoD solicitation. Can you claim adequate price competition based on the expectation of competition?",
-      "a": "No. That one-offer path applies only to agencies other than DoD, NASA, and the Coast Guard — a DoD contracting officer needs another basis to find the price fair and reasonable.",
-      "cite": {
-        "src": "rfo",
-        "sec": "15.403-2",
-        "quote": "For agencies other than DoD, NASA, and the Coast Guard, a price is also based on adequate price competition when"
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
-      "q": "May certified cost or pricing data be obtained at or below the SAT?",
-      "a": "No — it must not be obtained.",
-      "cite": {
-        "src": "rfo",
-        "sec": "15.403-2",
-        "quote": "Certified cost or pricing data must not be obtained for acquisitions at or below the simplified acquisition threshold."
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Terminations",
-      "q": "What is a termination for convenience?",
-      "a": "The Government's right to completely or partially terminate performance when it is in the Government's interest. Unlike default, no contractor fault is involved.",
-      "cite": {
-        "src": "rfo",
-        "sec": "2.101",
-        "quote": "Termination for convenience means the exercise of the Government’s right to completely or partially terminate performance of work under a contract when it is in the Government’s interest."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "216.301-3",
+        "quote": "For contracts in connection with a military construction project or a military family housing project, contracting officers must not use cost-plus-fixed-fee, cost-plus-award- fee, or cost-plus-incentive-fee contract types"
       }
     },
     {
@@ -547,7 +573,7 @@
     {
       "rung": "sat",
       "type": "recall",
-      "topic": "Construction & Service Contracting",
+      "topic": "Acquisition Planning & Strategy",
       "q": "May contractors perform inherently governmental functions?",
       "a": "No. Contracts must not be used for them — examples include awarding contracts, approving contractual documents, and voting on source selection boards.",
       "cite": {
@@ -597,11 +623,16 @@
       "type": "recall",
       "topic": "Inspection & Acceptance",
       "q": "What inspection does the Government normally perform for contracts at or below the SAT?",
-      "a": "Inspection at destination, and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking.",
+      "a": "Inspection at destination, and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking. DoD reinforces it from the other side: do not require quality assurance at source at or below the SAT unless the 246.402 criteria are met.",
       "cite": {
         "src": "rfo",
         "sec": "46.404",
         "quote": "the Government must inspect contracts at or below the simplified acquisition threshold at destination and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking, if applicable."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "246.404",
+        "quote": "Do not require Government contract quality assurance at source for contracts or delivery orders valued at or below the simplified acquisition threshold unless the criteria at 246.402 have been met."
       }
     },
     {
@@ -633,24 +664,25 @@
       "rung": "sat",
       "type": "recall",
       "topic": "REAs & Claims",
-      "q": "A contractor threatens to stop work until a dispute is resolved. What does the Disputes clause require?",
-      "a": "The contractor must proceed diligently with performance pending final resolution, and comply with the contracting officer's decision.",
+      "q": "How long does the contracting officer have to decide a contractor claim?",
+      "a": "For claims of $100,000 or less: if the contractor requests a decision in writing, render it within 60 days of the request. For certified claims over $100,000: within 60 days, either decide the claim or tell the contractor the date by which the decision will be made.",
       "cite": {
         "src": "rfo",
         "sec": "52.233-1",
-        "quote": "The Contractor must proceed diligently with performance of this contract, pending final resolution of any request for relief, claim, appeal, or action arising under the contract."
+        "quote": "For Contractor claims of $100,000 or less, the Contracting Officer must, if requested in writing by the Contractor, render a decision within 60 days of the request. For Contractor-certified claims over $100,000, the Contracting Officer must, within 60 days, decide the claim or notify the Contractor of the date by which the decision will be made.",
+        "amount": "$100,000"
       }
     },
     {
       "rung": "sat",
       "type": "recall",
       "topic": "REAs & Claims",
-      "q": "Where should contract controversies be resolved first?",
-      "a": "By mutual agreement at the contracting officer's level, before a claim is submitted.",
+      "q": "A contractor threatens to stop work until a dispute is resolved. What does the Disputes clause require?",
+      "a": "The contractor must proceed diligently with performance pending final resolution, and comply with the contracting officer's decision.",
       "cite": {
         "src": "rfo",
-        "sec": "33.204",
-        "quote": "As a matter of policy, the Government tries to resolve all contractual issues in controversy by mutual agreement at the contracting officer's level."
+        "sec": "52.233-1",
+        "quote": "The Contractor must proceed diligently with performance of this contract, pending final resolution of any request for relief, claim, appeal, or action arising under the contract."
       }
     },
     {
@@ -687,19 +719,8 @@
         "src": "rfo",
         "sec": "6.001",
         "quote": "Contract modifications that are within the scope of the contract, including exercising priced options that were evaluated as part of the original competition (see part 17)"
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Options",
-      "q": "What is an option?",
-      "a": "A unilateral right by which, for a specified time, the Government may purchase additional supplies or services called for by the contract, or extend its term.",
-      "cite": {
-        "src": "rfo",
-        "sec": "2.101",
-        "quote": "Option means a unilateral right in a contract by which, for a specified time, the Government may elect to purchase additional supplies or services called for by the contract, or may elect to extend the term of the contract."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "sat",
@@ -735,6 +756,61 @@
         "src": "rfo",
         "sec": "32.703-3",
         "quote": "for severable services for a period that begins in one fiscal year and ends in the next fiscal year if the period of the contract awarded, option exercised, or order placed does not exceed one year"
+      },
+      "dod": "n/a"
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Finance & Fiscal Law",
+      "q": "When is an invoice payment due under the Prompt Payment rules?",
+      "a": "The later of two dates: the 30th day after the designated billing office receives a proper invoice, or the 30th day after Government acceptance of the supplies or services. For computing any interest penalty, acceptance is deemed to occur constructively on the 7th day after delivery or performance absent a dispute. DoD note: the contracting officer may extend a constructive acceptance period, but shorter than the 7-day (or 14-day construction) period is not authorized.",
+      "cite": {
+        "src": "rfo",
+        "sec": "32.904",
+        "quote": "The later of the following two events: (i) The 30th day after the designated billing office receives a proper invoice from the contractor (except as provided in paragraph (b)(3) of this section). (ii) The 30th day after Government acceptance of supplies delivered or services performed."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "232.904",
+        "quote": "A constructive acceptance period of less than the cited 7 or 14 days is not authorized."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Finance & Fiscal Law",
+      "q": "What has to be in place before the Government pays a contractor's invoice?",
+      "a": "Two things: receipt of a proper invoice and satisfactory contract performance. A proper invoice carries the contractor's name and address, invoice date and number, contract number, the description, quantity, and price of what was delivered, shipping and payment terms, and correct EFT banking data. A defective invoice must go back to the contractor within 7 days with the reasons it is not proper.",
+      "cite": {
+        "src": "rfo",
+        "sec": "32.905",
+        "quote": "Payment will be based on receipt of a proper invoice and satisfactory contract performance."
+      },
+      "dod": "n/a"
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Finance & Fiscal Law",
+      "q": "Must a contractor ask for interest when the Government pays late?",
+      "a": "No. The designated payment office pays the interest penalty automatically, without any request from the contractor, once a proper invoice was received, the receiving report cleared with no disagreement over quantity or quality, and payment went out after the due date.",
+      "cite": {
+        "src": "rfo",
+        "sec": "32.907",
+        "quote": "The designated payment office will pay an interest penalty automatically, without request from the contractor, when all the following conditions, if applicable, have been met:"
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Contract Finance & Fiscal Law",
+      "q": "How must contractors submit payment requests on DoD contracts?",
+      "a": "Electronically — and Wide Area WorkFlow (WAWF) is the only acceptable electronic form; facsimile, email, and scanned documents do not count. Narrow exceptions cover classified work, environments without connectivity, and purchase-card payments, where only the receiving report goes in electronically.",
+      "cite": {
+        "src": "r-dfars",
+        "sec": "232.7002",
+        "quote": "The only acceptable electronic form for submission of payment requests and receiving reports is Wide Area WorkFlow (WAWF)"
       }
     }
   ]

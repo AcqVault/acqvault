@@ -5,23 +5,16 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "Who is the source selection authority by default, and what team must the SSA establish?",
-      "a": "The contracting officer is the SSA unless the agency head appoints another individual. The SSA must establish an evaluation team tailored to the acquisition with contracting, legal, logistics, technical, and other expertise.",
+      "a": "The contracting officer is the SSA unless the agency head appoints another individual. The SSA must establish an evaluation team tailored to the acquisition with contracting, legal, logistics, technical, and other expertise. For DoD, R-DFARS 215.201 adds a step: for high-dollar value and other acquisitions, as prescribed by agency procedures, the SSA must approve a source selection plan before the solicitation is issued.",
       "cite": {
         "src": "rfo",
         "sec": "15.201",
         "quote": "Agency heads are responsible for source selection. A contracting officer is designated as the source selection authority (SSA), unless the agency head appoints another individual for a particular acquisition or group of acquisitions."
-      }
-    },
-    {
-      "rung": "25m",
-      "type": "recall",
-      "topic": "Contracting by Negotiation — Source Selection",
-      "q": "Against what may competitive proposals be evaluated?",
-      "a": "Solely the factors and subfactors stated in the RFP — nothing else.",
-      "cite": {
-        "src": "rfo",
-        "sec": "15.202",
-        "quote": "Agencies must evaluate each competitive proposal based solely on the factors and subfactors in the RFP."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.201",
+        "quote": "For high-dollar value and other acquisitions, as prescribed by agency procedures, the source selection authority must approve a source selection plan before the solicitation is issued."
       }
     },
     {
@@ -125,11 +118,16 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "What is the minimum content of negotiations with each offeror in the competitive range?",
-      "a": "Negotiate with each responsible offeror in the range, tailored to its proposal — and at a minimum indicate to, or negotiate with, each offeror any deficiencies or significant weaknesses in its proposal.",
+      "a": "Negotiate with each responsible offeror in the range, tailored to its proposal — and at a minimum indicate to, or negotiate with, each offeror any deficiencies or significant weaknesses in its proposal. For DoD, R-DFARS 215.204-2 adds an expectation: for acquisitions with an estimated value of $100 million or more, contracting officers should conduct negotiations.",
       "cite": {
         "src": "rfo",
         "sec": "15.204-2",
         "quote": "(i) Negotiate with each responsible offeror within the competitive range; and (ii) Tailor the negotiation to the offeror’s proposal, but at a minimum, indicate to, or negotiate with, each offeror any deficiencies or significant weaknesses in the proposal."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.204-2",
+        "quote": "For acquisitions with an estimated value of $100 million or more, contracting officers should conduct negotiations."
       }
     },
     {
@@ -142,7 +140,21 @@
         "src": "rfo",
         "sec": "15.204-2",
         "quote": "(1) When a proposal is eliminated, no further revisions to the proposal can be accepted or considered. (2) Contracting officers may eliminate a proposal from the competitive range at any time upon concluding that the offeror is unlikely to receive an award."
-      }
+      },
+      "dod": "n/a"
+    },
+    {
+      "rung": "25m",
+      "type": "recall",
+      "topic": "Contracting by Negotiation — Source Selection",
+      "q": "Negotiations are finished. What must every offeror still in the competitive range receive?",
+      "a": "An opportunity to submit a proposal revision, plus a notice requiring the revision in writing and stating that the Government intends to make award without obtaining further revisions. Every offeror still in the competitive range must get an equal amount of time to submit its revision.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.204-2",
+        "quote": "(1) When negotiations with an offeror are finished, and that offeror has not been eliminated from the competitive range, contracting officers must provide the offeror with— (i) An opportunity to submit a proposal revision; and (ii) A notice requiring the proposal revision in writing and stating that the Government intends to make award without obtaining further revisions. (2) Each offeror with a proposal still within the competitive range must be given an equal amount of time within which to submit their proposal revision."
+      },
+      "dod": "n/a"
     },
     {
       "rung": "25m",
@@ -172,12 +184,29 @@
       "rung": "25m",
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
+      "q": "An offeror is excluded from the competitive range before award. What notice and debriefing rights does it have?",
+      "a": "Prompt written notice stating the basis for the determination and that proposal revisions will not be considered (15.206-1). The offeror may then request a preaward debriefing in writing within 3 days after receiving the exclusion notice — or ask to delay it until after award, in which case it must include everything a postaward debriefing would, and the delay could affect the timeliness of any later protest. Miss the 3-day window and the offeror need not be given either a preaward or a postaward debriefing; no offeror gets more than one debriefing per proposal. A preaward debriefing must never disclose the number, identity, content, ranking, or evaluation of other offerors.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.206-2",
+        "quote": "(1) Offerors may request a preaward debriefing by submitting a written request for debriefing to the contracting officer within 3 days after receipt of the notice of exclusion from the competition. (2) At the offeror's request, this debriefing may be delayed until after award. If the debriefing is delayed until after award, it must include all information normally provided in a postaward debriefing. Debriefings delayed pursuant to this paragraph could affect the timeliness of any protest filed subsequent to the debriefing."
+      }
+    },
+    {
+      "rung": "25m",
+      "type": "recall",
+      "topic": "Contracting by Negotiation — Source Selection",
       "q": "How quickly must an offeror request a postaward debriefing, and how soon should it occur?",
-      "a": "The written request is due within 3 days after receipt of the award notice; the debriefing should occur within 5 days after receipt of the request, to the maximum extent practicable.",
+      "a": "The written request is due within 3 days after receipt of the award notice; the debriefing should occur within 5 days after receipt of the request, to the maximum extent practicable. For DoD the skeleton has a tail: a written or oral debriefing is required, when requested, for contract awards valued at $15 million or more (R-DFARS 215.301-170), and under the enhanced procedure at 215.301-270 the debriefed offeror has 2 business days to submit additional written questions, the agency must respond in writing within 5 business days, and the debriefing is not concluded until the later of its delivery or that written response — and conclusion is what starts the stay and protest clocks.",
       "cite": {
         "src": "rfo",
         "sec": "15.301-1",
         "quote": "within 3 days after receipt of the award notice in accordance with 15.207-2. Such offerors must be debriefed and furnished the basis for the selection decision and contract award. (2) To the maximum extent practicable, the debriefing should occur within 5 days after receipt of the written request."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.301-270",
+        "quote": "When providing a required postaward debriefing to successful and unsuccessful offerors, contracting officers must— (a) Provide an opportunity to submit additional written questions related to the required debriefing not later than 2 business days after receiving the postaward debriefing; (b) Respond in writing to timely submitted additional questions within 5 business days after receipt of the questions; and (c) Not consider the postaward debriefing to be concluded until the later of— (1) The date that the postaward debriefing is delivered, orally or in writing; or (2) If additional written questions related to the debriefing are timely received, the date the agency delivers its written response."
       }
     },
     {
@@ -185,11 +214,16 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "What must a postaward debriefing include?",
-      "a": "The evaluation of significant weaknesses or deficiencies in the offeror's proposal; the overall evaluated cost or price and technical rating of both the successful and debriefed offerors, plus the debriefed offeror's past performance information; the overall ranking when one was developed; a summary of the award rationale; and reasonable responses to relevant procedural questions.",
+      "a": "The evaluation of significant weaknesses or deficiencies in the offeror's proposal; the overall evaluated cost or price and technical rating of both the successful and debriefed offerors, plus the debriefed offeror's past performance information; the overall ranking when one was developed; a summary of the award rationale; for commercial-product acquisitions, the make and model the successful offeror will deliver; and reasonable responses to relevant procedural questions. The RFO text adds source-selection-decision-document tiers for DoD — small businesses and nontraditional defense contractors get an option to request the redacted SSDD on awards over $10 million up to $100 million, and the redacted SSDD must be disclosed on awards over $100 million — while R-DFARS 215.301-170(b) states those same tiers at over $15 million and over $150 million. Know both sets of numbers.",
       "cite": {
         "src": "rfo",
         "sec": "15.301-1",
-        "quote": "(i) The Government's evaluation of the significant weaknesses or deficiencies in the offeror's proposal, if applicable; (ii) The overall evaluated cost or price and technical rating of the successful offeror and the debriefed offeror, and past performance information on the debriefed offeror; (iii) The overall ranking of all offerors, when any ranking was developed by the agency during the source selection; (iv) A summary of the rationale for award"
+        "quote": "(i) The Government's evaluation of the significant weaknesses or deficiencies in the offeror's proposal, if applicable; (ii) The overall evaluated cost or price and technical rating of the successful offeror and the debriefed offeror, and past performance information on the debriefed offeror; (iii) The overall ranking of all offerors, when any ranking was developed by the agency during the source selection; (iv) A summary of the rationale for award; (v) For acquisitions of commercial products, the make and model of the product to be delivered by the successful offeror"
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.301-170",
+        "quote": "(b) In addition to the requirements of FAR 15.301-1(c), the minimum debriefing information must include the following: (1) For award of a contract in excess of $15 million and not in excess of $150 million with a small business or nontraditional defense contractor, an option for the small business or nontraditional defense contractor to request disclosure of the agency’s written source selection decision document, redacted to protect the confidential and proprietary information of other offerors for the contract award. (2) For award of a contract in excess of $150 million, disclosure of the agency’s written source selection decision document, redacted to protect the confidential and proprietary information of other offerors for the contract award."
       }
     },
     {
@@ -233,6 +267,18 @@
       "rung": "25m",
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "When is a price based on adequate price competition — and which route is closed to DoD?",
+      "a": "The core standard: two or more responsible offerors, competing independently, submit priced offers that satisfy the Government's expressed requirement; award goes to the best-value offeror where price is a substantial factor; and there is no finding that the successful price is unreasonable — any such finding needs a statement of facts approved above the contracting officer. Agencies other than DoD, NASA, and the Coast Guard get a second route: a reasonable expectation, based on market research, that two or more responsible offerors would compete, even though only one offer arrived — with approval above the contracting officer. DoD cannot use that one-offer expectation route. A third basis, open to all: price analysis clearly demonstrating the proposed price is reasonable against current or recent prices for the same or similar items from adequate competition, adjusted for market and quantity changes.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.403-2",
+        "quote": "(ii) For agencies other than DoD, NASA, and the Coast Guard, a price is also based on adequate price competition when (A) There was a reasonable expectation, based on market research or other assessment, that two or more responsible offerors, competing independently, would submit priced offers in response to the request for proposal’s (RFP) expressed requirement, even though only one offer is received from a responsible offeror"
+      }
+    },
+    {
+      "rung": "25m",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "Who can waive the certified cost or pricing data requirement?",
       "a": "The head of the contracting activity, without power of delegation, in exceptional cases — only if the price can be determined fair and reasonable without the data, with the authorization and rationale in writing.",
       "cite": {
@@ -246,12 +292,17 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "A modification deletes $1.5 million of work and adds $1 million — a net $500,000 change. Does it cross the certified-data threshold?",
-      "a": "Yes. Price adjustments count both increases and decreases, so this is a $2.5 million pricing adjustment that exceeds the threshold even though the net change is $500,000.",
+      "a": "Against the baseline $2.5 million threshold, yes — price adjustments count both increases and decreases, so this is a $2.5 million pricing adjustment even though the net change is $500,000. For DoD, R-DFARS 215.403-3 directs you to use the same criteria as the prime contract being modified: primes awarded after June 30, 2026 carry a $10 million threshold, so this adjustment would not trigger certified data there, while primes awarded on or before that date keep the $2.5 million threshold and it would.",
       "cite": {
         "src": "rfo",
         "sec": "15.403-3",
         "quote": "Price adjustment amounts must consider both increases and decreases ( e.g. , a $500,000 modification resulting from a reduction of $1,500,000 and an increase of $1,000,000 is a $2,500,000 pricing adjustment exceeding the $2,500,000 threshold).",
         "amount": "$2,500,000"
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.403-3",
+        "quote": "(1) Use the same criteria for contract modifications or changes as the prime contract being modified or changed."
       }
     },
     {
@@ -264,7 +315,8 @@
         "src": "rfo",
         "sec": "15.403-3",
         "quote": "Certified cost or pricing data are not required for modifications— (A) Solely for overrun funding or interim billing price adjustments; or (B) To exercise an option at the price established at contract award or initial negotiation."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "25m",
@@ -276,6 +328,19 @@
         "src": "rfo",
         "sec": "15.403-4",
         "quote": "The certificate does not constitute a representation as to the accuracy of the contractor's judgment on the estimate of future costs or projections. It applies to the data upon which the judgment or estimate was based."
+      },
+      "dod": "n/a"
+    },
+    {
+      "rung": "25m",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "What is price analysis, and which techniques are preferred?",
+      "a": "Examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit. The preferred techniques are comparison of the proposed prices received in response to the RFP and comparison to historical prices paid, by the Government or others, for the same or similar items — a prior price must be a valid basis and adjusted for differing terms, quantities, and market conditions. Only when those are unavailable or insufficient do the others come in: parametric estimates and rough yardsticks, published price lists and market prices, independent Government cost estimates, market research, or analysis of data other than certified cost or pricing data. A catalog listing does not, by itself, make a price fair and reasonable.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.404-1",
+        "quote": "Price analysis is the process of examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit."
       }
     },
     {
@@ -390,6 +455,42 @@
       "rung": "25m",
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "How does DoD develop its profit objective when certified cost or pricing data are obtained?",
+      "a": "With a structured approach, documented on DD Form 1547: the weighted guidelines method is mandatory, except that the modified weighted guidelines method applies to nonprofit organizations other than FFRDCs, and an alternate structured approach is allowed only for actions at or below the certified data threshold, architect-engineer or construction work, material mostly from subcontractors, or termination settlements — or when weighted guidelines cannot produce a reasonable objective and the HCA approves in writing. Cost-plus-award-fee contracts and FFRDCs are excepted entirely, never perform a profit analysis when assessing cost realism in competitive acquisitions, and document the profit analysis in the contract file.",
+      "cite": {
+        "src": "r-dfars",
+        "sec": "215.404-970",
+        "quote": "Use a structured approach for developing a prenegotiation profit or fee objective on any negotiated contract action when certified cost or pricing data is obtained, except for cost-plus-award-fee contracts (see PGI 215.404-974, 216.402-4, and FAR 16.402-4) or contracts with Federally Funded Research and Development Centers (FFRDCs) (see PGI 215.404-975)."
+      }
+    },
+    {
+      "rung": "25m",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "What must you establish before negotiating any pricing action?",
+      "a": "Prenegotiation objectives — the Government's initial negotiation position, built on the contracting officer's analysis of the offeror's proposal. The scope and depth of the supporting analysis should track the dollar value, importance, and complexity of the action, and when cost analysis is required you must document the pertinent issues to be negotiated, the cost objectives, and a profit or fee objective.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.408-1",
+        "quote": "Contracting officers must establish prenegotiation objectives before negotiating a pricing action. The scope and depth of the analysis supporting the objectives should be directly related to the dollar value, importance, and complexity of the pricing action."
+      }
+    },
+    {
+      "rung": "25m",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "What goes in your price negotiation memorandum?",
+      "a": "The principal elements of the negotiated agreement, in the contract file: the purpose of the negotiation; a description of the acquisition; who represented each side; the status of contractor systems that affected the negotiation; if certified cost or pricing data were not required above the threshold, the exception used and its basis; if they were required, the extent you relied on them and any inaccurate, incomplete, or noncurrent data recognized; a summary of the proposal, field pricing recommendations, the Government's objective, and the negotiated position — each major cost element when based on cost analysis, or the source and type of data when based on price analysis; the most significant facts controlling the objectives and the agreement, with any significant differences between the two explained; the impact of higher-level direction; the basis for the profit or fee objective and what was negotiated; and documentation of fair and reasonable pricing.",
+      "cite": {
+        "src": "rfo",
+        "sec": "15.408-2",
+        "quote": "Contracting officers must document in the contract file the principal elements of the negotiated agreement. The documentation ( e.g. , price negotiation memorandum) must include the following: (1) The purpose of the negotiation. (2) A description of the acquisition, including appropriate identifying numbers ( e.g. , RFP No.)."
+      }
+    },
+    {
+      "rung": "25m",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "May another contract's prices or profits influence this negotiation?",
       "a": "No. Each contract is priced separately and independently — no proposed price reductions under other contracts, no losses or profits realized or anticipated elsewhere, and no contingency amounts the contract already covers by adjustment.",
       "cite": {
@@ -415,11 +516,16 @@
       "type": "recall",
       "topic": "Contractor Qualifications — Responsibility",
       "q": "Recite the general standards of responsibility.",
-      "a": "Adequate financial resources (or the ability to obtain them); ability to meet the delivery or performance schedule given existing commitments; a satisfactory performance record; a satisfactory record of integrity and business ethics; the necessary organization, experience, controls, and technical skills; the necessary production, construction, and technical equipment and facilities; and being otherwise qualified and eligible under applicable laws.",
+      "a": "Adequate financial resources (or the ability to obtain them); ability to meet the delivery or performance schedule given existing commitments; a satisfactory performance record — but never determine a contractor responsible or nonresponsible based solely on a lack of relevant performance history; a satisfactory record of integrity and business ethics; the necessary organization, experience, controls, and technical skills; the necessary production, construction, and technical equipment and facilities; and being otherwise qualified and eligible under applicable laws. For DoD, R-DFARS 209.104-1 adds more: on cost-reimbursement, incentive, or progress-payment contracts the contractor's accounting system and internal controls must give reasonable assurance that laws are complied with, cost data are reliable, misallocation risk is minimized, and charges match invoice procedures — and control by a state sponsor of terrorism, or by a foreign government where the contract requires access to proscribed information, bars award.",
       "cite": {
         "src": "rfo",
         "sec": "9.104-1",
-        "quote": "(a) Have adequate financial resources to perform the contract, or the ability to obtain them (see 9.104-3(a)); (b) Be able to comply with the required or proposed delivery or performance schedule, taking into consideration all existing commercial and governmental business commitments; (c) Have a satisfactory performance record"
+        "quote": "(a) Have adequate financial resources to perform the contract, or the ability to obtain them (see 9.104-3(a)); (b) Be able to comply with the required or proposed delivery or performance schedule, taking into consideration all existing commercial and governmental business commitments; (c) Have a satisfactory performance record (see 9.104-3(b) and part 42). Do not determine a prospective contractor responsible or nonresponsible based solely on a lack of relevant performance history"
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "209.104-1",
+        "quote": "(e) For cost-reimbursement or incentive type contracts, or contracts that provide for progress payments based on costs or on a percentage or stage of completion, the prospective contractor’s accounting system and related internal controls must provide reasonable assurance that— (i) Applicable laws and regulations are complied with; (ii) The accounting system and cost data are reliable; (iii) Risk of misallocations and mischarges are minimized; and (iv) Contract allocations and charges are consistent with invoice procedures."
       }
     },
     {
@@ -486,12 +592,12 @@
       "rung": "25m",
       "type": "recall",
       "topic": "Procurement Integrity",
-      "q": "What two categories of information does the procurement integrity rule protect from disclosure?",
-      "a": "Contractor bid or proposal information and source selection information — neither may be disclosed to anyone not authorized to receive it.",
+      "q": "An offeror contacts you about a job while you are working its source selection. What must you do — and what waits on the other side of Government service?",
+      "a": "Report the contact promptly in writing to your supervisor and the agency ethics official, then either reject the possibility of non-Federal employment or disqualify yourself from further personal and substantial participation in that procurement — the duty attaches to any official participating personally and substantially in a procurement over the SAT, and unsolicited approaches count. On the back end, a former official who served as the contracting officer, SSA, evaluation-board member, evaluation-team chief, program manager, deputy PM, or ACO on a contract exceeding $10 million to that contractor — or personally made certain $10 million-plus award, rate, payment, or claim decisions — may not accept compensation from that contractor as an employee, officer, director, or consultant for 1 year.",
       "cite": {
         "src": "rfo",
-        "sec": "3.104-4",
-        "quote": "No person or entity may disclose contractor bid or proposal information or source selection information to any person other than those authorized to receive that information"
+        "sec": "3.104-3",
+        "quote": "(i) Promptly report the contact in writing to the official's supervisor and to the agency ethics official; and (ii) Either reject the possibility of non-Federal employment or disqualify himself or herself from further personal and substantial participation in that Federal agency procurement"
       }
     },
     {
@@ -523,7 +629,7 @@
       "type": "recall",
       "topic": "Protests",
       "q": "State the GAO postaward stay rule precisely.",
-      "a": "If the agency receives GAO's protest notice within 10 days after award or within 5 days after a debriefing date offered under a required debriefing — whichever is later — the contracting officer must immediately suspend performance or terminate the contract, unless the HCA authorizes continued performance.",
+      "a": "If the agency receives GAO's protest notice within 10 days after award or within 5 days after a debriefing date offered under a required debriefing — whichever is later — the contracting officer must immediately suspend performance or terminate the contract, unless the HCA authorizes continued performance. [Note: the quoted reference to “15.505 or 15.506” is a stale cross-reference — in the RFO those sections cover unsolicited proposals; the operative debriefing sections are 15.206-2 (preaward) and 15.301 (postaward).]",
       "cite": {
         "src": "rfo",
         "sec": "33.105-3",
