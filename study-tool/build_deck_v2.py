@@ -332,7 +332,40 @@ def ladder_gate(items):
         card['cite']['link'] = {'t': ('RFO ' if cite['src'] == 'rfo' else 'R-DFARS ') + cite['sec'],
                                 'u': '/' + cite['src'] + '/part-' + part + '#' + str(frag)}
         out[it['rung']].append(card)
+    _dod_overlay_check(items)
     return out
+
+
+# The defect verbatim quoting CANNOT see: a card can cite the RFO correctly and quote it
+# exactly, and still be wrong for a DoD reader, because R-DFARS supersedes that section.
+# Only reading the supplement catches it. So if an RFO-cited card sits on a section with a
+# substantive DoD counterpart, it must carry `dod` — either an r-dfars cite (the deviation
+# changes the answer) or the string "n/a" (checked, it doesn't). Report-only until the
+# existing cards are annotated; then flip fatal=True and it can never regress.
+def _dod_overlay_check(items, fatal=False):
+    idx = {}
+    for _d in docs:
+        if _d.get('source') != 'r-dfars': continue
+        _m = re.match(r'^(\d{3}\.[\d.-]+)', _d['title'])
+        if _m: idx.setdefault(_m.group(1), _d)
+    missing = []
+    for it in items:
+        c = it.get('cite', {})
+        if c.get('src') != 'rfo': continue
+        head, _, tail = c.get('sec', '').partition('.')
+        if not head.isdigit() or not tail: continue
+        key = '2%02d.%s' % (int(head), tail)
+        dod = idx.get(key)
+        if not dod or len(_norm(dod['content'])) < 160: continue   # no supplement, or a stub
+        if not it.get('dod'):
+            missing.append((it['rung'], key, it['q'][:56]))
+    if missing:
+        print('  ladder DoD-overlay: %d card(s) cite an RFO section R-DFARS supplements, unreviewed:' % len(missing))
+        for r, s, q in missing[:60]:
+            print('    [%-9s] R-DFARS %-12s %s' % (r, s, q))
+        if fatal: sys.exit('FATAL: ladder: %d card(s) missing a `dod` review field' % len(missing))
+    else:
+        print('  ladder DoD-overlay: every RFO cite with a DoD supplement has been reviewed')
 
 # ACQVAULT_LADDER_FILE: test hook (scripts/test_ladder_gate.py) — pins to a single file.
 # Default authors one file per rung (deck-ladder-*.json) so batches never race the same file;
