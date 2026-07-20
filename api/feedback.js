@@ -1,4 +1,4 @@
-const { enforce } = require('./_ratelimit');
+const { enforce, clientIp } = require('./_ratelimit');
 
 // Same-origin feedback relay. The browser only ever talks to acqvault.com (CAC-safe —
 // locked-down .mil networks that block third-party form endpoints still work); this
@@ -83,9 +83,11 @@ async function boardPost(req, res, body) {
   if (g !== 'X' && !(g >= 1 && g <= 6)) return res.status(400).json({ error: 'Bad result.' });
   let name = clean(body.name, 18).replace(NAME_RE, '').trim() || 'Anonymous';
   if (NAME_BLOCK.test(name)) name = 'Anonymous';
-  // one post per IP per day — an office board, not a spam wall
+  // one post per IP per day — an office board, not a spam wall. Use clientIp(), which reads
+  // cf-connecting-ip: behind Cloudflare the x-forwarded-for is a rotating colo, so hashing it
+  // let duplicates through and collided unrelated visitors onto one bucket.
   const ipHash = require('crypto').createHash('sha256')
-    .update(String((req.headers['x-forwarded-for'] || '').split(',')[0] || (req.socket && req.socket.remoteAddress) || '') + ':' + no)
+    .update(clientIp(req) + ':' + no)
     .digest('hex').slice(0, 24);
   const gate = await redis([['SET', `lbip:${no}:${ipHash}`, '1', 'NX', 'EX', '100000']]);
   if (!gate) return res.status(502).json({ error: 'The board didn’t answer — try again.' });

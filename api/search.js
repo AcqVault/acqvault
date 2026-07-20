@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { enforce } = require('./_ratelimit');
 
-// AcqVault search runs fully in-memory over output/documents.json (all 6
-// sources, ~5,500 docs). No external search service — the corpus is small and
+// AcqVault search runs fully in-memory over output/documents.json (all 7
+// sources, ~5,900 docs). No external search service — the corpus is small and
 // the data already ships with the deployment, so this removes the MeiliSearch
 // dependency (and its credentials) and the local/remote split-brain entirely.
 

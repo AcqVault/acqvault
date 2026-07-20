@@ -1,5 +1,21 @@
 const { enforce } = require('./_ratelimit');
 
+// A slow or hung upstream (SAM.gov) would otherwise run until the platform kills the
+// function and returns a raw 504; this gives it a real deadline so the handler's own
+// graceful JSON error is what the user gets.
+async function timedFetch(url, opts, ms) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms || 8000);
+  try {
+    return await fetch(url, Object.assign({}, opts, { signal: ctrl.signal }));
+  } catch (e) {
+    if (e && e.name === 'AbortError') throw Object.assign(new Error('SAM.gov did not respond in time.'), { status: 504 });
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const NOTICE_TYPE_LABELS = {
   p: 'Pre-solicitation',
   r: 'Sources sought',
@@ -138,7 +154,7 @@ async function fetchSam(params, apiKey) {
   if (params.setAside) url.searchParams.set('typeOfSetAside', params.setAside);
   if (params.ptype) url.searchParams.set('ptype', params.ptype);
 
-  const upstream = await fetch(url.toString(), { headers: { Accept: 'application/json' } });
+  const upstream = await timedFetch(url.toString(), { headers: { Accept: 'application/json' } }, 8000);
   const data = await upstream.json().catch(async () => ({ error: await upstream.text() }));
   if (!upstream.ok) {
     const error = new Error(data?.error || data?.message || `SAM.gov returned HTTP ${upstream.status}`);

@@ -3,6 +3,23 @@
 // + CAC networks block third-party client calls. Data is stable → cache hard.
 const { enforce } = require('./_ratelimit');
 
+// Every upstream call gets a deadline. vehiclesMode does 3 sequential order-page fetches
+// plus up to 24 parallel enrichment fetches; without a per-call abort a single slow upstream
+// runs until the platform kills the whole function and returns a raw 504 instead of the
+// handler's graceful JSON.
+async function timedFetch(url, opts, ms) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms || 8000);
+  try {
+    return await fetch(url, Object.assign({}, opts, { signal: ctrl.signal }));
+  } catch (e) {
+    if (e && e.name === 'AbortError') throw Object.assign(new Error('USASpending did not respond in time.'), { status: 504 });
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const AWARD_TYPES = ['A', 'B', 'C', 'D']; // definitive contracts + IDVs
 const FIELDS = ['Award ID', 'Recipient Name', 'Award Amount', 'Awarding Agency', 'Awarding Sub Agency', 'Start Date', 'End Date', 'Contract Award Type', 'generated_internal_id'];
 
@@ -30,11 +47,11 @@ function compactAward(a) {
 }
 
 async function fetchUsa(payload) {
-  const upstream = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
+  const upstream = await timedFetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(payload)
-  });
+  }, 8000);
   const data = await upstream.json().catch(async () => ({ error: await upstream.text() }));
   if (!upstream.ok) {
     const error = new Error(data?.detail || data?.error || `USASpending returned HTTP ${upstream.status}`);
@@ -49,11 +66,11 @@ async function fetchUsa(payload) {
 // the primary result, so a leaderboard failure must not fail the request.
 async function fetchLeaderboardSafe(filters) {
   try {
-    const upstream = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_category/recipient/', {
+    const upstream = await timedFetch('https://api.usaspending.gov/api/v2/search/spending_by_category/recipient/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ filters, limit: 6 })
-    });
+    }, 7000);
     if (!upstream.ok) return null;
     const data = await upstream.json().catch(() => null);
     if (!data || !Array.isArray(data.results)) return null;
@@ -164,16 +181,16 @@ function vIsoDaysAgo(days) { return new Date(Date.now() - days * 86400000).toISO
 function vToday() { return new Date().toISOString().slice(0, 10); }
 
 async function post(path, payload) {
-  const r = await fetch(`${USA}${path}`, {
+  const r = await timedFetch(`${USA}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(payload)
-  });
+  }, 8000);
   if (!r.ok) throw Object.assign(new Error(`USASpending ${path} HTTP ${r.status}`), { status: r.status });
   return r.json();
 }
 async function get(path) {
-  const r = await fetch(`${USA}${path}`, { headers: { Accept: 'application/json' } });
+  const r = await timedFetch(`${USA}${path}`, { headers: { Accept: 'application/json' } }, 7000);
   if (!r.ok) return null; // enrichment is best-effort
   return r.json().catch(() => null);
 }
