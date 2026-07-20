@@ -1151,12 +1151,14 @@
   function resumeSession() {
     var r = S.resume;
     if (!r) return false;
-    if (r.mode !== 'ladder' && r.mode !== 'ladderBoard' && !S.track) { clearResume(); return false; }
+    // ladder, board sims and the games need no track selected; the track-bound modes do.
+    if (r.mode !== 'ladder' && r.mode !== 'ladderBoard' && r.mode !== 'governs' && !S.track) { clearResume(); return false; }
     rendered = true;
     var ok = r.mode === 'ladderBoard' ? resumeLadderBoard()
       : r.mode === 'recall' ? resumeRecall()
       : r.mode === 'deep' ? resumeDeep()
       : r.mode === 'sprint' ? resumeSprint()
+      : r.mode === 'governs' ? resumeGoverns()
       : resumeLadder();
     if (!ok) rendered = false;   // nothing resumed — the next paint really is a cold arrival
     return ok;
@@ -1552,37 +1554,58 @@
       var isBest = score > (G[bk] || 0);
       if (isBest) G[bk] = score;
       if (bestCombo > (G[ck] || 0)) G[ck] = bestCombo;
-      bumpStreak(); save();
-      var missHtml = misses.length
-        ? '<div class="st-gv-misslist"><div class="st-walk-head">The ones that got away</div>' +
-          misses.slice(0, 8).map(function (q) {
-            return '<div class="st-gv-miss"><span>' + esc(q.s) + '</span>' +
-              '<a class="st-cite" href="' + esc(q.link.u) + '" target="_blank" rel="noopener">' + esc(q.p) + ' — ' + esc(deck.games.part_names[q.p] || '') + '</a></div>';
-          }).join('') + '</div>'
-        : '<p class="st-sub" style="text-align:center">Nothing got away. Clean round.</p>';
-      var SEAL = '<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gv-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#gv-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="41" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity=".55"/><circle cx="50" cy="50" r="21" fill="none" stroke="#16263f" stroke-width="2.4" opacity=".9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity=".9"><line x1="50" y1="34" x2="50" y2="42"/><line x1="50" y1="66" x2="50" y2="58"/><line x1="34" y1="50" x2="42" y2="50"/><line x1="66" y1="50" x2="58" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#16263f" opacity=".9"/></svg>';
-      render('<div class="st-card st-summary st-gv-end">' +
-        '<div class="st-chip">Which Part Governs?</div>' +
-        '<div class="st-gv-seal' + (document.hidden ? '' : ' st-gv-seal-stamp') + '">' + SEAL + '</div>' +
-        '<div class="st-sum-num" id="gv-final">0</div>' +
-        '<div class="st-gv-tier">' + gvTier(score) + (isBest && score > 0 ? ' · new personal best' : (G[bk] ? ' · best ' + G[bk].toLocaleString() : '')) + '</div>' +
-        '<p class="st-sub">Top combo ×' + (1 + Math.min(4, Math.floor(bestCombo / 2))) + (bestCombo >= 2 ? '' : ' — chain answers to multiply') + '. Fast calls (under 4s) earn the bonus.</p>' +
-        missHtml +
-        '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="gv-again">Run it again</button>' +
-        '<button class="st-btn st-btn-hint" id="st-home">Study menu</button></div></div>');
-      el('gv-again').onclick = viewGoverns;
-      el('st-home').onclick = backToTools;
-      // score counts up — the end-screen moment (rAF is paused in hidden tabs: set the
-      // value directly there so a backgrounded tab never shows 0)
-      var fin = el('gv-final'), t0 = Date.now(), dur = Math.min(900, 200 + score / 8);
-      if (document.hidden || !window.requestAnimationFrame) { if (fin) fin.textContent = score.toLocaleString(); }
-      else (function up() {
-        var f = Math.min(1, (Date.now() - t0) / dur);
-        if (fin) fin.textContent = Math.round(score * (1 - Math.pow(1 - f, 3))).toLocaleString();
-        if (f < 1) requestAnimationFrame(up); else if (fin) fin.textContent = score.toLocaleString();
-      })();
+      bumpStreak();
+      // Persist the finished round. This is what lets the miss-list citations be same-tab
+      // like everywhere else: follow one, and coming back to /study restores this screen
+      // instead of dropping you at the intro with the misses gone. The state mutations
+      // above run ONCE, here; the restore path only re-renders from this saved result.
+      S.resume = { mode: 'governs', at: Date.now(), res: {
+        score: score, bestCombo: bestCombo, isBest: isBest, bestScore: G[bk] || 0,
+        misses: misses.slice(0, 8).map(function (q) { return { s: q.s, p: q.p, u: q.link.u }; })
+      } };
+      save();
+      renderGovernsEnd(S.resume.res);
     }
     intro();
+  }
+  // Pure render of a finished round — driven from a saved result, so it serves both the
+  // live finish and the restore-after-citation path with no state change.
+  function renderGovernsEnd(res) {
+    var missHtml = res.misses.length
+      ? '<div class="st-gv-misslist"><div class="st-walk-head">The ones that got away</div>' +
+        res.misses.map(function (m) {
+          return '<div class="st-gv-miss"><span>' + esc(m.s) + '</span>' +
+            '<a class="st-cite" href="' + esc(m.u) + '">' + esc(m.p) + ' — ' + esc(deck.games.part_names[m.p] || '') + '</a></div>';
+        }).join('') + '</div>'
+      : '<p class="st-sub" style="text-align:center">Nothing got away. Clean round.</p>';
+    var SEAL = '<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gv-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#gv-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="41" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity=".55"/><circle cx="50" cy="50" r="21" fill="none" stroke="#16263f" stroke-width="2.4" opacity=".9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity=".9"><line x1="50" y1="34" x2="50" y2="42"/><line x1="50" y1="66" x2="50" y2="58"/><line x1="34" y1="50" x2="42" y2="50"/><line x1="66" y1="50" x2="58" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#16263f" opacity=".9"/></svg>';
+    render('<div class="st-card st-summary st-gv-end">' +
+      '<div class="st-chip">Which Part Governs?</div>' +
+      '<div class="st-gv-seal' + (document.hidden ? '' : ' st-gv-seal-stamp') + '">' + SEAL + '</div>' +
+      '<div class="st-sum-num" id="gv-final">0</div>' +
+      '<div class="st-gv-tier">' + gvTier(res.score) + (res.isBest && res.score > 0 ? ' · new personal best' : (res.bestScore ? ' · best ' + res.bestScore.toLocaleString() : '')) + '</div>' +
+      '<p class="st-sub">Top combo ×' + (1 + Math.min(4, Math.floor(res.bestCombo / 2))) + (res.bestCombo >= 2 ? '' : ' — chain answers to multiply') + '. Fast calls (under 4s) earn the bonus.</p>' +
+      missHtml +
+      '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="gv-again">Run it again</button>' +
+      '<button class="st-btn st-btn-hint" id="st-home">Study menu</button></div></div>');
+    el('gv-again').onclick = function () { clearResume(); viewGoverns(); };
+    el('st-home').onclick = function () { clearResume(); backToTools(); };
+    // score counts up — the end-screen moment (rAF is paused in hidden tabs: set the
+    // value directly there so a backgrounded tab never shows 0)
+    var fin = el('gv-final'), t0 = Date.now(), dur = Math.min(900, 200 + res.score / 8);
+    if (document.hidden || !window.requestAnimationFrame) { if (fin) fin.textContent = res.score.toLocaleString(); }
+    else (function up() {
+      var f = Math.min(1, (Date.now() - t0) / dur);
+      if (fin) fin.textContent = Math.round(res.score * (1 - Math.pow(1 - f, 3))).toLocaleString();
+      if (f < 1) requestAnimationFrame(up); else if (fin) fin.textContent = res.score.toLocaleString();
+    })();
+  }
+  function resumeGoverns() {
+    var r = S.resume;
+    if (!r || !r.res) { clearResume(); return false; }
+    depth1View = viewGoverns;
+    goDepth(1, function () { renderGovernsEnd(r.res); });
+    return true;
   }
 
   /* ---- board sim (out loud, with hints + a methodical model answer) ---- */
