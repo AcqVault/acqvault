@@ -240,7 +240,7 @@
         run + '-day streak</div>' : '') +
       '<div class="st-track-chip">' + (S.track === 'basic' ? 'Basic · Foundations' : 'Advanced · Board Prep') +
       ' <button class="st-link" id="st-switch">switch</button></div></div>' +
-      '<button class="st-daily" id="m-daily"><div class="st-daily-eyebrow">Today’s session · Daily Review</div>' + dailyInner + '<span class="st-daily-go" aria-hidden="true">→</span></button>' +
+      '<button class="st-daily' + (due.length ? '' : ' st-daily-dead') + '" id="m-daily"' + (due.length ? '' : ' disabled') + '><div class="st-daily-eyebrow">Today’s session · Daily Review</div>' + dailyInner + (due.length ? '<span class="st-daily-go" aria-hidden="true">→</span>' : '') + '</button>' +
       '<div class="st-modes">' +
       '<button class="st-mode" id="m-deep"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Deep Study</b><span>Endless random cards, every topic in the mix — go as long as you want</span></button>' +
       '<button class="st-mode" id="m-sprint"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Threshold Sprint</b><span>Rapid-fire numbers · best streak ' + (S.sprint.best || 0) + '</span></button>' +
@@ -254,7 +254,7 @@
       '<button class="st-link" id="st-import">Import</button> · ' +
       '<button class="st-link" id="st-reset">Reset</button><input type="file" id="st-file" accept="application/json" hidden></div>'
     );
-    el('m-daily').onclick = function () { goDepth(2, function () { startSession(due, 'Daily Review'); }); };
+    if (due.length) el('m-daily').onclick = function () { goDepth(2, function () { startSession(due, 'Daily Review'); }); };
     el('m-deep').onclick = function () { goDepth(2, viewDeep); };
     el('m-sprint').onclick = function () { goDepth(2, viewSprint); };
     if (el('m-board')) el('m-board').onclick = function () { goDepth(2, viewBoard); };
@@ -1159,6 +1159,7 @@
       : r.mode === 'deep' ? resumeDeep()
       : r.mode === 'sprint' ? resumeSprint()
       : r.mode === 'governs' ? resumeGoverns()
+      : r.mode === 'board' ? resumeBoard()
       : resumeLadder();
     if (!ok) rendered = false;   // nothing resumed — the next paint really is a cold arrival
     return ok;
@@ -1434,7 +1435,7 @@
     var pool = shuffle(deck.games.governs.slice());
     var PN = deck.games.part_names;
     var i = 0, score = 0, combo = 0, bestCombo = 0, misses = [], answered = false, caseNo = 0;
-    var endAt = 0, tick = null, qShownAt = 0, started = false;
+    var endAt = 0, tick = null, qShownAt = 0, started = false, pend = null, ended = false;
     function mult() { return 1 + Math.min(4, Math.floor(combo / 2)); }
     function remaining() { return Math.max(0, (endAt - Date.now()) / 1000); }
     function ringHtml() {
@@ -1483,6 +1484,7 @@
       next();
     }
     function next() {
+      if (ended) return;   // a pending reveal-delay must not paint a question over the end screen
       if (i >= pool.length) { shuffle(pool); i = 0; }
       var q = pool[i]; answered = false; caseNo++;
       var opts = shuffle([q.p].concat(q.d));
@@ -1516,7 +1518,7 @@
       setTimeout(function () { f.remove(); }, 900);
     }
     function call(btn, q) {
-      if (answered) return; answered = true;
+      if (answered || ended) return; answered = true;
       var right = btn.getAttribute('data-p') === q.p;
       var fast = (Date.now() - qShownAt) < 4000;
       Array.prototype.forEach.call(app.querySelectorAll('.st-gv-opt'), function (b) {
@@ -1532,18 +1534,20 @@
         if (!document.hidden) floatPoints(btn, pts);
         var card = el('gv-card'); if (card) card.classList.add('st-gv-card-hit');
         i++;
-        setTimeout(next, 340);
+        pend = setTimeout(next, 340);
       } else {
         btn.classList.add('st-gv-opt-wrong');
         combo = 0;
         var pips2 = el('gv-pips'); if (pips2) pips2.outerHTML = pipsHtml();
         misses.push(q);
         i++;
-        setTimeout(next, 1350);
+        pend = setTimeout(next, 1350);
       }
     }
     function finish() {
-      clearInterval(tick); keyHandler(null);
+      if (ended) return;   // End round can be reached twice (buzzer + button); score once
+      ended = true;
+      clearTimeout(pend); clearInterval(tick); keyHandler(null);
       var G = gamesState().governs;
       var bk = 'best_advanced', ck = 'bestCombo_advanced'; // flat again — level split removed
       if (!G[bk] && G.best) { G[bk] = G.best; G[ck] = G.bestCombo; }
@@ -1605,6 +1609,14 @@
     if (!r || !r.res) { clearResume(); return false; }
     depth1View = viewGoverns;
     goDepth(1, function () { renderGovernsEnd(r.res); });
+    return true;
+  }
+  function resumeBoard() {
+    var r = S.resume;
+    var sc = (r && r.ids && r.ids.length) ? deck.scenarios.filter(function (s) { return s.id === r.ids[0]; })[0] : null;
+    if (!sc) { clearResume(); return false; }
+    depth1View = viewHome;
+    goDepth(2, function () { viewBoard(r.ids[0], r.i, r.fu, r.hs); });
     return true;
   }
 
@@ -1670,16 +1682,23 @@
       (co.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(co.cite) + '</b></div>' : '') +
       citesHtml(co.links) + '</div>';
   }
-  function viewBoard() {
+  function viewBoard(pickId, startStage, startFu, startHints) {
     var pool = deck.scenarios.slice();
-    var fresh = pool.filter(function (s) { return !S.scen[s.id]; });
-    var sc = (fresh.length ? shuffle(fresh) : shuffle(pool))[0];
-    var stage = 0; // 0 scenario, 1 debrief, 2+ follow-ups
-    var fuRevealed = false; // within a follow-up: question shown → debrief shown
+    var sc = pickId ? pool.filter(function (s) { return s.id === pickId; })[0] : null;
+    if (!sc) {
+      var fresh = pool.filter(function (s) { return !S.scen[s.id]; });
+      sc = (fresh.length ? shuffle(fresh) : shuffle(pool))[0];
+    }
+    var stage = startStage || 0; // 0 scenario, 1 debrief, 2+ follow-ups
+    var fuRevealed = !!startFu; // within a follow-up: question shown → debrief shown
     var fus = sc.follow_ups || [];
-    var hints = boardHints(sc), hintsShown = 0;
+    var hints = boardHints(sc), hintsShown = startHints || 0;
     var askHtml = sc.ask ? '<div class="st-panel-ask"><span class="st-ask-kicker">The panel asks</span>' + esc(sc.ask) + '</div>' : '';
     function step() {
+      // Persist the place, like every other mode. Board Sim's debrief citations are same-tab;
+      // without this, following one to read a rule dumped you back at the track picker with
+      // the sim gone — the exact regression the resume system exists to prevent.
+      saveResume('board', S.track, [sc], stage, 0, 'Board Sim', { fu: fuRevealed, hs: hintsShown });
       var body = '<div class="st-chip">Board Sim' + (sc.topics && sc.topics.length && stage > 0 ? ' · ' + esc(sc.topics.join(' · ')) : '') + '</div>';
       if (stage === 0) {
         body = '<div class="st-chip">Board Sim</div>' +
@@ -1733,7 +1752,7 @@
       }
       render('<div class="st-session-head"><span>Board Sim</span><span>&nbsp;</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
         '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
-      el('st-quit').onclick = backHome;
+      el('st-quit').onclick = function () { clearResume(); backHome(); };
       if (stage === 0 && el('st-hint')) {
         // re-show any hints already taken (render() wipes them)
         for (var hi = 0; hi < hintsShown; hi++) addHint(hints[hi]);

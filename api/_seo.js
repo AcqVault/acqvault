@@ -19,10 +19,28 @@ const SOURCES = {
     desc: 'Federal category management buying guidance.' },
   'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
     desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.' },
-  'ssp':                 { name: 'DoD Source Selection Procedures', short: 'Source Selection',
+  'ssp':                 { name: 'DoD Source Selection Procedures', short: 'DoD SSP',
     desc: 'The Department of Defense Source Selection Procedures (August 20, 2022) — what every competitively negotiated DoD source selection above $10 million runs on: source selection team roles, the rating methods and their adjectival definitions, the tradeoff and LPTA processes, and the debriefing guide.' }
 };
 const SOURCE_KEYS = Object.keys(SOURCES);
+
+// "Part 1 … Part A" is meaningless for a document whose divisions are named sections and
+// lettered appendices, so a source may supply its own labels. Used by BOTH the hub (the
+// part list) and the part page (title, breadcrumb, h1) so the two never disagree —
+// previously the hub said "Appendix A — Debriefing Guide" and the page it linked to said
+// "Part A". Sources without an entry keep the plain "Part N" wording untouched.
+const PART_LABELS = {
+  ssp: {
+    '1': '1. Purpose, Roles, and Responsibilities', '2': '2. Pre-Solicitation Activities',
+    '3': '3. Evaluation and Decision Process', '4': '4. Documentation Requirements',
+    '5': '5. Definitions', 'A': 'Appendix A — Debriefing Guide',
+    'B': 'Appendix B — Tradeoff Source Selection', 'C': 'Appendix C — LPTA',
+    'D': 'Appendix D — Streamlining Source Selection', 'E': 'Appendix E — Intellectual Property'
+  }
+};
+function partLabel(source, part) {
+  return (PART_LABELS[source] && PART_LABELS[source][part]) || `Part ${part}`;
+}
 
 let docsCache = null;
 function loadDocs() {
@@ -140,6 +158,41 @@ function titleEchoLines(lines, title) {
 
 // Render a doc's content into clean paragraphs (strip the "Ln:" level markers
 // and a leading line that just repeats the title).
+// The DoD SSP rating scales are ingested as one em-dash row per line ("Blue — Outstanding
+// — Proposal demonstrates…") under a header line ("Color Rating — Adjectival Rating —
+// Description"). Rendered as <p>s the header reads as a nonsense sentence and the columns
+// lose all alignment, so we reconstitute the real table. Detection is deliberately narrow —
+// the header must open with "Color Rating"/"Adjectival Rating" and close with "Description",
+// which ordinary prose never does — so a stray em-dash sentence is never captured.
+// KEEP IN SYNC with assets/app.js parseRatingTable (the browse reader).
+function stripMark(l) { return String(l == null ? '' : l).replace(/^L\d+:\s*/, '').trim(); }
+function parseRatingTable(lines, i, escFn) {
+  const header = stripMark(lines[i]);
+  // Both shapes: 3-col "Color Rating — Adjectival Rating — Description" and 2-col
+  // "Adjectival Rating — Description". The middle column is optional.
+  if (!/^(?:Color Rating|Adjectival Rating) — (?:.*— )?Description$/.test(header)) return null;
+  const cols = header.split(' — ');
+  const N = cols.length;
+  const rows = [];
+  let last = i;
+  for (let j = i + 1; j < lines.length; j++) {
+    const raw = stripMark(lines[j]);
+    if (!raw) continue;                       // blank separators between rows
+    const parts = raw.split(' — ');
+    if (parts.length < N) break;              // not a row → the table ends here
+    if (parts[0].length > 30 || /[.:]$/.test(parts[0])) break;  // first cell is a short label
+    const cells = parts.slice(0, N - 1);
+    cells.push(parts.slice(N - 1).join(' — '));  // an em-dash inside the description survives
+    rows.push(cells);
+    last = j;
+  }
+  if (!rows.length) return null;
+  const th = cols.map(c => `<th scope="col">${escFn(c)}</th>`).join('');
+  const body = rows.map(r => '<tr>' + r.map((c, ci) =>
+    ci === 0 ? `<th scope="row">${escFn(c)}</th>` : `<td>${escFn(c)}</td>`).join('') + '</tr>').join('');
+  return { html: `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`, endIdx: last };
+}
+
 function renderContent(content, title, anchorBase) {
   const lines = String(content || '').split('\n');
   const out = [];
@@ -150,6 +203,8 @@ function renderContent(content, title, anchorBase) {
     const isTop = /^L0:/.test(line);
     let s = line.replace(/^L\d+:\s*/, '').trim();
     if (!s) continue;
+    const rt = parseRatingTable(lines, li, esc);
+    if (rt) { out.push(rt.html); li = rt.endIdx; continue; }
 
     // The source PDFs run reserved variants together on one line
     // ("Alternate II. [Reserved] Alternate III. [Reserved] Alternate IV. As
@@ -260,6 +315,13 @@ table.devtable th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em
 table.devtable tr:hover td{background:#f7f6f2}
 table.devtable td a{color:var(--accent);text-decoration:none}table.devtable td a:hover{text-decoration:underline}
 table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:nowrap}
+.ratetable-wrap{overflow-x:auto;margin:14px 0}
+table.ratetable{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.5}
+table.ratetable th,table.ratetable td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+table.ratetable thead th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:2px solid var(--line);white-space:nowrap}
+table.ratetable tbody th{font-weight:700;color:var(--ink);white-space:nowrap}
+table.ratetable tbody td{color:#3d444d}
+table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:none}
 @media(max-width:560px){.parts{columns:1}table.devtable{font-size:12.5px}table.devtable th,table.devtable td{padding:7px 6px}}
 .libcat{padding:30px 0 8px;border-top:none}
 .libcat+.libcat{border-top:1px solid var(--line);padding-top:32px}
@@ -360,7 +422,7 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed, ogIma
 <body>
 ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
 <header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></header>
-${body}
+<main>${body}</main>
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</footer>
 </div>`}
 </body>
@@ -373,7 +435,8 @@ function renderPartPage(source, part) {
   const docs = groups.get(String(part));
   if (!meta || !docs || !docs.length) return null;
   const canonical = `${SITE}/${source}/part-${encodeURIComponent(part)}`;
-  const title = `${meta.short} Part ${part} — ${meta.name} | AcqVault`;
+  const label = partLabel(source, part);   // "Part 6" for most; "Appendix A — Debriefing Guide" for ssp
+  const title = `${meta.short} ${label} — ${meta.name} | AcqVault`;
   const description = metaDescription(docs);
 
   const sections = docs.map(d => {
@@ -392,16 +455,16 @@ ${renderContent(d.content, d.title, anchor)}
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'Article',
-    headline: `${meta.name} — Part ${part}`,
+    headline: `${meta.name} — ${label}`,
     description: description,
     isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE },
     publisher: { '@type': 'Organization', name: 'AcqVault', url: SITE },
     mainEntityOfPage: canonical
   };
 
-  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › Part ${esc(part)}</nav>
-<h1>${esc(meta.name)} · Part ${esc(part)}</h1>
-<p class="lede">${esc(meta.desc)} Full text of Part ${esc(part)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
+  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › ${esc(label)}</nav>
+<h1>${esc(meta.name)} · ${esc(label)}</h1>
+<p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${sections}`;
 
   return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}-v2.png` });
@@ -416,21 +479,8 @@ function renderHubPage(source) {
   const title = `${meta.name} — full text & parts | AcqVault`;
   const description = esc(meta.desc.slice(0, 155));
 
-  // "Part 1 … Part A" is meaningless for a document whose divisions are named sections and
-  // lettered appendices, so a source may supply its own labels. Everything else keeps the
-  // existing "Part N" wording untouched.
-  const PART_LABELS = {
-    'ssp': {
-      '1': '1. Purpose, Roles, and Responsibilities', '2': '2. Pre-Solicitation Activities',
-      '3': '3. Evaluation and Decision Process', '4': '4. Documentation Requirements',
-      '5': '5. Definitions', 'A': 'Appendix A — Debriefing Guide',
-      'B': 'Appendix B — Tradeoff Source Selection', 'C': 'Appendix C — LPTA',
-      'D': 'Appendix D — Streamlining Source Selection', 'E': 'Appendix E — Intellectual Property'
-    }
-  };
-  const labelFor = p => (PART_LABELS[source] && PART_LABELS[source][p]) || `Part ${p}`;
   const links = parts.map(p =>
-    `<a href="/${source}/part-${encodeURIComponent(p)}">${esc(labelFor(p))}</a>`).join('\n');
+    `<a href="/${source}/part-${encodeURIComponent(p)}">${esc(partLabel(source, p))}</a>`).join('\n');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'CollectionPage',
@@ -475,7 +525,7 @@ function renderDeviationsPage() {
 <h1>R-DFARS Deviations Index</h1>
 <p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul (${rows.length} parts), with its RFO part, legacy DFARS reference, effective date, and DARS tracking number. Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
 <table class="devtable">
-<thead><tr><th>RFO Part</th><th>Legacy DFARS ref</th><th>Effective</th><th>DARS Tracking #</th><th>Read</th></tr></thead>
+<thead><tr><th scope="col">RFO Part</th><th scope="col">Legacy DFARS ref</th><th scope="col">Effective</th><th scope="col">DARS Tracking #</th><th scope="col">Read</th></tr></thead>
 <tbody>
 ${tr}
 </tbody></table>`;
@@ -557,15 +607,23 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
     '@context': 'https://schema.org', '@type': 'CollectionPage',
     name: 'AcqVault Library', description, url: canonical,
     isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE },
-    hasPart: cats.flatMap(c => c.items.map(it => ({
-      '@type': 'DigitalDocument', name: it.title, url: `${SITE}${it.file}`,
-      encodingFormat: 'application/pdf'
-    })))
+    hasPart: cats.flatMap(c => c.items.map(it => {
+      // it.file may be an absolute URL (FMR → its official host), an internal HTML page
+      // (SSP → /ssp browse hub), or a hosted PDF. The old code prefixed SITE onto all three,
+      // producing "https://www.acqvault.comhttps://…" for FMR, and declared everything a PDF.
+      const abs = /^https?:/i.test(it.file || '');
+      const isPdf = /\.pdf$/i.test(it.file || '');
+      const node = { '@type': isPdf ? 'DigitalDocument' : 'WebPage',
+                     name: it.title, url: abs ? it.file : `${SITE}${it.file}` };
+      if (isPdf) node.encodingFormat = 'application/pdf';
+      return node;
+    }))
   };
 
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
 
   const body = `<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></div></header>
+<main>
 <section class="lband lhero"><div class="lband-inner">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Library</nav>
 <div class="eyebrow">AcqVault · Library</div>
@@ -575,6 +633,7 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 <svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="ls-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#ls-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>
 </div></section>
 ${catHtml}
+</main>
 <footer class="lband lband--foot"><div class="lband-inner">
 <p class="lfoot-note"><strong>Originals</strong> are written by AcqVault as research aids. <strong>Source documents</strong> are compiled from official material and regenerated monthly — always verify against the signed DoD class deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on any result in a contract file.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</p>
@@ -633,7 +692,7 @@ function renderChangesPage() {
 </details>`;
     }).join('\n');
 
-    const OTHER_LABELS = { r_dfars: 'R-DFARS', far_companion: 'FAR Companion', category_management: 'Category Mgmt', fmr: 'DoD FMR', afi_63_138: 'DAFI 63-138' };
+    const OTHER_LABELS = { r_dfars: 'R-DFARS', far_companion: 'FAR Companion', category_management: 'Category Mgmt', fmr: 'DoD FMR', afi_63_138: 'DAFI 63-138', ssp: 'DoD SSP' };
     const otherSources = Object.keys(OTHER_LABELS)
       .filter(k => run[k] != null)
       .map(k => {
@@ -727,7 +786,7 @@ function renderStudyPage() {
 .st-daily{position:relative;overflow:hidden;display:block;width:100%;text-align:left;background:linear-gradient(158deg,#173a60,#0f2540 62%,#0a1c33);border:1px solid rgba(228,196,119,.4);border-radius:16px;padding:22px 24px 20px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .2s;box-shadow:0 22px 44px -22px rgba(15,37,64,.55)}
 .st-daily::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
 .st-daily::after{content:"";position:absolute;right:-60px;bottom:-140px;width:340px;height:340px;opacity:.12;background:repeating-radial-gradient(circle at 50% 50%,rgba(228,196,119,.6) 0 1px,transparent 1px 12px);pointer-events:none}
-.st-daily:hover{border-color:rgba(228,196,119,.7);transform:translateY(-2px)}
+.st-daily:hover{border-color:rgba(228,196,119,.7);transform:translateY(-2px)}.st-daily:disabled,.st-daily-dead{cursor:default}.st-daily:disabled:hover,.st-daily-dead:hover{border-color:rgba(228,196,119,.4);transform:none}
 .st-daily-eyebrow{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-bright);margin-bottom:10px}
 .st-daily-eyebrow::before{content:"";width:16px;height:2px;background:var(--brass-bright);border-radius:2px}
 .st-daily-row{position:relative;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
@@ -799,7 +858,6 @@ function renderStudyPage() {
 .st-fact>div{color:#3d444d;margin-top:2px}
 .st-bait{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8c2b23;background:#fdf0ef;border-radius:3px;padding:1px 6px;margin-left:6px}
 .st-gov{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#155433;background:#eef7f0;border-radius:3px;padding:1px 6px;margin-left:6px}
-.st-boardans{background:var(--off,#f7f6f2);border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.6;margin-top:12px}
 .st-followup{margin:6px 0 0}
 .st-followup>span{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
 .st-lad-boards{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:10px;padding-top:11px;border-top:1px solid var(--line2)}
@@ -869,7 +927,6 @@ function renderStudyPage() {
 .st-cites{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px}
 .st-cites-lab{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .st-cite{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--brass-ink);background:#fff;border:1px solid rgba(135,101,28,.4);border-radius:999px;padding:4px 11px;text-decoration:none;transition:background .13s,border-color .13s,transform .13s}
-.st-cite svg{width:9px;height:9px;opacity:.7}
 .st-cite:hover{background:#f6efdd;border-color:rgba(135,101,28,.65);transform:translateY(-1px)}
 .st-cite:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
 .st-streak{display:inline-flex;align-items:center;gap:6px;margin-right:auto;font-size:12.5px;font-weight:800;color:var(--brass-ink);background:linear-gradient(158deg,#f6efdd,#f1e5c6);border:1px solid rgba(135,101,28,.35);border-radius:999px;padding:5px 12px;font-variant-numeric:tabular-nums}
@@ -943,8 +1000,8 @@ function renderStudyPage() {
 .st-cb-legend .st-cb-tile{width:15px;height:15px;border-radius:3.5px;border-width:1px;font-size:0;transition:none}
 .st-cb-msg{min-height:20px;text-align:center;font-size:13px;font-weight:700;color:var(--brass-ink);margin:8px 0 2px}
 .st-cb-kb{display:flex;flex-direction:column;gap:6px;margin-top:6px}
-.st-cb-kbrow{display:flex;gap:5px;justify-content:center}
-.st-cb-key{min-width:clamp(26px,7.6vw,40px);height:50px;padding:0 6px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:7px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;text-transform:uppercase}
+.st-cb-kbrow{display:flex;gap:4px;justify-content:center}
+.st-cb-key{min-width:clamp(22px,7vw,40px);height:50px;padding:0 5px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:7px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;text-transform:uppercase}
 .st-cb-key:active{transform:translateY(1px)}
 .st-cb-key-wide{min-width:clamp(44px,12vw,62px);font-size:11px}
 .st-cb-key-c{background:#173a60;border-color:#0f2540;color:#fff}
@@ -983,8 +1040,6 @@ function renderStudyPage() {
 .st-gv-head{display:flex;justify-content:space-between;align-items:center;margin:2px 0 12px}
 .st-gv-score{display:flex;align-items:baseline;gap:10px}
 .st-gv-score b{font-family:var(--serif);font-size:34px;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
-.st-gv-combo{font-size:13px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;transition:color .15s,transform .15s}
-.st-gv-combo-hot{color:var(--brass-ink);transform:scale(1.12)}
 .st-gv-ring{position:relative;width:58px;height:58px;flex:none}
 .st-gv-ring svg{width:58px;height:58px}
 .st-gv-ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
@@ -1055,7 +1110,7 @@ function renderStudyPage() {
 .st-rungs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
 @media(max-width:560px){.st-rungs{grid-template-columns:1fr 1fr}}
 @media(max-width:360px){.st-rungs{grid-template-columns:1fr}}
-.st-rung{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;background:#fff;border:1px solid var(--line2);border-left:3px solid transparent;border-radius:10px;padding:15px 16px 14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:border-color .13s,box-shadow .13s}.st-rung-ceiling{font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.05;color:var(--ink);letter-spacing:-.01em}.st-rung-what{font-size:12px;line-height:1.35;color:var(--muted)}.st-rung-n{margin-top:3px;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink);opacity:.42}.st-rung-on{border-left-color:var(--brass);box-shadow:0 1px 3px rgba(16,24,40,.06)}.st-rung-on .st-rung-n{opacity:.66}
+.st-rung{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;background:#fff;border:1px solid var(--line2);border-left:3px solid transparent;border-radius:10px;padding:15px 16px 14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:border-color .13s,box-shadow .13s}.st-rung-ceiling{font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.05;color:var(--ink);letter-spacing:-.01em}.st-rung-what{font-size:12px;line-height:1.35;color:var(--muted)}.st-rung-n{margin-top:3px;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.st-rung-on{border-left-color:var(--brass);box-shadow:0 1px 3px rgba(16,24,40,.06)}.st-rung-on .st-rung-n{color:var(--brass-ink)}
 .st-rung:hover{border-color:var(--line);box-shadow:0 1px 3px rgba(16,24,40,.06)}
 .st-rung:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
 .st-rung-on,.st-rung-on:hover{border-left-color:var(--brass);color:var(--ink)}
@@ -1075,6 +1130,7 @@ function renderStudyPage() {
   const SEAL_SVG = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="st-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#st-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
 
   const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></div></header>
+<main>
 <section class="lband lhero"><div class="lband-inner">
 ${SEAL_SVG}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Study</nav>
@@ -1086,11 +1142,12 @@ ${SEAL_SVG}
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
 <div id="study-app"><noscript><p>AcqVault Study is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
 </div></section>
+</main>
 <footer class="lband lband--foot"><div class="lband-inner">
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=43"></script>`;
+<script defer src="/assets/study.js?v=44"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

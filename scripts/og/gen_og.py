@@ -139,6 +139,9 @@ VARIANTS = {
   'src-fmr': source('DoD Financial<br>Management Reg.',
      'DoD 7000.14-R — all 16 volumes, budget to contract payment, by volume and chapter.',
      'DoD FMR', '#a84e22'),
+  'src-ssp': source('DoD Source<br>Selection.',
+     'The DoD Source Selection Procedures — team roles, the rating methods, tradeoff and LPTA, and the debriefing guide.',
+     'Source Selection', '#87651c'),
 }
 
 def render(name):

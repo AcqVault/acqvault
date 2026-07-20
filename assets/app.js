@@ -1004,6 +1004,36 @@ function titleEchoLines(lines, title) {
   return 0;
 }
 
+// KEEP IN SYNC with api/_seo.js parseRatingTable (the SSR path). The DoD SSP rating scales
+// arrive as one em-dash row per line under a "… — Description" header; rendered line-by-line
+// they read as broken prose, so we rebuild the real table. Detection is narrow enough that
+// ordinary em-dash sentences are never captured.
+function stripBrMark(l) { return String(l == null ? '' : l).replace(/^L\d+:\s*/, '').trim(); }
+function parseRatingTable(lines, i) {
+  const header = stripBrMark(lines[i]);
+  if (!/^(?:Color Rating|Adjectival Rating) — (?:.*— )?Description$/.test(header)) return null;
+  const cols = header.split(' — ');
+  const N = cols.length;
+  const rows = [];
+  let last = i;
+  for (let j = i + 1; j < lines.length; j++) {
+    const raw = stripBrMark(lines[j]);
+    if (!raw) continue;
+    const parts = raw.split(' — ');
+    if (parts.length < N) break;
+    if (parts[0].length > 30 || /[.:]$/.test(parts[0])) break;
+    const cells = parts.slice(0, N - 1);
+    cells.push(parts.slice(N - 1).join(' — '));
+    rows.push(cells);
+    last = j;
+  }
+  if (!rows.length) return null;
+  const th = cols.map(c => `<th scope="col">${esc(c)}</th>`).join('');
+  const body = rows.map(r => '<tr>' + r.map((c, ci) =>
+    ci === 0 ? `<th scope="row">${esc(c)}</th>` : `<td>${esc(c)}</td>`).join('') + '</tr>').join('');
+  return { html: `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`, endIdx: last };
+}
+
 function renderContentLine(line, baseCitation, source, paraPath, altCtx) {
   const lm = line.match(/^L(\d):(.*)/);
   if (lm) {
@@ -1502,9 +1532,20 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     const visualFlags = {};
     const paraPath = makeParaPath(); // fresh token path per section
     const altCtx = { anchor, blocks: [] }; // variant headings, scoped per section
-    let bodyHTML = source === 'compass'
-      ? formatCompassContent(content, hit, citation)
-      : lines.map(l => renderContentLine(l, citation, source, paraPath, altCtx) + categoryGuideVisualAfterLine(source, partNum, l, visualFlags)).join('');
+    let bodyHTML;
+    if (source === 'compass') {
+      bodyHTML = formatCompassContent(content, hit, citation);
+    } else {
+      // Rating-table groups collapse to a single <table>; everything else renders per line.
+      const acc = [];
+      for (let li = 0; li < lines.length; li++) {
+        const rt = parseRatingTable(lines, li);
+        if (rt) { acc.push(rt.html); li = rt.endIdx; continue; }
+        acc.push(renderContentLine(lines[li], citation, source, paraPath, altCtx) +
+          categoryGuideVisualAfterLine(source, partNum, lines[li], visualFlags));
+      }
+      bodyHTML = acc.join('');
+    }
     // One variant is just a clause; two or more is a document you have to navigate.
     if (altCtx.blocks.length >= 2) {
       // A <div role="navigation">, NOT <nav> — app.css styles bare `nav` as the
