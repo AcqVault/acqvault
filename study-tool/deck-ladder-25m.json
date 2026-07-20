@@ -22,11 +22,16 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "When is the tradeoff approach appropriate, and what must a higher-priced award show?",
-      "a": "When it may be in the Government's best interest to award to other than the lowest-priced or highest-technically-rated offeror. It permits tradeoffs among price and non-price factors — but the anticipated benefits of the higher-priced proposal must merit the additional cost.",
+      "a": "When it may be in the Government's best interest to award to other than the lowest-priced or highest-technically-rated offeror. It permits tradeoffs among price and non-price factors — but the anticipated benefits of the higher-priced proposal must merit the additional cost. DoD bolts on one mandate: for fuel acquisitions supporting an overseas contingency operation above the SAT, R-DFARS 215.103-170 directs consideration of a tradeoff approach — with past performance, cost, anticorruption training, and anticorruption compliance as candidate factors — and if tradeoff is not considered, a written justification approved one level above the contracting officer goes in the contract file before the solicitation issues.",
       "cite": {
         "src": "rfo",
         "sec": "15.103-1",
         "quote": "This process permits tradeoffs among cost or price and non-cost or non-price factors. The anticipated benefits of a higher priced proposal must merit the additional cost."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.103-170",
+        "quote": "(a) Consider using a tradeoff approach as described at FAR 15.103-1 when conducting a source selection for the acquisition of fuel for an overseas contingency operation that is expected to exceed the simplified acquisition threshold (section 843 of the National Defense Authorization Act (NDAA) for Fiscal Year (FY) 2022 (Pub. L. 117-81)). Consider using the following evaluation factors for the acquisition: (1) Past performance. (2) Cost. (3) Anticorruption training. (4) Anticorruption compliance."
       }
     },
     {
@@ -231,11 +236,16 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "What must a postaward debriefing never include?",
-      "a": "Point-by-point comparisons of the debriefed offeror's proposal with other offerors' proposals — or any information prohibited from disclosure, such as trade secrets, confidential cost breakdowns, or the names of past performance references.",
+      "a": "Point-by-point comparisons of the debriefed offeror's proposal with other offerors' proposals — or any information prohibited from disclosure, such as trade secrets, confidential cost breakdowns, or the names of past performance references. DoD adds a third rail: when the withholding authority at R-DFARS 240.271-6 is exercised, notifications to unsuccessful offerors must not reveal information determined withheld under 10 U.S.C. 3252 (R-DFARS 215.301-170(c)). And do not confuse the never-include list with DoD's must-disclose floor — for awards over $15 million a small business or nontraditional defense contractor may request the agency's redacted source selection decision document, and over $150 million its redacted release is required (R-DFARS 215.301-170(b), which supersedes the $10 million/$100 million figures still printed in RFO 15.301-1(c)).",
       "cite": {
         "src": "rfo",
         "sec": "15.301-1",
         "quote": "The debriefing must not include point-by-point comparisons of the debriefed offeror's proposal with those of other offerors."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.301-170",
+        "quote": "If the Government exercises the authority provided in 240.271-6, the notifications to unsuccessful offerors must not reveal any information that is determined to be withheld from disclosure in accordance with 10 U.S.C. 3252 (see subpart 240.271)."
       }
     },
     {
@@ -273,11 +283,16 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "When is a price based on adequate price competition — and which route is closed to DoD?",
-      "a": "The core standard: two or more responsible offerors, competing independently, submit priced offers that satisfy the Government's expressed requirement; award goes to the best-value offeror where price is a substantial factor; and there is no finding that the successful price is unreasonable — any such finding needs a statement of facts approved above the contracting officer. Everything in 15.403-2(c)(1)(ii) is reserved to \"agencies other than DoD, NASA, and the Coast Guard,\" and it holds two alternatives: (A) a reasonable expectation, based on market research, that two or more responsible offerors would compete even though only one offer arrived, with approval above the contracting officer; and (B) price analysis clearly demonstrating the proposed price is reasonable against current or recent prices for the same or similar items from adequate competition, adjusted for market and quantity changes. Neither alternative is open to DoD — an Air Force buyer is left with the core standard.",
+      "a": "The core standard: two or more responsible offerors, competing independently, submit priced offers that satisfy the Government's expressed requirement; award goes to the best-value offeror where price is a substantial factor; and there is no finding that the successful price is unreasonable — any such finding needs a statement of facts approved above the contracting officer. Everything in 15.403-2(c)(1)(ii) is reserved to \"agencies other than DoD, NASA, and the Coast Guard,\" and it holds two alternatives: (A) a reasonable expectation, based on market research, that two or more responsible offerors would compete even though only one offer arrived, with approval above the contracting officer; and (B) price analysis clearly demonstrating the proposed price is reasonable against current or recent prices for the same or similar items from adequate competition, adjusted for market and quantity changes. Neither alternative is open to DoD. What DoD gets instead is R-DFARS 215.403-270(a)(3): for dual or multiple source programs, adequate price competition is determined case by case — it normally exists when prices are solicited across a full range of step quantities, normally including a 0-100 percent split, from at least two offerors individually capable of producing the full quantity, and the reasonableness of all awarded prices is clearly established by price analysis. And when a competitive solicitation draws only one offer, R-DFARS routes you to 215.202-71.",
       "cite": {
         "src": "rfo",
         "sec": "15.403-2",
         "quote": "(ii) For agencies other than DoD, NASA, and the Coast Guard, a price is also based on adequate price competition when (A) There was a reasonable expectation, based on market research or other assessment, that two or more responsible offerors, competing independently, would submit priced offers in response to the request for proposal’s (RFP) expressed requirement, even though only one offer is received from a responsible offeror"
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.403-270",
+        "quote": "(B) Adequate price competition normally exists when— (1) Prices are solicited across a full range of step quantities, normally including a 0-100 percent split, from at least two offerors that are individually capable of producing the full quantity, and (2) The reasonableness of all prices awarded is clearly established on the basis of price analysis (see FAR 15.404-1)."
       }
     },
     {
@@ -436,11 +451,16 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "What are the statutory cost-plus-fixed-fee ceilings?",
-      "a": "15 percent of estimated cost for experimental, developmental, or research work; 10 percent for all other CPFF contracts; and for architect-engineer services, 6 percent of the estimated construction cost — but that 6 percent is the civilian baseline. For the Departments of the Army, Navy, and Air Force, R-DFARS 236.202-371 sets the A-E design-fee limit at 10 percent.",
+      "a": "15 percent of estimated cost for experimental, developmental, or research work; 10 percent for all other CPFF contracts; and for architect-engineer services, 6 percent of the estimated construction cost — but that 6 percent is the civilian baseline. For the Departments of the Army, Navy, and Air Force, R-DFARS 236.202-371 sets the A-E design-fee limit at 10 percent of the project's estimated construction cost (10 U.S.C. 7540, 8612, and 9540).",
       "cite": {
         "src": "rfo",
         "sec": "15.404-9",
         "quote": "(i) For experimental, developmental, or research work performed under a cost-plus-fixed-fee contract, the fee must not exceed 15 percent of the contract's estimated cost, excluding fee. (ii) For architect-engineer services for public works or utilities, the contract price or the estimated cost and fee for production and delivery of designs, plans, drawings, and specifications must not exceed 6 percent of the estimated cost of construction of the public work or utility, excluding fees. (iii) For other cost-plus-fixed-fee contracts, the fee must not exceed 10 percent of the contract's estimated cost, excluding fee."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "236.202-371",
+        "quote": "The statutes at 10 U.S.C. 7540, 8612, and 9540, for the Departments of the Army, Navy, and Air Force, respectively, limit the contract price (or fee) for architect-engineer services for the preparation of designs, plans, drawings, and specifications to 10 percent of the project's estimated construction cost."
       }
     },
     {
@@ -651,11 +671,16 @@
       "type": "recall",
       "topic": "Protests",
       "q": "State the GAO postaward stay rule precisely.",
-      "a": "If the agency receives GAO's protest notice within 10 days after award or within 5 days after a debriefing date offered under a required debriefing — whichever is later — the contracting officer must immediately suspend performance or terminate the contract, unless the HCA authorizes continued performance. [Note: the quoted reference to “15.505 or 15.506” is a stale cross-reference — in the RFO those sections cover unsolicited proposals; the operative debriefing sections are 15.206-2 (preaward) and 15.301 (postaward).]",
+      "a": "If the agency receives GAO's protest notice within 10 days after award or within 5 days after a debriefing date offered under a required debriefing — whichever is later — the contracting officer must immediately suspend performance or terminate the contract, unless the HCA authorizes continued performance. [Note: the quoted reference to “15.505 or 15.506” is a stale cross-reference — in the RFO those sections cover unsolicited proposals; the operative debriefing sections are 15.206-2 (preaward) and 15.301 (postaward).] For DoD, R-DFARS 233.105-370 swaps in its own clock: suspend or terminate if GAO's notice arrives within the LATEST of — 10 days after contract award; 10 days after issuance of a task or delivery order exceeding $25 million; 5 days after a debriefing date offered under a timely request (even if the protester rejected the offered date, unless an earlier date is negotiated); or 5 days after a required postaward debriefing is concluded — and under the enhanced-debriefing rule the debriefing is not concluded until timely follow-up questions are answered in writing (R-DFARS 215.301-270).",
       "cite": {
         "src": "rfo",
         "sec": "33.105-3",
         "quote": "If the agency receives notice of a protest from the GAO within 10 days after contract award or within 5 days after a debriefing date offered to the protester for any debriefing that is required by 15.505 or 15.506, whichever is later, then the contracting officer must immediately suspend performance or terminate the awarded contract, unless the head of the contracting activity authorizes contract performance."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "233.105-370",
+        "quote": "contracting officers must immediately suspend performance or terminate the award using the time periods in paragraphs (a) through (d) of this section, whichever is later, in lieu of the time periods in FAR 33.105- 3(b)(1) if the agency receives notice of a protest from the GAO. (a) Ten days after the date of contract award. (b) Ten days after the date a task order or delivery order is issued, where the value exceeds $25 million (10 U.S.C. 3406(f)). (c) Five days after a debriefing date offered to the protestor under a timely debriefing request in accordance with FAR 15.301 regardless of whether the protestor rejected the offered debriefing date, unless an earlier debriefing date is negotiated as a result. (d) Five days after a postaward debriefing under FAR 15.301 is concluded in accordance with 215.301-2."
       }
     },
     {
@@ -668,7 +693,8 @@
         "src": "rfo",
         "sec": "33.105-3",
         "quote": "The head of the contracting activity, on a nondelegable basis, may authorize contract performance, upon a written finding that— (i) Contract performance will be in the best interests of the United States; or (ii) Urgent and compelling circumstances that significantly affect the interests of the United States will not permit waiting for the GAO's decision."
-      }
+      },
+      "dod": "n/a"
     }
   ]
 }

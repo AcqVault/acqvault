@@ -332,7 +332,7 @@ def ladder_gate(items):
         card['cite']['link'] = {'t': ('RFO ' if cite['src'] == 'rfo' else 'R-DFARS ') + cite['sec'],
                                 'u': '/' + cite['src'] + '/part-' + part + '#' + str(frag)}
         out[it['rung']].append(card)
-    _dod_overlay_check(items)
+    _dod_overlay_check(items, fatal=True)
     return out
 
 
@@ -374,6 +374,14 @@ def _dod_overlay_check(items, fatal=False):
                 missing.append((it['rung'], key, it['q'][:56]))
                 break
 
+    if missing:
+        print('  ladder DoD-overlay: %d card(s) cite an RFO section R-DFARS supplements, unreviewed:' % len(missing))
+        for r, s, q in missing[:60]:
+            print('    [%-9s] R-DFARS %-12s %s' % (r, s, q))
+        if fatal: sys.exit('FATAL: ladder: %d card(s) missing a `dod` review field' % len(missing))
+    else:
+        print('  ladder DoD-overlay: every RFO cite with a DoD supplement has been reviewed')
+
 
 def _dod_supplements(base, key):
     """Does R-DFARS `key` supplement the mirrored RFO section `base`?
@@ -390,13 +398,6 @@ def _dod_supplements(base, key):
     rest = key[len(base):]
     if rest.startswith('-'): rest = rest[1:]
     return rest.isdigit() and len(rest) <= 3 and int(rest) >= 70
-    if missing:
-        print('  ladder DoD-overlay: %d card(s) cite an RFO section R-DFARS supplements, unreviewed:' % len(missing))
-        for r, s, q in missing[:60]:
-            print('    [%-9s] R-DFARS %-12s %s' % (r, s, q))
-        if fatal: sys.exit('FATAL: ladder: %d card(s) missing a `dod` review field' % len(missing))
-    else:
-        print('  ladder DoD-overlay: every RFO cite with a DoD supplement has been reviewed')
 
 # ACQVAULT_LADDER_FILE: test hook (scripts/test_ladder_gate.py) — pins to a single file.
 # Default authors one file per rung (deck-ladder-*.json) so batches never race the same file;

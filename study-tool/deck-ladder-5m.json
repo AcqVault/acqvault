@@ -21,19 +21,6 @@
       "rung": "5m",
       "type": "recall",
       "topic": "Competition (CICA)",
-      "q": "Name the seven statutory exceptions permitting other than full and open competition.",
-      "a": "Only one responsible source; unusual and compelling urgency; industrial mobilization, engineering/developmental/research capability, or expert services; international agreement; authorized or required by statute; national security; and public interest (RFO 6.103-1 through 6.103-7).",
-      "cite": {
-        "src": "rfo",
-        "sec": "6.103",
-        "quote": "Agencies may contract without providing for full and open competition under authorities specified in this section (see 10 U.S.C. 3204 and 41 U.S.C. 3304)."
-      },
-      "dod": "n/a"
-    },
-    {
-      "rung": "5m",
-      "type": "recall",
-      "topic": "Competition (CICA)",
       "q": "May other than full and open competition be justified by a lack of planning or a shortage of funds?",
       "a": "No. It must not be justified on the basis of a lack of planning by the requiring activity or concerns about the amount of funds available to the agency or activity.",
       "cite": {
@@ -70,7 +57,8 @@
         "src": "rfo",
         "sec": "6.103-1",
         "quote": "(2) When awarding a follow-on contract for the continued development or production of a major system or highly specialized equipment and, for DoD, NASA, and the Coast Guard, for the continued provision of highly specialized services, would result in— (i) Substantial duplication of cost to the Government that is not expected to be recovered through competition; or (ii) Unacceptable delays in fulfilling the agency's requirements."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "5m",
@@ -82,7 +70,8 @@
         "src": "rfo",
         "sec": "6.103-1",
         "quote": "Agencies may contract without providing for full and open competition when the supplies or services required by the agency are available from only one responsible source and no other type of supplies or services will satisfy agency requirements. For DoD, NASA, and the Coast Guard, this authority extends to situations where only a limited number of responsible sources can satisfy agency requirements."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "5m",
@@ -376,11 +365,16 @@
       "type": "recall",
       "topic": "IDIQ Ordering & Fair Opportunity",
       "q": "How long may a DoD task- or delivery-order contract run?",
-      "a": "Up to five years, extendable by option or modification — but the total period as extended may not exceed 10 years unless the head of the agency determines in writing that exceptional circumstances require a longer period (R-DFARS 217.201-270(a) restates the same 5/10-year rule for DoD). One carve-out a board will probe: a task-order contract for advisory and assistance services is capped at a 5-year ordering period including all extensions (16.501-2(c)(2)), unless a longer period is specifically authorized by statute or the A&AS is determined incidental and not a significant component of the contract — plus a sole-source extension of up to 6 months when a follow-on award is delayed by circumstances not reasonably foreseeable and continuity of services requires it.",
+      "a": "Up to five years, extendable by option or modification — but the total period as extended may not exceed 10 years unless the head of the agency determines in writing that exceptional circumstances require a longer period (R-DFARS 217.201-270(a) restates the same 5/10-year rule for DoD). One carve-out a board will probe: a task-order contract for advisory and assistance services is capped at a 5-year ordering period including all extensions (16.501-2(c)(2)), unless a longer period is specifically authorized by statute or the A&AS is determined incidental and not a significant component of the contract — plus a sole-source extension of up to 6 months when a follow-on award is delayed by circumstances not reasonably foreseeable and continuity of services requires it. DoD adds one more tripwire: senior procurement executive approval is required before issuing an order expected to extend more than 1 year beyond that 10-year (or extended) limit (R-DFARS 217.201-270(c)).",
       "cite": {
         "src": "rfo",
         "sec": "16.501-2",
         "quote": "may provide for the contract to cover any period up to five years and may extend the contract period for one or more successive periods pursuant to an option provided in the contract or a modification of the contract. The total contract period as extended may not exceed 10 years unless such head of an agency determines in writing that exceptional circumstances necessitate a longer contract period."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "217.201-270",
+        "quote": "(1) May be for any period up to 5 years; (2) May be subsequently extended for one or more successive periods in accordance with an option provided in the contract or a modification of the contract; and (3) Must not exceed 10 years unless the head of the agency determines in writing that exceptional circumstances require a longer ordering period."
       }
     },
     {
@@ -410,7 +404,8 @@
         "src": "rfo",
         "sec": "17.204-1",
         "quote": "The option exercise complies with the requirements of part 6 for full and open competition, i.e., the option was evaluated as part of the initial competition and is exercisable at an amount specified in or reasonably determinable from the terms of the contract."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "5m",
@@ -422,7 +417,8 @@
         "src": "rfo",
         "sec": "17.201-1",
         "quote": "The contracting officer must not use options when- (1) Price or availability of necessary material or labor is not reasonably foreseeable, introducing significant risk into option pricing; or (2) Market prices for the supplies or services are likely to change significantly."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "5m",
@@ -608,7 +604,8 @@
         "src": "rfo",
         "sec": "16.404-1",
         "quote": "A fixed-price incentive (firm target) contract specifies a target cost, a target profit, a price ceiling (but not a profit ceiling or floor), and a formula for profit adjustments. When the final cost is less than the target cost, application of the formula results in a final profit greater than the target profit; conversely, when final cost is more than target cost, application of the formula results in a final profit less than the target profit, or even a net loss. If the final negotiated cost exceeds the price ceiling, the contractor absorbs the difference as a loss."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "5m",

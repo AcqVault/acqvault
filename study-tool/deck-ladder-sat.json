@@ -29,13 +29,17 @@
       "type": "recall",
       "topic": "Contracting Authority",
       "q": "How is a contracting officer appointed?",
-      "a": "In writing, on a Standard Form 1402, Certificate of Appointment — and the certificate must state any limits on the contracting officer's authority beyond those already in law or regulation. Individuals given micro-purchase authority are also appointed in writing, but an SF 1402 is not required for them.",
+      "a": "In writing, on a Standard Form 1402, Certificate of Appointment — and the certificate must state any limits on the contracting officer's authority beyond those already in law or regulation. Individuals given micro-purchase authority are also appointed in writing, but an SF 1402 is not required for them. For DoD the certificate rides on statutory qualifications: under 10 U.S.C. 1724 (R-DFARS 201.403-1), serving with authority above the simplified acquisition threshold requires completion of the required contracting courses, at least 2 years of experience in a contracting position, and a baccalaureate degree — with narrow exceptions for legacy pre-2001 incumbents, the contingency contracting force, and 3-year developmental positions.",
       "cite": {
         "src": "rfo",
         "sec": "1.403-2",
         "quote": "Contracting officers must be appointed in writing, using a Standard Form (SF) 1402, Certificate of Appointment. The certificate must state any limitations placed on the contracting officer’s scope of authority, other than limitations contained in applicable law or regulation."
       },
-      "dod": "n/a"
+      "dod": {
+        "src": "r-dfars",
+        "sec": "201.403-1",
+        "quote": "In accordance with 10 U.S.C. 1724, in order to qualify to serve as a contracting officer with authority to award or administer contracts for amounts above the simplified acquisition threshold, a person must— (i) Have completed all contracting courses required for a contracting officer to serve in the grade in which the employee or member of the armed forces will serve; (ii) Have at least 2 years experience in a contracting position; (iii) Have received a baccalaureate degree from an accredited educational institution;"
+      }
     },
     {
       "rung": "sat",
@@ -726,11 +730,16 @@
       "type": "recall",
       "topic": "Options",
       "q": "Before exercising an option, what must the contracting officer determine about the price?",
-      "a": "That the option price is fair and reasonable based on current market conditions and that exercising the option is in the Government's best interest — after written notice to the contractor and confirming funds are available.",
+      "a": "That the option price is fair and reasonable based on current market conditions and that exercising the option is in the Government's best interest — after written notice to the contractor and confirming funds are available. For DoD, R-DFARS 217.204-170 adds pre-exercise gates — an active, accurate SAM record and current SPRS entries (a NIST SP 800-171 assessment score and a CMMC certificate, each not more than 3 years old) — and, for firm-fixed-price contracts containing spare parts, PGI 217.204-170 requires cost or price analysis of the spares before any option is exercised.",
       "cite": {
         "src": "rfo",
         "sec": "17.204-1",
         "quote": "After reviewing price and other factors, the option price is fair and reasonable based on current market conditions and exercise of the option is in the Government's best interest"
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "217.204-170",
+        "quote": "See PGI 217.204-170 for the requirement to perform cost or price analysis of spare parts prior to exercising any option for firm- fixed-price contracts containing spare parts."
       }
     },
     {
