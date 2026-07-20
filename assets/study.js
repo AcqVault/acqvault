@@ -677,6 +677,17 @@
     var byId = {};
     pool.forEach(function (c) { byId[c.id] = c; });
     var sink = (S.ladderMiss || []).map(function (id) { return byId[id]; }).filter(Boolean).slice(0, 5);
+    /* The board self-grade used to be collected and shown nowhere — the most board-predictive
+       signal in the tool, feeding nothing. It reads back here, on the rung it belongs to. */
+    var boards = ladderBoardPool(sel), bmap = ladderBoardMap();
+    var faced = boards.filter(function (b) { return bmap[b.id]; });
+    var ready = faced.filter(function (b) { return bmap[b.id].g === 3; }).length;
+    var rough = faced.filter(function (b) { return bmap[b.id].g === 1; }).length;
+    var boardHtml = !boards.length ? ''
+      : '<div class="st-lad-boards"><span class="st-lad-boards-lab">Board sims</span>' +
+        '<span class="st-lad-boards-n">' + faced.length + ' of ' + boards.length + ' faced</span>' +
+        (faced.length ? '<span class="st-lad-boards-split">' + ready + ' board-ready · ' + rough + ' rough</span>' : '') +
+        '</div>';
     var sinkHtml = sink.length
       ? '<div class="st-lad-sink"><div class="st-lad-head">What would sink you</div>' +
         sink.map(function (c) {
@@ -693,7 +704,10 @@
       '<div class="st-lad-ready"><span class="st-lad-ready-lab">Card mastery</span>' +
       '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
       '<span class="st-topic-meta">' + m + '%</span></div>' +
-      '<div class="st-actions"><button class="st-btn st-btn-reveal" id="lad-start">Drill this rung <kbd>space</kbd></button></div>' +
+      boardHtml +
+      '<div class="st-actions"><button class="st-btn st-btn-reveal" id="lad-start">Drill this rung <kbd>space</kbd></button>' +
+      (boards.length ? '<button class="st-btn st-btn-hint" id="lad-board">Face the board</button>' : '') +
+      '</div>' +
       sinkHtml +
       '<button class="st-link st-quit" id="st-quit">← Study menu</button>');
     el('st-quit').onclick = backToTools;
@@ -701,6 +715,9 @@
       b.onclick = function () { S.ladderRung = b.getAttribute('data-rung'); save(); viewLadder(); };
     });
     el('lad-start').onclick = function () { goDepth(2, function () { ladderSession(pool, label); }); };
+    if (el('lad-board')) {
+      el('lad-board').onclick = function () { goDepth(2, function () { ladderBoardSession(sel, label); }); };
+    }
     keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('lad-start').onclick(); return true; } });
   }
   /* Session position survives a reload. Without this, following a citation — the whole
@@ -799,6 +816,261 @@
       el('st-home').onclick = backHome;
     }
     step();
+  }
+
+  /* ---- The Warrant Ladder — board sims ----
+     The recall cards ask whether you know a rule; a board asks whether you can hold the
+     floor and land on a decision. These 47 scenarios are the other half, scoped to the same
+     rungs. They deliberately never reach grade()/INTERVALS — 47 narrative items would flood
+     Daily Review with things nobody answers in twelve seconds. Their record lives in
+     S.ladderBoard instead. */
+  function ladderBoardPool(rung) { return (deck.ladder_boards && deck.ladder_boards[rung]) || []; }
+  function ladderBoardMap() { if (!S.ladderBoard) S.ladderBoard = {}; return S.ladderBoard; }
+  function ladderBoardNoteRough(id) {
+    var r = (S.ladderBoardRough || []).filter(function (x) { return x !== id; });
+    r.unshift(id);
+    if (r.length > 50) r.length = 50;
+    S.ladderBoardRough = r;
+  }
+  /* The one honest thing a browser knows about a spoken answer is how long you held the
+     floor. So the clock counts UP and never gates — a clock that cuts you off teaches you
+     to rush, and the failure worth catching is the opposite one: the six-second reply that
+     was really a throat-clear. Measured against the model script at 150 words a minute. */
+  function spokenSecs(script) {
+    var w = String(script || '').trim().split(/\s+/).length;
+    return Math.max(20, Math.round(w / 150 * 60));
+  }
+  function mmss(s) { var m = Math.floor(s / 60), r = s % 60; return m + ':' + (r < 10 ? '0' : '') + r; }
+  /* Citations are staged across the exchange: ABSENT while you answer (they are the answer),
+     TEXT-ONLY beside the model so the eye has something to check against, and LINKED only at
+     the record — the one moment when leaving the page is the right move. */
+  function boardCitesText(cites) {
+    if (!cites || !cites.length) return '';
+    return '<div class="st-bd-cites"><span class="st-bd-cites-head">Resting on</span>' +
+      cites.map(function (c) { return '<span class="st-bd-cite">' + esc(c.t) + '</span>'; }).join('') + '</div>';
+  }
+  function boardCitesLinked(cites) {
+    if (!cites || !cites.length) return '';
+    return '<div class="st-bd-sources"><div class="st-bd-sources-head">Read the rules behind this</div>' +
+      cites.map(function (c) {
+        return '<div class="st-bd-source"><a class="st-lad-quote-link" href="' + esc(c.u) + '">' + esc(c.t) + '</a>' +
+          (c.quote ? '<div class="st-bd-source-q">“' + esc(c.quote) + '”</div>' : '') + '</div>';
+      }).join('') + '</div>';
+  }
+
+  var BD_CHECKS = [
+    'I named the rule and where it lives',
+    'I called the trap in the scenario',
+    'I landed on a decision and said where I’d verify it'
+  ];
+  var BD_VERDICT = { 1: 'Rough', 2: 'Getting there', 3: 'Board-ready' };
+  var BD_HINT_DELAY_MS = 10000; // the hint is ABSENT, not greyed — reaching for it is the tell
+
+  function ladderBoardSession(rung, label, pickId, startStage) {
+    var pool = ladderBoardPool(rung);
+    if (!pool.length) { viewLadder(); return; }
+    var done = ladderBoardMap();
+    var sc = null;
+    if (pickId) { sc = pool.filter(function (s) { return s.id === pickId; })[0]; }
+    if (!sc) {
+      var fresh = pool.filter(function (s) { return !done[s.id]; });
+      sc = (fresh.length ? shuffle(fresh.slice()) : shuffle(pool.slice()))[0];
+    }
+    var fus = sc.follow_ups || [];
+    var CHECK_STAGE = 2 + fus.length, RECORD_STAGE = CHECK_STAGE + 1;
+    var stage = Math.min(startStage || 0, RECORD_STAGE);
+    var fuRevealed = false, hintUsed = false, hintReady = false;
+    var bluf = '', floorSecs = 0, clockT = null, hintT = null;
+    var checks = [false, false, false];
+
+    function stopClock() { if (clockT) { clearInterval(clockT); clockT = null; } }
+    function stopHint() { if (hintT) { clearTimeout(hintT); hintT = null; } }
+    function derive() {
+      var n = 0;
+      checks.forEach(function (c) { if (c) n++; });
+      var g = n >= 3 ? 3 : (n >= 2 ? 2 : 1);
+      if (hintUsed && g > 2) g = 2; // a hint you needed is a hint the panel would have heard you need
+      return g;
+    }
+    function bridgePool() {
+      return ladderPool(rung).filter(function (c) { return c.topic === sc.topic; });
+    }
+    function advance() { stopClock(); stopHint(); stage++; fuRevealed = false; hintReady = false; step(); }
+
+    function step() {
+      saveResume('ladderBoard', rung, [sc], stage, 0, label);
+      var body = '<div class="st-chip">Board sim · ' + esc(sc.topic) + '</div>';
+      if (stage === 0) {
+        body += '<div class="st-scenario"><div class="st-scen-eyebrow">The scenario</div>' + esc(sc.scenario) + '</div>' +
+          '<div class="st-panel-ask"><span class="st-ask-kicker">The panel asks</span>' + esc(sc.ask) + '</div>' +
+          '<div class="st-bd-floor"><span class="st-bd-floor-lab">You have the floor</span>' +
+          '<span class="st-bd-clock" id="bd-clock">0:00</span></div>' +
+          '<p class="st-outloud">Answer <b>out loud</b>, all the way through, as if the panel were in front of you.</p>' +
+          '<label class="st-bd-bluf-lab" for="bd-bluf">Bottom line up front — one line, the way you opened</label>' +
+          '<input class="st-bd-bluf" id="bd-bluf" type="text" maxlength="140" autocomplete="off" ' +
+          'placeholder="e.g. I’d stop the award and run a set-aside check first.">' +
+          '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">I’m done — show the model answer</button></div>';
+      } else if (stage === 1) {
+        var model = spokenSecs(sc.script);
+        var thin = floorSecs > 0 && floorSecs < Math.round(model * 0.4);
+        body += '<div class="st-scenario st-scenario-sm">' + esc(sc.scenario) + '</div>' +
+          (bluf
+            ? '<div class="st-bd-echo"><div class="st-bd-echo-head">What you said you’d do</div>' + esc(bluf) + '</div>'
+            : '<div class="st-bd-echo st-bd-echo-none">No opening line — the model answer is below.</div>') +
+          (floorSecs
+            ? '<p class="st-bd-cmp' + (thin ? ' st-bd-cmp-thin' : '') + '">You held the floor ' + mmss(floorSecs) +
+              '. The model answer takes about ' + mmss(model) + ' to say.' +
+              (thin ? ' That wasn’t an answer yet — it was a throat-clear.' : '') + '</p>'
+            : '') +
+          '<div class="st-script"><div class="st-script-head">Say it like this</div><p>' + esc(sc.script) + '</p></div>' +
+          boardCitesText(sc.cites) +
+          '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' +
+          (fus.length ? 'The panel follows up… <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
+      } else if (stage < CHECK_STAGE) {
+        var k = stage - 2, fu = fus[k] || {};
+        body += '<div class="st-followup"><span>Panel follow-up ' + (k + 1) + ' of ' + fus.length + '</span>' +
+          '<div class="st-q">' + esc(fu.q) + '</div></div>';
+        if (fuRevealed && fu.d) {
+          body += '<div class="st-fu-debrief"><div class="st-fu-debrief-head">Debrief</div><p>' + esc(fu.d) + '</p></div>' +
+            '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' +
+            (k + 1 < fus.length ? 'Next follow-up <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
+        } else {
+          body += '<p class="st-outloud">Answer <b>out loud</b>, then reveal the debrief.</p>' +
+            '<div id="fu-hint-box"></div>' +
+            '<div class="st-actions" id="fu-acts">' +
+            (hintReady && fu.h ? '<button class="st-btn st-btn-hint" id="fu-hint">Hint</button>' : '') +
+            '<button class="st-btn st-btn-reveal" id="fu-reveal">Reveal the debrief <kbd>space</kbd></button></div>';
+        }
+      } else if (stage === CHECK_STAGE) {
+        // Grading by checklist rather than by feel: the three items ARE the shape of a board
+        // answer, so scoring yourself teaches the shape even when the verdict is Rough.
+        body += '<div class="st-q">How did that go? Check what you actually did.</div>' +
+          '<div class="st-bd-check">' + BD_CHECKS.map(function (t, ci) {
+            return '<button class="st-bd-chk' + (checks[ci] ? ' st-bd-chk-on' : '') + '" data-chk="' + ci +
+              '" aria-pressed="' + checks[ci] + '"><span class="st-bd-chk-box" aria-hidden="true"></span>' +
+              esc(t) + '</button>';
+          }).join('') + '</div>' +
+          (hintUsed ? '<p class="st-bd-capped">You took a hint, so this one caps at “getting there”.</p>' : '') +
+          '<div class="st-actions"><button class="st-btn st-btn-reveal" id="bd-score">Score it</button></div>';
+      } else {
+        var rec = done[sc.id] || { g: derive() };
+        var bp = bridgePool();
+        body += '<div class="st-bd-verdict st-bd-v' + rec.g + '">' + BD_VERDICT[rec.g] + '</div>' +
+          '<p class="st-sub">' + esc(sc.topic) + ' · ' + esc(label) + '</p>' +
+          boardCitesLinked(sc.cites) +
+          '<div class="st-actions">' +
+          (bp.length ? '<button class="st-btn st-btn-reveal" id="bd-drill">Drill the ' + bp.length +
+            ' cards behind this</button>' : '') +
+          '<button class="st-btn' + (bp.length ? ' st-btn-hint' : ' st-btn-reveal') + '" id="bd-next">Next scenario</button>' +
+          '<button class="st-btn st-btn-hint" id="bd-home">Back to the ladder</button></div>';
+      }
+      var headNote = stage === 0 ? 'the ask'
+        : stage === 1 ? 'the model answer'
+        : stage < CHECK_STAGE ? 'follow-up ' + (stage - 1) + ' of ' + fus.length
+        : stage === CHECK_STAGE ? 'your call' : 'the record';
+      render('<div class="st-session-head"><span>' + esc(label) + ' · board sim</span><span>' + headNote +
+        '</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
+        '<button class="st-link st-quit" id="st-quit">End this sim</button>');
+      el('st-quit').onclick = function () { stopClock(); stopHint(); clearResume(); viewLadder(); };
+
+      if (stage === 0) {
+        floorSecs = 0;
+        clockT = setInterval(function () {
+          var n = el('bd-clock');
+          if (!n) { stopClock(); return; }
+          floorSecs++;
+          n.textContent = mmss(floorSecs);
+        }, 1000);
+        el('next').onclick = function () {
+          var f = el('bd-bluf');
+          bluf = f ? f.value.trim() : '';   // read, echoed once, never persisted
+          advance();
+        };
+      } else if (stage < CHECK_STAGE && stage >= 2 && !(fuRevealed && fus[stage - 2] && fus[stage - 2].d)) {
+        var fuNow = fus[stage - 2] || {};
+        if (!hintReady && fuNow.h) {
+          hintT = setTimeout(function () {
+            hintT = null;
+            if (!el('fu-acts')) return;     // the view moved on
+            hintReady = true;
+            var b = document.createElement('button');
+            b.className = 'st-btn st-btn-hint'; b.id = 'fu-hint'; b.textContent = 'Hint';
+            b.onclick = showHint;
+            el('fu-acts').insertBefore(b, el('fu-reveal'));
+          }, BD_HINT_DELAY_MS);
+        }
+        if (el('fu-hint')) el('fu-hint').onclick = showHint;
+        el('fu-reveal').onclick = function () { stopHint(); fuRevealed = true; step(); };
+        keyHandler(function (k) {
+          if (k === ' ' || k === 'Enter') { stopHint(); fuRevealed = true; step(); return true; }
+        });
+      } else if (stage === CHECK_STAGE) {
+        Array.prototype.forEach.call(app.querySelectorAll('.st-bd-chk'), function (b) {
+          b.onclick = function () {
+            var ci = +b.getAttribute('data-chk');
+            checks[ci] = !checks[ci];
+            b.classList.toggle('st-bd-chk-on', checks[ci]);
+            b.setAttribute('aria-pressed', checks[ci]);
+          };
+        });
+        el('bd-score').onclick = function () {
+          var g = derive();
+          done[sc.id] = { g: g, hint: hintUsed, t: floorSecs };
+          if (g === 1) ladderBoardNoteRough(sc.id);
+          bumpStreak(); save();
+          stage++; step();
+        };
+      } else if (stage >= RECORD_STAGE) {
+        keyHandler(null); clearResume();
+        if (el('bd-drill')) {
+          el('bd-drill').onclick = function () {
+            var bp2 = bridgePool();
+            goDepth(2, function () { ladderSession(bp2, label); });
+          };
+        }
+        el('bd-next').onclick = function () { ladderBoardSession(rung, label); };
+        el('bd-home').onclick = function () { clearResume(); viewLadder(); };
+      } else if (el('next')) {
+        el('next').onclick = advance;
+        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { advance(); return true; } });
+      }
+
+      function showHint() {
+        var f = fus[stage - 2] || {};
+        var box = el('fu-hint-box');
+        if (box && f.h) {
+          var div = document.createElement('div');
+          div.className = 'st-hint';
+          div.innerHTML = '<b>Hint:</b> ' + esc(f.h);
+          box.appendChild(div);
+        }
+        hintUsed = true;
+        if (el('fu-hint')) el('fu-hint').disabled = true;
+      }
+    }
+    step();
+  }
+  function resumeLadderBoard() {
+    var r = S.resume;
+    if (!r || r.mode !== 'ladderBoard' || !r.ids || !r.ids.length) { clearResume(); return false; }
+    if (!ladderBoardPool(r.rung).some(function (s) { return s.id === r.ids[0]; })) { clearResume(); return false; }
+    S.ladderRung = r.rung; save();
+    depth1View = viewLadder;
+    goDepth(2, function () { ladderBoardSession(r.rung, r.label, r.ids[0], r.i); });
+    return true;
+  }
+  /* render() deliberately skips its anchor-scroll on the very first paint so a cold arrival
+     rests on the hero instead of being yanked past it. A resume is not an arrival — you were
+     already mid-drill and only left to read a citation — so that reasoning inverts here.
+     Left alone, a cold resume put the card 578px down a 720px viewport with the reveal
+     button below the fold, which is a fold bug this feature would itself have created. */
+  function resumeSession() {
+    var r = S.resume;
+    if (!r) return false;
+    rendered = true;
+    var ok = r.mode === 'ladderBoard' ? resumeLadderBoard() : resumeLadder();
+    if (!ok) rendered = false;   // nothing resumed — the next paint really is a cold arrival
+    return ok;
   }
 
   /* ---- The Combination — the daily vault word ---- */
@@ -1460,7 +1732,7 @@
         }
         depth1View = viewCombo; goDepth(1, viewCombo); return;
       }
-      if (resumeLadder()) return;   // a reload or a citation click shouldn't cost the session
+      if (resumeSession()) return;  // a reload or a citation click shouldn't cost the session
       viewTrack();
     }).catch(function () {
       app.innerHTML = '<p class="st-sub">Couldn’t load the question deck — check your connection and refresh. (Once loaded once, it works offline.)</p>';

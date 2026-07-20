@@ -780,6 +780,38 @@ function renderStudyPage() {
 .st-boardans{background:var(--off,#f7f6f2);border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.6;margin-top:12px}
 .st-followup{margin:6px 0 0}
 .st-followup>span{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+.st-lad-boards{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:10px;padding-top:11px;border-top:1px solid var(--line2)}
+.st-lad-boards-lab{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.st-lad-boards-n{font-size:14px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.st-lad-boards-split{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.st-bd-floor{display:flex;align-items:center;gap:11px;margin-top:14px;padding:10px 14px;background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:9px}
+.st-bd-floor-lab{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.st-bd-clock{margin-left:auto;font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.st-bd-bluf-lab{display:block;margin-top:15px;margin-bottom:6px;font-size:12.5px;font-weight:700;color:var(--ink)}
+.st-bd-bluf{display:block;width:100%;box-sizing:border-box;padding:11px 13px;font-size:15px;line-height:1.45;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:8px}
+.st-bd-bluf:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px rgba(135,101,28,.13)}
+.st-bd-echo{margin-top:2px;padding:12px 15px;background:#f6efdd;border:1px solid rgba(135,101,28,.3);border-left:3px solid var(--brass);border-radius:0 10px 10px 0;font-size:15px;line-height:1.55;color:#2a3140}
+.st-bd-echo-head{font-size:10.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:5px}
+.st-bd-echo-none{background:var(--off,#f7f6f2);border-color:var(--line2);border-left-color:var(--line2);color:var(--muted);font-size:13.5px}
+.st-bd-cmp{margin:12px 0 0;font-size:13.5px;line-height:1.55;color:var(--muted);font-variant-numeric:tabular-nums}
+.st-bd-cmp-thin{color:#8c2b23}
+.st-bd-cites{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:13px}
+.st-bd-cites-head{font-size:10.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.st-bd-cite{font-size:12.5px;font-weight:700;color:#3d444d;background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:4px;padding:2px 8px}
+.st-bd-sources{margin-top:16px;padding-top:14px;border-top:1px solid var(--line2);text-align:left}
+.st-bd-sources-head{font-size:10.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.st-bd-source{padding:7px 0 7px 12px;border-left:2px solid var(--line2);margin-bottom:6px}
+.st-bd-source-q{margin-top:3px;font-size:13.5px;line-height:1.6;color:#3d444d}
+.st-bd-check{display:flex;flex-direction:column;gap:8px;margin-top:14px;text-align:left}
+.st-bd-chk{display:flex;align-items:flex-start;gap:10px;width:100%;padding:12px 14px;font-size:14.5px;line-height:1.5;font-weight:600;color:#2a3140;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:9px;cursor:pointer}
+.st-bd-chk-box{flex:none;width:17px;height:17px;margin-top:1px;border:2px solid var(--line);border-radius:4px;background:#fff}
+.st-bd-chk-on{border-color:var(--brass);background:#f6efdd}
+.st-bd-chk-on .st-bd-chk-box{border-color:var(--brass);background:var(--brass)}
+.st-bd-capped{margin:11px 0 0;font-size:12.5px;font-style:italic;color:var(--muted)}
+.st-bd-verdict{font-size:25px;font-weight:700;font-family:var(--serif);letter-spacing:.01em;margin-top:4px}
+.st-bd-v1{color:#8c2b23}
+.st-bd-v2{color:var(--brass-ink)}
+.st-bd-v3{color:#155433}
 .st-foot-tools{margin-top:26px;font-size:12.5px;color:var(--muted)}
 .st-trackcard{position:relative}
 .st-trackcard-active{border-color:rgba(135,101,28,.55);box-shadow:0 16px 34px -18px rgba(15,37,64,.4)}
@@ -1034,7 +1066,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=36"></script>`;
+<script defer src="/assets/study.js?v=37"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }
