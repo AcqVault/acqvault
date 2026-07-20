@@ -127,6 +127,18 @@
      "meta": "20 volume-parts · 304 chapters",
      "origin": "Official source (DoD Comptroller)",
      "updated": "Mar 2024"
+    },
+    {
+     "id": "src-ssp",
+     "title": "DoD Source Selection Procedures",
+     "subtitle": "USA000740-22-DPC · Aug 20, 2022",
+     "desc": "The Department of Defense Source Selection Procedures — searchable and browsable in-app by section and appendix.",
+     "file": "/ssp",
+     "download": "",
+     "type": "In-app",
+     "meta": "5 sections · 5 appendices",
+     "origin": "Official source (OUSD A&S · DPC)",
+     "updated": "Aug 20, 2022"
     }
    ]
   }

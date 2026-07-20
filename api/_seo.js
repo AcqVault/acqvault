@@ -293,7 +293,7 @@ table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fon
 .libsrc .sb{font-size:12px;color:var(--muted);font-weight:600}
 .libsrc .mt{font-size:11px;color:var(--muted);margin-top:2px}
 .libsrc .dl{position:absolute;top:12px;right:13px;font-size:14px;font-weight:800;color:var(--src,#94a3b8)}
-.libsrc[data-src="rfo"]{--src:#2f5aa6}.libsrc[data-src="r-dfars"]{--src:#2c6a44}.libsrc[data-src="far-companion"]{--src:#67508f}.libsrc[data-src="category-management"]{--src:#1c6377}.libsrc[data-src="dafi-63-138"]{--src:#87651c}.libsrc[data-src="fmr"]{--src:#976420}
+.libsrc[data-src="rfo"]{--src:#2f5aa6}.libsrc[data-src="r-dfars"]{--src:#2c6a44}.libsrc[data-src="far-companion"]{--src:#67508f}.libsrc[data-src="category-management"]{--src:#1c6377}.libsrc[data-src="dafi-63-138"]{--src:#87651c}.libsrc[data-src="fmr"]{--src:#976420}.libsrc[data-src="ssp"]{--src:#5e4715}
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
 @media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}
 /* ── Library themed full-bleed bands (homepage rhythm: navy hero / white / beige) ── */
@@ -490,7 +490,7 @@ function renderLibraryPage() {
   const canonical = `${SITE}/library`;
   const title = `AcqVault Library — field guides, templates & source PDFs | AcqVault`;
   const totalItems = cats.reduce((n, c) => n + c.items.length, 0);
-  const description = esc(`Free downloadable AcqVault field guides and templates for the DoD acquisition community, plus the full text of every indexed source (RFO, R-DFARS, FAR Companion, Category Management, DAFI 63-138, and the DoD FMR) as one clean PDF each. ${totalItems} resources, no account required.`);
+  const description = esc(`Free downloadable AcqVault field guides and templates for the DoD acquisition community, plus the full text of every indexed source (RFO, R-DFARS, FAR Companion, Category Management, DAFI 63-138, the DoD FMR, and the DoD Source Selection Procedures). ${totalItems} resources, no account required.`);
 
   // engraved brass vault emblem (line-art, no glow) — matches the homepage covers
   const EMBLEM = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>';
@@ -514,9 +514,16 @@ function renderLibraryPage() {
       const cards = cat.items.map(it => {
         const srcKey = String(it.id || '').replace(/^src-/, '');
         const ext = /^https?:\/\//i.test(it.file || '');
-        const attrs = ext ? 'target="_blank" rel="noopener"' : `download="${esc(it.download || '')}" rel="noopener"`;
+        // Three link kinds: an external official PDF (new tab), a compiled PDF we host
+        // (download), or an in-app browse hub like /ssp — which is a page, so it navigates
+        // normally. A download attribute on an internal page would try to save the HTML.
+        const internalPage = !ext && !/\.pdf$/i.test(it.file || '');
+        const attrs = ext ? 'target="_blank" rel="noopener"'
+          : internalPage ? 'rel="noopener"'
+          : `download="${esc(it.download || '')}" rel="noopener"`;
+        const glyph = ext ? '↗' : internalPage ? '→' : '↓';
         return `<a class="libsrc" data-src="${esc(srcKey)}" href="${esc(it.file)}" ${attrs}>
-<span class="dl" aria-hidden="true">${ext ? '↗' : '↓'}</span>
+<span class="dl" aria-hidden="true">${glyph}</span>
 <span class="nm">${esc(it.title)}</span>
 ${it.subtitle ? `<span class="sb">${esc(it.subtitle)}</span>` : ''}
 ${it.meta ? `<span class="mt">${esc(it.meta)}</span>` : ''}
