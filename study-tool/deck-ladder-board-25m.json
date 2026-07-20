@@ -1,0 +1,232 @@
+{
+  "items": [
+    {
+      "rung": "25m",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "scenario": "You are negotiating a sole-source follow-on with an incumbent for aircraft ground support equipment. The estimated price is $6.2 million and the prime contract would be awarded next month. Your contract specialist has drafted a request for certified cost or pricing data, citing the $2.5 million threshold, and the contractor's counsel has already pushed back in writing.",
+      "ask": "Your specialist wants to require certified cost or pricing data on this action. Talk me through whether that is right.",
+      "script": "The instinct is right and the number is wrong for us. $2.5 million is the government-wide floor; for DoD, R-DFARS 215.403-3 applies in lieu of the FAR rule and the threshold is $10 million for primes awarded after 30 June 2026. At $6.2 million I am below it, so I cannot require certified data on this action. That does not leave me empty-handed — I still need a fair and reasonable price, so I go to data other than certified, and I document what I got and what it supported. The failure mode I am avoiding is demanding a certificate I have no authority to demand and handing the contractor a legitimate grievance.",
+      "follow_ups": [
+        {
+          "q": "The contractor offers to certify voluntarily to make the negotiation move faster. Do you take it?",
+          "h": "Think about what a certificate buys the Government, and what it obligates you to do with it.",
+          "d": "A certificate is not a convenience — it carries defective pricing exposure and a whole documentation regime. Accepting one below the threshold to speed a negotiation invites the question of why you needed it, and a strong candidate says they would obtain data other than certified and reserve certification for actions where the rule requires it."
+        },
+        {
+          "q": "Same buy, same dollars, but you are a civilian agency contracting officer. Does your answer change?",
+          "h": "Which title of the U.S. Code did the FY26 NDAA actually amend?",
+          "d": "Yes — and this is the trap. Section 1804(c) amended 10 U.S.C. 3702, which is DoD. Title 41 was never touched, so civilian agencies remain at $2.5 million and the specialist's original answer would have been correct there. A candidate who states one figure without naming the agency has answered half the question."
+        },
+        {
+          "q": "What if the estimated price were $11 million?",
+          "h": "Walk the exceptions before you walk the threshold.",
+          "d": "Over the DoD threshold you still check the exceptions at RFO 15.403-2 first — adequate price competition, prices set by law or regulation, a commercial product or service, or an HCA waiver. The threshold tells you when to look; the exceptions tell you whether to require."
+        }
+      ],
+      "cites": [
+        { "src": "r-dfars", "sec": "215.403-3", "quote": "In lieu of the requirements of FAR 15.403-3(a), obtain certified cost or pricing data when a prime contract is expected to exceed $10 million and is awarded after June 30, 2026" },
+        { "src": "rfo", "sec": "15.403-2", "quote": "Certified cost or pricing data must not be obtained for acquisitions at or below the simplified acquisition threshold." }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Contracting by Negotiation — Source Selection",
+      "scenario": "In a competitive source selection for base operating support, the evaluation team flags that one offeror's technical proposal assumes a staffing level well below every other proposal and below the independent estimate. The offeror's price is the lowest received by a wide margin. The team wants to leave the price alone and simply rate the technical approach as a weakness.",
+      "ask": "The team says the price is the price and the market will sort it out. How do you advise them?",
+      "script": "That is where cost realism belongs. Under RFO 15.404-3 I independently review each offeror's proposed cost elements to see whether they are realistic for the work, reflect a clear understanding of the requirement, and are consistent with the offeror's own technical proposal — which is exactly what is failing here, because the staffing in the technical volume does not support the price in the cost volume. On a cost-reimbursement action that produces a probable cost I must use for evaluation. The team's instinct to note it as a technical weakness is not wrong, but it is not sufficient on its own.",
+      "follow_ups": [
+        {
+          "q": "This is a fixed-price competition, not cost-reimbursement. May you adjust the offered price?",
+          "h": "Separate what realism informs from what it changes.",
+          "d": "No. On competitive fixed-price proposals realism results may inform performance-risk and responsibility assessments, but proposals are evaluated on the RFP criteria and the offered prices are not adjusted. A candidate who says 'I would adjust their price up to realistic' has just described a protest."
+        },
+        {
+          "q": "Where does this show up in your source selection decision?",
+          "h": "What does the SSA actually have to document?",
+          "d": "RFO 15.205 requires the decision to represent the SSA's independent judgement on a comparative assessment against all the RFP criteria, documented with the rationale for business judgments and tradeoffs. If realism drove the award away from the lowest price, the rationale for that is the document."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "15.404-3", "quote": "Cost realism analysis is the process of independently reviewing and evaluating specific elements of each offeror's proposed cost estimate to determine whether the estimated proposed cost elements are realistic for the work to be performed" },
+        { "src": "rfo", "sec": "15.205", "quote": "The source selection decision must represent the SSA’s independent judgement and be based on a comparative assessment of proposals against all source selection criteria in the RFP." }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Contracting by Negotiation — Source Selection",
+      "scenario": "Proposals are in for a $30 million services competition. One offeror's price volume has an obvious transposition — a labor rate entered as $8,400 where every other page says $84.00. Your specialist wants to email the offeror to confirm the intended number and calls it a clarification. Nobody has established a competitive range.",
+      "ask": "Is that exchange a clarification, and may you have it?",
+      "script": "Clarifications are limited exchanges that let offerors clarify certain aspects of a proposal or resolve minor clerical errors, and a transposed rate contradicted everywhere else in the proposal is close to the paradigm case. What I will not do is let it drift — the moment the exchange lets the offeror revise its proposal, I am in negotiations, and negotiations require a competitive range. So I bound the exchange tightly, document what I asked and what came back, and treat any answer that changes price or approach as the trigger to stop and restructure the acquisition.",
+      "follow_ups": [
+        {
+          "q": "The offeror answers and volunteers a lower price on two other line items. Now what?",
+          "h": "What did they just turn your clarification into?",
+          "d": "That is a proposal revision, and accepting it converts the exchange into negotiations conducted with one offeror outside a competitive range. The candidate should say they would not accept the revision, would document the unsolicited material, and would consider whether the acquisition now requires a competitive range and negotiations with everyone in it."
+        },
+        {
+          "q": "If you do decide to hold negotiations, what has to happen first?",
+          "h": "Who gets in the room?",
+          "d": "A competitive range — the group of evaluated proposals the contracting officer determines are best suited for further negotiation, which RFO 15.204-1 requires whenever negotiations will occur after evaluating competitive proposals. Negotiating with one offeror and calling it efficiency is the fastest route to a sustained protest."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "15.202", "quote": "Agencies must evaluate each competitive proposal based solely on the factors and subfactors in the RFP." },
+        { "src": "rfo", "sec": "15.204-1", "quote": "A competitive range is the group of evaluated proposals that the contracting officer determines are best suited for further negotiation. Contracting officers must establish a competitive range if negotiations will occur after evaluating competitive proposals." }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Contracting by Negotiation — Source Selection",
+      "scenario": "A program office wants to run a $22 million recapitalization of test equipment as lowest price technically acceptable. Their reasoning is that the specification is tight, the items are commercial, and tradeoff evaluations take months they do not have. The technical lead privately tells you that vendor reliability has varied enormously on past buys.",
+      "ask": "They want LPTA. Do you agree, and how do you make that call?",
+      "script": "LPTA is appropriate when it is in the Government's best interest to award to the technically acceptable proposal with the lowest evaluated price, and it does not permit tradeoffs — technical merit above acceptable buys nothing. So the real question is whether I can write acceptability criteria that capture what the technical lead just told me. If reliability differences are material and I cannot reduce them to a pass/fail bar, LPTA is the wrong instrument and I should say so before the RFP goes out, not after the award.",
+      "follow_ups": [
+        {
+          "q": "Does DoD have anything to say about using LPTA here?",
+          "h": "The RFO's limitations open with two words that matter to you.",
+          "d": "Yes — and this is where a civilian-trained answer fails. RFO 15.103-2's limitations open 'Except for DoD,' and DoD's own limitations and outright prohibitions live at R-DFARS 215.103-270, which separates what you must avoid to the maximum extent practicable from what you must not do at all. Knowing that split is the answer."
+        },
+        {
+          "q": "If you go LPTA, what must the RFP say?",
+          "h": "What does an offeror need to know to compete?",
+          "d": "The approach does not permit tradeoffs and the solicitation has to state the minimum requirements that establish technical acceptability. Vague acceptability criteria are how LPTA competitions get protested and how you end up defending an award you did not want to make."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "15.103-2", "quote": "The lowest price technically acceptable (LPTA) approach to source selection is appropriate when it is in the Government’s best interest to award to the offeror that submits a technically acceptable proposal with the lowest evaluated price." }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Contracting by Negotiation — Source Selection",
+      "scenario": "You are about to release the RFP on a $40 million competition. The program manager has assembled an evaluation team of engineers and a cost analyst, and has told you who the source selection authority will be — a senior program office official, appointed by nobody in particular. Your name is on the contract.",
+      "ask": "Who is the source selection authority on this acquisition, and how do you handle that conversation?",
+      "script": "By default it is me. Under RFO 15.201 the contracting officer is designated as the SSA unless the agency head appoints another individual for that acquisition or group of acquisitions — the program office cannot simply name one. So the conversation is not adversarial: either the agency head makes that appointment properly, or the authority sits with me. Either way the SSA has to establish an evaluation team tailored to the acquisition, and I want that team documented before the RFP goes out, not reconstructed afterward.",
+      "follow_ups": [
+        {
+          "q": "The agency head does appoint the program official. What is left for you?",
+          "h": "Authority moved. Did responsibility?",
+          "d": "Plenty — the contract is still signed by a contracting officer, and the evaluation still has to run against the stated criteria with a documented decision. A candidate who treats an SSA appointment as handing off their own responsibilities has missed that the two roles coexist."
+        },
+        {
+          "q": "For DoD, is there anything else the SSA owes before the solicitation issues?",
+          "h": "Think about what has to be approved, and when.",
+          "d": "For high-dollar-value acquisitions DoD expects the SSA to approve a source selection plan before the solicitation is issued. Waiting until after release to formalize the plan is a common finding and an easy one for a panel to probe."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "15.201", "quote": "A contracting officer is designated as the source selection authority (SSA), unless the agency head appoints another individual for a particular acquisition or group of acquisitions." }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "scenario": "A sole-source proposal for $18 million arrives with no comparable commercial sales and no recent competitive award to price against. Your specialist proposes to justify price reasonableness by pointing to what the Government paid the same contractor for a similar effort four years ago, escalated for inflation.",
+      "ask": "Is prior price paid a sufficient basis here?",
+      "script": "It is a technique, not a conclusion. Price analysis under RFO 15.404-1 examines a proposed price without evaluating separate cost elements, and comparison to previous prices is one of the recognized techniques — but only if the prior price was itself established as fair and reasonable and the conditions are genuinely comparable. A four-year-old sole-source price escalated forward proves that we paid it, not that it was right. On an $18 million action I want cost analysis behind it.",
+      "follow_ups": [
+        {
+          "q": "For DoD, does the preferred method change when there is no adequate price competition?",
+          "h": "There is a DoD-specific instruction on which technique to reach for first.",
+          "d": "Yes. R-DFARS 215.404-170 makes market-price-based pricing the preferred method absent adequate price competition, and cautions that reasonableness must not rest solely on historical prices paid by the Government — which is precisely what the specialist proposed."
+        },
+        {
+          "q": "The contractor says the price is fair because it is the same rate on their GSA schedule. Does that settle it?",
+          "h": "A schedule price is a ceiling, not a determination.",
+          "d": "A schedule price has been determined fair and reasonable for the schedule, not for this quantity, this delivery, or this scope. The candidate should treat it as one input, and should say what else they would look at before signing."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "15.404-1", "quote": "Price analysis is the process of examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit." }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Protests",
+      "scenario": "You awarded a $28 million contract on Tuesday. An unsuccessful offeror requested a debriefing on Thursday, you offered Friday, and they declined the offered date and asked for the following week. On the Monday after award you receive notice from GAO that a protest has been filed.",
+      "ask": "Walk me through your obligation on performance right now.",
+      "script": "I need to work the clock before I do anything else, and for a DoD action I do not work it from FAR 33.105-3 alone. R-DFARS 233.105-370 replaces the trigger dates with a latest-of test: ten days after award, ten days after a task or delivery order over $25 million is issued, five days after a debriefing date offered — expressly whether or not the protester accepted it — and five days after a required postaward debriefing is concluded. I take the latest of those that applies, and if the protest landed inside it, performance suspends or the award is terminated.",
+      "follow_ups": [
+        {
+          "q": "They declined the debriefing date we offered. Does that help us?",
+          "h": "Read the trigger literally.",
+          "d": "No, and this is the trap. The five-day clock runs from the debriefing date offered regardless of whether the protester rejected it. A candidate who reasons 'they declined, so the clock never started' has just let a contractor perform through a live stay."
+        },
+        {
+          "q": "When is a required postaward debriefing actually 'concluded' for DoD?",
+          "h": "It is not when everyone leaves the room.",
+          "d": "Under the DoD enhanced-debriefing procedures the offeror gets two business days to submit additional written questions and the agency responds within five business days, and the debriefing is not concluded until that written response is delivered. Conclusion is what starts the clock, so treating the meeting as the end date understates your exposure."
+        }
+      ],
+      "cites": [
+        { "src": "r-dfars", "sec": "233.105-370", "quote": "contracting officers must immediately suspend performance or terminate the award using the time periods in paragraphs (a) through (d) of this section, whichever is later, in lieu of the time periods in FAR 33.105-" }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Contracting by Negotiation — Source Selection",
+      "scenario": "Award went out three weeks ago on a $26 million competition. An unsuccessful offeror's counsel sends a detailed request asking for the winner's technical scores, the source selection decision document, and the evaluators' individual worksheets.",
+      "ask": "What do you give them, and what do you refuse?",
+      "script": "A postaward debriefing is a defined thing, not a discovery request. RFO 15.301-1 sets who may request one and when, and fixes the minimum content — the evaluation of their own proposal, the overall evaluated cost and technical rating of the awardee, the rationale for award, and reasonable responses to relevant questions. What I do not hand over is another offeror's proprietary and confidential information or a point-by-point comparison of proposals. Individual evaluator worksheets are not on the list and I would not release them.",
+      "follow_ups": [
+        {
+          "q": "They ask for the source selection decision document itself. Is that ever released?",
+          "h": "There is a dollar-value answer, and DoD has its own numbers.",
+          "d": "It can be. The RFO provides for redacted SSDD disclosure at defined DoD contract values, and R-DFARS 215.301-170(b) restates those tiers at DoD-specific figures. The honest board answer names both authorities and says which one governs the action in front of you rather than picking a number."
+        },
+        {
+          "q": "Does holding the debriefing affect anything other than good relations?",
+          "h": "Think about what starts running.",
+          "d": "Yes — debriefing dates and conclusion drive protest timeliness and the CICA stay window. Treating a debriefing as a courtesy rather than a scheduled legal event is how agencies lose the ability to control their own timeline."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "15.301-1", "quote": "The awardee and offerors that received the award notice at 15.207-2 may request a postaward debriefing after receiving a notice of contract award." }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "scenario": "You issued a solicitation expecting three capable offerors on a $14 million requirement. One proposal arrives. Your specialist says that is still adequate price competition because you had a reasonable expectation of competition when you issued it, and proposes to skip certified cost or pricing data on that basis.",
+      "ask": "Can you rely on the expectation of competition here?",
+      "script": "Not as an Air Force buyer. That route exists — but read the heading it sits under. In RFO 15.403-2 the expectation-of-competition basis is nested under a paragraph that applies to agencies other than DoD, NASA and the Coast Guard. It is not available to me. What I have instead is one offer that I must price on its own merits, and DoD has its own resolicit-or-certify machinery for exactly this situation.",
+      "follow_ups": [
+        {
+          "q": "So what does DoD require when only one offer comes in?",
+          "h": "There is a specific DoD rule about what you do next.",
+          "d": "R-DFARS 215.202-71 governs — the general expectation is to resolicit for an additional period, with a path involving price reasonableness determination or certified data, a defined set of exceptions, and an HCA waiver. A candidate who says 'one offer, so I just do a price analysis' has skipped the rule that applies to them."
+        },
+        {
+          "q": "Which exceptions to certified cost or pricing data are still open to you?",
+          "h": "Go back to the list and take out the one that is closed.",
+          "d": "The rest of RFO 15.403-2 still applies — prices set by law or regulation, a commercial product or service including commercial modifications, and an HCA waiver. Knowing which single route is closed to DoD, and that the others remain, is the sophisticated answer."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "15.403-2", "quote": "Contracting officers must not require certified cost" }
+      ]
+    },
+    {
+      "rung": "25m",
+      "topic": "Contracting by Negotiation — Source Selection",
+      "scenario": "A multiple-award solicitation for engineering support services will result in several awards for the same or similar services, and the acquisition strategy is to award to every qualifying offeror. The program office asks whether they can skip price evaluation at the master contract level and compete price only at the order level.",
+      "ask": "Must price or cost be evaluated in this source selection?",
+      "script": "For most agencies, yes — but this is one of the places DoD is treated differently and the strategy they described is the exact fact pattern. Under RFO 15.104 contracting officers for DoD, NASA and the Coast Guard may choose not to include price or cost as an evaluation factor when the solicitation is above the simplified acquisition threshold, will result in multiple-award contracts for the same or similar services, and states that the Government intends to award to each and all qualifying offerors. All three conditions hold here, so the answer is that they can — and price consideration moves to the order level.",
+      "follow_ups": [
+        {
+          "q": "Does that exception have a limit?",
+          "h": "Think about what kind of orders might ride the contract.",
+          "d": "It does not reach multiple-award solicitations that provide for sole-source 8(a) orders. A candidate who states the exception without its carve-out has given an answer that is right until the program adds an 8(a) lane."
+        },
+        {
+          "q": "If one of those three conditions failed, what changes?",
+          "h": "The exception is conjunctive.",
+          "d": "The exception collapses and price or cost becomes a mandatory evaluation factor again. Boards probe this because candidates remember that DoD 'can skip price' and forget it is three conditions and all of them must hold."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "15.104", "quote": "Contracting officers may choose not to include price or cost as an evaluation factor for award when an RFP" }
+      ]
+    }
+  ]
+}
