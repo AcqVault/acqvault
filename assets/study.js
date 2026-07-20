@@ -644,10 +644,13 @@
   }
   function ladderCountLine(pool) { return '<p class="st-lad-count">' + pool.length + ' cards, every one cited to the rulebook.</p>'; }
   function ladderSectionHtml() {
-    if (!LADDER_ENABLED || !S.ladderBeta || !deck.ladder) return '';
+    // Public as of the beta launch — S.ladderBeta is no longer a gate, only a record that
+    // someone arrived through the original unlisted link. LADDER_ENABLED still kills it.
+    if (!LADDER_ENABLED || !deck.ladder) return '';
     var sel = ladderRung();
-    return '<h2 class="st-h2">The Warrant Ladder</h2>' +
-      '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +
+    return '<h2 class="st-h2">The Warrant Ladder <span class="st-beta">Beta</span></h2>' +
+      '<p class="st-sub">Pick the ceiling you’re testing for. Every card quotes the regulation ' +
+      'it’s testing, and says so where DoD deviates.</p>' +
       rungStripHtml(sel) +
       ladderCountLine(ladderPool(sel));
   }
