@@ -222,18 +222,6 @@
     {
       "rung": "unlimited",
       "type": "recall",
-      "topic": "Organizational Conflict of Interest",
-      "q": "The agency wants to waive an OCI rule. Who can, and how far down may that authority travel?",
-      "a": "The agency head or a designee may waive any general rule or procedure of the OCI subpart by determining that its application in the particular situation would not be in the Government's interest. The request must be in writing and set forth the extent of the conflict — and waiver authority must not be delegated below the head of a contracting activity.",
-      "cite": {
-        "src": "rfo",
-        "sec": "9.503",
-        "quote": "Agency heads must not delegate waiver authority below the level of head of a contracting activity."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
       "topic": "REAs & Claims",
       "q": "How long does the contracting officer have to issue a final decision on a certified claim over $100,000?",
       "a": "60 days after receiving the certified claim — or, within those 60 days, notify the contractor of the time within which a decision will be issued. One senior-level escape hatch: if a claim over $100,000 carries a defective certification, the contracting officer has no obligation to render a final decision at all, provided the contractor is notified in writing, within 60 days of receiving the claim, of the reasons the attempted certification was found defective.",

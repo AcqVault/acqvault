@@ -27,7 +27,8 @@
         "src": "rfo",
         "sec": "6.103",
         "quote": "Agencies may contract without providing for full and open competition under authorities specified in this section (see 10 U.S.C. 3204 and 41 U.S.C. 3304)."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "5m",
@@ -39,18 +40,24 @@
         "src": "rfo",
         "sec": "6.103",
         "quote": "Contracting without providing for full and open competition must not be justified on the basis of— (1) A lack of planning by the requiring activity; or (2) Concerns related to the amount of funds available to the agency or activity for acquisition."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "5m",
       "type": "recall",
       "topic": "Competition (CICA)",
       "q": "Which two competition exceptions do not require a justification and approval?",
-      "a": "Authorized or required by statute (6.103-5) and public interest (6.103-7). Every other 6.103 authority requires the justification and approval at 6.104.",
+      "a": "Authorized or required by statute (6.103-5) and public interest (6.103-7). Every other 6.103 authority requires the justification and approval at 6.104. DoD adds a wrinkle inside the statute lane: under R-DFARS 206.104-70, no justification and approval is required for a sole-source 8(a) contract up to $100 million, but above $100 million the contracting officer must justify the sole-source award in writing under FAR 6.104-1, obtain approval, and make the justification public after award.",
       "cite": {
         "src": "rfo",
         "sec": "6.104",
         "quote": "A justification and approval must support procedures under 6.103, except 6.103-5 and 6.103-7."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "206.104-70",
+        "quote": "In accordance with section 823 of the National Defense Authorization Act for Fiscal Year 2020 (Pub. L. 116-92), no justification and approval is required for a sole- source contract under the 8(a) authority (15 U.S.C. 637(a)) for an amount not exceeding $100 million."
       }
     },
     {
@@ -154,7 +161,8 @@
         "src": "rfo",
         "sec": "6.101",
         "quote": "(i) Time permits staff to solicit, submit, and evaluate sealed bids; (ii) The award will be made on the basis of price and other price-related factors; (iii) Discussion with bidders is unnecessary; and (iv) Contracting officers reasonably expect to receive more than one sealed bid."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "5m",
@@ -457,39 +465,19 @@
     {
       "rung": "5m",
       "type": "recall",
-      "topic": "Publicizing (Part 5)",
-      "q": "When must you post a presolicitation notice to the GPE?",
-      "a": "For every proposed contract action expected to be greater than $20,000, unless an exemption applies. Exemptions include actions at or below the SAT when the solicitation itself will be posted to the GPE and allows electronic response; orders under requirements, task-order, or delivery-order contracts; perishable subsistence; sole-source utility services; litigation experts; unique-and-innovative unsolicited proposals and SBIR acceptances; and most other-than-full-and-open actions — but not those under 6.103-1 (only one responsible source) or 6.103-6 (national security), which still require the notice.",
-      "cite": {
-        "src": "rfo",
-        "sec": "5.101",
-        "quote": "For proposed contract actions expected to be greater than $20,000, post a presolicitation notice to the GPE unless an exemption in paragraph (b) applies.",
-        "amount": "$20,000"
-      }
-    },
-    {
-      "rung": "5m",
-      "type": "recall",
       "topic": "Commercial Products & Services",
       "q": "Can a requirement that is not commercial be bought as if it were?",
-      "a": "Yes, in one narrow lane: the head of the agency may determine that supplies or services used to facilitate defense against or recovery from cyber, nuclear, biological, chemical, or radiological attack are to be treated as commercial products or commercial services. The escape hatch has a floor — a sole-source award over $25 million under this treatment remains subject to Cost Accounting Standards and certified cost or pricing data requirements. And remember part 12's rank: it takes precedence over other parts whenever there is an inconsistency.",
+      "a": "Yes — and for DoD there is more than one lane. The RFO lane: the head of the agency may determine that supplies or services used to facilitate defense against or recovery from cyber, nuclear, biological, chemical, or radiological attack are to be treated as commercial products or commercial services — though a sole-source award over $25 million under this treatment remains subject to Cost Accounting Standards and certified cost or pricing data requirements. R-DFARS 212.001-70 adds two statutory lanes of its own: supplies and services provided by nontraditional defense contractors may be treated as commercial (10 U.S.C. 3457), and supplies or services resulting from a commercial solutions opening are treated as commercial (10 U.S.C. 3458) — none of the three lanes requires a commercial product or commercial service determination. And remember part 12's rank: it takes precedence over other parts whenever there is an inconsistency.",
       "cite": {
         "src": "rfo",
         "sec": "12.001",
         "quote": "Agencies may treat any acquisition of supplies or services that, as determined by the head of the agency, are to be used to facilitate defense against or recovery from cyber, nuclear, biological, chemical, or radiological attack, as an acquisition of commercial products or commercial services. However, if the contract is awarded on a sole-source basis for an amount greater than $25 million, the contract is not exempt from Cost Accounting Standards (CAS) (see 48 CFR chapter 99) or certified cost or pricing data requirements (see part 15).",
         "amount": "$25 million"
-      }
-    },
-    {
-      "rung": "5m",
-      "type": "recall",
-      "topic": "Commercial Products & Services",
-      "q": "What does restricting competition on a commercial acquisition over the SAT require?",
-      "a": "A written justification approved as described in 6.104, citing the applicable statutory authority. At or below the SAT, documenting the single-source decision and its basis suffices.",
-      "cite": {
-        "src": "rfo",
-        "sec": "12.102",
-        "quote": "For acquisitions valued over the SAT, prepare a written justification and obtain approval of the justification as described in 6.104."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "212.001-70",
+        "quote": "Use of FAR part 12 procedures is based on applicability of one of the following statutes that provide for treatment as a commercial product or commercial service and use of FAR part 12 procedures, even though the item may not meet the definition of “commercial product” or “commercial service” at FAR 2.101 and does not require a commercial product or commercial service determination: (1) 41 U.S.C. 1903 - Supplies or services to be used to facilitate defense against or recovery from cyber, nuclear, biological, chemical, or radiological attack pursuant to FAR 12.001(b). (2) 10 U.S.C. 3457 - Supplies or services from nontraditional defense contractors pursuant to paragraph (d) of this section. (3) 10 U.S.C. 3458 - Supplies or services resulting from a commercial solutions opening pursuant to subpart 212.70."
       }
     },
     {
@@ -539,11 +527,16 @@
       "type": "recall",
       "topic": "Contract Types",
       "q": "Which contract types are the default?",
-      "a": "Fixed-price types are the default and preferred. If a fixed-price type is not appropriate for the entire contract, consider whether a portion of it can be established on a fixed-price basis.",
+      "a": "Fixed-price types are the default and preferred. If a fixed-price type is not appropriate for the entire contract, consider whether a portion of it can be established on a fixed-price basis. DoD draws a hard line at development work: R-DFARS 235.170 forbids awarding a fixed-price type contract for a development program effort unless the level of program risk permits realistic pricing, the fixed-price type allocates program risk equitably and sensibly between the Government and the contractor, and a written determination to that effect is executed — by USD(A&S) when the contract is over $25 million and covers non-major-system R&D or development of a major system or its subsystem, otherwise by the contracting officer.",
       "cite": {
         "src": "rfo",
         "sec": "16.102",
         "quote": "Fixed-price contract types are the default and preferred contract types. If a fixed-price contract type is not appropriate for an entire contract, consider whether a portion of the contract can be established on a fixed-price basis."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "235.170",
+        "quote": "Do not award a fixed-price type contract for a development program effort unless— (i) The level of program risk permits realistic pricing; (ii) The use of a fixed-price type contract permits an equitable and sensible allocation of program risk between the Government and the contractor; and (iii) A written determination that the criteria of paragraphs (b)(1)(i) and (ii) of this section have been met is executed—"
       }
     },
     {
@@ -551,11 +544,16 @@
       "type": "recall",
       "topic": "Contract Types",
       "q": "When must firm-fixed-price be used, and what if a reasonable basis for firm pricing does not exist?",
-      "a": "FFP must be used when the risk involved is minimal or predictable with an acceptable degree of certainty. Without a firm pricing basis, select a type (or combination) that appropriately ties profit to contractor performance.",
+      "a": "FFP must be used when the risk involved is minimal or predictable with an acceptable degree of certainty. Without a firm pricing basis, select a type (or combination) that appropriately ties profit to contractor performance. DoD bounds that rule for development: under R-DFARS 235.170, a fixed-price type contract may not be awarded for a development program effort unless program risk permits realistic pricing and the fixed-price type permits an equitable and sensible allocation of risk — backed by a written determination, executed by USD(A&S) for covered development contracts over $25 million.",
       "cite": {
         "src": "rfo",
         "sec": "16.102",
         "quote": "A firm-fixed-price contract (see section 16.202) must be used when the risk involved is minimal or can be predicted with an acceptable degree of certainty."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "235.170",
+        "quote": "Do not award a fixed-price type contract for a development program effort unless— (i) The level of program risk permits realistic pricing; (ii) The use of a fixed-price type contract permits an equitable and sensible allocation of program risk between the Government and the contractor; and (iii) A written determination that the criteria of paragraphs (b)(1)(i) and (ii) of this section have been met is executed—"
       }
     },
     {

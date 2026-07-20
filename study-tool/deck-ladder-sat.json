@@ -358,11 +358,16 @@
       "type": "recall",
       "topic": "Commercial Products & Services",
       "q": "A customer insists on a brand-name item at or below the SAT. What documentation does restricting competition require?",
-      "a": "Document the decision that only one source is available and the basis for the decision. (Over the SAT it takes a written justification approved under 6.104.)",
+      "a": "Document the decision that only one source is available and the basis for the decision. (Over the SAT it takes a written justification approved under 6.104.) DoD reads brand-name more strictly: under R-DFARS 212.102-70, implementing section 888(a) of the FY 2017 NDAA, the 12.102 documentation is required even for brand-name-or-equal descriptions and for proprietary specifications and standards — allowing an equal product does not excuse the paperwork.",
       "cite": {
         "src": "rfo",
         "sec": "12.102",
         "quote": "For acquisitions valued at or below the simplified acquisition threshold (SAT), document the decision that only one source is available and the basis for the decision."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "212.102-70",
+        "quote": "In accordance with section 888(a) of the National Defense Authorization Act for Fiscal Year 2017 (Pub. L. 114-328), the documentation addressed in FAR 12.102 is required to use brand name or equal descriptions or proprietary specifications and standards."
       }
     },
     {
@@ -406,7 +411,8 @@
         "sec": "5.101",
         "quote": "For proposed contract actions expected to be greater than $20,000, post a presolicitation notice to the GPE unless an exemption in paragraph (b) applies.",
         "amount": "$20,000"
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "sat",
@@ -580,7 +586,8 @@
         "src": "rfo",
         "sec": "7.503",
         "quote": "Contracts must not be used to perform inherently governmental functions."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "sat",

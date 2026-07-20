@@ -58,11 +58,16 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "Must price or cost be evaluated in every competitive source selection?",
-      "a": "Not always. For DoD, NASA, and the Coast Guard, the contracting officer may choose not to include price or cost as an award evaluation factor when the RFP is above the SAT, will result in multiple-award contracts for the same or similar services, and states the Government intends to award to each and all qualifying offerors — price or cost then must be considered on every order placed under the contract instead. Otherwise the baseline holds: price or cost in every competitive source selection, quality through one or more non-cost factors, and past performance unless the contracting officer documents why it is not appropriate.",
+      "a": "Not always. For DoD, NASA, and the Coast Guard, the contracting officer may choose not to include price or cost as an award evaluation factor when the RFP is above the SAT, will result in multiple-award contracts for the same or similar services, and states the Government intends to award to each and all qualifying offerors — price or cost then must be considered on every order placed under the contract instead. Otherwise the baseline holds: price or cost in every competitive source selection, and quality through one or more non-cost factors. On past performance the two books split: the RFO requires it in every competitive source selection unless the contracting officer documents why it is not appropriate, but R-DFARS 215.104-70 applies in lieu of that direction for DoD — past performance is evaluated when the contract, task order, or delivery order exceeds the category thresholds: $5 million for systems and operations support (including fuels), $1 million for services (including health care), $1 million for information technology, and $500,000 for ship repair and overhaul.",
       "cite": {
         "src": "rfo",
         "sec": "15.104",
         "quote": "for DoD, NASA, and the Coast Guard– (A) Contracting officers may choose not to include price or cost as an evaluation factor for award when an RFP– (1) Has an estimated value above the simplified acquisition threshold; (2) Will result in multiple-award contracts that are for the same or similar services; and (3) States that the Government intends to make an award to each and all qualifying offerors."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.104-70",
+        "quote": "In lieu of the direction at FAR 15.104(b)(3)(i), evaluate past performance for negotiated acquisitions when the value of the contract, task order or delivery order exceeds the following thresholds: (1) Systems and operations support (including fuels) expected to exceed $5 million. (2) Services (including health care) expected to exceed $1 million. (3) Information technology expected to exceed $1 million. (4) Ship repair and overhaul expected to exceed $500,000."
       }
     },
     {
@@ -75,7 +80,8 @@
         "src": "rfo",
         "sec": "15.104",
         "quote": "whether all evaluation factors other than cost or price, when combined, are— (1) Significantly more important than cost or price; (2) Approximately equal to cost or price; or (3) Significantly less important than cost or price"
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "25m",
@@ -87,18 +93,24 @@
         "src": "rfo",
         "sec": "15.202",
         "quote": "Clarifications do not permit offerors to revise their proposal and cannot be used to cure proposal deficiencies or material omissions or materially alter the technical or cost elements of the proposal."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "25m",
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "How do you evaluate an offeror with no relevant past performance record?",
-      "a": "Neither favorably nor unfavorably — the absence of a record may not count for or against the offeror.",
+      "a": "Neither favorably nor unfavorably — the absence of a record may not count for or against the offeror. DoD adds one step before the record is treated as absent: when the offeror is a small business concern, R-DFARS 215.202-70 requires the contracting officer to consider relevant past performance information provided for the offeror's affiliates.",
       "cite": {
         "src": "rfo",
         "sec": "15.202",
         "quote": "An offeror without a record of relevant past performance or for whom information on past performance is not available may not be evaluated favorably or unfavorably on past performance."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.202-70",
+        "quote": "When evaluating the past performance of an offeror that is a small business concern in response to a competitive solicitation, contracting officers will consider relevant past performance information provided for affiliates of the offeror (section 865 of Pub. L. 118-31)."
       }
     },
     {
@@ -413,7 +425,8 @@
         "src": "rfo",
         "sec": "15.304",
         "quote": "the Government is entitled to a price adjustment, including profit or fee, of any significant amount by which the price was increased because of the defective data."
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "25m",
@@ -497,7 +510,8 @@
         "src": "rfo",
         "sec": "15.402",
         "quote": "Contracting officers must price each contract separately and independently and not— (1) Consider proposed price reductions under other contracts; (2) Consider losses or profits realized or anticipated under other contracts"
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "25m",
@@ -569,11 +583,16 @@
       "type": "recall",
       "topic": "Organizational Conflict of Interest",
       "q": "Who approves an OCI waiver, and how far may that authority be delegated?",
-      "a": "The agency head or a designee, on a written request setting forth the extent of the conflict — and the authority must not be delegated below the head of a contracting activity.",
+      "a": "The agency head or a designee, on a written request setting forth the extent of the conflict — and the authority must not be delegated below the head of a contracting activity. DoD carves out consulting services: under R-DFARS 209.503-70, notwithstanding the baseline rule, the waiver approval authority for consulting services (as defined at 209.572(b)) is the Secretary of Defense, the Under Secretary of Defense (Acquisition and Sustainment), or the assistant secretaries of the military departments — with no delegation below an official appointed by the President and confirmed by the Senate.",
       "cite": {
         "src": "rfo",
         "sec": "9.503",
         "quote": "Any request for waiver must be in writing, must set forth the extent of the conflict, and requires approval by the agency head or a designee. Agency heads must not delegate waiver authority below the level of head of a contracting activity."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "209.503-70",
+        "quote": "Notwithstanding FAR 9.503, for consulting services, as defined at 209.572(b), the waiver approval authority is the Secretary of Defense and the following officials, without power of delegation below an official appointed by the President and confirmed by the Senate: (a) The Under Secretary of Defense (Acquisition and Sustainment). (b) The assistant secretaries of the military departments."
       }
     },
     {
