@@ -324,7 +324,7 @@ function retrieve(question) {
     .filter(x => x.matched >= need || x.conceptHits > 0)
     .sort((a, b) => b.score - a.score || (b.matched + b.conceptHits) - (a.matched + a.conceptHits));
 
-  const SRC_LABEL = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management', 'afi-63-138': 'DAFI 63-138', 'fmr': 'DoD FMR' };
+  const SRC_LABEL = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management', 'afi-63-138': 'DAFI 63-138', 'fmr': 'DoD FMR', 'ssp': 'DoD Source Selection Procedures' };
   const docs = rank(loadIndex(), e => e.titleLc, e => e.contentLc).slice(0, 6).map(({ e }) => {
     const d = e.doc;
     const srcLabel = SRC_LABEL[d.source] || d.source;

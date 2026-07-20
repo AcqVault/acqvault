@@ -255,14 +255,27 @@ const SOURCE_URLS = {
   'category-management': 'https://www.acquisition.gov/far-overhaul',
   'fmr':           'https://comptroller.war.gov/FMR/',
   'afi-63-138':    'https://www.e-publishing.af.mil/',
+  'ssp':           'https://www.acq.osd.mil/asda/dpc/cp/policy/source-selection-procedures.html',
 };
 const SOURCE_LABELS = {
   'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management Buying Guide',
-  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138',
+  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD Source Selection Procedures',
 };
 
 // ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
 const PARTS_BY_SOURCE = {
+  'ssp': [
+    ['1','Purpose, Roles, and Responsibilities'],
+    ['2','Pre-Solicitation Activities'],
+    ['3','Evaluation and Decision Process'],
+    ['4','Documentation Requirements'],
+    ['5','Definitions'],
+    ['A','Appendix A — Debriefing Guide'],
+    ['B','Appendix B — Tradeoff Source Selection Process'],
+    ['C','Appendix C — Lowest Price Technically Acceptable'],
+    ['D','Appendix D — Streamlining Source Selection'],
+    ['E','Appendix E — Intellectual Property'],
+  ],
   'rfo': [
     [1,'Federal Acquisition Regulations System'],[2,'Definitions of Words and Terms'],
     [3,'Improper Business Practices and Personal Conflicts of Interest'],[4,'Administrative and Information Matters'],
@@ -1445,8 +1458,8 @@ function openFmrChapter(idx) {
 
 function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
   const srcLabel  = SOURCE_LABELS[source] || source.toUpperCase();
-  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff','category-management':'#e0f2fe','afi-63-138':'#fff1f2','compass':'#f0f9ff','fmr':'#fef3c7'}[source] || '#f0f0f0';
-  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799','category-management':'#075985','afi-63-138':'#9f1239','compass':'#075985','fmr':'#92400e'}[source] || '#666';
+  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff','category-management':'#e0f2fe','afi-63-138':'#fff1f2','compass':'#f0f9ff','fmr':'#fef3c7','ssp':'#f6efdd'}[source] || '#f0f0f0';
+  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799','category-management':'#075985','afi-63-138':'#9f1239','compass':'#075985','fmr':'#92400e','ssp':'#5e4715'}[source] || '#666';
   const readerHits = source === 'far-companion'
     ? hits.filter(hit => parseBrowseTitle(hit, source).num)
     : hits;
@@ -2346,7 +2359,7 @@ async function search(query, offset = 0) {
 
 function buildFilter(sources, statuses) {
   const parts = [];
-  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'fmr'];
+  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'fmr', 'ssp'];
   const selectedSources = sources.size > 0 ? [...sources].filter(s => liveSources.includes(s)) : liveSources;
   if (selectedSources.length) parts.push('(' + selectedSources.map(s => `source = "${s}"`).join(' OR ') + ')');
   if (statuses.length)  parts.push('(' + statuses.map(s => `status = "${s}"`).join(' OR ') + ')');

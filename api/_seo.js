@@ -18,7 +18,9 @@ const SOURCES = {
   'category-management': { name: 'Category Management Buying Guide', short: 'Cat Mgmt',
     desc: 'Federal category management buying guidance.' },
   'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
-    desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.' }
+    desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.' },
+  'ssp':                 { name: 'DoD Source Selection Procedures', short: 'Source Selection',
+    desc: 'The Department of Defense Source Selection Procedures (August 20, 2022) — what every competitively negotiated DoD source selection above $10 million runs on: source selection team roles, the rating methods and their adjectival definitions, the tradeoff and LPTA processes, and the debriefing guide.' }
 };
 const SOURCE_KEYS = Object.keys(SOURCES);
 
@@ -414,8 +416,21 @@ function renderHubPage(source) {
   const title = `${meta.name} — full text & parts | AcqVault`;
   const description = esc(meta.desc.slice(0, 155));
 
+  // "Part 1 … Part A" is meaningless for a document whose divisions are named sections and
+  // lettered appendices, so a source may supply its own labels. Everything else keeps the
+  // existing "Part N" wording untouched.
+  const PART_LABELS = {
+    'ssp': {
+      '1': '1. Purpose, Roles, and Responsibilities', '2': '2. Pre-Solicitation Activities',
+      '3': '3. Evaluation and Decision Process', '4': '4. Documentation Requirements',
+      '5': '5. Definitions', 'A': 'Appendix A — Debriefing Guide',
+      'B': 'Appendix B — Tradeoff Source Selection', 'C': 'Appendix C — LPTA',
+      'D': 'Appendix D — Streamlining Source Selection', 'E': 'Appendix E — Intellectual Property'
+    }
+  };
+  const labelFor = p => (PART_LABELS[source] && PART_LABELS[source][p]) || `Part ${p}`;
   const links = parts.map(p =>
-    `<a href="/${source}/part-${encodeURIComponent(p)}">Part ${esc(p)}</a>`).join('\n');
+    `<a href="/${source}/part-${encodeURIComponent(p)}">${esc(labelFor(p))}</a>`).join('\n');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'CollectionPage',

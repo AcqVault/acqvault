@@ -43,10 +43,15 @@ FURNITURE = re.compile(
 # sources whose text is prose extracted from PDFs and must read as paragraphs.
 # FMR is excluded on purpose: 303 of its 304 docs are tabular, so its line
 # breaks are table structure, not wrapped prose.
+# SSP is excluded for a different reason than FMR: its ingest emits one paragraph per
+# block separated by a blank line, so consecutive non-empty lines never occur and the
+# line-pair heuristic below would score a vacuous 0.0%. Its reflow is guarded instead by
+# scripts/ingest_ssp.py, which asserts the whitespace-normalized word sequence is
+# identical to the source PDF.
 PROSE_SOURCES = {"r-dfars", "far-companion"}
 MIDSENT_LIMIT = 5.0          # percent of line breaks that may fall mid-sentence
 # expected marker style per source: True = every line carries an L-marker
-MARKER_STYLE = {"r-dfars": True, "far-companion": False, "fmr": False}
+MARKER_STYLE = {"r-dfars": True, "far-companion": False, "fmr": False, "ssp": False}
 
 results = []
 
