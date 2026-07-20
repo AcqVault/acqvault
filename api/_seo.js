@@ -800,6 +800,7 @@ function renderStudyPage() {
 .st-bd-check{display:flex;flex-direction:column;gap:8px;margin-top:14px;text-align:left}
 .st-bd-chk{display:flex;align-items:flex-start;gap:10px;width:100%;padding:12px 14px;font-size:14.5px;line-height:1.5;font-weight:600;color:#2a3140;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:9px;cursor:pointer}
 .st-bd-chk-box{flex:none;width:17px;height:17px;margin-top:1px;border:2px solid var(--line);border-radius:4px;background:#fff}
+.st-bd-chk:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
 .st-bd-chk-on{border-color:var(--brass);background:#f6efdd}
 .st-bd-chk-on .st-bd-chk-box{border-color:var(--brass);background:var(--brass)}
 .st-bd-capped{margin:11px 0 0;font-size:12.5px;font-style:italic;color:var(--muted)}
@@ -810,7 +811,7 @@ function renderStudyPage() {
 .st-foot-tools{margin-top:26px;font-size:12.5px;color:var(--muted)}
 .st-trackcard{position:relative}
 .st-trackcard-active{border-color:rgba(135,101,28,.55);box-shadow:0 16px 34px -18px rgba(15,37,64,.4)}
-.st-tc-continue{position:absolute;top:10px;right:12px;z-index:1;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5e4715;background:#f6efdd;border:1px solid rgba(135,101,28,.4);border-radius:999px;padding:2px 9px}
+.st-tc-continue{display:inline-block;margin-bottom:7px;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5e4715;background:#f6efdd;border:1px solid rgba(135,101,28,.4);border-radius:999px;padding:2px 9px}
 .st-opts{display:flex;flex-direction:column;gap:8px;margin-top:18px}
 .st-opt{display:flex;align-items:baseline;gap:10px;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:9px;padding:11px 14px;font-size:14.5px;line-height:1.5;color:#2a3140;cursor:pointer;min-height:44px;transition:border-color .12s,transform .12s,box-shadow .12s}
 .st-opt:hover:not(:disabled){border-color:rgba(135,101,28,.5);transform:translateY(-1px);box-shadow:0 8px 18px -12px rgba(15,37,64,.3)}
@@ -1061,7 +1062,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=39"></script>`;
+<script defer src="/assets/study.js?v=40"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

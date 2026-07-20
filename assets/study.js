@@ -160,10 +160,14 @@
   function viewTrack() {
     var last = S.track;
     function cardHtml(id, kicker, name, blurb, active, vol) {
+      // The continue badge lives IN the flow, first line of the body. It used to be
+      // position:absolute over the top-right corner, where it sat on the kicker text at
+      // every width — an overlay can only be collision-free at widths somebody checked.
       return '<button class="st-trackcard' + (active ? ' st-trackcard-active' : '') + '" id="' + id + '">' +
-        (active ? '<span class="st-tc-continue">Continue — you were here</span>' : '') +
         '<span class="st-tcover" aria-hidden="true">' + VAULT_GLYPH + '<span class="st-tcover-vol">' + vol + '</span></span>' +
-        '<span class="st-tc-body"><span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
+        '<span class="st-tc-body">' +
+        (active ? '<span class="st-tc-continue">Continue — you were here</span>' : '') +
+        '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
     render(
       '<h2 class="st-h2" style="margin-top:0">Pick your track</h2>' +
@@ -198,6 +202,13 @@
     }).join('');
     var scen = deck.scenarios;
     var scenDone = scen.filter(function (s) { return S.scen[s.id]; }).length;
+    // The self-grade (1 rough / 2 getting there / 3 board-ready) was collected on every
+    // scenario and displayed nowhere — the most board-predictive signal in the tool,
+    // feeding nothing. It reads back here on the mode it belongs to.
+    var scenReady = scen.filter(function (s) { return S.scen[s.id] === 3; }).length;
+    var scenLine = scenDone
+      ? scenDone + ' of ' + scen.length + ' faced · ' + scenReady + ' board-ready — answer out loud, then the follow-ups'
+      : scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups';
     var overall = mastery(pool);
     /* The headline used to be the whole backlog — 337 — while a session hands you 25, and
        finishing those 25 moved it to 333 because a missed card is due again immediately.
@@ -234,7 +245,7 @@
       '<button class="st-mode" id="m-deep"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Deep Study</b><span>Endless random cards, every topic in the mix — go as long as you want</span></button>' +
       '<button class="st-mode" id="m-sprint"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Threshold Sprint</b><span>Rapid-fire numbers · best streak ' + (S.sprint.best || 0) + '</span></button>' +
       (S.track === 'advanced' ?
-        '<button class="st-mode" id="m-board"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Board Sim</b><span>' + scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups</span></button>' : '') +
+        '<button class="st-mode" id="m-board"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Board Sim</b><span>' + scenLine + '</span></button>' : '') +
       '</div>' +
       '<div class="st-ready-head"><h2 class="st-h2">Readiness by topic</h2><span class="st-overall">' + overall + '% overall</span></div>' +
       '<p class="st-sub">Tap a topic to study it directly, due or not.</p>' +
@@ -942,6 +953,12 @@
     function advance() { stage++; fuRevealed = false; step(); }
 
     function step() {
+      /* Every render owns its key state. Without this reset, the previous view's handler
+         survived into stages that set none: space on the scenario screen fired the ladder
+         view's start button (gone from the DOM — TypeError), and space on the checklist
+         fired the last follow-up's advance — skipping the grade and showing a verdict
+         that was never saved. */
+      keyHandler(null);
       saveResume('ladderBoard', rung, [sc], stage, 0, label);
       var body = '<div class="st-chip">Board sim · ' + esc(sc.topic) + '</div>';
       if (stage === 0) {
@@ -1015,6 +1032,11 @@
           bluf = f ? f.value.trim() : '';   // read, echoed once, never persisted
           advance();
         };
+        // Enter in the one-line box submits it — a single-line input that swallows Enter
+        // reads as broken, and there is nowhere else for Enter to go on this screen.
+        el('bd-bluf').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); el('next').onclick(); }
+        });
       } else if (stage < CHECK_STAGE && stage >= 2 && !(fuRevealed && fus[stage - 2] && fus[stage - 2].d)) {
         if (el('fu-hint')) el('fu-hint').onclick = showHint;
         el('fu-reveal').onclick = function () { fuRevealed = true; step(); };
