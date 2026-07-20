@@ -191,7 +191,7 @@
     var rows = names.map(function (t) {
       var m = mastery(byTopic[t]);
       var d = byTopic[t].filter(function (c) { return isDue(c.id); }).length;
-      return '<button class="st-topic" data-topic="' + esc(t) + '" aria-label="Drill ' + esc(t) + ', mastery ' + m + ' percent">' +
+      return '<button class="st-topic" data-topic="' + esc(t) + '" aria-label="Study ' + esc(t) + ', mastery ' + m + ' percent">' +
         '<span class="st-topic-name">' + esc(t) + '</span>' +
         '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
         '<span class="st-topic-meta">' + m + '%' + (d ? ' <b class="st-due">· ' + d + ' due</b>' : '') + '</span></button>';
@@ -237,7 +237,7 @@
         '<button class="st-mode" id="m-board"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Board Sim</b><span>' + scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups</span></button>' : '') +
       '</div>' +
       '<div class="st-ready-head"><h2 class="st-h2">Readiness by topic</h2><span class="st-overall">' + overall + '% overall</span></div>' +
-      '<p class="st-sub">Tap a topic to drill it directly, due or not.</p>' +
+      '<p class="st-sub">Tap a topic to study it directly, due or not.</p>' +
       '<div class="st-topics">' + rows + '</div>' +
       '<div class="st-foot-tools"><button class="st-link" id="st-export">Export progress</button> · ' +
       '<button class="st-link" id="st-import">Import</button> · ' +
@@ -748,7 +748,7 @@
       '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
       '<span class="st-topic-meta">' + m + '%</span></div>' +
       boardHtml +
-      '<div class="st-actions"><button class="st-btn st-btn-reveal" id="lad-start">Drill this rung <kbd>space</kbd></button>' +
+      '<div class="st-actions"><button class="st-btn st-btn-reveal" id="lad-start">Study these cards <kbd>space</kbd></button>' +
       (boards.length ? '<button class="st-btn st-btn-hint" id="lad-board">Face the board</button>' : '') +
       '</div>' +
       sinkHtml +
@@ -861,7 +861,7 @@
         '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
         '<p class="st-sub">' + sumFlavor(pct, i) + '</p>' + missHtml +
         '<div class="st-actions">' +
-        (shaky.length ? '<button class="st-btn st-btn-reveal" id="st-again">Drill the ' + shaky.length + ' you dropped</button>' : '') +
+        (shaky.length ? '<button class="st-btn st-btn-reveal" id="st-again">Go back over the ' + shaky.length + ' you dropped</button>' : '') +
         '<button class="st-btn' + (shaky.length ? ' st-btn-hint' : ' st-btn-reveal') + '" id="st-home">Back to the ladder</button>' +
         '</div></div>');
       if (shaky.length) el('st-again').onclick = function () { ladderSession(shaky.slice(), label); };
@@ -884,15 +884,10 @@
     if (r.length > 50) r.length = 50;
     S.ladderBoardRough = r;
   }
-  /* The one honest thing a browser knows about a spoken answer is how long you held the
-     floor. So the clock counts UP and never gates — a clock that cuts you off teaches you
-     to rush, and the failure worth catching is the opposite one: the six-second reply that
-     was really a throat-clear. Measured against the model script at 150 words a minute. */
-  function spokenSecs(script) {
-    var w = String(script || '').trim().split(/\s+/).length;
-    return Math.max(20, Math.round(w / 150 * 60));
-  }
-  function mmss(s) { var m = Math.floor(s / 60), r = s % 60; return m + ':' + (r < 10 ? '0' : '') + r; }
+  /* No clock here, by owner's call. A running timer on board prep is pressure for its own
+     sake: the counter was measuring how long you held the floor, but a number ticking on
+     screen changes how you answer, and rehearsal is where you should be free to take as
+     long as the thought needs. The hint is likewise available the moment you want it. */
   /* Citations are staged across the exchange: ABSENT while you answer (they are the answer),
      TEXT-ONLY beside the model so the eye has something to check against, and LINKED only at
      the record — the one moment when leaving the page is the right move. */
@@ -916,7 +911,6 @@
     'I landed on a decision and said where I’d verify it'
   ];
   var BD_VERDICT = { 1: 'Rough', 2: 'Getting there', 3: 'Board-ready' };
-  var BD_HINT_DELAY_MS = 10000; // the hint is ABSENT, not greyed — reaching for it is the tell
 
   function ladderBoardSession(rung, label, pickId, startStage) {
     var pool = ladderBoardPool(rung);
@@ -931,12 +925,10 @@
     var fus = sc.follow_ups || [];
     var CHECK_STAGE = 2 + fus.length, RECORD_STAGE = CHECK_STAGE + 1;
     var stage = Math.min(startStage || 0, RECORD_STAGE);
-    var fuRevealed = false, hintUsed = false, hintReady = false;
-    var bluf = '', floorSecs = 0, clockT = null, hintT = null;
+    var fuRevealed = false, hintUsed = false;
+    var bluf = '';
     var checks = [false, false, false];
 
-    function stopClock() { if (clockT) { clearInterval(clockT); clockT = null; } }
-    function stopHint() { if (hintT) { clearTimeout(hintT); hintT = null; } }
     function derive() {
       var n = 0;
       checks.forEach(function (c) { if (c) n++; });
@@ -947,7 +939,7 @@
     function bridgePool() {
       return ladderPool(rung).filter(function (c) { return c.topic === sc.topic; });
     }
-    function advance() { stopClock(); stopHint(); stage++; fuRevealed = false; hintReady = false; step(); }
+    function advance() { stage++; fuRevealed = false; step(); }
 
     function step() {
       saveResume('ladderBoard', rung, [sc], stage, 0, label);
@@ -955,25 +947,17 @@
       if (stage === 0) {
         body += '<div class="st-scenario"><div class="st-scen-eyebrow">The scenario</div>' + esc(sc.scenario) + '</div>' +
           '<div class="st-panel-ask"><span class="st-ask-kicker">The panel asks</span>' + esc(sc.ask) + '</div>' +
-          '<div class="st-bd-floor"><span class="st-bd-floor-lab">You have the floor</span>' +
-          '<span class="st-bd-clock" id="bd-clock">0:00</span></div>' +
-          '<p class="st-outloud">Answer <b>out loud</b>, all the way through, as if the panel were in front of you.</p>' +
+          '<p class="st-outloud">Answer <b>out loud</b>, all the way through, as if the panel were in front of you. ' +
+          'Take as long as you need — nothing here is timed.</p>' +
           '<label class="st-bd-bluf-lab" for="bd-bluf">Bottom line up front — one line, the way you opened</label>' +
           '<input class="st-bd-bluf" id="bd-bluf" type="text" maxlength="140" autocomplete="off" ' +
           'placeholder="e.g. I’d stop the award and run a set-aside check first.">' +
           '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">I’m done — show the model answer</button></div>';
       } else if (stage === 1) {
-        var model = spokenSecs(sc.script);
-        var thin = floorSecs > 0 && floorSecs < Math.round(model * 0.4);
         body += '<div class="st-scenario st-scenario-sm">' + esc(sc.scenario) + '</div>' +
           (bluf
             ? '<div class="st-bd-echo"><div class="st-bd-echo-head">What you said you’d do</div>' + esc(bluf) + '</div>'
             : '<div class="st-bd-echo st-bd-echo-none">No opening line — the model answer is below.</div>') +
-          (floorSecs
-            ? '<p class="st-bd-cmp' + (thin ? ' st-bd-cmp-thin' : '') + '">You held the floor ' + mmss(floorSecs) +
-              '. The model answer takes about ' + mmss(model) + ' to say.' +
-              (thin ? ' That wasn’t an answer yet — it was a throat-clear.' : '') + '</p>'
-            : '') +
           '<div class="st-script"><div class="st-script-head">Say it like this</div><p>' + esc(sc.script) + '</p></div>' +
           boardCitesText(sc.cites) +
           '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' +
@@ -990,7 +974,7 @@
           body += '<p class="st-outloud">Answer <b>out loud</b>, then reveal the debrief.</p>' +
             '<div id="fu-hint-box"></div>' +
             '<div class="st-actions" id="fu-acts">' +
-            (hintReady && fu.h ? '<button class="st-btn st-btn-hint" id="fu-hint">Hint</button>' : '') +
+            (fu.h ? '<button class="st-btn st-btn-hint" id="fu-hint">Hint</button>' : '') +
             '<button class="st-btn st-btn-reveal" id="fu-reveal">Reveal the debrief <kbd>space</kbd></button></div>';
         }
       } else if (stage === CHECK_STAGE) {
@@ -1011,7 +995,7 @@
           '<p class="st-sub">' + esc(sc.topic) + ' · ' + esc(label) + '</p>' +
           boardCitesLinked(sc.cites) +
           '<div class="st-actions">' +
-          (bp.length ? '<button class="st-btn st-btn-reveal" id="bd-drill">Drill the ' + bp.length +
+          (bp.length ? '<button class="st-btn st-btn-reveal" id="bd-drill">Study the ' + bp.length +
             ' cards behind this</button>' : '') +
           '<button class="st-btn' + (bp.length ? ' st-btn-hint' : ' st-btn-reveal') + '" id="bd-next">Next scenario</button>' +
           '<button class="st-btn st-btn-hint" id="bd-home">Back to the ladder</button></div>';
@@ -1023,38 +1007,19 @@
       render('<div class="st-session-head"><span>' + esc(label) + ' · board sim</span><span>' + headNote +
         '</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
         '<button class="st-link st-quit" id="st-quit">End this sim</button>');
-      el('st-quit').onclick = function () { stopClock(); stopHint(); clearResume(); viewLadder(); };
+      el('st-quit').onclick = function () { clearResume(); viewLadder(); };
 
       if (stage === 0) {
-        floorSecs = 0;
-        clockT = setInterval(function () {
-          var n = el('bd-clock');
-          if (!n) { stopClock(); return; }
-          floorSecs++;
-          n.textContent = mmss(floorSecs);
-        }, 1000);
         el('next').onclick = function () {
           var f = el('bd-bluf');
           bluf = f ? f.value.trim() : '';   // read, echoed once, never persisted
           advance();
         };
       } else if (stage < CHECK_STAGE && stage >= 2 && !(fuRevealed && fus[stage - 2] && fus[stage - 2].d)) {
-        var fuNow = fus[stage - 2] || {};
-        if (!hintReady && fuNow.h) {
-          hintT = setTimeout(function () {
-            hintT = null;
-            if (!el('fu-acts')) return;     // the view moved on
-            hintReady = true;
-            var b = document.createElement('button');
-            b.className = 'st-btn st-btn-hint'; b.id = 'fu-hint'; b.textContent = 'Hint';
-            b.onclick = showHint;
-            el('fu-acts').insertBefore(b, el('fu-reveal'));
-          }, BD_HINT_DELAY_MS);
-        }
         if (el('fu-hint')) el('fu-hint').onclick = showHint;
-        el('fu-reveal').onclick = function () { stopHint(); fuRevealed = true; step(); };
+        el('fu-reveal').onclick = function () { fuRevealed = true; step(); };
         keyHandler(function (k) {
-          if (k === ' ' || k === 'Enter') { stopHint(); fuRevealed = true; step(); return true; }
+          if (k === ' ' || k === 'Enter') { fuRevealed = true; step(); return true; }
         });
       } else if (stage === CHECK_STAGE) {
         Array.prototype.forEach.call(app.querySelectorAll('.st-bd-chk'), function (b) {
@@ -1067,7 +1032,7 @@
         });
         el('bd-score').onclick = function () {
           var g = derive();
-          done[sc.id] = { g: g, hint: hintUsed, t: floorSecs };
+          done[sc.id] = { g: g, hint: hintUsed };
           if (g === 1) ladderBoardNoteRough(sc.id);
           bumpStreak(); save();
           stage++; step();

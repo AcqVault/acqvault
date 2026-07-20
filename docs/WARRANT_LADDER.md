@@ -111,11 +111,19 @@ They are graded but never scheduled: scenarios stay out of `grade()` and `INTERV
 because 47 narrative items would flood Daily Review with things nobody answers in twelve
 seconds. Their record lives in `S.ladderBoard` and reads back on the rung card.
 
-The floor clock counts up and never cuts you off — it exists to catch the six-second reply,
-not to rush you. The bottom-line-up-front box is deliberately one line and deliberately
-never persisted; its only job is to be echoed back verbatim above the model answer, before
-your memory of what you said reshapes to match what you just read.
+**Nothing in board prep is timed, and that is deliberate.** An earlier build ran a clock
+that counted up while you answered and compared it to how long the model script takes to
+say, and held the hint back for ten seconds so that reaching for it meant something. Both
+came out at the owner's call: a counter ticking on screen changes how you answer, and
+rehearsal is where you should be free to take as long as the thought needs. Taking a hint
+still caps the verdict at "getting there" — that is a grading rule, not a clock. If you are
+tempted to add a timer here, this paragraph is the reason not to. (The 90-second clock in
+Which Part Governs stays; there the clock is the game.)
+
+The bottom-line-up-front box is deliberately one line and deliberately never persisted; its
+only job is to be echoed back verbatim above the model answer, before your memory of what
+you said reshapes to match what you just read.
 
 Four Unlimited scenarios have no recall cards on their own rung (UCAs & Letter Contracts,
 OCI, Contract Modifications & Scope, Acquisition Planning), so they end without the
-"drill the cards behind this" bridge. That is expected, not a bug.
+"study the cards behind this" bridge. That is expected, not a bug.
