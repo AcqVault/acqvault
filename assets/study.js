@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=22';
+  var DECK_URL = '/assets/study-deck.json?v=23';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -176,7 +176,7 @@
       cardHtml('t-basic', 'New to contracting', 'Basic — Foundations',
         'Knowledge checks from Field Guide Vol. 1: the players, the money, the methods. Build the base before the board.', last === 'basic', 'VOL I') +
       cardHtml('t-adv', 'Warrant board prep', 'Advanced — The Board',
-        'Everything in Basic plus Vol. 2: board-probe questions, threshold drills, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
+        'Everything in Basic plus Vol. 2: board-probe questions, threshold sprints, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
       '</div>' +
       ladderSectionHtml() +
       gamesSectionHtml());
@@ -279,7 +279,7 @@
   function startSession(cards, label, startAt, startGot) {
     if (!cards.length) { viewHome(); return; }
     var q = startAt == null ? interleave(shuffle(cards.slice()).slice(0, SESSION_CAP)) : cards;
-    var i = startAt || 0, got = startGot || 0;
+    var i = startAt || 0, got = startGot || 0, shaky = [];
     function step() {
       if (i >= q.length) return summary();
       saveResume('recall', S.track, q, i, got, label);
@@ -308,7 +308,7 @@
             b.disabled = true;
           });
           grade(c.id, right ? 3 : 1);
-          if (right) got++;
+          if (right) got++; else shaky.push(c);
           appendExplain(c, right);
           var act = document.createElement('div'); act.className = 'st-actions';
           act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">' + (right ? 'Next' : 'Got it — next') + ' <kbd>space</kbd></button>';
@@ -351,18 +351,36 @@
           if (k === '3') { doGrade(3); return true; }
         });
       }
-      function doGrade(g) { grade(c.id, g); if (g === 3) got++; i++; step(); }
+      function doGrade(g) { grade(c.id, g); if (g === 3) got++; else shaky.push(c); i++; step(); }
     }
+    /* Parity with the ladder's ending: name what you dropped and offer to run just those.
+       This summary used to be a score and one button — the audit's "every session
+       dead-ends" finding — and Daily Review is the loop people actually live in. */
     function summary() {
       keyHandler(null);
       clearResume();
       if (label === 'Daily Review') noteDailyDone(i);
       var pct = i ? Math.round(100 * got / i) : 0;
+      var missHtml = '';
+      if (shaky.length) {
+        missHtml = '<div class="st-sum-miss"><div class="st-sum-miss-head">Say these out loud before you close this tab</div>' +
+          shaky.slice(0, 5).map(function (m) {
+            var l = m.links && m.links[0];
+            return '<div class="st-sum-miss-item">' + esc(m.q) +
+              (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+          }).join('') +
+          (shaky.length > 5 ? '<div class="st-sum-miss-more">+ ' + (shaky.length - 5) + ' more</div>' : '') +
+          '</div>';
+      }
       render('<div class="st-card st-summary"><div class="st-chip">' + esc(label) + '</div>' +
         '<div class="st-sum-num">' + got + '<span> of ' + i + ' solid</span></div>' +
         '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
-        '<p class="st-sub">' + sumFlavor(pct, i) + '</p>' +
-        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
+        '<p class="st-sub">' + sumFlavor(pct, i) + '</p>' + missHtml +
+        '<div class="st-actions">' +
+        (shaky.length ? '<button class="st-btn st-btn-reveal" id="st-again">Go back over the ' + shaky.length + ' you dropped</button>' : '') +
+        '<button class="st-btn' + (shaky.length ? ' st-btn-hint' : ' st-btn-reveal') + '" id="st-home">Back to dashboard</button>' +
+        '</div></div>');
+      if (shaky.length) el('st-again').onclick = function () { startSession(shaky.slice(), label); };
       el('st-home').onclick = backHome;
     }
     step();

@@ -669,8 +669,8 @@ ${runHtml}`;
 // ── /study — the client-side drill room (Basic/Advanced tracks; assets/study.js does the work) ──
 function renderStudyPage() {
   const canonical = `${SITE}/study`;
-  const title = 'AcqVault Study — drills & spaced review for the acquisition community | AcqVault';
-  const description = esc('Free, no-login study drills for contracting professionals: spaced-repetition knowledge checks from the AcqVault Field Guides, rapid threshold sprints, and board-style scenario simulations with follow-up questions. Works offline. No account needed.');
+  const title = 'AcqVault Study — practice & spaced review for the acquisition community | AcqVault';
+  const description = esc('Free, no-login practice for contracting professionals: spaced-repetition knowledge checks from the AcqVault Field Guides, rapid threshold sprints, and board-style scenario simulations with follow-up questions. Works offline. No account needed.');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'WebApplication',
@@ -1051,18 +1051,18 @@ function renderStudyPage() {
 ${SEAL_SVG}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Study</nav>
 <div class="eyebrow">AcqVault · Study</div>
-<h1>Drill it until it&rsquo;s reflex</h1>
-<p class="lede">Knowledge checks, threshold sprints, and board-style scenario drills built from the AcqVault Field Guides — every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
-<div class="stats"><span class="stat"><b>500+</b> drills</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+<h1>Know it cold</h1>
+<p class="lede">Knowledge checks, threshold sprints, and board-style scenarios built from the AcqVault Field Guides — every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
+<div class="stats"><span class="stat"><b>500+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
-<div id="study-app"><noscript><p>AcqVault Study is an interactive drill tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
+<div id="study-app"><noscript><p>AcqVault Study is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
 </div></section>
 <footer class="lband lband--foot"><div class="lband-inner">
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=40"></script>`;
+<script defer src="/assets/study.js?v=41"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

@@ -27,6 +27,23 @@ def card_id(c):
 
 deck = load(DECK)
 
+# ---- 0b. topic renames (display only — NEVER an id input) ----
+# Vol. 1 and Vol. 2 were authored with separate taxonomies and the union shipped, so the
+# dashboard showed near-duplicate rows ("Competition & CICA" beside "Competition (CICA)").
+# The rename CANNOT be done in the authoring files: card ids are sha1(type|topic|q), the
+# committed deck is this build's own baseline, and the keyed maps (distractors, explains,
+# hand links) are all id-addressed — renaming a topic at the source mints new ids,
+# duplicates the cards, and resets every user's scheduler state on them. (Tried it; the
+# canaries caught 337→343 and UNLINKED 7→13.) So topics rename HERE, after load and after
+# every id already exists, and the authoring files stay frozen as the id record.
+TOPIC_RENAMES = {
+    'Competition & CICA': 'Competition (CICA)',
+    'Authority, Warrants & Unauthorized Commitments': 'Authority, Unauthorized Commitments & Ratification',
+}
+for _pool in ('recall_basic', 'recall_advanced', 'thresholds'):
+    for _c in deck[_pool]:
+        if _c.get('topic') in TOPIC_RENAMES: _c['topic'] = TOPIC_RENAMES[_c['topic']]
+
 # ---- 1. merge distractors ----
 distractors = {}
 for name in ('distractors-basic.json', 'distractors-thresholds.json',
@@ -58,7 +75,8 @@ def add_cards(path, pool, level):
     added = 0
     for nc in load(os.path.join(MCQ, path)):
         card = {'type': 'recall', 'level': level, 'topic': nc['topic'], 'q': nc['q'], 'a': nc['a']}
-        cid = card_id(card)
+        cid = card_id(card)   # id from the AUTHORED topic — the rename below must never feed this
+        card['topic'] = TOPIC_RENAMES.get(card['topic'], card['topic'])
         if cid in by_id:
             # already in the baseline deck from a prior build — refresh its authored fields
             ex = by_id[cid]
