@@ -996,6 +996,22 @@ function renderStudyPage() {
 .st-gv-seal-stamp{animation:st-gv-stamp .5s cubic-bezier(.2,1.6,.35,1) 1}
 @keyframes st-gv-stamp{0%{opacity:0;transform:scale(1.7) rotate(-7deg)}60%{opacity:1;transform:scale(.96) rotate(1deg)}100%{transform:scale(1) rotate(0)}}
 @media(prefers-reduced-motion:reduce){.st-opt-right,.st-gv-opt-wrong,.st-cb-row-shake,.st-cb-flip,.st-cb-dial-spin,.st-gv-ring-crit,.st-gv-card-in,.st-gv-float,.st-gv-seal-stamp{animation:none}}
+.st-rungs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+@media(max-width:560px){.st-rungs{grid-template-columns:1fr 1fr}}
+@media(max-width:360px){.st-rungs{grid-template-columns:1fr}}
+.st-rung{text-align:left;background:#fff;border:1px solid var(--line2);border-left:3px solid transparent;border-radius:10px;padding:12px 14px;min-height:44px;font-size:14px;font-weight:700;color:#2a3140;cursor:pointer;font-variant-numeric:tabular-nums;transition:border-color .13s}
+.st-rung:hover{border-color:var(--line);border-left-width:3px}
+.st-rung:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
+.st-rung-on,.st-rung-on:hover{border-left-color:var(--brass);color:var(--ink)}
+.st-lad-count{color:var(--muted);font-size:13px;margin:10px 0 0;font-variant-numeric:tabular-nums}
+.st-lad-ready{display:flex;align-items:center;gap:10px;max-width:440px;margin:16px 0 0}
+.st-lad-ready .st-bar{flex:1}
+.st-lad-ready-lab{flex:none;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.st-lad-quote{margin-top:14px;border-left:3px solid var(--brass);padding:2px 0 2px 14px;font-size:14.5px;line-height:1.65;color:#3d444d}
+.st-lad-dod{margin-top:10px}.st-lad-dod-tag{display:inline-block;font:700 10px/1.4 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--ink);opacity:.62;margin-right:6px;vertical-align:1px}.st-lad-quote-link{color:var(--brass-ink);font-weight:700;text-decoration:underline}
+.st-lad-sink{margin-top:24px}
+.st-lad-head{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:8px}
+.st-lad-sink-item{font-size:14px;line-height:1.6;color:#2a3140;padding:8px 0;border-top:1px solid var(--line2)}
 </style>`;
 
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
@@ -1018,7 +1034,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=30"></script>`;
+<script defer src="/assets/study.js?v=31"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

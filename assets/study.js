@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=18';
+  var DECK_URL = '/assets/study-deck.json?v=19';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -159,9 +159,11 @@
       cardHtml('t-adv', 'Warrant board prep', 'Advanced — The Board',
         'Everything in Basic plus Vol. 2: board-probe questions, threshold drills, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
       '</div>' +
+      ladderSectionHtml() +
       gamesSectionHtml());
     el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewHome; save(); goDepth(1, viewHome); };
     el('t-adv').onclick = function () { S.track = 'advanced'; depth1View = viewHome; save(); goDepth(1, viewHome); };
+    wireLadderSection();
     wireGamesSection();
   }
 
@@ -589,6 +591,161 @@
   function wireGamesSection() {
     if (el('g-combo')) el('g-combo').onclick = function () { depth1View = viewCombo; goDepth(1, viewCombo); };
     if (el('g-governs')) el('g-governs').onclick = function () { depth1View = viewGoverns; goDepth(1, viewGoverns); };
+  }
+
+  /* ---- The Warrant Ladder — rung-scoped recall, every answer backed by the regulation's
+     own words (deck.ladder, built + verified by build_deck_v2.py). UNLISTED beta: renders
+     only once ?ladder=1 has set S.ladderBeta. The four rungs are legal authority levels —
+     all always available, never gated. Ladder ids are globally unique and share the same
+     per-card scheduler (grade/cardState) but the pools stay out of recallPool() entirely. */
+  /* KILL SWITCH. Set to false and the ladder disappears for everyone, including people
+     holding the ?ladder=1 link — no other edit required, no deck rebuild, nothing else on
+     /study affected. Flip it, bump the study.js ?v in api/_seo.js and the sw.js cache, push.
+     To remove the feature outright rather than hide it, see docs/WARRANT_LADDER.md. */
+  var LADDER_ENABLED = true;
+
+  var RUNGS = [
+    { k: 'sat', label: 'SAT · $350K' },
+    { k: '5m', label: '$5M' },
+    { k: '25m', label: '$25M' },
+    { k: 'unlimited', label: 'Unlimited' }
+  ];
+  function ladderPool(rung) { return (deck.ladder && deck.ladder[rung]) || []; }
+  function ladderRung() {
+    var r = S.ladderRung;
+    return RUNGS.some(function (x) { return x.k === r; }) ? r : 'sat';
+  }
+  function ladderNoteMiss(id) { // most-recent-first, for "What would sink you"
+    var lm = (S.ladderMiss || []).filter(function (x) { return x !== id; });
+    lm.unshift(id);
+    if (lm.length > 50) lm.length = 50;
+    S.ladderMiss = lm; // grade() saves right after
+  }
+  function ladderCiteHtml(c) { // the point of the feature: the regulation's own words, in the card body
+    if (!c.cite || !c.cite.quote) return '';
+    var l = c.cite.link;
+    var out = '<div class="st-lad-quote">“' + esc(c.cite.quote) + '”' +
+      (l ? ' — <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+    // Where DoD deviates, the deviation is the operative rule for this audience — so it
+    // gets the same treatment as the baseline, not a footnote.
+    var d = c.dod;
+    if (d && d.quote && d.link) {
+      out += '<div class="st-lad-quote st-lad-dod"><span class="st-lad-dod-tag">DoD</span> “' +
+        esc(d.quote) + '” — <a class="st-lad-quote-link" href="' + esc(d.link.u) + '">' +
+        esc(d.link.t) + '</a></div>';
+    }
+    return out;
+  }
+  function rungStripHtml(sel) {
+    return '<div class="st-rungs">' + RUNGS.map(function (r) {
+      return '<button class="st-rung' + (r.k === sel ? ' st-rung-on' : '') + '" data-rung="' + r.k +
+        '" aria-pressed="' + (r.k === sel) + '">' + r.label + '</button>';
+    }).join('') + '</div>';
+  }
+  function ladderCountLine(pool) { return '<p class="st-lad-count">' + pool.length + ' cards, every one cited to the rulebook.</p>'; }
+  function ladderSectionHtml() {
+    if (!LADDER_ENABLED || !S.ladderBeta || !deck.ladder) return '';
+    var sel = ladderRung();
+    return '<h2 class="st-h2">The Warrant Ladder</h2>' +
+      '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +
+      rungStripHtml(sel) +
+      ladderCountLine(ladderPool(sel));
+  }
+  function wireLadderSection() {
+    Array.prototype.forEach.call(app.querySelectorAll('.st-rung'), function (b) {
+      b.onclick = function () {
+        S.ladderRung = b.getAttribute('data-rung'); save();
+        depth1View = viewLadder; goDepth(1, viewLadder);
+      };
+    });
+  }
+  function viewLadder() {
+    var sel = ladderRung();
+    var pool = ladderPool(sel);
+    var label = (RUNGS.filter(function (r) { return r.k === sel; })[0] || RUNGS[0]).label;
+    var m = mastery(pool);
+    var byId = {};
+    pool.forEach(function (c) { byId[c.id] = c; });
+    var sink = (S.ladderMiss || []).map(function (id) { return byId[id]; }).filter(Boolean).slice(0, 5);
+    var sinkHtml = sink.length
+      ? '<div class="st-lad-sink"><div class="st-lad-head">What would sink you</div>' +
+        sink.map(function (c) {
+          var l = c.cite && c.cite.link;
+          return '<div class="st-lad-sink-item">' + esc(c.q) +
+            (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+        }).join('') + '</div>'
+      : '';
+    render(
+      '<h2 class="st-h2" style="margin-top:0">The Warrant Ladder</h2>' +
+      '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +
+      rungStripHtml(sel) +
+      ladderCountLine(pool) +
+      '<div class="st-lad-ready"><span class="st-lad-ready-lab">Card mastery</span>' +
+      '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
+      '<span class="st-topic-meta">' + m + '%</span></div>' +
+      '<div class="st-actions"><button class="st-btn st-btn-reveal" id="lad-start">Drill this rung <kbd>space</kbd></button></div>' +
+      sinkHtml +
+      '<button class="st-link st-quit" id="st-quit">← Study menu</button>');
+    el('st-quit').onclick = backToTools;
+    Array.prototype.forEach.call(app.querySelectorAll('.st-rung'), function (b) {
+      b.onclick = function () { S.ladderRung = b.getAttribute('data-rung'); save(); viewLadder(); };
+    });
+    el('lad-start').onclick = function () { goDepth(2, function () { ladderSession(pool, label); }); };
+    keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('lad-start').onclick(); return true; } });
+  }
+  function ladderSession(cards, label) { // mirrors startSession's produce-then-reveal branch
+    if (!cards.length) { viewLadder(); return; }
+    var q = interleave(shuffle(cards.slice()).slice(0, SESSION_CAP));
+    var i = 0, got = 0;
+    function step() {
+      if (i >= q.length) return summary();
+      var c = q[i];
+      render(
+        '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>' +
+        '<div class="st-prog" aria-hidden="true"><span style="width:' + Math.round(100 * i / q.length) + '%"></span></div>' +
+        '<div class="st-card" aria-live="polite">' +
+        '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
+        '<div class="st-q">' + esc(c.q) + '</div>' +
+        '<div id="st-a" class="st-a" hidden>' + esc(c.a) + ladderCiteHtml(c) + '</div>' +
+        '<div class="st-actions" id="st-act">' +
+        '<button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
+        '<button class="st-link st-quit" id="st-quit">End session</button>');
+      el('st-quit').onclick = summary;
+      el('st-reveal').onclick = reveal;
+      keyHandler(function (k) { if (k === ' ' || k === 'Enter') { reveal(); return true; } });
+      function reveal() {
+        el('st-a').hidden = false;
+        el('st-act').innerHTML =
+          '<button class="st-btn st-g1" id="g1">Missed <kbd>1</kbd></button>' +
+          '<button class="st-btn st-g2" id="g2">Shaky <kbd>2</kbd></button>' +
+          '<button class="st-btn st-g3" id="g3">Got it <kbd>3</kbd></button>';
+        el('g1').onclick = function () { doGrade(1); };
+        el('g2').onclick = function () { doGrade(2); };
+        el('g3').onclick = function () { doGrade(3); };
+        keyHandler(function (k) {
+          if (k === '1') { doGrade(1); return true; }
+          if (k === '2') { doGrade(2); return true; }
+          if (k === '3') { doGrade(3); return true; }
+        });
+      }
+      function doGrade(g) {
+        if (g === 1) ladderNoteMiss(c.id);
+        grade(c.id, g);
+        if (g === 3) got++;
+        i++; step();
+      }
+    }
+    function summary() {
+      keyHandler(null);
+      var pct = i ? Math.round(100 * got / i) : 0;
+      render('<div class="st-card st-summary"><div class="st-chip">' + esc(label) + '</div>' +
+        '<div class="st-sum-num">' + got + '<span> of ' + i + ' solid</span></div>' +
+        '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
+        '<p class="st-sub">' + sumFlavor(pct, i) + '</p>' +
+        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to the ladder</button></div></div>');
+      el('st-home').onclick = backHome;
+    }
+    step();
   }
 
   /* ---- The Combination — the daily vault word ---- */
@@ -1237,6 +1394,11 @@
       history.replaceState({ st: 0 }, '');
       navDepth = 0;
       var qs = new URLSearchParams(location.search);
+      if (qs.get('ladder') === '1') { // unlisted beta unlock — persists, then the param goes away
+        S.ladderBeta = true; save();
+        qs.delete('ladder');
+        try { history.replaceState({ st: 0 }, '', location.pathname + (qs.toString() ? '?' + qs.toString() : '')); } catch (e) {}
+      }
       if (qs.get('play') === 'daily') {
         if (qs.get('fresh') === '1') { // replay today's word (streak & history untouched)
           var gc = gamesState().combo;
