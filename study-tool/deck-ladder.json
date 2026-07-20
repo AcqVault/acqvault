@@ -6,6 +6,12 @@
       "topic": "Thresholds",
       "q": "What is the simplified acquisition threshold?",
       "a": "$350,000.",
+      "x": "The reflex answer is $250,000 — a stale figure from outside the RFO, and the distractor every board reaches for. Get this one exact because it is load-bearing: the SAT gates simplified procedures and dozens of clause prescriptions, so an error here propagates into every one of them. $350,000, from 2.101, no qualifiers.",
+      "d": [
+        "$250,000.",
+        "$150,000.",
+        "$500,000."
+      ],
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -19,6 +25,12 @@
       "topic": "Thresholds",
       "q": "What is the micro-purchase threshold?",
       "a": "$15,000.",
+      "x": "$10,000 is the reflex and it is wrong here — the RFO sets $15,000. Below the MPT the rules genuinely relax: awards may be made without soliciting competitive quotations when the price is reasonable, no written provisions or clauses are required, and the purchase card is a primary method. Get the ceiling wrong and you are either strangling small buys or waiving rules that still apply.",
+      "d": [
+        "$10,000.",
+        "$25,000.",
+        "$3,500."
+      ],
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -32,6 +44,12 @@
       "topic": "Competition",
       "q": "Who approves a J&A at or below $900,000?",
       "a": "The contracting officer.",
+      "x": "At this tier the certification required by 6.104(a)(12) IS the approval — no separate signature chain above the contracting officer. The trap runs the other direction: assuming every sole source needs a higher blessing. Below $900,000 the KO who signs the justification owns it alone, which is why boards probe whether you treat that certification as a formality or as the whole safeguard.",
+      "d": [
+        "The advocate for competition.",
+        "The chief of the contracting office.",
+        "The head of the procuring activity."
+      ],
       "cite": {
         "src": "rfo",
         "sec": "6.104-2",
@@ -45,6 +63,12 @@
       "topic": "Competition",
       "q": "Who approves a J&A above $900,000 up to $20M, and is it delegable?",
       "a": "The advocate for competition. Not delegable.",
+      "x": "Half-credit trap: candidates name the advocate and drop 'not delegable.' Note the asymmetry — the next tier up, the head of the procuring activity, IS delegable to the general/flag-officer or above-GS-15 level, so non-delegability is specific to the advocate's tier, not a blanket rule. And officials at a higher level may always approve lower-dollar justifications; the table sets floors, not exclusive lanes.",
+      "d": [
+        "The head of the procuring activity. Delegable to the flag-officer level.",
+        "The senior procurement executive. Not delegable.",
+        "The advocate for competition. Delegable in writing."
+      ],
       "cite": {
         "src": "rfo",
         "sec": "6.104-2",

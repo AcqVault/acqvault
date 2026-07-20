@@ -6,6 +6,7 @@
       "topic": "Contracting Authority",
       "q": "Before signing any contract, what two assurances must the contracting officer make?",
       "a": "That the contract meets all requirements of law, Executive orders, regulations, and applicable procedures (including clearances and approvals), and that funds are available for obligation.",
+      "x": "Signing is a personal certification, not a formality: legal and regulatory compliance (clearances and approvals included) and funds available for obligation. The second is your Anti-Deficiency shield — a CO who signs on promised-but-unissued funding owns that violation.",
       "cite": {
         "src": "rfo",
         "sec": "1.402-2",
@@ -18,6 +19,12 @@
       "topic": "Contracting Authority",
       "q": "What standard of treatment does a contracting officer owe offerors and contractors?",
       "a": "Impartial, fair, and equitable treatment.",
+      "d": [
+        "Fair and reasonable treatment.",
+        "Equal treatment — identical terms and information for every offeror.",
+        "Good faith and fair dealing."
+      ],
+      "x": "The bait is 'fair and reasonable' — that's the price standard, not the treatment standard. What's owed is impartial, fair, and equitable treatment, and it runs to contractors as well as offerors: the duty doesn't switch off at award.",
       "cite": {
         "src": "rfo",
         "sec": "1.402-2",
@@ -29,7 +36,8 @@
       "type": "recall",
       "topic": "Contracting Authority",
       "q": "How is a contracting officer appointed?",
-      "a": "In writing, on a Standard Form 1402, Certificate of Appointment — and the certificate must state any limits on the contracting officer's authority beyond those already in law or regulation. Individuals given micro-purchase authority are also appointed in writing, but an SF 1402 is not required for them. For DoD the certificate rides on statutory qualifications: under 10 U.S.C. 1724 (R-DFARS 201.403-1), serving with authority above the simplified acquisition threshold requires completion of the required contracting courses, at least 2 years of experience in a contracting position, and a baccalaureate degree — with narrow exceptions for legacy pre-2001 incumbents, the contingency contracting force, and 3-year developmental positions.",
+      "a": "In writing, on a Standard Form 1402, Certificate of Appointment — and the certificate must state any limits on the contracting officer's authority beyond those already in law or regulation. Individuals given micro-purchase authority are also appointed in writing, but an SF 1402 is not required for them. For DoD the certificate rides on statutory qualifications: under 10 U.S.C. 1724 (R-DFARS 201.403-1), serving with authority above the simplified acquisition threshold requires completion of the required contracting courses, at least 2 years of experience in a contracting position, and a baccalaureate degree — with narrow exceptions for incumbents who held the position on or before 30 September 2000, the contingency contracting force, and 3-year developmental positions.",
+      "x": "The civilian answer stops at 'in writing, on an SF 1402.' A DoD board is listening for the 10 U.S.C. 1724 layer: above the SAT the warrant rides on qualifications — the courses, 2 years' experience, and the degree — not just the certificate. Bonus trap: micro-purchase authority is appointed in writing too, but needs no SF 1402.",
       "cite": {
         "src": "rfo",
         "sec": "1.403-2",
@@ -46,7 +54,8 @@
       "type": "recall",
       "topic": "Contracting Authority",
       "q": "What must a person have to qualify as a DoD contracting officer with authority above the SAT?",
-      "a": "Under 10 U.S.C. 1724: completion of all contracting courses required for the grade, at least 2 years of experience in a contracting position, and a baccalaureate degree — plus any additional requirements the Secretary of Defense sets based on dollar value and complexity. The degree requirement does not reach legacy pre-2000 incumbents, the contingency contracting force, or 3-year developmental appointees.",
+      "a": "Under 10 U.S.C. 1724: completion of all contracting courses required for the grade, at least 2 years of experience in a contracting position, and a baccalaureate degree — plus any additional requirements the Secretary of Defense sets based on dollar value and complexity. The degree requirement does not reach incumbents who held the position on or before 30 September 2000, the contingency contracting force, or 3-year developmental appointees.",
+      "x": "Courses, 2 years, degree — plus whatever the Secretary adds for dollar value and complexity. The trap is overapplying the degree leg: it doesn't reach grandfathered incumbents (in position on or before September 30, 2000), the contingency contracting force, or 3-year developmental appointees. And the gate itself only exists above the SAT.",
       "cite": {
         "src": "r-dfars",
         "sec": "201.403-1",
@@ -59,6 +68,7 @@
       "topic": "Contracting Authority",
       "q": "May a contracting officer's representative commit the Government to a change in contract terms?",
       "a": "No. A COR has no authority to make any commitments or changes affecting price, quality, quantity, delivery, or other terms and conditions of the contract. DoD adds an eligibility rule: a COR must be a Government employee — military or civilian (or foreign-government, NATO, or coalition-partner personnel) — and contractor personnel must never serve as CORs.",
+      "x": "A COR monitors; only the CO moves the deal. Anything a COR 'approves' that touches price, quality, quantity, delivery, or terms is an unauthorized commitment in the making. The DoD add-on boards probe: a COR must be a Government (or foreign/NATO/coalition-partner) employee — contractor personnel never serve as CORs, however embedded.",
       "cite": {
         "src": "rfo",
         "sec": "1.404",
@@ -76,6 +86,7 @@
       "topic": "Authority, Unauthorized Commitments & Ratification",
       "q": "What is an unauthorized commitment?",
       "a": "An agreement that is not binding solely because the Government representative who made it lacked the authority to enter into it on behalf of the Government.",
+      "x": "The word doing the work is 'solely' — the agreement would bind but for the missing authority. Ratification exists to cure exactly that one defect; if the deal also fails for another reason, there's nothing a ratifying official can fix. That's why the definition is narrower than 'any bad handshake.'",
       "cite": {
         "src": "rfo",
         "sec": "1.405",
@@ -88,6 +99,12 @@
       "topic": "Authority, Unauthorized Commitments & Ratification",
       "q": "Who may ratify an unauthorized commitment, and how far down may that authority be delegated?",
       "a": "The head of the contracting activity; agencies may delegate the authority, but never below the chief of the contracting office.",
+      "d": [
+        "The contracting officer assigned to the action, once funds are confirmed.",
+        "The head of the agency — the authority is not delegable.",
+        "The chief of the contracting office, delegable to any warranted contracting officer."
+      ],
+      "x": "Two halves, both graded: authority starts at the head of the contracting activity, and delegation stops at the chief of the contracting office. The reflex error is assuming the CO cleaning up the mess can ratify it — the warrant that would have made the deal legal is not the authority that cures it.",
       "cite": {
         "src": "rfo",
         "sec": "1.405",
@@ -100,6 +117,12 @@
       "topic": "Authority, Unauthorized Commitments & Ratification",
       "q": "Can an unauthorized commitment be ratified if funds were not available at the time the commitment was made?",
       "a": "No. Funds must be available now and must also have been available when the unauthorized commitment was made.",
+      "d": [
+        "Yes — availability is tested only at the time of ratification.",
+        "Yes, with head-of-agency approval after a fiscal-law review.",
+        "Yes, if the contractor performed in good faith."
+      ],
+      "x": "Both clocks must show money: funds available now and available when the commitment was made. Ratification that papered over a missing appropriation would convert an authority problem into a funding violation — so the rule refuses, no matter how sympathetic the contractor.",
       "cite": {
         "src": "rfo",
         "sec": "1.405",
@@ -112,6 +135,7 @@
       "topic": "Thresholds",
       "q": "What does the simplified acquisition threshold become for acquisitions supporting a contingency operation?",
       "a": "$1 million for a contract awarded and performed, or purchase made, inside the United States; $2 million outside the United States. The same tiers apply to the other categories in that exception — defense against or recovery from cyber, nuclear, biological, chemical, or radiological attack; international disaster assistance; and response to an emergency or major disaster — and all of them turn on a head-of-agency determination. Do not confuse this with the separate humanitarian or peacekeeping operation tier in the same definition, which is $650,000 and only for contracts awarded and performed outside the United States (10 U.S.C. 3015).",
+      "x": "Anchor the pair — $1M inside the U.S., $2M outside, on a head-of-agency determination — and know the same tiers serve cyber/CBRN defense, international disaster assistance, and emergency response. The planted distractor is $650K: that's the humanitarian/peacekeeping tier, and it only exists for contracts awarded and performed outside the U.S.",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -125,6 +149,7 @@
       "topic": "Thresholds",
       "q": "What does the micro-purchase threshold become for acquisitions supporting a contingency operation?",
       "a": "$25,000 for a contract awarded and performed, or purchase made, inside the United States; $40,000 outside the United States — on a head-of-agency determination. The carve-out matters: the increase does not reach construction subject to the Wage Rate Requirements (Construction) statute, so covered construction stays at the $2,000 micro-purchase threshold no matter how urgent the contingency.",
+      "x": "$25K inside, $40K outside — but the carve-out is where boards go: construction covered by the wage-rate statute never rides the increase. However urgent the contingency, covered construction sits at its $2,000 floor, because the labor-standards trigger protects wages, not purchasing speed.",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -138,6 +163,7 @@
       "topic": "Thresholds",
       "q": "The micro-purchase threshold is $15,000 — when is it actually lower?",
       "a": "Two labor-standards sub-tiers: $2,000 for construction subject to the Wage Rate Requirements (Construction) statute, and $2,500 for services subject to Service Contract Labor Standards. Miss the sub-tier and a $10,000 construction buy you treated as a micro-purchase was really a simplified acquisition owing labor-standards clauses.",
+      "x": "Treat $15K as three numbers: $2,000 for covered construction, $2,500 for covered services. The sub-tier isn't trivia — it decides which procedures and clauses govern the buy. At the desk the order of questions is 'what am I buying?' before 'how much is it?'; the dollar figure alone can't classify the action.",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -151,6 +177,12 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "Which acquisitions does RFO part 13 cover?",
       "a": "Noncommercial products and services valued at or below the SAT. Commercial acquisitions use the part 12 procedures instead.",
+      "d": [
+        "All acquisitions valued at or below the SAT, commercial or noncommercial.",
+        "Commercial products and services valued up to $9 million.",
+        "Any purchase at or below the micro-purchase threshold."
+      ],
+      "x": "Part 13 is the noncommercial lane at or below the SAT. The reflex answer — 'everything under $350K' — is wrong: commercial buys run under part 12's own simplified procedures. Commercial-or-not is the first sort at the desk; it picks the part before the price tag does.",
       "cite": {
         "src": "rfo",
         "sec": "13.000",
@@ -163,6 +195,7 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "Before you reach for part 13 simplified procedures, what two checks gate their use?",
       "a": "First, no commercial product or service can satisfy the need — commercial buys run under part 12. Second, the supplies or services are not available from a required source under part 8. Only when both checks clear are part 13 procedures on the table.",
+      "x": "Both screens run before part 13 is even on the table: no commercial solution (part 12 owns those) and no required source under part 8. Simplified procedures are what's left after those checks clear, not a default you start from because the dollars are small.",
       "cite": {
         "src": "rfo",
         "sec": "13.001",
@@ -175,6 +208,12 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "May you split a requirement into smaller pieces to stay under the SAT?",
       "a": "No. Requirements whose aggregate value exceeds the SAT must not be divided merely to permit use of simplified procedures.",
+      "d": [
+        "Yes, if each piece is independently priced fair and reasonable.",
+        "Yes, when funding arrives in separate increments.",
+        "Only with a determination and findings approved one level above the contracting officer."
+      ],
+      "x": "The test is aggregate value, not invoice value. Three $150K orders against one $450K requirement is an over-SAT acquisition wearing a disguise, and 'the funding came in pieces' doesn't change the math. Define the requirement first; the procedure follows from its total, not its installments.",
       "cite": {
         "src": "rfo",
         "sec": "13.001",
@@ -187,6 +226,7 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "What document supports soliciting from only one source under simplified procedures?",
       "a": "A determination and findings (subpart 1.5) that only one source is reasonably available — for example urgency, exclusive licensing agreements, brand-name, or industrial mobilization.",
+      "x": "Below the SAT, sole source rides on a determination and findings under subpart 1.5 that only one source is reasonably available — urgency, exclusive licensing, brand-name, industrial mobilization. The trap is instrument confusion: the heavyweight part 6 justification machinery belongs to acquisitions above the SAT, not here.",
       "cite": {
         "src": "rfo",
         "sec": "13.101",
@@ -199,6 +239,12 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "Does a quotation bind the vendor? Does the purchase order bind the Government?",
       "a": "Neither forms a contract by itself. A quotation is not an offer, and the purchase order is only the Government's offer to buy.",
+      "d": [
+        "The quotation binds the vendor once the Government relies on it.",
+        "The purchase order binds the Government the moment it is issued.",
+        "Both — a quotation is an offer and the purchase order accepts it."
+      ],
+      "x": "A quotation is information, not an offer — the Government can't 'accept' it into a contract. The purchase order is the Government's offer to buy. Until the supplier accepts, nobody is bound, which is why a vendor who ignores your purchase order hasn't breached anything.",
       "cite": {
         "src": "rfo",
         "sec": "12.201-1",
@@ -211,6 +257,12 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "When is a binding contract formed under RFQ and purchase-order procedures?",
       "a": "When the supplier accepts the Government's offer — by written acceptance of the purchase order or by substantial performance.",
+      "d": [
+        "When the Government issues the purchase order.",
+        "When the supplier submits its quotation.",
+        "Only on written acceptance — performance alone never forms the contract."
+      ],
+      "x": "Acceptance arrives two ways: written acceptance of the purchase order, or substantial performance. The second path is the one to respect at the desk — a supplier who ships has accepted your offer and formed the contract, paperwork or not. Silence plus performance binds; silence alone binds no one.",
       "cite": {
         "src": "rfo",
         "sec": "12.201-1",
@@ -223,6 +275,12 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "When soliciting quotations directly from suppliers at or below the SAT, how many sources must you solicit?",
       "a": "At least three — and whenever practicable, two sources not included in the previous solicitation.",
+      "d": [
+        "At least two — enough to establish price competition.",
+        "At least five, rotated each quarter.",
+        "No fixed minimum — the maximum practicable number."
+      ],
+      "x": "Three is the floor; the half candidates drop is rotation — whenever practicable, two sources not in the previous solicitation. That clause exists so 'our usual three quotes' doesn't quietly harden into a standing pool that never sees a new competitor.",
       "cite": {
         "src": "rfo",
         "sec": "12.201-1",
@@ -235,6 +293,12 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "On what should price reasonableness be based when awarding under part 13?",
       "a": "Competitive quotations, whenever possible.",
+      "d": [
+        "Certified cost or pricing data.",
+        "Comparison with the independent Government cost estimate.",
+        "Prior contract prices, adjusted for inflation."
+      ],
+      "x": "Competitive quotations are the default evidence; everything else is the fallback for when competition wasn't possible. If you solicited three sources and got real quotes, the price story writes itself — reaching past them invites the question of why you competed at all.",
       "cite": {
         "src": "rfo",
         "sec": "13.203",
@@ -247,6 +311,7 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "What is the cap on each individual purchase under a blanket purchase agreement?",
       "a": "It depends on which part the BPA lives under. A part 12 commercial BPA caps each individual purchase at the simplified-procedures ceiling in 12.201-1(a) — $9 million, or the increased ceiling under 12.001(c) ($15 million for contingency, cyber/CBRN, international disaster assistance, or emergency/major disaster support). A part 13 (noncommercial) BPA is tighter: 13.201 caps the maximum value of each individual purchase under a BPA at the SAT. Quoting the SAT as the cap on a commercial BPA leaves real headroom on the table.",
+      "x": "The whole question is which part the BPA lives under. A part 12 commercial BPA runs each purchase to the $9M simplified ceiling ($15M for the contingency-class categories); a part 13 noncommercial BPA stops each purchase at the SAT. Quoting $350K for a commercial BPA is the reflex that leaves millions of headroom on the table.",
       "cite": {
         "src": "rfo",
         "sec": "12.201-1",
@@ -259,6 +324,12 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "Must micro-purchases be competed?",
       "a": "No. They may be awarded without soliciting competitive quotations if the price is considered reasonable.",
+      "d": [
+        "Yes — solicit at least three quotations, like any simplified buy.",
+        "Yes, unless a sole-source determination and findings is on file.",
+        "Only micro-purchases above $10,000 must be competed."
+      ],
+      "x": "No quotes required at or below the MPT — price reasonableness is the only test, on the cardholder's judgment. Read it as permission, not prohibition: the rule removes the requirement to compete, not the option. When a price looks off, a second quote is still the cheapest assurance there is.",
       "cite": {
         "src": "rfo",
         "sec": "12.402",
@@ -271,6 +342,7 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "What is the primary method for making micro-purchases?",
       "a": "The Governmentwide commercial purchase card — authorized for purchases of supplies, services, or construction, and only for purchases authorized by law or regulation. Purchase orders are the other primary method. DoD goes further: use the purchase card as the method of purchase and/or payment for everything at or below the MPT unless a 212.403 exception applies.",
+      "x": "The civilian answer: the purchase card is a primary method, alongside purchase orders. DoD hardens it to a mandate — the card is the method of purchase and/or payment at or below the MPT unless a 212.403 exception applies. A board wants to hear that shift from 'authorized' to 'required' said out loud.",
       "cite": {
         "src": "rfo",
         "sec": "12.403",
@@ -288,6 +360,7 @@
       "topic": "Simplified Acquisition Procedures",
       "q": "When may you use an SF 44, Purchase Order-Invoice-Voucher?",
       "a": "It is a pocket-size form for on-the-spot, over-the-counter buys away from the purchasing office or at isolated activities — and only when every condition holds: the agency authorizes it, the amount is at or below the MPT (or an agency-set ceiling for urgency or contingency support), the supplies or services are immediately available with one delivery and one payment, and it beats the purchase card on economy and efficiency. In DoD the purchase card is the mandated micro-purchase method, so an SF 44 rides on a 212.403 exception — a Standard Form 44 purchase for aviation fuel is the listed example.",
+      "x": "The SF 44 is the field expedient: on-the-spot, over-the-counter, one delivery, one payment, agency-authorized, at or below the MPT — and it must beat the purchase card on economy. In DoD that last test nearly always loses, because the card is mandated at the MPT; an SF 44 needs a 212.403 exception, aviation fuel being the schoolhouse example.",
       "cite": {
         "src": "rfo",
         "sec": "12.403",
@@ -305,6 +378,7 @@
       "topic": "Small Business Programs",
       "q": "When must a contract be set aside for small business (the Rule of Two)?",
       "a": "For contracts above the micro-purchase threshold, when there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery. The test does not apply to purchases at or below the MPT or to purchases from required sources under part 8. Note the separate, categorical rule for noncommercial buys: under 13.102 an acquisition above the MPT but at or below the SAT must be set aside, with no expectation analysis. For DoD, R-DFARS 219.104-1 applies FAR 19.104-1(a) and (b) to construction (including maintenance and repairs) under $3.5 million, dredging under $2 million, and architect-engineer services for military construction or family housing under $1 million, and excepts supplies developed and financed in whole or in part by Canadian sources under the U.S.-Canadian Defense Development Sharing Program.",
+      "x": "Keep three regimes straight. Above the MPT, the Rule of Two is an expectation judgment — two responsible small businesses, competitive on price, quality, delivery. In the MPT-to-SAT band under part 13, the set-aside is categorical, no analysis. And DoD applies the rule to construction, dredging, and A-E work only under specific dollar ceilings. 'Always set aside below the SAT' blurs the first two into a wrong answer.",
       "cite": {
         "src": "rfo",
         "sec": "19.104-1",
@@ -322,6 +396,7 @@
       "topic": "Small Business Programs",
       "q": "For a noncommercial acquisition between the micro-purchase threshold and the SAT, when must it be set aside for small business?",
       "a": "Always. Under 13.102 the set-aside is categorical in that band — no Rule-of-Two expectation analysis. Do not generalize it past part 13: part 13 covers noncommercial products and services only. A commercial buy in the same dollar band runs under part 12, which points to part 19, where 19.104-1's Rule of Two governs and requires the reasonable-expectation-of-two-offers judgment.",
+      "x": "Categorical means no expectation analysis — in the MPT-to-SAT band under part 13 you set aside, full stop. The reciprocal trap is dragging that automatic rule into a commercial buy: part 12 routes those through part 19, where the Rule of Two's two-offers judgment governs. The part decides the test.",
       "cite": {
         "src": "rfo",
         "sec": "13.102",
@@ -334,6 +409,7 @@
       "topic": "Contractor Qualifications — Responsibility",
       "q": "What must a prospective contractor demonstrate to be found responsible?",
       "a": "Adequate financial resources (or the ability to obtain them); ability to meet the delivery or performance schedule given all existing commitments; a satisfactory performance record — though never nonresponsible solely for lacking one; a satisfactory record of integrity and business ethics; the necessary organization, experience, controls, and technical skills; the necessary equipment and facilities; and otherwise qualified and eligible under law. DoD adds one for cost-type, incentive, and progress-payment work: the accounting system and internal controls must give reasonable assurance the cost data are reliable.",
+      "x": "Responsibility is the CO's affirmative determination, not an assumption from a SAM registration. Two probe points: a missing performance record alone can never make a contractor nonresponsible — new entrants get in — and DoD adds the accounting-system leg the moment cost data starts driving payment: cost-type, incentive, or progress-payment work.",
       "cite": {
         "src": "rfo",
         "sec": "9.104-1",
@@ -351,6 +427,12 @@
       "topic": "Commercial Products & Services",
       "q": "When must an agency buy commercial?",
       "a": "Whenever the agency determines commercial products or services are available to meet its needs.",
+      "d": [
+        "Only for acquisitions at or below the SAT.",
+        "Only when commercial pricing beats the Government estimate.",
+        "Whenever at least two commercial sources exist."
+      ],
+      "x": "The determination that commercial items are available is the mandate — 'must acquire,' not 'should consider.' Market research under part 10 is what produces that determination, which is why skipping the research and defaulting to a Government-unique spec is a compliance failure, not a style preference.",
       "cite": {
         "src": "rfo",
         "sec": "12.101",
@@ -363,6 +445,7 @@
       "topic": "Commercial Products & Services",
       "q": "A customer insists on a brand-name item at or below the SAT. What documentation does restricting competition require?",
       "a": "Document the decision that only one source is available and the basis for the decision. (Over the SAT it takes a written justification approved under 6.104.) DoD reads brand-name more strictly: under R-DFARS 212.102-70, implementing section 888(a) of the FY 2017 NDAA, the 12.102 documentation is required even for brand-name-or-equal descriptions and for proprietary specifications and standards — allowing an equal product does not excuse the paperwork.",
+      "x": "At or below the SAT the paperwork is light: document that only one source is available and why. The DoD overlay is the board hook — under section 888(a), 'brand name or equal' descriptions and proprietary specs need the same 12.102 documentation. Adding 'or equal' softens the restriction, not the paperwork.",
       "cite": {
         "src": "rfo",
         "sec": "12.102",
@@ -380,6 +463,12 @@
       "topic": "Commercial Products & Services",
       "q": "Up to what value do the commercial simplified procedures (RFQ followed by a purchase order) apply?",
       "a": "$9 million.",
+      "d": [
+        "$350,000",
+        "$7.5 million",
+        "$15 million"
+      ],
+      "x": "$9 million is the commercial simplified ceiling — RFQ then purchase order — and it's the figure people cross-wire with the SAT. $350K bounds part 13's noncommercial procedures; the commercial lane runs to $9M, and $15M for the contingency-class categories. Two lanes, two ceilings.",
       "cite": {
         "src": "rfo",
         "sec": "12.201-1",
@@ -393,6 +482,7 @@
       "topic": "Market Research",
       "q": "When is market research required?",
       "a": "Appropriate to the circumstances, before developing new requirements documents and before soliciting offers or awarding task or delivery orders valued over the SAT. DoD adds triggers: conduct market research before issuing any solicitation with tiered evaluation of offers, and use the results to make the part 19 set-aside call and to inform price reasonableness.",
+      "x": "Three triggers: before new requirements documents at any value, and before soliciting or ordering over the SAT. 'Appropriate to the circumstances' scales the effort — it never waives it. DoD adds tiered-evaluation solicitations as a trigger and puts the results to work on the set-aside call and price reasonableness.",
       "cite": {
         "src": "rfo",
         "sec": "10.001",
@@ -410,6 +500,7 @@
       "topic": "Publicizing Contract Actions",
       "q": "When must you post a presolicitation notice, and what lets a SAT-level buy skip it?",
       "a": "Post a presolicitation notice to the GPE for any proposed contract action expected to be greater than $20,000. At or below the SAT you may skip it if the solicitation itself will be posted to the GPE under 5.201 and the public can respond to it electronically.",
+      "x": "Two moving parts: the $20K trigger for the presolicitation notice, and the SAT-level skip — no separate notice needed when the solicitation itself goes to the GPE and vendors can respond electronically. The rule's object is public visibility, and posting the RFQ delivers it; the notice was never the point.",
       "cite": {
         "src": "rfo",
         "sec": "5.101",
@@ -424,6 +515,7 @@
       "topic": "Contract Types",
       "q": "What defines a firm-fixed-price contract?",
       "a": "A price not subject to any adjustment on the basis of the contractor's cost experience in performing the contract — the contractor bears the cost risk.",
+      "x": "'No adjustment based on cost experience' is the definition and the risk allocation in one sentence: the contractor eats overruns and keeps underruns. That is exactly why FFP presumes a requirement definite enough to price — hand a vague spec to a fixed price and the risk premium comes back to you in the offer.",
       "cite": {
         "src": "rfo",
         "sec": "16.202-1",
@@ -436,6 +528,7 @@
       "topic": "Contract Types",
       "q": "When may a cost-reimbursement contract be used?",
       "a": "Only when the requirements cannot be sufficiently defined for a fixed-price type contract, or performance uncertainties do not permit costs to be estimated accurately enough for any fixed-price type. Clearing that gate is not enough — 16.301-3 adds four hard prerequisites: a written acquisition plan approved at least one level above the contracting officer; the agency head's approval of a justification for other than fixed-price if 16.104 requires one; a contractor accounting system that can segregate, accumulate, and allocate contract costs; and sufficient Government resources, including a designated COR, to award and manage a non-firm-fixed-price contract. Cost-reimbursement is also barred outright for commercial products and services.",
+      "x": "Passing the can't-define-or-estimate test only opens the door. The four 16.301-3 prerequisites decide whether you may walk through: an acquisition plan approved one level up, any required 16.104 justification, a contractor accounting system that can track costs, and Government resources — including a named COR — to manage it.",
       "cite": {
         "src": "rfo",
         "sec": "16.301-2",
@@ -448,6 +541,7 @@
       "topic": "Contract Types",
       "q": "May a cost-reimbursement contract be used to buy commercial products or services?",
       "a": "No — it is not allowed. DoD stacks a second hard stop on the same section: for military construction or military family housing projects, cost-plus-fixed-fee, cost-plus-award-fee, and cost-plus-incentive-fee types are barred — even under a declaration of war or national emergency.",
+      "x": "Two absolutes stacked on one section. Civilian rule: commercial buys never go cost-reimbursement. DoD's addition: for military construction and family housing, no CPFF, CPAF, or CPIF — expressly even under a declaration of war or national emergency. Boards use it to test whether you know some no's have no waiver path.",
       "cite": {
         "src": "rfo",
         "sec": "16.301-3",
@@ -465,6 +559,12 @@
       "topic": "Terminations",
       "q": "How must a termination be communicated to the contractor?",
       "a": "Only by written notice, stating the reason (convenience or default), the effective date, the extent, and any special instructions.",
+      "d": [
+        "Orally, if confirmed in writing within 10 days.",
+        "By any reasonable method, so long as the effective date is documented.",
+        "Through the COR, who delivers the notice and stop-work direction."
+      ],
+      "x": "Termination is a written-notice act — reason, effective date, extent, special instructions. An oral 'stop work' from anyone, however senior, terminates nothing and starts its own liability story. Until the CO's written notice goes out, the contract is still running and still costing.",
       "cite": {
         "src": "rfo",
         "sec": "49.102",
@@ -477,6 +577,7 @@
       "topic": "Terminations",
       "q": "What is the contractor's first duty after receiving a convenience termination notice?",
       "a": "Stop work immediately on the terminated portion and stop placing subcontracts for that work — then terminate related subcontracts and promptly submit a settlement proposal.",
+      "x": "The sequence is stop, stop, then settle: stop work on the terminated portion, stop placing subcontracts for it, terminate the related subs, then submit the settlement proposal. Every hour worked after notice is a cost the settlement will fight about — which is why 'immediately' is the first word that matters.",
       "cite": {
         "src": "rfo",
         "sec": "49.104",
@@ -489,6 +590,12 @@
       "topic": "Terminations",
       "q": "What should a convenience-termination settlement pay the contractor for?",
       "a": "Work completed, preparations made for the terminated portion, and a reasonable profit amount.",
+      "d": [
+        "The full contract price, less the cost of the unperformed work.",
+        "Completed work plus the profit anticipated on the entire contract.",
+        "Actual costs only — no profit is paid on any termination."
+      ],
+      "x": "Fair compensation looks backward: work completed, preparations made, reasonable profit. What's pointedly absent is profit on work never performed — a convenience termination isn't a breach, so the contractor is made whole for effort expended, not for the deal it hoped to finish.",
       "cite": {
         "src": "rfo",
         "sec": "49.201",
@@ -501,6 +608,12 @@
       "topic": "Terminations",
       "q": "Is profit paid on work the contractor never performed?",
       "a": "No. No profit is paid for unperformed work, settlement costs, or consequential damages.",
+      "d": [
+        "Yes — profit is calculated on the full contract price.",
+        "Yes, when the termination is for the Government's convenience.",
+        "Only if the contractor completed more than half the work."
+      ],
+      "x": "Profit follows performance. The distractor logic is 'the Government quit, so make me whole' — but convenience is a right the Government holds under the contract, not a breach of it. No profit on unperformed work, none on settlement costs, and consequential damages don't enter at all.",
       "cite": {
         "src": "rfo",
         "sec": "49.202",
@@ -513,6 +626,12 @@
       "topic": "Terminations",
       "q": "When should a contracting officer not bother terminating for convenience?",
       "a": "When the remaining work is worth less than $5,000.",
+      "d": [
+        "When the remaining work is worth less than $10,000.",
+        "When the remaining work is worth less than the micro-purchase threshold.",
+        "When the remaining work is worth less than $2,500."
+      ],
+      "x": "A should-not, not a can't: below $5,000 of remaining work, the settlement machinery costs more than it saves, so let the contract run out. It's one of the few rules aimed at the Government's own economy, and boards use it to check that you know terminations carry overhead too.",
       "cite": {
         "src": "rfo",
         "sec": "49.101",
@@ -526,6 +645,12 @@
       "topic": "Terminations",
       "q": "What makes a delay excusable under a commercial purchase order?",
       "a": "Nonperformance caused by an occurrence beyond the contractor's reasonable control and without its fault or negligence.",
+      "d": [
+        "Any delay the contractor reports in writing within 10 days.",
+        "Any failure of a subcontractor, regardless of its cause.",
+        "Severe weather, whether or not it was foreseeable."
+      ],
+      "x": "Two conjunctive legs: beyond the contractor's reasonable control and without its fault or negligence. Nothing excuses by label — weather, strikes, supplier failures all still have to pass both tests on their facts. A foreseeable storm the contractor didn't plan around fails the second leg, category notwithstanding.",
       "cite": {
         "src": "rfo",
         "sec": "52.212-4",
@@ -538,6 +663,7 @@
       "topic": "Construction & Service Contracting",
       "q": "What are the two types of differing site conditions?",
       "a": "Two categories, known in practice as Type I and Type II — the clause itself doesn't use those labels. The first: latent or subsurface conditions at the site differing materially from those indicated in the contract. The second: unknown physical conditions of an unusual nature, differing materially from those ordinarily encountered and generally recognized as inhering in that kind of work.",
+      "x": "Type I measures the site against the contract's indications — what the documents said you'd find. Type II measures it against the work's ordinary character — unusual conditions nobody would expect in this kind of job. The pivot at the desk: Type I needs contract representations to differ from; silent documents push the contractor to Type II's steeper proof.",
       "cite": {
         "src": "rfo",
         "sec": "52.236-2",
@@ -550,6 +676,12 @@
       "topic": "Construction & Service Contracting",
       "q": "When must a contractor give notice of a differing site condition?",
       "a": "Promptly, in writing, and before the conditions are disturbed.",
+      "d": [
+        "Within 30 days of discovery, in writing.",
+        "Before final payment — the only firm deadline.",
+        "Orally on discovery, then in writing within 7 days."
+      ],
+      "x": "Three requirements travel together: promptly, in writing, before the conditions are disturbed. The third leg is the one that bites — notice before disturbance preserves the Government's chance to investigate the condition as found, and an excavator that kept digging just destroyed the evidence its own claim needed.",
       "cite": {
         "src": "rfo",
         "sec": "52.236-2",
@@ -562,6 +694,12 @@
       "topic": "Construction & Service Contracting",
       "q": "What happens if the contractor disturbs a differing site condition without giving the written notice?",
       "a": "No equitable adjustment is allowed under the clause without the required written notice — and none at all after final payment.",
+      "d": [
+        "The claim survives if the condition is documented with photographs.",
+        "The adjustment is reduced by the cost of the disturbance.",
+        "Nothing — notice is procedural and cannot defeat a valid claim."
+      ],
+      "x": "No written notice, no equitable adjustment under the clause — and after final payment, none at all. The Government-side lesson: when a contractor calls about strange site conditions, the answer is 'stop and send it in writing,' because letting them keep working helps neither their claim nor your record of what was found.",
       "cite": {
         "src": "rfo",
         "sec": "52.236-2",
@@ -574,6 +712,7 @@
       "topic": "Acquisition Planning & Strategy",
       "q": "May contractors perform inherently governmental functions?",
       "a": "No. Contracts must not be used to perform inherently governmental functions — the non-exclusive list includes awarding contracts, approving contractual documents, administering and terminating contracts, and serving as a voting member on a source selection board. For DoD, the written determination FAR 7.503(e) requires must be prepared using DoD Instruction 1100.22 and must also determine that none of the functions are exempt from private sector performance; contracting for the closely-associated functions at 7.503(d) carries its own 10 U.S.C. 4508 gate.",
+      "x": "Contractors can support the function; they can't be the function. Awarding, approving contractual documents, administering, terminating, voting on a source selection board — reserved to the Government. DoD routes the required written determination through DoDI 1100.22, and the closely-associated list at 7.503(d) carries its own separate gate.",
       "cite": {
         "src": "rfo",
         "sec": "7.503",
@@ -591,6 +730,7 @@
       "topic": "Construction & Service Contracting",
       "q": "A flight chief wants a contractor employee in the office taking daily tasking under his direct supervision. What is the key indicator that this is a prohibited personal services arrangement?",
       "a": "The Government exercising relatively continuous supervision and control over contractor personnel — making them appear, in effect, Government employees. Personal services contracts are barred unless specifically authorized by statute.",
+      "x": "Watch the supervision, not the paperwork. Relatively continuous Government supervision and control over contractor personnel is the key indicator, and no contract clause launders it — the flight chief's 'daily tasking under my direct supervision' is the textbook pattern. Task the contractor through the contract, never the person.",
       "cite": {
         "src": "rfo",
         "sec": "37.201-2",
@@ -603,6 +743,7 @@
       "topic": "Inspection & Acceptance",
       "q": "What is the difference between a latent and a patent defect?",
       "a": "Latent defect (2.101) — a defect that exists at the time of acceptance but cannot be discovered by a reasonable inspection. Patent defect (46.101) — any defect that exists at the time of acceptance and is not a latent defect. The distinction is what decides whether Government acceptance is still open to challenge.",
+      "x": "The definitions are a complementary pair: latent is what a reasonable inspection couldn't find at acceptance; patent is everything else that existed then. Which side a defect lands on decides whether acceptance's finality protects the contractor — so 'what would a reasonable inspection have caught?' is where the real fight happens.",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -615,6 +756,12 @@
       "topic": "Inspection & Acceptance",
       "q": "Is Government acceptance final?",
       "a": "Generally conclusive — except for latent defects, fraud, gross mistakes amounting to fraud, or as otherwise provided in the contract.",
+      "d": [
+        "Yes — acceptance is absolutely final in every case.",
+        "No — the Government may revoke acceptance for any defect found within one year.",
+        "It becomes final only when the warranty period expires."
+      ],
+      "x": "Conclusive is the default; the exceptions — latent defects, fraud, gross mistakes amounting to fraud, contract carve-outs — are the whole exam. Note what's not on the list: a patent defect you simply failed to catch. Acceptance closes the door on everything a reasonable inspection would have found.",
       "cite": {
         "src": "rfo",
         "sec": "52.246-2",
@@ -627,6 +774,7 @@
       "topic": "Inspection & Acceptance",
       "q": "What inspection does the Government normally perform for contracts at or below the SAT?",
       "a": "Inspection at destination, and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking. DoD reinforces it from the other side: do not require quality assurance at source at or below the SAT unless the 246.402 criteria are met.",
+      "x": "Below the SAT the inspection is deliberately shallow: at destination, five checks — type and kind, quantity, damage, operability if readily determinable, packaging and marking. DoD guards the other flank: no quality assurance at source at or below the SAT unless 246.402's criteria are met. Demanding source inspection on a simple buy is gold-plating.",
       "cite": {
         "src": "rfo",
         "sec": "46.404",
@@ -644,6 +792,7 @@
       "topic": "REAs & Claims",
       "q": "What is a claim?",
       "a": "A written demand or written assertion by one of the contracting parties seeking, as a matter of right, payment of money in a sum certain, the adjustment or interpretation of contract terms, or other relief arising under or relating to the contract. Two carve-outs travel with the definition: a contractor demand for money exceeding $100,000 is not a claim until certified, and a routine, undisputed voucher or invoice is not a claim — though it can become one if it is later disputed as to liability or amount, or is not acted on in a reasonable time.",
+      "x": "Three elements — written, as a matter of right, sum certain (or contract terms, or other relief) — and two carve-outs: over $100K nothing is a claim until certified, and a routine invoice isn't one until disputed or ignored. Status matters because it starts the machinery: interest runs from the CO's receipt of a proper claim.",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -656,6 +805,12 @@
       "topic": "REAs & Claims",
       "q": "At what dollar value must a contractor certify a claim?",
       "a": "Over $100,000 — a money demand exceeding $100,000 is not even a claim under the Disputes statute until certified.",
+      "d": [
+        "Over $50,000.",
+        "Over $250,000.",
+        "Over the simplified acquisition threshold."
+      ],
+      "x": "Over $100,000 — and the consequence is sharper than 'attach a certificate.' An uncertified demand over the line isn't a claim at all: no interest accrues, no decision obligation attaches. The figure people reach for is the SAT; the Disputes statute keeps its own threshold.",
       "cite": {
         "src": "rfo",
         "sec": "52.233-1",
@@ -669,6 +824,7 @@
       "topic": "REAs & Claims",
       "q": "How long does the contracting officer have to decide a contractor claim?",
       "a": "For claims of $100,000 or less: if the contractor requests a decision in writing, render it within 60 days of the request. For certified claims over $100,000: within 60 days, either decide the claim or tell the contractor the date by which the decision will be made.",
+      "x": "Two clocks keyed to $100K. At or under: 60 days, but only if the contractor requests a decision in writing. Over: 60 days to decide or to name the date you will. That second option is the practical lever — on a complex claim the CO controls the schedule by committing to a date, not by going quiet.",
       "cite": {
         "src": "rfo",
         "sec": "52.233-1",
@@ -682,6 +838,12 @@
       "topic": "REAs & Claims",
       "q": "A contractor threatens to stop work until a dispute is resolved. What does the Disputes clause require?",
       "a": "The contractor must proceed diligently with performance pending final resolution, and comply with the contracting officer's decision.",
+      "d": [
+        "The contractor may suspend performance until the dispute is decided.",
+        "Work continues only if the Government first pays the undisputed amount.",
+        "The CO must issue a stop-work order while the claim is resolved."
+      ],
+      "x": "Perform now, argue in parallel. The Disputes clause obligates diligent performance pending final resolution and compliance with the CO's decision — stopping work over a dispute is its own breach. The desk move: the moment the threat is made, restate the obligation in writing, citing the clause.",
       "cite": {
         "src": "rfo",
         "sec": "52.233-1",
@@ -694,6 +856,7 @@
       "topic": "Contract Modifications & Scope",
       "q": "Who may execute contract modifications?",
       "a": "Only contracting officers acting within the scope of their authority. Other Government personnel must not act in a way that makes the contractor believe they can bind the Government.",
+      "x": "Only contracting officers, inside the warrant — and the second sentence is the operational half: everyone else must avoid even appearing able to bind the Government, because acting the part is how unauthorized commitments get made. Modifications are where authority discipline is won or lost.",
       "cite": {
         "src": "rfo",
         "sec": "43.202",
@@ -706,6 +869,7 @@
       "topic": "Contract Modifications & Scope",
       "q": "What is the difference between a bilateral and a unilateral modification?",
       "a": "Bilateral (supplemental agreement) — signed by both the contractor and the contracting officer, e.g., negotiated equitable adjustments. Unilateral — signed only by the contracting officer, e.g., administrative changes, change orders, termination notices.",
+      "x": "Bilateral: both signatures — supplemental agreements, negotiated equitable adjustments. Unilateral: the CO's alone — administrative changes, change orders, termination notices. The classic confusion is the change order: it's unilateral by design, and the bilateral paper shows up afterward, in the equitable adjustment that prices it.",
       "cite": {
         "src": "rfo",
         "sec": "43.203",
@@ -718,6 +882,7 @@
       "topic": "Contract Modifications & Scope",
       "q": "Does an in-scope modification require a new competition?",
       "a": "No. Part 6 competition requirements do not apply to modifications within the scope of the contract, including exercising priced options evaluated in the original competition.",
+      "x": "Scope is the competition question. An in-scope mod — including a priced option evaluated in the original competition — needs no new part 6 analysis. Flip it and the trap appears: an out-of-scope change is a new procurement wearing a mod's clothing, and it needs its own competition or its own justification.",
       "cite": {
         "src": "rfo",
         "sec": "6.001",
@@ -731,6 +896,7 @@
       "topic": "Options",
       "q": "Before exercising an option, what must the contracting officer determine about the price?",
       "a": "That the option price is fair and reasonable based on current market conditions and that exercising the option is in the Government's best interest — after written notice to the contractor and confirming funds are available. For DoD, R-DFARS 217.204-170 adds pre-exercise gates — an active, accurate SAM record and current SPRS entries (a NIST SP 800-171 assessment score and a CMMC certificate, each not more than 3 years old) — and, for firm-fixed-price contracts containing spare parts, PGI 217.204-170 requires cost or price analysis of the spares before any option is exercised.",
+      "x": "The civilian checklist — notice, funds, fair-and-reasonable at current market, best interest — is half the DoD answer. Boards listen for the R-DFARS gates: an active, accurate SAM record and current SPRS entries (NIST 800-171 score, CMMC certificate, each within 3 years), plus spares cost or price analysis on FFP contracts. An option exercise is a new obligation, not a formality.",
       "cite": {
         "src": "rfo",
         "sec": "17.204-1",
@@ -748,6 +914,12 @@
       "topic": "Contract Finance & Fiscal Law",
       "q": "What does the Anti-Deficiency Act prohibit?",
       "a": "Creating or authorizing an obligation in excess of available funds, or in advance of appropriations, unless otherwise authorized by law.",
+      "d": [
+        "Spending appropriated funds on a purpose Congress did not authorize.",
+        "Obligating expired funds for a new requirement.",
+        "Committing funds before Financial Management certifies their availability."
+      ],
+      "x": "The ADA polices amount and timing: obligations over the funds available, or before the appropriation exists. The classic cross-wire is with purpose — spending the right amount of the wrong pot is a different fiscal violation. This is also why funds availability is one of the CO's two pre-signature assurances.",
       "cite": {
         "src": "rfo",
         "sec": "32.702",
@@ -760,6 +932,7 @@
       "topic": "Contract Finance & Fiscal Law",
       "q": "May a severable services contract cross fiscal years?",
       "a": "Yes. A contract, option, or order for severable services may begin in one fiscal year and end in the next as long as the period does not exceed one year, and the first year's funds may be obligated for the total amount. In DoD the authority sits with the contracting officer under R-DFARS 232.703-3(b) (10 U.S.C. 3133), rather than with the head of the executive agency as FAR 32.703-3(b) frames it.",
+      "x": "Yes — the period may cross the fiscal-year line so long as it doesn't exceed one year, and first-year funds may cover the whole of it. Two nuances: the cap is twelve months, not 'through the next FY,' and in DoD the 10 U.S.C. 3133 authority sits with the contracting officer, not the agency head the civilian text names.",
       "cite": {
         "src": "rfo",
         "sec": "32.703-3",
@@ -777,6 +950,7 @@
       "topic": "Contract Finance & Fiscal Law",
       "q": "When is an invoice payment due under the Prompt Payment rules?",
       "a": "The later of two dates: the 30th day after the designated billing office receives a proper invoice, or the 30th day after Government acceptance of the supplies or services. For computing any interest penalty, acceptance is deemed to occur constructively on the 7th day after delivery or performance absent a dispute. DoD note: the contracting officer may extend a constructive acceptance period, but shorter than the 7-day (or 14-day construction) period is not authorized.",
+      "x": "The due date is the later of the two 30-day paths — later is the word that flips answers. For interest math, acceptance happens constructively on the 7th day after delivery absent a dispute. DoD's wrinkle: the CO may lengthen a constructive-acceptance period, but shortening below the 7 days (14 for construction) is not authorized.",
       "cite": {
         "src": "rfo",
         "sec": "32.904",
@@ -794,6 +968,7 @@
       "topic": "Contract Finance & Fiscal Law",
       "q": "What has to be in place before the Government pays a contractor's invoice?",
       "a": "Two things: receipt of a proper invoice and satisfactory contract performance. A proper invoice carries the contractor's name and address, invoice date and number, contract number, the description, quantity, and price of what was delivered, shipping and payment terms, and correct EFT banking data. A defective invoice goes back with the reasons within 7 days — but 3 days for meat, meat food products, or fish, and 5 days for perishable agricultural commodities, dairy, and edible fats or oils. Miss the clock and the payment-due date slips by the extra days taken.",
+      "x": "Payment stands on two legs: a proper invoice and satisfactory performance. The clock discipline is on your side of the desk — a defective invoice goes back with reasons within 7 days, but 3 for meat and fish, 5 for perishables, dairy, and edible fats, and the due-date math moves by every extra day the office sits on it.",
       "cite": {
         "src": "rfo",
         "sec": "32.905",
@@ -807,6 +982,7 @@
       "topic": "Contract Finance & Fiscal Law",
       "q": "Must a contractor ask for interest when the Government pays late?",
       "a": "No. The designated payment office pays the interest penalty automatically, without any request from the contractor, once a proper invoice was received, the receiving report cleared with no disagreement over quantity or quality, and payment went out after the due date.",
+      "x": "Automatic means the payment office computes and pays the penalty with no request from the contractor — once the invoice was proper, the receiving report was clean, and payment left late. Interest here isn't a claim to be won; it's a consequence the file produces on its own. Paying late is self-billing.",
       "cite": {
         "src": "rfo",
         "sec": "32.907",
@@ -819,6 +995,7 @@
       "topic": "Contract Finance & Fiscal Law",
       "q": "How must contractors submit payment requests on DoD contracts?",
       "a": "Electronically — and Wide Area WorkFlow (WAWF) is the only acceptable electronic form; facsimile, email, and scanned documents do not count. The exceptions are narrow: classified work where electronic submission would compromise safeguarding; performance where electronic submission is not feasible (no internet connectivity); cases where DoD cannot receive or accept electronically; cases where the contractor asked in writing and the contracting officer put an alternative method in the contract; and purchase-card payments, where only the receiving report must be electronic.",
+      "x": "Electronic means WAWF, specifically — fax, email, and scanned paper don't qualify. The exceptions are narrow and mostly environmental: classified safeguarding, no connectivity, DoD unable to receive, a written-request alternative in the contract, and purchase-card buys, where only the receiving report must be electronic. 'We emailed the invoice' is a nonpayment story.",
       "cite": {
         "src": "r-dfars",
         "sec": "232.7002",

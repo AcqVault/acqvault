@@ -325,6 +325,16 @@ def ladder_gate(items):
         seen.add(cid)
         card['id'] = cid
         card['rung'] = it['rung']
+        # Carry the authored teaching fields through. This constructor names its fields
+        # explicitly, so anything added to the authoring schema is silently dropped unless
+        # it is listed here — `dod` was lost that way, then `x` and `d` were lost the same
+        # way right after. Validate-then-discard is the failure mode to watch for.
+        if it.get('x'): card['x'] = it['x']
+        if it.get('d'):
+            _o = it['d']
+            if len(_o) != 3 or len(set(_o)) != 3 or it['a'] in _o:
+                sys.exit(f'FATAL: ladder {tag}: needs 3 distinct distractors, none equal to the answer')
+            card['d'] = _o
         part = str(d.get('part') or '').strip()
         if not part: sys.exit(f'FATAL: ladder {tag}: section {cite["src"]} {cite["sec"]} has no part — link unbuildable')
         frag = d.get('anchor') or d['id']
