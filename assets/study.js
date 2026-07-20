@@ -54,6 +54,19 @@
   }
   function cardState(id) { return S.cards[id] || { box: 0, due: 0, lapses: 0 }; }
   function isDue(id) { var c = cardState(id); return c.box === 0 || c.due <= today(); }
+  /* Per-day Daily Review record, so finishing a session is an end state the tool acknowledges
+     instead of a number that barely moved. Resets itself on the first read of a new day. */
+  function dailyState() {
+    var t = today();
+    if (!S.daily || S.daily.day !== t) S.daily = { day: t, done: 0, sessions: 0 };
+    return S.daily;
+  }
+  function noteDailyDone(n) {
+    if (!n) return;                 // quitting before answering anything isn't a session
+    var d = dailyState();
+    d.done += n; d.sessions++;
+    save();
+  }
   function bumpStreak() { // consecutive days with at least one graded card
     var t = today(), st = S.streak || { last: 0, run: 0 };
     if (st.last === t) return;
@@ -97,12 +110,14 @@
   // rulebook itself one click away (links resolved into the deck at build time).
   // right === true/false → verdict line (MCQ); right === null → no verdict (reveal cards).
   var RIGHT_LINES = ['✓ Right', '✓ Clean', '✓ Locked in', '✓ That’s the rule', '✓ Board-ready'];
+  /* Same-tab, and without the little diagonal arrow that promised a new one. These opened in
+     a new tab only because losing your place was worse than the tab clutter; now that every
+     mode restores where you were, that trade is gone and so is the exception. */
   function citesHtml(links) {
     if (!links || !links.length) return '';
     return '<div class="st-cites"><span class="st-cites-lab">Described in</span>' +
       links.map(function (l) {
-        return '<a class="st-cite" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) +
-          '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 1.5h7v7M10.5 1.5 1.5 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>';
+        return '<a class="st-cite" href="' + esc(l.u) + '">' + esc(l.t) + '</a>';
       }).join('') + '</div>';
   }
   function explainHtml(card, right) {
@@ -184,11 +199,28 @@
     var scen = deck.scenarios;
     var scenDone = scen.filter(function (s) { return S.scen[s.id]; }).length;
     var overall = mastery(pool);
-    var dailyInner = due.length
-      ? '<div class="st-daily-row"><span class="st-daily-num">' + due.length + '</span><span class="st-daily-what">card' + (due.length !== 1 ? 's' : '') + ' due today</span></div>' +
-        '<span class="st-daily-sub">Spaced repetition picked these — the ones you’re about to forget, right before you forget them. Short and often beats long and rare.</span>'
-      : '<div class="st-daily-row"><span class="st-daily-what" style="font-size:19px">All caught up — nothing due today.</span></div>' +
+    /* The headline used to be the whole backlog — 337 — while a session hands you 25, and
+       finishing those 25 moved it to 333 because a missed card is due again immediately.
+       A number that only ever goes down by the cards you already knew reads as punishment.
+       So: the big number is the session you're about to run, the backlog is context, and
+       finishing one is an end state rather than a slightly smaller pile. */
+    var dstate = dailyState();
+    var sessionSize = Math.min(due.length, SESSION_CAP);
+    var dailyInner;
+    if (!due.length) {
+      dailyInner = '<div class="st-daily-row"><span class="st-daily-what" style="font-size:19px">All caught up — nothing due today.</span></div>' +
         '<span class="st-daily-sub">The scheduler has nothing urgent. Run a Deep Study shuffle or face a Board Sim scenario to stay sharp.</span>';
+    } else if (dstate.sessions) {
+      dailyInner = '<div class="st-daily-row"><span class="st-daily-what" style="font-size:19px">Done for today — ' +
+        dstate.done + ' card' + (dstate.done !== 1 ? 's' : '') + ' answered.</span></div>' +
+        '<span class="st-daily-sub">Cards you missed stay in the pile until they stick, so the count doesn’t drop to zero — that’s the schedule working, not a backlog. Another round of ' +
+        sessionSize + ' whenever you want it.</span>';
+    } else {
+      dailyInner = '<div class="st-daily-row"><span class="st-daily-num">' + sessionSize + '</span><span class="st-daily-what">card' + (sessionSize !== 1 ? 's' : '') + ' in today’s session</span></div>' +
+        '<span class="st-daily-sub">Spaced repetition picked these — the ones you’re about to forget, right before you forget them.' +
+        (due.length > sessionSize ? ' Drawn from ' + due.length + ' due; a session caps at ' + SESSION_CAP + ' on purpose, because short and often beats long and rare.' : '') +
+        '</span>';
+    }
     var run = streakRun();
     render(
       '<div class="st-head">' +
@@ -233,12 +265,13 @@
   function backToTools() { keyHandler(null); if (navDepth >= 1) history.back(); else viewTrack(); }
 
   /* ---- recall session (mixed reveal + multiple-choice) ---- */
-  function startSession(cards, label) {
+  function startSession(cards, label, startAt, startGot) {
     if (!cards.length) { viewHome(); return; }
-    var q = interleave(shuffle(cards.slice()).slice(0, SESSION_CAP));
-    var i = 0, got = 0;
+    var q = startAt == null ? interleave(shuffle(cards.slice()).slice(0, SESSION_CAP)) : cards;
+    var i = startAt || 0, got = startGot || 0;
     function step() {
       if (i >= q.length) return summary();
+      saveResume('recall', S.track, q, i, got, label);
       var c = q[i];
       var opts = mcqOptions(c); // authored multiple choice; reveal-style when the card has no authored options
       var head = '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>' +
@@ -311,6 +344,8 @@
     }
     function summary() {
       keyHandler(null);
+      clearResume();
+      if (label === 'Daily Review') noteDailyDone(i);
       var pct = i ? Math.round(100 * got / i) : 0;
       render('<div class="st-card st-summary"><div class="st-chip">' + esc(label) + '</div>' +
         '<div class="st-sum-num">' + got + '<span> of ' + i + ' solid</span></div>' +
@@ -339,16 +374,21 @@
   }
 
   /* ---- deep study: endless random cards, every topic in the mix ---- */
-  function viewDeep() {
+  function viewDeep(resumeCard, startSeen, startGot) {
     var pool = recallPool();
     var order = shuffle(pool.slice());
-    var i = 0, seen = 0, got = 0;
+    var i = 0, seen = startSeen || 0, got = startGot || 0;
+    var pending = resumeCard || null;   // the card you were on when you left
     function nextCard() {
+      if (pending) { var p = pending; pending = null; return p; }
       if (i >= order.length) { order = shuffle(pool.slice()); i = 0; } // deck exhausted → reshuffle, keep going
       return order[i++];
     }
     function step() {
       var c = nextCard();
+      /* Deep Study is endless, so its "place" is the card in front of you plus the tally —
+         storing the whole shuffled order would persist hundreds of ids to no purpose. */
+      saveResume('deep', S.track, [c], 0, got, 'Deep Study', { seen: seen });
       var opts = mcqOptions(c);
       var head = '<div class="st-session-head"><span>Deep Study · endless</span><span>' + got + ' / ' + seen + ' solid</span></div>';
       if (opts) {
@@ -413,6 +453,7 @@
     }
     function summary() {
       keyHandler(null);
+      clearResume();
       var pct = seen ? Math.round(100 * got / seen) : 0;
       render('<div class="st-card st-summary"><div class="st-chip">Deep Study</div>' +
         '<div class="st-sum-num">' + got + '<span> of ' + seen + ' solid</span></div>' +
@@ -425,11 +466,12 @@
   }
 
   /* ---- threshold sprint (multiple choice, streak on correct) ---- */
-  function viewSprint() {
-    var q = shuffle(deck.thresholds.slice());
-    var i = 0, streak = 0;
+  function viewSprint(resumeQ, startAt, startStreak) {
+    var q = resumeQ || shuffle(deck.thresholds.slice());
+    var i = startAt || 0, streak = startStreak || 0;
     function step() {
       if (i >= q.length) return done();
+      saveResume('sprint', S.track, q, i, 0, 'Threshold Sprint', { streak: streak });
       var c = q[i];
       var opts = mcqOptions(c) || [c.a];
       render(
@@ -470,6 +512,7 @@
     }
     function done() {
       keyHandler(null);
+      clearResume();
       render('<div class="st-card st-summary"><div class="st-chip">Threshold Sprint</div>' +
         '<div class="st-sum-num">' + (S.sprint.best || 0) + '<span> best streak</span></div>' +
         '<p class="st-sub">Numbers rot fastest — sprint a few times a week and the board can’t rattle you with a dollar figure.</p>' +
@@ -723,10 +766,19 @@
   /* Session position survives a reload. Without this, following a citation — the whole
      point of the ladder — dumped you back at the track picker with the drill gone, which
      punished the exact behaviour the feature exists to create. Stores card ids, not cards. */
-  function saveResume(mode, rung, q, i, got, label) {
+  function saveResume(mode, rung, q, i, got, label, extra) {
     S.resume = { mode: mode, rung: rung, ids: q.map(function (c) { return c.id; }),
                  i: i, got: got, label: label, at: Date.now() };
+    if (extra) for (var k in extra) if (extra.hasOwnProperty(k)) S.resume[k] = extra[k];
     save();
+  }
+  /* Every mode stores ids, never card objects — a rebuilt deck must be able to invalidate a
+     stale session rather than resurrect questions that no longer exist. */
+  function cardsByIdFromPool(pool, ids) {
+    var byId = {};
+    pool.forEach(function (c) { byId[c.id] = c; });
+    var out = ids.map(function (id) { return byId[id]; }).filter(Boolean);
+    return out.length === ids.length ? out : null;   // deck moved under us
   }
   function clearResume() { if (S.resume) { delete S.resume; save(); } }
   function resumeLadder() {
@@ -1064,11 +1116,43 @@
      already mid-drill and only left to read a citation — so that reasoning inverts here.
      Left alone, a cold resume put the card 578px down a 720px viewport with the reveal
      button below the fold, which is a fold bug this feature would itself have created. */
+  /* The other three modes lost their place for the same reason the ladder did: nothing
+     recorded where you were. They restore into viewHome's depth so Back still walks out
+     through the dashboard rather than off the page. */
+  function resumeRecall() {
+    var r = S.resume;
+    var q = r.ids ? cardsByIdFromPool(recallPool(), r.ids) : null;
+    if (!q || r.i >= q.length) { clearResume(); return false; }
+    depth1View = viewHome;
+    goDepth(2, function () { startSession(q, r.label, r.i, r.got); });
+    return true;
+  }
+  function resumeDeep() {
+    var r = S.resume;
+    var q = r.ids ? cardsByIdFromPool(recallPool(), r.ids) : null;
+    if (!q || !q.length) { clearResume(); return false; }
+    depth1View = viewHome;
+    goDepth(2, function () { viewDeep(q[0], r.seen || 0, r.got || 0); });
+    return true;
+  }
+  function resumeSprint() {
+    var r = S.resume;
+    var q = r.ids ? cardsByIdFromPool(deck.thresholds, r.ids) : null;
+    if (!q || r.i >= q.length) { clearResume(); return false; }
+    depth1View = viewHome;
+    goDepth(2, function () { viewSprint(q, r.i, r.streak || 0); });
+    return true;
+  }
   function resumeSession() {
     var r = S.resume;
     if (!r) return false;
+    if (r.mode !== 'ladder' && r.mode !== 'ladderBoard' && !S.track) { clearResume(); return false; }
     rendered = true;
-    var ok = r.mode === 'ladderBoard' ? resumeLadderBoard() : resumeLadder();
+    var ok = r.mode === 'ladderBoard' ? resumeLadderBoard()
+      : r.mode === 'recall' ? resumeRecall()
+      : r.mode === 'deep' ? resumeDeep()
+      : r.mode === 'sprint' ? resumeSprint()
+      : resumeLadder();
     if (!ok) rendered = false;   // nothing resumed — the next paint really is a cold arrival
     return ok;
   }
