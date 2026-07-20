@@ -19,6 +19,25 @@ def norm(t):
     return re.sub(r'\s+', ' ', re.sub(r'\bL\d+:', ' ', t)).strip()
 
 
+def dod_supplements(base, key):
+    """Does R-DFARS section `key` supplement the mirrored RFO section `base`?
+
+    DoD numbering takes three forms and missing any one hides real errors — this
+    check has now been wrong three separate ways:
+      exact mirror       6.104-2  -> 206.104-2
+      hyphenated suffix  6.103    -> 206.103-170
+      APPENDED digits    15.103-2 -> 215.103-270   (no hyphen; the -2 absorbs the 70)
+    """
+    if key == base:
+        return True
+    if not key.startswith(base):
+        return False
+    rest = key[len(base):]
+    if rest.startswith('-'):
+        rest = rest[1:]
+    return rest.isdigit() and len(rest) <= 3 and int(rest) >= 70
+
+
 def main(path):
     docs = json.load(open(os.path.join(ROOT, 'output', 'documents.json')))
 
@@ -96,12 +115,8 @@ def main(path):
             if head.isdigit() and tail:
                 base = '2%02d.%s' % (int(head), tail)
                 for key in sorted(dod_idx):
-                    if key != base and not key.startswith(base + '-'):
+                    if not dod_supplements(base, key):
                         continue
-                    if key != base:
-                        suf = key[len(base) + 1:]
-                        if not (suf.isdigit() and int(suf) >= 70):
-                            continue          # a normal child section, not a DoD-unique one
                     if len(norm(dod_idx[key]['content'])) >= 160:
                         unreviewed.append((key, tag))
                         break

@@ -107,7 +107,7 @@
       "type": "recall",
       "topic": "Thresholds",
       "q": "What does the simplified acquisition threshold become for acquisitions supporting a contingency operation?",
-      "a": "$1 million for contracts awarded and performed inside the United States; $2 million outside the United States.",
+      "a": "$1 million for a contract awarded and performed, or purchase made, inside the United States; $2 million outside the United States. The same tiers apply to the other categories in that exception — defense against or recovery from cyber, nuclear, biological, chemical, or radiological attack; international disaster assistance; and response to an emergency or major disaster — and all of them turn on a head-of-agency determination. Do not confuse this with the separate humanitarian or peacekeeping operation tier in the same definition, which is $650,000 and only for contracts awarded and performed outside the United States (10 U.S.C. 3015).",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -120,7 +120,7 @@
       "type": "recall",
       "topic": "Thresholds",
       "q": "What does the micro-purchase threshold become for acquisitions supporting a contingency operation?",
-      "a": "$25,000 for contracts awarded and performed inside the United States; $40,000 outside the United States.",
+      "a": "$25,000 for a contract awarded and performed, or purchase made, inside the United States; $40,000 outside the United States — on a head-of-agency determination. The carve-out matters: the increase does not reach construction subject to the Wage Rate Requirements (Construction) statute, so covered construction stays at the $2,000 micro-purchase threshold no matter how urgent the contingency.",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -242,11 +242,11 @@
       "type": "recall",
       "topic": "Simplified Acquisition Procedures",
       "q": "What is the cap on each individual purchase under a blanket purchase agreement?",
-      "a": "It depends on which part the BPA lives under. A part 13 (noncommercial) BPA caps each individual purchase at the SAT. A part 12 commercial BPA caps each purchase at the simplified-procedures ceiling in 12.201-1(a) — $9 million. Quoting the SAT as the cap on a commercial BPA leaves real headroom on the table.",
+      "a": "It depends on which part the BPA lives under. A part 12 commercial BPA caps each individual purchase at the simplified-procedures ceiling in 12.201-1(a) — $9 million, or the increased ceiling under 12.001(c) ($15 million for contingency, cyber/CBRN, international disaster assistance, or emergency/major disaster support). A part 13 (noncommercial) BPA is tighter: 13.201 caps the maximum value of each individual purchase under a BPA at the SAT. Quoting the SAT as the cap on a commercial BPA leaves real headroom on the table.",
       "cite": {
         "src": "rfo",
         "sec": "12.201-1",
-        "quote": "The dollar limitation for each individual purchase under the BPA, which may not exceed the threshold for use of simplified procedures at 12.201-1(a)"
+        "quote": "The dollar limitation for each individual purchase under the BPA, which may not exceed the threshold for use of simplified procedures at 12.201-1(a) (including the increased threshold at 12.001(c)"
       }
     },
     {
@@ -300,7 +300,7 @@
       "type": "recall",
       "topic": "Small Business Programs",
       "q": "When must a contract be set aside for small business (the Rule of Two)?",
-      "a": "When there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery. But do not reach for the test too early: between the MPT and the SAT the set-aside is categorical under 13.102 — no expectation analysis needed. The Rule of Two is the test you actually run above the SAT. For DoD, R-DFARS bounds the requirement in certain lines of work — it applies to construction (including maintenance and repair) under $3.5 million, dredging under $2 million, and A-E services for military construction or family housing under $1 million — and it does not apply to supplies developed and financed by Canadian sources under the U.S.-Canadian Defense Development Sharing Program.",
+      "a": "For contracts above the micro-purchase threshold, when there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery. The test does not apply to purchases at or below the MPT or to purchases from required sources under part 8. Note the separate, categorical rule for noncommercial buys: under 13.102 an acquisition above the MPT but at or below the SAT must be set aside, with no expectation analysis. For DoD, R-DFARS 219.104-1 applies FAR 19.104-1(a) and (b) to construction (including maintenance and repairs) under $3.5 million, dredging under $2 million, and architect-engineer services for military construction or family housing under $1 million, and excepts supplies developed and financed in whole or in part by Canadian sources under the U.S.-Canadian Defense Development Sharing Program.",
       "cite": {
         "src": "rfo",
         "sec": "19.104-1",
@@ -316,8 +316,8 @@
       "rung": "sat",
       "type": "recall",
       "topic": "Small Business Programs",
-      "q": "Between the micro-purchase threshold and the SAT, when must an acquisition be set aside for small business?",
-      "a": "Always — in that band the set-aside is automatic. No Rule-of-Two expectation analysis, no market-research test: above the MPT and at or below the SAT, the acquisition must be set aside for small business concerns, full stop.",
+      "q": "For a noncommercial acquisition between the micro-purchase threshold and the SAT, when must it be set aside for small business?",
+      "a": "Always. Under 13.102 the set-aside is categorical in that band — no Rule-of-Two expectation analysis. Do not generalize it past part 13: part 13 covers noncommercial products and services only. A commercial buy in the same dollar band runs under part 12, which points to part 19, where 19.104-1's Rule of Two governs and requires the reasonable-expectation-of-two-offers judgment.",
       "cite": {
         "src": "rfo",
         "sec": "13.102",
@@ -431,7 +431,7 @@
       "type": "recall",
       "topic": "Contract Types",
       "q": "When may a cost-reimbursement contract be used?",
-      "a": "Only when the requirements cannot be defined well enough for a fixed-price contract, or performance uncertainties prevent sufficiently accurate cost estimates.",
+      "a": "Only when the requirements cannot be sufficiently defined for a fixed-price type contract, or performance uncertainties do not permit costs to be estimated accurately enough for any fixed-price type. Clearing that gate is not enough — 16.301-3 adds four hard prerequisites: a written acquisition plan approved at least one level above the contracting officer; the agency head's approval of a justification for other than fixed-price if 16.104 requires one; a contractor accounting system that can segregate, accumulate, and allocate contract costs; and sufficient Government resources, including a designated COR, to award and manage a non-firm-fixed-price contract. Cost-reimbursement is also barred outright for commercial products and services.",
       "cite": {
         "src": "rfo",
         "sec": "16.301-2",
@@ -531,21 +531,9 @@
     {
       "rung": "sat",
       "type": "recall",
-      "topic": "Terminations",
-      "q": "A vendor misses delivery because its truck broke down. Excusable delay?",
-      "a": "No. Equipment failure is within the contractor's control. Excusable causes are events like acts of God, Government acts, fires, floods, epidemics, strikes, unusually severe weather, and common-carrier delays.",
-      "cite": {
-        "src": "rfo",
-        "sec": "52.212-4",
-        "quote": "Examples of occurrences include acts of God or the public enemy, acts of the Government in either its sovereign or contractual capacity, fires, floods, epidemics, quarantine restrictions, strikes, unusually severe weather, and delays of common carriers."
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
       "topic": "Construction & Service Contracting",
       "q": "What are the two types of differing site conditions?",
-      "a": "Type I — latent or subsurface conditions differing materially from those indicated in the contract. Type II — unknown, unusual physical conditions differing materially from those ordinarily encountered in that kind of work.",
+      "a": "Two categories, known in practice as Type I and Type II — the clause itself doesn't use those labels. The first: latent or subsurface conditions at the site differing materially from those indicated in the contract. The second: unknown physical conditions of an unusual nature, differing materially from those ordinarily encountered and generally recognized as inhering in that kind of work.",
       "cite": {
         "src": "rfo",
         "sec": "52.236-2",
@@ -581,13 +569,17 @@
       "type": "recall",
       "topic": "Acquisition Planning & Strategy",
       "q": "May contractors perform inherently governmental functions?",
-      "a": "No. Contracts must not be used for them — examples include awarding contracts, approving contractual documents, and voting on source selection boards.",
+      "a": "No. Contracts must not be used to perform inherently governmental functions — the non-exclusive list includes awarding contracts, approving contractual documents, administering and terminating contracts, and serving as a voting member on a source selection board. For DoD, the written determination FAR 7.503(e) requires must be prepared using DoD Instruction 1100.22 and must also determine that none of the functions are exempt from private sector performance; contracting for the closely-associated functions at 7.503(d) carries its own 10 U.S.C. 4508 gate.",
       "cite": {
         "src": "rfo",
         "sec": "7.503",
         "quote": "Contracts must not be used to perform inherently governmental functions."
       },
-      "dod": "n/a"
+      "dod": {
+        "src": "r-dfars",
+        "sec": "207.503-70",
+        "quote": "The written determination required by FAR 7.503(e) must— (1) Be prepared using DoD Instruction 1100.22, Guidance for Determining Workforce Mix; and (2) Include a determination that none of the functions to be performed are exempt from private sector performance, as addressed in DoD Instruction 1100.22."
+      }
     },
     {
       "rung": "sat",
@@ -606,7 +598,7 @@
       "type": "recall",
       "topic": "Inspection & Acceptance",
       "q": "What is the difference between a latent and a patent defect?",
-      "a": "A latent defect exists at the time of acceptance but cannot be discovered by a reasonable inspection. A patent defect is any defect existing at acceptance that is not latent.",
+      "a": "Latent defect (2.101) — a defect that exists at the time of acceptance but cannot be discovered by a reasonable inspection. Patent defect (46.101) — any defect that exists at the time of acceptance and is not a latent defect. The distinction is what decides whether Government acceptance is still open to challenge.",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
@@ -647,11 +639,11 @@
       "type": "recall",
       "topic": "REAs & Claims",
       "q": "What is a claim?",
-      "a": "A written demand or assertion by a contracting party seeking, as a matter of right, payment of money in a sum certain, adjustment or interpretation of contract terms, or other relief arising under or relating to the contract.",
+      "a": "A written demand or written assertion by one of the contracting parties seeking, as a matter of right, payment of money in a sum certain, the adjustment or interpretation of contract terms, or other relief arising under or relating to the contract. Two carve-outs travel with the definition: a contractor demand for money exceeding $100,000 is not a claim until certified, and a routine, undisputed voucher or invoice is not a claim — though it can become one if it is later disputed as to liability or amount, or is not acted on in a reasonable time.",
       "cite": {
         "src": "rfo",
         "sec": "2.101",
-        "quote": "Claim means a written demand or written assertion by one of the contracting parties seeking, as a matter of right, the payment of money in a sum certain, the adjustment or interpretation of contract terms, or other relief arising under or relating to the contract."
+        "quote": "Claim means a written demand or written assertion by one of the contracting parties seeking, as a matter of right, the payment of money in a sum certain, the adjustment or interpretation of contract terms, or other relief arising under or relating to the contract. However, a written demand or written assertion by the contractor seeking the payment of money exceeding $100,000 is not a claim under 41 U.S.C. chapter 71, Contract Disputes, until certified as required by the statute. A voucher, invoice, or other routine request for payment that is not in dispute when submitted is not a claim."
       }
     },
     {
@@ -758,13 +750,17 @@
       "type": "recall",
       "topic": "Contract Finance & Fiscal Law",
       "q": "May a severable services contract cross fiscal years?",
-      "a": "Yes — a contract, option, or order for severable services may begin in one fiscal year and end in the next if the period does not exceed one year, funded with the first year's funds.",
+      "a": "Yes. A contract, option, or order for severable services may begin in one fiscal year and end in the next as long as the period does not exceed one year, and the first year's funds may be obligated for the total amount. In DoD the authority sits with the contracting officer under R-DFARS 232.703-3(b) (10 U.S.C. 3133), rather than with the head of the executive agency as FAR 32.703-3(b) frames it.",
       "cite": {
         "src": "rfo",
         "sec": "32.703-3",
         "quote": "for severable services for a period that begins in one fiscal year and ends in the next fiscal year if the period of the contract awarded, option exercised, or order placed does not exceed one year"
       },
-      "dod": "n/a"
+      "dod": {
+        "src": "r-dfars",
+        "sec": "232.703-3",
+        "quote": "The contracting officer may enter into a contract, exercise an option, or place an order under a contract for severable services for a period that begins in one fiscal year and ends in the next fiscal year if the period of the contract awarded, option exercised, or order placed does not exceed 1 year (10 U.S.C. 3133)."
+      }
     },
     {
       "rung": "sat",
@@ -788,7 +784,7 @@
       "type": "recall",
       "topic": "Contract Finance & Fiscal Law",
       "q": "What has to be in place before the Government pays a contractor's invoice?",
-      "a": "Two things: receipt of a proper invoice and satisfactory contract performance. A proper invoice carries the contractor's name and address, invoice date and number, contract number, the description, quantity, and price of what was delivered, shipping and payment terms, and correct EFT banking data. A defective invoice must go back to the contractor within 7 days with the reasons it is not proper.",
+      "a": "Two things: receipt of a proper invoice and satisfactory contract performance. A proper invoice carries the contractor's name and address, invoice date and number, contract number, the description, quantity, and price of what was delivered, shipping and payment terms, and correct EFT banking data. A defective invoice goes back with the reasons within 7 days — but 3 days for meat, meat food products, or fish, and 5 days for perishable agricultural commodities, dairy, and edible fats or oils. Miss the clock and the payment-due date slips by the extra days taken.",
       "cite": {
         "src": "rfo",
         "sec": "32.905",
@@ -813,7 +809,7 @@
       "type": "recall",
       "topic": "Contract Finance & Fiscal Law",
       "q": "How must contractors submit payment requests on DoD contracts?",
-      "a": "Electronically — and Wide Area WorkFlow (WAWF) is the only acceptable electronic form; facsimile, email, and scanned documents do not count. Narrow exceptions cover classified work, environments without connectivity, and purchase-card payments, where only the receiving report goes in electronically.",
+      "a": "Electronically — and Wide Area WorkFlow (WAWF) is the only acceptable electronic form; facsimile, email, and scanned documents do not count. The exceptions are narrow: classified work where electronic submission would compromise safeguarding; performance where electronic submission is not feasible (no internet connectivity); cases where DoD cannot receive or accept electronically; cases where the contractor asked in writing and the contracting officer put an alternative method in the contract; and purchase-card payments, where only the receiving report must be electronic.",
       "cite": {
         "src": "r-dfars",
         "sec": "232.7002",

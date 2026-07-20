@@ -5,7 +5,7 @@
       "type": "recall",
       "topic": "Competition (CICA)",
       "q": "Which acquisitions are exempt from the part 6 competition requirements?",
-      "a": "Simplified acquisitions under part 13; procedures expressly authorized by statute; in-scope modifications (including exercising priced options evaluated in the original competition); orders under requirements and definite-quantity contracts; and orders against task- and delivery-order contracts entered into under part 16. Orders under indefinite-quantity contracts are exempt only conditionally: the contract must have been awarded under 6.101 or 6.102 with all responsible sources realistically permitted to compete for the order's requirements, or under 6.103 with a J&A that adequately covers the order. The IDIQ exemption is earned by the underlying award — it is not automatic. DoD adds one exemption of its own: personal-services contracts with individual health-care providers awarded under the 10 U.S.C. 1091 procedures at 237.201-1(ii) are exempt from part 6 (R-DFARS 206.001).",
+      "a": "Simplified acquisitions under part 13; procedures expressly authorized by statute; in-scope modifications (including exercising priced options evaluated in the original competition); orders under requirements and definite-quantity contracts; and orders against task- and delivery-order contracts entered into under part 16. Orders under indefinite-quantity contracts are exempt only conditionally: the contract must have been awarded under 6.101 or 6.102 with all responsible sources realistically permitted to compete for the order's requirements, or under 6.103 with a J&A that adequately covers the order. The IDIQ exemption is earned by the underlying award — it is not automatic. DoD adds one exemption of its own: contracts awarded to individuals under the 10 U.S.C. 1091 personal-services authority for health care (R-DFARS 237.201-170(b)) are exempt from part 6 (R-DFARS 206.001).",
       "cite": {
         "src": "rfo",
         "sec": "6.001",
@@ -47,8 +47,8 @@
       "rung": "5m",
       "type": "recall",
       "topic": "Competition (CICA)",
-      "q": "Which two competition exceptions do not require a justification and approval?",
-      "a": "Authorized or required by statute (6.103-5) and public interest (6.103-7). Every other 6.103 authority requires the justification and approval at 6.104. DoD adds a wrinkle inside the statute lane: under R-DFARS 206.104-70, no justification and approval is required for a sole-source 8(a) contract up to $100 million, but above $100 million the contracting officer must justify the sole-source award in writing under FAR 6.104-1, obtain approval, and make the justification public after award.",
+      "q": "Which competition exceptions do not require a justification and approval?",
+      "a": "Under 6.104(a) there are two: authorized or required by statute (6.103-5) and public interest (6.103-7). But an Air Force reader has a third — 6.103-4(c) provides that contracts awarded by DoD, NASA, and the Coast Guard under the international agreement authority do not require the written justifications and approvals described in 6.104, and R-DFARS 206.103-4(c) adds that the head of the contracting activity instead prepares a document describing the terms of the agreement, treaty, or written directions (such as a Letter of Offer and Acceptance) that require other than competitive procedures. Every other 6.103 authority requires the 6.104 justification and approval. Two carve-backs inside the statute lane: 6.103-5(e) restores the J&A requirement for sole-source 8(a) contracts over $30 million, and for DoD R-DFARS 206.104-70 moves that trigger to $100 million — no J&A up to $100 million, but above it the contracting officer must justify the sole-source award in writing under FAR 6.104-1, obtain approval, and make the justification public after award.",
       "cite": {
         "src": "rfo",
         "sec": "6.104",
@@ -118,7 +118,7 @@
       "type": "recall",
       "topic": "Competition (CICA)",
       "q": "Recite the justification approval ladder.",
-      "a": "Up to $900,000 — the contracting officer (the 6.104(a)(12) certification is the approval). Over $900,000 to $20 million — advocate for competition, not delegable. Over $20 million to $90 million ($150 million for DoD, NASA, and the Coast Guard) — head of the procuring activity. Above that — senior procurement executive. Include the value of all options when setting the level.",
+      "a": "Up to $900,000 — the contracting officer (the 6.104(a)(12) certification is the approval). Over $900,000 to $20 million — advocate for competition, not delegable. Over $20 million to $90 million ($150 million for DoD, NASA, and the Coast Guard) — head of the procuring activity, who may delegate to a general or flag officer or a civilian above GS-15. Above that — senior procurement executive, not delegable except to USD(A&S) acting as the senior procurement executive for DoD. Include the estimated dollar value of all options when setting the level, and note that a higher-level official may always approve a lower-dollar justification.",
       "cite": {
         "src": "rfo",
         "sec": "6.104-2",
@@ -215,7 +215,7 @@
       "type": "recall",
       "topic": "IDIQ Ordering & Fair Opportunity",
       "q": "Name the exceptions that allow a sole-source order despite fair opportunity.",
-      "a": "Urgency causing unacceptable delays; only one awardee capable (unique or highly specialized); logical follow-on in the interest of economy and efficiency; satisfying a minimum guarantee; a statute authorizing a specified source (orders over the SAT); and, for DoD, NASA, and the Coast Guard, the 6.103 exceptions. DoD adds a tripwire: an over-SAT order that is a follow-on to an order previously justified under the only-one-capable or logical-follow-on exception requires the procedures at PGI 216.507-6(b) (R-DFARS 216.507-6).",
+      "a": "Urgency causing unacceptable delays; only one awardee capable (unique or highly specialized); logical follow-on in the interest of economy and efficiency; satisfying a minimum guarantee; a statute authorizing a specified source (orders over the SAT); and, for DoD, NASA, and the Coast Guard, the 6.103 exceptions — with the caveat that the public interest exception must not be used unless Congress is notified under 10 U.S.C. 3204(a)(7). Setting an order aside under part 19 is a separate lane that is not subject to these justification, approval, and posting requirements at all (16.507-6(c)). DoD adds a tripwire: an over-SAT order that is a follow-on to an order previously justified under the only-one-capable or logical-follow-on exception requires the procedures at PGI 216.507-6(b) (R-DFARS 216.507-6).",
       "cite": {
         "src": "rfo",
         "sec": "16.507-6",
@@ -376,7 +376,7 @@
       "type": "recall",
       "topic": "IDIQ Ordering & Fair Opportunity",
       "q": "How long may a DoD task- or delivery-order contract run?",
-      "a": "Up to five years, extendable by option or modification — but the total period as extended may not exceed 10 years unless the head of the agency determines in writing that exceptional circumstances require a longer period.",
+      "a": "Up to five years, extendable by option or modification — but the total period as extended may not exceed 10 years unless the head of the agency determines in writing that exceptional circumstances require a longer period (R-DFARS 217.201-270(a) restates the same 5/10-year rule for DoD). One carve-out a board will probe: a task-order contract for advisory and assistance services is capped at a 5-year ordering period including all extensions (16.501-2(c)(2)), unless a longer period is specifically authorized by statute or the A&AS is determined incidental and not a significant component of the contract — plus a sole-source extension of up to 6 months when a follow-on award is delayed by circumstances not reasonably foreseeable and continuity of services requires it.",
       "cite": {
         "src": "rfo",
         "sec": "16.501-2",
@@ -485,7 +485,7 @@
       "type": "recall",
       "topic": "Commercial Products & Services",
       "q": "How are commercial acquisitions over $9 million solicited?",
-      "a": "Using the subpart 12.2 procedures in conjunction with part 15 (requests for proposals) or part 14 (invitations for bids) — with the RFP preferred because it considers past performance.",
+      "a": "Using the subpart 12.2 procedures in conjunction with part 15 (requests for proposals) or part 14 (invitations for bids) — with the RFP preferred because it considers past performance. Know the moving line underneath the number: $9 million is the ceiling for the simplified procedures at 12.201-1, and 12.001(c) raises that ceiling to $15 million when the head of the agency determines the supplies or services support a contingency operation, facilitate defense against or recovery from a cyber, nuclear, biological, chemical, or radiological attack, support a State/USAID request for international disaster assistance, or support response to an emergency or major disaster. Do not divide requirements merely to stay under a threshold (12.001(d)).",
       "cite": {
         "src": "rfo",
         "sec": "12.201-2",
@@ -527,7 +527,7 @@
       "type": "recall",
       "topic": "Contract Types",
       "q": "Which contract types are the default?",
-      "a": "Fixed-price types are the default and preferred. If a fixed-price type is not appropriate for the entire contract, consider whether a portion of it can be established on a fixed-price basis. DoD draws a hard line at development work: R-DFARS 235.170 forbids awarding a fixed-price type contract for a development program effort unless the level of program risk permits realistic pricing, the fixed-price type allocates program risk equitably and sensibly between the Government and the contractor, and a written determination to that effect is executed — by USD(A&S) when the contract is over $25 million and covers non-major-system R&D or development of a major system or its subsystem, otherwise by the contracting officer.",
+      "a": "Fixed-price types are the default and preferred. If a fixed-price type is not appropriate for the entire contract, consider whether a portion of it can be established on a fixed-price basis. DoD draws a hard line at development work: for programs other than major defense acquisition programs, R-DFARS 235.170(b) forbids awarding a fixed-price type contract for a development program effort unless the level of program risk permits realistic pricing, the fixed-price type allocates program risk equitably and sensibly between the Government and the contractor, and a written determination to that effect is executed — by USD(A&S) when the contract is over $25 million and covers non-major-system R&D or development of a major system or its subsystem, otherwise by the contracting officer. Major defense acquisition programs run a different track: 235.170(a) sends you to 234.7202.",
       "cite": {
         "src": "rfo",
         "sec": "16.102",
@@ -544,7 +544,7 @@
       "type": "recall",
       "topic": "Contract Types",
       "q": "When must firm-fixed-price be used, and what if a reasonable basis for firm pricing does not exist?",
-      "a": "FFP must be used when the risk involved is minimal or predictable with an acceptable degree of certainty. Without a firm pricing basis, select a type (or combination) that appropriately ties profit to contractor performance. DoD bounds that rule for development: under R-DFARS 235.170, a fixed-price type contract may not be awarded for a development program effort unless program risk permits realistic pricing and the fixed-price type permits an equitable and sensible allocation of risk — backed by a written determination, executed by USD(A&S) for covered development contracts over $25 million.",
+      "a": "FFP must be used when the risk involved is minimal or predictable with an acceptable degree of certainty. Without a firm pricing basis, select a type (or combination) that appropriately ties profit to contractor performance. DoD bounds that rule for development: under R-DFARS 235.170(b), and for programs other than major defense acquisition programs, a fixed-price type contract may not be awarded for a development program effort unless program risk permits realistic pricing and the fixed-price type permits an equitable and sensible allocation of risk — backed by a written determination, executed by USD(A&S) for covered development contracts over $25 million and otherwise by the contracting officer. For major defense acquisition programs, 235.170(a) routes you to 234.7202 instead.",
       "cite": {
         "src": "rfo",
         "sec": "16.102",
@@ -628,7 +628,7 @@
       "type": "recall",
       "topic": "Small Business Programs",
       "q": "When must an 8(a) acquisition be competed among 8(a) participants?",
-      "a": "When there is a reasonable expectation that at least two eligible, responsible 8(a) participants will offer at a fair market price, and the anticipated total value including options exceeds $8.5 million for manufacturing NAICS codes or $5.5 million for all other acquisitions. One DoD wrinkle: above the competitive threshold, SBA may still accept the requirement for a sole-source 8(a) award on behalf of a concern owned by a Native Hawaiian Organization (R-DFARS 219.108-7).",
+      "a": "When there is a reasonable expectation that at least two eligible, responsible 8(a) participants will offer at a fair market price, and the anticipated total value including options exceeds $8.5 million for manufacturing NAICS codes or $5.5 million for all other acquisitions. Do not read that as license to go sole-source below the threshold: under 19.108-7(d)(1) a contracting officer below the competitive threshold must first try the acquisition as a competitive 8(a) order using the governmentwide contracts SBA has approved for competition among 8(a) contract-holders before proceeding to a sole-source 8(a) award. Splitting a requirement that exceeds the threshold into lesser amounts to reach 8(a) sole-source procedures is prohibited (19.108-7(c)). One DoD wrinkle: above the competitive threshold, SBA may still accept the requirement for a sole-source 8(a) award on behalf of a concern owned by a Native Hawaiian Organization (R-DFARS 219.108-7).",
       "cite": {
         "src": "rfo",
         "sec": "19.108-7",
@@ -639,19 +639,6 @@
         "src": "r-dfars",
         "sec": "219.108-7",
         "quote": "(b)(i) For acquisitions exceeding the competitive threshold (see FAR 19.108-7(a)(2)), the SBA may accept the requirement for a sole source 8(a) award on behalf of a small business concern owned by a Native Hawaiian Organization (Section 8020 of Pub. L. 109-148)."
-      }
-    },
-    {
-      "rung": "5m",
-      "type": "recall",
-      "topic": "Small Business Programs",
-      "q": "What extra scrutiny applies to a sole-source 8(a) award above the competitive threshold — and where does the expanded-justification trigger sit for DoD?",
-      "a": "Above the competitive threshold, SBA may accept the requirement sole-source only after the contracting officer complies with 6.103. The expanded justification kicks in at $100 million for DoD — R-DFARS 206.104-71 applies that figure in lieu of the $30 million trigger in 6.104-1(b), which is the civilian-agency number. Above the applicable trigger, the justification must include at minimum the description and estimated value, the statutory authority, and the fair-and-reasonable-cost determination.",
-      "cite": {
-        "src": "r-dfars",
-        "sec": "206.104-71",
-        "quote": "In lieu of the threshold at FAR 6.104-1(b), each justification for a sole-source 8(a) contract over $100 million shall include the information at FAR 6.104-1(b).",
-        "amount": "$100 million"
       }
     },
     {

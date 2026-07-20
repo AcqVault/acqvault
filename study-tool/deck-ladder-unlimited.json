@@ -4,18 +4,6 @@
       "rung": "unlimited",
       "type": "recall",
       "topic": "Contract Types",
-      "q": "How is the fee determined under a cost-plus-incentive-fee contract?",
-      "a": "It is a cost-reimbursement contract with a target cost, target fee, minimum and maximum fees, and a formula that adjusts the fee based on total allowable costs versus target costs; outside the formula range the contractor receives allowable costs plus the minimum or maximum fee.",
-      "cite": {
-        "src": "rfo",
-        "sec": "16.405",
-        "quote": "The cost-plus-incentive-fee contract is a cost-reimbursement contract that adjusts the initially negotiated fee based on a formula comparing total allowable costs to total target costs. This contract type includes a target cost, target fee, minimum and maximum fees, and a fee adjustment formula."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Contract Types",
       "q": "What two pieces make up the fee on a cost-plus-award-fee contract?",
       "a": "A base amount fixed at inception (if used, at the contracting officer's discretion) and an award fee the contractor may earn in whole or in part to motivate excellence in cost, schedule, and technical performance — decided each evaluation period by the Fee-Determining Official on the Award-Fee Board's recommendations. DoD adds hard guardrails: base fee capped at 3 percent of the estimated cost exclusive of fee, at least 40 percent of the award fee held for the final evaluation (going lower takes nondelegable HCA approval), award-fee payments outside the end-of-period evaluation prohibited, and the FDO's rating due to the contractor within 45 calendar days of the end of the period.",
       "cite": {
@@ -150,18 +138,6 @@
     {
       "rung": "unlimited",
       "type": "recall",
-      "topic": "Cost Principles & CAS",
-      "q": "When is a cost \"reasonable,\" and who carries the burden when the contracting officer challenges one?",
-      "a": "A cost is reasonable if, in nature and amount, it does not exceed what a reasonable person in the conduct of competitive business would incur. No presumption of reasonableness attaches merely because the cost was incurred — and if the contracting officer or the contracting officer's representative challenges a specific cost, the burden of proof is on the contractor to prove the cost is reasonable.",
-      "cite": {
-        "src": "rfo",
-        "sec": "31.201-3",
-        "quote": "A cost is reasonable if, in its nature and amount, it does not exceed that which would be incurred by a reasonable person in the conduct of competitive business. (1) No presumption of reasonableness must be attached to the incurrence of costs. (2) If the contracting officer, or the contracting officer’s representative, challenges a specific cost, the burden of proof is on the contractor to prove that the cost is reasonable."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
       "topic": "Data Rights",
       "q": "When does the Government get unlimited rights in technical data?",
       "a": "When the item, component, or process was or will be developed exclusively with Government funds — plus categories like form, fit, and function data; data necessary for installation, operation, maintenance, or training purposes other than detailed manufacturing or process data (that OMIT carve-out is the most-fought-over line in DoD data rights — dropping it flips the answer); and publicly available data.",
@@ -200,7 +176,7 @@
       "type": "recall",
       "topic": "Data Rights",
       "q": "Delivered technical data arrives marked with restrictive legends the program doubts. What is the Government's recourse, and how long does it have?",
-      "a": "A contractor's assertions do not, by themselves, determine the Government's rights. Review asserted restrictions before accepting the deliverable, and the contracting officer may challenge an assertion when reasonable grounds exist to believe it is invalid — within six years after final payment or six years after delivery of the data or software, whichever is later. Commercial products are presumed developed exclusively at private expense, so challenging one takes specifically stated reasonable grounds; and a contractor's failure to respond to a challenge notice cannot be the sole basis for a final decision denying the restriction.",
+      "a": "A contractor's assertions do not, by themselves, determine the Government's rights. Review asserted restrictions before accepting the deliverable, and the contracting officer may challenge an assertion when reasonable grounds exist to believe it is invalid — within six years after final payment or six years after delivery of the data or software, whichever is later. Commercial products and services are presumed developed exclusively at private expense whether or not the contractor submits a justification, so challenging one takes specifically stated reasonable grounds — and on that commercial presumption a failure to respond to the challenge notice cannot be the sole basis for a final decision denying the restriction.",
       "cite": {
         "src": "r-dfars",
         "sec": "227.7103-13",
@@ -236,60 +212,12 @@
       "rung": "unlimited",
       "type": "recall",
       "topic": "REAs & Claims",
-      "q": "After a contracting officer's final decision, what are the contractor's appeal routes and deadlines?",
-      "a": "Appeal to the agency board of contract appeals within 90 days of receiving the decision, or bring an action directly in the U.S. Court of Federal Claims within 12 months.",
-      "cite": {
-        "src": "rfo",
-        "sec": "33.205-6",
-        "quote": "you may bring an action directly in the United States Court of Federal Claims (except as provided in 41 U.S.C. 7102(d), regarding Maritime Contracts) within 12 months of the date you receive this decision"
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "REAs & Claims",
       "q": "The contracting officer never issues a decision within the required time. What happens to the claim?",
       "a": "The failure is deemed a decision denying the claim, and it authorizes the contractor to file an appeal or suit.",
       "cite": {
         "src": "rfo",
         "sec": "33.205-6",
         "quote": "Any failure of the contracting officer to issue a decision within the required time periods will be deemed a decision by the contracting officer denying the claim and will authorize the contractor to file an appeal or suit on the claim."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Terminations",
-      "q": "A contractor's failure (other than late delivery) is endangering performance before the delivery date. What notice applies?",
-      "a": "A cure notice: written notice specifying the failure and allowing at least 10 days (or longer if necessary) to cure it before the Government may terminate for default.",
-      "cite": {
-        "src": "rfo",
-        "sec": "49.402-3",
-        "quote": "(1) Give the contractor written notice specifying the failure; (2) Allow 10 days (or longer if necessary) to cure the failure"
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Terminations",
-      "q": "When is a show cause notice used instead of a cure notice?",
-      "a": "When the time remaining in the delivery schedule will not permit a realistic cure period of 10 days or more — typically once delivery is already delinquent. It is sent immediately upon expiration of the delivery period and asks the contractor to show why the contract should not be terminated for default.",
-      "cite": {
-        "src": "rfo",
-        "sec": "49.607",
-        "quote": "If the time remaining in the contract delivery schedule is not sufficient to permit a realistic \"cure\" period of 10 days or more, the following \"Show Cause Notice\" may be used. It should be sent immediately upon expiration of the delivery period."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Terminations",
-      "q": "Before issuing a default termination the contracting officer determines the failure was excusable. Now what?",
-      "a": "Default termination is off the table. If termination is still in the Government's interest, terminate for convenience instead.",
-      "cite": {
-        "src": "rfo",
-        "sec": "49.402-3",
-        "quote": "If the contracting officer determines before issuing the termination notice that the failure was excusable, they must not terminate for default. If termination is still in the Government's interest, they may terminate for convenience."
       }
     },
     {
@@ -361,31 +289,6 @@
         "sec": "211.403",
         "quote": "Insert the clause at FAR 52.211-12, Liquidated Damages—Construction, in all construction contracts exceeding $900,000, except cost-plus-fixed-fee contracts or contracts where the contractor cannot control the pace of the work. Use of the clause in contracts of $900,000 or less is optional."
       }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Contract Modifications & Scope",
-      "q": "What does a contractor get out of a value engineering change proposal?",
-      "a": "A share of the net acquisition savings realized from accepted VECPs, at the clause's incentive sharing rates — contractors are encouraged to submit them voluntarily.",
-      "cite": {
-        "src": "rfo",
-        "sec": "52.248-1",
-        "quote": "The Contractor is encouraged to develop, prepare, and submit value engineering change proposals (VECP’s) voluntarily. The Contractor shall share in any net acquisition savings realized from accepted VECP’s, in accordance with the incentive sharing rates in paragraph (f) of this clause."
-      }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Government Property",
-      "q": "Who is ordinarily expected to furnish the property needed to perform a Government contract?",
-      "a": "The contractor. The Government provides property only when clearly demonstrated to be in its best interest, the benefit significantly outweighs the administration cost, risk is not substantially increased, and requirements cannot otherwise be met.",
-      "cite": {
-        "src": "rfo",
-        "sec": "45.102",
-        "quote": "Contractors are ordinarily required to furnish all property necessary to perform Government contracts."
-      },
-      "dod": "n/a"
     },
     {
       "rung": "unlimited",
@@ -485,19 +388,6 @@
         "sec": "206.001-70",
         "quote": "Also excepted from this part are follow-on production contracts for products developed pursuant to the “other transactions” authority of 10 U.S.C. 4022 for prototype projects"
       }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Acquisition Planning & Strategy",
-      "q": "What is a multiyear contract, and how does it differ from a contract with options?",
-      "a": "A contract for the purchase of supplies or services for more than 1 but not more than 5 program years — it buys the out-years up front instead of establishing and exercising an option for each program year. Out-year performance may be made contingent on appropriations, and if it is, the contract may provide for a cancellation payment to the contractor; the cancellation ceiling is the maximum charge the contractor can receive. That ceiling caps the Government's liability — it is contractor protection, not Government protection.",
-      "cite": {
-        "src": "rfo",
-        "sec": "17.102",
-        "quote": "Multiyear contract means a contract for the purchase of supplies or services for more than 1, but not more than 5 program years. A multiyear contract may provide that performance under the contract during the second and subsequent years of the contract is contingent upon the appropriation of funds, and (if it does so provide) may provide for a cancellation payment to be made to the contractor if appropriations are not made."
-      },
-      "dod": "n/a"
     },
     {
       "rung": "unlimited",

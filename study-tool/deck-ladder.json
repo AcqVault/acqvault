@@ -50,31 +50,6 @@
         "sec": "6.104-2",
         "quote": "Advocate for competition."
       }
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Contracting Authority",
-      "q": "What document appoints a contracting officer, and what must it state?",
-      "a": "An SF 1402, Certificate of Appointment, stating any limitations on the CO's scope of authority.",
-      "cite": {
-        "src": "rfo",
-        "sec": "1.403-2",
-        "quote": "Contracting officers must be appointed in writing, using a Standard Form (SF) 1402, Certificate of Appointment."
-      },
-      "dod": "n/a"
-    },
-    {
-      "rung": "unlimited",
-      "type": "recall",
-      "topic": "Contracting Authority",
-      "q": "Who may sign, administer, or terminate contracts for the Government?",
-      "a": "Only contracting officers, within delegated authority.",
-      "cite": {
-        "src": "rfo",
-        "sec": "1.402-1",
-        "quote": "Only contracting officers may sign, administer, or terminate contracts on behalf of the Government."
-      }
     }
   ]
 }

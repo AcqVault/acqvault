@@ -9,7 +9,7 @@
       "cite": {
         "src": "rfo",
         "sec": "15.201",
-        "quote": "Agency heads are responsible for source selection. A contracting officer is designated as the source selection authority (SSA), unless the agency head appoints another individual for a particular acquisition or group of acquisitions."
+        "quote": "Agency heads are responsible for source selection. A contracting officer is designated as the source selection authority (SSA), unless the agency head appoints another individual for a particular acquisition or group of acquisitions. (b) The SSA must— (1) Establish an evaluation team tailored for the acquisition that includes appropriate contracting, legal, logistics, technical, and other expertise to ensure a comprehensive evaluation of proposals;"
       },
       "dod": {
         "src": "r-dfars",
@@ -34,11 +34,16 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "What defines the lowest price technically acceptable approach, and what does it forbid?",
-      "a": "Award goes to the offeror with a technically acceptable proposal at the lowest evaluated price. It does not permit tradeoffs — technical superiority beyond acceptability buys nothing.",
+      "a": "Award goes to the offeror with a technically acceptable proposal at the lowest evaluated price. It does not permit tradeoffs — technical superiority beyond acceptability buys nothing. Watch the limitations split: the RFO's own limitations at 15.103-2(c) open with \"Except for DoD,\" so they do not bind an Air Force buyer. DoD's parallel limits are at R-DFARS 215.103-270, which permits the LPTA approach only when all of the conditions it lists are met — among them that minimum requirements can be described clearly and comprehensively, that no or minimal value would come from exceeding them, that the file contains a determination that the lowest price reflects full life-cycle cost, and that the contracting officer documents the justifying circumstances.",
       "cite": {
         "src": "rfo",
         "sec": "15.103-2",
         "quote": "The lowest price technically acceptable (LPTA) approach to source selection is appropriate when it is in the Government’s best interest to award to the offeror that submits a technically acceptable proposal with the lowest evaluated price. This approach does not permit tradeoffs."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.103-270",
+        "quote": "Use the lowest price technically acceptable source selection approach when— (i) Minimum requirements can be described clearly and comprehensively and expressed in terms of performance objectives, measures, and standards that will be used to determine the acceptability of offers,"
       }
     },
     {
@@ -58,7 +63,7 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "Must price or cost be evaluated in every competitive source selection?",
-      "a": "Not always. For DoD, NASA, and the Coast Guard, the contracting officer may choose not to include price or cost as an award evaluation factor when the RFP is above the SAT, will result in multiple-award contracts for the same or similar services, and states the Government intends to award to each and all qualifying offerors — price or cost then must be considered on every order placed under the contract instead. Otherwise the baseline holds: price or cost in every competitive source selection, and quality through one or more non-cost factors. On past performance the two books split: the RFO requires it in every competitive source selection unless the contracting officer documents why it is not appropriate, but R-DFARS 215.104-70 applies in lieu of that direction for DoD — past performance is evaluated when the contract, task order, or delivery order exceeds the category thresholds: $5 million for systems and operations support (including fuels), $1 million for services (including health care), $1 million for information technology, and $500,000 for ship repair and overhaul.",
+      "a": "Not always. For DoD, NASA, and the Coast Guard, the contracting officer may choose not to include price or cost as an award evaluation factor when the RFP is above the SAT, will result in multiple-award contracts for the same or similar services, and states the Government intends to award to each and all qualifying offerors — price or cost then must be considered on every order placed under the contract instead, and the exception does not apply to RFPs for multiple-award contracts that provide for sole source orders under section 8(a) of the Small Business Act. Otherwise the baseline holds: price or cost in every competitive source selection, and quality through one or more non-cost factors. On past performance the two books split: the RFO requires it in every competitive source selection unless the contracting officer documents why it is not appropriate, but R-DFARS 215.104-70 applies in lieu of that direction for DoD — past performance is evaluated when the contract, task order, or delivery order exceeds the category thresholds: $5 million for systems and operations support (including fuels), $1 million for services (including health care), $1 million for information technology, and $500,000 for ship repair and overhaul.",
       "cite": {
         "src": "rfo",
         "sec": "15.104",
@@ -209,7 +214,7 @@
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
       "q": "How quickly must an offeror request a postaward debriefing, and how soon should it occur?",
-      "a": "The written request is due within 3 days after receipt of the award notice; the debriefing should occur within 5 days after receipt of the request, to the maximum extent practicable. For DoD the skeleton has a tail: a written or oral debriefing is required, when requested, for contract awards valued at $15 million or more (R-DFARS 215.301-170), and under the enhanced procedure at 215.301-270 the debriefed offeror has 2 business days to submit additional written questions, the agency must respond in writing within 5 business days, and the debriefing is not concluded until the later of its delivery or that written response — and conclusion is what starts the stay and protest clocks.",
+      "a": "The written request is due within 3 days after receipt of the award notice; the debriefing should occur within 5 days after receipt of the request, to the maximum extent practicable. For DoD the skeleton has a tail: a written or oral debriefing is required, when requested, for contract awards valued at $15 million or more (R-DFARS 215.301-170), and under the enhanced procedure at 215.301-270 the debriefed offeror has 2 business days to submit additional written questions, the agency must respond in writing within 5 business days, and the debriefing is not concluded until the later of its delivery or that written response.",
       "cite": {
         "src": "rfo",
         "sec": "15.301-1",
@@ -219,23 +224,6 @@
         "src": "r-dfars",
         "sec": "215.301-270",
         "quote": "When providing a required postaward debriefing to successful and unsuccessful offerors, contracting officers must— (a) Provide an opportunity to submit additional written questions related to the required debriefing not later than 2 business days after receiving the postaward debriefing; (b) Respond in writing to timely submitted additional questions within 5 business days after receipt of the questions; and (c) Not consider the postaward debriefing to be concluded until the later of— (1) The date that the postaward debriefing is delivered, orally or in writing; or (2) If additional written questions related to the debriefing are timely received, the date the agency delivers its written response."
-      }
-    },
-    {
-      "rung": "25m",
-      "type": "recall",
-      "topic": "Contracting by Negotiation — Source Selection",
-      "q": "What must a postaward debriefing include?",
-      "a": "The evaluation of significant weaknesses or deficiencies in the offeror's proposal; the overall evaluated cost or price and technical rating of both the successful and debriefed offerors, plus the debriefed offeror's past performance information; the overall ranking when one was developed; a summary of the award rationale; for commercial-product acquisitions, the make and model the successful offeror will deliver; and reasonable responses to relevant procedural questions. The RFO text adds source-selection-decision-document tiers for DoD — small businesses and nontraditional defense contractors get an option to request the redacted SSDD on awards over $10 million up to $100 million, and the redacted SSDD must be disclosed on awards over $100 million — while R-DFARS 215.301-170(b) states those same tiers at over $15 million and over $150 million. Know both sets of numbers.",
-      "cite": {
-        "src": "rfo",
-        "sec": "15.301-1",
-        "quote": "(i) The Government's evaluation of the significant weaknesses or deficiencies in the offeror's proposal, if applicable; (ii) The overall evaluated cost or price and technical rating of the successful offeror and the debriefed offeror, and past performance information on the debriefed offeror; (iii) The overall ranking of all offerors, when any ranking was developed by the agency during the source selection; (iv) A summary of the rationale for award; (v) For acquisitions of commercial products, the make and model of the product to be delivered by the successful offeror"
-      },
-      "dod": {
-        "src": "r-dfars",
-        "sec": "215.301-170",
-        "quote": "(b) In addition to the requirements of FAR 15.301-1(c), the minimum debriefing information must include the following: (1) For award of a contract in excess of $15 million and not in excess of $150 million with a small business or nontraditional defense contractor, an option for the small business or nontraditional defense contractor to request disclosure of the agency’s written source selection decision document, redacted to protect the confidential and proprietary information of other offerors for the contract award. (2) For award of a contract in excess of $150 million, disclosure of the agency’s written source selection decision document, redacted to protect the confidential and proprietary information of other offerors for the contract award."
       }
     },
     {
@@ -268,11 +256,16 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "Name the exceptions that prohibit requiring certified cost or pricing data.",
-      "a": "Adequate price competition; prices set by law or regulation; commercial products or services; an HCA waiver; and modifications of commercial-product or commercial-service contracts (plus the flat prohibition at or below the SAT).",
+      "a": "Adequate price competition; prices set by law or regulation; commercial products or services; an HCA waiver; and modifications of commercial-product or commercial-service contracts (plus the flat prohibition at or below the SAT). For DoD the list is longer: R-DFARS 215.403-270 adds that certified data are not required to the extent the data relate to an indirect offset, and sets DoD's own standards for the adequate-price-competition and waiver exceptions.",
       "cite": {
         "src": "rfo",
         "sec": "15.403-2",
         "quote": "(1) When the contracting officer determines that prices agreed upon are based on adequate price competition (see standards in paragraph (c)(1) of this subsection); (2) When the contracting officer determines that prices agreed upon are based on prices set by law or regulation (see standards in paragraph (c)(2) of this subsection); (3) When a commercial product or commercial service is being acquired (see standards in paragraph (c)(3) of this subsection); (4) When a waiver has been granted (see standards in paragraph (c)(4) of this subsection); or (5) When modifying a contract or subcontract for commercial products or commercial services"
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.403-270",
+        "quote": "Submission of certified cost or pricing data is not required in the case of a contract, subcontract, or modification of a contract or subcontract to the extent such data relates to an indirect offset (10 U.S.C. 3703)."
       }
     },
     {
@@ -280,7 +273,7 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "When is a price based on adequate price competition — and which route is closed to DoD?",
-      "a": "The core standard: two or more responsible offerors, competing independently, submit priced offers that satisfy the Government's expressed requirement; award goes to the best-value offeror where price is a substantial factor; and there is no finding that the successful price is unreasonable — any such finding needs a statement of facts approved above the contracting officer. Agencies other than DoD, NASA, and the Coast Guard get a second route: a reasonable expectation, based on market research, that two or more responsible offerors would compete, even though only one offer arrived — with approval above the contracting officer. DoD cannot use that one-offer expectation route. A third basis, open to all: price analysis clearly demonstrating the proposed price is reasonable against current or recent prices for the same or similar items from adequate competition, adjusted for market and quantity changes.",
+      "a": "The core standard: two or more responsible offerors, competing independently, submit priced offers that satisfy the Government's expressed requirement; award goes to the best-value offeror where price is a substantial factor; and there is no finding that the successful price is unreasonable — any such finding needs a statement of facts approved above the contracting officer. Everything in 15.403-2(c)(1)(ii) is reserved to \"agencies other than DoD, NASA, and the Coast Guard,\" and it holds two alternatives: (A) a reasonable expectation, based on market research, that two or more responsible offerors would compete even though only one offer arrived, with approval above the contracting officer; and (B) price analysis clearly demonstrating the proposed price is reasonable against current or recent prices for the same or similar items from adequate competition, adjusted for market and quantity changes. Neither alternative is open to DoD — an Air Force buyer is left with the core standard.",
       "cite": {
         "src": "rfo",
         "sec": "15.403-2",
@@ -292,11 +285,16 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "Who can waive the certified cost or pricing data requirement?",
-      "a": "The head of the contracting activity, without power of delegation, in exceptional cases — only if the price can be determined fair and reasonable without the data, with the authorization and rationale in writing.",
+      "a": "The head of the contracting activity, without power of delegation, in exceptional cases — only if the price can be determined fair and reasonable without the data, with the authorization and rationale in writing. For DoD, R-DFARS 215.403-270(b)(1) makes it a three-part determination: the property or services cannot reasonably be obtained without a waiver, the price can be determined fair and reasonable without certified data, and there are demonstrated benefits to granting the waiver.",
       "cite": {
         "src": "rfo",
         "sec": "15.403-2",
         "quote": "In exceptional cases, the HCA may, without power of delegation, waive the requirement for submission of certified cost or pricing data if the price can be determined to be fair and reasonable without submission of certified cost or pricing data."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.403-270",
+        "quote": "the head of the contracting activity may, without power of delegation, apply the exceptional circumstances authority when a determination is made that— (i) The property or services cannot reasonably be obtained under the contract, subcontract, or modification, without granting a waiver, (ii) The price can be determined to be fair and reasonable without the submission of certified cost or pricing data, and (iii) There are demonstrated benefits to granting the waiver."
       }
     },
     {
@@ -348,11 +346,16 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "What is price analysis, and which techniques are preferred?",
-      "a": "Examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit. The preferred techniques are comparison of the proposed prices received in response to the RFP and comparison to historical prices paid, by the Government or others, for the same or similar items — a prior price must be a valid basis and adjusted for differing terms, quantities, and market conditions. Only when those are unavailable or insufficient do the others come in: parametric estimates and rough yardsticks, published price lists and market prices, independent Government cost estimates, market research, or analysis of data other than certified cost or pricing data. A catalog listing does not, by itself, make a price fair and reasonable.",
+      "a": "Examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit. The preferred techniques are comparison of the proposed prices received in response to the RFP and comparison to historical prices paid, by the Government or others, for the same or similar items — a prior price must be a valid basis and adjusted for differing terms, quantities, and market conditions. Only when those are unavailable or insufficient do the others come in: parametric estimates and rough yardsticks, published price lists and market prices, independent Government cost estimates, market research, or analysis of data other than certified cost or pricing data. A catalog listing does not, by itself, make a price fair and reasonable. For DoD the preference is stated differently: under R-DFARS 215.404-170, when there is no adequate price competition, pricing based on market prices is the preferred method, and price reasonableness must not be based solely on historical prices paid by the Government.",
       "cite": {
         "src": "rfo",
         "sec": "15.404-1",
         "quote": "Price analysis is the process of examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit."
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "215.404-170",
+        "quote": "In the absence of adequate price competition in response to the solicitation, pricing based on market prices is the preferred method to establish a fair and reasonable price (see PGI 215.404-170)."
       }
     },
     {

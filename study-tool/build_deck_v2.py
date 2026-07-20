@@ -368,17 +368,28 @@ def _dod_overlay_check(items, fatal=False):
         head, _, tail = c.get('sec', '').partition('.')
         if not head.isdigit() or not tail: continue
         base = '2%02d.%s' % (int(head), tail)
-        # DoD-unique sections carry -70/-170/-970 suffixes and do NOT mirror the RFO
-        # number; an exact-match lookup misses them, which hid a brand-name card that
-        # told DoD readers the opposite of their own rule.
         for key in sorted(idx):
-            if key != base and not key.startswith(base + '-'): continue
-            if key != base:
-                suf = key[len(base) + 1:]
-                if not (suf.isdigit() and int(suf) >= 70): continue
+            if not _dod_supplements(base, key): continue
             if len(_norm(idx[key]['content'])) >= 160:
                 missing.append((it['rung'], key, it['q'][:56]))
                 break
+
+
+def _dod_supplements(base, key):
+    """Does R-DFARS `key` supplement the mirrored RFO section `base`?
+
+    DoD numbering takes three forms, and this check was wrong three separate
+    times before it covered all of them — each miss hid cards that gave an Air
+    Force reader a rule their own regulation displaces:
+        exact mirror       6.104-2  -> 206.104-2
+        hyphenated suffix  6.103    -> 206.103-170
+        APPENDED digits    15.103-2 -> 215.103-270   (no hyphen; the -2 absorbs the 70)
+    """
+    if key == base: return True
+    if not key.startswith(base): return False
+    rest = key[len(base):]
+    if rest.startswith('-'): rest = rest[1:]
+    return rest.isdigit() and len(rest) <= 3 and int(rest) >= 70
     if missing:
         print('  ladder DoD-overlay: %d card(s) cite an RFO section R-DFARS supplements, unreviewed:' % len(missing))
         for r, s, q in missing[:60]:
