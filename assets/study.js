@@ -1243,7 +1243,8 @@
     function shareText() {
       var no = comboNo(day);
       var grid = G.rows.map(function (g) {
-        return evalRow(g).map(function (s) { return s === 'c' ? '🟩' : s === 'p' ? '🟨' : '⬛'; }).join('');
+        // 🟦/🟨 mirrors the board's navy/brass — the colorblind-safe pair — not Wordle's green
+        return evalRow(g).map(function (s) { return s === 'c' ? '🟦' : s === 'p' ? '🟨' : '⬛'; }).join('');
       }).join('\n');
       var run = G.streak.run;
       return 'AcqVault — The Combination No. ' + no + ' · ' + (G.win ? G.rows.length : 'X') + '/6\n' + grid +

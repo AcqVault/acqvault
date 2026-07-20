@@ -873,7 +873,7 @@ function renderStudyPage() {
 .st-hub-grid{display:flex;flex-direction:column;gap:2px}
 .st-hub-gridrow{display:flex;gap:2px}
 .st-hub-cell{width:13px;height:13px;border-radius:2.5px;background:rgba(244,248,252,.14)}
-.st-hub-cell-c{background:#1e6b43}
+.st-hub-cell-c{background:#f4f8fc} /* on the dark plate the "correct" pole is paper-white — navy would vanish; white-vs-brass reads under every CVD type */
 .st-hub-cell-p{background:#e4c477}
 .st-hub-cell-a{background:rgba(244,248,252,.22)}
 /* quick rounds: game plates */
@@ -889,7 +889,7 @@ function renderStudyPage() {
 .st-plate-meta{display:block;margin-top:11px;padding-top:9px;border-top:1px solid rgba(228,196,119,.22);font-size:11.5px;font-weight:700;color:var(--brass-bright);font-variant-numeric:tabular-nums}
 .st-plate-art{display:flex;gap:4px}
 .st-mini-tile{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#f4f8fc;background:rgba(244,248,252,.08);border:1px solid rgba(244,248,252,.25);border-radius:5px}
-.st-mini-hit{background:#1e6b43;border-color:#1e6b43}
+.st-mini-hit{background:#f4f8fc;border-color:#f4f8fc;color:#0f2540}
 .st-mini-near{background:#c9a44c;border-color:#c9a44c;color:#0f2540}
 .st-plate-art-ring{position:relative;width:46px;height:46px}
 .st-plate-art-ring svg{width:46px;height:46px}
@@ -903,9 +903,15 @@ function renderStudyPage() {
 .st-cb-fill{border-color:rgba(23,58,96,.55);transform:scale(1.04)}
 .st-cb-flip{animation:st-cb-flip .34s ease-in-out 1}
 @keyframes st-cb-flip{0%{transform:rotateX(0)}50%{transform:rotateX(88deg)}100%{transform:rotateX(0)}}
-.st-cb-c{background:#1e6b43;border-color:#1e6b43;color:#fff}
+/* Combination states are COLORBLIND-FIRST by owner's call — do not restore green.
+   Green-vs-gold is the classic deutan/protan confusion, and the old green (#1e6b43) and
+   old slate (#565e6b) were luminance-IDENTICAL (L .112 vs .110), so "right spot" vs "not
+   in the word" was unreadable without normal color vision. The trio is now navy/brass/
+   slate: blue-vs-yellow survives every red-green deficiency AND it's the brand axis, and
+   the luminances ladder (L .04 / .57 / .18) so a pure-greyscale viewer reads the board. */
+.st-cb-c{background:#173a60;border-color:#0f2540;color:#fff}
 .st-cb-p{background:#e4c477;border-color:#c9a44c;color:#3b2f10}
-.st-cb-a{background:#565e6b;border-color:#565e6b;color:#eef1f5}
+.st-cb-a{background:#6e7683;border-color:#6e7683;color:#fff}
 .st-cb-cat{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 auto 10px;font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);text-align:center}
 .st-cb-cat span{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:linear-gradient(158deg,#173a60,#0f2540);border-radius:999px;padding:4px 10px}
 .st-cb-prompt{text-align:center;font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.5}
@@ -919,9 +925,9 @@ function renderStudyPage() {
 .st-cb-key{min-width:clamp(26px,7.6vw,40px);height:50px;padding:0 6px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:7px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;text-transform:uppercase}
 .st-cb-key:active{transform:translateY(1px)}
 .st-cb-key-wide{min-width:clamp(44px,12vw,62px);font-size:11px}
-.st-cb-key-c{background:#1e6b43;border-color:#1e6b43;color:#fff}
+.st-cb-key-c{background:#173a60;border-color:#0f2540;color:#fff}
 .st-cb-key-p{background:#e4c477;border-color:#c9a44c;color:#3b2f10}
-.st-cb-key-a{background:#565e6b;border-color:#565e6b;color:#eef1f5}
+.st-cb-key-a{background:#6e7683;border-color:#6e7683;color:#fff}
 .st-cb-result{text-align:center;padding:6px 4px}
 .st-cb-dial{width:74px;height:74px;margin:0 auto 6px;color:var(--brass)}
 .st-cb-dial svg{width:100%;height:100%}
@@ -1062,7 +1068,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=41"></script>`;
+<script defer src="/assets/study.js?v=42"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

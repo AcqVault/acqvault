@@ -2978,7 +2978,7 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
 .daily-strip-main{display:flex;align-items:center;gap:16px;text-decoration:none;min-width:0;flex:1 1 380px;}
 .daily-tiles{display:flex;gap:3px;flex:none;}
 .daily-tiles i{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12.5px;font-weight:800;color:#f4f8fc;background:rgba(244,248,252,.08);border:1px solid rgba(244,248,252,.28);border-radius:4px;}
-.daily-tiles .dt-hit{background:#1e6b43;border-color:#1e6b43;}
+.daily-tiles .dt-hit{background:#f4f8fc;border-color:#f4f8fc;color:#0f2540;} /* colorblind-first: white=hit on the dark strip, matching the game's navy/brass/slate language */
 .daily-tiles .dt-near{background:#c9a44c;border-color:#c9a44c;color:#0f2540;}
 .daily-copy{min-width:0;}
 .daily-copy b{display:block;font-family:var(--font-serif,Georgia,serif);font-size:16.5px;letter-spacing:-.01em;color:#f4f8fc;}
