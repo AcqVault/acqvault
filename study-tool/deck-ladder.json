@@ -55,7 +55,8 @@
         "sec": "6.104-2",
         "quote": "$900,000 or below Contracting officer.",
         "amount": "$900,000"
-      }
+      },
+      "dod": "n/a"
     },
     {
       "rung": "25m",
@@ -73,7 +74,8 @@
         "src": "rfo",
         "sec": "6.104-2",
         "quote": "Advocate for competition."
-      }
+      },
+      "dod": "n/a"
     }
   ]
 }

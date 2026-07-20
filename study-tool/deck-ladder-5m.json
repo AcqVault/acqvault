@@ -55,14 +55,18 @@
       "type": "recall",
       "topic": "Competition (CICA)",
       "q": "Under the one-responsible-source exception, when may a follow-on for a major system be sole-sourced?",
-      "a": "When award to another source would result in substantial duplication of cost to the Government not expected to be recovered through competition, or unacceptable delays in fulfilling the agency's requirements. The authority covers follow-ons for the continued development or production of a major system or highly specialized equipment — and, for DoD, NASA, and the Coast Guard, for the continued provision of highly specialized services as well.",
-      "x": "The trap is treating 'the incumbent knows the program' as the justification. The authority demands evidence of harm from switching: duplicated cost competition won't recover, or delay the requirement can't absorb. And note who gets the services version — continued highly specialized services ride this authority only for DoD, NASA, and the Coast Guard.",
+      "a": "When award to another source would result in substantial duplication of cost to the Government not expected to be recovered through competition, or unacceptable delays in fulfilling the agency's requirements. The authority covers follow-ons for the continued development or production of a major system or highly specialized equipment — and, for DoD, NASA, and the Coast Guard, for the continued provision of highly specialized services as well. For DoD, a justification citing this authority must also include the information required by PGI 206.104-71(b) (R-DFARS 206.104-71), and a non-competitive follow-on to a previous award justified under it takes the procedures at PGI 206.104-270 (R-DFARS 206.104-72(b)).",
+      "x": "The trap is treating 'the incumbent knows the program' as the justification. The authority demands evidence of harm from switching: duplicated cost competition won't recover, or delay the requirement can't absorb. And DoD adds teeth to exactly this scenario — the justification carries the PGI 206.104-71(b) content, and a repeat follow-on takes the PGI 206.104-270 procedures.",
       "cite": {
         "src": "rfo",
         "sec": "6.103-1",
         "quote": "(2) When awarding a follow-on contract for the continued development or production of a major system or highly specialized equipment and, for DoD, NASA, and the Coast Guard, for the continued provision of highly specialized services, would result in— (i) Substantial duplication of cost to the Government that is not expected to be recovered through competition; or (ii) Unacceptable delays in fulfilling the agency's requirements."
       },
-      "dod": "n/a"
+      "dod": {
+        "src": "r-dfars",
+        "sec": "206.104-71",
+        "quote": "Include the information required by PGI 206.104-71(b) in justifications citing the authority at FAR 6.103-1."
+      }
     },
     {
       "rung": "5m",
@@ -114,13 +118,18 @@
       "type": "recall",
       "topic": "Competition (CICA)",
       "q": "Recite the justification approval ladder.",
-      "a": "Up to $900,000 — the contracting officer (the 6.104(a)(12) certification is the approval). Over $900,000 to $20 million — advocate for competition, not delegable. Over $20 million to $90 million ($150 million for DoD, NASA, and the Coast Guard) — head of the procuring activity, who may delegate to a general or flag officer or a civilian above GS-15. Above that — senior procurement executive, not delegable except to USD(A&S) acting as the senior procurement executive for DoD. Include the estimated dollar value of all options when setting the level, and note that a higher-level official may always approve a lower-dollar justification.",
-      "x": "Set the level on the value including all options — undervaluing the action is how J&As get approved one rung too low and die in review. The advocate tier is not delegable. And keep the ceilings straight: $90 million civilian, $150 million for DoD, NASA, and the Coast Guard, before the senior procurement executive takes over.",
+      "a": "Up to $900,000 — the contracting officer (the 6.104(a)(12) certification is the approval). Over $900,000 to $20 million — advocate for competition, not delegable. Over $20 million to $90 million ($150 million for DoD, NASA, and the Coast Guard) — head of the procuring activity, who may delegate to a general or flag officer or a civilian above GS-15. Above that — senior procurement executive, not delegable except in the case of USD(A&S) acting as DoD's senior procurement executive, who may send the authority to an Assistant Secretary of Defense or, for a defense agency, an official above brigadier general or rear admiral (lower half) or a civilian at a comparable grade (R-DFARS 206.104-72(a)). Include the estimated dollar value of all options when setting the level, and note that a higher-level official may always approve a lower-dollar justification. One more DoD lane: sole-source 8(a) contracts need no justification and approval at all up to $100 million, and above $100 million the head of the procuring activity — not the senior procurement executive — approves, delegable only to that same flag-or-above level (R-DFARS 206.104-70, 206.104-72(c)).",
+      "x": "Set the level on the value including all options — undervaluing the action is how J&As get approved one rung too low and die in review. Keep the ceilings straight: $90 million civilian, $150 million for DoD, NASA, and the Coast Guard. Know the DoD lanes — USD(A&S) may hand the top tier to an ASD, and sole-source 8(a) skips the ladder until $100 million, where the HPA owns it.",
       "cite": {
         "src": "rfo",
         "sec": "6.104-2",
         "quote": "$900,000 or below Contracting officer. Accomplished by certification required at 6.104(a)(12). >$900,000 - $20,000,000 Advocate for competition. Not delegable.",
         "amount": "$900,000"
+      },
+      "dod": {
+        "src": "r-dfars",
+        "sec": "206.104-72",
+        "quote": "In accordance with section 823 of the National Defense Authorization Act for Fiscal Year 2020 (Pub. L. 116-92), the head of the procuring activity is the approval authority for a proposed sole-source 8(a) contract exceeding $100 million."
       }
     },
     {
