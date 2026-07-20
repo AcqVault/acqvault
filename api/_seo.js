@@ -999,8 +999,8 @@ function renderStudyPage() {
 .st-rungs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
 @media(max-width:560px){.st-rungs{grid-template-columns:1fr 1fr}}
 @media(max-width:360px){.st-rungs{grid-template-columns:1fr}}
-.st-rung{text-align:left;background:#fff;border:1px solid var(--line2);border-left:3px solid transparent;border-radius:10px;padding:12px 14px;min-height:44px;font-size:14px;font-weight:700;color:#2a3140;cursor:pointer;font-variant-numeric:tabular-nums;transition:border-color .13s}
-.st-rung:hover{border-color:var(--line);border-left-width:3px}
+.st-rung{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;background:#fff;border:1px solid var(--line2);border-left:3px solid transparent;border-radius:10px;padding:15px 16px 14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:border-color .13s,box-shadow .13s}.st-rung-ceiling{font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.05;color:var(--ink);letter-spacing:-.01em}.st-rung-what{font-size:12px;line-height:1.35;color:var(--muted)}.st-rung-n{margin-top:3px;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink);opacity:.42}.st-rung-on{border-left-color:var(--brass);box-shadow:0 1px 3px rgba(16,24,40,.06)}.st-rung-on .st-rung-n{opacity:.66}
+.st-rung:hover{border-color:var(--line);box-shadow:0 1px 3px rgba(16,24,40,.06)}
 .st-rung:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
 .st-rung-on,.st-rung-on:hover{border-left-color:var(--brass);color:var(--ink)}
 .st-beta{display:inline-block;vertical-align:4px;margin-left:10px;color:var(--ink);opacity:.45;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}.st-lad-count{color:var(--muted);font-size:13px;margin:10px 0 0;font-variant-numeric:tabular-nums}
@@ -1034,7 +1034,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=34"></script>`;
+<script defer src="/assets/study.js?v=35"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

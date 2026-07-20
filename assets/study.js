@@ -604,11 +604,14 @@
      To remove the feature outright rather than hide it, see docs/WARRANT_LADDER.md. */
   var LADDER_ENABLED = true;
 
+  /* The ceiling is the hero of each rung — it is the most motivating thing on the card and
+     the thing a candidate actually organises around. `what` says which material lives there
+     so the rungs read as coverage rather than as difficulty settings. */
   var RUNGS = [
-    { k: 'sat', label: 'SAT · $350K' },
-    { k: '5m', label: '$5M' },
-    { k: '25m', label: '$25M' },
-    { k: 'unlimited', label: 'Unlimited' }
+    { k: 'sat', label: 'SAT · $350K', ceiling: '$350K', what: 'Simplified acquisitions (SAT)' },
+    { k: '5m', label: '$5M', ceiling: '$5M', what: 'Competition &amp; ordering' },
+    { k: '25m', label: '$25M', ceiling: '$25M', what: 'Source selection &amp; pricing' },
+    { k: 'unlimited', label: 'Unlimited', ceiling: 'Unlimited', what: 'Senior authority' }
   ];
   function ladderPool(rung) { return (deck.ladder && deck.ladder[rung]) || []; }
   function ladderRung() {
@@ -638,8 +641,12 @@
   }
   function rungStripHtml(sel) {
     return '<div class="st-rungs">' + RUNGS.map(function (r) {
+      var n = ladderPool(r.k).length;
       return '<button class="st-rung' + (r.k === sel ? ' st-rung-on' : '') + '" data-rung="' + r.k +
-        '" aria-pressed="' + (r.k === sel) + '">' + r.label + '</button>';
+        '" aria-pressed="' + (r.k === sel) + '" aria-label="' + esc(r.label) + ', ' + n + ' cards">' +
+        '<b class="st-rung-ceiling">' + r.ceiling + '</b>' +
+        '<span class="st-rung-what">' + r.what + '</span>' +
+        '<span class="st-rung-n">' + n + ' cards</span></button>';
     }).join('') + '</div>';
   }
   function ladderCountLine(pool) { return '<p class="st-lad-count">' + pool.length + ' cards, every one cited to the rulebook.</p>'; }
