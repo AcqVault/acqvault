@@ -261,6 +261,25 @@ for d in docs:  # second pass: the doc living in the section's own part wins a d
     if str(d.get('part') or '').strip() == want:
         sec_idx[(src, num)] = d
 
+# SSP sections carry a different numbering: body subsections "3.9", the "5" of Definitions,
+# and lettered appendix subsections "A.1". SEC_TITLE (digits-only) can't parse the letters,
+# so the SSP has its own key extraction. Every subsection already renders an id="ssp-3-9"
+# anchor on its part page, so a cite resolves to a working deep link with no extra work.
+SSP_SEC = re.compile(r'^([1-5]\.\d+|[A-E]\.\d+|[1-5]|[A-E])\b')
+for d in docs:
+    if d.get('source') != 'ssp': continue
+    m = SSP_SEC.match(d['title'])
+    if m:
+        sec_idx[('ssp', m.group(1))] = d
+        part_ok.add(('ssp', str(d.get('part') or '').strip()))
+
+def cite_label(src, num):
+    """Human label for a citation. SSP joins RFO/R-DFARS as a first-class citeable source."""
+    return {'rfo': 'RFO ', 'r-dfars': 'R-DFARS ', 'ssp': 'DoD SSP '}.get(src, src.upper() + ' ') + num
+
+def part_label(src):
+    return {'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'ssp': 'DoD SSP'}.get(src, src.upper())
+
 def find_sec(src, num):
     num = num.rstrip('.')
     d = sec_idx.get((src, num))
@@ -277,7 +296,7 @@ def sec_link(src, num):
     part = str(d.get('part') or '').strip()
     if not part: return None
     frag = d.get('anchor') or d['id']  # SEO pages render id=anchor, falling back to the doc id
-    return {'t': ('RFO ' if src == 'rfo' else 'R-DFARS ') + num,
+    return {'t': cite_label(src, num),
             'u': '/' + src + '/part-' + part + '#' + str(frag)}
 
 def part_link(src, part):
@@ -286,7 +305,7 @@ def part_link(src, part):
     if src == 'r-dfars' and len(part) == 3 and part.startswith('2'):
         part = str(int(part) - 200)  # cites say "227"; the corpus stores DFARS parts as 27
     if (src, part) not in part_ok: return None
-    return {'t': ('RFO' if src == 'rfo' else 'R-DFARS') + ' Part ' + label_part,
+    return {'t': part_label(src) + ' Part ' + label_part,
             'u': '/' + src + '/part-' + part}
 
 # ---- 2f-L. ladder pool (warrant-level track) — STRICT build-time citation gate ----
@@ -357,7 +376,7 @@ def ladder_gate(items):
         if not part: sys.exit(f'FATAL: ladder {tag}: section {cite["src"]} {cite["sec"]} has no part — link unbuildable')
         frag = d.get('anchor') or d['id']
         card['cite'] = dict(cite)
-        card['cite']['link'] = {'t': ('RFO ' if cite['src'] == 'rfo' else 'R-DFARS ') + cite['sec'],
+        card['cite']['link'] = {'t': cite_label(cite['src'], cite['sec']),
                                 'u': '/' + cite['src'] + '/part-' + part + '#' + str(frag)}
         # Carry the DoD deviation through to the runtime. It was being validated and then
         # dropped, so 58 cards asserted a DoD rule in prose with nothing to click — the
@@ -526,7 +545,7 @@ def ladder_board_gate(items):
                 sys.exit(f'FATAL: ladder board {tag}: quote not verbatim in {c["src"]} {c["sec"]}')
             part = str(d.get('part') or '').strip()
             if not part: sys.exit(f'FATAL: ladder board {tag}: {c["sec"]} has no part')
-            links.append({'t': ('RFO ' if c['src'] == 'rfo' else 'R-DFARS ') + c['sec'],
+            links.append({'t': cite_label(c['src'], c['sec']),
                           'u': '/' + c['src'] + '/part-' + part + '#' + str(d.get('anchor') or d['id']),
                           'quote': c['quote']})
         sid = hashlib.sha1(('board|' + it['rung'] + '|' + it['ask']).encode()).hexdigest()[:12]

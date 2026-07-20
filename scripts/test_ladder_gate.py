@@ -2,13 +2,13 @@
 """Prove the ladder citation gate in study-tool/build_deck_v2.py.
 
 Runs the real build once (the 6 seed items in study-tool/deck-ladder.json must all
-pass), then runs the build against seven synthetic BAD ladder files via the
+pass), then runs the build against nine synthetic BAD ladder files via the
 ACQVAULT_LADDER_FILE hook and asserts each one FATALs with the RIGHT reason.
 
 Negative runs never touch assets/study-deck.json: the gate sys.exit()s before the
 deck is written. The final positive run leaves the deck in its normal built state.
 
-Exit 0 = all 6 seeds pass + all 7 negative cases FATAL correctly. Exit 1 otherwise.
+Exit 0 = all 6 seeds pass + all 9 negative cases FATAL correctly. Exit 1 otherwise.
 """
 import json, os, re, subprocess, sys, tempfile
 
@@ -52,6 +52,15 @@ NEGATIVE = [
           quote='The contracting officer is responsible for granting, withholding, or '
                 'withdrawing approval of a contractor’s purchasing system'),
      ['244.301-70', 'dod']),
+    # SSP is a first-class citeable source. A misquote must fail as "not verbatim in ssp 3.9"
+    # — NOT as "no such section". If SSP were dropped from the section index, this would
+    # regress to the wrong error, which is the signal that citeability broke.
+    ('cite to ssp 3.9 with a misquote — proves SSP is indexed and verbatim-gated',
+     item(sec='3.9', src='ssp', amount=None, quote='The SSA decides whatever seems best'),
+     ['quote not verbatim', 'ssp', '3.9']),
+    ('cite to ssp 9.9 — no such SSP section',
+     item(sec='9.9', src='ssp', amount=None, quote='anything'),
+     ['no such section', 'ssp', '9.9']),
 ]
 
 def run(env_extra=None):
@@ -86,6 +95,27 @@ for i, (name, bad, must_contain) in enumerate(NEGATIVE):
     print(f'PASS (FATAL as required) [{name}]')
     print(f'     -> {blob.strip().splitlines()[-1]}')
 
+# ---- positive: a valid SSP citation builds clean and resolves to a DoD SSP deep link ----
+_ssp_quote = ('The SSA’s decision regarding which proposal is most advantageous to the '
+              'Government shall be based on a comparative analysis of proposals against all '
+              'source selection criteria in the solicitation')
+_ssp = os.path.join(tmpdir, 'ssp-ok.json')
+with open(_ssp, 'w') as f:
+    json.dump({'items': [item(sec='3.9', src='ssp', amount=None, quote=_ssp_quote)]}, f)
+r = run({'ACQVAULT_LADDER_FILE': _ssp})
+if r.returncode != 0:
+    print(f'FAIL [ssp citeable]: valid SSP cite FATALed: {(r.stdout + r.stderr)[-300:]}')
+    failures += 1
+else:
+    lad = (json.load(open(DECK)).get('ladder') or {})
+    card = next((c for v in lad.values() for c in v if c.get('cite', {}).get('src') == 'ssp'), None)
+    link = (card or {}).get('cite', {}).get('link', {})
+    if link.get('t') == 'DoD SSP 3.9' and link.get('u') == '/ssp/part-3#ssp-3-9':
+        print('PASS [ssp citeable]: SSP 3.9 built a verbatim-checked DoD SSP deep link')
+    else:
+        print(f'FAIL [ssp citeable]: link wrong — {link}')
+        failures += 1
+
 # ---- positive case: the real 6-seed file must build clean ----
 r = run()
 if r.returncode != 0:
@@ -105,7 +135,7 @@ else:
         # cite.link must resolve to a real part page on EITHER rulebook source
         bad_cards = [c.get('id') or c.get('q', '')[:40] for v in lad.values() for c in v
                      if not (c.get('id') and re.match(
-                         r'^/(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr)/part-',
+                         r'^/(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr|ssp)/part-',
                          c.get('cite', {}).get('link', {}).get('u', '')))]
         # the six hand-verified seed questions must survive every rebuild
         seeds = ['What is the simplified acquisition threshold?',
@@ -126,4 +156,4 @@ print()
 if failures:
     print(f'{failures} test(s) FAILED')
     sys.exit(1)
-print('ALL TESTS PASSED: 6 seed items pass the gate, 7 negative cases FATAL with the right reasons')
+print('ALL TESTS PASSED: 6 seed items pass the gate, 9 negative cases FATAL with the right reasons')
