@@ -68,14 +68,31 @@ numbering forms — exact mirror (`6.104-2` → `206.104-2`), hyphenated suffix 
 `206.103-170`), and appended digits with no hyphen (`15.103-2` → `215.103-270`). If you
 touch `_dod_supplements`, keep all three.
 
+Numbering only reaches supplements that mirror. `206.104-71` displaces FAR 6.104-2 and
+`244.301-70` displaces FAR 44.301-3, and no arithmetic connects those digits, so rule 6
+also consults an explicit table, `_DOD_EXTRA`. Populate it from
+`scripts/reverse_dod_index.py`, which scans R-DFARS for a FAR section named inside
+deviation language and reports anything the numbering already covers as already handled.
+
+**Read a candidate before promoting it.** The scan finds sentences, and a supplement cites
+FAR as often to say "comply with this" as to say "ignore this" — 219.208-2 names FAR 6.104
+as the justification you must complete, which is the opposite of displacing it. Pairs that
+are real but deliberately ungated live in `_DOD_REVIEWED_NO_GATE` with the reason, so a
+clean run means reviewed rather than unseen. The script exits non-zero when something is
+genuinely new.
+
 ## Known limits
 
 - **PGI is not in the corpus.** Eight cards carry a DoD supplement that defers to PGI for
   the operative procedure. The quoted supplement text is real; the procedure behind it
   cannot be checked here.
-- **Supplements that do not mirror the section number are invisible to the gate.** R-DFARS
-  235.170 supplements FAR 16.102 and no number-mapping finds it. Those were caught by
-  reading, not by tooling.
+- **A supplement that changes the answer without naming the section it changes is invisible
+  to everything.** R-DFARS 235.170, "Contracting methods and contract type", bears on FAR
+  16.102, "Negotiating contract type", and cites no FAR section at all — the link is subject
+  matter, not text, so neither the numbering nor `reverse_dod_index.py` can see it. (16.102
+  itself is covered, via the mirrored 216.102; the risk is what 235.170 adds on top.) Title
+  similarity across 2,154 R-DFARS documents is too noisy to gate on, so this class stays a
+  reading problem. A clean gate run is not coverage of it.
 - **The rungs are not regulatory.** No section of the RFO or R-DFARS defines a "$5M warrant"
   or a "$25M warrant" — those are local appointment levels that vary by unit. The rungs are
   an organizing device only, and no card asserts a rule applies "at" a tier.

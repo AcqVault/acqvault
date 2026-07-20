@@ -2,13 +2,13 @@
 """Prove the ladder citation gate in study-tool/build_deck_v2.py.
 
 Runs the real build once (the 6 seed items in study-tool/deck-ladder.json must all
-pass), then runs the build against six synthetic BAD ladder files via the
+pass), then runs the build against seven synthetic BAD ladder files via the
 ACQVAULT_LADDER_FILE hook and asserts each one FATALs with the RIGHT reason.
 
 Negative runs never touch assets/study-deck.json: the gate sys.exit()s before the
 deck is written. The final positive run leaves the deck in its normal built state.
 
-Exit 0 = all 6 seeds pass + all 6 negative cases FATAL correctly. Exit 1 otherwise.
+Exit 0 = all 6 seeds pass + all 7 negative cases FATAL correctly. Exit 1 otherwise.
 """
 import json, os, re, subprocess, sys, tempfile
 
@@ -44,6 +44,14 @@ NEGATIVE = [
     ('amount $350,000 not inside the quote',
      item(quote='Micro-purchase threshold means $15,000', amount='$350,000'),
      ['amount $350,000 not inside the quote']),
+    # The number-mapping cannot reach 244.301-70 from 44.301-3, so before _DOD_EXTRA this
+    # card built clean while resting on a section DoD tells you to ignore. Without this
+    # case the table could be emptied by accident and every check would still report green.
+    ('cite to 44.301-3 with no `dod` — displaced by 244.301-70, which no number-mapping finds',
+     item(sec='44.301-3', amount=None,
+          quote='The contracting officer is responsible for granting, withholding, or '
+                'withdrawing approval of a contractor’s purchasing system'),
+     ['244.301-70', 'dod']),
 ]
 
 def run(env_extra=None):
@@ -118,4 +126,4 @@ print()
 if failures:
     print(f'{failures} test(s) FAILED')
     sys.exit(1)
-print('ALL TESTS PASSED: 6 seed items pass the gate, 6 negative cases FATAL with the right reasons')
+print('ALL TESTS PASSED: 6 seed items pass the gate, 7 negative cases FATAL with the right reasons')

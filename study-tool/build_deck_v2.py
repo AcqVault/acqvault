@@ -386,6 +386,16 @@ def _dod_overlay_check(items, fatal=False):
 
         c = it.get('cite', {})
         if c.get('src') != 'rfo' or it.get('dod'): continue
+        # Supplements that displace a section without mirroring its number are invisible to
+        # the arithmetic below — 206.104-71 displaces 6.104-2, 244.301-70 displaces 44.301-3.
+        # scripts/reverse_dod_index.py finds the candidates; only pairs somebody has read get
+        # promoted into the table, because "in lieu of" appearing in a sentence does not
+        # prove the section it names is the one being displaced.
+        _extra = [k for k in _DOD_EXTRA.get(c.get('sec', ''), ())
+                  if k in idx and len(_norm(idx[k]['content'])) >= 160]
+        if _extra:
+            missing.append((it['rung'], _extra[0], it['q'][:56]))
+            continue
         head, _, tail = c.get('sec', '').partition('.')
         if not head.isdigit() or not tail: continue
         base = '2%02d.%s' % (int(head), tail)
@@ -402,6 +412,39 @@ def _dod_overlay_check(items, fatal=False):
         if fatal: sys.exit('FATAL: ladder: %d card(s) missing a `dod` review field' % len(missing))
     else:
         print('  ladder DoD-overlay: every RFO cite with a DoD supplement has been reviewed')
+
+
+# RFO section -> R-DFARS sections that displace it WITHOUT mirroring its number, so the
+# arithmetic in _dod_supplements can never reach them. Discovered by
+# scripts/reverse_dod_index.py; every entry below was then read in full, because the scan
+# finds sentences and only a reader can tell a rule being displaced from a rule being cited
+# as the authority to follow. Re-run that script after any corpus change and promote what
+# it flags with a `*`.
+#
+# Its blind spot, which is not fixable by pattern: a supplement that changes the answer
+# without naming the section it changes (R-DFARS 235.170 vs FAR 16.102). That stays a
+# reading problem — a clean run is not coverage of it.
+_DOD_EXTRA = {
+    '6.104-1':  ['206.104-70', '206.104-71'],  # justification content, and the 8(a) $100M rule
+    '6.104-2':  ['206.104-71'],                # content in lieu of the Table 6-1 thresholds
+    '12.104':   ['212.7002'],                  # notwithstanding 12.104, fixed-price required
+    '15.403-2': ['215.202-71'],                # one-offer handling on top of the exceptions
+    '16.504':   ['216.504-3'],                 # congressional notification does not apply
+    '27.404-5': ['203.104-4'],                 # 27.404-5(a)(1) does not apply to DoD
+    '40.202':   ['240.270-3'],                 # additive prohibition on covered telecom
+    '44.301-3': ['244.301-70'],                # "use this section instead of FAR 44.301-3"
+}
+
+# Read, real, and deliberately NOT gated — with the reason, so the next person doesn't
+# rediscover it and "fix" it by adding the entry. The gate is section-granular; when a
+# supplement displaces one definition inside a section that defines dozens, gating on the
+# section would force a `dod` annotation onto every unrelated card sitting there, and a
+# wall of `"n/a"` written to silence a check is exactly how a false n/a gets shipped
+# looking settled.
+_DOD_REVIEWED_NO_GATE = {
+    ('2.1', '240.271-2'): 'displaces only the "information technology" definition; the '
+                          'ladder cards on 2.101 are SAT, MPT, claim and latent defect',
+}
 
 
 def _dod_supplements(base, key):
