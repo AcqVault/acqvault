@@ -5,11 +5,11 @@
       "type": "recall",
       "topic": "Competition (CICA)",
       "q": "Which acquisitions are exempt from the part 6 competition requirements?",
-      "a": "Contracts awarded using the simplified acquisition procedures of part 13; procedures expressly authorized by statute; in-scope modifications (including exercising priced options evaluated in the original competition); and orders under requirements, definite-quantity, indefinite-quantity, and task- or delivery-order contracts.",
+      "a": "Simplified acquisitions under part 13; procedures expressly authorized by statute; in-scope modifications (including exercising priced options evaluated in the original competition); orders under requirements and definite-quantity contracts; and orders against task- and delivery-order contracts entered into under part 16. Orders under indefinite-quantity contracts are exempt only conditionally: the contract must have been awarded under 6.101 or 6.102 with all responsible sources realistically permitted to compete for the order's requirements, or under 6.103 with a J&A that adequately covers the order. The IDIQ exemption is earned by the underlying award — it is not automatic.",
       "cite": {
         "src": "rfo",
         "sec": "6.001",
-        "quote": "This part applies to all acquisitions except— (a) Contracts awarded using the simplified acquisition procedures of part 13; (b) Contracts awarded using contracting procedures (other than those addressed in this part) that are expressly authorized by statute"
+        "quote": "Orders placed under indefinite-quantity contracts that were entered into according to this part when— (1) The contract was awarded under 6.101 or 6.102, and all responsible sources were realistically permitted to compete for the requirements contained in the order; or (2) The contract was awarded under 6.103, and the justification and approval, if required, adequately covers the requirements contained in the order;"
       }
     },
     {
@@ -504,13 +504,13 @@
       "rung": "5m",
       "type": "recall",
       "topic": "Small Business Programs",
-      "q": "What extra scrutiny applies to a sole-source 8(a) award above the competitive threshold — and above $30 million?",
-      "a": "Above the competitive threshold, SBA may accept the requirement sole-source only after the contracting officer complies with 6.103. For sole-source 8(a) contracts over $30 million, the justification must include at minimum the description and estimated value, the statutory authority, and the fair-and-reasonable-cost determination.",
+      "q": "What extra scrutiny applies to a sole-source 8(a) award above the competitive threshold — and where does the expanded-justification trigger sit for DoD?",
+      "a": "Above the competitive threshold, SBA may accept the requirement sole-source only after the contracting officer complies with 6.103. The expanded justification kicks in at $100 million for DoD — R-DFARS 206.104-71 applies that figure in lieu of the $30 million trigger in 6.104-1(b), which is the civilian-agency number. Above the applicable trigger, the justification must include at minimum the description and estimated value, the statutory authority, and the fair-and-reasonable-cost determination.",
       "cite": {
-        "src": "rfo",
-        "sec": "6.104-1",
-        "quote": "For sole-source 8(a) contracts over $30 million, the justification must include, at a minimum, the contents described at paragraphs (a)(3), (a)(4), and (a)(7) of this section.",
-        "amount": "$30 million"
+        "src": "r-dfars",
+        "sec": "206.104-71",
+        "quote": "In lieu of the threshold at FAR 6.104-1(b), each justification for a sole-source 8(a) contract over $100 million shall include the information at FAR 6.104-1(b).",
+        "amount": "$100 million"
       }
     },
     {

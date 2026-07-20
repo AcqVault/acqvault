@@ -199,11 +199,11 @@
       "type": "recall",
       "topic": "Simplified Acquisition Procedures",
       "q": "What is the cap on each individual purchase under a blanket purchase agreement?",
-      "a": "The SAT.",
+      "a": "It depends on which part the BPA lives under. A part 13 (noncommercial) BPA caps each individual purchase at the SAT. A part 12 commercial BPA caps each purchase at the simplified-procedures ceiling in 12.201-1(a) — $9 million. Quoting the SAT as the cap on a commercial BPA leaves real headroom on the table.",
       "cite": {
         "src": "rfo",
-        "sec": "13.201",
-        "quote": "if using blanket purchase agreements (BPAs), the maximum value of each individual purchase under a BPA may not exceed the SAT."
+        "sec": "12.201-1",
+        "quote": "The dollar limitation for each individual purchase under the BPA, which may not exceed the threshold for use of simplified procedures at 12.201-1(a)"
       }
     },
     {
@@ -223,11 +223,23 @@
       "type": "recall",
       "topic": "Small Business Programs",
       "q": "When must a contract be set aside for small business (the Rule of Two)?",
-      "a": "Above the micro-purchase threshold, when there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery.",
+      "a": "When there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery. But do not reach for the test too early: between the MPT and the SAT the set-aside is categorical under 13.102 — no expectation analysis needed. The Rule of Two is the test you actually run above the SAT.",
       "cite": {
         "src": "rfo",
         "sec": "19.104-1",
         "quote": "For contracts above the micro-purchase threshold, the contracting officer must set the contract aside for small business if there is a reasonable expectation of obtaining offers— (1) From two or more responsible small business concerns; and (2) That are competitive in terms of fair market prices, quality, and delivery."
+      }
+    },
+    {
+      "rung": "sat",
+      "type": "recall",
+      "topic": "Small Business Programs",
+      "q": "Between the micro-purchase threshold and the SAT, when must an acquisition be set aside for small business?",
+      "a": "Always — in that band the set-aside is automatic. No Rule-of-Two expectation analysis, no market-research test: above the MPT and at or below the SAT, the acquisition must be set aside for small business concerns, full stop.",
+      "cite": {
+        "src": "rfo",
+        "sec": "13.102",
+        "quote": "Acquisitions of supplies or services that have an anticipated dollar value above the MPT, but at or below the SAT, must be set aside for small business concerns (see part 19)."
       }
     },
     {
@@ -675,18 +687,6 @@
         "src": "rfo",
         "sec": "6.001",
         "quote": "Contract modifications that are within the scope of the contract, including exercising priced options that were evaluated as part of the original competition (see part 17)"
-      }
-    },
-    {
-      "rung": "sat",
-      "type": "recall",
-      "topic": "Contract Modifications & Scope",
-      "q": "What factors drive a scope determination on a proposed modification (the FACT PoP memory aid)?",
-      "a": "Whether offerors Fairly and reasonably Anticipated the work, the Cost relative to the original value, the Type or nature of the work, and the effect on the Period of Performance. Work outside the existing scope is a new contract action that must be competed or justified.",
-      "cite": {
-        "src": "rfo",
-        "sec": "5.001",
-        "quote": "Contract action means an action resulting in a contract, including actions for additional supplies or services outside the existing contract scope."
       }
     },
     {

@@ -100,12 +100,12 @@
       "rung": "unlimited",
       "type": "recall",
       "topic": "Undefinitized Contract Actions",
-      "q": "What is the letter-contract definitization deadline under the RFO baseline procedures?",
-      "a": "Within 180 days after the date of the letter contract or before completion of 40 percent of the work, whichever occurs first. (Contrast the DoD UCA schedule, where the 180 days runs from the qualifying proposal and the trigger is 50 percent of the NTE obligated.)",
+      "q": "What definitization schedule applies to a DoD letter contract?",
+      "a": "The UCA schedule at 217.7404-3(a): definitize by the earlier of 180 days after the contractor submits a qualifying proposal (extendable up to 90 more days only by HCA-level written determination) or the point where obligations exceed 50 percent of the not-to-exceed price. R-DFARS 216.603-2(c) applies that schedule instead of the civilian baseline at 16.603-2(c) — 180 days from the letter contract or 40 percent of the work — so for a DoD contracting officer the baseline rule simply does not apply.",
       "cite": {
-        "src": "rfo",
-        "sec": "16.603-2",
-        "quote": "The schedule will provide for definitization of the contract within 180 days after the date of the letter contract or before completion of 40 percent of the work to be performed, whichever occurs first."
+        "src": "r-dfars",
+        "sec": "216.603-2",
+        "quote": "In accordance with 10 U.S.C. 3372, establish definitization schedules for letter contracts following the requirements at 217.7404-3(a) instead of the requirements at FAR 16.603-2(c)."
       }
     },
     {
@@ -185,11 +185,11 @@
       "type": "recall",
       "topic": "Data Rights",
       "q": "When does the Government get unlimited rights in technical data?",
-      "a": "When the item, component, or process was or will be developed exclusively with Government funds — plus categories like form, fit, and function data; data necessary for installation, operation, maintenance, or training; and publicly available data.",
+      "a": "When the item, component, or process was or will be developed exclusively with Government funds — plus categories like form, fit, and function data; data necessary for installation, operation, maintenance, or training purposes other than detailed manufacturing or process data (that OMIT carve-out is the most-fought-over line in DoD data rights — dropping it flips the answer); and publicly available data.",
       "cite": {
         "src": "r-dfars",
         "sec": "227.7103-5",
-        "quote": "The Government obtains unlimited rights in technical data, computer software, or computer software documentation that are— (1) Technical data related to an item, component, or process which has been or will be developed exclusively with Government funds"
+        "quote": "The Government obtains unlimited rights in technical data, computer software, or computer software documentation that are— (1) Technical data related to an item, component, or process which has been or will be developed exclusively with Government funds; (2) Studies, analyses, test data, or similar data produced in the performance of a contract when the study, analysis, test, or similar work was specified as an element of performance; (3) Created exclusively with Government funds in the performance of a contract that does not require the development, manufacture, construction, or production of items, components, or processes; (4) Form, fit, and function data; (5) Necessary for installation, operation, maintenance, or training purposes (other than detailed manufacturing or process data);"
       }
     },
     {
@@ -486,11 +486,11 @@
       "type": "recall",
       "topic": "Acquisition Planning & Strategy",
       "q": "What is a multiyear contract, and how does it differ from a contract with options?",
-      "a": "A contract for the purchase of supplies or services for more than 1 but not more than 5 program years — buying the out-years without exercising options, with later-year performance contingent on funds and cancellation provisions protecting the Government.",
+      "a": "A contract for the purchase of supplies or services for more than 1 but not more than 5 program years — it buys the out-years up front instead of establishing and exercising an option for each program year. Out-year performance may be made contingent on appropriations, and if it is, the contract may provide for a cancellation payment to the contractor; the cancellation ceiling is the maximum charge the contractor can receive. That ceiling caps the Government's liability — it is contractor protection, not Government protection.",
       "cite": {
         "src": "rfo",
         "sec": "17.102",
-        "quote": "Multiyear contract means a contract for the purchase of supplies or services for more than 1, but not more than 5 program years."
+        "quote": "Multiyear contract means a contract for the purchase of supplies or services for more than 1, but not more than 5 program years. A multiyear contract may provide that performance under the contract during the second and subsequent years of the contract is contingent upon the appropriation of funds, and (if it does so provide) may provide for a cancellation payment to be made to the contractor if appropriations are not made."
       }
     },
     {

@@ -64,12 +64,12 @@
       "rung": "25m",
       "type": "recall",
       "topic": "Contracting by Negotiation — Source Selection",
-      "q": "Which evaluation factors are mandatory in every competitive source selection?",
-      "a": "Price or cost must be evaluated in every competitive source selection; quality must be evaluated through one or more non-cost factors; and past performance must be evaluated unless the contracting officer documents why it is not appropriate.",
+      "q": "Must price or cost be evaluated in every competitive source selection?",
+      "a": "Not always. For DoD, NASA, and the Coast Guard, the contracting officer may choose not to include price or cost as an award evaluation factor when the RFP is above the SAT, will result in multiple-award contracts for the same or similar services, and states the Government intends to award to each and all qualifying offerors — price or cost then must be considered on every order placed under the contract instead. Otherwise the baseline holds: price or cost in every competitive source selection, quality through one or more non-cost factors, and past performance unless the contracting officer documents why it is not appropriate.",
       "cite": {
         "src": "rfo",
         "sec": "15.104",
-        "quote": "Price or cost to the Government must be evaluated in every competitive source selection (10 U.S.C. 3206(c)(1)(B) and41 U.S.C. 3306(c)(1)(B))."
+        "quote": "for DoD, NASA, and the Coast Guard– (A) Contracting officers may choose not to include price or cost as an evaluation factor for award when an RFP– (1) Has an estimated value above the simplified acquisition threshold; (2) Will result in multiple-award contracts that are for the same or similar services; and (3) States that the Government intends to make an award to each and all qualifying offerors."
       }
     },
     {
@@ -209,12 +209,12 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "Above what dollar value must certified cost or pricing data be obtained?",
-      "a": "When an action meets or exceeds $2.5 million (for prime contracts awarded on or after July 1, 2018), unless a 15.403-2 exception applies. Consider requesting a waiver when the waiver standards can be met.",
+      "a": "For DoD: $10 million for prime contracts awarded after June 30, 2026, and $2.5 million for primes awarded on or before that date — R-DFARS 215.403-3(a), in lieu of the RFO baseline. Civilian agencies stayed at $2.5 million. Either way the duty yields to a 15.403-2 exception (DoD adds its own at 215.403-270), and a waiver remains worth requesting when the standards can be met.",
       "cite": {
-        "src": "rfo",
-        "sec": "15.403-3",
-        "quote": "Unless an exception at 15.403-2 applies, contracting officers must obtain certified cost or pricing data when an action meets or exceeds the threshold of $2.5 million (for prime contracts awarded on or after July 1, 2018).",
-        "amount": "$2.5 million"
+        "src": "r-dfars",
+        "sec": "215.403-3",
+        "quote": "In lieu of the requirements of FAR 15.403-3(a), obtain certified cost or pricing data when a prime contract is expected to exceed $10 million and is awarded after June 30, 2026, unless an exception at FAR 15.403-2 or DFARS 215.403-270 applies. The threshold is $2.5 million when the prime contract is awarded on or before June 30, 2026",
+        "amount": "$10 million"
       }
     },
     {
@@ -355,11 +355,23 @@
       "type": "recall",
       "topic": "Certified Cost or Pricing Data & Proposal Analysis",
       "q": "What are the statutory cost-plus-fixed-fee ceilings?",
-      "a": "15 percent of estimated cost for experimental, developmental, or research work; 6 percent of the estimated construction cost for architect-engineer services; and 10 percent for all other CPFF contracts.",
+      "a": "15 percent of estimated cost for experimental, developmental, or research work; 10 percent for all other CPFF contracts; and for architect-engineer services, 6 percent of the estimated construction cost — but that 6 percent is the civilian baseline. For the Departments of the Army, Navy, and Air Force, R-DFARS 236.202-371 sets the A-E design-fee limit at 10 percent.",
       "cite": {
         "src": "rfo",
         "sec": "15.404-9",
         "quote": "(i) For experimental, developmental, or research work performed under a cost-plus-fixed-fee contract, the fee must not exceed 15 percent of the contract's estimated cost, excluding fee. (ii) For architect-engineer services for public works or utilities, the contract price or the estimated cost and fee for production and delivery of designs, plans, drawings, and specifications must not exceed 6 percent of the estimated cost of construction of the public work or utility, excluding fees. (iii) For other cost-plus-fixed-fee contracts, the fee must not exceed 10 percent of the contract's estimated cost, excluding fee."
+      }
+    },
+    {
+      "rung": "25m",
+      "type": "recall",
+      "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+      "q": "What is the architect-engineer design-fee limit for the Departments of the Army, Navy, and Air Force?",
+      "a": "10 percent of the project's estimated construction cost — the military departments' statutory limit under R-DFARS 236.202-371, which displaces the 6 percent civilian baseline. It reaches modifications and redesign work too, but only the portion of the price attributable to preparing designs, plans, drawings, and specifications.",
+      "cite": {
+        "src": "r-dfars",
+        "sec": "236.202-371",
+        "quote": "The statutes at 10 U.S.C. 7540, 8612, and 9540, for the Departments of the Army, Navy, and Air Force, respectively, limit the contract price (or fee) for architect-engineer services for the preparation of designs, plans, drawings, and specifications to 10 percent of the project's estimated construction cost."
       }
     },
     {
