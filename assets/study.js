@@ -703,12 +703,35 @@
     el('lad-start').onclick = function () { goDepth(2, function () { ladderSession(pool, label); }); };
     keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('lad-start').onclick(); return true; } });
   }
-  function ladderSession(cards, label) { // mirrors startSession's produce-then-reveal branch
+  /* Session position survives a reload. Without this, following a citation — the whole
+     point of the ladder — dumped you back at the track picker with the drill gone, which
+     punished the exact behaviour the feature exists to create. Stores card ids, not cards. */
+  function saveResume(mode, rung, q, i, got, label) {
+    S.resume = { mode: mode, rung: rung, ids: q.map(function (c) { return c.id; }),
+                 i: i, got: got, label: label, at: Date.now() };
+    save();
+  }
+  function clearResume() { if (S.resume) { delete S.resume; save(); } }
+  function resumeLadder() {
+    var r = S.resume;
+    if (!r || r.mode !== 'ladder' || !r.ids || r.i >= r.ids.length) { clearResume(); return false; }
+    var byId = {};
+    (ladderPool(r.rung) || []).forEach(function (c) { byId[c.id] = c; });
+    var q = r.ids.map(function (id) { return byId[id]; }).filter(Boolean);
+    if (q.length !== r.ids.length) { clearResume(); return false; }   // deck moved under us
+    S.ladderRung = r.rung; save();
+    depth1View = viewLadder;
+    goDepth(2, function () { ladderSession(q, r.label, r.i, r.got); });
+    return true;
+  }
+
+  function ladderSession(cards, label, startAt, startGot) { // mirrors startSession's produce-then-reveal branch
     if (!cards.length) { viewLadder(); return; }
-    var q = interleave(shuffle(cards.slice()).slice(0, SESSION_CAP));
-    var i = 0, got = 0;
+    var q = startAt == null ? interleave(shuffle(cards.slice()).slice(0, SESSION_CAP)) : cards;
+    var i = startAt || 0, got = startGot || 0, shaky = [];
     function step() {
       if (i >= q.length) return summary();
+      saveResume('ladder', ladderRung(), q, i, got, label);
       var c = q[i];
       render(
         '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>' +
@@ -739,20 +762,40 @@
         });
       }
       function doGrade(g) {
-        if (g === 1) ladderNoteMiss(c.id);
+        if (g === 1) { ladderNoteMiss(c.id); shaky.push(c); }
+        else if (g === 2) shaky.push(c);
         grade(c.id, g);
         if (g === 3) got++;
         i++; step();
       }
     }
+    /* The end of a session used to be a receipt — "3 of 25 solid" and one button. The
+       casual word game debriefed better than the board prep did. Name what you dropped
+       and offer to run it again; a miss list is an assignment, a percentage is a score. */
     function summary() {
       keyHandler(null);
+      clearResume();
       var pct = i ? Math.round(100 * got / i) : 0;
+      var missHtml = '';
+      if (shaky.length) {
+        missHtml = '<div class="st-sum-miss"><div class="st-sum-miss-head">Say these out loud before you close this tab</div>' +
+          shaky.slice(0, 5).map(function (m) {
+            var l = m.cite && m.cite.link;
+            return '<div class="st-sum-miss-item">' + esc(m.q) +
+              (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+          }).join('') +
+          (shaky.length > 5 ? '<div class="st-sum-miss-more">+ ' + (shaky.length - 5) + ' more</div>' : '') +
+          '</div>';
+      }
       render('<div class="st-card st-summary"><div class="st-chip">' + esc(label) + '</div>' +
         '<div class="st-sum-num">' + got + '<span> of ' + i + ' solid</span></div>' +
         '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
-        '<p class="st-sub">' + sumFlavor(pct, i) + '</p>' +
-        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to the ladder</button></div></div>');
+        '<p class="st-sub">' + sumFlavor(pct, i) + '</p>' + missHtml +
+        '<div class="st-actions">' +
+        (shaky.length ? '<button class="st-btn st-btn-reveal" id="st-again">Drill the ' + shaky.length + ' you dropped</button>' : '') +
+        '<button class="st-btn' + (shaky.length ? ' st-btn-hint' : ' st-btn-reveal') + '" id="st-home">Back to the ladder</button>' +
+        '</div></div>');
+      if (shaky.length) el('st-again').onclick = function () { ladderSession(shaky.slice(), label); };
       el('st-home').onclick = backHome;
     }
     step();
@@ -1417,6 +1460,7 @@
         }
         depth1View = viewCombo; goDepth(1, viewCombo); return;
       }
+      if (resumeLadder()) return;   // a reload or a citation click shouldn't cost the session
       viewTrack();
     }).catch(function () {
       app.innerHTML = '<p class="st-sub">Couldn’t load the question deck — check your connection and refresh. (Once loaded once, it works offline.)</p>';

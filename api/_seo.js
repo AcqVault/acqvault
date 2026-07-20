@@ -1008,7 +1008,7 @@ function renderStudyPage() {
 .st-lad-ready .st-bar{flex:1}
 .st-lad-ready-lab{flex:none;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .st-lad-quote{margin-top:14px;border-left:3px solid var(--brass);padding:2px 0 2px 14px;font-size:14.5px;line-height:1.65;color:#3d444d}
-.st-lad-dod{margin-top:10px}.st-lad-dod-tag{display:inline-block;margin-right:6px;vertical-align:1px;color:var(--ink);opacity:.62;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}.st-lad-quote-link{color:var(--brass-ink);font-weight:700;text-decoration:underline}
+.st-lad-dod{margin-top:10px}.st-lad-dod-tag{display:inline-block;margin-right:6px;vertical-align:1px;color:var(--ink);opacity:.62;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}.st-sum-miss{margin:16px 0 4px;padding-top:14px;border-top:1px solid var(--line2);text-align:left}.st-sum-miss-head{font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink);opacity:.5;margin-bottom:9px}.st-sum-miss-item{font-size:13.5px;line-height:1.5;color:var(--ink);padding:5px 0 5px 11px;border-left:2px solid var(--line2)}.st-sum-miss-more{font-size:12px;color:var(--muted);padding:5px 0 0 11px}.st-lad-quote-link{color:var(--brass-ink);font-weight:700;text-decoration:underline}
 .st-lad-sink{margin-top:24px}
 .st-lad-head{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:8px}
 .st-lad-sink-item{font-size:14px;line-height:1.6;color:#2a3140;padding:8px 0;border-top:1px solid var(--line2)}
