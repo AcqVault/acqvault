@@ -1,0 +1,408 @@
+{
+  "items": [
+    {
+      "rung": "sat",
+      "topic": "Simplified Acquisition Procedures",
+      "scenario": "The comm squadron sends you a $180K purchase request for noncommercial network test sets. Stapled to it is a quote from TechServe, and the requirements owner is direct about it: \"Award to TechServe — they did the site survey, they know our racks, and we already told them it's coming.\" The PR narrative was written around TechServe's product sheet.",
+      "ask": "The customer says the vendor is already picked and the quote is attached. Walk me through what you do with this purchase request.",
+      "script": "This is a competition question wearing a customer-service disguise. RFO 13.101 requires me to promote competition to the maximum extent practicable at this tier — a quote the customer solicited isn't competition, and \"we already told them\" isn't a determination. My move is a candid conversation: incumbent knowledge can earn TechServe the award through evaluation, not before it. Then I run the normal play — set-aside check under RFO 13.102, scrub the requirement so it isn't written around one product sheet, and solicit quotes from at least three sources per RFO 12.201-1. If the customer truly believes only TechServe can perform, that's a determination and findings under RFO 13.101(b), and I own that decision, not the requiring activity.",
+      "follow_ups": [
+        {
+          "q": "The customer says three quotes is just paperwork — TechServe wins anyway. Can you sole-source it?",
+          "h": "There is a door for single-source at this tier. What has to be true to walk through it?",
+          "d": "RFO 13.101(b): the contracting officer may solicit from a single source based on a D&F that only one source is reasonably available — the examples are urgency, exclusive licensing agreements, brand-name, industrial mobilization. \"They know our setup\" and \"we promised them\" are on nobody's list. The trap is letting the requiring activity's pre-selection masquerade as a one-source market. The D&F is the CO's determination, supported by findings, and a weak one invites protest and audit findings."
+        },
+        {
+          "q": "What would change if this requirement were over the SAT?",
+          "h": "The streamlined justification has a heavier cousin.",
+          "d": "Above the SAT you leave Part 13 entirely — full competition rules apply, and restricting competition takes a written justification and approval under RFO 6.104, with technical and requirements personnel certifying their supporting data as accurate and complete. A good answer contrasts the tiers: below the SAT a D&F under 13.101(b); above it a J&A. The trap is the candidate who thinks below-SAT means no justification at all — the D&F is still a written, supportable decision."
+        },
+        {
+          "q": "Where does small business fit in your plan for this buy?",
+          "h": "At this dollar value the answer is not discretionary.",
+          "d": "RFO 13.102: noncommercial acquisitions above the MPT and at or below the SAT must be set aside for small business concerns. So before anyone debates TechServe, the real first question is whether TechServe is even eligible to compete. If they're a large business, the customer's hand-picked awardee may be out of the lane altogether — which is exactly why the CO runs the process front-to-back instead of papering a done deal."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.101", "quote": "Agencies must promote competition to the maximum extent practicable when procuring noncommercial products and services valued at or below the SAT." },
+        { "src": "rfo", "sec": "13.102", "quote": "Acquisitions of supplies or services that have an anticipated dollar value above the MPT, but at or below the SAT, must be set aside for small business concerns (see part 19)." },
+        { "src": "rfo", "sec": "12.201-1", "quote": "Solicit quotations from at least three sources" }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Simplified Acquisition Procedures",
+      "scenario": "Your RFQ for $95K of noncommercial shop equipment closed Friday at 1400. Monday morning you find a quote that hit the org box at 1427 Friday — 27 minutes late — and it's $8K below the next lowest. Your buyer wants to toss it: \"Late is late. That's the rule.\"",
+      "ask": "Your buyer says the low quote is late, so it's out. Is she right? What do you do?",
+      "script": "She's applying the wrong rulebook. Under simplified procedures, RFO 13.202 tells me to exercise good business judgment in deciding whether to accept a quotation received after the due date — there is no automatic late-is-late rule here. The legal footing matters: under RFO 12.201-1, neither a quotation nor the purchase order forms a binding contract, so a quote is market information, not an offer I'm barred from touching. My judgment factors: has award already been decided, would accepting prejudice the quoters who met the deadline, is the process still fair, and what's the value to the Government — $8K on $95K is real money. Whatever I decide, RFO 13.203(b) says the file gets a written description of the procedures I used, so the reasoning is on paper either way.",
+      "follow_ups": [
+        {
+          "q": "Why doesn't the strict late-offer discipline from negotiated procurement apply here?",
+          "h": "Start with what a quotation legally is.",
+          "d": "RFO 12.201-1(b): a quotation is not an offer — the purchase order the Government issues is the offer, and no contract exists until the supplier accepts it. Because quotes carry no contract-law formality, RFO 12.203(c) gives the CO broad discretion: quotation evaluation is expressly not subject to Part 15 or 14 procedures. The trap is the candidate who recites late-proposal doctrine from negotiated acquisitions — importing that rigidity into SAP is exactly the burden simplified procedures exist to shed."
+        },
+        {
+          "q": "What facts would push you to refuse the late quote?",
+          "h": "Think about fairness to the vendors who made the deadline.",
+          "d": "A strong answer names real limits on the discretion: award decision already made or announced, evidence the late quoter gained information the others lacked, a vendor who habitually quotes late to see the field, or a delay long enough that acceptance starts looking like a reopened competition. Good business judgment cuts both ways — RFO 13.202 licenses acceptance, it doesn't compel it. The trap is treating discretion as \"always take the low number.\""
+        },
+        {
+          "q": "How do you paper this file?",
+          "h": "Part 13 tells you exactly what the award file contains.",
+          "d": "RFO 13.203(b): include in the contract file a written description of the procedures used in awarding the purchase order and the number of quotations received. For a judgment call like a late quote, the description should say what arrived when, what I decided, and why the process stayed fair. Thin files are where reasonable judgment calls go to die in an audit."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.202", "quote": "Exercise good business judgment in deciding whether or not to accept a quotation received after the due date or time." },
+        { "src": "rfo", "sec": "12.201-1", "quote": "Neither a quotation nor the purchase order issued by the Government in response to a quotation form a binding contract." },
+        { "src": "rfo", "sec": "13.203", "quote": "Include in the contract file a written description of the procedures used in awarding the purchase order and the number of quotations received." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Authority, Unauthorized Commitments & Ratification",
+      "scenario": "Two months ago the vehicle maintenance shop chief signed a vendor \"service agreement\" for hydraulic lift repairs — $38K. The lifts are fixed, the vendor is invoicing, finance bounced the invoice for lack of a contract, and the package landed on your desk with a sticky note: \"Please fix.\"",
+      "ask": "The work is done, the price looks fine, and the unit needs this vendor paid. How do you fix it?",
+      "script": "This is an unauthorized commitment, and I say that out loud before anything else — RFO 1.402-1: only contracting officers may sign contracts on behalf of the Government, and a shop chief's signature bound nothing. My phone-a-friend is Legal, immediately. Then I work RFO 1.405: the shop chief writes the facts down, and I test the ratification criteria — the Government accepted the work and benefited, the action would have been proper if a CO had done it, I can determine the price fair and reasonable, funds were available when the commitment was made and still are, Legal concurs, and the ratifying official actually holds contractual authority. Package goes to the right approval level. Then the part that actually fixes anything: training that unit on who can obligate the Government, because ratification is a cleanup, not a process.",
+      "follow_ups": [
+        {
+          "q": "Who can ratify this, exactly?",
+          "h": "There's a floor below which the authority cannot go.",
+          "d": "RFO 1.405(b): the head of the contracting activity may ratify, and agencies may delegate — but cannot delegate below the level of the chief of the contracting office. A strong candidate knows the floor cold and adds the design logic: ratification is deliberately elevated and independent, so the person who created the mess, or their chain, never blesses it themselves. The trap is answering \"the CO ratifies\" — a line contracting officer processing the package is not the ratifying official."
+        },
+        {
+          "q": "What if the price turns out high, or funds weren't actually available back in the spring?",
+          "h": "The criteria are conjunctive. What happens when one fails?",
+          "d": "Then it isn't ratifiable — every RFO 1.405(c) criterion must hold, including a fair and reasonable price and funds available both at the time of the commitment and now. RFO 1.405(d) is the exit: nonratifiable actions may be resolved under 31 U.S.C. 3702 or subpart 50.1. The trap is treating ratification as an automatic payment fix; the vendor's path to money isn't guaranteed, which is a point worth making loudly to the unit that caused it."
+        },
+        {
+          "q": "The shop chief says the vendor should have known he wasn't a contracting officer. Does that matter?",
+          "h": "Look at the definition — whose lack of authority makes it a UC?",
+          "d": "RFO 1.405(a) defines the unauthorized commitment: an agreement that is not binding solely because the Government representative lacked authority to make it. The vendor's diligence doesn't change the classification — contractors deal with the Government at their peril when the signer holds no warrant, which is precisely why the Government isn't bound. But the Government took the benefit, so ratification is the equitable route. The mature answer adds RFO 1.405(b)(1): agencies should act to avoid ratifications — prevention is the CO's real deliverable here."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "1.402-1", "quote": "Only contracting officers may sign, administer, or terminate contracts on behalf of the Government." },
+        { "src": "rfo", "sec": "1.405", "quote": "Unauthorized commitment means an agreement that is not binding solely because the Government representative who made it lacked the authority to enter into that agreement on behalf of the Government." },
+        { "src": "rfo", "sec": "1.405", "quote": "Agencies cannot delegate this authority below the level of the chief of the contracting office." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Acquisition Planning & Strategy",
+      "scenario": "The civil engineer flight sends a $140K noncommercial purchase request for lift-station pumps specifying \"Brand X only — no substitutes.\" The stated reason: \"Everything else in the plant is Brand X.\" No salient characteristics, no engineering analysis. Your market research turns up two other manufacturers whose pumps claim full compatibility.",
+      "ask": "Your customer insists it's Brand X or nothing. How do you proceed?",
+      "script": "Brand-name is a restriction on competition, so the customer's preference is the start of my analysis, not the end of it. First I test the premise: RFO 13.101 makes maximum-practicable competition the rule at this tier, and my market research already shows two claimed equals — so I push the engineers to give me salient characteristics for a brand-name-or-equal description, which usually dissolves the problem. If the technical case for Brand X-only survives — real interface, sustainment, or standardization facts — then RFO 13.101(b) is the vehicle: a determination and findings that only one source is reasonably available, with brand-name expressly among the examples. Either way the decision is documented and it's mine. What I won't do is launder a preference into a specification.",
+      "follow_ups": [
+        {
+          "q": "The engineer signs a memo saying only Brand X works. Is that enough?",
+          "h": "Whose determination is a D&F?",
+          "d": "No — it's an input. RFO 1.501: a D&F is a special form of written approval, a determination supported by findings covering each requirement of the regulation. The engineer supplies facts I can test — interface constraints, failure history, the cost of mixed fleets — and I make the determination. A strong candidate says plainly: technical advice feeds the decision; it doesn't replace the contracting officer's ownership of it. The trap is the CO as stenographer, filing the memo and calling it findings."
+        },
+        {
+          "q": "Same pumps, but they're commercial products under Part 12. What changes?",
+          "h": "Part 12 has its own documentation line for this exact move.",
+          "d": "RFO 12.102: for commercial acquisitions at or below the SAT, document the decision that only one source is available and the basis for it; over the SAT it escalates to a written justification per 6.104. So the discipline survives the commercial determination — only the paperwork's shape changes. Good answers also catch that brand-name-without-equal is called out by name in 12.102 as a restriction that must be documented."
+        },
+        {
+          "q": "You're in DoD. Anything extra ride along with a brand-name description?",
+          "h": "There's a statute DoD implements on exactly this.",
+          "d": "R-DFARS 212.102-70(b), implementing section 888(a) of the FY17 NDAA: the documentation addressed in 12.102 is required to use brand name or equal descriptions or proprietary specifications. That's the pattern worth naming for the board — where the streamlined baseline relaxes, DoD statute frequently keeps the documentation duty alive. The weak answer stops at the baseline rule and never checks the supplement."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.101", "quote": "Contracting officers may solicit from a single source based on a determination and findings (see subpart 1.5) that only one source is reasonably available (e.g., urgency, exclusive licensing agreements, brand-name or industrial mobilization)." },
+        { "src": "rfo", "sec": "12.102", "quote": "For acquisitions valued at or below the simplified acquisition threshold (SAT), document the decision that only one source is available and the basis for the decision." },
+        { "src": "r-dfars", "sec": "212.102-70", "quote": "the documentation addressed in FAR 12.102 is required to use brand name or equal descriptions or proprietary specifications and standards." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Commercial Products & Services",
+      "scenario": "A program manager hands you a $200K purchase request for ruggedized tablets and a fleet-management application — the same package sold to trucking companies, lightly configured for the unit. He's already labeled it: \"Part 13 simplified buy, it's under $350K.\"",
+      "ask": "He's under the SAT, so he says Part 13 it is. Is he right? Walk me through your gate checks.",
+      "script": "He's confused the dollar gate with the commerciality gate. RFO 13.001(a) says Part 13 may be used only if no commercial products or services can satisfy the need — and tablets plus a fleet app sold to the trucking industry are about as commercial as it gets. RFO 10.001(f) points the same direction: procure commercial to the maximum extent practicable, and my market research documents that determination. So this rides Part 12, whose own simplified procedures under RFO 12.201-1 run up to $9 million — well past this buy. Second gate before I move: required sources under Part 8, per 13.001(a)(2) — inventories, excess, AbilityOne. The dollar value picks thresholds and clauses; market research picks the part.",
+      "follow_ups": [
+        {
+          "q": "Why does it matter which part you use if the procedures feel similar?",
+          "h": "Think about what changes in the resulting order.",
+          "d": "The parts carry different clause architectures and different postaward machinery — RFO 13.204(c) flatly prohibits using the Part 12 clauses (52.212-1, -2, -4) in noncommercial acquisitions, and the reverse mismatch buries a commercial vendor under noncommercial terms it never agreed to price. Wrong-part awards create clause conflicts on inspection, termination, and payment that surface exactly when something goes wrong. The strong candidate frames part selection as a legal-effect decision, not a filing preference."
+        },
+        {
+          "q": "What's the other applicability gate in 13.001 besides commerciality?",
+          "h": "Someone may already be required to supply this.",
+          "d": "RFO 13.001(a)(2): the supplies or services must not be available from a required source under Part 8 — agency inventories, excess from other agencies, Federal Prison Industries, AbilityOne Procurement List. A good answer runs the gates in order: required sources, then commerciality, then method. The trap is jumping straight to \"how do I buy\" before \"may I buy it on the open market at all.\""
+        },
+        {
+          "q": "Where does the $9 million figure come from, and what's the classic mistake around it?",
+          "h": "Simplified is bigger than the SAT — in one lane.",
+          "d": "RFO 12.201-1(a): for commercial acquisitions valued up to $9 million, issue an RFQ followed by a purchase order — that's the commercial simplified lane. The classic mistake is treating $350K as the ceiling on all simplified buying. The SAT bounds Part 13's noncommercial procedures; commercial simplified runs far higher. A board loves the candidate who can keep the two ceilings straight and say which one governs the buy on the table."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.001", "quote": "There are no commercial products or commercial services that can satisfy the agency’s needs" },
+        { "src": "rfo", "sec": "12.201-1", "quote": "For acquisitions valued up to $9 million, issue a request for quotations (RFQ) followed by a purchase order." },
+        { "src": "rfo", "sec": "10.001", "quote": "Agencies must procure commercial products and commercial services to the maximum extent practicable." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Thresholds",
+      "scenario": "A customer with a $520K noncommercial ramp-lighting retrofit across two adjacent buildings offers you a helpful idea: \"Cut two purchase orders, $260K each, one per building. Keeps everything under your simplified threshold and we move faster.\"",
+      "ask": "Two purchase orders, each under the SAT. What's wrong with that picture, and what do you tell the customer?",
+      "script": "That's a split, and the rule is written for exactly this conversation. RFO 13.001(c): do not divide requirements whose aggregate value exceeds the SAT merely to permit use of Part 13 procedures. The test is the requirement, not the paperwork — this is one $520K need that happens to touch two buildings, and the SAT is $350,000 under RFO 2.101. So I tell the customer no, and I tell him why it isn't just bureaucracy: the thresholds are where competition, publicizing, and justification rules attach, and splitting is engineering around all of them at once. Then I give him the real path — the buy runs under above-SAT procedures, and my job is to make that as fast as the rules allow, which is usually faster than he fears.",
+      "follow_ups": [
+        {
+          "q": "When are two buys legitimately two requirements instead of a split?",
+          "h": "The rule's own verb is \"divide\" — and its test is intent plus aggregation.",
+          "d": "The line is whether one known requirement was carved up \"merely to permit\" simplified procedures. Needs that arise independently — different times, different funded requirements, genuinely severable work — can stand alone. One project, one funding action, one designer, two POs on the same day fails the smell test every time. A strong candidate says they'd document the independence if they split, because the file has to defend the aggregate-value call."
+        },
+        {
+          "q": "Give me the SAT's exception tiers and when you'd see them.",
+          "h": "The definition itself carries the exceptions.",
+          "d": "RFO 2.101: the SAT is $350,000, except for acquisitions supporting contingency operations or defense/recovery from cyber, nuclear, biological, chemical, or radiological attack, or disaster response — then $1 million inside the United States and $2 million outside. Boards probe this because it's where deployed COs live. The trap is quoting the higher tiers without the qualifying purpose — the head of the agency's determination that the acquisition supports the covered operation is what unlocks them."
+        },
+        {
+          "q": "Same trick at the bottom of the scale — a buyer splits a $25K buy into two purchase-card transactions. Different answer?",
+          "h": "Same principle, different threshold.",
+          "d": "Same violation, smaller numbers: the MPT is $15,000 under RFO 2.101, and splitting to stay under it dodges the competition and set-aside duties that attach above it — remember RFO 13.102's set-aside obligation starts right above the MPT. Know the carve-downs too: $2,000 for construction under wage-rate requirements, $2,500 for services under labor standards. And the DoD wrinkle: class-deviation special acquisition authorities can raise micro-purchase thresholds for purchases directly supporting covered combatant-commander operations — deviation-driven, not a blanket raise."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.001", "quote": "Do not divide requirements, the aggregate value of which exceeds the SAT, merely to permit use of the procedures in this part." },
+        { "src": "rfo", "sec": "2.101", "quote": "Simplified acquisition threshold means $350,000, except for—" },
+        { "src": "rfo", "sec": "2.101", "quote": "Micro-purchase threshold means $15,000" }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Small Business Programs",
+      "scenario": "Your buyer is drafting an RFQ for $120K in noncommercial calibration services and plans to post it unrestricted \"to get the widest field.\" She notes, almost in passing, that the two incumbents everyone knows are both large businesses.",
+      "ask": "The buyer wants to run this unrestricted. What's your call, and how do you get there?",
+      "script": "My call is that unrestricted isn't the default she thinks it is. RFO 13.102 is categorical for this lane: noncommercial buys above the MPT and at or below the SAT must be set aside for small business. So the posture starts set-aside, and my market research question flips — not \"who are the incumbents\" but \"are there small businesses that can do calibration to this standard.\" Part 19 supplies the working test: RFO 19.104-1(a), a reasonable expectation of offers from two or more responsible small businesses, competitive on price, quality, and delivery. If honest research says the small-business field genuinely can't cover it, RFO 19.104-1(b) makes me document the reason the buy isn't set aside. The incumbents being large is a fact about the past, not a market-research conclusion.",
+      "follow_ups": [
+        {
+          "q": "Your research finds exactly one capable small business. Now what?",
+          "h": "The rule-of-two is an expectation about offers — count them.",
+          "d": "One capable small business defeats the RFO 19.104-1(a) expectation of two or more, so a total set-aside isn't supportable on that ground — and the decision not to set aside gets documented under 19.104-1(b). The strong answer doesn't stop there: it asks whether one of the socioeconomic-program paths in Part 19 fits before defaulting to unrestricted, and whether the requirement's scope is what's shrinking the small-business field. The trap is treating one good small business as \"close enough\" to set aside — or as a license to sole-source."
+        },
+        {
+          "q": "Does the set-aside obligation reach micro-purchases or your AbilityOne buys?",
+          "h": "The rule has an explicit floor and an explicit carve-out.",
+          "d": "No — RFO 19.104-1(c): the set-aside requirement does not apply at or below the micro-purchase threshold or to purchases from required sources under Part 8, the AbilityOne Procurement List being the canonical example. Boards ask this to see if the candidate knows where the obligation starts and stops rather than reciting \"always set aside.\" Required sources outrank set-asides in the order of operations."
+        },
+        {
+          "q": "Any DoD-specific boundaries on the set-aside rule you'd flag?",
+          "h": "The supplement draws dollar lines the baseline doesn't.",
+          "d": "R-DFARS 219.104-1 scopes the FAR 19.104-1(a) and (b) requirements for certain work: construction including maintenance and repair under $3.5 million, dredging under $2 million, A-E services for military construction or family housing under $1 million — and carves out supplies developed under the U.S.-Canadian Defense Development Sharing Program. The point for a board: the set-aside machinery is baseline-plus-supplement, and a DoD CO who has never opened the 219 pages is guessing."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.102", "quote": "must be set aside for small business concerns" },
+        { "src": "rfo", "sec": "19.104-1", "quote": "For contracts above the micro-purchase threshold, the contracting officer must set the contract aside for small business if there is a reasonable expectation of obtaining offers—" },
+        { "src": "r-dfars", "sec": "219.104-1", "quote": "The requirements at FAR 19.104-1(a) and (b) apply to acquisitions for—" }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Contracting Authority",
+      "scenario": "On your $290K noncommercial grounds-maintenance purchase order, the COR emails the contractor: \"Add the two new buildings to your route starting Monday — we'll square up the paperwork later.\" The contractor complies. Three weeks on, an invoice arrives 12 percent over the order value, and the COR tells you he was \"just keeping the mission moving.\"",
+      "ask": "The COR says he was keeping the mission moving. Untangle this for me — what happened, and what do you do about it?",
+      "script": "What happened is an unauthorized commitment issued by the one person the contractor had every reason to trust. RFO 1.404(d) is unambiguous: a COR has no authority to make commitments or changes affecting price, quantity, delivery, or any other term — and RFO 1.402-1 reserves binding the Government to contracting officers. So the Government isn't bound to the extra work, but it took the benefit, which puts me in RFO 1.405 ratification territory: facts in writing, criteria tested, Legal in the loop, package to the proper level. In parallel I level with the contractor about where their invoice actually stands. Then the fix that outlives this order: re-brief the COR against his designation letter, remind him it warns of personal liability for unauthorized acts, and reset the who-can-direct line with the contractor in writing.",
+      "follow_ups": [
+        {
+          "q": "The COR's designation letter never mentions directing changes. Does that silence help him?",
+          "h": "What must the designation specify — and which way does silence cut?",
+          "d": "It cuts against him. RFO 1.404(a): the designation must specify the extent of the COR's authority, its period, that it cannot be redelegated, and that the COR may be personally liable for unauthorized acts. Authority in this system is affirmative — it exists where granted in writing, and silence grants nothing. The trap is the instinct that an ambiguous letter creates wiggle room; the baseline is zero authority to change the contract, and the letter can only add within the CO's own limits."
+        },
+        {
+          "q": "The contractor says the COR is the Government's own representative — why isn't the Government simply bound?",
+          "h": "Whose signature can create a contract obligation?",
+          "d": "Because binding the Government takes actual authority, and RFO 1.402-1(a) places that with contracting officers acting within their delegated limits. A COR's direction is apparent authority at best, and contractors rely on it at their peril — which is precisely why RFO 1.405 exists as the equitable cleanup when the Government has accepted the benefit. The strong answer holds both truths: the contractor doesn't get automatic payment, and the Government doesn't get free work — ratification or another 1.405(d) path resolves it."
+        },
+        {
+          "q": "How do you keep this from happening again on your contracts?",
+          "h": "The regulation states the goal in one line — prevention.",
+          "d": "RFO 1.405(b)(1): agencies should take actions to avoid the need for ratifications. In practice: postaward kickoff where the CO — not the COR — explains who can direct what; a who-can-direct letter in the contractor's hands; COR files reviewed periodically against the designation; and fast, visible processing of this UC so the unit learns the cost. A board wants to hear that the candidate treats every ratification as a training failure with a name on it."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "1.404", "quote": "A COR has no authority to make any commitments or changes that affect price, quality, quantity, delivery, or other terms and conditions of the contract." },
+        { "src": "rfo", "sec": "1.402-1", "quote": "Only contracting officers may sign, administer, or terminate contracts on behalf of the Government." },
+        { "src": "rfo", "sec": "1.405", "quote": "Agencies should take actions to avoid the need for ratifications." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Contract Finance & Fiscal Law",
+      "scenario": "The vendor on your $85K purchase order emails an invoice missing the contract number and the defective-invoice notice contact. It sits in an org inbox for 12 days before anyone forwards it to the billing office. Now the vendor is on the phone demanding late-payment interest and threatening to stop work on the follow-on.",
+      "ask": "The vendor wants interest. Do they have a case? Walk me through how invoices are supposed to move on this order.",
+      "script": "Both sides fumbled, and prompt-payment rules score each fumble separately. RFO 32.905(a): payment rides on a proper invoice plus satisfactory performance. This invoice isn't proper — 32.905(b) lists the required content, and the contract number is on it. But the Government has a clock too: the designated billing office must return a defective invoice within 7 days with the reasons, and if it doesn't, the due date adjusts for interest-penalty purposes. Twelve days in an org inbox means we own part of this. So: get the invoice back to the vendor today with the specific defects, fix my routing so invoices land at the designated billing office, confirm the receiving report is in place per 32.905(c), and walk the vendor through what a proper invoice looks like so round two pays clean.",
+      "follow_ups": [
+        {
+          "q": "Name the load-bearing elements of a proper invoice.",
+          "h": "Think about what the payment office needs to match money to performance.",
+          "d": "From RFO 32.905(b): contractor name and address, invoice date and number, the contract number or other authorization, description-quantity-unit price-extended price of what was delivered, shipping and payment terms, remit-to official, a contact for defective-invoice notices, plus TIN and EFT data where agency procedures require them, and anything else the contract itself demands. The candidate who can name even five signals they've actually cleared a payment problem rather than memorized a slide."
+        },
+        {
+          "q": "The billing office sat on it 12 days. Why does that matter if the invoice was defective anyway?",
+          "h": "A defective invoice doesn't stop the Government's own clock.",
+          "d": "RFO 32.905(b)(3): the billing office must return an improper invoice within 7 days after receipt with the reasons; if the notice isn't timely, the due date adjusts for determining any interest penalty. So \"it was defective\" is not absolution — the Government's delay converts into interest exposure. The trap is the one-sided answer that lectures the vendor about proper invoices while ignoring that the file shows the Government failed its own return deadline."
+        },
+        {
+          "q": "The vendor is a small business and you're in DoD. Does that change your payment posture?",
+          "h": "DoD has a statutory acceleration goal.",
+          "d": "Yes — R-DFARS 232.009-1: 10 U.S.C. 3801(b) requires DoD to provide accelerated payments to small business contractors and subcontractors to the fullest extent permitted by law, with a goal of 15 days. The board is listening for whether the candidate treats small-business cash flow as a compliance afterthought or as a policy DoD is statutorily leaning into — and whether they know acceleration is a goal that still presupposes a proper invoice."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "32.905", "quote": "Payment will be based on receipt of a proper invoice and satisfactory contract performance." },
+        { "src": "rfo", "sec": "32.905", "quote": "the designated billing office must return it within 7 days after receipt" },
+        { "src": "r-dfars", "sec": "232.009-1", "quote": "10 U.S.C. 3801(b) requires DoD to provide accelerated payments to small business contractors and subcontractors, to the fullest extent permitted by law, with a goal of 15 days." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "REAs & Claims",
+      "scenario": "Your $145K noncommercial fabrication purchase order carries the 52.213-4 terms. The day after the delivery date passes, the vendor calls: a flood shut their plant for two weeks, they're requesting a no-cost extension. Your customer, already burned by this timeline, wants them terminated for cause today.",
+      "ask": "The customer says terminate for cause today. What's your analysis?",
+      "script": "Not today — analysis first, and the clause supplies the framework. Under 52.213-4(b), the contractor is liable for default unless nonperformance was caused by an occurrence beyond its reasonable control and without its fault or negligence — and floods are on the clause's own list of examples. So I verify: did the flood actually cause this miss, or was the vendor already behind? Did they meet the clause's duties — written notice as soon as possible, remedy the delay quickly, notify when it's over? If the delay is excusable, there's no default to terminate for, and the businesslike answer is an extension sized to the flood. If the facts fall apart, then the cause path opens — but I explain to the customer that terminating over an excusable delay hands the vendor an improper-termination argument, converts my leverage into liability, and still doesn't get parts delivered.",
+      "follow_ups": [
+        {
+          "q": "The vendor never sent written notice during the flood — game over for their excuse?",
+          "h": "Separate the notice duty from the causation test.",
+          "d": "Not automatically. The clause obligates the contractor to notify in writing as soon as possible, remedy the delay, and report when it ends — but the substantive test in 52.213-4(b) is causation beyond reasonable control without fault or negligence. Blown notice hurts their credibility and my ability to mitigate, and I document it; it doesn't manufacture a default where the flood genuinely caused the miss. The trap is the gotcha answer that terminates on a procedural foot-fault and loses on the merits."
+        },
+        {
+          "q": "Say the delay isn't excusable. Walk me through what your termination has to get right.",
+          "h": "There's a notice you usually owe first — with one exception.",
+          "d": "Under 52.213-4(d), the Government sends a cure notice before terminating for cause unless the reason is late delivery — which is this fact pattern, so I could move without one. The termination itself must be defensible: documented default, remedies stated, and the knowledge that an improper cause termination is deemed a termination for convenience, with the Government paying for the privilege. Strong candidates also mention checking with Legal and reporting the termination per policy rather than firing off a letter solo."
+        },
+        {
+          "q": "Why is this clause in your purchase order at all?",
+          "h": "Part 13 built one clause to do four jobs.",
+          "d": "RFO 13.204(b): contracting officers may use 52.213-4 to provide a streamlined set of terms for inspection/acceptance, excusable delays, terminations, and warranties — in lieu of the separate clauses, or tailored. The design point a board rewards: simplified acquisition trades the heavyweight clause architecture for one integrated set of terms, so the CO must actually know what's inside it — because on this order, that clause is the whole postaward rulebook."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "52.213-4", "quote": "The Contractor shall be liable for default unless nonperformance is caused by an occurrence beyond the reasonable control of the Contractor and without its fault or negligence." },
+        { "src": "rfo", "sec": "13.204", "quote": "Contracting officers may use the clause at 52.213-4, Terms and Conditions—Simplified Acquisitions (Noncommercial), to provide a streamlined set of terms and conditions for inspection/acceptance, excusable delays, terminations, and warranties." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Terminations",
+      "scenario": "The day after you issue a $190K purchase order for bleacher systems, the requirement dies — mission change, event cancelled. The vendor never returned a written acceptance, but when you call about cancelling, they push back hard: \"We already ordered the steel. You can't just cancel.\"",
+      "ask": "Can you just cancel this order, or does the vendor have you? Walk me through it.",
+      "script": "This turns on contract formation, and simplified procedures are unusual here. Under RFO 12.201-1(b), my purchase order was the Government's offer — a binding contract forms only when the supplier accepts, by written acceptance or by substantial performance. RFO 13.302(a) lets me withdraw or cancel by written notice any time before acceptance occurs. No written acceptance exists, so the live question is whether ordering steel is substantial performance — placing an upstream material order usually isn't performance of my order, but I get the facts before I get confident. If acceptance hasn't occurred: written cancellation today, and per 13.302(b) I ask the vendor to acknowledge it in writing. If they claim real costs from beginning performance, 13.302(c) routes me to a termination under Part 49 or the 52.213-4 clause rather than a shouting match — the vendor gets process, not a veto.",
+      "follow_ups": [
+        {
+          "q": "What exactly turns your purchase order into a binding contract?",
+          "h": "The offer is yours. What are the two ways they take it?",
+          "d": "RFO 12.201-1(b): written acceptance of the purchase order, or substantial performance of it. Until one happens, there's no contract — which is why 13.302(a) cancellation-by-notice works at all. The discriminating question is what counts as substantial performance: mobilizing, fabricating, delivering against the order points one way; internal preparations like ordering raw stock generally don't. Weak candidates either treat every PO as instantly binding or assume the Government can walk away at any point — both wrong."
+        },
+        {
+          "q": "The vendor proves they cut steel to your drawings before your notice arrived. Now what?",
+          "h": "The regulation names your off-ramp when cancellation is contested.",
+          "d": "RFO 13.302(c): if the contractor doesn't accept the cancellation or claims costs from beginning performance, follow Part 49 or the 52.213-4 clause to terminate. Under the clause's convenience terms, the contractor is paid the percentage of the contract price reflecting work performed plus reasonable demonstrable charges resulting from the termination — no cost-accounting-standards apparatus, and nothing for costs that could reasonably have been avoided. The trap is digging in on \"it never became a contract\" when the facts have moved; termination for convenience is the clean, defensible exit."
+        },
+        {
+          "q": "Why doesn't the full Part 49 termination machinery automatically govern here?",
+          "h": "Check what Part 49 says about orders carrying the simplified clause.",
+          "d": "RFO 49.501 states the subpart on termination clauses does not apply to contracts using the 52.213-4 terms — the streamlined clause carries its own self-contained termination scheme, deliberately lighter: percentage-of-price settlement, standard record keeping, no audit right. The board point: simplified acquisition simplifies the exit too, and a CO who reflexively fires up full Part 49 settlement machinery on a purchase order is burning exactly the effort Part 13 exists to save."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.302", "quote": "The Government may withdraw, amend, or cancel purchase orders by written notice to the supplier at any time before acceptance of the order occurs" },
+        { "src": "rfo", "sec": "12.201-1", "quote": "A binding contract is formed when the supplier accepts the Government’s offer, either by written acceptance of the purchase order or substantial performance of the purchase order." },
+        { "src": "rfo", "sec": "52.213-4", "quote": "the Contractor shall be paid a percentage of the contract price reflecting the percentage of the work performed prior to the notice of termination" }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Inspection & Acceptance",
+      "scenario": "For a $60K buy of industrial shelving and racks, your customer wants inspection at the vendor's plant plus a battery of acceptance tests — \"we got burned on the last delivery and I'm not signing for junk again.\" The items are catalog-standard, nothing safety-critical.",
+      "ask": "How much inspection does this buy actually need — and how do you handle the customer?",
+      "script": "The default answer is in the rulebook: RFO 13.103 — inspection and acceptance should generally be at destination, with source inspection specified only where 46.404 requires it. And 46.404's calculus for at-or-below-SAT work weighs criticality of application, the size of possible losses, and how likely the vendor is to replace defective items without a fight. Catalog shelving fails every trigger for the heavyweight treatment: at destination we check type and kind, quantity, damage, operability if readily determinable, and packaging — that's the prescribed scope. For the customer, I don't dismiss the scar tissue; I redirect it. Getting burned once argues for a crisp receiving process and knowing our post-acceptance remedies, not for buying plant-visit inspection the item's risk profile can't justify — inspection rigor is priced into every quote we'll get.",
+      "follow_ups": [
+        {
+          "q": "When would source inspection be the right call at this dollar level?",
+          "h": "The section names the situations that escalate.",
+          "d": "RFO 46.404(b)(2): special situations may require more detailed quality assurance, including standard or higher-level quality requirements — the flags are items with critical applications, real potential for harm to personnel or property, or losses the Government can't absorb. Dollar value alone is not the trigger; consequence is. The strong answer shows the candidate scaling QA to risk in both directions rather than owning one default they apply everywhere."
+        },
+        {
+          "q": "The shelving arrives dented and acceptance is already signed. What are your options?",
+          "h": "The simplified clause keeps rights alive after signature — with time limits.",
+          "d": "Under 52.213-4(a), the Government may require repair or replacement of nonconforming supplies at no increase in price, and if that won't cure it, seek an equitable price reduction or consideration. The conditions matter: post-acceptance rights must be exercised within a reasonable time after the defect was or should have been discovered, and before any substantial change in the item's condition. So acceptance isn't absolution for the vendor — but a receiving official who sits on obvious damage can burn those rights. That's the answer to give the once-burned customer."
+        },
+        {
+          "q": "Same vendor has now delivered clean nine straight times. Do you adjust anything?",
+          "h": "The regulation rewards a defect-free history.",
+          "d": "RFO 46.404(b)(3): for repetitive purchases of the same item from the same manufacturer with a history of defect-free work, Government inspection may be reduced to periodic checks of occasional purchases. Inspection intensity is a dial, not a switch — history earns relief, incidents crank it back up. Boards like this probe because it separates the CO who manages quality risk from the one who just performs the same ritual on every delivery."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.103", "quote": "Generally, inspection and acceptance should be at destination." },
+        { "src": "rfo", "sec": "46.404", "quote": "the Government must inspect contracts at or below the simplified acquisition threshold at destination and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking, if applicable." },
+        { "src": "rfo", "sec": "52.213-4", "quote": "The Government may require repair or replacement of nonconforming supplies or reperformance of nonconforming services at no increase in contract price." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Publicizing Contract Actions",
+      "scenario": "Your buyer has a $150K noncommercial repair-parts requirement and a plan: email the RFQ to three vendors she already knows and skip any posting. \"It's a simplified buy,\" she says. \"SAP means I don't have to advertise.\"",
+      "ask": "Is she right that nothing gets posted? Walk me through the publicizing rules for this buy.",
+      "script": "Half right, which in publicizing is wrong. Simplified buys have two lanes under RFO 12.201-1(c), which Part 13 borrows: post the RFQ to the Governmentwide point of entry — the normal route — or solicit directly from suppliers. Direct solicitation isn't a free pass; it comes with conditions: a presolicitation notice per subpart 5.1 unless an exemption applies, quotes from at least three sources, and whenever practicable two sources not included in the last solicitation. The backbone rule is RFO 5.101(a): actions expected to exceed $20,000 get a presolicitation notice to the GPE unless exempted — and the exemption she's probably thinking of, 5.101(b)(1)(i), applies precisely because the solicitation itself gets posted with electronic response. So something touches the GPE either way. Her three-friendly-vendors plan, unposted and unrotated, fails on both lanes.",
+      "follow_ups": [
+        {
+          "q": "Which exemption lets you skip the separate presolicitation notice here, and what's its logic?",
+          "h": "One posting can do the work of two.",
+          "d": "RFO 5.101(b)(1)(i): no presolicitation notice is required when the action is at or below the SAT and the solicitation itself will be posted to the GPE and allow electronic response. The logic is substitution, not waiver — industry still gets visibility and a way in, just via the solicitation instead of an advance notice. The trap is reading the exemption as \"below SAT means no posting\": it trades one posting for another, and if the buyer refuses to post the RFQ, the notice obligation comes right back."
+        },
+        {
+          "q": "She emailed these same three vendors last quarter too. Any problem beyond optics?",
+          "h": "The direct-solicitation rules address repeat fields directly.",
+          "d": "Yes — RFO 12.201-1(c)(2): when soliciting directly, quote at least three sources and, whenever practicable, include two sources not in the previous solicitation. A standing trio of favorite vendors quarter after quarter defeats the rotation the rule builds in, and over time it quietly rebuilds the closed market that maximum-practicable competition exists to prevent. The strong candidate also notes the rotation is a fresh-pricing mechanism, not just a fairness gesture."
+        },
+        {
+          "q": "Award's made and an unsuccessful quoter calls. What do they get?",
+          "h": "Part 13's postaward section is short — and this is in it.",
+          "d": "RFO 13.301: comply with the award-notice posting requirements, and upon request give a brief explanation of the award decision — why that quoter wasn't selected. Not a formal debriefing with slides and Q&A; a brief, honest explanation. Boards use this to test tier discipline: the candidate who promises full negotiated-procurement debriefings on a purchase order is gold-plating, and the one who says \"they get nothing, it's SAP\" is violating the section outright."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "5.101", "quote": "For proposed contract actions expected to be greater than $20,000, post a presolicitation notice to the GPE unless an exemption in paragraph (b) applies." },
+        { "src": "rfo", "sec": "12.201-1", "quote": "For acquisitions at or below the SAT, the contracting officer may choose to solicit quotations directly from suppliers." },
+        { "src": "rfo", "sec": "13.301", "quote": "Upon request, provide a brief explanation of the award decision that explains why the unsuccessful quoter was not selected." }
+      ]
+    },
+    {
+      "rung": "sat",
+      "topic": "Simplified Acquisition Procedures",
+      "scenario": "Your competitive RFQ for $310K of noncommercial paint-booth filtration units was posted properly — and drew exactly one quote, priced 9 percent above your independent government estimate. The customer needs award in two weeks to hold the depot schedule.",
+      "ask": "One quote, above your estimate, clock running. How do you get to award — or do you?",
+      "script": "One quote doesn't kill the buy; it kills my easiest price story. RFO 13.203(a) requires me to determine the price fair and reasonable, based whenever possible on competitive quotations — I don't have those, so I work the other tools: prior purchase prices for the same units, published catalog and market pricing, a hard look at whether my IGE's assumptions are current, and, because quotes aren't sealed offers, direct negotiation with the quoter — 9 percent above an estimate is a conversation, not a verdict. I also diagnose the silence: was the requirement written too tight, the response window too short, the posting easy to miss? If the tools close the gap, I award and document the whole path — RFO 13.203(b) puts my procedures and the number of quotes in the file. If I can't get to fair and reasonable, the schedule loses to the determination, and I resolicit with the defect fixed.",
+      "follow_ups": [
+        {
+          "q": "Name your price-analysis moves when there's no second quote to compare.",
+          "h": "Competitive quotes are the preferred basis, not the only one.",
+          "d": "A solid list: historical prices paid for the same or similar items adjusted for quantity and time; published catalog or market prices; the IGE itself, decomposed and defended rather than waved at; value analysis against the next-best alternative; and negotiation with the quoter — under RFO 12.201-1 a quotation isn't a binding offer, so dialogue and revised pricing are natural, not exceptional. The weak answer knows only \"compare the quotes\" and stalls the moment competition thins."
+        },
+        {
+          "q": "You're in DoD. Does one response to a competitive solicitation trigger anything special?",
+          "h": "There's a one-offer policy — and an exception aimed at exactly this tier.",
+          "d": "R-DFARS 215.202-71 sets DoD's only-one-offer drill — consult the requiring activity and resolicit for at least 30 more days when the window was short — but its exceptions say the resolicitation requirements do not apply to acquisitions at or below the simplified acquisition threshold. Fair-and-reasonable still must be established; the mandatory resolicit machinery doesn't attach here. This probe separates candidates cleanly: one group doesn't know the DoD policy exists, another applies it below the SAT where it doesn't belong. And for commercial SAP, R-DFARS 212.102-71 points to the same procedures."
+        },
+        {
+          "q": "What does your file look like at award?",
+          "h": "Part 13's documentation standard is one sentence — know it.",
+          "d": "RFO 13.203(b): a written description of the procedures used in awarding the purchase order and the number of quotations received. On this buy that means the posting history, the one-quote result and my read on why, each price-analysis technique and what it showed, the negotiation outcome, and the fair-and-reasonable determination it all supports. Simplified documentation scales with the story's difficulty — a one-quote, above-IGE award needs a paragraph that would survive a skeptical reviewer, not a checkbox."
+        }
+      ],
+      "cites": [
+        { "src": "rfo", "sec": "13.203", "quote": "The contracting officer must determine the price to be fair and reasonable. Whenever possible, base price reasonableness on competitive quotations." },
+        { "src": "r-dfars", "sec": "215.202-71", "quote": "The requirements at 215.202-71(b) do not apply to— (i) Acquisitions at or below the simplified acquisition threshold" }
+      ]
+    }
+  ]
+}

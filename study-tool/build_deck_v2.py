@@ -430,8 +430,59 @@ _ladder_paths = [_pin] if _pin else sorted(
     glob.glob(os.path.join(_here, 'deck-ladder-*.json')))
 if not _ladder_paths: sys.exit('FATAL: ladder: no deck-ladder*.json authoring file found')
 _ladder_items = []
-for _p in _ladder_paths: _ladder_items.extend(load(_p)['items'])
+for _p in _ladder_paths:
+    if os.path.basename(_p).startswith('deck-ladder-board-'): continue   # boards build below
+    _ladder_items.extend(load(_p)['items'])
 deck['ladder'] = ladder_gate(_ladder_items)
+
+
+# ---- ladder board sims: rung-scoped scenarios on the existing Board Sim schema ----
+# A scenario rests on several rules at once, so it carries `cites` (1..N) rather than the
+# single `cite` a recall card gets. Every entry faces the same verbatim assertion.
+def ladder_board_gate(items):
+    out = {r: [] for r in LADDER_RUNGS}
+    seen = set()
+    for it in items:
+        tag = (it.get('ask') or it.get('scenario') or '(no ask)')[:56]
+        for f in ('rung', 'topic', 'scenario', 'ask', 'script', 'follow_ups', 'cites'):
+            if not it.get(f): sys.exit(f'FATAL: ladder board {tag}: missing "{f}"')
+        if it['rung'] not in LADDER_RUNGS:
+            sys.exit(f'FATAL: ladder board {tag}: unknown rung "{it["rung"]}"')
+        for fu in it['follow_ups']:
+            for f in ('q', 'h', 'd'):
+                if not fu.get(f): sys.exit(f'FATAL: ladder board {tag}: follow-up missing "{f}"')
+        links = []
+        for c in it['cites']:
+            for f in ('src', 'sec', 'quote'):
+                if not c.get(f): sys.exit(f'FATAL: ladder board {tag}: cite missing "{f}"')
+            d = sec_idx.get((c['src'], c['sec']))
+            if not d: sys.exit(f'FATAL: ladder board {tag}: no such section {c["src"]} {c["sec"]}')
+            b, t = _norm(d['content']), _norm(d['title'])
+            if b.lower().startswith(t.lower()): b = b[len(t):].strip(' .')
+            if '[Reserved]' in d['title'] or len(b) < 40:
+                sys.exit(f'FATAL: ladder board {tag}: {c["sec"]} is [Reserved]/empty')
+            if _norm(c['quote']) not in _norm(d['content']):
+                sys.exit(f'FATAL: ladder board {tag}: quote not verbatim in {c["src"]} {c["sec"]}')
+            part = str(d.get('part') or '').strip()
+            if not part: sys.exit(f'FATAL: ladder board {tag}: {c["sec"]} has no part')
+            links.append({'t': ('RFO ' if c['src'] == 'rfo' else 'R-DFARS ') + c['sec'],
+                          'u': '/' + c['src'] + '/part-' + part + '#' + str(d.get('anchor') or d['id']),
+                          'quote': c['quote']})
+        sid = hashlib.sha1(('board|' + it['rung'] + '|' + it['ask']).encode()).hexdigest()[:12]
+        if sid in seen: sys.exit(f'FATAL: ladder board {tag}: duplicate id {sid}')
+        seen.add(sid)
+        out[it['rung']].append({'id': sid, 'type': 'scenario', 'rung': it['rung'],
+                                'topic': it['topic'], 'scenario': it['scenario'], 'ask': it['ask'],
+                                'script': it['script'], 'follow_ups': it['follow_ups'], 'cites': links})
+    n = sum(len(v) for v in out.values())
+    print('  ladder boards: ' + ' · '.join(f'{r} {len(out[r])}' for r in LADDER_RUNGS) +
+          f' — {n} scenarios, all cites corpus-verified' if n else '  ladder boards: none authored yet')
+    return out
+
+_board_paths = sorted(glob.glob(os.path.join(_here, 'deck-ladder-board-*.json')))
+_board_items = []
+for _p in _board_paths: _board_items.extend(load(_p)['items'])
+deck['ladder_boards'] = ladder_board_gate(_board_items)
 
 SRC_WORD = {'RFO': 'rfo', 'R-DFARS': 'r-dfars'}
 def cite_links(cite):
