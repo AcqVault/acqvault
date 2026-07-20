@@ -303,7 +303,15 @@ def ladder_gate(items):
         if not d:
             sys.exit(f'FATAL: ladder {tag}: no such section {cite["src"]} {cite["sec"]} (exact match required)')
         # 2. not reserved / empty
-        if '[Reserved]' in d['title'] or len(_norm(d['content'])) < 200:
+        # Measure the BODY, not the whole doc: a raw length floor on title+body rejects
+        # short-but-complete rules (RFO 13.102 is 174 chars of substance and was excluded
+        # by one character under the old 200-char total). Heading-only stubs and [Reserved]
+        # sections leave a body of ~0 once the title echo is stripped, so they still fail.
+        _body = _norm(d['content'])
+        _t = _norm(d['title'])
+        if _body.lower().startswith(_t.lower()):
+            _body = _body[len(_t):].strip(' .')
+        if '[Reserved]' in d['title'] or len(_body) < 40:
             sys.exit(f'FATAL: ladder {tag}: section {cite["src"]} {cite["sec"]} is [Reserved]/empty — not citable')
         # 3. quote verbatim in the section
         if _norm(cite['quote']) not in _norm(d['content']):
