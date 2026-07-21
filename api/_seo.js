@@ -1177,6 +1177,8 @@ function renderSourceSelectionPage() {
 
   const SRCSEL_CSS = `<style>
 .lband--room{position:relative;overflow:hidden;background:var(--off);border-top:1px solid rgba(135,101,28,.16)}
+.st-guilloche{position:absolute;right:-150px;top:-120px;width:520px;height:520px;opacity:.06;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%)}
+.st-guilloche svg{width:100%;height:100%}
 .ss-wrap{position:relative;max-width:860px;margin:0 auto;padding:34px 22px 72px}
 #ssim-app{min-height:460px}
 .ss-sub{color:var(--muted);font-size:14px;line-height:1.55;margin:0}
