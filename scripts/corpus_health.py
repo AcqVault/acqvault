@@ -105,7 +105,16 @@ def main():
     check("no empty docs", not empty, f"{len(empty)} empty: {empty[:3]}")
 
     # ── tofu / private-use glyphs ─────────────────────────────────────────────
-    pua = sum(1 for d in docs for ch in (d.get("content") or "")
+    # Recovered tables carry their own copy of the cell text, so this has to look
+    # there too — a glyph scrubbed from `content` alone still renders as a box.
+    def _pua_chars(d):
+        yield from (d.get("content") or "")
+        for tbl in d.get("tables") or []:
+            for row in tbl.get("rows") or []:
+                for cell in row:
+                    yield from str(cell or "")
+
+    pua = sum(1 for d in docs for ch in _pua_chars(d)
               if 0xE000 <= ord(ch) <= 0xF8FF)
     check("no tofu glyphs", pua == 0, f"{pua} private-use char(s) would render as boxes",
           "scripts/scrub_pua_glyphs.py")

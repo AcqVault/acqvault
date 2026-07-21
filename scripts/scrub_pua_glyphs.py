@@ -8,6 +8,9 @@ code point back to its plain-text equivalent, verified by context:
 
   U+F8E7, U+F0BE  →  "—"  (em dash introducing an enumerated list: "unless— (1)")
   U+F0D8, U+F0B7, U+F0FC  →  "•"  (list bullets flattened into the paragraph)
+  U+F8FD  →  "×"  (multiplication in the loss-ratio worked example at 32.503-6;
+           the arithmetic settles it rather than the shape: $2,700,000 × 83.3% = $2,249,100,
+           then × 80.0% = $1,799,280)
 
 Idempotent and assertion-guarded: run it after any FMR/R-DFARS re-ingest.
 documents.json is the maintained artifact for both sources (refresh.py never
@@ -27,6 +30,7 @@ PUA_MAP = {
     "": "•",  # bullet
     "": "•",  # bullet
     "": "•",  # bullet
+    "": "×",  # multiplication sign (acquisition.gov HTML)
 }
 # any remaining PUA char after mapping is a miss we want to hear about
 PUA_RANGE = re.compile(r"[-]")
@@ -55,6 +59,14 @@ def main():
             if field in d and isinstance(d[field], str):
                 d[field], n = scrub(d[field])
                 hit += n
+        # Recovered tables hold their own copy of the cell text, so a glyph scrubbed
+        # out of `content` survives in `tables` and still renders as a box.
+        for tbl in d.get("tables") or []:
+            for r_i, row in enumerate(tbl.get("rows") or []):
+                for c_i, cell in enumerate(row):
+                    if isinstance(cell, str):
+                        row[c_i], n = scrub(cell)
+                        hit += n
         if hit:
             touched += 1
             total += hit
@@ -64,6 +76,11 @@ def main():
             v = d.get(field)
             if isinstance(v, str) and PUA_RANGE.search(v):
                 leftover.append((d.get("id"), field))
+        for tbl in d.get("tables") or []:
+            for row in tbl.get("rows") or []:
+                for cell in row:
+                    if isinstance(cell, str) and PUA_RANGE.search(cell):
+                        leftover.append((d.get("id"), "tables"))
 
     if leftover:
         print("ERROR: PUA characters still present after scrub — unmapped code points:")
