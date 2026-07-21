@@ -760,6 +760,15 @@
         '<span class="st-lad-boards-n">' + faced.length + ' of ' + boards.length + ' faced</span>' +
         (faced.length ? '<span class="st-lad-boards-split">' + ready + ' board-ready · ' + rough + ' rough</span>' : '') +
         '</div>';
+    /* Senior-authority rung only: the source-selection simulator lives on its own page
+       (/source-selection). A full best-value tradeoff is too big for a card drill, so it's
+       promoted here as a distinct launch rather than folded into the recall pool. */
+    var simHtml = sel === 'unlimited'
+      ? '<a class="st-lad-sim" href="/source-selection"><span class="st-lad-sim-kick">Simulator</span>' +
+        '<b class="st-lad-sim-t">Run a full source selection</b>' +
+        '<span class="st-lad-sim-d">Take the Source Selection Authority’s chair on a $250M best-value tradeoff — nine rulings, a live protest-risk score, every call cited to the DoD SSP.</span>' +
+        '<span class="st-lad-sim-go" aria-hidden="true">→</span></a>'
+      : '';
     var sinkHtml = sink.length
       ? '<div class="st-lad-sink"><div class="st-lad-head">What would sink you</div>' +
         sink.map(function (c) {
@@ -777,6 +786,7 @@
       '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
       '<span class="st-topic-meta">' + m + '%</span></div>' +
       boardHtml +
+      simHtml +
       '<div class="st-actions"><button class="st-btn st-btn-reveal" id="lad-start">Study these cards <kbd>space</kbd></button>' +
       (boards.length ? '<button class="st-btn st-btn-hint" id="lad-board">Face the board</button>' : '') +
       '</div>' +

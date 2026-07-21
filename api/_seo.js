@@ -864,6 +864,15 @@ function renderStudyPage() {
 .st-lad-boards-lab{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .st-lad-boards-n{font-size:14px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .st-lad-boards-split{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.st-lad-sim{position:relative;display:block;margin-top:14px;padding:18px 46px 18px 20px;background:linear-gradient(158deg,#173a60,#0f2540 64%,#0a1c33);border:1px solid rgba(228,196,119,.4);border-radius:14px;text-decoration:none;overflow:hidden;box-shadow:0 20px 42px -24px rgba(15,37,64,.6);transition:border-color .15s,transform .15s}
+.st-lad-sim::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
+.st-lad-sim:hover{border-color:rgba(228,196,119,.7);transform:translateY(-2px)}
+.st-lad-sim-kick{display:block;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-bright);margin-bottom:6px}
+.st-lad-sim-t{display:block;font-family:var(--serif);font-size:19px;letter-spacing:-.01em;color:#f4f8fc;line-height:1.2}
+.st-lad-sim-d{display:block;color:rgba(221,233,246,.8);font-size:13px;line-height:1.5;margin-top:6px;max-width:56ch}
+.st-lad-sim-go{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--brass-bright);transition:transform .15s}
+.st-lad-sim:hover .st-lad-sim-go{transform:translateY(-50%) translateX(4px)}
+.st-lad-sim:focus-visible{outline:3px solid rgba(228,196,119,.6);outline-offset:2px}
 .st-bd-bluf-lab{display:block;margin-top:15px;margin-bottom:6px;font-size:12.5px;font-weight:700;color:var(--ink)}
 .st-bd-bluf{display:block;width:100%;box-sizing:border-box;padding:11px 13px;font-size:15px;line-height:1.45;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:8px}
 .st-bd-bluf:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px rgba(135,101,28,.13)}
@@ -1147,9 +1156,165 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=44"></script>`;
+<script defer src="/assets/study.js?v=45"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
+}
+
+function renderSourceSelectionPage() {
+  const canonical = `${SITE}/source-selection`;
+  const title = 'Source Selection Simulator — run a DoD source selection | AcqVault';
+  const description = esc('A free, hands-on source-selection simulator for the acquisition community. Play the Source Selection Authority through a full best-value tradeoff — acquisition planning, competitive range, discussions, cost realism, and the award decision — with a running protest-risk score. Every ruling links to the governing DoD Source Selection Procedures. No account.');
+
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'LearningResource',
+    name: 'DoD Source Selection Simulator', learningResourceType: 'Simulation',
+    educationalLevel: 'Professional', isAccessibleForFree: true,
+    teaches: 'DoD source selection procedures, best-value tradeoff, competitive range, discussions, and source selection decisions',
+    description, url: canonical,
+    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
+  };
+
+  const SRCSEL_CSS = `<style>
+.lband--room{position:relative;overflow:hidden;background:var(--off);border-top:1px solid rgba(135,101,28,.16)}
+.ss-wrap{position:relative;max-width:860px;margin:0 auto;padding:34px 22px 72px}
+#ssim-app{min-height:460px}
+.ss-sub{color:var(--muted);font-size:14px;line-height:1.55;margin:0}
+.ss-card{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line2);border-radius:16px;padding:24px 26px;box-shadow:0 24px 48px -26px rgba(15,37,64,.35)}
+.ss-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
+@media(max-width:640px){.ss-card{padding:19px 17px}}
+.ss-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin:0 0 7px}
+.ss-h2{font-family:var(--serif);font-size:25px;line-height:1.15;letter-spacing:-.012em;color:var(--ink);margin:0 0 8px}
+.ss-prog-title{font-family:var(--serif);font-size:22px;line-height:1.2;color:var(--ink);margin:2px 0 3px}
+.ss-hat{font-size:13.5px;color:var(--muted);margin:0 0 16px}
+.ss-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 2px}
+.ss-tag{font-size:12px;font-weight:700;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(135,101,28,.28);border-radius:999px;padding:5px 12px}
+.ss-note{font-size:12.5px;color:var(--muted);line-height:1.55;margin:16px 0 0;padding-top:14px;border-top:1px dashed rgba(135,101,28,.35)}
+.ss-off-wrap{overflow-x:auto;margin:16px 0 2px}
+.ss-off{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}
+.ss-off th,.ss-off td{border-bottom:1px solid var(--line2);padding:9px 10px;text-align:left;vertical-align:top}
+.ss-off thead th{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.ss-off td b{color:var(--ink)}
+.ss-off .ss-off-name{font-family:var(--serif);font-size:14px;color:var(--ink)}
+.ss-off small{display:block;color:var(--muted);font-size:11.5px;line-height:1.4;margin-top:3px}
+.ss-pill{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:1px 7px;white-space:nowrap}
+.ss-pill-o{background:#eaf0f6;color:#1c3557}
+.ss-pill-g{background:#eef7f0;color:#155433}
+.ss-pill-m{background:#fdf0ef;color:#8c2b23}
+.ss-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;align-items:center}
+.ss-btn{border:none;border-radius:9px;padding:12px 20px;font-size:14.5px;font-weight:700;cursor:pointer;min-height:46px;font-family:inherit}
+.ss-btn-primary{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#f4f8fc}
+.ss-btn-primary:hover{filter:brightness(1.08)}
+.ss-btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.ss-btn-ghost:hover{border-color:var(--muted2,#6f6c74)}
+.ss-btn:disabled{opacity:.45;cursor:default}
+.ss-btn:focus-visible,.ss-opt:focus-within,.ss-doc-chip:focus-visible,.ss-cite-src:focus-visible{outline:3px solid rgba(135,101,28,.42);outline-offset:2px}
+.ss-resume{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:#f6efdd;border:1px solid rgba(135,101,28,.3);border-radius:12px;padding:13px 16px;margin-bottom:16px}
+.ss-resume p{margin:0;font-size:13.5px;color:var(--brass-ink);font-weight:600}
+.ss-rail{margin-bottom:16px}
+.ss-rail-top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:8px}
+.ss-meter{display:inline-flex;align-items:center;gap:7px;letter-spacing:.02em;text-transform:none;font-weight:700;font-size:12px}
+.ss-meter-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.ss-m-low{color:#155433}.ss-m-low .ss-meter-dot{background:#155433}
+.ss-m-mod{color:#8a6d2e}.ss-m-mod .ss-meter-dot{background:#b8934a}
+.ss-m-high{color:#8c2b23}.ss-m-high .ss-meter-dot{background:#8c2b23}
+.ss-prog{height:6px;background:#ece8dd;border-radius:99px;overflow:hidden}
+.ss-prog span{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px;transition:width .35s ease}
+.ss-docs{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 18px}
+.ss-doc-lab{width:100%;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.ss-doc-chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line2);color:var(--ink);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:650;cursor:pointer;font-family:inherit;transition:border-color .13s,box-shadow .13s}
+.ss-doc-chip:hover{border-color:rgba(135,101,28,.5);box-shadow:0 6px 16px -12px rgba(15,37,64,.4)}
+.ss-doc-chip svg{width:14px;height:14px;flex:none;color:var(--brass)}
+.ss-prompt{font-family:var(--serif);font-size:20px;line-height:1.35;color:var(--ink);letter-spacing:-.006em;margin:0 0 16px}
+.ss-opts{display:flex;flex-direction:column;gap:10px}
+.ss-opt{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line2);border-radius:11px;padding:13px 15px;cursor:pointer;transition:border-color .13s,box-shadow .13s}
+.ss-opt:hover{border-color:rgba(135,101,28,.5)}
+.ss-opt.sel{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass)}
+.ss-opt input{margin:2px 0 0;flex:none;accent-color:#87651c;width:17px;height:17px}
+.ss-opt-txt{font-size:14.5px;line-height:1.5;color:var(--ink)}
+.ss-opt.locked{cursor:default}
+.ss-opt.picked-right{border-color:rgba(30,107,67,.55);box-shadow:0 0 0 1px rgba(30,107,67,.4);background:#f6fbf7}
+.ss-opt.picked-wrong{border-color:rgba(179,38,30,.5);box-shadow:0 0 0 1px rgba(179,38,30,.35);background:#fdf6f5}
+.ss-opt-mark{margin-left:auto;flex:none;font-size:12px;font-weight:800;align-self:center}
+.ss-opt-mark.ok{color:#155433}.ss-opt-mark.no{color:#8c2b23}
+.ss-fb{border-radius:12px;padding:15px 17px;margin-top:18px;font-size:14.5px;line-height:1.58}
+.ss-fb-good{background:#eef7f0;color:#134d2e;border:1px solid rgba(30,107,67,.3)}
+.ss-fb-bad{background:#fdf0ef;color:#7c2620;border:1px solid rgba(179,38,30,.3)}
+.ss-fb-warn{background:#faf3e0;color:#6f5416;border:1px solid rgba(135,101,28,.3)}
+.ss-fb-head{font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.ss-cite{margin-top:15px;border-left:3px solid var(--brass);padding:3px 0 3px 15px}
+.ss-cite-q{font-family:var(--serif);font-size:14px;font-style:italic;color:#33404f;line-height:1.5;margin:0 0 8px}
+.ss-cite-q+.ss-cite-q{margin-top:8px}
+.ss-cite-src{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--brass-ink);text-decoration:none;border-bottom:1px solid rgba(135,101,28,.45);padding-bottom:1px}
+.ss-cite-src:hover{color:#3a2c0d;border-color:var(--brass)}
+.ss-cite-src svg{width:12px;height:12px}
+.ss-verdict{position:relative;overflow:hidden;border-radius:16px;padding:28px 26px;text-align:center;margin-bottom:18px}
+.ss-verdict::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.ss-verdict h2{font-family:var(--serif);font-size:27px;letter-spacing:-.01em;margin:0 0 8px;line-height:1.15}
+.ss-verdict p{font-size:14.5px;line-height:1.55;margin:0 auto;max-width:56ch}
+.ss-verdict-good{background:#eef7f0;border:1px solid rgba(30,107,67,.32)}.ss-verdict-good h2{color:#155433}.ss-verdict-good::before{background:#155433}
+.ss-verdict-warn{background:#faf3e0;border:1px solid rgba(135,101,28,.32)}.ss-verdict-warn h2{color:#6f5416}.ss-verdict-warn::before{background:var(--brass)}
+.ss-verdict-bad{background:#fdf0ef;border:1px solid rgba(179,38,30,.32)}.ss-verdict-bad h2{color:#8c2b23}.ss-verdict-bad::before{background:#8c2b23}
+.ss-score{display:inline-flex;align-items:baseline;gap:7px;margin-top:14px;font-size:13px;color:var(--muted);font-weight:600}
+.ss-score b{font-family:var(--serif);font-size:30px;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+.ss-log{background:#fff;border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin-top:16px}
+.ss-log-cap{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 16px 8px}
+.ss-log-row{display:grid;grid-template-columns:22px 1fr auto;gap:11px;align-items:baseline;padding:10px 16px;border-top:1px solid var(--line2);font-size:13.5px;line-height:1.45}
+.ss-log-mark{font-weight:800;font-size:13px}
+.ss-log-ok .ss-log-mark{color:#155433}.ss-log-bad .ss-log-mark{color:#8c2b23}
+.ss-log-txt{color:#2a3140}
+.ss-log-txt b{color:var(--ink)}
+.ss-log-risk{font-size:11.5px;font-weight:800;color:#8c2b23;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ss-log-risk.zero{color:#155433}
+.ss-modal{position:fixed;inset:0;background:rgba(10,20,35,.6);display:flex;align-items:flex-start;justify-content:center;padding:30px 14px;z-index:60;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ss-modal-card{background:#fbfaf6;border-radius:14px;max-width:720px;width:100%;box-shadow:0 34px 80px -20px rgba(0,0,0,.55);margin:auto 0}
+.ss-modal-head{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;background:#16263f;color:#f4f8fc;padding:13px 18px;border-radius:14px 14px 0 0;z-index:2}
+.ss-modal-head h3{font-size:15px;margin:0;font-family:var(--serif);font-weight:600}
+.ss-modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:31px;height:31px;border-radius:8px;cursor:pointer;font-size:17px;line-height:1;flex:none}
+.ss-modal-close:hover{background:rgba(255,255,255,.28)}
+.ss-doc{padding:22px 24px 26px}
+@media(max-width:560px){.ss-doc{padding:18px 16px 22px}}
+.cui-banner{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-align:center;color:#8a6d2e;background:#f7efd9;border:1px solid rgba(135,101,28,.35);border-radius:5px;padding:6px 10px;margin-bottom:16px}
+.dod-header{text-align:center;border-bottom:2px solid #16263f;padding-bottom:11px;margin-bottom:15px}
+.dod-header h3{font-family:var(--serif);font-size:18px;color:#16263f;margin:0;line-height:1.2}
+.dod-header h4{font-size:12px;font-weight:600;color:var(--muted);margin:5px 0 0}
+.ss-doc p{font-size:14px;line-height:1.62;color:#2a3140;margin:0 0 11px}
+.ss-doc ul{margin:0 0 11px;padding-left:19px}
+.ss-doc li{font-size:14px;line-height:1.55;color:#2a3140;margin-bottom:5px}
+.ss-doc hr{border:none;border-top:1px solid #e0dccf;margin:14px 0}
+.dod-table{width:100%;border-collapse:collapse;margin:10px 0 14px;font-size:12.5px}
+.dod-table th,.dod-table td{border:1px solid #cfc8b8;padding:6px 9px;text-align:left;vertical-align:top;line-height:1.4}
+.dod-table th{background:#f1ece0;color:#16263f;font-weight:700}
+.dod-sig{margin-top:16px;padding-top:9px;border-top:1px solid #cfc8b8;font-size:12.5px;font-style:italic;color:var(--muted);text-align:right}
+.ss-fail{background:#fff;border:1px solid var(--line2);border-radius:14px;padding:22px 24px}
+.ss-fail h2{font-family:var(--serif);font-size:20px;color:var(--ink);margin:0 0 8px}
+</style>`;
+
+  const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
+
+  const SEAL = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="ss-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#ss-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
+
+  const body = `${SRCSEL_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/study">Study</a><a class="cta" href="/?q=">Search all sources →</a></span></div></header>
+<main>
+<section class="lband lhero"><div class="lband-inner">
+${SEAL}
+<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/study">Study</a> › Source Selection</nav>
+<div class="eyebrow">AcqVault · Simulator</div>
+<h1>Run a source selection</h1>
+<p class="lede">Sit in the Source Selection Authority's chair and work a full best-value tradeoff — from acquisition planning to the signed decision. Every call carries a protest-risk cost, and every ruling links straight to the governing DoD Source Selection Procedures on this site.</p>
+<div class="stats"><span class="stat">9 decisions</span><span class="stat">One $250M source selection</span><span class="stat">Every rule cited to the SSP</span><span class="stat">Free · no account</span><span class="stat">Untimed</span></div>
+</div></section>
+<section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="ss-wrap">
+<div id="ssim-app"><noscript><p class="ss-sub">The source-selection simulator is interactive and needs JavaScript. The procedures it drills are all searchable in the <a href="/ssp">DoD Source Selection Procedures</a>.</p></noscript><p class="ss-sub">Loading the simulator…</p></div>
+</div></section>
+</main>
+<footer class="lband lband--foot"><div class="lband-inner">
+<p class="lfoot-note"><strong>How it works:</strong> read the record for each phase, make the call the Source Selection Authority would make, then check it against the governing rule. Wrong calls add to a running protest-risk score that decides whether your award survives a GAO protest. The scenario is fictional; the procedures and citations are real. Adapted from a colleague's warrant-prep exercise and rebuilt on the current DoD Source Selection Procedures.</p>
+<p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the <a href="/ssp">DoD Source Selection Procedures</a> and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
+</div></footer>
+<script defer src="/assets/source-selection.js?v=1"></script>`;
+
+  return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-src-ssp-v2.png' });
 }
 
 const RFO_FAQ = [
@@ -1202,6 +1367,7 @@ function renderSitemap() {
   if (loadDeviations().length) urls.push(`${SITE}/deviations`);
   if (loadChangesLog().length) urls.push(`${SITE}/changes`);
   urls.push(`${SITE}/study`);
+  urls.push(`${SITE}/source-selection`);
   for (const source of SOURCE_KEYS) {
     const { parts } = partsForSource(source);
     if (!parts.length) continue;
@@ -1223,4 +1389,4 @@ function renderNotFoundPage() {
   return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Page not found — AcqVault</title>\n<meta name=\"robots\" content=\"noindex\">\n<link rel=\"icon\" href=\"/assets/favicon-vault.svg\" type=\"image/svg+xml\">\n<style>\n@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}\n*{box-sizing:border-box;margin:0;padding:0;}\nbody{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;\n  background:radial-gradient(120% 140% at 12% 8%,#1b436b 0%,#123253 42%,#0a1c33 100%);\n  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color:#eaf1fb;}\n.card{max-width:520px;width:100%;text-align:center;padding:48px 32px;}\n.dial{width:88px;height:88px;margin:0 auto 28px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.4));}\n.eyebrow{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#e4c477;margin-bottom:14px;}\nh1{font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:clamp(30px,6vw,42px);line-height:1.05;letter-spacing:-.015em;color:#fff;margin-bottom:14px;}\np{font-size:16px;line-height:1.55;color:rgba(230,238,248,.82);margin-bottom:28px;}\n.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}\n.btn{display:inline-block;font-size:14.5px;font-weight:700;text-decoration:none;padding:11px 22px;border-radius:999px;transition:transform .15s,background .15s;}\n.btn:hover{transform:translateY(-1px);}\n.btn-brass{background:#e4c477;color:#0a1c33;}\n.btn-brass:hover{background:#f0d79a;}\n.btn-ghost{color:#eaf1fb;border:1px solid rgba(255,255,255,.22);}\n.btn-ghost:hover{background:rgba(255,255,255,.07);}\n.links{margin-top:26px;font-size:14px;color:rgba(230,238,248,.6);}\n.links a{color:#e4c477;text-decoration:none;margin:0 8px;}\n.links a:hover{text-decoration:underline;}\na:focus-visible,.btn:focus-visible{outline:2px solid #e4c477;outline-offset:3px;}\n</style>\n</head>\n<body>\n<main class=\"card\">\n  <svg class=\"dial\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"94\" height=\"94\" rx=\"20\" fill=\"#0f2540\" stroke=\"#6f521a\" stroke-width=\"1\"/><rect x=\"11\" y=\"11\" width=\"78\" height=\"78\" rx=\"14\" fill=\"none\" stroke=\"#87651c\" stroke-width=\"2\"/><circle cx=\"50\" cy=\"50\" r=\"24\" fill=\"none\" stroke=\"#e4c477\" stroke-width=\"3.5\"/><g stroke=\"#e4c477\" stroke-width=\"4\" stroke-linecap=\"round\"><line x1=\"50\" y1=\"29\" x2=\"50\" y2=\"39\"/><line x1=\"50\" y1=\"71\" x2=\"50\" y2=\"61\"/><line x1=\"29\" y1=\"50\" x2=\"39\" y2=\"50\"/><line x1=\"71\" y1=\"50\" x2=\"61\" y2=\"50\"/></g><circle cx=\"50\" cy=\"50\" r=\"6\" fill=\"#e4c477\"/></svg>\n  <div class=\"eyebrow\">404 · Not found</div>\n  <h1>This one isn&rsquo;t in the vault.</h1>\n  <p>The page you&rsquo;re after doesn&rsquo;t exist — it may have moved when the rulebook did. Search the full text instead, or start from the front door.</p>\n  <div class=\"actions\">\n    <a class=\"btn btn-brass\" href=\"/?q=\">Search the rulebook</a>\n    <a class=\"btn btn-ghost\" href=\"/?home=1\">Go home</a>\n  </div>\n  <div class=\"links\">\n    <a href=\"/rfo\">RFO</a>·<a href=\"/r-dfars\">R-DFARS</a>·<a href=\"/library\">Library</a>·<a href=\"/study\">Study</a>\n  </div>\n</main>\n</body>\n</html>\n";
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSitemap, renderNotFoundPage, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSourceSelectionPage, renderSitemap, renderNotFoundPage, SITE };

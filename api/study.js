@@ -1,7 +1,8 @@
-const { renderStudyPage } = require('./_seo.js');
+const { renderStudyPage, renderSourceSelectionPage } = require('./_seo.js');
 
 module.exports = function handler(req, res) {
-  const html = renderStudyPage();
+  // /source-selection rides this function (Hobby 12-function cap — no new api/ file).
+  const html = (req.query && req.query.view === 'srcsel') ? renderSourceSelectionPage() : renderStudyPage();
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   if (!html) {
     res.status(404);
