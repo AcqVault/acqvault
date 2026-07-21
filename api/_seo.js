@@ -946,6 +946,20 @@ function renderStudyPage() {
 /* games hub: third track card + level toggle */
 .st-games-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .st-games-head .st-streak{margin:26px 0 0}
+.st-sim-feature{position:relative;overflow:hidden;display:block;text-decoration:none;background:linear-gradient(158deg,#173a60,#0f2540 62%,#0a1c33);border:1px solid rgba(228,196,119,.4);border-radius:16px;padding:22px 54px 20px 24px;margin:14px 0 4px;box-shadow:inset 0 0 0 1px rgba(228,196,119,.22),0 26px 50px -24px rgba(15,37,64,.6);transition:border-color .15s,transform .15s}
+.st-sim-feature::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep));z-index:2}
+.st-sim-feature::after{content:"";position:absolute;right:-60px;bottom:-150px;width:360px;height:360px;opacity:.12;background:repeating-radial-gradient(circle at 50% 50%,rgba(228,196,119,.6) 0 1px,transparent 1px 12px);pointer-events:none}
+.st-sim-feature:hover{border-color:rgba(228,196,119,.7);transform:translateY(-2px)}
+.st-sim-feature:focus-visible{outline:3px solid rgba(228,196,119,.6);outline-offset:2px}
+.st-sim-kick{position:relative;display:block;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-bright);margin-bottom:7px}
+.st-sim-title{position:relative;display:block;font-family:var(--serif);font-size:23px;letter-spacing:-.01em;color:#f4f8fc;line-height:1.15}
+.st-sim-desc{position:relative;display:block;color:rgba(221,233,246,.82);font-size:13.5px;line-height:1.55;margin-top:7px;max-width:60ch}
+.st-sim-chips{position:relative;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:13px}
+.st-sim-chip{font-size:12px;font-weight:800;color:var(--brass-bright);border:1px solid rgba(228,196,119,.5);border-radius:999px;padding:4px 12px;letter-spacing:.02em;white-space:nowrap}
+.st-sim-meta{font-size:12.5px;color:rgba(221,233,246,.72);font-variant-numeric:tabular-nums}
+.st-sim-go{position:absolute;right:22px;top:24px;font-size:22px;color:var(--brass-bright);transition:transform .15s}
+.st-sim-feature:hover .st-sim-go{transform:translateX(4px)}
+.st-games-tier{display:block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 10px}
 
 
 
@@ -1156,7 +1170,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=45"></script>`;
+<script defer src="/assets/study.js?v=46"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }
@@ -1202,6 +1216,7 @@ function renderSourceSelectionPage() {
 .ss-pill{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:1px 7px;white-space:nowrap}
 .ss-pill-o{background:#eaf0f6;color:#1c3557}
 .ss-pill-g{background:#eef7f0;color:#155433}
+.ss-pill-p{background:#e7e2f0;color:#3b0764}
 .ss-pill-y{background:#faf3e0;color:#8a6d2e}
 .ss-pill-m{background:#fdf0ef;color:#8c2b23}
 .ss-startnote{display:flex;gap:10px;align-items:flex-start;background:#faf3e0;border:1px solid rgba(135,101,28,.32);border-radius:10px;padding:11px 14px;margin:12px 0 4px;font-size:13px;color:#6f5416;line-height:1.5}
@@ -1322,7 +1337,7 @@ ${SEAL}
 <p class="lfoot-note"><strong>How it works:</strong> read the record for each phase, make the call the Source Selection Authority would make, then check it against the governing rule. Wrong calls add to a running protest-risk score that decides whether your award survives a GAO protest. The scenario is fictional; the procedures and citations are real. Adapted from a colleague's warrant-prep exercise and rebuilt on the current DoD Source Selection Procedures.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the <a href="/ssp">DoD Source Selection Procedures</a> and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/source-selection.js?v=2"></script>`;
+<script defer src="/assets/source-selection.js?v=3"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-src-ssp-v2.png' });
 }

@@ -54,7 +54,7 @@
   function pill(rating) {
     // Colors track the DoD SSP Table 2A key: Outstanding=blue, Acceptable=green,
     // Marginal=yellow, Unacceptable=red. Red is reserved for Unacceptable, never Marginal.
-    var map = { Outstanding: 'ss-pill-o', Good: 'ss-pill-o', Acceptable: 'ss-pill-g', Marginal: 'ss-pill-y', Unacceptable: 'ss-pill-m' };
+    var map = { Outstanding: 'ss-pill-o', Good: 'ss-pill-p', Acceptable: 'ss-pill-g', Marginal: 'ss-pill-y', Unacceptable: 'ss-pill-m' };
     return '<span class="ss-pill ' + (map[rating] || 'ss-pill-g') + '">' + esc(rating) + '</span>';
   }
   function renderStart() {

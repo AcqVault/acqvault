@@ -646,10 +646,17 @@
     var govMeta = govToday
       ? 'Today\u2019s best ' + govToday.best.toLocaleString() + (gvBest > govToday.best ? ' \u00b7 record ' + gvBest.toLocaleString() : ' \u00b7 that\u2019s your record') + ' \u00b7 run it again \u2192'
       : (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' \u00b7 play \u2192' : 'No score on the board yet \u00b7 play \u2192');
-    return '<div class="st-games-head"><h2 class="st-h2" style="margin:26px 0 0">Quick rounds</h2>' +
+    return '<div class="st-games-head"><h2 class="st-h2" style="margin:26px 0 0">The Proving Ground</h2>' +
       (run >= 2 ? '<span class="st-streak" title="Days in a row with at least one round played \u2014 weekends don\u2019t break it"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' + run + '-day streak</span>' : '') +
       '</div>' +
-      '<p class="st-sub">A daily word and a 90-second round \u2014 under three minutes each, no studying required.</p>' +
+      '<p class="st-sub">Practice by deciding, not reviewing \u2014 from the daily word to a 90-second reflex round to a full source selection you sit down with.</p>' +
+      '<a class="st-sim-feature" href="/source-selection">' +
+      '<span class="st-sim-kick">Flagship \u00b7 Simulator</span>' +
+      '<b class="st-sim-title">Source Selection Simulator</b>' +
+      '<span class="st-sim-desc">Take the Source Selection Authority\u2019s chair on a $250M best-value tradeoff \u2014 nine rulings, a live protest-risk score, and every call cited to the DoD Source Selection Procedures.</span>' +
+      '<span class="st-sim-chips"><span class="st-sim-chip">\u2248 18 min</span><span class="st-sim-meta">$250M best-value \u00b7 9 rulings \u00b7 untimed</span></span>' +
+      '<span class="st-sim-go" aria-hidden="true">\u2192</span></a>' +
+      '<div class="st-games-tier">Or a two-minute round</div>' +
       donePanel +
       '<div class="st-plates">' + comboCard +
       '<button class="st-plate' + (govToday ? ' st-plate-played' : '') + '" id="g-governs">' +
