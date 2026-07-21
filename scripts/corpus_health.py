@@ -20,6 +20,7 @@ production at least once:
 """
 import json
 import re
+from collections import Counter
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -118,6 +119,40 @@ def main():
               if 0xE000 <= ord(ch) <= 0xF8FF)
     check("no tofu glyphs", pua == 0, f"{pua} private-use char(s) would render as boxes",
           "scripts/scrub_pua_glyphs.py")
+
+    # ── recovered tables: spans must be in range, and must not hide text ──────
+    # The renderers draw a table INSTEAD of the lines it spans, so a span that
+    # covers text the table does not reproduce deletes that text from the page.
+    # This is the rule scripts/extract_tables.py enforces when matching; checking it
+    # here stops a later pass from quietly relaxing it.
+    span_bad, hide_bad = [], []
+    _fur = re.compile(r"^(revolutionary|defense|attachment|dars|page|\d{1,3})$", re.I)
+    for d in docs:
+        lines = (d.get("content") or "").split("\n")
+        for t in d.get("tables") or []:
+            start, end = t.get("start"), t.get("end")
+            if not isinstance(start, int) or not isinstance(end, int) \
+                    or not (0 <= start <= end < len(lines)):
+                span_bad.append(d.get("id"))
+                continue
+            if d.get("source") == "afi-63-138":
+                continue          # hand-rebuilt tables deliberately cover flattened cells
+            span_words = re.findall(r"[a-z0-9]+",
+                                    " ".join(LMARK.sub("", l) for l in lines[start:end + 1]).lower())
+            have = Counter(re.findall(r"[a-z0-9]+",
+                                      " ".join(c for r in t.get("rows") or [] for c in r).lower()))
+            for w in span_words:
+                if _fur.match(w):
+                    continue
+                if have[w] <= 0:
+                    hide_bad.append(d.get("id"))
+                    break
+                have[w] -= 1
+    check("table spans in range", not span_bad,
+          f"{len(span_bad)} doc(s) have a table span outside the content: {span_bad[:3]}")
+    check("tables hide no text", not hide_bad,
+          f"{len(hide_bad)} doc(s) have a table that would hide text it does not show: {hide_bad[:3]}",
+          "scripts/extract_tables.py")
 
     # ── level markers leaking into visible text ───────────────────────────────
     inline = [d["id"] for d in docs
