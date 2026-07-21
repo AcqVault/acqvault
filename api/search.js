@@ -122,6 +122,43 @@ function highlight(text, query) {
   return out;
 }
 
+
+// ── CLAUSE DEDUP FOR SEARCH ───────────────────────────────────────────────────
+// 274 clause numbers exist as more than one r-dfars doc: the deviation memo's copy in
+// the clause's SUBJECT part, a legacy pre-deviation copy in part 52, and sometimes a
+// title-only stub where a memo merely lists the clause. Their prescriptions can
+// DISAGREE (all 13 checked against the signed memos: the subject-part copy matches the
+// memo 12/13, part 52 never does — part 52 is the pre-deviation library). Returning
+// both from a SEARCH invites citing the stale one, so a query returns only the best
+// copy per clause number: subject-part substantive > part-52 substantive > stub.
+// Browse is untouched — a part filter shows everything, and part 52 pages carry a
+// supersession note instead. KEEP IDENTICAL to app.js acqClauseSuppressed (scorer parity).
+function clauseNum(title) {
+  const m = String(title || '').trim().match(/^(252\.\d{3}-\d{4}(?:-\d+)?)\b/);
+  return m ? m[1] : null;
+}
+let clauseSuppressCache = null;
+function clauseSuppressSet(entries) {
+  if (clauseSuppressCache) return clauseSuppressCache;
+  const best = new Map();   // clause -> winning doc
+  const rank = d => (String(d.part) !== '52' ? 2 : 1) * 1000000 + Math.min(String(d.content || '').length, 999999);
+  for (const { doc } of entries) {
+    if (doc.source !== 'r-dfars') continue;
+    const c = clauseNum(doc.title);
+    if (!c) continue;
+    const prev = best.get(c);
+    if (!prev || rank(doc) > rank(prev)) best.set(c, doc);
+  }
+  const suppress = new Set();
+  for (const { doc } of entries) {
+    if (doc.source !== 'r-dfars') continue;
+    const c = clauseNum(doc.title);
+    if (c && best.get(c) && best.get(c).id !== doc.id) suppress.add(doc.id);
+  }
+  clauseSuppressCache = suppress;
+  return suppress;
+}
+
 function searchDocs(body = {}) {
   const filter = body.filter || '';
   const sources = parseValueFilters(filter, 'source');
@@ -138,7 +175,10 @@ function searchDocs(body = {}) {
   });
 
   if (terms.length) {
+    // Dedup applies to QUERIES only — a part filter (browse) must keep every doc.
+    const suppress = clauseSuppressSet(loadIndex());
     entries = entries
+      .filter(({ doc }) => !suppress.has(doc.id))
       .map(entry => ({ entry, score: scoreEntry(entry, terms, phrase) }))
       .filter(x => x.score > 0)
       .sort((a, b) => b.score - a.score)

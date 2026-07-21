@@ -137,6 +137,31 @@ function partsForSource(source) {
   return { parts, groups };
 }
 
+
+// ── SUPERSEDED CLAUSE NOTES (r-dfars part 52) ─────────────────────────────────
+// Part 52 reproduces the legacy pre-deviation clause library — deliberately, because
+// 74 clauses (including 252.204-7012) exist nowhere else. But where a deviation memo
+// RESTATES a clause, the memo's copy in the clause's subject part is the authoritative
+// text, and the two can disagree on the prescription (verified against the signed
+// memos: subject-part matches 12/13, part 52 0/13). Say so on the page, per section,
+// with a link to the current copy — never silently, and never by editing reproduced text.
+function supersededBy(doc) {
+  if (doc.source !== 'r-dfars' || String(doc.part) !== '52') return null;
+  const m = String(doc.title || '').trim().match(/^(252\.\d{3}-\d{4}(?:-\d+)?)\b/);
+  if (!m) return null;
+  for (const d of loadDocs()) {
+    if (d.source !== 'r-dfars' || String(d.part) === '52' || d.id === doc.id) continue;
+    if (String(d.title || '').trim().startsWith(m[1]) && String(d.content || '').length > 200)
+      return d;
+  }
+  return null;
+}
+function supersededChip(doc) {
+  const cur = supersededBy(doc);
+  if (!cur) return '';
+  return `<div class="pair pair-rule"><span class="lead">Deviated</span><a href="/r-dfars/part-${encodeURIComponent(String(cur.part))}#${encodeURIComponent(String(cur.anchor || cur.id))}">current text in Part ${esc(displayPartForSource('r-dfars', cur.part))}</a><span class="note">this copy is the pre-deviation clause — the deviation restates it, and the prescriptions can differ</span></div>`;
+}
+
 // ── RULE ⇄ PROCEDURE PAIRING ──────────────────────────────────────────────────
 // The DoD class deviation ships the rule (Attachment A1) and its procedure (A2) in ONE
 // document. AcqVault indexes them as two sources, so /r-dfars/part-4 and /pgi/part-4
@@ -934,6 +959,7 @@ function renderPartPage(source, part) {
 <h2><a href="#${anchor}">${esc(d.title)}</a>${src}</h2>
 ${compassNote}
 ${pairChip(source, d, pairIdx, ownCounts)}
+${supersededChip(d)}
 ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
 </section>`;
   }).join('\n');

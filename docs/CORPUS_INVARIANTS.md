@@ -223,3 +223,40 @@ The reader said "Part 204" while the crawlable page at the same URL said "Part 4
 * **A section number is NOT unique within a part.** R-DFARS part 233 holds two different
   sections numbered `233.170`. Anything that pairs or links on a bare number must detect
   the collision and decline, not pick the first match.
+
+## The r-dfars part-52 clause library (decided 2026-07-23 — don't relitigate)
+
+**Part 52 is the legacy PRE-DEVIATION clause library, kept on purpose.** 347 clause
+docs, of which 74 exist nowhere else — including 252.204-7012 (Safeguarding Covered
+Defense Information). Deleting the part would delete regulation text.
+
+**Where a deviation memo restates a clause (273 numbers), the memo's copy in the
+clause's SUBJECT part is authoritative.** Proven from the signed memos, not inferred:
+of the 13 clause numbers whose two copies carry DIFFERENT "As prescribed in" lines,
+the memo prints the subject-part copy's prescription 12/13 and the part-52 copy's
+0/13 (the 13th could not be located in the memo text). Independently: all 13
+subject-part prescriptions exist as corpus sections; 12 of 13 part-52 prescriptions
+do not — they reference pre-RFO section numbers.
+
+**The fix is labelling + search dedup, NEVER text editing.** The part-52 copies are
+faithful reproductions of the legacy text; rewriting their prescription lines would
+falsify a reproduced document (the same reason the CM tier revert happened).
+Enforced/implemented as:
+  * SEARCH queries return one hit per clause number — subject-part substantive beats
+    part-52 substantive beats title-only stub (`clauseSuppressSet`, KEPT IDENTICAL in
+    api/search.js and assets/app.js — scorer parity). A part FILTER (browse) still
+    returns everything.
+  * The SSR part-52 page labels each restated clause with a "Deviated — current text
+    in Part NNN" chip linking to the memo copy; the in-app part-52 reader carries a
+    part-level pre-deviation banner.
+  * Title-only stubs (e.g. the part-12 commercial-clause list) STAY in the corpus —
+    they are the memo's own applicability list — but lose to a substantive twin in
+    search.
+
+**Wrapped-title repair (`scripts/repair_wrapped_titles.py`):** the memos wrap long
+headings onto a second line and ingest kept only the first, so 59 titles ended
+mid-phrase ("…Organizational Conflict of") and their citations did too. The script
+rejoins title + continuation, touches ONLY the `title` field (asserted), and doc
+hashes are content-only so no pinned clause fired a false "changed" alert. ⚠ Its
+tail heuristic must require real words: 252.227-7037's next line is a LIST OF CLAUSE
+NUMBERS, which a naive join would have welded into the title.

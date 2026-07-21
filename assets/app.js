@@ -134,10 +134,43 @@ function acqLoadCorpus(){
     .then(r => { if(!r.ok) throw new Error('corpus HTTP '+r.status); return r.json(); })
     // DAF Compass temporarily excluded from search (kept identical to the server
     // filter in api/search.js loadDocs) — docs remain in the corpus, just not indexed.
-    .then(docs => { ACQ_INDEX = docs.filter(Boolean).filter(doc => doc.source!=='compass').map(doc => ({ doc, titleLc:String(doc.title||'').toLowerCase(), contentLc:String(doc.content||'').toLowerCase() })); if (typeof srAnnounce === 'function') srAnnounce('Offline search ready.'); return ACQ_INDEX; })
+    .then(docs => { ACQ_INDEX = docs.filter(Boolean).filter(doc => doc.source!=='compass').map(doc => ({ doc, titleLc:String(doc.title||'').toLowerCase(), contentLc:String(doc.content||'').toLowerCase() })); clauseSuppressCache = null; if (typeof srAnnounce === 'function') srAnnounce('Offline search ready.'); return ACQ_INDEX; })
     .catch(e => { acqCorpusPromise = null; throw e; });
   return acqCorpusPromise;
 }
+
+// ── CLAUSE DEDUP FOR SEARCH ───────────────────────────────────────────────────
+// KEEP IDENTICAL to api/search.js clauseSuppressSet (scorer parity). A clause number
+// can exist as the deviation memo's copy (subject part), a legacy pre-deviation copy
+// (part 52), and a title-only stub — with DISAGREEING prescriptions. Queries return
+// only the best copy: subject-part substantive > part-52 substantive > stub. A part
+// filter (browse) keeps everything.
+function clauseNum(title){
+  const m=String(title||'').trim().match(/^(252\.\d{3}-\d{4}(?:-\d+)?)\b/);
+  return m?m[1]:null;
+}
+let clauseSuppressCache=null;
+function clauseSuppressSet(entries){
+  if(clauseSuppressCache) return clauseSuppressCache;
+  const best=new Map();
+  const rank=d=>(String(d.part)!=='52'?2:1)*1000000+Math.min(String(d.content||'').length,999999);
+  for(const {doc} of entries){
+    if(doc.source!=='r-dfars') continue;
+    const c=clauseNum(doc.title);
+    if(!c) continue;
+    const prev=best.get(c);
+    if(!prev||rank(doc)>rank(prev)) best.set(c,doc);
+  }
+  const suppress=new Set();
+  for(const {doc} of entries){
+    if(doc.source!=='r-dfars') continue;
+    const c=clauseNum(doc.title);
+    if(c&&best.get(c)&&best.get(c).id!==doc.id) suppress.add(doc.id);
+  }
+  clauseSuppressCache=suppress;
+  return suppress;
+}
+
 function acqLocalSearch(body){
   const filter=body.filter||'';
   const sources=acqValueFilters(filter,'source'), parts=acqValueFilters(filter,'part'), statuses=acqValueFilters(filter,'status');
@@ -149,7 +182,9 @@ function acqLocalSearch(body){
     return true;
   });
   if(terms.length){
-    entries=entries.map(e=>({e,s:acqScore(e,terms,phrase)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.e);
+    // Dedup applies to QUERIES only — a part filter (browse) must keep every doc.
+    const suppress=clauseSuppressSet(ACQ_INDEX);
+    entries=entries.filter(({doc})=>!suppress.has(doc.id)).map(e=>({e,s:acqScore(e,terms,phrase)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.e);
   } else {
     entries=entries.sort((a,b)=>acqPartNum(a.doc)-acqPartNum(b.doc)||regTitleCmp(a.doc.title,b.doc.title));
   }
@@ -1774,6 +1809,23 @@ function pairChipHTML(source, parsed, pairIdx, ownCounts) {
       </div>`;
 }
 
+
+// Part 52 reproduces the legacy pre-deviation clause library (74 clauses exist nowhere
+// else). Where a memo restates a clause, the subject-part copy is authoritative and the
+// prescriptions can differ — proven against the signed memos. The SSR pages label each
+// affected section; in-app, the whole part gets the warning (the per-section twin
+// lookup needs the full corpus, which the browse pane does not hold).
+function legacyLibraryBannerHTML(source, indexPart) {
+  if (source !== 'r-dfars' || String(indexPart) !== '52') return '';
+  return `<div class="br-partpair br-partpair-rule">
+    <span class="br-partpair-tag">Pre-deviation</span>
+    <div class="br-partpair-body"><strong>This part reproduces the legacy clause library.</strong>
+    Where a DoD class deviation restates one of these clauses, the deviated text lives in the clause's
+    subject part (252.204-xxxx → Part 204, and so on) and is the version to cite — the prescription
+    lines can differ. Clauses the deviations never restated appear only here.</div>
+  </div>`;
+}
+
 // Standing on a part, say plainly which half of the deviation you are reading and
 // where the other half is. The badge and colour do this in a RESULT LIST; until now
 // nothing did it while browsing.
@@ -1928,6 +1980,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount, pairIdx) {
       </div>
     </div>
     ${partPairBannerHTML(source, indexPartForSource(source, partNum), pairIdx)}
+    ${legacyLibraryBannerHTML(source, indexPartForSource(source, partNum))}
     <div class="br-part-search" id="br-part-search" role="search" aria-label="Search within this part">
       <span class="br-part-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
       <input class="br-part-search-input" id="br-part-search-input" type="text" placeholder="Search within ${partWord(source)} ${esc(displayPartForSource(source, partNum))}…" autocomplete="off" spellcheck="false" aria-label="Search within this part">
