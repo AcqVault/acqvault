@@ -265,9 +265,222 @@ function sectionDepth(title) {
   const m = /^(\d+(?:\.\d+)*)/.exec(String(title || '').trim());
   return m ? m[1].split('.').length : 0;
 }
-function renderContent(content, title, anchorBase, tables, source) {
+
+/* ── Category Management curated visuals ──────────────────────────────────────
+   These three tables are hand-built rather than extracted, because the buying
+   guide's PDF flattens them into unusable runs of cells — an extraction attempt
+   put HCaTS under Tier 4 when it belongs to Tier 3, which in a buying guide is
+   the whole answer. The curated data lived only in assets/app.js, so the in-app
+   reader drew them and these server-rendered pages showed nothing at all.
+   Copied verbatim so both surfaces agree. KEEP IN SYNC with assets/app.js.
+   The two linkified cells fall back to plain escaping here: the client's
+   linkifier emits target="_blank", and this site does not open new tabs. */
+function categoryGuideContinuumHTML() {
+  const rows = [
+    ['Requirements', '<strong>Commercial products and commercial services</strong> Includes COTS items and solutions that can be bought largely as-is.', '<strong>Non-commercial or mission-specific needs</strong> Includes products or services that require more tailoring, integration, or specialized delivery.'],
+    ['Value / Competition', '<strong>Micro-purchase to simplified procedures</strong> Use micro-purchase, simplified acquisition, and commercial simplified procedures where the requirement fits.', '<strong>Above simplified commercial lanes</strong> Use more formal procedures when value, risk, or complexity exceeds the simplified pathway.'],
+    ['Sources', '<strong>Required and priority sources first</strong> Check mandatory sources, existing government-wide contracts, BPAs, shared services, FSS, GWACs, IDIQs, and other pre-competed vehicles.', '<strong>Agency discretion and open market when needed</strong> Move beyond existing vehicles when they cannot meet the requirement.'],
+    ['Contracting Method', '<strong>Fast, structured buying lanes</strong> FAR 8.4 orders/BPAs, FAR 12.201-1 and 12.201-2, FAR 13, and other simplified/commercial procedures.', '<strong>Formal market procedures</strong> FAR 14/15 IFB/RFP, broad agency announcements, construction, architect-engineer, and other specialized pathways.'],
+    ['Approach', '<strong>Buy commercial capability as-is</strong> Prioritize speed, value, and adoption of existing market solutions.', '<strong>Plan for mission failure risk</strong> Build the capable team, evaluation strategy, and controls needed for complex or custom work.']
+  ];
+  return `<div class="cm-native-visual cm-continuum" aria-label="Simple to other-than-simple acquisition continuum">
+    <div class="cm-continuum-head">
+      <div><strong>Simple Pathway</strong><span>Speed, value, and adoption of commercial solutions as-is.</span></div>
+      <div><strong>Other-than-Simple Pathway</strong><span>More planning for capable teams, complexity, and mission-risk reduction.</span></div>
+    </div>
+    <div class="cm-continuum-grid">
+      ${rows.map(([label, simple, complex]) => `<div class="cm-cont-row"><div class="cm-cont-label">${label}</div><div class="cm-cont-cell">${simple}</div><div class="cm-cont-cell">${complex}</div></div>`).join('')}
+    </div>
+    <div class="cm-native-caption"><strong>Continuum summary</strong><span>Adapted from the Category Management Buying Guide, p. 5</span></div>
+  </div>`;
+}
+
+function categoryGuideSpendTableHTML() {
+  const rows = [
+    ['Facilities & Construction', 'Office furniture, building materials, commercial real estate leases, and common maintenance services such as janitorial work.', 'Specialized construction services for government facilities, building of military bases, or custom-designed infrastructure.'],
+    ['Human Capital', 'Talent acquisition, employer relocation, and professional development training.', 'Specialized government talent development, security clearances, and employee relations services specific to federal regulations.'],
+    ['Industrial Products and Services', 'Basic materials, hardware, tools, machinery, and repair or maintenance services for commercial equipment.', 'Specialized test and measurement supplies, equipment, and services for government-specific research and development projects.'],
+    ['Information Technology', 'Commercial off-the-shelf software licenses, computer hardware, and general IT consulting.', 'Highly customized software solutions for federal agencies, cybersecurity for classified networks, and specialized telecommunications.'],
+    ['Medical', 'Standard pharmaceuticals, healthcare services, and common medical equipment or supplies.', 'Specialized or customized pharmaceuticals, medical equipment, supplies, or services used exclusively by the military or certain federal agencies.'],
+    ['Office Management', 'Office supplies, office furniture, and basic office management services.', 'N/A'],
+    ['Professional Services', 'Financial services, legal services, management consulting, and marketing services.', 'Research and development projects for government use only, or advisory services for federal policy.'],
+    ['Security & Protection', 'Standard security systems, uniforms or protective apparel, and general security guard services.', 'Specialized weapons, integrated physical access control systems, and tactical communication services.'],
+    ['Transportation & Logistics Services', 'Package delivery, motor vehicles, and general transportation equipment.', 'Logistics support for military operations, specialized vehicles for federal agencies, or transportation of classified materials.'],
+    ['Travel', 'Lodging, passenger travel, and car rental services.', 'N/A']
+  ];
+  return `<div class="cm-native-visual">
+    <div class="cm-spend-wrap">
+      <table class="cm-spend-table">
+        <thead><tr><th>Category</th><th>Simple Pathway</th><th>Other-than-Simple Pathway</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="cm-native-caption"><strong>Categories of spend examples</strong><span>Adapted from the Category Management Buying Guide, pp. 8-9</span></div>
+  </div>`;
+}
+
+const CATEGORY_VEHICLE_TABLES = {
+  '3': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Facilities Reduction Program (FRP)', 'N/A', 'USACE'],
+    ['Tier 3', 'Building Maintenance & Operations (BMO)', 'Building Maintenance and Operations Buyer’s Guide', 'GSA'],
+    ['Tier 3', 'OASIS+ Facilities Domain', 'OASIS+ Buyer’s Guide', 'GSA'],
+    ['Tier 3', 'Maintenance Repair Facility Supplies Generation 2 (MRFS2)', 'MRFS2 How To', 'GSA'],
+    ['Tier 3', 'GSA Global Supply', 'GSA Global Supply FAQs', 'GSA'],
+    ['Tier 2', 'GSA MAS - Facilities & Construction', 'Construction-Related Services MAS Ordering Guide (GSA 2024)', 'GSA']
+  ],
+  '4': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Human Capital and Training Solutions (HCaTS)', 'HCaTS Ordering Guide', 'GSA'],
+    ['Tier 3', 'USA Learning', 'N/A', 'OPM'],
+    ['Tier 2', 'GSA MAS - Human Capital', 'N/A', 'GSA']
+  ],
+  '5': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Maintenance Repair Facility Supplies Generation 2 (MRFS2)', 'Maintenance Repair Facility Supplies Generation 2', 'GSA'],
+    ['Tier 3', 'GSA Global Supply', 'GSA Global Supply', 'GSA'],
+    ['Tier 3', 'DLA eCAT', 'N/A', 'DLA'],
+    ['Tier 2', 'GSA MAS - Industrial Products & Services', 'MAS Desk Reference', 'GSA'],
+    ['Tier 2', 'VA Federal Supply Schedules', 'N/A', 'VA'],
+    ['Tier 2', 'DLA eProcurement', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Special Operational Equipment (SOE)', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Fire and Emergency Services Equipment (FESE)', 'N/A', 'DLA'],
+    ['Tier 2', 'DLA Troop Support Tier 2 Contracts', 'N/A', 'DLA'],
+    ['Tier 1', 'Treasury Tier 1 Precious Metals', 'N/A', 'Treasury']
+  ],
+  '6': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', '8(a) STARS III', 'Industry partners, master contract, and pricing', 'GSA'],
+    ['Tier 3', 'Alliant 2', 'Ordering guide, industry partners, and pricing list', 'GSA'],
+    ['Tier 3', 'Digital Market', 'Ordering guide, vendor list, awarded contracts, and pricing', 'Army'],
+    ['Tier 3', 'COMSATCOM', 'Complex Commercial SATCOM Solutions and contractor listing/pricing', 'GSA'],
+    ['Tier 3', 'EIS', 'GSA EIS Ordering Guide, Fair Opportunity Ordering Guide, Partner Guide, and Service Guide', 'GSA'],
+    ['Tier 3', 'MAS IT', 'MAS Ordering Guide and MAS Buyer Websites and Tools', 'GSA'],
+    ['Tier 3', 'SEWP', 'SEWP Tools Guide and vendor contracts/services', 'NASA'],
+    ['Tier 3', 'NITAAC CIO-CS', 'CIO-CS Ordering Guide and contract holders', 'NIH'],
+    ['Tier 3', 'NITAAC CIO-SP3 / CIO-SP3 SB', 'SP3 and SP3 SB ordering guides and contract holders', 'NIH'],
+    ['Tier 3', 'VETS 2', 'N/A', 'GSA'],
+    ['Tier 3', 'Wireless', 'Wireless Mobility Solutions website, guide, contractor listing, and pricing', 'GSA']
+  ],
+  '7': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Medical Surgical Prime Vendor Program (MSPV)', 'Customer Ordering Guide', 'DLA'],
+    ['Tier 3', 'VA Hearing Aids (HRA)', 'Registration & Ordering Guidance', 'VA'],
+    ['Tier 3', 'DOD/VA High-Tech Medical Equipment / Radiology', 'DMMonline and VA website', 'DLA / VA'],
+    ['Tier 3', 'Defense Logistics Agency Medical Electronic Catalog Program (ECAT)', 'Core ECAT User Customer Ordering Guide', 'DLA'],
+    ['Tier 3', 'DOD/VA Joint National Contracts for Generic Pharmaceuticals', 'VA Website', 'VA'],
+    ['Tier 2', 'GSA MAS - Medical', 'MAS Ordering Guide', 'GSA'],
+    ['Tier 2', 'MQS2NG Multiple-Award IDIQ', 'MQS2NG SharePoint Online', 'DHA'],
+    ['Tier 2', 'Pharmaceutical Prime Vendor: DoD / VA', 'Customer use guide and VA website', 'DLA / VA'],
+    ['Tier 2', 'VA Federal Supply Schedule medical schedules', 'Orders not requiring SOW, orders requiring SOW, and open market paths', 'VA'],
+    ['Tier 2', 'AbilityOne / UNICOR / Omnibus IV / Community Care resources', 'How to Buy Products, ordering procedures, and program resources', 'Multiple']
+  ],
+  '8': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Global Supply Requisition Channel - Furniture', 'Global Supply Furniture Training Video', 'GSA'],
+    ['Tier 3', 'Federal Strategic Sourcing Initiative for Office Supplies Fourth Generation (FSSI OS4)', 'FSSI Office Supplies Fourth Generation Buying Guide', 'GSA'],
+    ['Tier 2', 'GSA MAS - Office Management', 'MAS Office Administrative Services Ordering Guide (GSA 2024)', 'GSA'],
+    ['Tier 2', 'GSA MAS - Furniture and Furnishings', 'N/A', 'GSA']
+  ],
+  '9': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Identity Protection Services (IPS)', 'Data Breach Response and Identity Protection Services Ordering Procedures', 'GSA'],
+    ['Tier 3', 'OASIS+', 'OASIS+ Ordering Guide', 'GSA'],
+    ['Tier 2', 'MAS - Professional Services', 'N/A', 'GSA'],
+    ['Tier 2', 'MAS - Human Capital', 'N/A', 'GSA']
+  ],
+  '10': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Reduced Hazard Training Ammunition (RHTA) II', 'RHTA II Ordering Guide', 'DHS'],
+    ['Tier 3', 'Body Armor IV', 'Body Armor Ordering Guide', 'DHS'],
+    ['Tier 3', 'Tactical Communications Equipment and Services II (TacCom II)', 'N/A', 'DHS'],
+    ['Tier 2', 'GSA MAS - Security & Protection', 'N/A', 'GSA']
+  ],
+  '11': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'Next Generation Delivery Service (NGDS)', 'NGDS Contracting Officer’s Ordering Guide', 'DLA'],
+    ['Tier 3', 'Direct Delivery Fuels', 'N/A', 'DLA'],
+    ['Tier 3', 'GSA Fleet Vehicle Purchasing', 'How to Buy Vehicles', 'GSA'],
+    ['Tier 3', 'GSA Fleet Vehicle Leasing', 'N/A', 'GSA']
+  ],
+  '12': [
+    ['Tier 4', 'N/A', 'N/A', 'N/A'],
+    ['Tier 3', 'City Pair Program (CPP)', 'N/A', 'GSA'],
+    ['Tier 3', 'Civilian Employee Relocation Resource Center (ERRC) / Employee Relocation Solutions', 'N/A', 'GSA'],
+    ['Tier 3', 'MAS 531110 Long Term Lodging / FedRooms / DoD Preferred', 'N/A', 'GSA'],
+    ['Tier 3', 'U.S. Government Rental Car Program', 'N/A', 'DoD'],
+    ['Tier 3', 'Emergency Lodging Services (ELS)', 'Guidance for Using ELS', 'GSA'],
+    ['Tier 2', 'E-Gov Travel Service (ETS2)', 'N/A', 'GSA'],
+    ['Tier 2', 'Travel Agent Services / Travel Consulting / Lodging Negotiation and Management', 'N/A', 'GSA'],
+    ['Tier 2', 'GO.gov / CHAMP / Long Term Lodging / Rideshare', 'N/A', 'GSA']
+  ]
+};
+
+function categoryGuideVehicleTableHTML(partNum) {
+  const rows = CATEGORY_VEHICLE_TABLES[String(partNum)] || [];
+  if (!rows.length) return '';
+  return `<div class="cm-native-visual">
+    <div class="cm-spend-wrap">
+      <table class="cm-spend-table cm-vehicle-table">
+        <thead><tr><th>Tier</th><th>Program</th><th>Ordering Guide</th><th>Agency Owner</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="cm-native-caption"><strong>Vehicles Table</strong><span>Adapted from the Category Management Buying Guide</span></div>
+  </div>`;
+}
+
+// KEEP IN SYNC with categoryGuideVisualAfterLine() in assets/app.js
+function cmVisualAfterLine(source, partNum, line, flags) {
+  if (source !== 'category-management') return '';
+  const t = (line || '').trim();
+  if (String(partNum) === '1' && !flags.continuum && /^The [\u201c"]simple[\u201d"].*continuum is a useful framework/i.test(t)) {
+    flags.continuum = true;
+    return categoryGuideContinuumHTML();
+  }
+  if (String(partNum) === '2' && !flags.spend && /^Categories of Spend Examples$/i.test(t)) {
+    flags.spend = true;
+    return categoryGuideSpendTableHTML();
+  }
+  if (Number(partNum) >= 3 && !flags.vehicles && /^Vehicles Table$/i.test(t)) {
+    flags.vehicles = true;
+    return categoryGuideVehicleTableHTML(partNum);
+  }
+  return '';
+}
+
+
+// KEEP IN SYNC with normalizeBrowseLines() in assets/app.js. The curated visuals
+// above replace flattened blocks of cells that are still sitting in the text; the
+// in-app reader skips those lines, and without the same skip here the page would
+// show the table and then the same data again as prose.
+function cmSkipLine(source, partNum, line, st) {
+  if (source !== 'category-management') return false;
+  const t = (line || '').trim();
+  if (Number(partNum) >= 3 && /^Types of Vehicles\b/i.test(t)) { st.vehicles = true; return true; }
+  if (st.vehicles) {
+    if (/^Resources$/i.test(t)) st.vehicles = false;
+    else return true;
+  }
+  if (String(partNum) === '1' && /^Simple\s+Other than Simple$/i.test(t)) { st.graphic = true; return true; }
+  if (String(partNum) === '2' && /^Category\s+Simple Pathway\s+Other-than-Simple Pathway$/i.test(t)) { st.graphic = true; return true; }
+  if (st.graphic) {
+    if ((String(partNum) === '1' && /^Simple Procurements$/i.test(t)) ||
+        (String(partNum) === '2' && /^Category Management$/i.test(t))) {
+      st.graphic = false;
+      if (String(partNum) === '2') return true;
+    } else {
+      return true;
+    }
+  }
+  return false;
+}
+
+function renderContent(content, title, anchorBase, tables, source, partNum) {
   const lines = spliceTables(content, tables);
   let lastLower = null;   // the (a)…(h)(i) run is per section
+  const cmFlags = {};     // each curated Category Management visual draws once
+  const cmSkip = {};      // and its flattened cells are skipped, as in the reader
   const baseDepth = sectionDepth(title);
   const out = [];
   const blocks = [];
@@ -310,8 +523,10 @@ function renderContent(content, title, anchorBase, tables, source) {
         out.push(`<h3 class="alt-head" id="${esc(id)}"><a href="#${esc(id)}">${esc(label)}.</a></h3>`);
         const rest = t.slice(m[0].length).trim();
         if (rest) out.push(`<p${pcls}>` + esc(rest) + '</p>');
-      } else {
+      } else if (!cmSkipLine(source, partNum, t, cmSkip)) {
         out.push(`<p${pcls}>` + esc(t) + '</p>');
+        const vis = cmVisualAfterLine(source, partNum, t, cmFlags);
+        if (vis) out.push(vis);
       }
     }
   }
@@ -383,6 +598,33 @@ section.sec:target>h2{color:var(--accent)}
 @media(prefers-reduced-motion:reduce){section.sec:target{animation:none}}
 .srcref{font-size:12.5px;color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
+/* Category Management curated visuals — copied from assets/app.css so the
+   server-rendered pages style them the same way the in-app reader does.
+   KEEP IN SYNC with assets/app.css. */
+.cm-native-visual{width:100%;max-width:100%;margin:24px 0 32px;border:1px solid var(--line2);border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 8px 28px rgba(15,37,64,0.05);}
+.cm-native-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-top:1px solid var(--line2);font-size:var(--fs-sm);font-weight:650;color:var(--muted);}
+.cm-native-caption strong{color:var(--ink2);}
+.cm-continuum{overflow-x:auto;}
+.cm-continuum-head{display:grid;grid-template-columns:1fr 1fr;background:linear-gradient(135deg,#10243d,#17375e);color:#fff;}
+.cm-continuum-head,.cm-continuum-grid{min-width:680px;}
+.cm-continuum-head div{padding:14px 16px;}
+.cm-continuum-head strong{display:block;font-size:var(--fs-lg);font-weight:var(--fw-heavy);letter-spacing:-0.015em;}
+.cm-continuum-head span{display:block;margin-top:3px;font-size:var(--fs-sm);line-height:1.4;color:rgba(255,255,255,0.78);}
+.cm-continuum-grid{display:grid;grid-template-columns:132px 1fr 1fr;}
+.cm-cont-row{display:contents;}
+.cm-cont-label,.cm-cont-cell{padding:13px 14px;border-top:1px solid var(--line2);font-size:var(--fs-base);line-height:1.45;}
+.cm-cont-label{font-size:var(--fs-xs);font-weight:var(--fw-black);letter-spacing:0.065em;text-transform:uppercase;color:var(--muted);background:#f8fafc;}
+.cm-cont-cell{color:var(--ink2);}
+.cm-cont-cell strong{display:block;color:var(--ink);font-size:var(--fs-md);margin-bottom:3px;}
+.cm-spend-wrap{width:100%;max-width:100%;overflow-x:auto;}
+.cm-spend-table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px;}
+.cm-spend-table th{background:#142f4d;color:#fff;text-align:left;font-size:var(--fs-sm);font-weight:var(--fw-heavy);letter-spacing:0.035em;text-transform:uppercase;padding:12px 14px;}
+.cm-spend-table td{vertical-align:top;padding:13px 14px;border-top:1px solid var(--line2);font-size:var(--fs-base);line-height:1.45;color:var(--ink2);}
+.cm-spend-table td:first-child{width:22%;font-weight:var(--fw-heavy);color:var(--ink);background:#f8fafc;}
+.cm-spend-table tr:nth-child(even) td:not(:first-child){background:#fbfdff;}
+.cm-vehicle-table td:first-child{width:15%;font-weight:var(--fw-black);color:var(--cm-txt);background:var(--cm-bg);}
+.cm-vehicle-table td:nth-child(2){width:31%;font-weight:var(--fw-heavy);color:var(--ink);}
+.cm-vehicle-table td:nth-child(4){width:12%;font-weight:var(--fw-heavy);color:var(--muted);}
 .srclink{font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap;margin-left:8px;vertical-align:2px}
 .srclink:hover{color:var(--accent);text-decoration:underline}
 /* Paragraph nesting — the rulebook's own tiering. acquisition.gov indents 24px per
@@ -570,7 +812,7 @@ function renderPartPage(source, part) {
     return `<section class="sec" id="${anchor}">
 <h2><a href="#${anchor}">${esc(d.title)}</a>${src}</h2>
 ${compassNote}
-${renderContent(d.content, d.title, anchor, d.tables, source)}
+${renderContent(d.content, d.title, anchor, d.tables, source, part)}
 </section>`;
   }).join('\n');
 
