@@ -656,7 +656,6 @@
       '<span class="st-sim-desc">Take the Source Selection Authority\u2019s chair on a $250M best-value tradeoff \u2014 nine rulings, a live protest-risk score, and every call cited to the DoD Source Selection Procedures.</span>' +
       '<span class="st-sim-chips"><span class="st-sim-chip">\u2248 18 min</span><span class="st-sim-meta">$250M best-value \u00b7 9 rulings \u00b7 untimed</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">\u2192</span></a>' +
-      '<div class="st-games-tier">Or a two-minute round</div>' +
       donePanel +
       '<div class="st-plates">' + comboCard +
       '<button class="st-plate' + (govToday ? ' st-plate-played' : '') + '" id="g-governs">' +
