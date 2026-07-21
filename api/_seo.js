@@ -223,8 +223,52 @@ function tableHtml(rows, escFn) {
     ci === 0 ? `<th scope="row">${escFn(c)}</th>` : `<td>${escFn(c)}</td>`).join('') + '</tr>').join('');
   return `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
-function renderContent(content, title, anchorBase, tables) {
+// Paragraph depth from the token a line opens with — see assets/app.js tokenLevel().
+// The RFO's HTML publishes an explicit level per paragraph and confirms the fixed
+// FAR/DFARS order: (a)->L1 96%, (1)->L2 93%, (i)->L3 91%, (A)->L4 92%. Deriving it at
+// render time gives the sources that never had markers (FAR Companion, FMR, SSP) the
+// same tiering without touching the corpus, and corrects R-DFARS's collapsed markers.
+// KEEP IN SYNC with assets/app.js.
+const PARA_TOKEN = /^\(([A-Za-z0-9]{1,4})\)\s/;
+const ROMAN_TOKEN = /^(?:i|ii|iii|iv|v|vi|vii|viii|ix|x|xi|xii|xiii|xiv|xv)$/;
+const AMBIG_PREV = { i: 'h', v: 'u', x: 'w' };
+function tokenLevel(text, lastLower) {
+  const m = PARA_TOKEN.exec(String(text || '').trim());
+  if (!m) return null;
+  const t = m[1];
+  if (/^\d+$/.test(t)) return 2;
+  if (t.length === 1 && t >= 'A' && t <= 'Z') return 4;
+  if (AMBIG_PREV[t] && lastLower === AMBIG_PREV[t]) return 1;
+  if (ROMAN_TOKEN.test(t)) return 3;
+  if (t.length === 1 && t >= 'a' && t <= 'z') return 1;
+  return null;
+}
+function paraTokenLetter(text) {
+  const m = PARA_TOKEN.exec(String(text || '').trim());
+  return (m && m[1].length === 1 && m[1] >= 'a' && m[1] <= 'z') ? m[1] : null;
+}
+// The other convention: a dotted outline ("3.1.1.1 All offers…"), used by the FMR,
+// the SSP and the DAFI. Depth is the number of components relative to the section's
+// own number, so 3.1.1 sits one level under a section titled "3.1". Gated by source
+// because a bare "31.205-6" in the RFO is a section reference, not an outline.
+const DECIMAL_SOURCES = { 'fmr': 1, 'ssp': 1, 'afi-63-138': 1, 'far-companion': 1 };
+const DECIMAL_TOKEN = /^(\d+(?:\.\d+)+)[.)]?\s/;
+function decimalLevel(text, source, baseDepth) {
+  if (!DECIMAL_SOURCES[source]) return null;
+  const m = DECIMAL_TOKEN.exec(String(text || '').trim());
+  if (!m) return null;
+  const depth = m[1].split('.').length;
+  const lvl = baseDepth ? depth - baseDepth : depth - 1;
+  return lvl > 0 ? Math.min(lvl, 4) : null;
+}
+function sectionDepth(title) {
+  const m = /^(\d+(?:\.\d+)*)/.exec(String(title || '').trim());
+  return m ? m[1].split('.').length : 0;
+}
+function renderContent(content, title, anchorBase, tables, source) {
   const lines = spliceTables(content, tables);
+  let lastLower = null;   // the (a)…(h)(i) run is per section
+  const baseDepth = sectionDepth(title);
   const out = [];
   const blocks = [];
   const skip = titleEchoLines(lines, title);
@@ -237,10 +281,16 @@ function renderContent(content, title, anchorBase, tables) {
     // regulation into a flat wall of paragraphs: (a), (1), (2), (b) all landed on
     // the same margin, so you could not see which paragraph governed which.
     const lvlM = line.match(/^L(\d+):/);
-    const lvl = lvlM ? Math.min(parseInt(lvlM[1], 10), 4) : 0;
-    const pcls = lvl > 0 ? ` class="lvl lvl-${lvl}"` : '';
     let s = line.replace(/^L\d+:\s*/, '').trim();
     if (!s) continue;
+    // The token wins over a stored marker where there is one: R-DFARS recorded
+    // 14,774 lines at L1 and a single line at L4 for text that nests four deep.
+    let derived = tokenLevel(s, lastLower);
+    if (paraTokenLetter(s)) lastLower = paraTokenLetter(s);
+    if (derived === null) derived = decimalLevel(s, source, baseDepth);
+    const lvl = derived !== null ? derived
+              : (lvlM ? Math.min(parseInt(lvlM[1], 10), 4) : 0);
+    const pcls = lvl > 0 ? ` class="lvl lvl-${lvl}"` : '';
     const rt = parseRatingTable(lines, li, esc);
     if (rt) { out.push(rt.html); li = rt.endIdx; continue; }
 
@@ -520,7 +570,7 @@ function renderPartPage(source, part) {
     return `<section class="sec" id="${anchor}">
 <h2><a href="#${anchor}">${esc(d.title)}</a>${src}</h2>
 ${compassNote}
-${renderContent(d.content, d.title, anchor, d.tables)}
+${renderContent(d.content, d.title, anchor, d.tables, source)}
 </section>`;
   }).join('\n');
 

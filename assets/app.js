@@ -1068,13 +1068,65 @@ function browseTableHtml(rows) {
     ci === 0 ? `<th scope="row">${esc(c)}</th>` : `<td>${esc(c)}</td>`).join('') + '</tr>').join('');
   return `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
+// Paragraph depth from the token a line opens with. The FAR/DFARS nesting order is
+// fixed — (a) then (1) then (i) then (A) — and the RFO's own HTML, which publishes an
+// explicit level per paragraph, confirms it rather than assuming it: (a)->L1 96%,
+// (1)->L2 93%, (i)->L3 91%, (A)->L4 92% across every tokened paragraph.
+// Deriving it here rather than baking markers into the corpus means the sources that
+// never had any tiering (FAR Companion, the FMR, the SSP) gain it without a re-ingest,
+// R-DFARS's collapsed markers get corrected in place, and the bullet, numbered-list,
+// category-guide and DAFI handlers below keep their own lines.
+// KEEP IN SYNC with api/_seo.js tokenLevel().
+let brLastLower = null;
+let brBaseDepth = 0;
+// The other convention: a dotted outline ("3.1.1.1 All offers…"), used by the FMR,
+// the SSP and the DAFI. Depth is the number of components relative to the section's
+// own number, so 3.1.1 sits one level under a section titled "3.1". Gated by source
+// because a bare "31.205-6" in the RFO is a section reference, not an outline.
+const DECIMAL_SOURCES = { 'fmr': 1, 'ssp': 1, 'afi-63-138': 1, 'far-companion': 1 };
+const DECIMAL_TOKEN = /^(\d+(?:\.\d+)+)[.)]?\s/;
+function decimalLevel(text, source, baseDepth) {
+  if (!DECIMAL_SOURCES[source]) return null;
+  const m = DECIMAL_TOKEN.exec(String(text || '').trim());
+  if (!m) return null;
+  const depth = m[1].split('.').length;
+  const lvl = baseDepth ? depth - baseDepth : depth - 1;
+  return lvl > 0 ? Math.min(lvl, 4) : null;
+}
+function sectionDepth(title) {
+  const m = /^(\d+(?:\.\d+)*)/.exec(String(title || '').trim());
+  return m ? m[1].split('.').length : 0;
+}
+const PARA_TOKEN = /^\(([A-Za-z0-9]{1,4})\)\s/;
+const ROMAN_TOKEN = /^(?:i|ii|iii|iv|v|vi|vii|viii|ix|x|xi|xii|xiii|xiv|xv)$/;
+const AMBIG_PREV = { i: 'h', v: 'u', x: 'w' };   // also the 9th/22nd/24th letters
+function tokenLevel(text, lastLower) {
+  const m = PARA_TOKEN.exec(String(text || '').trim());
+  if (!m) return null;
+  const t = m[1];
+  if (/^\d+$/.test(t)) return 2;
+  if (t.length === 1 && t >= 'A' && t <= 'Z') return 4;
+  // "(i)" straight after "(h)" is the letter continuing the run, not the numeral
+  if (AMBIG_PREV[t] && lastLower === AMBIG_PREV[t]) return 1;
+  if (ROMAN_TOKEN.test(t)) return 3;
+  if (t.length === 1 && t >= 'a' && t <= 'z') return 1;
+  return null;
+}
+function paraTokenLetter(text) {
+  const m = PARA_TOKEN.exec(String(text || '').trim());
+  return (m && m[1].length === 1 && m[1] >= 'a' && m[1] <= 'z') ? m[1] : null;
+}
 function renderContentLine(line, baseCitation, source, paraPath, altCtx, tables) {
   const tmark = BR_TBL_MARK.exec(line);
   if (tmark) { const t = (tables || [])[+tmark[1]]; return browseTableHtml(t && t.rows); }
   const lm = line.match(/^L(\d):(.*)/);
   if (lm) {
-    const level   = parseInt(lm[1]);
     const content = lm[2].trim();
+    // A stored marker can be wrong — R-DFARS recorded 14,774 lines at L1 and one at
+    // L4 for text that nests four deep — so the token wins where there is one.
+    const derived = tokenLevel(content, brLastLower);
+    const level   = derived === null ? parseInt(lm[1]) : derived;
+    if (paraTokenLetter(content)) brLastLower = paraTokenLetter(content);
     if (!content || isBrowsePageNumberLine(content)) return '';
     const text    = categoryGuideText(content, source);
     if (level === 0) {
@@ -1182,6 +1234,10 @@ function renderContentLine(line, baseCitation, source, paraPath, altCtx, tables)
     return `<div class="br-note-heading">${esc(t)}</div>`;
   }
 
+  let lvl = tokenLevel(t, brLastLower);
+  if (paraTokenLetter(t)) brLastLower = paraTokenLetter(t);
+  if (lvl === null) lvl = decimalLevel(t, source, brBaseDepth);
+  if (lvl) return `<p class="br-p br-l${Math.min(lvl, 4)}">${categoryGuideText(t, source)}</p>`;
   return `<p class="br-p">${categoryGuideText(t, source)}</p>`;
 }
 // ── CITE A SECTION ────────────────────────────────────────────────────────────
@@ -1568,6 +1624,8 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       return skip ? raw.slice(skip).join('\n').replace(/^\n+/, '') : raw.join('\n');
     })();
     const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
+    brLastLower = null;   // the (a)…(h)(i) run is per section, not per document
+    brBaseDepth = sectionDepth(title);
     const visualFlags = {};
     const paraPath = makeParaPath(); // fresh token path per section
     const altCtx = { anchor, blocks: [] }; // variant headings, scoped per section
