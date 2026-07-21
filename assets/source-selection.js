@@ -260,7 +260,7 @@
     }
   });
 
-  fetch('/assets/source-selection.json?v=2')
+  fetch('/assets/source-selection.json?v=3')
     .then(function (r) { if (!r.ok) throw new Error('load'); return r.json(); })
     .then(function (data) {
       scen = data; S = load() || fresh();
@@ -269,6 +269,9 @@
       // has i === phases.length, so the range check only applies mid-run (!done).
       if (S.started && (!scen.phases || typeof S.picks !== 'object' ||
           (!S.done && (typeof S.i !== 'number' || S.i >= scen.phases.length)))) S = fresh();
+      // S.risk renders unescaped in the verdict/meter; coerce to a finite number so a
+      // tampered localStorage value can never reach innerHTML as markup (defense-in-depth).
+      if (typeof S.risk !== 'number' || !isFinite(S.risk)) S.risk = 0;
       render();
     })
     .catch(function () {

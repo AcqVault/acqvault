@@ -659,8 +659,8 @@
       '<a class="st-sim-feature" href="/source-selection">' +
       '<span class="st-sim-kick">Flagship \u00b7 Simulator</span>' +
       '<b class="st-sim-title">Source Selection Simulator</b>' +
-      '<span class="st-sim-desc">Take the Source Selection Authority\u2019s chair on a $250M best-value tradeoff \u2014 nine rulings, a live protest-risk score, and every call cited to the DoD Source Selection Procedures.</span>' +
-      '<span class="st-sim-chips"><span class="st-sim-chip">\u2248 18 min</span><span class="st-sim-meta">$250M best-value \u00b7 9 rulings \u00b7 untimed</span></span>' +
+      '<span class="st-sim-desc">Take the Source Selection Authority\u2019s chair on a $250M best-value tradeoff \u2014 nine decisions, a live protest-risk score, and every call cited to the DoD Source Selection Procedures.</span>' +
+      '<span class="st-sim-chips"><span class="st-sim-chip">\u2248 18 min</span><span class="st-sim-meta">$250M best-value \u00b7 9 decisions \u00b7 untimed</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">\u2192</span></a>' +
       donePanel +
       '<div class="st-plates">' + comboCard +
@@ -780,7 +780,7 @@
     var simHtml = sel === 'unlimited'
       ? '<a class="st-lad-sim" href="/source-selection"><span class="st-lad-sim-kick">Simulator</span>' +
         '<b class="st-lad-sim-t">Run a full source selection</b>' +
-        '<span class="st-lad-sim-d">Take the Source Selection Authority’s chair on a $250M best-value tradeoff — nine rulings, a live protest-risk score, every call cited to the DoD SSP.</span>' +
+        '<span class="st-lad-sim-d">Take the Source Selection Authority’s chair on a $250M best-value tradeoff — nine decisions, a live protest-risk score, every call cited to the DoD SSP.</span>' +
         '<span class="st-lad-sim-go" aria-hidden="true">→</span></a>'
       : '';
     var sinkHtml = sink.length

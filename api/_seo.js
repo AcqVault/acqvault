@@ -1176,7 +1176,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=51"></script>`;
+<script defer src="/assets/study.js?v=52"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }
@@ -1184,7 +1184,7 @@ ${SEAL_SVG}
 function renderSourceSelectionPage() {
   const canonical = `${SITE}/source-selection`;
   const title = 'Source Selection Simulator — run a DoD source selection | AcqVault';
-  const description = esc('A free, hands-on source-selection simulator for the acquisition community. Play the Source Selection Authority through a full best-value tradeoff — acquisition planning, competitive range, discussions, cost realism, and the award decision — with a running protest-risk score. Every ruling links to the governing DoD Source Selection Procedures. No account.');
+  const description = esc('A free, hands-on source-selection simulator for the acquisition community. Play the Source Selection Authority through a full best-value tradeoff — acquisition planning, competitive range, discussions, cost realism, and the award decision — with a running protest-risk score. Every call links to the governing DoD Source Selection Procedures. No account.');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'LearningResource',
@@ -1332,7 +1332,7 @@ ${SEAL}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/study">Study</a> › Source Selection</nav>
 <div class="eyebrow">AcqVault · Simulator</div>
 <h1>Run a source selection</h1>
-<p class="lede">Sit in the Source Selection Authority's chair and work a full best-value tradeoff — from acquisition planning to the signed decision. Every call carries a protest-risk cost, and every ruling links straight to the governing DoD Source Selection Procedures on this site.</p>
+<p class="lede">Sit in the Source Selection Authority's chair and work a full best-value tradeoff — from acquisition planning to the signed decision. Every call carries a protest-risk cost, and every call links straight to the governing DoD Source Selection Procedures on this site.</p>
 <div class="stats"><span class="stat">9 decisions</span><span class="stat">One $250M source selection</span><span class="stat">Every rule cited to the SSP</span><span class="stat">Free · no account</span><span class="stat">Untimed</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="ss-wrap">
@@ -1343,7 +1343,7 @@ ${SEAL}
 <p class="lfoot-note"><strong>How it works:</strong> read the record for each phase, make the call the Source Selection Authority would make, then check it against the governing rule. Wrong calls add to a running protest-risk score that decides whether your award survives a GAO protest. The scenario is fictional; the procedures and citations are real. Adapted from a colleague's warrant-prep exercise and rebuilt on the current DoD Source Selection Procedures.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the <a href="/ssp">DoD Source Selection Procedures</a> and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/source-selection.js?v=3"></script>`;
+<script defer src="/assets/source-selection.js?v=4"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-src-ssp-v2.png' });
 }
