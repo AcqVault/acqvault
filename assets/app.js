@@ -257,9 +257,19 @@ const SOURCE_URLS = {
   'afi-63-138':    'https://www.e-publishing.af.mil/',
   'ssp':           'https://www.acq.osd.mil/asda/dpc/cp/policy/source-selection-procedures.html',
 };
-const SOURCE_LABELS = {
-  'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management Buying Guide',
-  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD Source Selection Procedures',
+// Two registers, one canonical name in each. The old single map mixed them, so a
+// result tag could read "RFO" beside "CATEGORY MANAGEMENT BUYING GUIDE".
+// SHORT is the citation prefix and the label for tags, pills and filter chips;
+// FULL is the narrative name for the reader, the drawer and the credit line.
+// Both agree with SOURCES[].short / SOURCES[].name in api/_seo.js.
+const SOURCE_SHORT = {
+  'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management',
+  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD SSP',
+};
+const SOURCE_FULL = {
+  'rfo': 'Revolutionary FAR Overhaul', 'r-dfars': 'R-DFARS Deviations', 'far-companion': 'FAR Companion',
+  'category-management': 'Category Management Buying Guide', 'fmr': 'DoD Financial Management Regulation',
+  'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD Source Selection Procedures',
 };
 
 // ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
@@ -1456,7 +1466,7 @@ function fmrChapterLabel(hit) {
 function renderFmrVolumeIndex(scroll) {
   const st = fmrBrowseState; if (!st) return;
   const reader = document.getElementById('browse-reader-inner');
-  const srcLabel = SOURCE_LABELS['fmr'] || 'DoD FMR';
+  const srcLabel = SOURCE_SHORT['fmr'] || 'DoD FMR';
   const items = st.hits.map((hit, i) =>
     `<li><a class="br-toc-link" href="#" data-fmr-ch="${i}">
       <span class="br-toc-link-num">Ch ${esc(fmrChapterNum(hit) || String(i + 1))}</span>
@@ -1487,7 +1497,7 @@ function openFmrChapter(idx) {
 }
 
 function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
-  const srcLabel  = SOURCE_LABELS[source] || source.toUpperCase();
+  const srcLabel  = SOURCE_SHORT[source] || source.toUpperCase();
   // Source tags reference the CSS tokens directly (app.css :root) so the reader can
   // never drift from the result-list palette the way the old hardcoded hex maps did.
   const tagVar = {'rfo':'rfo','r-dfars':'dfars','far-companion':'fc','category-management':'cm','afi-63-138':'dafi','compass':'cmp','fmr':'fmr','ssp':'ssp'}[source];
@@ -1730,7 +1740,7 @@ async function selectPart(tile, partNum, partLabel) {
 
 // ── CITATION ──────────────────────────────────────────────────────────────────
 function generateCitation(hit) {
-  const label = SOURCE_LABELS[hit.source] || (hit.source || 'Document').toUpperCase();
+  const label = SOURCE_SHORT[hit.source] || (hit.source || 'Document').toUpperCase();
   const title  = hit.title || '';
 
   // Extract the section title (text after the section number)
@@ -1999,7 +2009,7 @@ document.addEventListener('keydown', (e) => {
 // ── CONTENT FORMATTER ─────────────────────────────────────────────────────────
 function formatContent(text, hit) {
   if (!text) return '<div class="dc-text" style="color:#bbb;font-style:italic;">No content available.</div>';
-  const srcLabel = SOURCE_LABELS[hit.source] || (hit.source || 'Document').toUpperCase();
+  const srcLabel = SOURCE_FULL[hit.source] || (hit.source || 'Document').toUpperCase();
   const baseCite = generateCitation(hit);
   const lines    = text.split('\n');
   let html = '', curSection = null, paragraphNodes = [];
@@ -2493,7 +2503,7 @@ function badgeTag(status) {
 }
 function sourceTag(source) {
   const safeSource = source || 'unknown';
-  const label = SOURCE_LABELS[safeSource] || safeSource;
+  const label = SOURCE_SHORT[safeSource] || safeSource;
   const cls   = safeSource.replace(/[^a-z0-9]/gi,'-').toLowerCase();
   return `<span class="rc-tag rc-tag-${cls}">${esc(label)}</span>`;
 }
@@ -2513,7 +2523,7 @@ function buildCiteBlock(hit) {
   // generateCitation already returns "<REF> — <Title>", so use it verbatim as the reference line.
   const ref = (typeof generateCitation === 'function' ? generateCitation(hit) : '') || hit.filename || hit.title || 'Citation';
   const text = cleanClauseText(hit.content);
-  const label = SOURCE_LABELS[hit.source] || hit.source || '';
+  const label = SOURCE_FULL[hit.source] || hit.source || '';
   const asof = hit.indexed_at ? `copy retrieved ${fmtAsOf(hit.indexed_at)}` : '';
   let out = ref;
   if (text) out += `\n\n"${text}"`;
@@ -2621,7 +2631,7 @@ function buildNoResultsHTML(query) {
   const stripped = q.replace(legacyRe, '').replace(/\s{2,}/g, ' ').trim();
   const isLegacy = legacyRe.test(q) && stripped && stripped.toLowerCase() !== q.toLowerCase();
   const filtered = activeSources && activeSources.size > 0;
-  const filterNames = filtered ? Array.from(activeSources).map(s => SOURCE_LABELS[s] || s).join(', ') : '';
+  const filterNames = filtered ? Array.from(activeSources).map(s => SOURCE_SHORT[s] || s).join(', ') : '';
   // Both rescues can apply at once (e.g. a legacy term WHILE filtered) — stack them, don't pick one.
   let primary = '';
   if (isLegacy) {
@@ -2675,7 +2685,7 @@ function renderResults(data, query) {
   const hits  = data.hits || [];
   const total = data.estimatedTotalHits || hits.length;
   const fscope = (activeSources && activeSources.size > 0)
-    ? ` in ${esc(Array.from(activeSources).map(s => SOURCE_LABELS[s] || s).join(', '))}` : '';
+    ? ` in ${esc(Array.from(activeSources).map(s => SOURCE_SHORT[s] || s).join(', '))}` : '';
   label.innerHTML = `<strong>${total.toLocaleString()}</strong> result${total !== 1 ? 's' : ''} for "<em>${esc(query)}</em>"${fscope}`;
   if (!hits.length) { list.innerHTML = buildNoResultsHTML(query); return; }
   list.innerHTML = hits.map(resultCardHTML).join('');
@@ -2771,7 +2781,7 @@ function renderReaderPage(hit) {
   document.getElementById('reader-cite').textContent = citation;
   document.getElementById('reader-aside-cite').textContent = citation;
   document.getElementById('reader-file').textContent = hit.filename || '';
-  document.getElementById('reader-source').textContent = SOURCE_LABELS[hit.source] || hit.source || '—';
+  document.getElementById('reader-source').textContent = SOURCE_FULL[hit.source] || hit.source || '—';
   document.getElementById('reader-part').textContent = hit.part ? `${partWord(hit.source)} ${displayPartForSource(hit.source, hit.part)}` : '—';
 
   const original = document.getElementById('reader-original');
@@ -2935,7 +2945,7 @@ function openDrawer(hit) {
   activeDocId = hit.id; currentHit = hit;
   cacheDocumentForNewTab(hit);
   document.getElementById('drawer-title').textContent  = hit.title || 'Document';
-  document.getElementById('drawer-source').textContent = SOURCE_LABELS[hit.source] || hit.source;
+  document.getElementById('drawer-source').textContent = SOURCE_FULL[hit.source] || hit.source;
   document.getElementById('drawer-part').textContent   = hit.part ? `${partWord(hit.source)} ${displayPartForSource(hit.source, hit.part)}` : '—';
   document.getElementById('drawer-file').textContent   = hit.filename || '—';
   const drawerAsof = document.getElementById('drawer-asof');

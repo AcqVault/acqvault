@@ -15,7 +15,7 @@ const SOURCES = {
     desc: 'Practitioner guidance accompanying the Revolutionary FAR Overhaul.' },
   'afi-63-138':          { name: 'DAFI 63-138', short: 'DAFI 63-138',
     desc: 'Department of the Air Force Instruction 63-138, Acquisition Program Management.' },
-  'category-management': { name: 'Category Management Buying Guide', short: 'Cat Mgmt',
+  'category-management': { name: 'Category Management Buying Guide', short: 'Category Management',
     desc: 'Federal category management buying guidance.' },
   'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
     desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.' },
@@ -439,13 +439,19 @@ function renderPartPage(source, part) {
   const title = `${meta.short} ${label} — ${meta.name} | AcqVault`;
   const description = metaDescription(docs);
 
+  // Sources published as one document (the SSP, for instance) give every section the
+  // same landing page, so a per-section credit repeats one URL dozens of times down
+  // the page. When the whole part shares a URL, credit it once above the sections.
+  const srcref = url => /dps\.mil/i.test(url)
+    ? `<p class="srcref">Reproduced from the DAF Contracting Compass (the official DAF source is CAC-gated).</p>`
+    : `<p class="srcref">Source: <a href="${esc(url)}" rel="noopener nofollow">${esc(url)}</a></p>`;
+  const urls = new Set(docs.map(d => d.url).filter(Boolean));
+  const sharedUrl = (urls.size === 1 && docs.every(d => d.url)) ? [...urls][0] : null;
+  const partSrc = sharedUrl ? srcref(sharedUrl) : '';
+
   const sections = docs.map(d => {
     const anchor = esc(d.anchor || d.id);
-    const src = d.url
-      ? (/dps\.mil/i.test(d.url)
-          ? `<p class="srcref">Reproduced from the DAF Contracting Compass (the official DAF source is CAC-gated).</p>`
-          : `<p class="srcref">Source: <a href="${esc(d.url)}" rel="noopener nofollow">${esc(d.url)}</a></p>`)
-      : '';
+    const src = (d.url && !sharedUrl) ? srcref(d.url) : '';
     return `<section class="sec" id="${anchor}">
 <h2><a href="#${anchor}">${esc(d.title)}</a></h2>
 ${src}
@@ -465,6 +471,7 @@ ${renderContent(d.content, d.title, anchor)}
   const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › ${esc(label)}</nav>
 <h1>${esc(meta.name)} · ${esc(label)}</h1>
 <p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
+${partSrc}
 ${sections}`;
 
   return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}-v2.png` });
