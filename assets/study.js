@@ -173,7 +173,7 @@
         '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
     render(
-      '<p class="st-intro">One path, three steps: <b>learn</b> the whole domain, <b>prove</b> you can hold a warrant at your ceiling, then <b>rehearse</b> under pressure.</p>' +
+      '<p class="st-intro"><b>Learn</b> the whole domain, then <b>prove</b> you can hold a warrant at your ceiling — with interactive tools to sharpen any time.</p>' +
       stepKicker(1, 'Learn the domain') +
       '<h2 class="st-h2" style="margin-top:2px">Pick your depth</h2>' +
       '<p class="st-sub">Start shallow or go deep — progress saves per card, and you can switch any time without losing it.</p>' +
@@ -651,7 +651,7 @@
     var govMeta = govToday
       ? 'Today\u2019s best ' + govToday.best.toLocaleString() + (gvBest > govToday.best ? ' \u00b7 record ' + gvBest.toLocaleString() : ' \u00b7 that\u2019s your record') + ' \u00b7 run it again \u2192'
       : (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' \u00b7 play \u2192' : 'No score on the board yet \u00b7 play \u2192');
-    return stepKicker(3, 'Rehearse') +
+    return '<div class="st-tools-label">Interactive practice · jump in any time</div>' +
       '<div class="st-games-head"><h2 class="st-h2" style="margin:2px 0 0">The Proving Ground</h2>' +
       (run >= 2 ? '<span class="st-streak" title="Days in a row with at least one round played \u2014 weekends don\u2019t break it"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' + run + '-day streak</span>' : '') +
       '</div>' +
