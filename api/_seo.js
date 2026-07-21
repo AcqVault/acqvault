@@ -201,6 +201,12 @@ function renderContent(content, title, anchorBase) {
   for (let li = skip; li < lines.length; li++) {
     const line = lines[li];
     const isTop = /^L0:/.test(line);
+    // The depth the corpus recorded. Dropping it was what turned a tiered
+    // regulation into a flat wall of paragraphs: (a), (1), (2), (b) all landed on
+    // the same margin, so you could not see which paragraph governed which.
+    const lvlM = line.match(/^L(\d+):/);
+    const lvl = lvlM ? Math.min(parseInt(lvlM[1], 10), 4) : 0;
+    const pcls = lvl > 0 ? ` class="lvl lvl-${lvl}"` : '';
     let s = line.replace(/^L\d+:\s*/, '').trim();
     if (!s) continue;
     const rt = parseRatingTable(lines, li, esc);
@@ -221,9 +227,9 @@ function renderContent(content, title, anchorBase) {
         // character the source text — no punctuation quietly dropped.
         out.push(`<h3 class="alt-head" id="${esc(id)}"><a href="#${esc(id)}">${esc(label)}.</a></h3>`);
         const rest = t.slice(m[0].length).trim();
-        if (rest) out.push('<p>' + esc(rest) + '</p>');
+        if (rest) out.push(`<p${pcls}>` + esc(rest) + '</p>');
       } else {
-        out.push('<p>' + esc(t) + '</p>');
+        out.push(`<p${pcls}>` + esc(t) + '</p>');
       }
     }
   }
@@ -295,6 +301,24 @@ section.sec:target>h2{color:var(--accent)}
 @media(prefers-reduced-motion:reduce){section.sec:target{animation:none}}
 .srcref{font-size:12.5px;color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
+.srclink{font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap;margin-left:8px;vertical-align:2px}
+.srclink:hover{color:var(--accent);text-decoration:underline}
+/* Paragraph nesting — the rulebook's own tiering. acquisition.gov indents 24px per
+   level (ListL1/ListL2/…) and the corpus already stores that depth as L0:/L1:/L2:
+   markers, so match their scale rather than inventing one. Every level keeps the
+   SAME ink: in a regulation the operative rule is often at (1)(i), and fading the
+   deeper paragraphs makes the binding text the hardest to read on the page. */
+.lvl{margin:0 0 10px}
+.lvl-1{padding-left:24px}
+.lvl-2{padding-left:48px}
+.lvl-3{padding-left:72px}
+.lvl-4{padding-left:96px}
+@media(max-width:640px){
+  .lvl-1{padding-left:13px}
+  .lvl-2{padding-left:26px}
+  .lvl-3{padding-left:39px}
+  .lvl-4{padding-left:52px}
+}
 /* Clause variants (Basic / Alternate N) — jump strip + anchored headings */
 .alt-nav{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 20px;padding:12px 14px;border:1px solid var(--line2);border-left:3px solid var(--brass);border-radius:10px;background:rgba(135,101,28,.04)}
 .alt-nav-lbl{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:3px}
@@ -444,17 +468,26 @@ function renderPartPage(source, part) {
   // the page. When the whole part shares a URL, credit it once above the sections.
   const srcref = url => /dps\.mil/i.test(url)
     ? `<p class="srcref">Reproduced from the DAF Contracting Compass (the official DAF source is CAC-gated).</p>`
-    : `<p class="srcref">Source: <a href="${esc(url)}" rel="noopener nofollow">${esc(url)}</a></p>`;
+    // A bare URL printed under every heading competed with the regulation for
+    // attention and wrapped onto two lines; the link is the useful part, the
+    // 90-character path is not.
+    : `<p class="srcref">Source: <a href="${esc(url)}" rel="noopener nofollow">acquisition.gov</a></p>`;
   const urls = new Set(docs.map(d => d.url).filter(Boolean));
   const sharedUrl = (urls.size === 1 && docs.every(d => d.url)) ? [...urls][0] : null;
   const partSrc = sharedUrl ? srcref(sharedUrl) : '';
 
   const sections = docs.map(d => {
     const anchor = esc(d.anchor || d.id);
-    const src = (d.url && !sharedUrl) ? srcref(d.url) : '';
+    // Per-section provenance rides ON the heading rather than taking a line of its
+    // own beneath it. Every section deep-linking to its official anchor is worth
+    // keeping; spending a full line per section to say so is not.
+    const src = (d.url && !sharedUrl && !/dps\.mil/i.test(d.url))
+      ? ` <a class="srclink" href="${esc(d.url)}" rel="noopener nofollow">acquisition.gov</a>`
+      : '';
+    const compassNote = (d.url && !sharedUrl && /dps\.mil/i.test(d.url)) ? srcref(d.url) : '';
     return `<section class="sec" id="${anchor}">
-<h2><a href="#${anchor}">${esc(d.title)}</a></h2>
-${src}
+<h2><a href="#${anchor}">${esc(d.title)}</a>${src}</h2>
+${compassNote}
 ${renderContent(d.content, d.title, anchor)}
 </section>`;
   }).join('\n');
