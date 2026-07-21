@@ -77,11 +77,16 @@ function partNum(doc) {
 // sources fall back to the numeric-aware locale compare (their current order).
 // KEEP IDENTICAL to app.js regTitleCmp (scorer parity) and api/_seo.js.
 function regOrderKey(title) {
-  const t = String(title || '').trim();
+  // Strip the PGI prefix before keying: PGI titles read "PGI 204.201 …" and every match
+  // below is anchored at a digit, so regOrderKey returned null for all 427 PGI docs and
+  // their ordering silently fell back to a locale string compare.
+  const t = String(title || '').trim().replace(/^PGI\s+/i, '');
   const sub = t.match(/^Subpart\s+(\d+)\.(\d+)/i);
   if (sub) return [parseInt(sub[1], 10), parseInt(sub[2], 10), 0, 0, 0, 0];
   const sec = t.match(/^(\d+)\.(\d+)(?:-(\d+))?(?:-(\d+))?/);
   if (sec) return [parseInt(sec[1], 10), Math.floor(parseInt(sec[2], 10) / 100), 1, parseInt(sec[2], 10), sec[3] ? parseInt(sec[3], 10) : 0, sec[4] ? parseInt(sec[4], 10) : 0];
+  const letter = t.match(/^([A-E])\.(\d{1,2})(?:\.(\d+))?/);
+  if (letter) return [letter[1].charCodeAt(0), 0, 1, parseInt(letter[2], 10), letter[3] ? parseInt(letter[3], 10) : 0, 0];
   const partOnly = t.match(/^(?:Part\s+)?(\d+)\b/i);
   if (partOnly) return [parseInt(partOnly[1], 10), -1, 0, 0, 0, 0];
   return null;
@@ -324,13 +329,27 @@ function retrieve(question) {
     .filter(x => x.matched >= need || x.conceptHits > 0)
     .sort((a, b) => b.score - a.score || (b.matched + b.conceptHits) - (a.matched + a.conceptHits));
 
-  const SRC_LABEL = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management', 'afi-63-138': 'DAFI 63-138', 'fmr': 'DoD FMR', 'ssp': 'DoD Source Selection Procedures' };
+  // EVERY source in the corpus must appear here. A missing key falls through to the raw
+  // lowercase source id and prints it as a citation ("pgi — PGI 204.201 Unique procu…").
+  const SRC_LABEL = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management', 'afi-63-138': 'DAFI 63-138', 'fmr': 'DoD FMR', 'ssp': 'DoD Source Selection Procedures', 'pgi': 'PGI', 'compass': 'DAF Contracting Compass' };
+  // ⭐ Sources whose text is GUIDANCE, not a binding requirement. The badge and the clay
+  // colour keep this straight on the browse and result surfaces; this is the same
+  // protection for the one surface that answers in sentences, where a model could
+  // otherwise hand back a procedure worded like a rule.
+  const GUIDANCE_SOURCES = { 'pgi': 1 };
   const docs = rank(loadIndex(), e => e.titleLc, e => e.contentLc).slice(0, 6).map(({ e }) => {
     const d = e.doc;
     const srcLabel = SRC_LABEL[d.source] || d.source;
+    const t = String(d.title || '');
+    // A PGI title already opens with its own "PGI 204.201" — printing the label too
+    // would double-prefix it. Professionals write the bare "PGI 204.201".
+    const cite = /^\d/.test(t) ? `${srcLabel} ${t.split(' ')[0]}`
+      : /^PGI\s+\d/i.test(t) ? `PGI ${t.split(/\s+/)[1].replace(/\.$/, '')}`
+      : `${srcLabel} — ${t.slice(0, 60)}`;
     return {
-      cite: /^\d/.test(String(d.title || '')) ? `${srcLabel} ${String(d.title).split(' ')[0]}` : `${srcLabel} — ${String(d.title || '').slice(0, 60)}`,
-      title: String(d.title || ''),
+      cite,
+      guidance: !!GUIDANCE_SOURCES[d.source],
+      title: t,
       url: `/${d.source}/part-${d.part}#${d.anchor || d.id}`,
       kind: srcLabel,
       // L{n}: ingest level markers are structural metadata, not regulation
@@ -386,13 +405,16 @@ async function askVault(question) {
       refusal: 'Nothing on the site matches that question. Ask the Vault answers only from AcqVault’s own text — the RFO, R-DFARS, the other indexed sources, and the Field Guides. Try rephrasing with acquisition terms, or run an authoritative search.' };
   }
 
-  const excerpts = sources.map((s, i) => `[${i + 1}] CITE: ${s.cite}\nTITLE: ${s.title}\n${s.text}`).join('\n\n---\n\n');
+  const excerpts = sources.map((s, i) =>
+    `[${i + 1}] CITE: ${s.cite}${s.guidance ? '\nSTATUS: GUIDANCE — procedural; does not impose a requirement' : ''}\nTITLE: ${s.title}\n${s.text}`
+  ).join('\n\n---\n\n');
   const system = [
     'You are "Ask the Vault", the research assistant for AcqVault, a federal-acquisition reference site.',
     'HARD RULES:',
     '- Answer ONLY from the numbered excerpts provided. Never use outside knowledge, even when you are confident.',
     '- Every factual claim must carry the citation of the excerpt it came from, in square brackets exactly as given after CITE:, e.g. [RFO 13.201].',
     '- Dollar figures, thresholds, and section numbers must appear verbatim in an excerpt to be stated at all. Never estimate or recall them.',
+    '- An excerpt marked "STATUS: GUIDANCE" is procedural guidance (the DFARS PGI). It does NOT bind. Never write that it requires, mandates, prohibits, or obligates anything — describe it as the procedure for carrying out a rule, and say plainly that it is guidance. If the only support for an answer is a GUIDANCE excerpt, state that no binding text was retrieved for it.',
     '- If the excerpts do not contain the answer, reply with ONE short sentence saying the vault text retrieved for this question does not cover it, and suggest rephrasing with acquisition terms or running an authoritative search. Never list, count, describe, or refer to the excerpts by number.',
     '- Only answer questions about federal acquisition, contracting, or this site’s content. Politely decline anything else.',
     '- You are a research aid, not legal advice. Do not add a disclaimer; the interface displays one.',

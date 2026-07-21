@@ -142,6 +142,12 @@ VARIANTS = {
   'src-ssp': source('DoD Source<br>Selection.',
      'The DoD Source Selection Procedures — team roles, the rating methods, tradeoff and LPTA, and the debriefing guide.',
      'Source Selection', '#87651c'),
+  # Clay, matching --pgi-solid in assets/app.css. The subtitle carries the
+  # guidance-not-regulation distinction, because a shared link is the one place a
+  # reader meets this source with no badge and no colour to tell them.
+  'src-pgi': source('DFARS<br>PGI.',
+     'The procedural companion to the R-DFARS rule — how to carry a requirement out. <b>Guidance, not regulation.</b>',
+     'DFARS PGI', '#7a5a4a'),
 }
 
 def render(name):

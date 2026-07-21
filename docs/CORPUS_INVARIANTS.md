@@ -151,3 +151,75 @@ Guarded by the `no container inherited a child's text` health check and by
 5. **Re-run `gen_doc_hashes.py`** (rebuilds `doc-hashes.json` + `corpus-meta.json`)
    and **bump the `sw.js` cache** so installed clients get the new corpus.
 6. **Run `corpus_health.py`** before shipping.
+
+---
+
+# Render invariants — a valid corpus is not enough
+
+Everything above proves `documents.json` holds good DATA. None of it asks whether the
+code that DRAWS that data can parse it. On 2026-07-21 the DFARS PGI passed every single
+check above and shipped anyway with:
+
+* **all 427 section numbers unparsed.** Titles read `PGI 204.201 …`; `parseBrowseTitle`,
+  `generateCitation` and `regOrderKey` all anchor their number regexes at a DIGIT, so
+  every section fell through with an empty number and the contents list drew 27 em-dashes.
+* **one citation shared by 27 sections.** With no number parsed, the Cite button fell back
+  to the part, so every section of PGI part 204 copied `DFARS PGI Part 4`.
+* **ordering by locale string compare**, because `regOrderKey` returned null for all of them.
+* **no Browse entry point at all.** The source was in the search filter pills and nowhere
+  else — unreachable by browsing.
+
+Nobody noticed until the owner browsed it and said it "didn't seem like it was even
+complete." Every one of those defects lives in the gap between *the corpus is valid* and
+*the renderer can read the corpus*.
+
+These are enforced by **`scripts/render_health.py`**, a SEPARATE gate from
+`corpus_health.py` because the fix is a code change, not a repair script. `refresh.py`
+runs both before shipping. It drives the REAL renderer functions — `scripts/render_probe.js`
+slices them verbatim out of `assets/app.js` (which cannot be `require()`d; it touches
+`document` at top level) using `scripts/extract_js_fns.js`. A reimplementation would
+agree with itself while the shipped code stayed broken, which is exactly what happened.
+
+### 9. Every numbered source's titles parse to a section number
+100% of non-exempt docs, not a percentage floor — a floor hides new failures inside the
+margin left by old ones. Exemptions are declared **by document id**.
+
+### 10. Citations are unique within a part
+**The highest-value check here.** A citation is a derived *identity*: two docs sharing one
+means a parse fell through, whatever the cause. It needs no per-source knowledge and
+cannot be defeated by a new title format — the property the PGI ship needed and lacked.
+
+### 11. The parsed number appears in the citation
+`parseBrowseTitle` and `generateCitation` have INDEPENDENT regexes. Fixing one does not
+fix the other; this check is what notices.
+
+### 12. `regOrderKey` never returns null for a numbered source
+Otherwise section ordering silently degrades to `localeCompare`.
+
+### 13. Every live source appears in every registry site
+The scattered enumerations are listed in `registry_sites()` and in `docs/ADDING_A_SOURCE.md`.
+
+### 14. The mirrored functions really are identical
+`regOrderKey` / `regTitleCmp` / `pairKey` carry "KEEP IDENTICAL" comments that were
+enforced by nothing. Compared with comments and whitespace stripped.
+
+### 15. The in-app part label equals the server-rendered one
+The reader said "Part 204" while the crawlable page at the same URL said "Part 4".
+
+## Things that are NOT bugs (render side)
+
+* **`[Reserved]` titles parse fine.** `52.233 [Reserved]` leads with a digit. No exemption
+  needed — don't add one.
+* **FMR `Chapter N:` and Category Management `Part N -` titles have no section number,
+  legitimately.** They are declared `TITLE_STYLE` `'chapter'` / `'part'` and are exempt
+  from the parse check — but NOT from the citation checks, which is what keeps the
+  exemption honest.
+* **FAR Companion's null order keys are correct.** Many FC entries annotate the SAME FAR
+  section (`FC 5.000 Plain language` and `FC 5.000 Expanding reach beyond the GPE`), so a
+  numeric key ties for all of them and the alphabetical locale fallback is what actually
+  orders the part. Teaching `regOrderKey` to strip the `FC ` prefix was tried and
+  measured: it reordered 19 parts, replacing a deterministic alphabetical order with
+  corpus order. Reverted on purpose; declared in `ORDER_KEY_LOCALE_OK`.
+* **A section number is NOT unique within a part.** R-DFARS part 233 holds two different
+  sections numbered `233.170`. Anything that pairs or links on a bare number must detect
+  the collision and decline, not pick the first match.

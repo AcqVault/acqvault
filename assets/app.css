@@ -1032,6 +1032,42 @@ body.work-mode #spending-dashboard{display:none;}
 .br-subpart-heading{font-size:18px;font-weight:var(--fw-bold);letter-spacing:-0.03em;color:var(--ink);margin:36px 0 8px;padding:11px 16px;background:var(--off);border-left:2px solid var(--accent);border-radius:0 var(--r-md) var(--r-md) 0;line-height:var(--lh-snug);}
 .br-section-num{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-xs);font-weight:var(--fw-bold);color:var(--accent);margin-bottom:4px;}
 .br-section-num::before{content:'';display:block;width:10px;height:2px;background:var(--accent);border-radius:1px;}
+/* A PGI section number reads "PGI 204.201" and takes the clay of its source, not the
+   brass every rule uses — on a page of 204.xxx headings the colour and the "PGI" are
+   the two things separating guidance from regulation at a glance. */
+.br-section-num-pgi{color:var(--pgi-txt);}
+.br-section-num-pgi::before{background:var(--pgi-solid);}
+
+/* ── RULE ⇄ PROCEDURE PAIRING ───────────────────────────────────────────────────
+   The per-section link between a rule and the procedure that implements it. The two
+   directions are styled apart on purpose: clay = you are being sent to guidance,
+   ink/brass = you are being sent to the binding text. Never give them one shared
+   neutral style — the colour is carrying the rule-vs-guidance distinction. */
+.br-pair{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 9px;margin:0 0 14px;padding:7px 12px;border-radius:var(--r-sm);font-size:var(--fs-sm);line-height:1.45;}
+.br-pair-pgi{background:var(--pgi-bg);border-left:2px solid var(--pgi-solid);}
+.br-pair-rule{background:var(--off);border-left:2px solid var(--accent);}
+.br-pair-lead{font-weight:var(--fw-bold);text-transform:uppercase;letter-spacing:0.06em;font-size:var(--fs-2xs);flex-shrink:0;}
+.br-pair-pgi .br-pair-lead{color:var(--pgi-txt);}
+.br-pair-rule .br-pair-lead{color:var(--accent);}
+.br-pair-link{font-weight:var(--fw-semibold);text-decoration:underline;text-underline-offset:2px;}
+.br-pair-pgi .br-pair-link{color:var(--pgi-txt);}
+.br-pair-rule .br-pair-link{color:var(--ink);}
+.br-pair-note{color:var(--muted2);}
+
+/* Part-level banner: which half of the deviation am I standing in, and where is the
+   other half. The badge and colour already do this in a result list; this is the
+   equivalent for someone who arrived by browsing. */
+.br-partpair{display:flex;align-items:flex-start;gap:11px;margin:0 0 26px;padding:13px 16px;border-radius:var(--r-md);font-size:var(--fs-sm);line-height:1.6;}
+.br-partpair-pgi{background:var(--pgi-bg);border-left:3px solid var(--pgi-solid);color:var(--pgi-txt);}
+.br-partpair-rule{background:var(--off);border-left:3px solid var(--accent);color:var(--ink2);}
+.br-partpair-tag{flex-shrink:0;font-size:var(--fs-2xs);font-weight:var(--fw-bold);text-transform:uppercase;letter-spacing:0.07em;padding:3px 8px;border-radius:var(--r-sm);margin-top:1px;}
+.br-partpair-pgi .br-partpair-tag{background:var(--pgi-solid);color:#fff;}
+.br-partpair-rule .br-partpair-tag{background:var(--accent);color:#fff;}
+.br-partpair-body{min-width:0;}
+@media (max-width:640px){
+  .br-partpair{flex-direction:column;gap:8px;}
+  .br-pair{flex-direction:column;gap:3px;}
+}
 .br-section-heading{font-size:var(--fs-16);font-weight:var(--fw-semibold);letter-spacing:var(--ls-tighter);color:var(--ink);line-height:1.35;}
 .br-cite-btn{flex-shrink:0;font-size:var(--fs-2xs);font-weight:var(--fw-semibold);letter-spacing:0.03em;text-transform:uppercase;background:var(--off);border:1px solid var(--line);border-radius:var(--r-sm);padding:4px 9px;cursor:pointer;color:var(--muted2);transition:all 0.12s;margin-top:2px;}
 .br-cite-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink);}

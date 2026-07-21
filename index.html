@@ -35,7 +35,7 @@
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
 <link rel="preconnect" href="https://www.federalregister.gov" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=130">
+<link rel="stylesheet" href="/assets/app.css?v=131">
 </head>
 <body>
 
@@ -154,6 +154,7 @@
             <div class="browse-source-menu" id="browse-source-menu" role="group" aria-label="Browse by source or regulation">
               <button type="button" data-action="choose-browse-source" data-arg="rfo"><span>RFO</span><small>Live</small></button>
               <button type="button" data-action="choose-browse-source" data-arg="r-dfars"><span>R-DFARS</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="pgi"><span>DFARS PGI</span><small>Guidance</small></button>
               <button type="button" data-action="choose-browse-source" data-arg="far-companion"><span>FAR Companion</span><small>Live</small></button>
               <button type="button" data-action="choose-browse-source" data-arg="category-management"><span>Category Management Buying Guide</span><small>Live</small></button>
               <button type="button" data-action="choose-browse-source" data-arg="afi-63-138"><span>DAFI 63-138</span><small>Live</small></button>
@@ -264,6 +265,7 @@
       <span class="browse-source-bar-label">Regulation</span>
       <button type="button" class="browse-src-pill active" data-bsource="rfo" aria-pressed="true" data-action="set-browse-source" data-arg="rfo">RFO</button>
       <button type="button" class="browse-src-pill" data-bsource="r-dfars" aria-pressed="false" data-action="set-browse-source" data-arg="r-dfars">R-DFARS</button>
+      <button type="button" class="browse-src-pill" data-bsource="pgi" aria-pressed="false" data-action="set-browse-source" data-arg="pgi">DFARS PGI</button>
       <button type="button" class="browse-src-pill" data-bsource="far-companion" aria-pressed="false" data-action="set-browse-source" data-arg="far-companion">FAR Companion</button>
       <button type="button" class="browse-src-pill" data-bsource="category-management" aria-pressed="false" data-action="set-browse-source" data-arg="category-management">Category Management Buying Guide</button>
       <button type="button" class="browse-src-pill" data-bsource="afi-63-138" aria-pressed="false" data-action="set-browse-source" data-arg="afi-63-138">DAFI 63-138</button>
@@ -474,6 +476,7 @@
         <a class="lib-src" data-src="afi-63-138" href="/pdfs/dafi63-138.pdf" download="AcqVault-DAFI-63-138.pdf" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↓</span><span class="lib-src-name">DAFI 63-138</span><span class="lib-src-meta">Full-text PDF</span></a>
         <a class="lib-src" data-src="fmr" href="https://comptroller.war.gov/portals/45/documents/fmr/Combined_Volume1-16.pdf" target="_blank" rel="noopener"><span class="lib-src-dl" aria-hidden="true">↗</span><span class="lib-src-name">DoD FMR</span><span class="lib-src-meta">Official PDF · all 16 volumes</span></a>
         <a class="lib-src" data-src="ssp" href="/ssp" rel="noopener"><span class="lib-src-dl" aria-hidden="true">→</span><span class="lib-src-name">Source Selection Procedures</span><span class="lib-src-meta">Browse in-app · 5 sec + 5 appx</span></a>
+        <a class="lib-src" data-src="pgi" href="/pgi" rel="noopener"><span class="lib-src-dl" aria-hidden="true">→</span><span class="lib-src-name">DFARS PGI</span><span class="lib-src-meta">Browse in-app · guidance, not a rule</span></a>
       </div>
     </div>
     <div class="lib-cta-row fade-up">
@@ -528,6 +531,7 @@
         <div class="source-status-main">
           <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="rfo">RFO</button>
           <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="r-dfars">R-DFARS</button>
+          <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="pgi">DFARS PGI</button>
           <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="far-companion">FAR Companion</button>
           <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="category-management">Category Management Buying Guide</button>
           <button type="button" class="source-status-chip live" data-action="go-browse-source" data-arg="afi-63-138">DAFI 63-138</button>
@@ -641,7 +645,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=83"></script>
+<script defer src="/assets/app.js?v=86"></script>
 <script defer src="/assets/saved.js?v=8"></script>
 <script defer src="/assets/widgets.js?v=56"></script>
 <script defer src="/assets/polish.js?v=3"></script>

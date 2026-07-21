@@ -86,11 +86,16 @@ function acqPartNum(doc){ const m=String(doc.part||'').match(/\d+/); return m?pa
 // Subpart headings interleave before their sections — KEEP IDENTICAL to
 // api/search.js regTitleCmp (scorer parity) and api/_seo.js.
 function regOrderKey(title){
-  const t=String(title||'').trim();
+  // Strip the PGI prefix before keying: PGI titles read "PGI 204.201 …" and every match
+  // below is anchored at a digit, so regOrderKey returned null for all 427 PGI docs and
+  // their ordering silently fell back to a locale string compare.
+  const t=String(title||'').trim().replace(/^PGI\s+/i,'');
   const sub=t.match(/^Subpart\s+(\d+)\.(\d+)/i);
   if(sub) return [parseInt(sub[1],10),parseInt(sub[2],10),0,0,0,0];
   const sec=t.match(/^(\d+)\.(\d+)(?:-(\d+))?(?:-(\d+))?/);
   if(sec) return [parseInt(sec[1],10),Math.floor(parseInt(sec[2],10)/100),1,parseInt(sec[2],10),sec[3]?parseInt(sec[3],10):0,sec[4]?parseInt(sec[4],10):0];
+  const letter=t.match(/^([A-E])\.(\d{1,2})(?:\.(\d+))?/);
+  if(letter) return [letter[1].charCodeAt(0),0,1,parseInt(letter[2],10),letter[3]?parseInt(letter[3],10):0,0];
   const partOnly=t.match(/^(?:Part\s+)?(\d+)\b/i);
   if(partOnly) return [parseInt(partOnly[1],10),-1,0,0,0,0];
   return null;
@@ -266,59 +271,40 @@ const SOURCE_URLS = {
 const SOURCE_SHORT = {
   'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management',
   'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD SSP', 'pgi': 'DFARS PGI',
+  // Not publicly merchandised (see the positioning note), but it IS in the corpus, and a
+  // source missing here cites as its own shouting id — "COMPASS Part 27".
+  'compass': 'DAF Contracting Compass',
 };
 const SOURCE_FULL = {
   'rfo': 'Revolutionary FAR Overhaul', 'r-dfars': 'R-DFARS Deviations', 'far-companion': 'FAR Companion',
   'category-management': 'Category Management Buying Guide', 'fmr': 'DoD Financial Management Regulation',
   'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD Source Selection Procedures',
   'pgi': 'DFARS Procedures, Guidance, and Information',
+  'compass': 'DAF Contracting Compass',
 };
 
 // ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
 const PARTS_BY_SOURCE = {
+  // Keys are INDEX parts (the corpus stores PGI part 204 as "4"); the tile renders
+  // displayPartForSource() so it reads 204 like its R-DFARS twin. Labels deliberately
+  // mirror the r-dfars grid below word for word — a reader comparing the two grids is
+  // comparing the rule and its procedure, and the labels should not be the thing that
+  // differs. Parts absent here have no PGI in the deviation memos at all.
   'pgi': [
-    ['1','DFARS part 201 — 10 sections'],
-    ['3','DFARS part 203 — 5 sections'],
-    ['4','DFARS part 204 — 27 sections'],
-    ['5','DFARS part 205 — 3 sections'],
-    ['6','DFARS part 206 — 9 sections'],
-    ['7','DFARS part 207 — 8 sections'],
-    ['8','DFARS part 208 — 25 sections'],
-    ['9','DFARS part 209 — 13 sections'],
-    ['10','DFARS part 210 — 2 sections'],
-    ['11','DFARS part 211 — 3 sections'],
-    ['12','DFARS part 212 — 11 sections'],
-    ['15','DFARS part 215 — 32 sections'],
-    ['16','DFARS part 216 — 14 sections'],
-    ['17','DFARS part 217 — 23 sections'],
-    ['18','DFARS part 218 — 7 sections'],
-    ['19','DFARS part 219 — 11 sections'],
-    ['22','DFARS part 222 — 13 sections'],
-    ['23','DFARS part 223 — 3 sections'],
-    ['25','DFARS part 225 — 47 sections'],
-    ['26','DFARS part 226 — 3 sections'],
-    ['27','DFARS part 227 — 11 sections'],
-    ['28','DFARS part 228 — 3 sections'],
-    ['29','DFARS part 229 — 9 sections'],
-    ['30','DFARS part 230 — 1 section'],
-    ['31','DFARS part 231 — 2 sections'],
-    ['32','DFARS part 232 — 15 sections'],
-    ['33','DFARS part 233 — 3 sections'],
-    ['34','DFARS part 234 — 4 sections'],
-    ['35','DFARS part 235 — 2 sections'],
-    ['36','DFARS part 236 — 7 sections'],
-    ['37','DFARS part 237 — 14 sections'],
-    ['39','DFARS part 239 — 10 sections'],
-    ['40','DFARS part 240 — 10 sections'],
-    ['41','DFARS part 241 — 3 sections'],
-    ['42','DFARS part 242 — 17 sections'],
-    ['43','DFARS part 243 — 4 sections'],
-    ['44','DFARS part 244 — 3 sections'],
-    ['45','DFARS part 245 — 11 sections'],
-    ['46','DFARS part 246 — 9 sections'],
-    ['47','DFARS part 247 — 9 sections'],
-    ['49','DFARS part 249 — 8 sections'],
-    ['50','DFARS part 250 — 3 sections'],
+    ['1','Fed A-R Sys'],['3','Ethics'],['4','Admin'],
+    ['5','Publicizing'],['6','Competition'],['7','Planning'],
+    ['8','Sources'],['9','Contractor Qual'],['10','Market Res'],
+    ['11','Describing'],['12','Commercial'],['15','Negotiation'],
+    ['16','Types'],['17','Special'],['18','Acquisition Flexibilities'],
+    ['19','Small Bus'],['22','Labor'],['23','Environment'],
+    ['25','Foreign'],['26','Socioeconomic'],['27','IP'],
+    ['28','Bonds'],['29','Taxes'],['30','CAS'],
+    ['31','Cost Prin'],['32','Financing'],['33','Disputes'],
+    ['34','Major Systems'],['35','R&D'],['36','Construction'],
+    ['37','Services'],['39','IT'],['40','Supply Chain'],
+    ['41','Utilities'],['42','Admin'],['43','Modifications'],
+    ['44','Subcontracting'],['45','GFP'],['46','Quality'],
+    ['47','Transport'],['49','Termination'],['50','Extraordinary'],
   ],
   'ssp': [
     ['1','Purpose, Roles, and Responsibilities'],
@@ -516,6 +502,14 @@ document.addEventListener('click', (e) => {
       break;
     }
     case 'select-part': selectPart(el, el.dataset.part, el.dataset.label || ''); break;
+    case 'open-pair':
+      // The dedicated reader page hides #browse-section outright
+      // (body.reader-mode), so switching browse state there would look like a dead
+      // link. Let the anchor's real href navigate instead — same as a cross-reference.
+      if (document.body.classList.contains('reader-mode')) break;
+      e.preventDefault();
+      openPairedSection(el.dataset.source, el.dataset.part, el.dataset.anchor || '');
+      break;
     case 'select-cat-part': selectCategoryGuidePart(el, el.dataset.part, el.dataset.label || ''); break;
     case 'br-copy': brCopy(el.dataset.cite, el); break;
     case 'copy-inline-cite': copyInlineCite(el, el.dataset.cite || ''); break;
@@ -637,10 +631,12 @@ function renderPartsGrid(source) {
   }
   grid.innerHTML = parts.map(([num, label]) => {
     const active = String(browseActivePart) === String(num) && browseSrc === source;
+    // data-part stays the key the loader expects; only the LABEL is the display form
+    // (PGI keys are index parts, so the tile would otherwise read "4" for part 204).
     return `<button type="button" class="part-tile${active ? ' active' : ''}"
       data-part="${num}" data-label="${esc(label)}" aria-pressed="${active}"
       data-action="select-part">
-      <span class="part-tile-num">${num}</span>
+      <span class="part-tile-num">${esc(displayPartForSource(source, num))}</span>
       <span class="part-tile-label">${esc(label)}</span>
     </button>`;
   }).join('');
@@ -1571,15 +1567,36 @@ function parseBrowseTitle(hit, source) {
   if (subM) return { type: 'subpart', num: subM[1], label: subM[2] || '', anchor };
 
   if (source === 'far-companion' || hit.source === 'far-companion') {
-    const fcM = title.match(/^FC\s+(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*)\s+(.+)/i);
+    // A FAR Companion entry can carry TWO citations ("FC 12.000, 2.101 …"); capturing
+    // only the first left a comma where whitespace had to be, so the match failed and
+    // the section drew no number at all. MIRRORS the fcM branch in generateCitation.
+    const fcM = title.match(/^FC\s+((?:\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*)(?:\s*,\s*[\d.]+(?:-\d+)?(?:\([^)]+\))*)*)\.?\s+(.+)/i);
     if (fcM) return { type: 'section', num: fcM[1], label: fcM[2], anchor };
   }
 
+  // PGI sections carry the source inside the heading ("PGI 204.201 Unique procurement
+  // instrument identifiers"). Both number regexes below are anchored at a digit, so the
+  // "PGI " prefix made every one of the 427 sections fall through to type:'other' with
+  // an EMPTY num — the contents list drew 27 em-dashes instead of section numbers and
+  // the section headers carried no number at all, which is why the source read as
+  // half-built rather than complete. Keep the "PGI" IN the displayed number: on a page
+  // of 204.xxx headings it is the only thing marking these as guidance, not rule.
+  // DoD SSP appendices number their sections with a LETTER ("A.3 Notification of
+  // Debriefing"). Both number regexes below are anchored at a digit, so all 27 fell
+  // through with an empty number and the contents list drew em-dashes — the same
+  // defect the PGI had, on a different source.
+  const sspM = (source === 'ssp' || hit.source === 'ssp')
+    && title.match(/^([A-E]\.\d{1,2}(?:\.\d+)*)\s+(.+)/);
+  if (sspM) return { type: 'section', num: sspM[1], label: sspM[2], anchor, ruleNum: sspM[1] };
+
+  const pgiM = title.match(/^PGI\s+(\d{1,3}\.\d{1,6}(?:-\d+)*(?:\([^)]+\))*)\.?\s+(.+)/i);
+  if (pgiM) return { type: 'section', num: `PGI ${pgiM[1]}`, label: pgiM[2], anchor, ruleNum: pgiM[1] };
+
   const secM = title.match(/^(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*)\s+(.+)/);
-  if (secM) return { type: 'section', num: secM[1], label: secM[2], anchor };
+  if (secM) return { type: 'section', num: secM[1], label: secM[2], anchor, ruleNum: secM[1] };
 
   const looseM = title.match(/^(\d{1,3}[\d.]*(?:-\d+)*)\s+(.+)/);
-  if (looseM) return { type: 'section', num: looseM[1], label: looseM[2], anchor };
+  if (looseM) return { type: 'section', num: looseM[1], label: looseM[2], anchor, ruleNum: looseM[1] };
 
   return { type: 'other', num: '', label: title, anchor };
 }
@@ -1624,7 +1641,183 @@ function openFmrChapter(idx) {
   requestAnimationFrame(scrollBrowseReaderToTop);
 }
 
-function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
+// ── RULE ⇄ PROCEDURE PAIRING ──────────────────────────────────────────────────
+// The deviation memo ships the rule (Attachment A1) and its procedure (A2) inside ONE
+// document, so a reader moves from 204.201 to PGI 204.201 without leaving the page.
+// AcqVault indexes them as two sources, which split that: neither part page knew the
+// other existed. The numbering pairs exactly — 376 of 427 PGI sections have a
+// same-numbered rule — which is what makes the link cheap and unambiguous.
+//
+// ⭐ THE TWO DIRECTIONS ARE DELIBERATELY NOT SYMMETRICAL. PGI does not bind the way the
+// DFARS does. A neutral "see also" pointing both ways would leave them looking
+// interchangeable, which is the exact mistake the Guidance badge and the clay colour
+// exist to prevent. Each link states what it is pointing AT. Do not flatten this into
+// one shared string to save a branch.
+const PAIR_SOURCE = { 'r-dfars': 'pgi', 'pgi': 'r-dfars' };
+const pairIndexCache = new Map();
+
+// The bare section number both sides share ("PGI 204.201" and "204.201" → "204.201").
+function pairKey(title) {
+  const m = String(title || '').match(/^(?:PGI\s+)?(\d{3}\.\d{1,6}(?:-\d+)*)/i);
+  return m ? m[1] : null;
+}
+
+// PARTS_BY_SOURCE keys r-dfars by its DISPLAY part (204) and pgi by its INDEX part (4),
+// so a tile lookup has to accept either form.
+function tilePartFor(source, part) {
+  const parts = PARTS_BY_SOURCE[source] || [];
+  const disp = displayPartForSource(source, part);
+  const row = parts.find(([n]) => String(n) === String(part) || String(n) === String(disp));
+  return row ? String(row[0]) : String(part);
+}
+
+// Fetch the counterpart part once and cache it. Pairing is an ENHANCEMENT: every
+// failure path here returns null so the reader renders exactly as it did before —
+// a missing chip is fine, a part that won't load is not.
+async function loadPairIndex(source, indexPart) {
+  const other = PAIR_SOURCE[source];
+  if (!other) return null;
+  const key = `${other}:${indexPart}`;
+  if (pairIndexCache.has(key)) return pairIndexCache.get(key);
+  // The other half simply has no such part (R-DFARS 213/214/224/252 have no PGI).
+  // Skip the round-trip entirely rather than querying for a guaranteed-empty result.
+  const hasPart = (PARTS_BY_SOURCE[other] || [])
+    .some(([n]) => String(indexPartForSource(other, n)) === String(indexPart));
+  if (!hasPart) { pairIndexCache.set(key, null); return null; }
+  const map = new Map();
+  try {
+    const pageSize = 100;   // matches the server's hard cap (api/search.js)
+    let offset = 0;
+    while (true) {
+      const data = await meiliSearch({
+        q: '', limit: pageSize, offset,
+        filter: `source = "${other}" AND part = "${indexPart}"`,
+        attributesToRetrieve: ['id','title','source','part','anchor'],
+      });
+      const page = data.hits || [];
+      for (const h of page) {
+        const k = pairKey(h.title);
+        if (!k) continue;
+        // ⚠ A section number is NOT unique within a part: R-DFARS part 233 holds two
+        // different sections both numbered 233.170. First-wins would hand both of them
+        // the same mate and assert, under a label reading "tells you how to carry this
+        // out", that one section's procedure belongs to the other. When a number is
+        // ambiguous we show NO chip — a missing link is recoverable, a confidently
+        // wrong cross-reference in a rulebook is not.
+        if (map.has(k)) { map.set(k, null); continue; }
+        map.set(k, h);
+      }
+      const total = data.estimatedTotalHits || 0;
+      offset += page.length;
+      if (!page.length || page.length < pageSize || offset >= total) break;
+    }
+  } catch (e) {
+    // Cache the miss too: without this a failing lookup re-queries on every part open,
+    // and meiliSearch's own fallback path can pull the 27 MB corpus each time.
+    pairIndexCache.set(key, null);
+    return null;
+  }
+  pairIndexCache.set(key, map);
+  return map;
+}
+
+// Cross-links are an ENHANCEMENT and must never hold the regulation text hostage. If the
+// lookup is slow — meiliSearch falls back to downloading the 27 MB corpus when the API
+// is unreachable — render the part without chips rather than making the reader wait for
+// decoration they did not ask for.
+function pairIndexSoon(source, indexPart) {
+  return Promise.race([
+    loadPairIndex(source, indexPart),
+    new Promise(resolve => setTimeout(() => resolve(null), 1500))
+  ]).catch(() => null);
+}
+
+// The chip navigates like a cross-reference link: a REAL href, so cmd/middle-click and
+// "copy link address" work, and so the dedicated reader page (where the browse pane is
+// display:none) can simply follow it instead of silently doing nothing.
+function pairHref(mate) {
+  return `?view=reader&amp;doc=${encodeURIComponent(mate.id)}`;
+}
+
+// Ambiguity cuts both ways. Collisions in the MATE are nulled in loadPairIndex; this
+// counts collisions among the sections being RENDERED, because R-DFARS part 233 holds
+// two different sections numbered 233.170 and both would otherwise claim the single
+// PGI 233.170 as "the procedure for this". MIRRORS ownKeyCounts in api/_seo.js.
+function ownKeyCounts(hits) {
+  const counts = new Map();
+  for (const h of hits) {
+    const k = pairKey(h.title);
+    if (k) counts.set(k, (counts.get(k) || 0) + 1);
+  }
+  return counts;
+}
+
+function pairChipHTML(source, parsed, pairIdx, ownCounts) {
+  if (!pairIdx || !parsed || !parsed.ruleNum) return '';
+  if (ownCounts && ownCounts.get(parsed.ruleNum) > 1) return '';
+  const mate = pairIdx.get(parsed.ruleNum);
+  if (!mate) return '';                    // absent, or ambiguous (nulled above)
+  const other = PAIR_SOURCE[source];
+  const num = pairKey(mate.title) || parsed.ruleNum;
+  const tPart = tilePartFor(other, mate.part);
+  const open = `href="${pairHref(mate)}" data-action="open-pair" data-source="${esc(other)}" data-part="${esc(tPart)}" data-anchor="sec-${esc(mate.id)}"`;
+  return other === 'pgi'
+    ? `<div class="br-pair br-pair-pgi">
+        <span class="br-pair-lead">Procedure</span>
+        <a class="br-pair-link" ${open}>PGI ${esc(num)}</a>
+        <span class="br-pair-note">guidance — tells you how to carry this out, does not impose a requirement</span>
+      </div>`
+    : `<div class="br-pair br-pair-rule">
+        <span class="br-pair-lead">Rule</span>
+        <a class="br-pair-link" ${open}>${esc(num)}</a>
+        <span class="br-pair-note">the binding requirement this procedure implements</span>
+      </div>`;
+}
+
+// Standing on a part, say plainly which half of the deviation you are reading and
+// where the other half is. The badge and colour do this in a RESULT LIST; until now
+// nothing did it while browsing.
+function partPairBannerHTML(source, indexPart, pairIdx) {
+  const other = PAIR_SOURCE[source];
+  if (!other || !pairIdx || !pairIdx.size) return '';
+  const disp = displayPartForSource(source, indexPart);
+  const tPart = tilePartFor(other, indexPart);
+  const open = `href="/${esc(other)}/part-${encodeURIComponent(indexPart)}" data-action="open-pair" data-source="${esc(other)}" data-part="${esc(tPart)}" data-anchor=""`;
+  if (source === 'pgi') {
+    return `<div class="br-partpair br-partpair-pgi">
+      <span class="br-partpair-tag">Guidance</span>
+      <div class="br-partpair-body"><strong>This is the PGI — it does not bind.</strong>
+      It is the procedural half of the DoD class deviation: how to carry out a rule, not the rule itself.
+      The binding text is <a class="br-pair-link" ${open}>R-DFARS Part ${esc(disp)}</a>.
+      Only the PGI reissued by the deviation memos is indexed here, so a part carries fewer PGI sections than it does rules.</div>
+    </div>`;
+  }
+  return `<div class="br-partpair br-partpair-rule">
+    <span class="br-partpair-tag">Rule</span>
+    <div class="br-partpair-body"><strong>This is the binding text.</strong>
+    The same deviation also ships procedures for parts of this part —
+    see <a class="br-pair-link" ${open}>DFARS PGI Part ${esc(disp)}</a>, which is guidance and does not impose requirements.</div>
+  </div>`;
+}
+
+async function openPairedSection(source, part, anchor) {
+  setMode('browse');
+  setBrowseSource(source);
+  const label = (PARTS_BY_SOURCE[source] || []).find(([n]) => String(n) === String(part))?.[1] || '';
+  await selectPart(null, part, label);
+  if (!anchor) return;
+  // selectPart queues scrollBrowseReaderToTop on an animation frame. The await above
+  // resumes on a MICROTASK, i.e. before that frame runs, so scrolling to the section
+  // here directly would be immediately undone by the scroll-to-top. Wait for the frame
+  // selectPart queued, then land on the section — which is the entire point of a
+  // per-section link, as opposed to the part-level banner.
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const t = document.getElementById(anchor);
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+}
+
+function buildReaderHTML(hits, source, partNum, partLabel, docCount, pairIdx) {
   const srcLabel  = SOURCE_SHORT[source] || source.toUpperCase();
   // Source tags reference the CSS tokens directly (app.css :root) so the reader can
   // never drift from the result-list palette the way the old hardcoded hex maps did.
@@ -1636,7 +1829,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     : hits;
   const displayCount = readerHits.length || docCount;
   if (!readerHits.length) {
-    return `<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No indexed sections found</div><div class="browse-empty-sub">${esc(String(srcLabel))} Part ${esc(String(partNum))} is listed, but no section-level content is indexed yet.</div></div>`;
+    return `<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No indexed sections found</div><div class="browse-empty-sub">${esc(String(srcLabel))} ${partWord(source)} ${esc(displayPartForSource(source, partNum))} is listed, but no section-level content is indexed yet.</div></div>`;
   }
 
   // Build TOC from hits
@@ -1657,6 +1850,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     </ul>
   </div>`;
   // Build sections
+  const ownCounts = ownKeyCounts(readerHits);
   const sectionsHTML = readerHits.map((hit, i) => {
     const parsed = parseBrowseTitle(hit, source);
     const title   = hit.title || 'Untitled';
@@ -1709,11 +1903,12 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       ${i > 0 ? '<div class="br-divider"></div>' : ''}
       <div class="br-section-header">
         <div class="br-section-title-block">
-          ${parsed.num ? `<div class="br-section-num">${esc(parsed.num)}</div>` : ''}
+          ${parsed.num ? `<div class="br-section-num${source === 'pgi' ? ' br-section-num-pgi' : ''}">${esc(parsed.num)}</div>` : ''}
           <div class="br-section-heading">${esc(parsed.label || title)}</div>
         </div>
         <button class="br-cite-btn" data-cite="${esc(citation)}" data-action="br-copy">Cite</button>
       </div>
+      ${pairChipHTML(source, parsed, pairIdx, ownCounts)}
       <div class="br-body">${bodyHTML}</div>
     </div>`;
   }).join('');
@@ -1723,7 +1918,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
   return `
     <div class="br-header">
       <span class="br-source-badge" style="background:${tagBg};color:${tagClr}">${srcLabel}</span>
-      <div class="br-part-num">${partWord(source)} ${partNum}</div>
+      <div class="br-part-num">${partWord(source)} ${esc(displayPartForSource(source, partNum))}</div>
       <div class="br-part-title">${esc(partLabel)}</div>
       <div class="br-meta">
         <span>${displayCount} section${displayCount !== 1 ? 's' : ''}</span>
@@ -1732,9 +1927,10 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
         <span>${srcLabel}</span>
       </div>
     </div>
+    ${partPairBannerHTML(source, indexPartForSource(source, partNum), pairIdx)}
     <div class="br-part-search" id="br-part-search" role="search" aria-label="Search within this part">
       <span class="br-part-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
-      <input class="br-part-search-input" id="br-part-search-input" type="text" placeholder="Search within ${partWord(source)} ${partNum}…" autocomplete="off" spellcheck="false" aria-label="Search within this part">
+      <input class="br-part-search-input" id="br-part-search-input" type="text" placeholder="Search within ${partWord(source)} ${esc(displayPartForSource(source, partNum))}…" autocomplete="off" spellcheck="false" aria-label="Search within this part">
       <span class="br-part-search-count" id="br-part-search-count"></span>
       <span class="br-part-search-nav" id="br-part-search-nav" aria-label="Part search matches">
         <button type="button" class="br-part-search-step" id="br-part-search-prev" aria-label="Previous match">↑</button>
@@ -1748,15 +1944,21 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
   `;
 }
 
+// The DFARS 200-series lives in the corpus under its FAR-aligned part number (part
+// 204 is stored as "4"). PGI shares that scheme because it is extracted from the same
+// deviation memos — and it must share the DISPLAY too: a reader who sees "Part 204"
+// on the rule and "Part 4" on its procedure has no reason to think they are a pair.
+const PART_200_SOURCES = { 'r-dfars': 1, 'pgi': 1 };
+
 function indexPartForSource(source, part) {
   const n = Number(part);
-  if (source === 'r-dfars' && Number.isFinite(n) && n >= 200) return String(n - 200);
+  if (PART_200_SOURCES[source] && Number.isFinite(n) && n >= 200) return String(n - 200);
   return String(part);
 }
 
 function displayPartForSource(source, part) {
   const n = Number(part);
-  if (source === 'r-dfars' && Number.isFinite(n) && n > 0 && n < 200) return String(n + 200);
+  if (PART_200_SOURCES[source] && Number.isFinite(n) && n > 0 && n < 200) return String(n + 200);
   return String(part);
 }
 
@@ -1811,7 +2013,7 @@ async function selectPart(tile, partNum, partLabel) {
 
   // Show loading state in reader
   const reader = document.getElementById('browse-reader-inner');
-  reader.innerHTML = '<div class="browse-empty"><div class="spinner" style="margin:0 auto 16px;"></div><div class="browse-empty-sub">Loading Part ' + partNum + '…</div></div>';
+  reader.innerHTML = '<div class="browse-empty"><div class="spinner" style="margin:0 auto 16px;"></div><div class="browse-empty-sub">Loading ' + partWord(browseSrc) + ' ' + esc(displayPartForSource(browseSrc, partNum)) + '…</div></div>';
   if (window.matchMedia('(max-width: 768px)').matches) {
     const readerTop = document.getElementById('browse-reader').getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
     window.scrollTo({ top: Math.max(0, readerTop), behavior: 'smooth' });
@@ -1852,8 +2054,11 @@ async function selectPart(tile, partNum, partLabel) {
       renderFmrVolumeIndex();
       return;
     }
+    // Resolved BEFORE the build (not decorated after) so the cached HTML below carries
+    // the pairing too — otherwise a reload repaints a part with its cross-links missing.
+    const pairIdx = await pairIndexSoon(browseSrc, indexPart);
     try {
-      reader.innerHTML = buildReaderHTML(hits, browseSrc, partNum, partLabel, hits.length);
+      reader.innerHTML = buildReaderHTML(hits, browseSrc, partNum, partLabel, hits.length, pairIdx);
       requestAnimationFrame(scrollBrowseReaderToTop);
       saveBrowseState(); // remember this part so a tab discard/reload can restore it
       cacheBrowseHTML(browseSrc, partNum, browseLabel, reader.innerHTML); // repaint instantly on reload (no top-flash)
@@ -1869,6 +2074,11 @@ async function selectPart(tile, partNum, partLabel) {
 }
 
 // ── CITATION ──────────────────────────────────────────────────────────────────
+// Sources that do NOT use FAR 1.105-2 part/subpart/section levels. They number
+// paragraphs (SSP "3.9", DAFI 63-138 "1.1"), so calling one of those a "Subpart" names
+// a division the document does not have.
+const NON_FAR_LEVEL_SOURCES = { 'ssp': 1, 'afi-63-138': 1, 'fmr': 1 };
+
 function generateCitation(hit) {
   const label = SOURCE_SHORT[hit.source] || (hit.source || 'Document').toUpperCase();
   const title  = hit.title || '';
@@ -1881,8 +2091,11 @@ function generateCitation(hit) {
     return m ? m[1].replace(/\.$/, '').trim() : '';
   }
 
-  // Subpart: "Subpart X.X - Title"
-  const subM = title.match(/^Subpart\s+([\d.]+)\s*[-–]?\s*(.*)/i);
+  // Subpart: "Subpart X.X - Title". The dash class MUST include the em-dash: the
+  // R-DFARS titles are spelled "SUBPART 201.4 — CAREER DEVELOPMENT…", and with only
+  // [-–] the em-dash survived into the title half and 46 citations read
+  // "R-DFARS Subpart 201.4 — — CAREER DEVELOPMENT…".
+  const subM = title.match(/^Subpart\s+([\d.]+)[\s-–—]*(.*)/i);
   if (subM) {
     const subTitle = subM[2].replace(/\.$/, '').trim();
     return subTitle
@@ -1893,19 +2106,68 @@ function generateCitation(hit) {
   // FAR Companion: "FC X.XXX Title" — section numbers may carry paragraph tokens,
   // e.g. "FC 6.103(b)(1) Use planning…" (79 titles); without the paren group the
   // match fails and the cite degrades to the bare part ("FAR Companion Part 6").
-  const fcM = title.match(/^FC\s+([\d.]+(?:-\d+)?(?:\([^)]+\))*)\s+(.*)/);
+  // A FAR Companion entry can carry TWO citations ("FC 12.000, 2.101 Understanding
+  // commercial products and services."). Capturing only the first left a comma where
+  // the separator had to be whitespace, so the match failed and the cite degraded to
+  // the bare "FAR Companion Part 12".
+  const fcM = title.match(/^FC\s+((?:[\d.]+(?:-\d+)?(?:\([^)]+\))*)(?:\s*,\s*[\d.]+(?:-\d+)?(?:\([^)]+\))*)*)\.?\s+(.*)/);
   if (fcM && hit.source === 'far-companion') {
-    const fcTitle = fcM[2].replace(/\.$/, '').trim();
+    // Strip a leading dash of any width — several FC titles read "FC 30.201 - Cost
+    // Accounting Standards", which cited as "FAR Companion 30.201 — - Cost…".
+    const fcTitle = fcM[2].replace(/^[\s-–—]+/, '').replace(/\.$/, '').trim();
     return fcTitle
       ? `${label} ${fcM[1]} — ${fcTitle}`
       : `${label} ${fcM[1]}`;
   }
 
-  // Section/subsection: "X.XXX Title" or "X.XXX-X Title"
-  const secM = title.match(/^(\d{1,3}\.\d{1,6}(?:-\d+)?)\s+(.*)/);
+  // PGI: "PGI 204.201 Unique procurement instrument identifiers". Without this the
+  // number regexes below all miss the "PGI " prefix and every section in a part fell
+  // through to the bare `hit.part` fallback — all 27 sections of part 204 copied the
+  // SAME citation, "DFARS PGI Part 4", with no section number in it.
+  // PGI: "PGI 204.201 Unique procurement instrument identifiers". Without this the
+  // number regexes below all miss the "PGI " prefix and every section in a part fell
+  // through to the bare `hit.part` fallback — all 27 sections of part 204 copied the
+  // SAME citation, "DFARS PGI Part 4", with no section number in it.
+  // The cite is the BARE "PGI 204.201", not the source label + number: that is the form
+  // the DFARS itself uses ("see PGI 204.201"), it avoids double-prefixing a title that
+  // already says PGI, and it keeps the one word this site reserves — "DFARS" — out of a
+  // citation. The source BADGE still reads "DFARS PGI"; only the citation changes.
+  const pgiM = title.match(/^PGI\s+([\d.]+(?:-\d+)*)\.?\s+(.*)/i);
+  if (pgiM && hit.source === 'pgi') {
+    const pgiTitle = pgiM[2].replace(/\.$/, '').trim();
+    return pgiTitle
+      ? `PGI ${pgiM[1]} — ${pgiTitle}`
+      : `PGI ${pgiM[1]}`;
+  }
+
+  // DoD SSP appendices: "A.3 Notification of Debriefing". The section regex below is
+  // anchored at a DIGIT, so all 24 lettered appendix sections fell through to the part
+  // fallback and cited as a bare "DoD SSP Part A" — nine different sections producing
+  // one string. Mirrors SSP_SEC in study-tool/build_deck_v2.py.
+  const sspM = title.match(/^([A-E]\.\d{1,2}(?:\.\d+)*)\s+(.*)/);
+  if (sspM && hit.source === 'ssp') {
+    const sspTitle = sspM[2].replace(/\.$/, '').trim();
+    return sspTitle ? `${label} ${sspM[1]} — ${sspTitle}` : `${label} ${sspM[1]}`;
+  }
+
+  // Section/subsection: "X.XXX Title" or "X.XXX-X Title".
+  // (?:-\d+)* not (?:-\d+)? — a DFARS number can carry two suffixes ("232.502-4-70"),
+  // and with one group it failed the match and degraded to "R-DFARS Part 232", citing a
+  // whole part while the reader stood on one section.
+  // The optional second half captures a RANGE — "227.7203-1 - 227.7203-17 [Reserved]"
+  // is ONE document covering a span of reserved sections. Without it the number stopped
+  // at the first section and the dash survived into the title half, citing
+  // "R-DFARS 227.7203-1 — - 227.7203-17 [Reserved]". The range IS the honest citation.
+  const secM = title.match(/^(\d{1,3}\.\d{1,6}(?:-\d+)*(?:\s*[-–—]\s*\d{1,3}\.\d{1,6}(?:-\d+)*)?)\s+(.*)/);
   if (secM) {
     const secNum   = secM[1];
-    const secTitle = secM[2].replace(/\.$/, '').trim();
+    // Strip a leading dash run, then refuse a "title" that is only digits. One corpus
+    // heading is garbled as "245.103 -72", and printing it produced the citation
+    // "R-DFARS 245.103 — -72". Better to cite the section alone than to assert that
+    // "-72" is the name of a regulation. (The garbled TITLE is a corpus defect,
+    // tracked separately — this only stops the citation from repeating it.)
+    let secTitle = secM[2].replace(/^[\s-–—]+/, '').replace(/\.$/, '').trim();
+    if (/^\d+$/.test(secTitle)) secTitle = '';
 
     // Determine level label per FAR 1.105-2
     // Part = digits left of decimal only (rarely stored this way)
@@ -1916,8 +2178,12 @@ function generateCitation(hit) {
     const rightOfDecimal = parts[1] || '';
     const hasDash = secNum.includes('-');
 
+    // FAR 1.105-2 numbering is a FAR/DFARS convention. The SSP and DAFI 63-138 number
+    // paragraphs (1.1, 3.9) and have no subparts at all, so labelling those "Subpart"
+    // invented a division the document does not have — on 63 docs.
+    const usesFarLevels = !NON_FAR_LEVEL_SOURCES[hit.source];
     let levelLabel = '';
-    if (!hasDash && rightOfDecimal.length <= 2) {
+    if (usesFarLevels && !hasDash && rightOfDecimal.length <= 2) {
       levelLabel = 'Subpart ';
     }
     // Sections and subsections: no prefix per FAR convention
@@ -1974,17 +2240,52 @@ window.copyInlineCite = copyInlineCite;
 // hover/focus-previewable links — but ONLY when the reference resolves EXACTLY to a
 // section AcqVault has indexed. Unresolved tokens (dollar amounts, dates, sections we
 // don't hold) stay plain text, so we never invent or mis-point a citation.
-let XREF_MAP = null; // { rfo: Map(token->id), 'r-dfars': Map(token->id) }
-const XREF_SOURCES = { rfo: 1, 'r-dfars': 1 };
-const XREF_LEAD = /^(\d{1,3}\.\d{1,6}(?:-\d+)?)\b/;
+let XREF_MAP = null; // { rfo: Map(token->id), 'r-dfars': Map, pgi: Map }
+const XREF_SOURCES = { rfo: 1, 'r-dfars': 1, pgi: 1 };
+const XREF_LEAD = /^(?:PGI\s+)?(\d{1,3}\.\d{1,6}(?:-\d+)*)\b/;
+
+// ⭐ THE RULE/GUIDANCE BOUNDARY IS NEVER GUESSED. A reference only resolves into the PGI
+// when the text literally wrote "PGI" in front of the number. A bare "204.201" always
+// means the regulation, even inside a PGI document. Without this, "See PGI 209.470"
+// linked the bare 209.470 to the R-DFARS rule — which is "[Reserved]", because the
+// procedure it points at lives in the PGI. The reader was told to follow a procedure
+// and landed on an empty section.
+// Resolution order for a BARE number. PGI is in NOBODY's list — including its own:
+// inside PGI text a bare "204.201" still means the DFARS rule (the PGI writes
+// "PGI 204.201" when it means itself), so the ONLY door into the PGI is an explicit
+// "PGI" lead. The two rule key spaces are effectively disjoint (2,817 RFO keys at
+// 1.x-53.x against 1,819 R-DFARS keys at 2xx.x, colliding on exactly one token),
+// which is what makes the cross-source fallback safe.
+const XREF_BARE_ORDER = { rfo: ['rfo', 'r-dfars'], 'r-dfars': ['r-dfars', 'rfo'], pgi: ['r-dfars', 'rfo'] };
+
+// Numbers that belong to some OTHER citation system and merely look like a section.
+// "32 CFR 219.101" is the Common Rule for human subjects; it resolved to R-DFARS
+// 219.101 "Small business goals".
+const XREF_FOREIGN = /(?:\bC\.?F\.?R\.?|U\.?\s?S\.?\s?C\.?|Public\s+Law|Pub\.?\s*L\.?|DoD[IDM]|DFAS|E\.?O\.?|Executive\s+Order|Chapter)\s*$/i;
+
 function buildXrefMap() {
   if (XREF_MAP || !ACQ_INDEX) return XREF_MAP;
-  const map = { rfo: new Map(), 'r-dfars': new Map() };
+  const map = { rfo: new Map(), 'r-dfars': new Map(), pgi: new Map() };
   for (const { doc } of ACQ_INDEX) {
     const table = map[doc.source];
     if (!table) continue;
     const m = String(doc.title || '').trim().match(XREF_LEAD);
-    if (m && !table.has(m[1])) table.set(m[1], doc.id);
+    if (!m) continue;
+    const prev = table.get(m[1]);
+    // A clause number can appear as several documents — the prescribing part's
+    // header-only stub AND the Part 252 full text. First-wins picked the stub, so
+    // hovering "252.215-7010" previewed 117 characters instead of the 21,285-character
+    // clause. Keep the substantive copy: real text beats [Reserved], longer beats
+    // shorter.
+    if (prev) {
+      const better = (a, b) => {
+        const ra = /\[reserved\]/i.test(a.title || ''), rb = /\[reserved\]/i.test(b.title || '');
+        if (ra !== rb) return rb ? a : b;
+        return String(a.content || '').length >= String(b.content || '').length ? a : b;
+      };
+      if (better(prev, doc) === prev) continue;
+    }
+    table.set(m[1], doc);
   }
   XREF_MAP = map;
   return XREF_MAP;
@@ -1994,15 +2295,25 @@ function buildXrefMap() {
 function linkifyXrefs(escaped, hit) {
   if (!hit || !XREF_SOURCES[hit.source]) return escaped;
   const map = XREF_MAP || buildXrefMap();
-  const table = map && map[hit.source];
-  if (!table || !table.size) return escaped;
-  const selfM = String(hit.title || '').trim().match(XREF_LEAD);
-  const self = selfM ? selfM[1] : null;
-  return escaped.replace(/\b(\d{1,3}\.\d{1,6}(?:-\d+)?)\b/g, (full, num) => {
-    if (num === self) return full;          // don't self-link the section's own number
-    const id = table.get(num);
-    if (!id) return full;                    // unresolved -> leave as plain text
-    return `<a class="dc-xref" href="?view=reader&amp;doc=${encodeURIComponent(id)}" data-xref="${esc(id)}" tabindex="0">${full}</a>`;
+  if (!map) return escaped;
+  const order = XREF_BARE_ORDER[hit.source] || [hit.source];
+  return escaped.replace(/(PGI\s+)?\b(\d{1,3}\.\d{1,6}(?:-\d+)*)\b/g, (full, pgiLead, num, offset, s) => {
+    const before = s.slice(Math.max(0, offset - 30), offset);
+    if (XREF_FOREIGN.test(before)) return full;
+    // The source PDFs break a subsection number across a line: "227.7102- 4". We match
+    // only "227.7102", so linking it would send the reader to the PARENT section (or a
+    // [Reserved] stub) rather than the subsection actually cited. Leave it alone.
+    const after = s.slice(offset + full.length, offset + full.length + 8);
+    if (/^\s*[-–—]\s*\d/.test(after)) return full;
+
+    // "PGI 204.201" resolves ONLY against the PGI. A bare number never does.
+    const tables = pgiLead ? ['pgi'] : order;
+    let doc = null;
+    for (const t of tables) { const d = map[t] && map[t].get(num); if (d) { doc = d; break; } }
+    if (!doc) return full;
+    if (doc.id === hit.id) return full;      // don't self-link the section's own number
+    const label = pgiLead ? `${pgiLead}${num}` : full;
+    return `<a class="dc-xref" href="?view=reader&amp;doc=${encodeURIComponent(doc.id)}" data-xref="${esc(doc.id)}" tabindex="0">${label}</a>`;
   });
 }
 
@@ -2139,21 +2450,40 @@ document.addEventListener('keydown', (e) => {
 // ── CONTENT FORMATTER ─────────────────────────────────────────────────────────
 function formatContent(text, hit) {
   if (!text) return '<div class="dc-text" style="color:#bbb;font-style:italic;">No content available.</div>';
-  const srcLabel = SOURCE_FULL[hit.source] || (hit.source || 'Document').toUpperCase();
+  // SOURCE_SHORT, not SOURCE_FULL: this label goes into a CITATION, and the narrative
+  // name is not one. The section header button already cites "RFO 15.404-1 — Price
+  // analysis" via generateCitation while every paragraph button underneath it said
+  // "Revolutionary FAR Overhaul 15.404-1(b)(2)(i) — …", which nobody writes.
+  const srcLabel = SOURCE_SHORT[hit.source] || (hit.source || 'Document').toUpperCase();
   const baseCite = generateCitation(hit);
   const lines    = text.split('\n');
   let html = '', curSection = null, paragraphNodes = [];
 
   if (hit?.source === 'compass') return formatCompassContent(text, hit, baseCite);
 
+  // This document's OWN section number, so a number found in the body can be told apart
+  // from the one in the heading.
+  const ownCiteNum = (String(hit && hit.title || '').trim()
+    .match(/^(?:PGI\s+|FC\s+)?([A-E]?\d{1,3}\.\d{1,6}(?:-\d+)*)/) || [])[1] || null;
+
   function buildCite() {
+    // The FMR numbers paragraphs on a dotted outline ("1.0", "3.1") INSIDE a chapter.
+    // Printed alone those look like FAR-style sections and resolve to nothing — a
+    // pasted "DoD FMR 1.0" is unfindable. Cite the volume and chapter instead, which
+    // is what generateCitation already produced.
+    if (hit && hit.source === 'fmr') return baseCite;
     if (!curSection) return baseCite;
     // Build section number with paragraph tokens appended: 3.103(a)(1)
     let num = curSection;
     paragraphNodes.forEach(node => { num += `(${node.token})`; });
-    // Extract the section title from baseCite if it contains " — Title"
+    // The title belongs to THIS document. `curSection` is re-set by any body line that
+    // opens with something section-shaped — a clause list, a subpart index — and gluing
+    // this doc's heading onto that number produced citations pairing an unrelated pair,
+    // e.g. "FAR Companion 52.232-22 — Consumption-based contracting" (52.232-22 is a
+    // clause; the heading belongs to FC 16.2). Only carry the title when they agree.
     const dashIdx = baseCite.indexOf(' — ');
-    const sectionTitle = dashIdx !== -1 ? baseCite.slice(dashIdx) : '';
+    const sectionTitle = (ownCiteNum && curSection === ownCiteNum && dashIdx !== -1)
+      ? baseCite.slice(dashIdx) : '';
     return `${srcLabel} ${num}${sectionTitle}`;
   }
 
@@ -2932,8 +3262,8 @@ function renderReaderPage(hit) {
 // Regulation — part banner, Contents, serif section headers, nested para cites.
 // The reader topbar has its own find-in-document, so drop the injected in-part
 // search bar (it would be unwired here — polish.js only watches the browse pane).
-function renderReaderAsBrowse(contentEl, hits, source, partNum, partLabel) {
-  contentEl.innerHTML = buildReaderHTML(hits, source, partNum, partLabel, hits.length);
+function renderReaderAsBrowse(contentEl, hits, source, partNum, partLabel, pairIdx) {
+  contentEl.innerHTML = buildReaderHTML(hits, source, partNum, partLabel, hits.length, pairIdx);
   contentEl.querySelector('#br-part-search')?.remove();
 }
 
@@ -2941,7 +3271,10 @@ async function loadFullPartInReader(hit) {
   const contentEl = document.getElementById('reader-content');
   contentEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   const dispPart = displayPartForSource(hit.source, hit.part);
-  const partLabel = (PARTS_BY_SOURCE[hit.source] || []).find(([n]) => String(n) === String(dispPart))?.[1] || '';
+  // Compare in DISPLAY form on both sides: r-dfars keys its grid by 204, pgi by 4, and
+  // a raw `n === dispPart` test silently returns no label for one of them.
+  const partLabel = (PARTS_BY_SOURCE[hit.source] || []).find(([n]) =>
+    displayPartForSource(hit.source, n) === String(dispPart))?.[1] || '';
   // FMR: render just the clicked chapter (the readable unit), not the whole large volume.
   if (hit.source === 'fmr') {
     renderReaderAsBrowse(contentEl, [hit], 'fmr', dispPart, fmrChapterLabel(hit));
@@ -2967,11 +3300,12 @@ async function loadFullPartInReader(hit) {
       if (!page.length || page.length < pageSize || allHits.length >= total) break;
       offset += pageSize;
     }
+    const pairIdx = await pairIndexSoon(hit.source, indexPart);
     if (!allHits.length) {
-      renderReaderAsBrowse(contentEl, [hit], hit.source, dispPart, partLabel);
+      renderReaderAsBrowse(contentEl, [hit], hit.source, dispPart, partLabel, pairIdx);
       return;
     }
-    renderReaderAsBrowse(contentEl, allHits, hit.source, dispPart, partLabel);
+    renderReaderAsBrowse(contentEl, allHits, hit.source, dispPart, partLabel, pairIdx);
     resetReaderSearch();
     // Scroll to the clicked section after render (buildReaderHTML anchors are sec-<id>).
     // "Open in new tab" often opens BACKGROUNDED (middle-click): smooth scrolls are

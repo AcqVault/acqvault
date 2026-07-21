@@ -663,6 +663,16 @@ def ship(summary_line):
     if health.returncode != 0:
         print("\n✗ SHIP ABORTED — fix the failing check(s) above, then re-run.")
         sys.exit(1)
+    # Render health gate — corpus_health above proves the DATA is valid; this proves the
+    # RENDERERS can actually read it. The DFARS PGI passed every corpus check and shipped
+    # with all 427 section numbers unparsed, one citation shared by 27 sections, and no
+    # Browse entry point at all. A FAIL here usually means fix a FUNCTION, not the corpus.
+    print("\nRender health…")
+    render = subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "render_health.py")],
+                            cwd=str(BASE_DIR))
+    if render.returncode != 0:
+        print("\n✗ SHIP ABORTED — fix the failing check(s) above, then re-run.")
+        sys.exit(1)
     new_cache = bump_service_worker()
     if new_cache:
         print("  service worker cache → " + new_cache)

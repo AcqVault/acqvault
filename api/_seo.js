@@ -40,8 +40,22 @@ const PART_LABELS = {
     'D': 'Appendix D — Streamlining Source Selection', 'E': 'Appendix E — Intellectual Property'
   }
 };
+// The corpus stores the DFARS 200-series under its FAR-aligned number (part 204 is "4"),
+// and the FMR is organised in Volumes. Both are internal storage details that were
+// leaking into the crawlable page: /r-dfars/part-4 headed itself "Part 4" while every
+// section on it is numbered 204.xxx and the in-app reader called it "Part 204", and the
+// FMR called a Volume a Part. The URL keeps the index part; only the LABEL is corrected.
+// KEEP IN SYNC with PART_200_SOURCES / displayPartForSource / partWord in assets/app.js.
+const PART_200_SOURCES = { 'r-dfars': 1, 'pgi': 1 };
+function displayPartForSource(source, part) {
+  const n = Number(part);
+  if (PART_200_SOURCES[source] && Number.isFinite(n) && n > 0 && n < 200) return String(n + 200);
+  return String(part);
+}
+function partWord(source) { return source === 'fmr' ? 'Volume' : 'Part'; }
 function partLabel(source, part) {
-  return (PART_LABELS[source] && PART_LABELS[source][part]) || `Part ${part}`;
+  return (PART_LABELS[source] && PART_LABELS[source][part])
+    || `${partWord(source)} ${displayPartForSource(source, part)}`;
 }
 
 let docsCache = null;
@@ -89,11 +103,16 @@ function partNum(p) {
 // api/search.js and app.js regTitleCmp so the SSR page and the in-app reader
 // present a part in the same order.
 function regOrderKey(title) {
-  const t = String(title || '').trim();
+  // Strip the PGI prefix before keying: PGI titles read "PGI 204.201 …" and every match
+  // below is anchored at a digit, so regOrderKey returned null for all 427 PGI docs and
+  // their ordering silently fell back to a locale string compare.
+  const t = String(title || '').trim().replace(/^PGI\s+/i, '');
   const sub = t.match(/^Subpart\s+(\d+)\.(\d+)/i);
   if (sub) return [parseInt(sub[1], 10), parseInt(sub[2], 10), 0, 0, 0, 0];
   const sec = t.match(/^(\d+)\.(\d+)(?:-(\d+))?(?:-(\d+))?/);
   if (sec) return [parseInt(sec[1], 10), Math.floor(parseInt(sec[2], 10) / 100), 1, parseInt(sec[2], 10), sec[3] ? parseInt(sec[3], 10) : 0, sec[4] ? parseInt(sec[4], 10) : 0];
+  const letter = t.match(/^([A-E])\.(\d{1,2})(?:\.(\d+))?/);
+  if (letter) return [letter[1].charCodeAt(0), 0, 1, parseInt(letter[2], 10), letter[3] ? parseInt(letter[3], 10) : 0, 0];
   const partOnly = t.match(/^(?:Part\s+)?(\d+)\b/i);
   if (partOnly) return [parseInt(partOnly[1], 10), -1, 0, 0, 0, 0];
   return null;
@@ -116,6 +135,82 @@ function partsForSource(source) {
   const parts = [...groups.keys()].sort((a, b) => partNum(a) - partNum(b) || a.localeCompare(b));
   for (const p of parts) groups.get(p).sort((a, b) => regTitleCmp(a.title, b.title));
   return { parts, groups };
+}
+
+// ── RULE ⇄ PROCEDURE PAIRING ──────────────────────────────────────────────────
+// The DoD class deviation ships the rule (Attachment A1) and its procedure (A2) in ONE
+// document. AcqVault indexes them as two sources, so /r-dfars/part-4 and /pgi/part-4
+// had no idea the other existed. The numbering pairs exactly, which is what makes the
+// link unambiguous. MIRRORS assets/app.js — edit both.
+//
+// ⭐ THE DIRECTIONS ARE NOT SYMMETRICAL, ON PURPOSE. The PGI does not bind the way the
+// DFARS does. A neutral "see also" both ways would make them look interchangeable —
+// the exact confusion the Guidance badge and the clay colour exist to prevent.
+const PAIR_SOURCE = { 'r-dfars': 'pgi', 'pgi': 'r-dfars' };
+
+function pairKey(title) {
+  const m = String(title || '').match(/^(?:PGI\s+)?(\d{3}\.\d{1,6}(?:-\d+)*)/i);
+  return m ? m[1] : null;
+}
+
+function pairIndexFor(source, part) {
+  const other = PAIR_SOURCE[source];
+  if (!other) return null;
+  const map = new Map();
+  for (const d of loadDocs()) {
+    if (d.source !== other || String(d.part) !== String(part)) continue;
+    const k = pairKey(d.title);
+    if (!k) continue;
+    // ⚠ A section number is NOT unique within a part — R-DFARS part 233 holds two
+    // different sections both numbered 233.170. First-wins would tell the reader that
+    // one section's procedure belongs to the other, under a label reading "tells you
+    // how to carry this out". Ambiguous number => no chip. MIRRORS assets/app.js.
+    if (map.has(k)) { map.set(k, null); continue; }
+    map.set(k, d);
+  }
+  return map.size ? map : null;
+}
+
+function pairHref(other, mate) {
+  return `/${other}/part-${encodeURIComponent(String(mate.part))}#${encodeURIComponent(String(mate.anchor || mate.id))}`;
+}
+
+// Count how many docs IN THIS PART share each section number. Ambiguity cuts both ways:
+// the mate can be ambiguous (handled in pairIndexFor) and so can the section doing the
+// pointing — R-DFARS part 233 has two different sections numbered 233.170, and both
+// would otherwise claim the single PGI 233.170 as "the procedure for this".
+function ownKeyCounts(docs) {
+  const counts = new Map();
+  for (const d of docs) {
+    const k = pairKey(d.title);
+    if (k) counts.set(k, (counts.get(k) || 0) + 1);
+  }
+  return counts;
+}
+
+function pairChip(source, doc, pairIdx, ownCounts) {
+  if (!pairIdx) return '';
+  const k = pairKey(doc.title);
+  if (!k) return '';
+  if (ownCounts && ownCounts.get(k) > 1) return '';
+  const mate = pairIdx.get(k);
+  if (!mate) return '';
+  const other = PAIR_SOURCE[source];
+  const num = pairKey(mate.title) || k;
+  return other === 'pgi'
+    ? `<div class="pair pair-pgi"><span class="lead">Procedure</span><a href="${pairHref(other, mate)}">PGI ${esc(num)}</a><span class="note">guidance — tells you how to carry this out, does not impose a requirement</span></div>`
+    : `<div class="pair pair-rule"><span class="lead">Rule</span><a href="${pairHref(other, mate)}">${esc(num)}</a><span class="note">the binding requirement this procedure implements</span></div>`;
+}
+
+function partPairBanner(source, part, pairIdx) {
+  const other = PAIR_SOURCE[source];
+  if (!other || !pairIdx) return '';
+  const href = `/${other}/part-${encodeURIComponent(String(part))}`;
+  const disp = esc(displayPartForSource(source, part));
+  if (source === 'pgi') {
+    return `<div class="partpair partpair-pgi"><span class="tag">Guidance</span><div><strong>This is the PGI — it does not bind.</strong> It is the procedural half of the DoD class deviation: how to carry out a rule, not the rule itself. The binding text is <a href="${href}">R-DFARS Part ${disp}</a>. Only the PGI reissued by the deviation memos is indexed here, so a part carries fewer PGI sections than it does rules.</div></div>`;
+  }
+  return `<div class="partpair partpair-rule"><span class="tag">Rule</span><div><strong>This is the binding text.</strong> The same deviation also ships procedures for parts of this part — see <a href="${href}">DFARS PGI Part ${disp}</a>, which is guidance and does not impose requirements.</div></div>`;
 }
 
 // A clause published with variants opens each one with "Basic." or "Alternate N."
@@ -600,6 +695,28 @@ section.sec:target>h2{color:var(--accent)}
 @media(prefers-reduced-motion:reduce){section.sec:target{animation:none}}
 .srcref{font-size:12.5px;color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
+/* Rule ⇄ procedure pairing — KEEP IN SYNC with .br-pair/.br-partpair in assets/app.css.
+   The clay literals mirror --pgi-bg/--pgi-txt/--pgi-solid there; the SSR :root does not
+   carry the per-source tokens. Clay = being sent to guidance, brass/ink = being sent to
+   the binding text. Do not collapse the two into one neutral style. */
+.pair{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 9px;margin:0 0 12px;padding:7px 12px;border-radius:4px;font-size:12.5px;line-height:1.45}
+.pair-pgi{background:#efe5df;border-left:2px solid #7a5a4a}
+.pair-rule{background:#f7f6f2;border-left:2px solid var(--accent)}
+.pair .lead{font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:10px;flex-shrink:0}
+.pair-pgi .lead{color:#5b4136}
+.pair-rule .lead{color:var(--accent)}
+.pair a{font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.pair-pgi a{color:#5b4136}
+.pair-rule a{color:var(--ink)}
+.pair .note{color:var(--muted)}
+.partpair{display:flex;gap:11px;margin:0 0 24px;padding:13px 16px;border-radius:10px;font-size:13px;line-height:1.6}
+.partpair-pgi{background:#efe5df;border-left:3px solid #7a5a4a;color:#5b4136}
+.partpair-rule{background:#f7f6f2;border-left:3px solid var(--accent);color:var(--ink)}
+.partpair .tag{flex-shrink:0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border-radius:4px;height:fit-content;margin-top:1px}
+.partpair-pgi .tag{background:#7a5a4a;color:#fff}
+.partpair-rule .tag{background:var(--accent);color:#fff}
+.partpair a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:640px){.partpair{flex-direction:column;gap:8px}.pair{flex-direction:column;gap:3px}}
 /* Category Management curated visuals — copied from assets/app.css so the
    server-rendered pages style them the same way the in-app reader does.
    KEEP IN SYNC with assets/app.css. */
@@ -802,6 +919,8 @@ function renderPartPage(source, part) {
   const sharedUrl = (urls.size === 1 && docs.every(d => d.url)) ? [...urls][0] : null;
   const partSrc = sharedUrl ? srcref(sharedUrl) : '';
 
+  const pairIdx = pairIndexFor(source, part);
+  const ownCounts = ownKeyCounts(docs);
   const sections = docs.map(d => {
     const anchor = esc(d.anchor || d.id);
     // Per-section provenance rides ON the heading rather than taking a line of its
@@ -814,6 +933,7 @@ function renderPartPage(source, part) {
     return `<section class="sec" id="${anchor}">
 <h2><a href="#${anchor}">${esc(d.title)}</a>${src}</h2>
 ${compassNote}
+${pairChip(source, d, pairIdx, ownCounts)}
 ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
 </section>`;
   }).join('\n');
@@ -830,6 +950,7 @@ ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
   const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › ${esc(label)}</nav>
 <h1>${esc(meta.name)} · ${esc(label)}</h1>
 <p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
+${partPairBanner(source, part, pairIdx)}
 ${partSrc}
 ${sections}`;
 
@@ -1790,4 +1911,4 @@ function renderNotFoundPage() {
   return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Page not found — AcqVault</title>\n<meta name=\"robots\" content=\"noindex\">\n<link rel=\"icon\" href=\"/assets/favicon-vault.svg\" type=\"image/svg+xml\">\n<style>\n@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}\n*{box-sizing:border-box;margin:0;padding:0;}\nbody{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;\n  background:radial-gradient(120% 140% at 12% 8%,#1b436b 0%,#123253 42%,#0a1c33 100%);\n  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color:#eaf1fb;}\n.card{max-width:520px;width:100%;text-align:center;padding:48px 32px;}\n.dial{width:88px;height:88px;margin:0 auto 28px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.4));}\n.eyebrow{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#e4c477;margin-bottom:14px;}\nh1{font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:clamp(30px,6vw,42px);line-height:1.05;letter-spacing:-.015em;color:#fff;margin-bottom:14px;}\np{font-size:16px;line-height:1.55;color:rgba(230,238,248,.82);margin-bottom:28px;}\n.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}\n.btn{display:inline-block;font-size:14.5px;font-weight:700;text-decoration:none;padding:11px 22px;border-radius:999px;transition:transform .15s,background .15s;}\n.btn:hover{transform:translateY(-1px);}\n.btn-brass{background:#e4c477;color:#0a1c33;}\n.btn-brass:hover{background:#f0d79a;}\n.btn-ghost{color:#eaf1fb;border:1px solid rgba(255,255,255,.22);}\n.btn-ghost:hover{background:rgba(255,255,255,.07);}\n.links{margin-top:26px;font-size:14px;color:rgba(230,238,248,.6);}\n.links a{color:#e4c477;text-decoration:none;margin:0 8px;}\n.links a:hover{text-decoration:underline;}\na:focus-visible,.btn:focus-visible{outline:2px solid #e4c477;outline-offset:3px;}\n</style>\n</head>\n<body>\n<main class=\"card\">\n  <svg class=\"dial\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"94\" height=\"94\" rx=\"20\" fill=\"#0f2540\" stroke=\"#6f521a\" stroke-width=\"1\"/><rect x=\"11\" y=\"11\" width=\"78\" height=\"78\" rx=\"14\" fill=\"none\" stroke=\"#87651c\" stroke-width=\"2\"/><circle cx=\"50\" cy=\"50\" r=\"24\" fill=\"none\" stroke=\"#e4c477\" stroke-width=\"3.5\"/><g stroke=\"#e4c477\" stroke-width=\"4\" stroke-linecap=\"round\"><line x1=\"50\" y1=\"29\" x2=\"50\" y2=\"39\"/><line x1=\"50\" y1=\"71\" x2=\"50\" y2=\"61\"/><line x1=\"29\" y1=\"50\" x2=\"39\" y2=\"50\"/><line x1=\"71\" y1=\"50\" x2=\"61\" y2=\"50\"/></g><circle cx=\"50\" cy=\"50\" r=\"6\" fill=\"#e4c477\"/></svg>\n  <div class=\"eyebrow\">404 · Not found</div>\n  <h1>This one isn&rsquo;t in the vault.</h1>\n  <p>The page you&rsquo;re after doesn&rsquo;t exist — it may have moved when the rulebook did. Search the full text instead, or start from the front door.</p>\n  <div class=\"actions\">\n    <a class=\"btn btn-brass\" href=\"/?q=\">Search the rulebook</a>\n    <a class=\"btn btn-ghost\" href=\"/?home=1\">Go home</a>\n  </div>\n  <div class=\"links\">\n    <a href=\"/rfo\">RFO</a>·<a href=\"/r-dfars\">R-DFARS</a>·<a href=\"/library\">Library</a>·<a href=\"/study\">Study</a>\n  </div>\n</main>\n</body>\n</html>\n";
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSourceSelectionPage, renderSitemap, renderNotFoundPage, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, partLabel, displayPartForSource, partWord, regOrderKey, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSourceSelectionPage, renderSitemap, renderNotFoundPage, SITE };

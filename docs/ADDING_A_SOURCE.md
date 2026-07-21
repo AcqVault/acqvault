@@ -5,6 +5,38 @@ Every source added to AcqVault must behave identically to the existing six
 This file is the contract: the enumeration sites you must touch, and the
 behaviors the new source must inherit. Work through it top to bottom.
 
+## 0. Run the gate — this checklist is now enforced, not just written
+
+```bash
+python3 scripts/render_health.py
+```
+
+**This document already existed when the DFARS PGI was added, and PGI shipped missing
+four of the sites below anyway** — the browse pills, the browse dropdown, the coverage
+chips and the library card — so it was reachable only from the search filter. It also
+shipped with every section number unparsed and one citation shared by 27 sections. A
+checklist nobody can run is a checklist that gets skipped under time pressure.
+
+So the enumeration sites below are now checked automatically by the **registry
+completeness** check in `scripts/render_health.py`, and the parse/citation/ordering
+behaviors further down are checked by the rest of that gate. `refresh.py` refuses to ship
+if it fails.
+
+Work the list, then run the gate until it is green. **If a site is listed here and the
+gate does not check it, that is a bug in the gate — fix the gate rather than trusting the
+prose.** See `docs/CORPUS_INVARIANTS.md` § "Render invariants" for what each check means.
+
+Two sites this document used to omit entirely, both of which bit PGI:
+- **`api/search.js` `SRC_LABEL`** — a missing key prints the raw lowercase source id
+  into a user-facing citation (`pgi — PGI 204.201 …`) in the Ask the Vault answers.
+- **`assets/og-src-<source>-v2.png` must exist.** `api/_seo.js` emits that filename
+  unconditionally, so a missing card is a 404 social preview on every page of the source.
+  Add a variant to `scripts/og/gen_og.py` and run `python3 scripts/og/gen_og.py src-<source>`.
+
+Also note: `SOURCE_LABELS` below is now **`SOURCE_SHORT`** (citations/badges) plus
+**`SOURCE_FULL`** (narrative name). Citations must use `SOURCE_SHORT` — the narrative
+name is not a citation.
+
 ## 1. Enumeration sites (all of them — they are scattered on purpose)
 
 **`index.html`**
