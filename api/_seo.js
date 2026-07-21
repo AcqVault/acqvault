@@ -193,13 +193,45 @@ function parseRatingTable(lines, i, escFn) {
   return { html: `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`, endIdx: last };
 }
 
-function renderContent(content, title, anchorBase) {
+// Tables recovered by scripts/extract_tables.py arrive alongside the text with the
+// span of flattened lines they replace. Splicing a marker in — isolated by blank
+// lines so downstream block-joining leaves it alone — lets the existing per-line
+// loop stay exactly as it was.
+const TBL_MARK = /^L0:\u27e6TBL:(\d+)\u27e7$/;
+function spliceTables(content, tables) {
   const lines = String(content || '').split('\n');
+  if (!tables || !tables.length) return lines;
+  const ordered = tables.slice().sort((a, b) => a.start - b.start);
+  const out = [];
+  let ti = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const t = ordered[ti];
+    if (t && i === t.start) {
+      out.push('', `L0:\u27e6TBL:${ti}\u27e7`, '');
+      i = t.end;
+      ti++;
+      continue;
+    }
+    out.push(lines[i]);
+  }
+  return out;
+}
+function tableHtml(rows, escFn) {
+  if (!rows || rows.length < 2) return '';
+  const head = rows[0].map(c => `<th scope="col">${escFn(c)}</th>`).join('');
+  const body = rows.slice(1).map(r => '<tr>' + r.map((c, ci) =>
+    ci === 0 ? `<th scope="row">${escFn(c)}</th>` : `<td>${escFn(c)}</td>`).join('') + '</tr>').join('');
+  return `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+function renderContent(content, title, anchorBase, tables) {
+  const lines = spliceTables(content, tables);
   const out = [];
   const blocks = [];
   const skip = titleEchoLines(lines, title);
   for (let li = skip; li < lines.length; li++) {
     const line = lines[li];
+    const tm = TBL_MARK.exec(line);
+    if (tm) { out.push(tableHtml((tables || [])[+tm[1]] && (tables || [])[+tm[1]].rows, esc)); continue; }
     const isTop = /^L0:/.test(line);
     // The depth the corpus recorded. Dropping it was what turned a tiered
     // regulation into a flat wall of paragraphs: (a), (1), (2), (b) all landed on
@@ -488,7 +520,7 @@ function renderPartPage(source, part) {
     return `<section class="sec" id="${anchor}">
 <h2><a href="#${anchor}">${esc(d.title)}</a>${src}</h2>
 ${compassNote}
-${renderContent(d.content, d.title, anchor)}
+${renderContent(d.content, d.title, anchor, d.tables)}
 </section>`;
   }).join('\n');
 

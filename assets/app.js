@@ -1044,7 +1044,33 @@ function parseRatingTable(lines, i) {
   return { html: `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`, endIdx: last };
 }
 
-function renderContentLine(line, baseCitation, source, paraPath, altCtx) {
+// KEEP IN SYNC with api/_seo.js — tables recovered by scripts/extract_tables.py are
+// spliced in as an isolated marker line so the block-joining in normalizeBrowseLines
+// leaves them alone, then rendered here in place of the flattened cell list.
+const BR_TBL_MARK = /^L0:\u27e6TBL:(\d+)\u27e7$/;
+function spliceBrowseTables(content, tables) {
+  const lines = String(content || '').split('\n');
+  if (!tables || !tables.length) return lines;
+  const ordered = tables.slice().sort((a, b) => a.start - b.start);
+  const out = [];
+  let ti = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const t = ordered[ti];
+    if (t && i === t.start) { out.push('', `L0:\u27e6TBL:${ti}\u27e7`, ''); i = t.end; ti++; continue; }
+    out.push(lines[i]);
+  }
+  return out;
+}
+function browseTableHtml(rows) {
+  if (!rows || rows.length < 2) return '';
+  const head = rows[0].map(c => `<th scope="col">${esc(c)}</th>`).join('');
+  const body = rows.slice(1).map(r => '<tr>' + r.map((c, ci) =>
+    ci === 0 ? `<th scope="row">${esc(c)}</th>` : `<td>${esc(c)}</td>`).join('') + '</tr>').join('');
+  return `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+function renderContentLine(line, baseCitation, source, paraPath, altCtx, tables) {
+  const tmark = BR_TBL_MARK.exec(line);
+  if (tmark) { const t = (tables || [])[+tmark[1]]; return browseTableHtml(t && t.rows); }
   const lm = line.match(/^L(\d):(.*)/);
   if (lm) {
     const level   = parseInt(lm[1]);
@@ -1537,7 +1563,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
     // Strip the leading line(s) only when they echo the title we're already showing
     // — a heading wrapped by the source PDF spans more than one stored line.
     const content  = (() => {
-      const raw = (hit.content || '').split('\n');
+      const raw = spliceBrowseTables(hit.content, hit.tables);
       const skip = titleEchoLines(raw, title);
       return skip ? raw.slice(skip).join('\n').replace(/^\n+/, '') : raw.join('\n');
     })();
@@ -1554,7 +1580,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
       for (let li = 0; li < lines.length; li++) {
         const rt = parseRatingTable(lines, li);
         if (rt) { acc.push(rt.html); li = rt.endIdx; continue; }
-        acc.push(renderContentLine(lines[li], citation, source, paraPath, altCtx) +
+        acc.push(renderContentLine(lines[li], citation, source, paraPath, altCtx, hit.tables) +
           categoryGuideVisualAfterLine(source, partNum, lines[li], visualFlags));
       }
       bodyHTML = acc.join('');
