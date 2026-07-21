@@ -58,7 +58,7 @@ OUT = BASE / "_local_archive" / "pgi-preview.json"   # gitignored: a preview, no
 
 # The attachment boundary, and the section headings inside it.
 PGI_HEAD = re.compile(r"^PGI\s+\d+(\.\d+)?\s*[—–]")
-PGI_SEC = re.compile(r"^PGI\s+(\d+\.\d[\w.\-]*)\s*(.*)$")
+PGI_SEC = re.compile(r"^PGI\s+(\d+\.\d[\w\-]*(?:\.\d+)*)\.?\s*(.*)$")
 # A heading is "PGI 204.201 Unique procurement instrument identifiers"; a wrapped
 # cross-reference is "PGI 204.303-70 (b)(2)) for a list of applicable codes". Both
 # start a line with PGI and a section number, so the number alone cannot decide it.
@@ -68,12 +68,28 @@ TITLE_AFTER = re.compile(r"^[A-Z][A-Za-z].{2,}")
 
 
 def is_heading(rest, prev_line):
-    if rest and not TITLE_AFTER.match(rest):
-        return False
-    # a heading starts a block: the previous kept line ended a sentence
-    if prev_line and not re.search(r"[.:;]$", prev_line.strip()):
-        return False
-    return True
+    """Tell a section heading from a cross-reference that happens to start a line.
+
+    Both look like "PGI" plus a section number, so the number cannot decide it. Two
+    shapes are headings:
+
+      PGI 225.270 Energy savings service contracts.   a capitalised title follows
+      PGI 225.771.                                    the number alone, title wrapped
+
+    and these are not:
+
+      PGI 225.7021-3 for procedures and content ...   lower-case prose continues it
+      PGI 225.903(b)(ii).                             a pinpoint citation
+
+    The bare-number form is the one that matters most: missing it is why a single
+    section swallowed 506K characters of Part 25.
+    """
+    rest = (rest or "").strip()
+    if rest:
+        return bool(TITLE_AFTER.match(rest)) and len(rest) <= 100
+    # number alone — a heading only where a sentence has just ended, otherwise it is
+    # a wrapped cross-reference
+    return not prev_line or bool(re.search(r"[.:;]$", prev_line.strip()))
 
 # Running headers, tracking numbers and bare page numbers repeat on every page.
 FURNITURE = re.compile(
@@ -119,11 +135,24 @@ def main():
             for page in pdf.pages:
                 lines += (page.extract_text() or "").split("\n")
 
+        # Find the attachment boundary with the STRICT test. Using the loose one let a
+        # cross-reference inside the regulation ("see PGI 225.771.") pass for the start
+        # of the attachment, so everything after it — the rest of the regulation
+        # included — was swept into a single 505K "section".
         start = None
+        prev_scan = ""
         for i, raw in enumerate(lines):
-            if PGI_HEAD.match(raw.strip()) or PGI_SEC.match(raw.strip()):
+            line = raw.strip()
+            if not line or FURNITURE.match(line):
+                continue
+            if PGI_HEAD.match(line):
                 start = i
                 break
+            m = PGI_SEC.match(line)
+            if m and is_heading(m.group(2).strip(), prev_scan):
+                start = i
+                break
+            prev_scan = line
         if start is None:
             skipped.append(pdf_path.name)
             continue

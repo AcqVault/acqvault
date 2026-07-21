@@ -43,8 +43,10 @@ BASE = Path(__file__).resolve().parent.parent
 DOCS = BASE / "output" / "documents.json"
 
 # Sources whose corpus text came from these PDFs via extract_documents.py.
+# NOT rfo: since the HTML re-ingest the RFO carries the publisher's own tables, which
+# are better than anything recoverable from the PDF. Re-running it here would replace
+# 56 structured tables with whatever the PDF pass could match.
 PDF_SOURCES = {
-    "rfo": ["RFO"],
     "r-dfars": ["R-DFARS"],
     "far-companion": ["FAR Companion"],
     "category-management": ["Category Management"],
@@ -103,30 +105,114 @@ def table_cells(rows):
     return [c for row in rows for c in row if c]
 
 
-def find_span(doc_lines_norm, cells):
-    """Locate the consecutive run of content lines holding exactly these cells.
+def tight(s):
+    """Comparison form with every separator removed.
 
-    Returns (start, end) inclusive, or None. The comparison is on the concatenated
-    normalised text, so it does not matter whether the flattener split a cell across
-    several lines or packed several cells onto one.
+    Matching on words failed too often for reasons that have nothing to do with the
+    table being the right one: the flattener hyphenates across a line break, a page
+    header lands in the middle of a long table, a cell wraps so a space appears where
+    the PDF had none. Dropping everything that is not alphanumeric removes all of
+    those as sources of disagreement while still requiring the characters themselves
+    to match exactly, in order.
     """
-    target = norm(" ".join(cells))
-    if not target:
-        return None
-    n = len(doc_lines_norm)
-    for start in range(n):
-        if not doc_lines_norm[start]:
+    return re.sub(r"[^a-z0-9]", "", str(s or "").lower())
+
+
+def build_haystack(lines_norm):
+    """Concatenated tight text, plus the line each character came from."""
+    hay = []
+    owner = []
+    for i, line in enumerate(lines_norm):
+        t = tight(line)
+        if not t:
             continue
-        # cheap reject: the run must begin with the table's first words
-        acc = ""
-        for end in range(start, n):
-            if doc_lines_norm[end]:
-                acc = (acc + " " + doc_lines_norm[end]).strip()
-            if len(acc) > len(target):
-                break
-            if acc == target:
-                return (start, end)
-    return None
+        hay.append(t)
+        owner.extend([i] * len(t))
+    return "".join(hay), owner
+
+
+FURNITURE = re.compile(
+    r"^(Revolutionary Federal Acquisition Regulation \(FAR\) Overhaul Part \d+"
+    r"|Defense FAR Supplement \(DFARS\) Part \d+"
+    r"|Attachment\s+[A-Z]\d?"
+    r"|DARS Tracking Number:.*"
+    r"|Page \d+ of \d+"
+    r"|\d{1,3})$", re.I)
+
+def span_is_covered(lines_norm, span, cells):
+    """Refuse any match where drawing the table would hide text.
+
+    The renderers replace the whole matched run with the table, so every word inside
+    that run must be reproduced by a cell. The unordered fallback can otherwise pick
+    a region that merely CONTAINS the table's words — one FAR Companion example
+    spanned 3.3x the table's own text — and rendering it would quietly delete the
+    difference from the page. No table is better than a table that eats a sentence.
+    """
+    start, end = span
+    # Running headers and page numbers land inside a table that crosses a page break.
+    # They are page furniture, not regulation text, and replacing the run with the
+    # table is the right way to lose them — so they do not count as hidden content.
+    kept = [l for l in lines_norm[start:end + 1] if not FURNITURE.match((l or "").strip())]
+    span_words = re.findall(r"[a-z0-9]+", " ".join(kept).lower())
+    cell_words = re.findall(r"[a-z0-9]+", " ".join(cells).lower())
+    from collections import Counter
+    have = Counter(cell_words)
+    for w in span_words:
+        if have[w] <= 0:
+            return False
+        have[w] -= 1
+    return True
+
+def find_span_unordered(cells, hay, owner):
+    """Fallback for tables the flattener did not read row by row.
+
+    extract_text() walks a page in visual order, which for a multi-column table with
+    wrapped cells is not the row-major order extract_tables() returns. The Category
+    Management guide is almost entirely such tables, and not one of its eighteen
+    matched in order.
+
+    So: require every substantial cell to be present, and require the region holding
+    them to be tight — no wider than three times the table's own text. Order is not
+    required, position is. A loose version of this would happily staple a table onto
+    whichever paragraph happened to share a few words with it, which in a buying
+    guide full of near-identical tier tables is a real risk, so the bar stays high:
+    at least three distinct cells of six characters or more, all found.
+    """
+    probes = sorted({tight(c) for c in cells if len(tight(c)) >= 6}, key=len, reverse=True)
+    if len(probes) < 3:
+        return None
+    positions = []
+    for pr in probes:
+        i = hay.find(pr)
+        if i < 0:
+            return None                      # a cell that is nowhere: wrong document
+        positions.append((i, i + len(pr) - 1))
+    lo = min(p[0] for p in positions)
+    hi = max(p[1] for p in positions)
+    span_len = hi - lo + 1
+    table_len = len(tight(" ".join(cells)))
+    if span_len > max(table_len * 3, table_len + 400):
+        return None                          # scattered across the document, not a table
+    return (owner[lo], owner[hi])
+
+
+def find_span(doc_lines_norm, cells, hay=None, owner=None):
+    """Locate the run of content lines the table was flattened into.
+
+    Returns (start, end) inclusive, or None. Matching happens on the tight form, so a
+    table split by a page break still resolves; the span it returns covers the
+    intervening lines, which is what we want — the renderer replaces the whole run
+    with the table, taking any stray running header out of the reader's way.
+    """
+    target = tight(" ".join(cells))
+    if not target or len(target) < 12:
+        return None
+    if hay is None:
+        hay, owner = build_haystack(doc_lines_norm)
+    idx = hay.find(target)
+    if idx < 0:
+        return None
+    return (owner[idx], owner[idx + len(target) - 1])
 
 
 def main():
@@ -147,8 +233,8 @@ def main():
         rows_ = []
         for d in lst:
             lines = [norm(strip_marker(l)) for l in str(d.get("content", "")).split("\n")]
-            # a flat haystack so a table can reject most documents without a line walk
-            rows_.append((d, lines, norm(" ".join(lines))))
+            hay, owner = build_haystack(lines)
+            rows_.append((d, lines, hay, owner))
         prepped[src] = rows_
 
     attached, unmatched, skipped = 0, 0, 0
@@ -182,18 +268,30 @@ def main():
                         if candidate_rows is None:
                             continue
                         cs = table_cells(candidate_rows)
-                        target = norm(" ".join(cs))
-                        if not target:
+                        target = tight(" ".join(cs))
+                        if not target or len(target) < 12:
                             continue
-                        for doc, lines, hay in prepped[src]:
+                        for doc, lines, hay, owner in prepped[src]:
                             if target not in hay:
                                 continue
-                            span = find_span(lines, cs)
-                            if span:
+                            span = find_span(lines, cs, hay, owner)
+                            if span and span_is_covered(lines, span, cs):
                                 hit = (doc, span, rows)
                                 break
                         if hit:
                             break
+                    if not hit:
+                        for candidate_rows in (rows, rows[1:] if len(rows) > MIN_ROWS else None):
+                            if candidate_rows is None:
+                                continue
+                            cs = table_cells(candidate_rows)
+                            for doc, lines, hay, owner in prepped[src]:
+                                span = find_span_unordered(cs, hay, owner)
+                                if span and span_is_covered(lines, span, cs):
+                                    hit = (doc, span, rows)
+                                    break
+                            if hit:
+                                break
                     if not hit:
                         unmatched += 1
                         continue
@@ -228,7 +326,11 @@ def main():
                     keep.append({"start": t["start"], "end": t["end"], "rows": t["rows"]})
                     last_end = t["end"]
             d["tables"] = keep
-        elif "tables" in d:
+        elif "tables" in d and d.get("source") in PDF_SOURCES:
+            # Only clear tables for the sources this pass actually looked at. Without
+            # the guard, excluding a source from PDF_SOURCES silently deletes the
+            # tables it got from somewhere better — which is exactly what happened to
+            # the RFO's 56 HTML tables the first time this ran after that exclusion.
             del d["tables"]
 
     DOCS.write_text(json.dumps(container if container is not None else docs_list,
