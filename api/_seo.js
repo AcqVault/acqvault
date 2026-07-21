@@ -1200,7 +1200,10 @@ function renderSourceSelectionPage() {
 .ss-pill{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:1px 7px;white-space:nowrap}
 .ss-pill-o{background:#eaf0f6;color:#1c3557}
 .ss-pill-g{background:#eef7f0;color:#155433}
+.ss-pill-y{background:#faf3e0;color:#8a6d2e}
 .ss-pill-m{background:#fdf0ef;color:#8c2b23}
+.ss-startnote{display:flex;gap:10px;align-items:flex-start;background:#faf3e0;border:1px solid rgba(135,101,28,.32);border-radius:10px;padding:11px 14px;margin:12px 0 4px;font-size:13px;color:#6f5416;line-height:1.5}
+.ss-startnote-ic{flex:none;width:19px;height:19px;border-radius:50%;background:#8a6d2e;color:#fff;font-size:12px;font-weight:800;font-style:italic;display:flex;align-items:center;justify-content:center;line-height:1}
 .ss-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;align-items:center}
 .ss-btn{border:none;border-radius:9px;padding:12px 20px;font-size:14.5px;font-weight:700;cursor:pointer;min-height:46px;font-family:inherit}
 .ss-btn-primary{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#f4f8fc}
@@ -1208,11 +1211,11 @@ function renderSourceSelectionPage() {
 .ss-btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
 .ss-btn-ghost:hover{border-color:var(--muted2,#6f6c74)}
 .ss-btn:disabled{opacity:.45;cursor:default}
-.ss-btn:focus-visible,.ss-opt:focus-within,.ss-doc-chip:focus-visible,.ss-cite-src:focus-visible{outline:3px solid rgba(135,101,28,.42);outline-offset:2px}
+.ss-btn:focus-visible,.ss-opt:focus-within,.ss-doc-chip:focus-visible,.ss-cite-src:focus-visible,.ss-modal-close:focus-visible{outline:3px solid rgba(135,101,28,.42);outline-offset:2px}
 .ss-resume{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:#f6efdd;border:1px solid rgba(135,101,28,.3);border-radius:12px;padding:13px 16px;margin-bottom:16px}
 .ss-resume p{margin:0;font-size:13.5px;color:var(--brass-ink);font-weight:600}
 .ss-rail{margin-bottom:16px}
-.ss-rail-top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:8px}
+.ss-rail-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 12px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:8px}
 .ss-meter{display:inline-flex;align-items:center;gap:7px;letter-spacing:.02em;text-transform:none;font-weight:700;font-size:12px}
 .ss-meter-dot{width:9px;height:9px;border-radius:50%;flex:none}
 .ss-m-low{color:#155433}.ss-m-low .ss-meter-dot{background:#155433}
@@ -1222,7 +1225,7 @@ function renderSourceSelectionPage() {
 .ss-prog span{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px;transition:width .35s ease}
 .ss-docs{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 18px}
 .ss-doc-lab{width:100%;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
-.ss-doc-chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line2);color:var(--ink);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:650;cursor:pointer;font-family:inherit;transition:border-color .13s,box-shadow .13s}
+.ss-doc-chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line2);color:var(--ink);border-radius:9px;padding:8px 13px;min-height:44px;font-size:13px;font-weight:650;cursor:pointer;font-family:inherit;transition:border-color .13s,box-shadow .13s}
 .ss-doc-chip:hover{border-color:rgba(135,101,28,.5);box-shadow:0 6px 16px -12px rgba(15,37,64,.4)}
 .ss-doc-chip svg{width:14px;height:14px;flex:none;color:var(--brass)}
 .ss-prompt{font-family:var(--serif);font-size:20px;line-height:1.35;color:var(--ink);letter-spacing:-.006em;margin:0 0 16px}
@@ -1235,8 +1238,9 @@ function renderSourceSelectionPage() {
 .ss-opt.locked{cursor:default}
 .ss-opt.picked-right{border-color:rgba(30,107,67,.55);box-shadow:0 0 0 1px rgba(30,107,67,.4);background:#f6fbf7}
 .ss-opt.picked-wrong{border-color:rgba(179,38,30,.5);box-shadow:0 0 0 1px rgba(179,38,30,.35);background:#fdf6f5}
-.ss-opt-mark{margin-left:auto;flex:none;font-size:12px;font-weight:800;align-self:center}
-.ss-opt-mark.ok{color:#155433}.ss-opt-mark.no{color:#8c2b23}
+.ss-opt.picked-warn{border-color:rgba(135,101,28,.5);box-shadow:0 0 0 1px rgba(135,101,28,.32);background:#fdf9ee}
+.ss-opt-mark{margin-left:auto;flex:none;font-size:12px;font-weight:800;align-self:center;white-space:nowrap}
+.ss-opt-mark.ok{color:#155433}.ss-opt-mark.no{color:#8c2b23}.ss-opt-mark.warn{color:#8a6d2e}
 .ss-fb{border-radius:12px;padding:15px 17px;margin-top:18px;font-size:14.5px;line-height:1.58}
 .ss-fb-good{background:#eef7f0;color:#134d2e;border:1px solid rgba(30,107,67,.3)}
 .ss-fb-bad{background:#fdf0ef;color:#7c2620;border:1px solid rgba(179,38,30,.3)}
@@ -1261,7 +1265,8 @@ function renderSourceSelectionPage() {
 .ss-log-cap{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 16px 8px}
 .ss-log-row{display:grid;grid-template-columns:22px 1fr auto;gap:11px;align-items:baseline;padding:10px 16px;border-top:1px solid var(--line2);font-size:13.5px;line-height:1.45}
 .ss-log-mark{font-weight:800;font-size:13px}
-.ss-log-ok .ss-log-mark{color:#155433}.ss-log-bad .ss-log-mark{color:#8c2b23}
+.ss-log-ok .ss-log-mark{color:#155433}.ss-log-bad .ss-log-mark{color:#8c2b23}.ss-log-warn .ss-log-mark{color:#8a6d2e}
+.ss-log-warn .ss-log-risk{color:#8a6d2e}
 .ss-log-txt{color:#2a3140}
 .ss-log-txt b{color:var(--ink)}
 .ss-log-risk{font-size:11.5px;font-weight:800;color:#8c2b23;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -1270,10 +1275,13 @@ function renderSourceSelectionPage() {
 .ss-modal-card{background:#fbfaf6;border-radius:14px;max-width:720px;width:100%;box-shadow:0 34px 80px -20px rgba(0,0,0,.55);margin:auto 0}
 .ss-modal-head{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;background:#16263f;color:#f4f8fc;padding:13px 18px;border-radius:14px 14px 0 0;z-index:2}
 .ss-modal-head h3{font-size:15px;margin:0;font-family:var(--serif);font-weight:600}
-.ss-modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:31px;height:31px;border-radius:8px;cursor:pointer;font-size:17px;line-height:1;flex:none}
+.ss-modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:40px;height:40px;border-radius:8px;cursor:pointer;font-size:18px;line-height:1;flex:none}
 .ss-modal-close:hover{background:rgba(255,255,255,.28)}
 .ss-doc{padding:22px 24px 26px}
 @media(max-width:560px){.ss-doc{padding:18px 16px 22px}}
+.ss-train{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8a6d2e;background:#faf3e0;border:1px dashed rgba(135,101,28,.5);border-radius:5px;padding:4px 10px;margin-bottom:15px}
+.ss-tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0 14px}
+.ss-tscroll .dod-table{margin:0}
 .cui-banner{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-align:center;color:#8a6d2e;background:#f7efd9;border:1px solid rgba(135,101,28,.35);border-radius:5px;padding:6px 10px;margin-bottom:16px}
 .dod-header{text-align:center;border-bottom:2px solid #16263f;padding-bottom:11px;margin-bottom:15px}
 .dod-header h3{font-family:var(--serif);font-size:18px;color:#16263f;margin:0;line-height:1.2}
@@ -1312,7 +1320,7 @@ ${SEAL}
 <p class="lfoot-note"><strong>How it works:</strong> read the record for each phase, make the call the Source Selection Authority would make, then check it against the governing rule. Wrong calls add to a running protest-risk score that decides whether your award survives a GAO protest. The scenario is fictional; the procedures and citations are real. Adapted from a colleague's warrant-prep exercise and rebuilt on the current DoD Source Selection Procedures.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the <a href="/ssp">DoD Source Selection Procedures</a> and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/source-selection.js?v=1"></script>`;
+<script defer src="/assets/source-selection.js?v=2"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-src-ssp-v2.png' });
 }

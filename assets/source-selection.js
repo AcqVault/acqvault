@@ -52,8 +52,10 @@
 
   /* ---- brief / start screen ---- */
   function pill(rating) {
-    var c = rating === 'Outstanding' ? 'ss-pill-o' : (rating === 'Marginal' ? 'ss-pill-m' : 'ss-pill-g');
-    return '<span class="ss-pill ' + c + '">' + esc(rating) + '</span>';
+    // Colors track the DoD SSP Table 2A key: Outstanding=blue, Acceptable=green,
+    // Marginal=yellow, Unacceptable=red. Red is reserved for Unacceptable, never Marginal.
+    var map = { Outstanding: 'ss-pill-o', Good: 'ss-pill-o', Acceptable: 'ss-pill-g', Marginal: 'ss-pill-y', Unacceptable: 'ss-pill-m' };
+    return '<span class="ss-pill ' + (map[rating] || 'ss-pill-g') + '">' + esc(rating) + '</span>';
   }
   function renderStart() {
     var rows = scen.offerors.map(function (o) {
@@ -62,9 +64,11 @@
         '<td><b>' + esc(o.priceFinal !== '—' ? o.priceFinal : o.priceInitial) + '</b>' +
         (o.priceFinal !== '—' ? '<small>from ' + esc(o.priceInitial) + '</small>' : '<small>eliminated</small>') + '</td></tr>';
     }).join('');
+    var train = scen.trainingNote ? '<div class="ss-startnote"><span class="ss-startnote-ic" aria-hidden="true">i</span><span>' + esc(scen.trainingNote) + '</span></div>' : '';
     app.innerHTML =
       '<div class="ss-card"><div class="ss-eyebrow">The requirement</div>' +
       '<h2 class="ss-h2">' + esc(scen.title) + '</h2>' +
+      train +
       '<p class="ss-hat">' + esc(scen.role) + '</p>' +
       '<div class="ss-meta"><span class="ss-tag">' + esc(scen.value) + '</span><span class="ss-tag">' + esc(scen.type) + '</span><span class="ss-tag">9 decisions · untimed</span></div>' +
       '<div class="ss-off-wrap"><table class="ss-off"><thead><tr><th>Offeror</th><th>Technical</th><th>Risk</th><th>Past perf.</th><th>Evaluated price</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
@@ -93,9 +97,12 @@
         if (locked) {
           cls += ' locked';
           if (checked) {
-            var right = pick.tone === 'good';
-            cls += right ? ' picked-right' : ' picked-wrong';
-            mark = '<span class="ss-opt-mark ' + (right ? 'ok' : 'no') + '">' + (right ? 'Your call' : 'Your call') + '</span>';
+            var t = pick.tone; // good | warn | bad
+            cls += t === 'good' ? ' picked-right' : (t === 'warn' ? ' picked-warn' : ' picked-wrong');
+            var mk = t === 'good' ? { c: 'ok', x: '✓', l: 'Your call — sound' }
+                   : (t === 'warn' ? { c: 'warn', x: '!', l: 'Your call — risky' }
+                   : { c: 'no', x: '✗', l: 'Your call — adds risk' });
+            mark = '<span class="ss-opt-mark ' + mk.c + '">' + mk.x + ' ' + mk.l + '</span>';
           }
         }
         return '<label class="' + cls + (checked ? ' sel' : '') + '">' +
@@ -131,7 +138,7 @@
       '<div class="ss-actions" style="margin-top:14px"><button class="ss-btn ss-btn-ghost" id="ss-reset" type="button" style="font-size:13px;padding:8px 14px;min-height:38px">Start over</button></div>';
 
     var chips = app.querySelectorAll('.ss-doc-chip');
-    for (var i = 0; i < chips.length; i++) chips[i].onclick = function () { openDoc(this.getAttribute('data-doc')); };
+    for (var i = 0; i < chips.length; i++) chips[i].onclick = function () { openDoc(this.getAttribute('data-doc'), this); };
     var radios = app.querySelectorAll('input[name="ss-opt"]');
     for (var j = 0; j < radios.length; j++) radios[j].addEventListener('change', function () {
       var labels = app.querySelectorAll('.ss-opt');
@@ -141,7 +148,9 @@
     if (el('ss-lock')) el('ss-lock').onclick = lock;
     if (el('ss-next')) el('ss-next').onclick = next;
     el('ss-reset').onclick = function () { if (confirm('Start the source selection over from the beginning?')) reset(); };
-    if (locked && el('ss-ptitle')) el('ss-ptitle').focus();
+    // Move focus into the new phase on every render (not just the locked state) so
+    // keyboard/SR users aren't dumped back to the document top after each transition.
+    if (el('ss-ptitle')) el('ss-ptitle').focus();
   }
 
   function uniqLinks(cites) {
@@ -160,8 +169,9 @@
     var log = scen.phases.map(function (ph, idx) {
       var p = S.picks[idx]; if (!p) return '';
       var chosen = ph.options.filter(function (o) { return o.v === p.v; })[0] || { label: p.v };
-      var ok = p.tone === 'good';
-      return '<div class="ss-log-row ' + (ok ? 'ss-log-ok' : 'ss-log-bad') + '"><span class="ss-log-mark">' + (ok ? '✓' : '✗') + '</span>' +
+      var rowCls = p.tone === 'good' ? 'ss-log-ok' : (p.tone === 'warn' ? 'ss-log-warn' : 'ss-log-bad');
+      var glyph = p.tone === 'good' ? '✓' : (p.tone === 'warn' ? '!' : '✗');
+      return '<div class="ss-log-row ' + rowCls + '"><span class="ss-log-mark">' + glyph + '</span>' +
         '<span class="ss-log-txt"><b>Phase ' + ph.n + ' · ' + esc(ph.title) + '</b> — ' + esc(chosen.label) + '</span>' +
         '<span class="ss-log-risk' + (p.risk > 0 ? '' : ' zero') + '">' + (p.risk > 0 ? '+' + p.risk : 'clean') + '</span></div>';
     }).join('');
@@ -178,22 +188,42 @@
   }
 
   /* ---- document modal ---- */
-  function openDoc(k) {
+  var lastTrigger = null;
+  function openDoc(k, trigger) {
+    if (modalOpen) return;                 // never stack a second modal
     var d = scen.documents[k]; if (!d) return;
     modalOpen = true;
+    lastTrigger = trigger || document.activeElement;
+    // Give any wide record table its own horizontal scroll so it can't blow out
+    // the modal on a phone.
+    var htmlBody = d.html
+      .replace(/<table class='dod-table'>/g, "<div class='ss-tscroll'><table class='dod-table'>")
+      .replace(/<\/table>/g, '</table></div>');
     var m = document.createElement('div');
     m.className = 'ss-modal'; m.id = 'ss-modal';
-    m.innerHTML = '<div class="ss-modal-card" role="dialog" aria-modal="true" aria-label="Source selection document">' +
+    m.innerHTML = '<div class="ss-modal-card" role="dialog" aria-modal="true" aria-label="Source selection document (training scenario)">' +
       '<div class="ss-modal-head"><h3>' + d.title + '</h3><button class="ss-modal-close" id="ss-mclose" type="button" aria-label="Close document">✕</button></div>' +
-      '<div class="ss-doc">' + d.html + '</div></div>';
+      '<div class="ss-doc"><div class="ss-train">Training · fictional record</div>' + htmlBody + '</div></div>';
     document.body.appendChild(m);
     document.body.style.overflow = 'hidden';
-    m.addEventListener('click', function (e) { if (e.target === m || e.target.id === 'ss-mclose' || (e.target.closest && e.target.closest('#ss-mclose'))) closeDoc(); });
+    m.addEventListener('click', function (e) { if (e.target === m) closeDoc(); });
+    el('ss-mclose').addEventListener('click', closeDoc);
+    // Focus trap: keep Tab inside the dialog (aria-modal must mean what it says).
+    m.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var f = m.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])');
+      if (!f.length) { e.preventDefault(); return; }
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
     el('ss-mclose').focus();
   }
   function closeDoc() {
     var m = el('ss-modal'); if (m) m.parentNode.removeChild(m);
     document.body.style.overflow = ''; modalOpen = false;
+    if (lastTrigger && lastTrigger.focus) { try { lastTrigger.focus(); } catch (e) {} }
+    lastTrigger = null;
   }
 
   /* ---- transitions ---- */
@@ -230,12 +260,15 @@
     }
   });
 
-  fetch('/assets/source-selection.json?v=1')
+  fetch('/assets/source-selection.json?v=2')
     .then(function (r) { if (!r.ok) throw new Error('load'); return r.json(); })
     .then(function (data) {
       scen = data; S = load() || fresh();
-      // Guard: if the scenario changed shape under a saved session, start clean.
-      if (S.started && (!scen.phases || S.i > scen.phases.length)) S = fresh();
+      // Guard: if the scenario changed shape under a saved session, or the saved state is
+      // malformed, start clean rather than render a missing phase. A DONE session legitimately
+      // has i === phases.length, so the range check only applies mid-run (!done).
+      if (S.started && (!scen.phases || typeof S.picks !== 'object' ||
+          (!S.done && (typeof S.i !== 'number' || S.i >= scen.phases.length)))) S = fresh();
       render();
     })
     .catch(function () {
