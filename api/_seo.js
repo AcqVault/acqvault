@@ -19,6 +19,8 @@ const SOURCES = {
     desc: 'Federal category management buying guidance.' },
   'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
     desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.' },
+  'pgi':                 { name: 'DFARS Procedures, Guidance, and Information', short: 'DFARS PGI',
+    desc: 'The PGI attachment that ships with each DoD class deviation \u2014 the procedural companion to the R-DFARS rule: how to build a PIID, what a contract action report must carry, how to run a mentor-prot\u00e9g\u00e9 agreement. Guidance, not regulation: it tells you how to execute a rule, it does not impose one.' },
   'ssp':                 { name: 'DoD Source Selection Procedures', short: 'DoD SSP',
     desc: 'The Department of Defense Source Selection Procedures (August 20, 2022) — what every competitively negotiated DoD source selection above $10 million runs on: source selection team roles, the rating methods and their adjectival definitions, the tradeoff and LPTA processes, and the debriefing guide.' }
 };
@@ -703,7 +705,7 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .libsrc .sb{font-size:12px;color:var(--muted);font-weight:600}
 .libsrc .mt{font-size:11px;color:var(--muted);margin-top:2px}
 .libsrc .dl{position:absolute;top:12px;right:13px;font-size:14px;font-weight:800;color:var(--src,#94a3b8)}
-.libsrc[data-src="rfo"]{--src:#24486f}.libsrc[data-src="r-dfars"]{--src:#33654a}.libsrc[data-src="far-companion"]{--src:#6a4a63}.libsrc[data-src="category-management"]{--src:#4d5a64}.libsrc[data-src="dafi-63-138"]{--src:#7e2f3a}.libsrc[data-src="fmr"]{--src:#6d6234}.libsrc[data-src="ssp"]{--src:#6f521a}
+.libsrc[data-src="rfo"]{--src:#24486f}.libsrc[data-src="r-dfars"]{--src:#33654a}.libsrc[data-src="far-companion"]{--src:#6a4a63}.libsrc[data-src="category-management"]{--src:#4d5a64}.libsrc[data-src="dafi-63-138"]{--src:#7e2f3a}.libsrc[data-src="fmr"]{--src:#6d6234}.libsrc[data-src="ssp"]{--src:#6f521a}.libsrc[data-src="pgi"]{--src:#7a5a4a}
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
 @media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}
 /* ── Library themed full-bleed bands (homepage rhythm: navy hero / white / beige) ── */

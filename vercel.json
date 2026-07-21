@@ -7,8 +7,8 @@
     { "source": "/source-selection", "destination": "/api/study?view=srcsel" },
     { "source": "/library", "destination": "/api/library" },
     { "source": "/what-is-the-rfo", "destination": "/api/explainer" },
-    { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr|ssp)", "destination": "/api/hub?source=:source" },
-    { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr|ssp)/part-:part", "destination": "/api/page?source=:source&part=:part" }
+    { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr|ssp|pgi)", "destination": "/api/hub?source=:source" },
+    { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr|ssp|pgi)/part-:part", "destination": "/api/page?source=:source&part=:part" }
   ],
   "headers": [
     {

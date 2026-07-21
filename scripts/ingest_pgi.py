@@ -47,6 +47,7 @@ Usage:
 import hashlib
 import json
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -157,11 +158,28 @@ def main():
             skipped.append(pdf_path.name)
             continue
 
+        # A deviation memo can carry MORE than two attachments — Part 19 has an
+        # "Attachment A3" holding Appendix I, the Mentor-Protege Program. The
+        # furniture filter quietly skips those marker lines, so without this the last
+        # PGI section swallowed the whole appendix (47K characters of content that is
+        # not PGI at all). Note which attachment the PGI lives in, and stop at the
+        # next one.
+        ATTACH = re.compile(r"^Attachment\s+([A-Z]\d*)$", re.I)
+        pgi_attachment = None
+        for k in range(start, -1, -1):
+            m = ATTACH.match(lines[k].strip())
+            if m:
+                pgi_attachment = m.group(1).upper()
+                break
+
         # split the attachment on PGI section headings
         current = None
         prev = ""
         for raw in lines[start:]:
             line = raw.strip()
+            am = ATTACH.match(line)
+            if am and pgi_attachment and am.group(1).upper() != pgi_attachment:
+                break                      # a later attachment: the PGI ends here
             if not line or FURNITURE.match(line):
                 continue
             m = PGI_SEC.match(line)
@@ -211,9 +229,20 @@ def main():
             "source": "pgi",
             "source_label": "DFARS PGI",
             "filename": d["file"],
-            "status": "Active deviation",
+            "status": "Guidance",
             "indexed_at": now,
         })
+
+    if "--write-corpus" in sys.argv:
+        DOCS = BASE / "output" / "documents.json"
+        corpus = json.loads(DOCS.read_text())
+        existing_ids = {d.get("id") for d in corpus}
+        clash = [d["id"] for d in out if d["id"] in existing_ids and d.get("source") != "pgi"]
+        if clash:
+            sys.exit(f"id collision with the existing corpus: {clash[:3]}")
+        kept = [d for d in corpus if d.get("source") != "pgi"]
+        DOCS.write_text(json.dumps(kept + out, ensure_ascii=False))
+        print(f"merged {len(out)} pgi docs into {DOCS} (corpus now {len(kept) + len(out)})")
 
     OUT.write_text(json.dumps(out, ensure_ascii=False))
     chars = sum(len(d["content"]) for d in out)

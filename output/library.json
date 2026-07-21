@@ -139,6 +139,17 @@
      "meta": "5 sections · 5 appendices",
      "origin": "Official source (OUSD A&S · DPC)",
      "updated": "Aug 20, 2022"
+    },
+    {
+     "id": "src-pgi",
+     "title": "DFARS Procedures, Guidance, and Information",
+     "subtitle": "PGI · the procedural companion to the R-DFARS",
+     "desc": "The PGI attachment that ships with each DoD class deviation — how to build a PIID, what a contract action report must carry, how to run a mentor-protégé agreement. Guidance on executing the rule, not a rule itself.",
+     "file": "/pgi",
+     "type": "In-app",
+     "meta": "42 parts · 427 sections",
+     "origin": "Official source, extracted by AcqVault",
+     "updated": "2026-07"
     }
    ]
   }

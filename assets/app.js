@@ -256,6 +256,7 @@ const SOURCE_URLS = {
   'fmr':           'https://comptroller.war.gov/FMR/',
   'afi-63-138':    'https://www.e-publishing.af.mil/',
   'ssp':           'https://www.acq.osd.mil/asda/dpc/cp/policy/source-selection-procedures.html',
+  'pgi':           'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide',
 };
 // Two registers, one canonical name in each. The old single map mixed them, so a
 // result tag could read "RFO" beside "CATEGORY MANAGEMENT BUYING GUIDE".
@@ -264,16 +265,61 @@ const SOURCE_URLS = {
 // Both agree with SOURCES[].short / SOURCES[].name in api/_seo.js.
 const SOURCE_SHORT = {
   'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management',
-  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD SSP',
+  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD SSP', 'pgi': 'DFARS PGI',
 };
 const SOURCE_FULL = {
   'rfo': 'Revolutionary FAR Overhaul', 'r-dfars': 'R-DFARS Deviations', 'far-companion': 'FAR Companion',
   'category-management': 'Category Management Buying Guide', 'fmr': 'DoD Financial Management Regulation',
   'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD Source Selection Procedures',
+  'pgi': 'DFARS Procedures, Guidance, and Information',
 };
 
 // ── PARTS BY SOURCE ───────────────────────────────────────────────────────────
 const PARTS_BY_SOURCE = {
+  'pgi': [
+    ['1','DFARS part 201 — 10 sections'],
+    ['3','DFARS part 203 — 5 sections'],
+    ['4','DFARS part 204 — 27 sections'],
+    ['5','DFARS part 205 — 3 sections'],
+    ['6','DFARS part 206 — 9 sections'],
+    ['7','DFARS part 207 — 8 sections'],
+    ['8','DFARS part 208 — 25 sections'],
+    ['9','DFARS part 209 — 13 sections'],
+    ['10','DFARS part 210 — 2 sections'],
+    ['11','DFARS part 211 — 3 sections'],
+    ['12','DFARS part 212 — 11 sections'],
+    ['15','DFARS part 215 — 32 sections'],
+    ['16','DFARS part 216 — 14 sections'],
+    ['17','DFARS part 217 — 23 sections'],
+    ['18','DFARS part 218 — 7 sections'],
+    ['19','DFARS part 219 — 11 sections'],
+    ['22','DFARS part 222 — 13 sections'],
+    ['23','DFARS part 223 — 3 sections'],
+    ['25','DFARS part 225 — 47 sections'],
+    ['26','DFARS part 226 — 3 sections'],
+    ['27','DFARS part 227 — 11 sections'],
+    ['28','DFARS part 228 — 3 sections'],
+    ['29','DFARS part 229 — 9 sections'],
+    ['30','DFARS part 230 — 1 section'],
+    ['31','DFARS part 231 — 2 sections'],
+    ['32','DFARS part 232 — 15 sections'],
+    ['33','DFARS part 233 — 3 sections'],
+    ['34','DFARS part 234 — 4 sections'],
+    ['35','DFARS part 235 — 2 sections'],
+    ['36','DFARS part 236 — 7 sections'],
+    ['37','DFARS part 237 — 14 sections'],
+    ['39','DFARS part 239 — 10 sections'],
+    ['40','DFARS part 240 — 10 sections'],
+    ['41','DFARS part 241 — 3 sections'],
+    ['42','DFARS part 242 — 17 sections'],
+    ['43','DFARS part 243 — 4 sections'],
+    ['44','DFARS part 244 — 3 sections'],
+    ['45','DFARS part 245 — 11 sections'],
+    ['46','DFARS part 246 — 9 sections'],
+    ['47','DFARS part 247 — 9 sections'],
+    ['49','DFARS part 249 — 8 sections'],
+    ['50','DFARS part 250 — 3 sections'],
+  ],
   'ssp': [
     ['1','Purpose, Roles, and Responsibilities'],
     ['2','Pre-Solicitation Activities'],
@@ -1582,7 +1628,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
   const srcLabel  = SOURCE_SHORT[source] || source.toUpperCase();
   // Source tags reference the CSS tokens directly (app.css :root) so the reader can
   // never drift from the result-list palette the way the old hardcoded hex maps did.
-  const tagVar = {'rfo':'rfo','r-dfars':'dfars','far-companion':'fc','category-management':'cm','afi-63-138':'dafi','compass':'cmp','fmr':'fmr','ssp':'ssp'}[source];
+  const tagVar = {'rfo':'rfo','r-dfars':'dfars','far-companion':'fc','category-management':'cm','afi-63-138':'dafi','compass':'cmp','fmr':'fmr','ssp':'ssp','pgi':'pgi'}[source];
   const tagBg  = tagVar ? `var(--${tagVar}-bg)`  : 'var(--off2)';
   const tagClr = tagVar ? `var(--${tagVar}-txt)` : 'var(--muted2)';
   const readerHits = source === 'far-companion'
@@ -2497,7 +2543,7 @@ async function search(query, offset = 0) {
 
 function buildFilter(sources, statuses) {
   const parts = [];
-  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'fmr', 'ssp'];
+  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'fmr', 'ssp', 'pgi'];
   const selectedSources = sources.size > 0 ? [...sources].filter(s => liveSources.includes(s)) : liveSources;
   if (selectedSources.length) parts.push('(' + selectedSources.map(s => `source = "${s}"`).join(' OR ') + ')');
   if (statuses.length)  parts.push('(' + statuses.map(s => `status = "${s}"`).join(' OR ') + ')');
@@ -2575,6 +2621,9 @@ function statusClass(status) {
   if (s.includes('class'))    return 'rc-badge-class';
   if (s.includes('proposed')) return 'rc-badge-proposed';
   if (s.includes('final'))    return 'rc-badge-final';
+  // PGI is procedural guidance, not a rule. It must never wear the same badge as a
+  // deviation, or someone will cite it as one.
+  if (s.includes('guidance')) return 'rc-badge-guidance';
   return 'rc-badge-unknown';
 }
 function badgeTag(status) {

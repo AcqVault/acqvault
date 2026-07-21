@@ -183,9 +183,13 @@ def main():
           "scripts/strip_page_furniture.py")
 
     # ── swallowed PGI attachments ─────────────────────────────────────────────
-    pgi = [d["id"] for d in docs if PGI_HEAD.search(d.get("content") or "")]
-    check("no PGI attachments", not pgi,
-          f"{len(pgi)} doc(s) swallowed a PGI attachment (out of scope): {pgi[:3]}",
+    # The PGI is a source in its own right now, so its own headings are expected in
+    # its own documents. What must never happen again is a REGULATION doc absorbing
+    # one, which is the bug strip_pgi_attachments.py exists to undo.
+    pgi = [d["id"] for d in docs
+           if d.get("source") != "pgi" and PGI_HEAD.search(d.get("content") or "")]
+    check("no PGI in regulation docs", not pgi,
+          f"{len(pgi)} regulation doc(s) swallowed a PGI attachment: {pgi[:3]}",
           "scripts/strip_pgi_attachments.py")
 
     # ── [Reserved] headers that swallowed a child clause ──────────────────────
