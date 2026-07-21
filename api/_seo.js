@@ -844,6 +844,10 @@ function renderStudyPage() {
 .st-btn{border:none;border-radius:9px;padding:11px 18px;font-size:14.5px;font-weight:700;cursor:pointer;min-height:44px}
 .st-btn kbd{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;opacity:.65;font-weight:600;margin-left:5px;border:1px solid currentColor;border-radius:3px;padding:0 4px}
 .st-btn-reveal{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#f4f8fc}
+.st-btn-opts{background:#fff;color:var(--muted);border:1px solid var(--line2);font-weight:650}
+.st-btn-opts:hover{border-color:rgba(135,101,28,.5);color:var(--brass-ink)}
+.st-produce-hint{margin-top:14px;font-size:13px;font-style:italic;color:var(--muted2)}
+.st-capped{margin-top:12px;font-size:13px;line-height:1.5;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(135,101,28,.28);border-radius:8px;padding:9px 12px}
 .st-g1{background:#fdf0ef;color:#8c2b23;border:1px solid rgba(179,38,30,.3)}
 .st-g2{background:#f6efdd;color:#5e4715;border:1px solid rgba(135,101,28,.3)}
 .st-g3{background:#eef7f0;color:#155433;border:1px solid rgba(30,107,67,.3)}
@@ -1183,7 +1187,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=52"></script>`;
+<script defer src="/assets/study.js?v=53"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

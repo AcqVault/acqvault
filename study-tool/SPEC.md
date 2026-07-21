@@ -95,6 +95,15 @@ Deviations from the spec above, all owner-directed:
 - ALL knowledge checks are 4-option MULTIPLE CHOICE (owner reversed the no-MCQ stance for engagement);
   produce-then-reveal survives only as fallback when <3 distractors exist. Future idea: user toggle
   MCQ vs. blank-card.
+  **SUPERSEDED 2026-07-21 — owner-directed REORDERING (not a removal, and not a revert to line 41).**
+  Every recall/Deep Study card now OPENS produce-first: question, "Answer it out loud, then check
+  yourself", `Reveal`. Where authored distractors exist, `Show me the options` (key `o`) sits beside
+  Reveal as a costed escape hatch — taking it CAPS that card at Shaky (grade 2: box held, never
+  promoted) however clean the pick, and the debrief says why. Nothing was deleted; the multiple
+  choice is still one keystroke away, it just no longer advances your schedule. Rationale: a board
+  supplies no options, so recognising the right string among four is not the skill under test.
+  Threshold Sprint is DELIBERATELY EXEMPT — it is a timed recognition game in the Practice Range,
+  not a learning loop. Implemented as one shared `produceFirstCard()` in assets/study.js.
 - Landing ALWAYS shows the track selector with a "Continue — you were here" badge (never auto-locks
   into the remembered track).
 - In-tool back-button history via pushState depths 0/1/2 (track → dashboard → activity).

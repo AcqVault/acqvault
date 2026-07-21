@@ -106,6 +106,91 @@
     if (!card.d || card.d.length < 3) return null;
     return shuffle([card.a, card.d[0], card.d[1], card.d[2]]);
   }
+  /* Produce first; the options are a costed escape hatch.
+     A promotion board hands you nothing to choose from, so picking the right string out
+     of four is not the skill being trained — producing it is. Every card now OPENS as a
+     blank card. Where authored distractors exist they stay one keystroke away, and
+     taking them holds that card at Shaky however clean the pick: you recognised the
+     answer, you did not produce it. Nothing was removed — the multiple choice the owner
+     asked for is still there, it just costs something now. Threshold Sprint is
+     deliberately exempt: it is a timed recognition game in the Practice Range, not
+     a learning loop. */
+  function produceFirstCard(o) {
+    var c = o.card, opts = o.opts;
+    render(o.head +
+      '<div class="st-card" aria-live="polite">' +
+      '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
+      '<div class="st-q">' + esc(c.q) + '</div>' +
+      '<div id="st-a" class="st-a" hidden>' + esc(c.a) + explainHtml(c, null) + '</div>' +
+      '<div class="st-produce-hint" id="st-hint">Answer it out loud, then check yourself.</div>' +
+      '<div class="st-actions" id="st-act">' +
+      '<button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button>' +
+      (opts ? '<button class="st-btn st-btn-opts" id="st-opts-btn">Show me the options <kbd>o</kbd></button>' : '') +
+      '</div></div>' +
+      '<button class="st-link st-quit" id="st-quit">' + o.quitText + '</button>');
+    el('st-quit').onclick = o.onQuit;
+    function dropHint() { var h = el('st-hint'); if (h && h.parentNode) h.parentNode.removeChild(h); }
+
+    function selfGrade() {
+      dropHint();
+      el('st-a').hidden = false;
+      el('st-act').innerHTML =
+        '<button class="st-btn st-g1" id="g1">Missed <kbd>1</kbd></button>' +
+        (o.showShaky ? '<button class="st-btn st-g2" id="g2">Shaky <kbd>2</kbd></button>' : '') +
+        '<button class="st-btn st-g3" id="g3">Got it <kbd>3</kbd></button>';
+      el('g1').onclick = function () { o.onGrade(1); };
+      if (o.showShaky) el('g2').onclick = function () { o.onGrade(2); };
+      el('g3').onclick = function () { o.onGrade(3); };
+      keyHandler(function (k) {
+        if (k === '1') { o.onGrade(1); return true; }
+        if (k === '2' && o.showShaky) { o.onGrade(2); return true; }
+        if (k === '3' || (!o.showShaky && k === ' ')) { o.onGrade(3); return true; }
+      });
+    }
+
+    function showOptions() {
+      dropHint();
+      var card = app.querySelector('.st-card');
+      var ans = el('st-a'); if (ans && ans.parentNode) ans.parentNode.removeChild(ans);
+      el('st-act').outerHTML = '<div class="st-opts">' + opts.map(function (opt, k) {
+        return '<button class="st-opt" data-k="' + k + '"><kbd>' + (k + 1) + '</kbd><span>' + esc(opt) + '</span></button>';
+      }).join('') + '</div>';
+      var answered = false;
+      function pick(k) {
+        if (answered) return; answered = true;
+        var right = opts[k] === c.a;
+        Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
+          var bk = +b.getAttribute('data-k'), kb = b.querySelector('kbd');
+          if (opts[bk] === c.a) { b.classList.add('st-opt-right'); if (kb) kb.textContent = '✓'; }
+          else if (bk === k) { b.classList.add('st-opt-wrong'); if (kb) kb.textContent = '✗'; }
+          b.disabled = true;
+        });
+        appendExplain(c, right);
+        if (right) card.insertAdjacentHTML('beforeend',
+          '<div class="st-capped">Recognised with the options up — held at <b>Shaky</b>, so it comes back sooner. A board offers no choices.</div>');
+        var g = right ? 2 : 1;
+        var act = document.createElement('div'); act.className = 'st-actions';
+        act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">' + (right ? 'Next' : 'Got it — next') + ' <kbd>space</kbd></button>';
+        card.appendChild(act);
+        el('st-next').onclick = function () { o.onGrade(g); };
+        keyHandler(function (key) { if (key === ' ' || key === 'Enter') { o.onGrade(g); return true; } });
+      }
+      Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
+        b.onclick = function () { pick(+b.getAttribute('data-k')); };
+      });
+      keyHandler(function (k) {
+        var n = parseInt(k, 10);
+        if (n >= 1 && n <= opts.length) { pick(n - 1); return true; }
+      });
+    }
+
+    el('st-reveal').onclick = selfGrade;
+    if (opts) el('st-opts-btn').onclick = showOptions;
+    keyHandler(function (k) {
+      if (k === ' ' || k === 'Enter') { selfGrade(); return true; }
+      if (opts && (k === 'o' || k === 'O')) { showOptions(); return true; }
+    });
+  }
   // Post-answer debrief: the rule, the trap, and where the reference lives — with the
   // rulebook itself one click away (links resolved into the deck at build time).
   // right === true/false → verdict line (MCQ); right === null → no verdict (reveal cards).
@@ -289,74 +374,12 @@
       if (i >= q.length) return summary();
       saveResume('recall', S.track, q, i, got, label);
       var c = q[i];
-      var opts = mcqOptions(c); // authored multiple choice; reveal-style when the card has no authored options
       var head = '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>' +
         '<div class="st-prog" aria-hidden="true"><span style="width:' + Math.round(100 * i / q.length) + '%"></span></div>';
-      if (opts) {
-        render(head +
-          '<div class="st-card" aria-live="polite">' +
-          '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
-          '<div class="st-q">' + esc(c.q) + '</div>' +
-          '<div class="st-opts">' + opts.map(function (o, k) {
-            return '<button class="st-opt" data-k="' + k + '"><kbd>' + (k + 1) + '</kbd><span>' + esc(o) + '</span></button>';
-          }).join('') + '</div></div>' +
-          '<button class="st-link st-quit" id="st-quit">End session</button>');
-        el('st-quit').onclick = summary;
-        var answered = false;
-        function pick(k) {
-          if (answered) return; answered = true;
-          var right = opts[k] === c.a;
-          Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
-            var bk = +b.getAttribute('data-k'), kb = b.querySelector('kbd');
-            if (opts[bk] === c.a) { b.classList.add('st-opt-right'); if (kb) kb.textContent = '✓'; }
-            else if (bk === k) { b.classList.add('st-opt-wrong'); if (kb) kb.textContent = '✗'; }
-            b.disabled = true;
-          });
-          grade(c.id, right ? 3 : 1);
-          if (right) got++; else shaky.push(c);
-          appendExplain(c, right);
-          var act = document.createElement('div'); act.className = 'st-actions';
-          act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">' + (right ? 'Next' : 'Got it — next') + ' <kbd>space</kbd></button>';
-          app.querySelector('.st-card').appendChild(act);
-          el('st-next').onclick = function () { i++; step(); };
-          keyHandler(function (key) { if (key === ' ' || key === 'Enter') { i++; step(); return true; } });
-        }
-        Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
-          b.onclick = function () { pick(+b.getAttribute('data-k')); };
-        });
-        keyHandler(function (key) {
-          var n = parseInt(key, 10);
-          if (n >= 1 && n <= opts.length) { pick(n - 1); return true; }
-        });
-      } else {
-        render(head +
-          '<div class="st-card" aria-live="polite">' +
-          '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
-          '<div class="st-q">' + esc(c.q) + '</div>' +
-          '<div id="st-a" class="st-a" hidden>' + esc(c.a) + explainHtml(c, null) + '</div>' +
-          '<div class="st-actions" id="st-act">' +
-          '<button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
-          '<button class="st-link st-quit" id="st-quit">End session</button>');
-        el('st-quit').onclick = summary;
-        el('st-reveal').onclick = reveal;
-        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { reveal(); return true; } });
-      }
-      function reveal() {
-        el('st-a').hidden = false;
-        el('st-act').innerHTML =
-          '<button class="st-btn st-g1" id="g1">Missed <kbd>1</kbd></button>' +
-          '<button class="st-btn st-g2" id="g2">Shaky <kbd>2</kbd></button>' +
-          '<button class="st-btn st-g3" id="g3">Got it <kbd>3</kbd></button>';
-        el('g1').onclick = function () { doGrade(1); };
-        el('g2').onclick = function () { doGrade(2); };
-        el('g3').onclick = function () { doGrade(3); };
-        keyHandler(function (k) {
-          if (k === '1') { doGrade(1); return true; }
-          if (k === '2') { doGrade(2); return true; }
-          if (k === '3') { doGrade(3); return true; }
-        });
-      }
-      function doGrade(g) { grade(c.id, g); if (g === 3) got++; else shaky.push(c); i++; step(); }
+      produceFirstCard({
+        card: c, opts: mcqOptions(c), head: head, quitText: 'End session', onQuit: summary, showShaky: true,
+        onGrade: function (g) { grade(c.id, g); if (g === 3) got++; else shaky.push(c); i++; step(); }
+      });
     }
     /* Parity with the ladder's ending: name what you dropped and offer to run just those.
        This summary used to be a score and one button — the audit's "every session
@@ -423,67 +446,11 @@
       /* Deep Study is endless, so its "place" is the card in front of you plus the tally —
          storing the whole shuffled order would persist hundreds of ids to no purpose. */
       saveResume('deep', S.track, [c], 0, got, 'Deep Study', { seen: seen });
-      var opts = mcqOptions(c);
       var head = '<div class="st-session-head"><span>Deep Study · endless</span><span>' + got + ' / ' + seen + ' solid</span></div>';
-      if (opts) {
-        render(head +
-          '<div class="st-card" aria-live="polite">' +
-          '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
-          '<div class="st-q">' + esc(c.q) + '</div>' +
-          '<div class="st-opts">' + opts.map(function (o, k) {
-            return '<button class="st-opt" data-k="' + k + '"><kbd>' + (k + 1) + '</kbd><span>' + esc(o) + '</span></button>';
-          }).join('') + '</div></div>' +
-          '<button class="st-link st-quit" id="st-quit">That&rsquo;s enough for now</button>');
-        el('st-quit').onclick = summary;
-        var answered = false;
-        function pick(k) {
-          if (answered) return; answered = true;
-          var right = opts[k] === c.a;
-          Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
-            var bk = +b.getAttribute('data-k'), kb = b.querySelector('kbd');
-            if (opts[bk] === c.a) { b.classList.add('st-opt-right'); if (kb) kb.textContent = '✓'; }
-            else if (bk === k) { b.classList.add('st-opt-wrong'); if (kb) kb.textContent = '✗'; }
-            b.disabled = true;
-          });
-          grade(c.id, right ? 3 : 1); // deep-study answers still teach the daily scheduler
-          seen++; if (right) got++;
-          appendExplain(c, right);
-          var act = document.createElement('div'); act.className = 'st-actions';
-          act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">Next <kbd>space</kbd></button>';
-          app.querySelector('.st-card').appendChild(act);
-          el('st-next').onclick = step;
-          keyHandler(function (key) { if (key === ' ' || key === 'Enter') { step(); return true; } });
-        }
-        Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
-          b.onclick = function () { pick(+b.getAttribute('data-k')); };
-        });
-        keyHandler(function (k) {
-          var n = parseInt(k, 10);
-          if (n >= 1 && n <= opts.length) { pick(n - 1); return true; }
-        });
-      } else { // rare fallback: produce-then-reveal
-        render(head +
-          '<div class="st-card" aria-live="polite">' +
-          '<div class="st-chip">' + esc(c.topic || 'General') + '</div>' +
-          '<div class="st-q">' + esc(c.q) + '</div>' +
-          '<div id="st-a" class="st-a" hidden>' + esc(c.a) + explainHtml(c, null) + '</div>' +
-          '<div class="st-actions" id="st-act"><button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
-          '<button class="st-link st-quit" id="st-quit">That&rsquo;s enough for now</button>');
-        el('st-quit').onclick = summary;
-        el('st-reveal').onclick = function () {
-          el('st-a').hidden = false;
-          el('st-act').innerHTML =
-            '<button class="st-btn st-g1" id="g1">Missed <kbd>1</kbd></button>' +
-            '<button class="st-btn st-g3" id="g3">Got it <kbd>3</kbd></button>';
-          el('g1').onclick = function () { grade(c.id, 1); seen++; step(); };
-          el('g3').onclick = function () { grade(c.id, 3); seen++; got++; step(); };
-          keyHandler(function (k) {
-            if (k === '1') { el('g1').onclick(); return true; }
-            if (k === '3' || k === ' ') { el('g3').onclick(); return true; }
-          });
-        };
-        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('st-reveal').onclick(); return true; } });
-      }
+      produceFirstCard({
+        card: c, opts: mcqOptions(c), head: head, quitText: 'That\u2019s enough for now', onQuit: summary, showShaky: false,
+        onGrade: function (g) { grade(c.id, g); seen++; if (g === 3) got++; step(); }
+      });
     }
     function summary() {
       keyHandler(null);
