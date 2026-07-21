@@ -355,7 +355,7 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .libsrc .sb{font-size:12px;color:var(--muted);font-weight:600}
 .libsrc .mt{font-size:11px;color:var(--muted);margin-top:2px}
 .libsrc .dl{position:absolute;top:12px;right:13px;font-size:14px;font-weight:800;color:var(--src,#94a3b8)}
-.libsrc[data-src="rfo"]{--src:#2f5aa6}.libsrc[data-src="r-dfars"]{--src:#2c6a44}.libsrc[data-src="far-companion"]{--src:#67508f}.libsrc[data-src="category-management"]{--src:#1c6377}.libsrc[data-src="dafi-63-138"]{--src:#87651c}.libsrc[data-src="fmr"]{--src:#976420}.libsrc[data-src="ssp"]{--src:#5e4715}
+.libsrc[data-src="rfo"]{--src:#24486f}.libsrc[data-src="r-dfars"]{--src:#33654a}.libsrc[data-src="far-companion"]{--src:#6a4a63}.libsrc[data-src="category-management"]{--src:#4d5a64}.libsrc[data-src="dafi-63-138"]{--src:#7e2f3a}.libsrc[data-src="fmr"]{--src:#6d6234}.libsrc[data-src="ssp"]{--src:#6f521a}
 .libnote{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.55}
 @media(max-width:560px){.libgrid,.libsrc-grid{grid-template-columns:1fr}}
 /* ── Library themed full-bleed bands (homepage rhythm: navy hero / white / beige) ── */

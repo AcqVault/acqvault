@@ -513,13 +513,18 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
   --brass-line:   rgba(154,115,32,0.40);
   --brass-ink:    #5e4715;  /* AA-dark brass for occasional text/active states on light */
 
-  /* Source identity colors — muted "library-spine" family (desaturated ~15-20%, all AA) */
-  --rfo-bg:     #dde7f4; --rfo-txt:    #1e3a8a; --rfo-solid:  #2f5aa6;
-  --dfars-bg:   #dde9e0; --dfars-txt:  #14532d; --dfars-solid:#2c6a44;
-  --fc-bg:      #e7e2f0; --fc-txt:     #3b0764; --fc-solid:   #67508f;
-  --cm-bg:      #dceaef; --cm-txt:     #075985; --cm-solid:   #1c6377;
-  --cmp-bg:     #f1e7df; --cmp-txt:    #7c2d12; --cmp-solid:  #a84e22;
-  --fmr-bg:     #efe7d4; --fmr-txt:    #92400e; --fmr-solid:  #976420;
+  /* Source identity colors — bound-volume spines: navy, forest, aubergine, slate,
+     oxblood, rust, olive-bronze. Warm gamut only (no web blue, no pink); every
+     txt-on-bg and solid-on-white pair is >= 4.5:1. The RFO, as the flagship,
+     carries the brand's own federal-ink navy. Retoned 2026-07-21 (M8/M9/M10). */
+  --rfo-bg:     #e3e8ef; --rfo-txt:    #1b3c63; --rfo-solid:  #24486f;
+  --dfars-bg:   #e1e7de; --dfars-txt:  #1d4a32; --dfars-solid:#33654a;
+  --fc-bg:      #ece4ea; --fc-txt:     #4a3145; --fc-solid:   #6a4a63;
+  --cm-bg:      #e6e8ea; --cm-txt:     #333f49; --cm-solid:   #4d5a64;
+  --cmp-bg:     #f2e6de; --cmp-txt:    #7c2d12; --cmp-solid:  #a04a22;
+  --fmr-bg:     #eae6d7; --fmr-txt:    #554b22; --fmr-solid:  #6d6234;
+  --dafi-bg:    #f0e3e4; --dafi-txt:   #6b2531; --dafi-solid: #7e2f3a;
+  --ssp-bg:     #f6efdd; --ssp-txt:    #5e4715; --ssp-solid:  #6f521a;
 
   /* Neutrals — warm-tuned to the brass/ink brand (not default GitHub grey) */
   --white:  #ffffff;
@@ -826,7 +831,7 @@ body.work-mode #spending-dashboard{display:none;}
 .fpill[data-source="r-dfars"].active{background:var(--dfars-solid);border-color:var(--dfars-solid);}
 .fpill[data-source="far-companion"].active{background:var(--fc-solid);border-color:var(--fc-solid);}
 .fpill[data-source="category-management"].active{background:var(--cm-solid);border-color:var(--cm-solid);}
-.fpill[data-source="afi-63-138"].active{background:#9a3b46;border-color:#9a3b46;}
+.fpill[data-source="afi-63-138"].active{background:var(--dafi-solid);border-color:var(--dafi-solid);}
 .fpill[data-source="compass"].active{background:var(--cmp-solid);border-color:var(--cmp-solid);}
 .fpill[data-source="fmr"].active{background:var(--fmr-solid);border-color:var(--fmr-solid);}
 .fpill.disabled{opacity:0.4;cursor:not-allowed;pointer-events:none;}
@@ -842,7 +847,7 @@ body.work-mode #spending-dashboard{display:none;}
 .result-card[data-source="r-dfars"]{border-left-color:var(--dfars-solid);}
 .result-card[data-source="far-companion"]{border-left-color:var(--fc-solid);}
 .result-card[data-source="category-management"]{border-left-color:var(--cm-solid);}
-.result-card[data-source="afi-63-138"]{border-left-color:#9a3b46;}
+.result-card[data-source="afi-63-138"]{border-left-color:var(--dafi-solid);}
 .result-card[data-source="compass"]{border-left-color:var(--cmp-solid);}
 .result-card[data-source="fmr"]{border-left-color:var(--fmr-solid);}
 @keyframes card-in{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
@@ -854,7 +859,7 @@ body.work-mode #spending-dashboard{display:none;}
 .result-card[data-source="r-dfars"]:hover,.result-card[data-source="r-dfars"].active{border-left-color:var(--dfars-solid);}
 .result-card[data-source="far-companion"]:hover,.result-card[data-source="far-companion"].active{border-left-color:var(--fc-solid);}
 .result-card[data-source="category-management"]:hover,.result-card[data-source="category-management"].active{border-left-color:var(--cm-solid);}
-.result-card[data-source="afi-63-138"]:hover,.result-card[data-source="afi-63-138"].active{border-left-color:#9a3b46;}
+.result-card[data-source="afi-63-138"]:hover,.result-card[data-source="afi-63-138"].active{border-left-color:var(--dafi-solid);}
 .result-card[data-source="compass"]:hover,.result-card[data-source="compass"].active{border-left-color:var(--cmp-solid);}
 .result-card[data-source="fmr"]:hover,.result-card[data-source="fmr"].active{border-left-color:var(--fmr-solid);}
 .rc-meta{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap;}
@@ -865,7 +870,7 @@ body.work-mode #spending-dashboard{display:none;}
 .rc-tag-category-management{background:var(--cm-bg);color:var(--cm-txt);}
 .rc-tag-compass{background:var(--cmp-bg);color:var(--cmp-txt);}
 .rc-tag-fmr{background:var(--fmr-bg);color:var(--fmr-txt);}
-.rc-tag-afi-63-138{background:#fff1f2;color:#9f1239;}
+.rc-tag-afi-63-138{background:var(--dafi-bg);color:var(--dafi-txt);}
 .rc-badge{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);padding:2px 7px;border-radius:4px;}
 .rc-badge-open{background:#fefce8;color:#854d0e;}
 .rc-badge-interim,.rc-badge-class{background:#fff1f2;color:#991b1b;}
@@ -1058,7 +1063,7 @@ body.work-mode #spending-dashboard{display:none;}
 .br-body .br-dafi-l2{margin-left:26px;color:var(--ink3);}
 .br-body .br-dafi-l3{margin-left:52px;color:var(--muted);}
 .br-body .br-dafi-l4{margin-left:78px;color:var(--muted);}
-.br-body .br-dafi-num{font-family:var(--font-mono);font-size:var(--fs-xs);font-weight:750;line-height:1.35;color:#9f1239;background:#fff1f2;border:1px solid rgba(190,18,60,0.14);border-radius:6px;padding:4px 6px;text-align:center;white-space:nowrap;}
+.br-body .br-dafi-num{font-family:var(--font-mono);font-size:var(--fs-xs);font-weight:750;line-height:1.35;color:var(--dafi-txt);background:var(--dafi-bg);border:1px solid rgba(126,47,58,0.16);border-radius:6px;padding:4px 6px;text-align:center;white-space:nowrap;}
 .br-body .br-dafi-text{margin:0;min-width:0;}
 .br-body .br-dafi-l0 .br-dafi-num{background:rgba(135,101,28,0.08);border-color:rgba(135,101,28,0.15);color:var(--accent);}
 .br-body .br-dafi-l0 .br-dafi-text{font-weight:var(--fw-medium);color:var(--ink);}
@@ -1122,11 +1127,11 @@ body.work-mode #spending-dashboard{display:none;}
 .cm-spend-table td{vertical-align:top;padding:13px 14px;border-top:1px solid var(--line2);font-size:var(--fs-base);line-height:1.45;color:var(--ink2);}
 .cm-spend-table td:first-child{width:22%;font-weight:var(--fw-heavy);color:var(--ink);background:#f8fafc;}
 .cm-spend-table tr:nth-child(even) td:not(:first-child){background:#fbfdff;}
-.cm-vehicle-table td:first-child{width:15%;font-weight:var(--fw-black);color:var(--cm-txt);background:#f0f9ff;}
+.cm-vehicle-table td:first-child{width:15%;font-weight:var(--fw-black);color:var(--cm-txt);background:var(--cm-bg);}
 .cm-vehicle-table td:nth-child(2){width:31%;font-weight:var(--fw-heavy);color:var(--ink);}
 .cm-vehicle-table td:nth-child(4){width:12%;font-weight:var(--fw-heavy);color:var(--muted);}
 .dafi-native-table{margin:24px 0 28px;border:1px solid rgba(190,18,60,0.14);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 10px 28px rgba(15,23,42,0.04);}
-.dafi-native-title{display:flex;align-items:center;gap:8px;padding:13px 15px;background:#fff1f2;border-bottom:1px solid rgba(190,18,60,0.12);font-size:var(--fs-base);font-weight:var(--fw-black);color:#9f1239;line-height:var(--lh-snug);}
+.dafi-native-title{display:flex;align-items:center;gap:8px;padding:13px 15px;background:var(--dafi-bg);border-bottom:1px solid rgba(126,47,58,0.14);font-size:var(--fs-base);font-weight:var(--fw-black);color:var(--dafi-txt);line-height:var(--lh-snug);}
 .dafi-native-title span{font-family:var(--font-mono);font-size:var(--fs-2xs);font-weight:var(--fw-black);letter-spacing:var(--ls-wide);text-transform:uppercase;background:#fff;border:1px solid rgba(190,18,60,0.16);border-radius:999px;padding:3px 7px;}
 .dafi-table-wrap{overflow-x:auto;}
 .dafi-table{width:100%;min-width:760px;border-collapse:separate;border-spacing:0;}
@@ -1798,9 +1803,9 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 .lib-src[data-src="r-dfars"]{--src:var(--dfars-solid);}
 .lib-src[data-src="far-companion"]{--src:var(--fc-solid);}
 .lib-src[data-src="category-management"]{--src:var(--cm-solid);}
-.lib-src[data-src="afi-63-138"]{--src:var(--brass);}
+.lib-src[data-src="afi-63-138"]{--src:var(--dafi-solid);}
 .lib-src[data-src="fmr"]{--src:var(--fmr-solid);}
-.lib-src[data-src="ssp"]{--src:var(--brass-ink,#5e4715);}
+.lib-src[data-src="ssp"]{--src:var(--ssp-solid);}
 #library .lib-cta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;}
 .lib-open-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(160deg,var(--navy-700),var(--navy-900));color:#fff;font-size:var(--fs-base);font-weight:var(--fw-bold);padding:12px 22px;border:1px solid var(--brass-line);border-radius:var(--r-md);text-decoration:none;box-shadow:0 10px 24px -10px rgba(15,37,64,.5);transition:border-color .15s,transform .15s,box-shadow .2s;}
 .lib-open-btn:hover{border-color:rgba(228,196,119,.55);transform:translateY(-2px);}

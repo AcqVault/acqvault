@@ -1464,7 +1464,7 @@ function renderFmrVolumeIndex(scroll) {
     </a></li>`).join('');
   reader.innerHTML = `
     <div class="br-header">
-      <span class="br-source-badge" style="background:#fef3c7;color:#92400e">${esc(String(srcLabel))}</span>
+      <span class="br-source-badge" style="background:var(--fmr-bg);color:var(--fmr-txt)">${esc(String(srcLabel))}</span>
       <div class="br-part-num">Volume ${esc(String(st.partNum))}</div>
       <div class="br-part-title">${esc(String(st.partLabel))}</div>
       <div class="br-meta"><span>${st.hits.length} chapter${st.hits.length !== 1 ? 's' : ''}</span><span class="br-meta-dot"></span><span>Select a chapter to read</span></div>
@@ -1488,8 +1488,11 @@ function openFmrChapter(idx) {
 
 function buildReaderHTML(hits, source, partNum, partLabel, docCount) {
   const srcLabel  = SOURCE_LABELS[source] || source.toUpperCase();
-  const tagBg  = {'rfo':'#e8f0fe','r-dfars':'#e6f4ea','far-companion':'#f0eeff','category-management':'#e0f2fe','afi-63-138':'#fff1f2','compass':'#f0f9ff','fmr':'#fef3c7','ssp':'#f6efdd'}[source] || '#f0f0f0';
-  const tagClr = {'rfo':'#1a4aa8','r-dfars':'#1a6634','far-companion':'#3d2799','category-management':'#075985','afi-63-138':'#9f1239','compass':'#075985','fmr':'#92400e','ssp':'#5e4715'}[source] || '#666';
+  // Source tags reference the CSS tokens directly (app.css :root) so the reader can
+  // never drift from the result-list palette the way the old hardcoded hex maps did.
+  const tagVar = {'rfo':'rfo','r-dfars':'dfars','far-companion':'fc','category-management':'cm','afi-63-138':'dafi','compass':'cmp','fmr':'fmr','ssp':'ssp'}[source];
+  const tagBg  = tagVar ? `var(--${tagVar}-bg)`  : 'var(--off2)';
+  const tagClr = tagVar ? `var(--${tagVar}-txt)` : 'var(--muted2)';
   const readerHits = source === 'far-companion'
     ? hits.filter(hit => parseBrowseTitle(hit, source).num)
     : hits;
@@ -1624,7 +1627,7 @@ function buildCategoryManagementLanding() {
   const categories = (PARTS_BY_SOURCE['category-management'] || []).filter(([num]) => Number(num) >= 3);
   return `
     <div class="br-header">
-      <span class="br-source-badge" style="background:#e0f2fe;color:#075985">Category Management Buying Guide</span>
+      <span class="br-source-badge" style="background:var(--cm-bg);color:var(--cm-txt)">Category Management Buying Guide</span>
       <div class="br-part-num">Parent Section</div>
       <div class="br-part-title">Category Management</div>
       <div class="br-meta"><span>${categories.length} category pathways</span><span class="br-meta-dot"></span><span>Browse a category from the left panel</span></div>
