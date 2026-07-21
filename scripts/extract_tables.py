@@ -48,6 +48,9 @@ DOCS = BASE / "output" / "documents.json"
 # 56 structured tables with whatever the PDF pass could match.
 PDF_SOURCES = {
     "r-dfars": ["R-DFARS"],
+    # The PGI ships inside the same deviation PDFs, and 83 of the 95 ruled tables in
+    # them sit in that attachment — unreachable until the PGI became a source.
+    "pgi": ["R-DFARS"],
     "far-companion": ["FAR Companion"],
     "category-management": ["Category Management"],
     "afi-63-138": ["DAFI 63-138"],
