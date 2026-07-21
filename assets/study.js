@@ -157,6 +157,9 @@
   }
 
   var VAULT_GLYPH = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="2"><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="10"/></g><g stroke="#cdb277" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="27" x2="50" y2="38"/><line x1="50" y1="73" x2="50" y2="62"/><line x1="27" y1="50" x2="38" y2="50"/><line x1="73" y1="50" x2="62" y2="50"/></g><circle cx="50" cy="50" r="3.6" fill="#cdb277"/></svg>';
+  function stepKicker(n, label) {
+    return '<div class="st-step"><span class="st-step-n">' + n + '</span>' + label + '</div>';
+  }
   function viewTrack() {
     var last = S.track;
     function cardHtml(id, kicker, name, blurb, active, vol) {
@@ -170,13 +173,15 @@
         '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
     render(
-      '<h2 class="st-h2" style="margin-top:0">Pick your track</h2>' +
-      '<p class="st-sub">Your progress is saved per card either way — switch tracks any time without losing it.</p>' +
+      '<p class="st-intro">One path, three steps: <b>learn</b> the whole domain, <b>prove</b> you can hold a warrant at your ceiling, then <b>rehearse</b> under pressure.</p>' +
+      stepKicker(1, 'Learn the domain') +
+      '<h2 class="st-h2" style="margin-top:2px">Pick your depth</h2>' +
+      '<p class="st-sub">Start shallow or go deep — progress saves per card, and you can switch any time without losing it.</p>' +
       '<div class="st-tracks">' +
-      cardHtml('t-basic', 'New to contracting', 'Basic — Foundations',
-        'Knowledge checks from Field Guide Vol. 1: the players, the money, the methods. Build the base before the board.', last === 'basic', 'VOL I') +
-      cardHtml('t-adv', 'Warrant board prep', 'Advanced — The Board',
-        'Everything in Basic plus Vol. 2: board-probe questions, threshold sprints, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
+      cardHtml('t-basic', 'Start here if contracting is new', 'Foundations',
+        'Field Guide Vol. 1 — the players, the money, the methods. Build the base before the board.', last === 'basic', 'VOL I') +
+      cardHtml('t-adv', 'The full board-prep deck', 'The Board',
+        'Everything in Foundations plus Vol. 2 — board-probe questions, threshold sprints, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
       '</div>' +
       ladderSectionHtml() +
       gamesSectionHtml());
@@ -238,7 +243,7 @@
       (run >= 2 ? '<div class="st-streak" title="Days in a row with at least one card answered">' +
         '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' +
         run + '-day streak</div>' : '') +
-      '<div class="st-track-chip">' + (S.track === 'basic' ? 'Basic · Foundations' : 'Advanced · Board Prep') +
+      '<div class="st-track-chip">' + (S.track === 'basic' ? 'Foundations' : 'The Board') +
       ' <button class="st-link" id="st-switch">switch</button></div></div>' +
       '<button class="st-daily' + (due.length ? '' : ' st-daily-dead') + '" id="m-daily"' + (due.length ? '' : ' disabled') + '><div class="st-daily-eyebrow">Today’s session · Daily Review</div>' + dailyInner + (due.length ? '<span class="st-daily-go" aria-hidden="true">→</span>' : '') + '</button>' +
       '<div class="st-modes">' +
@@ -646,7 +651,8 @@
     var govMeta = govToday
       ? 'Today\u2019s best ' + govToday.best.toLocaleString() + (gvBest > govToday.best ? ' \u00b7 record ' + gvBest.toLocaleString() : ' \u00b7 that\u2019s your record') + ' \u00b7 run it again \u2192'
       : (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' \u00b7 play \u2192' : 'No score on the board yet \u00b7 play \u2192');
-    return '<div class="st-games-head"><h2 class="st-h2" style="margin:26px 0 0">The Proving Ground</h2>' +
+    return stepKicker(3, 'Rehearse') +
+      '<div class="st-games-head"><h2 class="st-h2" style="margin:2px 0 0">The Proving Ground</h2>' +
       (run >= 2 ? '<span class="st-streak" title="Days in a row with at least one round played \u2014 weekends don\u2019t break it"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' + run + '-day streak</span>' : '') +
       '</div>' +
       '<p class="st-sub">Practice by deciding, not reviewing \u2014 from the daily word to a 90-second reflex round to a full source selection you sit down with.</p>' +
@@ -733,9 +739,11 @@
     // someone arrived through the original unlisted link. LADDER_ENABLED still kills it.
     if (!LADDER_ENABLED || !deck.ladder) return '';
     var sel = ladderRung();
-    return '<h2 class="st-h2">The Warrant Ladder <span class="st-beta">Beta</span></h2>' +
-      '<p class="st-sub">Pick the ceiling you’re testing for. Every card quotes the regulation ' +
-      'it’s testing, and says so where DoD deviates.</p>' +
+    return stepKicker(2, 'Prove your readiness') +
+      '<h2 class="st-h2" style="margin-top:2px">The Warrant Ladder <span class="st-beta">Beta</span></h2>' +
+      '<p class="st-sub">A warrant lets you sign up to a ceiling — and holds you to every rule below it. ' +
+      'Scope your prep to the warrant you’re testing for; each card quotes the regulation in its own words, ' +
+      'and flags where DoD deviates. <span class="st-lad-cum">Each ceiling includes everything under it.</span></p>' +
       rungStripHtml(sel) +
       ladderCountLine(ladderPool(sel));
   }
