@@ -1,203 +1,243 @@
 {
-  "items": [
+ "items": [
+  {
+   "rung": "unlimited",
+   "topic": "Data Rights",
+   "scenario": "A depot wants to compete sustainment on a subsystem the Government has fielded for nine years. The original development contract delivered operation and maintenance manuals and the Government has been using them without complaint. The program office assumed that meant they could hand a competitor everything needed to build spares.",
+   "ask": "The depot wants a sustainment competition. What do you tell them about what the Government actually holds?",
+   "script": "The manuals are not the package. Under R-DFARS 227.7103-5 the standard license rights are unlimited, government purpose, limited or restricted, and the category matters more than the box of documents. The Government gets unlimited rights in data necessary for installation, operation, maintenance or training — but that category expressly excludes detailed manufacturing or process data. So a competitor can maintain the subsystem and cannot build it. Before I promise anyone a competition I want an inventory of what was delivered, under what legend, and whether we ever paid for the manufacturing package.",
+   "follow_ups": [
     {
-      "rung": "unlimited",
-      "topic": "Data Rights",
-      "scenario": "A depot wants to compete sustainment on a subsystem the Government has fielded for nine years. The original development contract delivered operation and maintenance manuals and the Government has been using them without complaint. The program office assumed that meant they could hand a competitor everything needed to build spares.",
-      "ask": "The depot wants a sustainment competition. What do you tell them about what the Government actually holds?",
-      "script": "The manuals are not the package. Under R-DFARS 227.7103-5 the standard license rights are unlimited, government purpose, limited or restricted, and the category matters more than the box of documents. The Government gets unlimited rights in data necessary for installation, operation, maintenance or training — but that category expressly excludes detailed manufacturing or process data. So a competitor can maintain the subsystem and cannot build it. Before I promise anyone a competition I want an inventory of what was delivered, under what legend, and whether we ever paid for the manufacturing package.",
-      "follow_ups": [
-        {
-          "q": "The program office says they will just ask the incumbent for the manufacturing data now. Where does that go?",
-          "h": "What did the Government pay for, and when?",
-          "d": "Rights follow funding and were fixed at development. Asking now means negotiating for something the contractor holds and has every reason to price accordingly — which is why the answer a board wants is what you would have done twelve months earlier, not what you do today."
-        },
-        {
-          "q": "Delivered data arrives marked with a restrictive legend you think is wrong. What are your options?",
-          "h": "There is a formal route, and it has a clock.",
-          "d": "The validation and challenge process at R-DFARS 227.7103-13 — a written challenge, a response window, and a defined path to a contracting officer's final decision, with a six-year limit on challenging most assertions. A candidate who says 'I'd just ignore the legend' has described a claim against the Government."
-        }
-      ],
-      "cites": [
-        { "src": "r-dfars", "sec": "227.7103-5", "quote": "The standard license rights that a licensor grants to the Government are unlimited rights, government purpose rights, limited rights, or restricted rights." }
-      ]
+     "q": "The program office says they will just ask the incumbent for the manufacturing data now. Where does that go?",
+     "h": "What did the Government pay for, and when?",
+     "d": "Rights follow funding and were fixed at development. Asking now means negotiating for something the contractor holds and has every reason to price accordingly — which is why the answer a board wants is what you would have done twelve months earlier, not what you do today."
     },
     {
-      "rung": "unlimited",
-      "topic": "UCAs & Letter Contracts",
-      "scenario": "An undefinitized contract action was issued 200 days ago to keep a depot line moving. The contractor submitted what it called a proposal on day 40; your pricing team judged it non-qualifying and said so in writing. A revised, complete proposal arrived on day 150. The program office now wants to obligate above the current not-to-exceed amount.",
-      "ask": "Where does the definitization clock actually stand, and what is your exposure?",
-      "script": "The clock does not run from award and it does not run from the first thing the contractor called a proposal. Under R-DFARS 217.7404-3 the schedule must provide for definitization by the earlier of 180 days after the contractor submits a qualifying proposal, or the point at which more than a defined share of the not-to-exceed amount is obligated. A non-qualifying submission does not start it, so my 180 days runs from day 150 — I have time, but the obligation trigger is the one about to bite, and that is what the program office just asked me to do.",
-      "follow_ups": [
-        {
-          "q": "Why does the rule use two triggers instead of one?",
-          "h": "Ask who controls each clock.",
-          "d": "Because a contractor who slow-rolls its proposal keeps the calendar clock from ever starting. The obligation trigger is the Government's protection against exactly that — one clock the contractor controls, one it does not. Naming that is what separates a candidate who memorized the rule from one who understands it."
-        },
-        {
-          "q": "Definitization slips well past the deadline. Does that affect the profit you negotiate?",
-          "h": "Whose risk are you actually pricing at that point?",
-          "d": "Yes. R-DFARS 217.7404-6 requires the profit to reflect the contractor's cost risk as it existed on the date the qualifying proposal was submitted — not the reduced risk they enjoy after months of performance on the Government's money. Missing this is how agencies pay full risk profit for no risk."
-        }
-      ],
-      "cites": [
-        { "src": "r-dfars", "sec": "217.7404-3", "quote": "UCAs must contain definitization schedules that provide for definitization by the earlier of—" }
-      ]
-    },
-    {
-      "rung": "unlimited",
-      "topic": "Contract Types",
-      "scenario": "A program office is standing up a $120 million development effort and wants a cost-plus-award-fee structure. Their draft plan sets base fee at six percent, pays award fee at the end of each six-month evaluation period, and holds nothing back for a final assessment.",
-      "ask": "Review that fee structure for me.",
-      "script": "Three problems, all DoD-specific, and none of them visible if you learned CPAF from the FAR alone. R-DFARS 216.402-4 governs the award-fee pool and its distribution. Base fee is capped well below six percent for DoD. A meaningful share of the award fee has to remain available for the final evaluation, and going below that share is a nondelegable HCA decision. And paying award fee at the end of each period with nothing held back removes the leverage the structure exists to create. I would send the plan back before it reaches the SSA.",
-      "follow_ups": [
-        {
-          "q": "The program manager says holding fee back will hurt the contractor's cash flow and cost us goodwill. Your response?",
-          "h": "What is award fee for?",
-          "d": "Award fee buys performance, not goodwill, and a structure that pays it out in full each period is a fixed fee with extra paperwork. A strong candidate says that plainly and offers the legitimate lever — provisional payments where authorized — rather than negotiating away the final evaluation."
-        },
-        {
-          "q": "Should you be using weighted guidelines on this action?",
-          "h": "DoD has a mandatory structured approach, and one place it does not apply.",
-          "d": "For DoD, structured profit analysis is the default method on negotiated actions where certified cost or pricing data is obtained — but it is not applied to CPAF, which is exactly the exception a board probes after you have just discussed weighted guidelines."
-        }
-      ],
-      "cites": [
-        { "src": "r-dfars", "sec": "216.402-4", "quote": "The award-fee pool is the total available award fee for each evaluation period for the life of the contract." }
-      ]
-    },
-    {
-      "rung": "unlimited",
-      "topic": "Government Property",
-      "scenario": "A contractor performing a negotiated fixed-price production contract — awarded without certified cost or pricing data — reports that Government-furnished test equipment was damaged when a forklift operator took a corner too fast. The program office wants the contractor to pay for it and is talking about withholding.",
-      "ask": "Is the contractor liable?",
-      "script": "Probably not, and the program office is reasoning from the civilian rule. FAR 45.104 lists the contract types where contractors are generally not held liable, and R-DFARS 245.104 extends that list for DoD to negotiated fixed-price contracts awarded on a basis other than certified cost or pricing data — which describes this contract. So the shield is broader for us than most people expect, and full liability is closer to the exception than the rule. What I would look at is whether this rises to willful misconduct or lack of good faith by the contractor's managerial personnel, because that is where liability comes back.",
-      "follow_ups": [
-        {
-          "q": "Why would the Government structure it that way? It sounds like we are absorbing avoidable loss.",
-          "h": "Think about what the alternative costs.",
-          "d": "Because the Government self-insures rather than paying every contractor to price the risk of loss into every contract. Making the contractor liable does not make the loss disappear — it makes you buy insurance at contractor margins on every action. A candidate who can explain the why is answering at the right level."
-        },
-        {
-          "q": "The prime furnished the equipment to a subcontractor, who damaged it. Does that change the prime's position?",
-          "h": "Does passing property down pass responsibility down?",
-          "d": "No. Furnishing Government property to a subcontractor does not relieve the prime of its responsibility to the Government. Candidates often assume flow-down moves the exposure; it moves the property."
-        }
-      ],
-      "cites": [
-        { "src": "r-dfars", "sec": "245.104", "quote": "In addition to the contract types listed at FAR 45.104, contractors are not held liable for loss of Government property under negotiated fixed-price contracts awarded on a basis other tha" }
-      ]
-    },
-    {
-      "rung": "unlimited",
-      "topic": "OCI",
-      "scenario": "A systems engineering and technical assistance contractor supporting a major program has been helping the Government write performance specifications for a follow-on production competition. Their corporate parent has just announced it intends to bid as a prime on that production contract.",
-      "ask": "Talk me through the conflict and what you do about it.",
-      "script": "This is the biased-ground-rules problem in its cleanest form. RFO 9.505-2 is explicit that a contractor who prepares complete specifications for a competitive acquisition is not allowed to furnish those items — the concern is not bad faith, it is that they wrote the test they intend to sit. My sequence is avoid, then neutralize, then mitigate, in that order, and I want the analysis in writing before the RFP issues rather than after the parent protests being excluded.",
-      "follow_ups": [
-        {
-          "q": "The program insists the work is too important to lose and asks you to waive it. Who can waive, and how far can that authority travel?",
-          "h": "For DoD consulting services, the answer is much higher than most people guess.",
-          "d": "Far above an HCA. R-DFARS 209.503-70 puts waiver authority for DoD consulting services at the Secretary of Defense and named officials, without power of delegation below a Presidentially appointed, Senate-confirmed official. A candidate who answers 'the HCA can waive it' has understated the level by several floors."
-        },
-        {
-          "q": "They propose a firewall between the SETA team and the bid team. Is that enough?",
-          "h": "Which of the three moves is that, and does it fit this conflict?",
-          "d": "A firewall mitigates unequal access to information. It does nothing about specifications the same corporate family already wrote — you cannot firewall away authorship. Naming why the proposed remedy does not match the conflict is the answer."
-        }
-      ],
-      "cites": [
-        { "src": "rfo", "sec": "9.505-2", "quote": "If a contractor prepares and furnishes complete specifications covering nondevelopmental items, to be used in a competitive acquisition, that contractor shall not be allowed to furnish these" },
-        { "src": "r-dfars", "sec": "209.503-70", "quote": "Notwithstanding FAR 9.503, for consulting services, as defined at 209.572(b), the waiver approval authority is the Secretary of Defense" }
-      ]
-    },
-    {
-      "rung": "unlimited",
-      "topic": "Terminations",
-      "scenario": "A contractor on a $9 million equipment contract has missed two delivery milestones and the program office has lost confidence. They have drafted a termination for default and want your signature this week. The contractor's last correspondence blamed a sole-source component supplier who shut down without notice.",
-      "ask": "They want a default termination signed this week. How do you proceed?",
-      "script": "Slowly, and on the record. RFO 49.402-3 requires the Government to review the situation with contracting and technical personnel and with legal counsel before deciding on default — and the situation includes convenience and no-cost cancellation as live alternatives, not just default. The supplier shutdown is the fact that matters: if the failure arose from causes beyond the contractor's control and without its fault or negligence, default is not available to me. What I want before I sign is the cure notice history, the technical assessment, and counsel's read.",
-      "follow_ups": [
-        {
-          "q": "You terminate for default anyway and a board later finds it improper. What happens?",
-          "h": "Improper default does not simply vanish.",
-          "d": "It converts to a termination for convenience, and the Government pays settlement costs on a contract it thought it was ending for free — plus whatever the reprocurement premium turns out to be. A candidate who has never thought past the signature has not thought about the money."
-        },
-        {
-          "q": "The program wants to reprocure immediately from the next offeror. Any caution?",
-          "h": "The reprocurement is evidence.",
-          "d": "Reprocure with care and document it, because excess reprocurement costs are only recoverable if the default stands and the repurchase was reasonable. A hurried, poorly documented reprocurement undermines the very claim it was meant to support."
-        }
-      ],
-      "cites": [
-        { "src": "rfo", "sec": "49.402-3", "quote": "Before deciding on default termination, the Government must review the situation (i.e., default, convenience, or no-cost cancellation) with contracting and technical personnel, as well as legal counsel" }
-      ]
-    },
-    {
-      "rung": "unlimited",
-      "topic": "Contract Modifications & Scope",
-      "scenario": "Eighteen months into a services contract, the requiring activity has added tasks by a series of small bilateral modifications. Reviewing the file, you notice the current statement of work covers two mission areas that were nowhere in the original solicitation, and the cumulative value has grown by roughly forty percent.",
-      "ask": "What is your concern with the file as it sits?",
-      "script": "Each modification looks defensible on its own and together they may have bought something nobody competed. Under RFO 43.203 a bilateral modification is signed by both parties, which tells me the contractor agreed — it does not tell me the work was within scope. The question a protester or an auditor will ask is whether the contract as modified is materially different from the one offerors competed for. Two new mission areas and forty percent growth is where I stop adding and start documenting.",
-      "follow_ups": [
-        {
-          "q": "The requiring activity says the contractor already agreed, so what is the problem?",
-          "h": "Whose rights are actually at issue?",
-          "d": "The incumbent's agreement is irrelevant — they benefit. The parties with standing are the offerors who never got to compete for the added work. A candidate who frames scope as a contractor-relations question has misidentified who is harmed."
-        },
-        {
-          "q": "How would you have caught this earlier?",
-          "h": "What review does a growing file need?",
-          "d": "A running cumulative-change view against the original competed scope, rather than reviewing each modification in isolation. Boards like this question because it moves the candidate from diagnosing a problem to preventing one."
-        }
-      ],
-      "cites": [
-        { "src": "rfo", "sec": "43.203", "quote": "A bilateral modification (supplemental agreement) is a contract modification that is signed by the contractor and the contracting officer." }
-      ]
-    },
-    {
-      "rung": "unlimited",
-      "topic": "Acquisition Planning",
-      "scenario": "A program office proposes a multiyear contract for a five-year production run of a munition, arguing it will save fifteen percent over annual buys. Their briefing says cancellation provisions will protect the Government if funding does not materialize.",
-      "ask": "Their briefing says cancellation provisions protect the Government. Is that right?",
-      "script": "It is backwards, and it is the most common misunderstanding of multiyear contracting. Under RFO 17.102, cancellation is the cancellation of the total requirements of all remaining program years, and the contract may provide for a cancellation payment to the contractor if appropriations are not made. The cancellation ceiling is the maximum charge the contractor can receive — so it caps the Government's liability, which is Government protection in the sense of a limit, but the payment itself runs to the contractor. Anyone who thinks cancellation is free has not read the exposure.",
-      "follow_ups": [
-        {
-          "q": "What has to happen before DoD can even use a multiyear contract on a buy this size?",
-          "h": "There is a statutory authorization step and a certification step.",
-          "d": "For DoD, multiyear contracts above defined thresholds require specific statutory authorization and a Secretary-level certification to Congress in advance, and the contract must be a fixed-price type. A candidate who treats multiyear as a contracting officer's discretionary tool has skipped the entire authorization regime."
-        },
-        {
-          "q": "How does this differ from a contract with four option years?",
-          "h": "What did the Government buy on day one?",
-          "d": "A multiyear buys the out-years up front, contingent on appropriations, which is what creates both the savings and the cancellation exposure. Options buy nothing until exercised. The savings and the risk come from the same feature."
-        }
-      ],
-      "cites": [
-        { "src": "rfo", "sec": "17.102", "quote": "Cancellation means the cancellation (within a contractually specified time) of the total requirements of all remaining program years." }
-      ]
-    },
-    {
-      "rung": "unlimited",
-      "topic": "Contract Administration",
-      "scenario": "A major supplier's earned value management system has been formally disapproved following a review. They hold four active DoD contracts with your office, including a $140 million development effort. Their program lead calls you asking what happens to their payments.",
-      "ask": "Walk me through what a business system disapproval means for this contractor.",
-      "script": "Disapproval is not a letter, it is a payment mechanism. DoD's business system rules cover six systems and attach a withholding to disapproval — a percentage held from payments until the contractor submits an acceptable corrective action plan, and a reduced percentage while they execute it, with ceilings on how much can be withheld overall. My job is to apply it correctly and consistently across their contracts, not to negotiate it away because the program office is worried about schedule.",
-      "follow_ups": [
-        {
-          "q": "The program manager says withholding will slow the very work we need. How do you answer?",
-          "h": "What is the withhold actually buying?",
-          "d": "The withhold exists precisely because schedule pressure is the reason systems never get fixed. Waiving it trades a permanent problem for a temporary one, and the mechanism is not discretionary in the way the program office hopes."
-        },
-        {
-          "q": "Does EVMS even apply to all four of those contracts?",
-          "h": "DoD has thresholds and one flat exemption.",
-          "d": "Not necessarily. R-DFARS 234.201 sets DoD's applicability by dollar value, makes it optional and risk-based below the lower tier, discourages it on firm-fixed-price at any value, and exempts contracts primarily for software. Knowing which of their contracts is actually in scope is the first thing a senior candidate checks."
-        }
-      ],
-      "cites": [
-        { "src": "r-dfars", "sec": "234.201", "quote": "DoD applies the earned value management system requirement as follows:" }
-      ]
+     "q": "Delivered data arrives marked with a restrictive legend you think is wrong. What are your options?",
+     "h": "There is a formal route, and it has a clock.",
+     "d": "The validation and challenge process at R-DFARS 227.7103-13 — a written challenge, a response window, and a defined path to a contracting officer's final decision, with a six-year limit on challenging most assertions. A candidate who says 'I'd just ignore the legend' has described a claim against the Government."
     }
-  ]
+   ],
+   "cites": [
+    {
+     "src": "r-dfars",
+     "sec": "227.7103-5",
+     "quote": "The standard license rights that a licensor grants to the Government are unlimited rights, government purpose rights, limited rights, or restricted rights."
+    }
+   ]
+  },
+  {
+   "rung": "unlimited",
+   "topic": "UCAs & Letter Contracts",
+   "scenario": "An undefinitized contract action was issued 200 days ago to keep a depot line moving. The contractor submitted what it called a proposal on day 40; your pricing team judged it non-qualifying and said so in writing. A revised, complete proposal arrived on day 150. The program office now wants to obligate above the current not-to-exceed amount.",
+   "ask": "Where does the definitization clock actually stand, and what is your exposure?",
+   "script": "The clock does not run from award and it does not run from the first thing the contractor called a proposal. Under R-DFARS 217.7404-3 the schedule must provide for definitization by the earlier of 180 days after the contractor submits a qualifying proposal, or the point at which more than a defined share of the not-to-exceed amount is obligated. A non-qualifying submission does not start it, so my 180 days runs from day 150 — I have time, but the obligation trigger is the one about to bite, and that is what the program office just asked me to do.",
+   "follow_ups": [
+    {
+     "q": "Why does the rule use two triggers instead of one?",
+     "h": "Ask who controls each clock.",
+     "d": "Because a contractor who slow-rolls its proposal keeps the calendar clock from ever starting. The obligation trigger is the Government's protection against exactly that — one clock the contractor controls, one it does not. Naming that is what separates a candidate who memorized the rule from one who understands it."
+    },
+    {
+     "q": "Definitization slips well past the deadline. Does that affect the profit you negotiate?",
+     "h": "Whose risk are you actually pricing at that point?",
+     "d": "Yes. R-DFARS 217.7404-6 requires the profit to reflect the contractor's cost risk as it existed on the date the qualifying proposal was submitted — not the reduced risk they enjoy after months of performance on the Government's money. Missing this is how agencies pay full risk profit for no risk."
+    }
+   ],
+   "cites": [
+    {
+     "src": "r-dfars",
+     "sec": "217.7404-3",
+     "quote": "UCAs must contain definitization schedules that provide for definitization by the earlier of—"
+    }
+   ]
+  },
+  {
+   "rung": "unlimited",
+   "topic": "Contract Types",
+   "scenario": "A program office is standing up a $120 million development effort and wants a cost-plus-award-fee structure. Their draft plan sets base fee at six percent, pays award fee at the end of each six-month evaluation period, and holds nothing back for a final assessment.",
+   "ask": "Review that fee structure for me.",
+   "script": "Three problems, all DoD-specific, and none of them visible if you learned CPAF from the FAR alone. R-DFARS 216.402-4 governs the award-fee pool and its distribution. Base fee is capped well below six percent for DoD. A meaningful share of the award fee has to remain available for the final evaluation, and going below that share is a nondelegable HCA decision. And paying award fee at the end of each period with nothing held back removes the leverage the structure exists to create. I would send the plan back before it reaches the SSA.",
+   "follow_ups": [
+    {
+     "q": "The program manager says holding fee back will hurt the contractor's cash flow and cost us goodwill. Your response?",
+     "h": "What is award fee for?",
+     "d": "Award fee buys performance, not goodwill, and a structure that pays it out in full each period is a fixed fee with extra paperwork. A strong candidate says that plainly — and names the right lever. R-DFARS 216.402-4(2) prohibits award-fee payments other than those resulting from the evaluation at the end of an award-fee period, and expressly exempts base-fee payments. So cash flow is addressed through base fee (capped at three percent of estimated cost) and ordinary cost reimbursement — not by paying award fee early, which is the one thing the rule forbids, and not by negotiating away the final evaluation."
+    },
+    {
+     "q": "Should you be using weighted guidelines on this action?",
+     "h": "DoD has a mandatory structured approach, and one place it does not apply.",
+     "d": "For DoD, structured profit analysis is the default method on negotiated actions where certified cost or pricing data is obtained — but it is not applied to CPAF, which is exactly the exception a board probes after you have just discussed weighted guidelines."
+    }
+   ],
+   "cites": [
+    {
+     "src": "r-dfars",
+     "sec": "216.402-4",
+     "quote": "The award-fee pool is the total available award fee for each evaluation period for the life of the contract."
+    }
+   ]
+  },
+  {
+   "rung": "unlimited",
+   "topic": "Government Property",
+   "scenario": "A contractor performing a negotiated fixed-price production contract — awarded without certified cost or pricing data — reports that Government-furnished test equipment was damaged when a forklift operator took a corner too fast. The program office wants the contractor to pay for it and is talking about withholding.",
+   "ask": "Is the contractor liable?",
+   "script": "Probably not, and the program office is reasoning from the civilian rule. FAR 45.104 lists the contract types where contractors are generally not held liable, and R-DFARS 245.104 extends that list for DoD to negotiated fixed-price contracts awarded on a basis other than certified cost or pricing data — which describes this contract. So the shield is broader for us than most people expect, and full liability is closer to the exception than the rule. What I would look at is whether this rises to willful misconduct or lack of good faith by the contractor's managerial personnel, because that is where liability comes back.",
+   "follow_ups": [
+    {
+     "q": "Why would the Government structure it that way? It sounds like we are absorbing avoidable loss.",
+     "h": "Think about what the alternative costs.",
+     "d": "Because the Government self-insures rather than paying every contractor to price the risk of loss into every contract. Making the contractor liable does not make the loss disappear — it makes you buy insurance at contractor margins on every action. A candidate who can explain the why is answering at the right level."
+    },
+    {
+     "q": "The prime furnished the equipment to a subcontractor, who damaged it. Does that change the prime's position?",
+     "h": "Does passing property down pass responsibility down?",
+     "d": "No. Furnishing Government property to a subcontractor does not relieve the prime of its responsibility to the Government. Candidates often assume flow-down moves the exposure; it moves the property."
+    }
+   ],
+   "cites": [
+    {
+     "src": "r-dfars",
+     "sec": "245.104",
+     "quote": "In addition to the contract types listed at FAR 45.104, contractors are not held liable for loss of Government property under negotiated fixed-price contracts awarded on a basis other than submission of certified cost or pricing data."
+    }
+   ]
+  },
+  {
+   "rung": "unlimited",
+   "topic": "OCI",
+   "scenario": "A systems engineering and technical assistance contractor supporting a major program has been helping the Government write performance specifications for a follow-on production competition. Their corporate parent has just announced it intends to bid as a prime on that production contract.",
+   "ask": "Talk me through the conflict and what you do about it.",
+   "script": "This is the biased-ground-rules problem in its cleanest form. RFO 9.505-2 is explicit that a contractor who prepares complete specifications for a competitive acquisition is not allowed to furnish those items — the concern is not bad faith, it is that they wrote the test they intend to sit. My sequence is avoid, then neutralize, then mitigate, in that order, and I want the analysis in writing before the RFP issues rather than after the parent protests being excluded.",
+   "follow_ups": [
+    {
+     "q": "The program insists the work is too important to lose and asks you to waive it. Who can waive, and how far can that authority travel?",
+     "h": "For DoD consulting services, the answer is much higher than most people guess.",
+     "d": "Far above an HCA. R-DFARS 209.503-70 puts waiver authority for DoD consulting services at the Secretary of Defense and named officials, without power of delegation below a Presidentially appointed, Senate-confirmed official. A candidate who answers 'the HCA can waive it' has understated the level by several floors."
+    },
+    {
+     "q": "They propose a firewall between the SETA team and the bid team. Is that enough?",
+     "h": "Which of the three moves is that, and does it fit this conflict?",
+     "d": "A firewall mitigates unequal access to information. It does nothing about specifications the same corporate family already wrote — you cannot firewall away authorship. Naming why the proposed remedy does not match the conflict is the answer."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "9.505-2",
+     "quote": "If a contractor prepares and furnishes complete specifications covering nondevelopmental items, to be used in a competitive acquisition, that contractor shall not be allowed to furnish these items, either as a prime contractor or as a subcontractor, for a reasonable period of time including, at least, the duration of the initial production contract."
+    },
+    {
+     "src": "r-dfars",
+     "sec": "209.503-70",
+     "quote": "Notwithstanding FAR 9.503, for consulting services, as defined at 209.572(b), the waiver approval authority is the Secretary of Defense"
+    }
+   ]
+  },
+  {
+   "rung": "unlimited",
+   "topic": "Terminations",
+   "scenario": "A contractor on a $9 million equipment contract has missed two delivery milestones and the program office has lost confidence. They have drafted a termination for default and want your signature this week. The contractor's last correspondence blamed a sole-source component supplier who shut down without notice.",
+   "ask": "They want a default termination signed this week. How do you proceed?",
+   "script": "Slowly, and on the record. RFO 49.402-3 requires the Government to review the situation with contracting and technical personnel and with legal counsel before deciding on default — and the situation includes convenience and no-cost cancellation as live alternatives, not just default. The supplier shutdown is the fact that matters: if the failure arose from causes beyond the contractor's control and without its fault or negligence, default is not available to me. What I want before I sign is the cure notice history, the technical assessment, and counsel's read.",
+   "follow_ups": [
+    {
+     "q": "You terminate for default anyway and a board later finds it improper. What happens?",
+     "h": "Improper default does not simply vanish.",
+     "d": "It converts to a termination for convenience, and the Government pays settlement costs on a contract it thought it was ending for free — plus whatever the reprocurement premium turns out to be. A candidate who has never thought past the signature has not thought about the money."
+    },
+    {
+     "q": "The program wants to reprocure immediately from the next offeror. Any caution?",
+     "h": "The reprocurement is evidence.",
+     "d": "Reprocure with care and document it, because excess reprocurement costs are only recoverable if the default stands and the repurchase was reasonable. A hurried, poorly documented reprocurement undermines the very claim it was meant to support."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "49.402-3",
+     "quote": "Before deciding on default termination, the Government must review the situation (i.e., default, convenience, or no-cost cancellation) with contracting and technical personnel, as well as legal counsel"
+    }
+   ]
+  },
+  {
+   "rung": "unlimited",
+   "topic": "Contract Modifications & Scope",
+   "scenario": "Eighteen months into a services contract, the requiring activity has added tasks by a series of small bilateral modifications. Reviewing the file, you notice the current statement of work covers two mission areas that were nowhere in the original solicitation, and the cumulative value has grown by roughly forty percent.",
+   "ask": "What is your concern with the file as it sits?",
+   "script": "Each modification looks defensible on its own and together they may have bought something nobody competed. Under RFO 43.203 a bilateral modification is signed by both parties, which tells me the contractor agreed — it does not tell me the work was within scope. The question a protester or an auditor will ask is whether the contract as modified is materially different from the one offerors competed for. Two new mission areas and forty percent growth is where I stop adding and start documenting.",
+   "follow_ups": [
+    {
+     "q": "The requiring activity says the contractor already agreed, so what is the problem?",
+     "h": "Whose rights are actually at issue?",
+     "d": "The incumbent's agreement is irrelevant — they benefit. The parties with standing are the offerors who never got to compete for the added work. A candidate who frames scope as a contractor-relations question has misidentified who is harmed."
+    },
+    {
+     "q": "How would you have caught this earlier?",
+     "h": "What review does a growing file need?",
+     "d": "A running cumulative-change view against the original competed scope, rather than reviewing each modification in isolation. Boards like this question because it moves the candidate from diagnosing a problem to preventing one."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "43.203",
+     "quote": "A bilateral modification (supplemental agreement) is a contract modification that is signed by the contractor and the contracting officer."
+    }
+   ]
+  },
+  {
+   "rung": "unlimited",
+   "topic": "Acquisition Planning",
+   "scenario": "A program office proposes a multiyear contract for a five-year production run of a munition, arguing it will save fifteen percent over annual buys. Their briefing says cancellation provisions will protect the Government if funding does not materialize.",
+   "ask": "Their briefing says cancellation provisions protect the Government. Is that right?",
+   "script": "It is backwards, and it is the most common misunderstanding of multiyear contracting. Under RFO 17.102, cancellation is the cancellation of the total requirements of all remaining program years, and the contract may provide for a cancellation payment to the contractor if appropriations are not made. The cancellation ceiling is the maximum charge the contractor can receive — so it caps the Government's liability, which is Government protection in the sense of a limit, but the payment itself runs to the contractor. Anyone who thinks cancellation is free has not read the exposure.",
+   "follow_ups": [
+    {
+     "q": "What has to happen before DoD can even use a multiyear contract on a buy this size?",
+     "h": "There is a statutory authorization step and a certification step.",
+     "d": "For DoD, multiyear contracts above defined thresholds require specific statutory authorization and a Secretary-level certification to Congress in advance, and the contract must be a fixed-price type. A candidate who treats multiyear as a contracting officer's discretionary tool has skipped the entire authorization regime."
+    },
+    {
+     "q": "How does this differ from a contract with four option years?",
+     "h": "What did the Government buy on day one?",
+     "d": "A multiyear buys the out-years up front, contingent on appropriations, which is what creates both the savings and the cancellation exposure. Options buy nothing until exercised. The savings and the risk come from the same feature."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "17.102",
+     "quote": "Cancellation means the cancellation (within a contractually specified time) of the total requirements of all remaining program years."
+    }
+   ]
+  },
+  {
+   "rung": "unlimited",
+   "topic": "Contract Administration",
+   "scenario": "A major supplier's earned value management system has been formally disapproved following a review. They hold four active DoD contracts with your office, including a $140 million development effort. Their program lead calls you asking what happens to their payments.",
+   "ask": "Walk me through what a business system disapproval means for this contractor.",
+   "script": "Disapproval is not a letter, it is a payment mechanism. DoD's business system rules cover six systems and attach a withholding to disapproval — a percentage held from payments until the contractor submits an acceptable corrective action plan, and a reduced percentage while they execute it, with ceilings on how much can be withheld overall. My job is to apply it correctly and consistently across their contracts, not to negotiate it away because the program office is worried about schedule.",
+   "follow_ups": [
+    {
+     "q": "The program manager says withholding will slow the very work we need. How do you answer?",
+     "h": "What is the withhold actually buying?",
+     "d": "The withhold exists precisely because schedule pressure is the reason systems never get fixed. Waiving it trades a permanent problem for a temporary one, and the mechanism is not discretionary in the way the program office hopes."
+    },
+    {
+     "q": "Does EVMS even apply to all four of those contracts?",
+     "h": "DoD has thresholds and one flat exemption.",
+     "d": "Not necessarily. R-DFARS 234.201 sets DoD's applicability by dollar value, makes it optional and risk-based below the lower tier, discourages it on firm-fixed-price at any value, and exempts contracts primarily for software. Knowing which of their contracts is actually in scope is the first thing a senior candidate checks."
+    }
+   ],
+   "cites": [
+    {
+     "src": "r-dfars",
+     "sec": "234.201",
+     "quote": "DoD applies the earned value management system requirement as follows:"
+    }
+   ]
+  }
+ ]
 }
