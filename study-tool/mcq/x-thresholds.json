@@ -48,8 +48,8 @@
   "ref": "RFO 6.301 · SAM.gov"
  },
  "0df8e100e849": {
-  "x": "8(a) sole source without a J&A runs to $100M for DoD, $30M civilian — the program's statutory basis covers it below those lines. The $10M/$25M-style figures belong to other ladders.",
-  "ref": "RFO Part 19 · SBA 8(a)"
+  "x": "$100M for DoD, $30M civilian — and know WHICH section carries it. The DoD rule is R-DFARS 206.104-70(a): “no justification and approval is required for a sole-source contract under the 8(a) authority”, per section 823 of the FY2020 NDAA. The underlying competition exception is RFO 6.103-5, Authorized or required by statute. ⚠ RFO 19.108-7 is a different rule — it sets the COMPETITIVE 8(a) threshold ($8.5M manufacturing / $5.5M other), not the J&A line, and citing it here is the common misdirect.",
+  "ref": "R-DFARS 206.104-70 · RFO 6.103-5 · Vol. 2, Small Business"
  },
  "ba6d444cbe87": {
   "x": "Competitive 8(a) begins at $8.5M manufacturing / $5.5M other — above those, requirements in the program compete among 8(a) firms. Same numbers as the HUBZone/WOSB caps; that's not a coincidence, it's the pattern.",
@@ -72,8 +72,8 @@
   "ref": "10 U.S.C. §3406 · RFO 16.508"
  },
  "16cac2656f7e": {
-  "x": "Order-level debriefing rights begin at $7.5M under RFO 16.507. Below that, unsuccessful holders get brief explanations, not the full debrief machinery.",
-  "ref": "RFO 16.507"
+  "x": "Order-level debriefing rights begin above $7.5M — RFO 16.507-5 is literally titled “Orders valued above $7.5 million”. ⚠ Two corrections worth carrying: RFO 16.507-4 (above the SAT but not above $7.5M) requires fair notice and file documentation — it says nothing about “brief explanations” to unsuccessful holders; that is legacy FAR 16.505(b)(6) language. And for DoD the rule is stricter than the RFO: R-DFARS 216.507-5(c) makes a written or oral postaward debriefing REQUIRED for task and delivery orders valued at $10 million or more, for successful and unsuccessful awardees alike.",
+  "ref": "RFO 16.507-5 · R-DFARS 216.507-5 · Vol. 2, IDIQ"
  },
  "0d274e32d3e5": {
   "x": "Fair-opportunity exceptions ride a D&A up the same ladder as J&As: CO to $900K, Competition Advocate to $20M, HPA/PEO to $90M ($150M DoD), SPE above. One ladder, two documents — learn it once, cite it twice.",
