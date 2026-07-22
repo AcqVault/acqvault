@@ -19,7 +19,7 @@ const SOURCES = {
     desc: 'Federal category management buying guidance.' },
   'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
     desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.' },
-  'pgi':                 { name: 'DFARS Procedures, Guidance, and Information', short: 'DFARS PGI',
+  'pgi':                 { name: 'R-DFARS Procedures, Guidance, and Information', short: 'R-DFARS PGI',
     desc: 'The PGI attachment that ships with each DoD class deviation \u2014 the procedural companion to the R-DFARS rule: how to build a PIID, what a contract action report must carry, how to run a mentor-prot\u00e9g\u00e9 agreement. Guidance, not regulation: it tells you how to execute a rule, it does not impose one.' },
   'ssp':                 { name: 'DoD Source Selection Procedures', short: 'DoD SSP',
     desc: 'The Department of Defense Source Selection Procedures (August 20, 2022) — what every competitively negotiated DoD source selection above $10 million runs on: source selection team roles, the rating methods and their adjectival definitions, the tradeoff and LPTA processes, and the debriefing guide.' }
@@ -235,7 +235,7 @@ function partPairBanner(source, part, pairIdx) {
   if (source === 'pgi') {
     return `<div class="partpair partpair-pgi"><span class="tag">Guidance</span><div><strong>This is the PGI — it does not bind.</strong> It is the procedural half of the DoD class deviation: how to carry out a rule, not the rule itself. The binding text is <a href="${href}">R-DFARS Part ${disp}</a>. Only the PGI reissued by the deviation memos is indexed here, so a part carries fewer PGI sections than it does rules.</div></div>`;
   }
-  return `<div class="partpair partpair-rule"><span class="tag">Rule</span><div><strong>This is the binding text.</strong> The same deviation also ships procedures for parts of this part — see <a href="${href}">DFARS PGI Part ${disp}</a>, which is guidance and does not impose requirements.</div></div>`;
+  return `<div class="partpair partpair-rule"><span class="tag">Rule</span><div><strong>This is the binding text.</strong> The same deviation also ships procedures for parts of this part — see <a href="${href}">R-DFARS PGI Part ${disp}</a>, which is guidance and does not impose requirements.</div></div>`;
 }
 
 // A clause published with variants opens each one with "Basic." or "Alternate N."
@@ -598,6 +598,61 @@ function cmSkipLine(source, partNum, line, st) {
   return false;
 }
 
+
+// ── CROSS-REFERENCE LINKS (SSR) ───────────────────────────────────────────────
+// Mirrors the client engine in assets/app.js (XREF_*, buildXrefMap, linkifyXrefs) —
+// same guards, same resolution rules; only the href differs (a real page URL instead
+// of the in-app reader). KEEP THE RULES IN SYNC:
+//   * "PGI 204.201" resolves ONLY into the PGI; a bare number NEVER does, even inside
+//     a PGI document — the rule/guidance boundary is never guessed.
+//   * foreign citation systems (CFR, U.S.C., Public Law, DoDI…) are never linkified.
+//   * a number split across a PDF line break ("227.7102- 4") is left alone.
+//   * duplicated clause numbers resolve to the substantive copy, never a stub.
+const SRV_XREF_LEAD = /^(?:PGI\s+)?(\d{1,3}\.\d{1,6}(?:-\d+)*)\b/;
+const SRV_XREF_BARE_ORDER = { rfo: ['rfo', 'r-dfars'], 'r-dfars': ['r-dfars', 'rfo'], pgi: ['r-dfars', 'rfo'] };
+const SRV_XREF_FOREIGN = /(?:\bC\.?F\.?R\.?|U\.?\s?S\.?\s?C\.?|Public\s+Law|Pub\.?\s*L\.?|DoD[IDM]|DFAS|E\.?O\.?|Executive\s+Order|Chapter)\s*$/i;
+let srvXrefMapCache = null;
+function srvXrefMap() {
+  if (srvXrefMapCache) return srvXrefMapCache;
+  const map = { rfo: new Map(), 'r-dfars': new Map(), pgi: new Map() };
+  for (const d of loadDocs()) {
+    const table = map[d.source];
+    if (!table) continue;
+    const m = String(d.title || '').trim().match(SRV_XREF_LEAD);
+    if (!m) continue;
+    const prev = table.get(m[1]);
+    if (prev) {
+      const better = (a, b) => {
+        const ra = /\[reserved\]/i.test(a.title || ''), rb = /\[reserved\]/i.test(b.title || '');
+        if (ra !== rb) return rb ? a : b;
+        return String(a.content || '').length >= String(b.content || '').length ? a : b;
+      };
+      if (better(prev, d) === prev) continue;
+    }
+    table.set(m[1], d);
+  }
+  srvXrefMapCache = map;
+  return map;
+}
+// Operates on ALREADY-ESCAPED text; emits nothing but the doc's own escaped fields.
+function srvLinkify(escaped, source, selfAnchor) {
+  if (!SRV_XREF_BARE_ORDER[source] && source !== 'pgi') return escaped;
+  const map = srvXrefMap();
+  return escaped.replace(/(PGI\s+)?\b(\d{1,3}\.\d{1,6}(?:-\d+)*)\b/g, (full, pgiLead, num, offset, str) => {
+    const before = str.slice(Math.max(0, offset - 30), offset);
+    if (SRV_XREF_FOREIGN.test(before)) return full;
+    const after = str.slice(offset + full.length, offset + full.length + 8);
+    if (/^\s*[-–—]\s*\d/.test(after)) return full;
+    const tables = pgiLead ? ['pgi'] : (SRV_XREF_BARE_ORDER[source] || []);
+    let doc = null;
+    for (const t of tables) { const d = map[t] && map[t].get(num); if (d) { doc = d; break; } }
+    if (!doc) return full;
+    if (String(doc.anchor || doc.id) === String(selfAnchor)) return full;
+    const href = `/${doc.source}/part-${encodeURIComponent(String(doc.part))}#${encodeURIComponent(String(doc.anchor || doc.id))}`;
+    return `<a class="xref" href="${href}">${full}</a>`;
+  });
+}
+
 function renderContent(content, title, anchorBase, tables, source, partNum) {
   const lines = spliceTables(content, tables);
   let lastLower = null;   // the (a)…(h)(i) run is per section
@@ -644,9 +699,9 @@ function renderContent(content, title, anchorBase, tables, source, partNum) {
         // character the source text — no punctuation quietly dropped.
         out.push(`<h3 class="alt-head" id="${esc(id)}"><a href="#${esc(id)}">${esc(label)}.</a></h3>`);
         const rest = t.slice(m[0].length).trim();
-        if (rest) out.push(`<p${pcls}>` + esc(rest) + '</p>');
+        if (rest) out.push(`<p${pcls}>` + srvLinkify(esc(rest), source, anchorBase) + '</p>');
       } else if (!cmSkipLine(source, partNum, t, cmSkip)) {
-        out.push(`<p${pcls}>` + esc(t) + '</p>');
+        out.push(`<p${pcls}>` + srvLinkify(esc(t), source, anchorBase) + '</p>');
         const vis = cmVisualAfterLine(source, partNum, t, cmFlags);
         if (vis) out.push(vis);
       }
@@ -720,6 +775,8 @@ section.sec:target>h2{color:var(--accent)}
 @media(prefers-reduced-motion:reduce){section.sec:target{animation:none}}
 .srcref{font-size:12.5px;color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
+section.sec p a.xref{color:var(--accent);text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(135,101,28,.45)}
+section.sec p a.xref:hover{text-decoration-color:var(--accent)}
 /* Rule ⇄ procedure pairing — KEEP IN SYNC with .br-pair/.br-partpair in assets/app.css.
    The clay literals mirror --pgi-bg/--pgi-txt/--pgi-solid there; the SSR :root does not
    carry the per-source tokens. Clay = being sent to guidance, brass/ink = being sent to
@@ -1693,7 +1750,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=53"></script>`;
+<script defer src="/assets/study.js?v=54"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

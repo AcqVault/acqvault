@@ -142,7 +142,7 @@
     },
     {
      "id": "src-pgi",
-     "title": "DFARS Procedures, Guidance, and Information",
+     "title": "R-DFARS Procedures, Guidance, and Information",
      "subtitle": "PGI · the procedural companion to the R-DFARS",
      "desc": "The PGI attachment that ships with each DoD class deviation — how to build a PIID, what a contract action report must carry, how to run a mentor-protégé agreement. Guidance on executing the rule, not a rule itself.",
      "file": "/pgi",

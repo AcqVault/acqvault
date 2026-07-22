@@ -145,9 +145,9 @@ VARIANTS = {
   # Clay, matching --pgi-solid in assets/app.css. The subtitle carries the
   # guidance-not-regulation distinction, because a shared link is the one place a
   # reader meets this source with no badge and no colour to tell them.
-  'src-pgi': source('DFARS<br>PGI.',
+  'src-pgi': source('R-DFARS<br>PGI.',
      'The procedural companion to the R-DFARS rule — how to carry a requirement out. <b>Guidance, not regulation.</b>',
-     'DFARS PGI', '#7a5a4a'),
+     'R-DFARS PGI', '#7a5a4a'),
 }
 
 def render(name):

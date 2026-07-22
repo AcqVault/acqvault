@@ -454,7 +454,7 @@ async function askVault(question) {
     '- Answer ONLY from the numbered excerpts provided. Never use outside knowledge, even when you are confident.',
     '- Every factual claim must carry the citation of the excerpt it came from, in square brackets exactly as given after CITE:, e.g. [RFO 13.201].',
     '- Dollar figures, thresholds, and section numbers must appear verbatim in an excerpt to be stated at all. Never estimate or recall them.',
-    '- An excerpt marked "STATUS: GUIDANCE" is procedural guidance (the DFARS PGI). It does NOT bind. Never write that it requires, mandates, prohibits, or obligates anything — describe it as the procedure for carrying out a rule, and say plainly that it is guidance. If the only support for an answer is a GUIDANCE excerpt, state that no binding text was retrieved for it.',
+    '- An excerpt marked "STATUS: GUIDANCE" is procedural guidance (the R-DFARS PGI). It does NOT bind. Never write that it requires, mandates, prohibits, or obligates anything — describe it as the procedure for carrying out a rule, and say plainly that it is guidance. If the only support for an answer is a GUIDANCE excerpt, state that no binding text was retrieved for it.',
     '- If the excerpts do not contain the answer, reply with ONE short sentence saying the vault text retrieved for this question does not cover it, and suggest rephrasing with acquisition terms or running an authoritative search. Never list, count, describe, or refer to the excerpts by number.',
     '- Only answer questions about federal acquisition, contracting, or this site’s content. Politely decline anything else.',
     '- You are a research aid, not legal advice. Do not add a disclaimer; the interface displays one.',

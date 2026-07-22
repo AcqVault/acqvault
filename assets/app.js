@@ -305,7 +305,7 @@ const SOURCE_URLS = {
 // Both agree with SOURCES[].short / SOURCES[].name in api/_seo.js.
 const SOURCE_SHORT = {
   'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management',
-  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD SSP', 'pgi': 'DFARS PGI',
+  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD SSP', 'pgi': 'R-DFARS PGI',
   // Not publicly merchandised (see the positioning note), but it IS in the corpus, and a
   // source missing here cites as its own shouting id — "COMPASS Part 27".
   'compass': 'DAF Contracting Compass',
@@ -314,7 +314,7 @@ const SOURCE_FULL = {
   'rfo': 'Revolutionary FAR Overhaul', 'r-dfars': 'R-DFARS Deviations', 'far-companion': 'FAR Companion',
   'category-management': 'Category Management Buying Guide', 'fmr': 'DoD Financial Management Regulation',
   'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD Source Selection Procedures',
-  'pgi': 'DFARS Procedures, Guidance, and Information',
+  'pgi': 'R-DFARS Procedures, Guidance, and Information',
   'compass': 'DAF Contracting Compass',
 };
 
@@ -767,8 +767,14 @@ const CATEGORY_LINKS = [
   ['Uber for Government', 'https://redeem.uber.com/public/optin/QJGUT4HH']
 ].sort((a,b) => b[0].length - a[0].length);
 
+// The browse reader's xref pass needs the section being rendered (source + own id for
+// the self-link guard). Set per section in buildReaderHTML like brLastLower/brBaseDepth.
+let brXrefHit = null;
 function categoryGuideText(text, source) {
   let out = esc(text);
+  // Cross-reference links in the BROWSE reader — same engine as the drawer
+  // (linkifyXrefs), which no-ops gracefully until the offline corpus is loaded.
+  if (brXrefHit && XREF_SOURCES[source]) return linkifyXrefs(out, brXrefHit);
   if (!isCategoryGuide(source)) return out;
   CATEGORY_LINKS.forEach(([label, url]) => {
     const needle = esc(label).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -1848,7 +1854,7 @@ function partPairBannerHTML(source, indexPart, pairIdx) {
     <span class="br-partpair-tag">Rule</span>
     <div class="br-partpair-body"><strong>This is the binding text.</strong>
     The same deviation also ships procedures for parts of this part —
-    see <a class="br-pair-link" ${open}>DFARS PGI Part ${esc(disp)}</a>, which is guidance and does not impose requirements.</div>
+    see <a class="br-pair-link" ${open}>R-DFARS PGI Part ${esc(disp)}</a>, which is guidance and does not impose requirements.</div>
   </div>`;
 }
 
@@ -1918,6 +1924,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount, pairIdx) {
     const lines = normalizeBrowseLines(content.split('\n'), source, parsed, partNum);
     brLastLower = null;   // the (a)…(h)(i) run is per section, not per document
     brBaseDepth = sectionDepth(title);
+    brXrefHit = XREF_SOURCES[source] ? hit : null;
     const visualFlags = {};
     const paraPath = makeParaPath(); // fresh token path per section
     const altCtx = { anchor, blocks: [] }; // variant headings, scoped per section
@@ -2176,15 +2183,15 @@ function generateCitation(hit) {
   // PGI: "PGI 204.201 Unique procurement instrument identifiers". Without this the
   // number regexes below all miss the "PGI " prefix and every section in a part fell
   // through to the bare `hit.part` fallback — all 27 sections of part 204 copied the
-  // SAME citation, "DFARS PGI Part 4", with no section number in it.
+  // SAME citation, "R-DFARS PGI Part 4", with no section number in it.
   // PGI: "PGI 204.201 Unique procurement instrument identifiers". Without this the
   // number regexes below all miss the "PGI " prefix and every section in a part fell
   // through to the bare `hit.part` fallback — all 27 sections of part 204 copied the
-  // SAME citation, "DFARS PGI Part 4", with no section number in it.
+  // SAME citation, "R-DFARS PGI Part 4", with no section number in it.
   // The cite is the BARE "PGI 204.201", not the source label + number: that is the form
   // the DFARS itself uses ("see PGI 204.201"), it avoids double-prefixing a title that
   // already says PGI, and it keeps the one word this site reserves — "DFARS" — out of a
-  // citation. The source BADGE still reads "DFARS PGI"; only the citation changes.
+  // citation. The source BADGE still reads "R-DFARS PGI"; only the citation changes.
   const pgiM = title.match(/^PGI\s+([\d.]+(?:-\d+)*)\.?\s+(.*)/i);
   if (pgiM && hit.source === 'pgi') {
     const pgiTitle = pgiM[2].replace(/\.$/, '').trim();
@@ -3035,9 +3042,38 @@ function cleanClauseText(s) {
     .replace(/\s+/g, ' ')
     .trim();
 }
+
+// ── DEVIATION AUTHORITY ───────────────────────────────────────────────────────
+// The authority behind an R-DFARS section is a SIGNED DoD class deviation with a DARS
+// tracking number and an effective date — which is what a contracting officer needs on
+// a citation going into a contract file. output/deviations.json holds all 46; fetch it
+// lazily and attach "(DoD Class Deviation 2026-O00NN, eff. <date>)" to the copied cite
+// block. Part 52 is the PRE-deviation clause library, so it gets no deviation line —
+// stamping a deviation number onto undeviated legacy text would claim an authority it
+// does not have. Same for the PGI: guidance carries the memo's number too (it ships as
+// the memo's attachment), so PGI cites get the same line.
+let DEVIATIONS_BY_PART = null;   // { rfoPart: {dars, effective} }
+// Fetched off the boot path — 46 rows, and the first Copy is never worth blocking on.
+setTimeout(function(){ try { loadDeviationsIndex(); } catch(e){} }, 2500);
+function loadDeviationsIndex() {
+  if (DEVIATIONS_BY_PART) return;
+  fetch('/output/deviations.json').then(r => r.ok ? r.json() : []).then(list => {
+    const map = {};
+    for (const e of (list || [])) if (e && e.rfo_part && e.dars) map[String(e.rfo_part)] = e;
+    DEVIATIONS_BY_PART = map;
+  }).catch(() => { DEVIATIONS_BY_PART = {}; });
+}
+function deviationLineFor(hit) {
+  if (!hit || (hit.source !== 'r-dfars' && hit.source !== 'pgi')) return '';
+  if (String(hit.part) === '52') return '';   // pre-deviation library — no deviation authority
+  const e = DEVIATIONS_BY_PART && DEVIATIONS_BY_PART[String(hit.part)];
+  if (!e) return '';
+  return ` (DoD Class Deviation ${e.dars}${e.effective ? ', eff. ' + e.effective : ''})`;
+}
+
 function buildCiteBlock(hit) {
   // generateCitation already returns "<REF> — <Title>", so use it verbatim as the reference line.
-  const ref = (typeof generateCitation === 'function' ? generateCitation(hit) : '') || hit.filename || hit.title || 'Citation';
+  const ref = ((typeof generateCitation === 'function' ? generateCitation(hit) : '') || hit.filename || hit.title || 'Citation') + deviationLineFor(hit);
   const text = cleanClauseText(hit.content);
   const label = SOURCE_FULL[hit.source] || hit.source || '';
   const asof = hit.indexed_at ? `copy retrieved ${fmtAsOf(hit.indexed_at)}` : '';
