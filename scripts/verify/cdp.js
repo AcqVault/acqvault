@@ -12,6 +12,19 @@ const os = require('os');
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const [, , url, wArg, hArg, exprFile] = process.argv;
+
+// Print usage instead of a stack trace. This lives in scripts/verify/, where the
+// idiom is `for f in scripts/verify/*.js; do node "$f"; done` — a crash there
+// reads as a failing suite. It is a tool, not a suite, so it exits 0.
+if (!url || !exprFile) {
+  console.log(`Drive real Chrome headless at an exact viewport; eval an expression in the PAGE world.
+
+    node scripts/verify/cdp.js <url> <width> <height> <exprFile>
+
+Use it for anything scroll-, animation- or viewport-driven. Not a suite — exits 0.`);
+  process.exit(0);
+}
+
 const W = parseInt(wArg || '375', 10), H = parseInt(hArg || '812', 10);
 const expr = fs.readFileSync(exprFile, 'utf8');
 

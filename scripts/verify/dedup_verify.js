@@ -1,7 +1,9 @@
 // Verify the clause dedup on BOTH sides using the real shipped code, and prove
 // scorer parity: the two clauseSuppressSet implementations must produce the SAME set.
 const fs = require('fs'), path = require('path'), vm = require('vm');
-const BASE = path.join(process.env.HOME, 'Documents/Projects/acqvault');
+// Resolve from THIS file, not $HOME: hard-coding the owner's path made these
+// unrunnable from any other clone — and therefore impossible to wire into a gate.
+const BASE = path.resolve(__dirname, '..', '..');
 const { grabFunction } = require(path.join(BASE, 'scripts', 'extract_js_fns.js'));
 
 const docs = JSON.parse(fs.readFileSync(path.join(BASE, 'output/documents.json'), 'utf8'))

@@ -1,6 +1,8 @@
 // Verify every citation fix against the REAL corpus using the REAL shipped function.
 const fs = require('fs'), path = require('path');
-const BASE = path.join(process.env.HOME, 'Documents/Projects/acqvault');
+// Resolve from THIS file, not $HOME: hard-coding the owner's path made these
+// unrunnable from any other clone — and therefore impossible to wire into a gate.
+const BASE = path.resolve(__dirname, '..', '..');
 const { grabFunction, grabConst } = require(path.join(BASE, 'scripts', 'extract_js_fns.js'));
 const src = fs.readFileSync(path.join(BASE, 'assets/app.js'), 'utf8');
 const vm = require('vm');
@@ -58,6 +60,17 @@ for (const [k, m] of byPart) for (const [c, n] of m) if (n > 1) {
 }
 console.log(`\n  citation collisions within a part: ${collisions} doc(s)` +
   (worst ? `\n     worst: ${worst[2]}x "${worst[1].slice(0, 62)}" in ${worst[0]}` : ''));
+// This printed the P0 invariant and passed regardless, so "ALL CITATION CHECKS
+// PASSED" was printed over a live count of 2 — the signature bug this suite
+// exists to catch. render_health.py owns the invariant FATALLY and holds the
+// allow-list (CITE_DUP_OK: the 205.302 / 205.302-2 pair, both genuinely titled
+// "205.302 Public Announcement"). Duplicating that list here would create the
+// second source of truth this repo keeps getting caught by, so this is a
+// REGRESSION guard: the count may not grow past what render_health sanctions.
+const ALLOWED_COLLISIONS = 2;  // one allow-listed pair = 2 docs
+ok(collisions <= ALLOWED_COLLISIONS,
+   `citation collisions within a part: ${collisions} (allowed ${ALLOWED_COLLISIONS}, ` +
+   `see CITE_DUP_OK in scripts/render_health.py) — a new one means a parse fell through`);
 
 // global regression: no source may fall through to a bare part cite when it has a number
 // A fall-through cite is the bare part fallback: "<label> Part 8" with NO section and

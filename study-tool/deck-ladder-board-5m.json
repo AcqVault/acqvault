@@ -1,563 +1,563 @@
 {
-  "items": [
+ "items": [
+  {
+   "rung": "5m",
+   "topic": "Competition (CICA)",
+   "scenario": "A program office brings you a follow-on requirement for engineering support on a fielded sensor system — about $12 million over three years. The incumbent has held the work for six years. The package contains one paragraph of justification: \"Contractor X is the only vendor with the necessary experience — request sole source.\" The last market research in the file is four years old.",
+   "ask": "The program manager wants the sole-source paperwork started today. Walk the panel through how you handle this request.",
+   "script": "The default is full and open competition, and the burden of escaping it sits on the file, not on incumbency. The only plausible authority is only-one-responsible-source, and for a follow-on that means demonstrating substantial duplication of cost not recoverable through competition, or unacceptable delay — demonstrated, not asserted. My first move is market research, because four-year-old research supports nothing. If the facts hold, the J&A carries the full 6.104-1 content: the unique-qualifications demonstration, efforts to solicit as many sources as practicable, a fair-and-reasonable price determination, the market research results, and the statement of actions to remove barriers before the next buy. \"They have the experience\" is a starting allegation, never the demonstration.",
+   "follow_ups": [
     {
-      "rung": "5m",
-      "topic": "Competition (CICA)",
-      "scenario": "A program office brings you a follow-on requirement for engineering support on a fielded sensor system — about $12 million over three years. The incumbent has held the work for six years. The package contains one paragraph of justification: \"Contractor X is the only vendor with the necessary experience — request sole source.\" The last market research in the file is four years old.",
-      "ask": "The program manager wants the sole-source paperwork started today. Walk the panel through how you handle this request.",
-      "script": "The default is full and open competition, and the burden of escaping it sits on the file, not on incumbency. The only plausible authority is only-one-responsible-source, and for a follow-on that means demonstrating substantial duplication of cost not recoverable through competition, or unacceptable delay — demonstrated, not asserted. My first move is market research, because four-year-old research supports nothing. If the facts hold, the J&A carries the full 6.104-1 content: the unique-qualifications demonstration, efforts to solicit as many sources as practicable, a fair-and-reasonable price determination, the market research results, and the statement of actions to remove barriers before the next buy. \"They have the experience\" is a starting allegation, never the demonstration.",
-      "follow_ups": [
-        {
-          "q": "Say the facts support the J&A. At $12 million, who approves it?",
-          "h": "Above $900,000 but not above $20 million.",
-          "d": "The advocate for competition, and that authority is not delegable (6.104-2). The contracting officer's certification carries approval only at $900K or below. A good answer also knows a higher official may approve a lower-dollar justification — the trap is treating the bands as exclusive lanes, or 'delegating' the advocate's approval to make routing easier."
-        },
-        {
-          "q": "The base is $12 million, but two option years could take it to $24 million. Does that change anything?",
-          "h": "What dollar value sets the approval level?",
-          "d": "6.104-2(c): the justification must include the estimated value of all options to determine the approval level — at $24M this climbs out of the advocate band into the head-of-the-procuring-activity band. The trap is pricing only the base to keep the approval low; that is threshold engineering and boards hunt for it."
-        },
-        {
-          "q": "What does DoD change about the only-one-source authority itself?",
-          "h": "Read the DoD sentence in 6.103-1(b) and the follow-on prong in (c)(2).",
-          "d": "For DoD, NASA, and the Coast Guard the authority extends to a limited number of responsible sources, and the follow-on prong extends beyond major systems and highly specialized equipment to continued provision of highly specialized services. A strong candidate volunteers the deviation; a weak one recites the civilian rule and stops."
-        },
-        {
-          "q": "The PM adds: \"We're out of runway to compete this — the money expires.\"",
-          "h": "What can never be the basis for other than full and open competition?",
-          "d": "6.103(b): lack of planning by the requiring activity and funding concerns are expressly barred as justification. The answer isn't 'no' — it's that urgency of the calendar has to trace to a legitimate authority and the Government's need, and the file must never lean on the schedule the office burned."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "6.103-1",
-          "quote": "Substantial duplication of cost to the Government that is not expected to be recovered through competition"
-        },
-        {
-          "src": "rfo",
-          "sec": "6.104-2",
-          "quote": "A justification must include the estimated dollar value of all options to determine the approval level."
-        },
-        {
-          "src": "rfo",
-          "sec": "6.103",
-          "quote": "A lack of planning by the requiring activity"
-        }
-      ]
+     "q": "Say the facts support the J&A. At $12 million, who approves it?",
+     "h": "Above $900,000 but not above $20 million.",
+     "d": "The advocate for competition, and that authority is not delegable (6.104-2). The contracting officer's certification carries approval only at $900K or below. A good answer also knows a higher official may approve a lower-dollar justification — the trap is treating the bands as exclusive lanes, or 'delegating' the advocate's approval to make routing easier."
     },
     {
-      "rung": "5m",
-      "topic": "Competition (CICA)",
-      "scenario": "A repair requirement sat in the program office for eight months. Now a fielded system has failed a safety inspection, operations wants it fixed within weeks, and an engineer has already obtained a quote from the vendor he likes. The PM hands you a draft urgency J&A with that vendor's name in it.",
-      "ask": "Is this an urgency action at all — and what do you do with the J&A already on your desk?",
-      "script": "Two separate questions. First, is the urgency real: the test is that the Government would be seriously injured, financially or otherwise, unless sources are limited. A safety failure can genuinely qualify even when the office also slept on the requirement — but the injury must be the Government's, now, not the schedule they burned, because lack of planning can never be the basis. Second, the process: urgency limits competition, it doesn't eliminate it — I still solicit as many sources as practicable under the circumstances. The pre-selected vendor is the red flag I run down: the file has to show why sources were limited, not that somebody's favorite got ratified. Then I scope the period of performance to the urgency and get the competitive successor moving in parallel.",
-      "follow_ups": [
-        {
-          "q": "How long can an urgency contract run?",
-          "h": "There are two ceilings — one tied to the need, one in months.",
-          "d": "No longer than necessary to meet the urgent need and to award a competitive successor, and not more than one year including all options unless the head of the agency determines exceptional circumstances apply — a determination separate from the J&A and documented in the file. The trap: writing a three-year PoP 'for stability' under an urgency authority."
-        },
-        {
-          "q": "Ops says there's no time for approvals. Can the J&A come after award?",
-          "h": "Urgency has a documented timing exception.",
-          "d": "Yes — 6.103-2(d) allows the justification and approval after award when doing it before would unreasonably delay the acquisition. A good answer treats that as a documented exception with the full content requirement intact, not a license to paper the file at leisure."
-        },
-        {
-          "q": "The PM argues the eight months of delay is itself the urgency. Answer him.",
-          "h": "What does 6.103(b) prohibit?",
-          "d": "Other than full and open competition must not be justified on lack of planning or funding concerns. The urgency must stand on present harm to the Government — the safety failure — and the J&A should be written on that harm, with the delay acknowledged honestly. Hiding the history is how justifications die at the advocate's desk."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "6.103-2",
-          "quote": "the Government would be seriously injured, financially or otherwise, unless the agency is permitted to limit the number of sources"
-        },
-        {
-          "src": "rfo",
-          "sec": "6.103-2",
-          "quote": "May not exceed one year, including all options, unless the head of the agency determines that exceptional circumstances apply"
-        },
-        {
-          "src": "rfo",
-          "sec": "6.103",
-          "quote": "Contracting without providing for full and open competition must not be justified on the basis of"
-        }
-      ]
+     "q": "The base is $12 million, but two option years could take it to $24 million. Does that change anything?",
+     "h": "What dollar value sets the approval level?",
+     "d": "6.104-2(c): the justification must include the estimated value of all options to determine the approval level — at $24M this climbs out of the advocate band into the head-of-the-procuring-activity band. The trap is pricing only the base to keep the approval low; that is threshold engineering and boards hunt for it."
     },
     {
-      "rung": "5m",
-      "topic": "Commercial Products & Services",
-      "scenario": "A requiring office sends you a purchase description for commercial network hardware, about $2.1 million: \"Brand X Model 4400 or equal.\" Reading the salient characteristics, you realize they were lifted from Brand X's own spec sheet — down to a proprietary management protocol no other manufacturer implements.",
-      "ask": "What do you do with this purchase description before anything goes on the street?",
-      "script": "An \"or equal\" whose salient characteristics only one product can meet is a brand-name spec wearing a costume — no equal can ever qualify, so it restricts competition exactly like pure brand name. True brand-name descriptions prevent full and open competition and ride on a justification; a genuine or-equal preserves it. So my first move is back to the requiring activity: strip the salient characteristics to actual minimum needs, stated in performance terms — a proprietary protocol is only salient if the mission truly requires it. If brand name survives that scrub, this commercial buy over the SAT takes a written justification approved per 6.104. And for DoD there's no documentation escape by adding \"or equal\" — the 12.102 documentation is required for brand-name-or-equal and proprietary specs too.",
-      "follow_ups": [
-        {
-          "q": "Same item, but the buy is at or below the SAT. What changes?",
-          "h": "12.102 splits the documentation duty at the SAT.",
-          "d": "Below the SAT you document the decision that only one source is available and the basis; above it you prepare a written justification and get it approved per 6.104. Lighter paper, same discipline. The trap is treating below-SAT as no-documentation territory."
-        },
-        {
-          "q": "Now it's an order under a multiple-award IDIQ instead of a new contract. Does the brand-name discipline follow it?",
-          "h": "Items peculiar to one manufacturer have their own ordering rule.",
-          "d": "Yes — 16.507-7: a brand-name item, even if available on more than one contract, is an item peculiar to one manufacturer. The restriction is justified in the 16.507-6(d)-(e) format, and above $40,000 the justification gets posted or sent with the solicitation to all awardees. Weak candidates think fair-opportunity-land has no brand-name rules."
-        },
-        {
-          "q": "Who owns the claim that the proprietary protocol is a real minimum need?",
-          "h": "The J&A's supporting data has certifiers besides the contracting officer.",
-          "d": "Technical and requirements personnel are responsible for providing — and certifying as accurate and complete — the data supporting other than full and open competition (6.104(b)). The CO signs the justification, but the requirement owner signs for the requirement. A good answer assigns that accountability out loud."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "6.103-1",
-          "quote": "use of brand-name descriptions, or specification of attributes peculiar to one manufacturer, prevents full and open competition"
-        },
-        {
-          "src": "r-dfars",
-          "sec": "212.102-70",
-          "quote": "the documentation addressed in FAR 12.102 is required to use brand name or equal descriptions or proprietary specifications and standards"
-        },
-        {
-          "src": "rfo",
-          "sec": "16.507-7",
-          "quote": "A brand-name item, even if available on more than one contract, is an item peculiar to one manufacturer."
-        }
-      ]
+     "q": "What does DoD change about the only-one-source authority itself?",
+     "h": "Read the DoD sentence in 6.103-1(b) and the follow-on prong in (c)(2).",
+     "d": "For DoD, NASA, and the Coast Guard the authority extends to a limited number of responsible sources, and the follow-on prong extends beyond major systems and highly specialized equipment to continued provision of highly specialized services. A strong candidate volunteers the deviation; a weak one recites the civilian rule and stops."
     },
     {
-      "rung": "5m",
-      "topic": "Small Business Programs",
-      "scenario": "An Air Force base-operations-support requirement, roughly $40 million, is headed to the 8(a) program, and SBA has identified a participant for a sole-source award. A sharp new specialist objects: \"Anything sole source over $900K needs a J&A through the competition advocate\" — and drafts one for your signature.",
-      "ask": "Is your specialist right? What actually governs this award, and what do you do with the draft?",
-      "script": "The instinct is right and the answer is still no — this is the classic DoD deviation. Under 206.104-70, implementing section 823 of the FY20 NDAA, no justification and approval is required for a sole-source 8(a) award up to $100 million. The 8(a) authority is its own statutory lane, not a 6.103 exception riding the approval ladder. What I do owe the file: the acquisition sits far above the 8(a) competitive thresholds — $8.5M manufacturing, $5.5M for everything else — so the real question is why this isn't a competitive 8(a) among eligible participants, and that conversation happens with SBA before acceptance, not in a J&A. I thank the specialist for the reflex, park the draft, and document the offering-and-acceptance trail instead.",
-      "follow_ups": [
-        {
-          "q": "Same requirement at $120 million. Now what?",
-          "h": "The $100 million line flips the whole posture.",
-          "d": "Above $100M DoD requires the works: a justification with the FAR 6.104-1 content, approval by the head of the procuring activity — delegable only to an official above brigadier general or rear admiral (lower half), or the civilian equivalent — and public posting after award. A strong candidate states the approval level and the delegation floor; a weak one says 'SPE, probably.'"
-        },
-        {
-          "q": "Why isn't this simply competed among 8(a) firms?",
-          "h": "What do the competitive thresholds command when two participants exist?",
-          "d": "Above the thresholds, the acquisition must be awarded competitively among eligible 8(a) participants when there's a reasonable expectation of two responsible participants and award at fair market price. Sole source above the threshold is the exception that has to be walked through SBA acceptance — that's the pressure point the board wants you to feel."
-        },
-        {
-          "q": "The PM offers a fix: split it into two $20 million packages and place both sole source.",
-          "h": "There's an express prohibition on exactly this.",
-          "d": "19.108-7(c): a requirement exceeding the competitive threshold shall not be divided into lesser amounts to use 8(a) sole-source procedures for a single firm. That's not creativity, it's splitting — and the answer the panel wants is the flat no, followed by the legitimate alternatives: competitive 8(a), or a defensible sole-source case at full value."
-        }
-      ],
-      "cites": [
-        {
-          "src": "r-dfars",
-          "sec": "206.104-70",
-          "quote": "no justification and approval is required for a sole- source contract under the 8(a) authority (15 U.S.C. 637(a)) for an amount not exceeding $100 million"
-        },
-        {
-          "src": "r-dfars",
-          "sec": "206.104-72",
-          "quote": "the head of the procuring activity is the approval authority for a proposed sole-source 8(a) contract exceeding $100 million"
-        },
-        {
-          "src": "rfo",
-          "sec": "19.108-7",
-          "quote": "shall not be divided into several requirements for lesser amounts in order to use 8(a) sole source procedures for award to a single firm"
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "IDIQ Ordering & Fair Opportunity",
-      "scenario": "On a five-awardee services MAC, one vendor won the original engineering-support order in open competition two years ago. Since then the program has issued two \"logical follow-on\" orders to the same vendor without notifying the field, and a third — $4.8 million — just arrived with a one-line justification: \"continuation of ongoing work.\"",
-      "ask": "The third order is on your desk. Take the panel through your review.",
-      "script": "Fair opportunity is the default for every order above the micro-purchase threshold; the logical follow-on exception exists for economy and efficiency, but it's earned order by order, never inherited as a habit. Three checks. Anchor: the exception is available only if all awardees had a fair opportunity at the original order — and if these chained follow-ons have drifted in scope, the chain back to that competed order may already be broken. Content: above the SAT the justification carries the full 16.507-6(d)(2) package, and the rationale must say why the relationship is logical in terms of scope, period of performance, or value — \"continuation of ongoing work\" is a wish, not a rationale. Approval and posting: at $4.8M this goes to the advocate for competition, not delegable, and the justification gets posted. If the package can't clear those, the order competes.",
-      "follow_ups": [
-        {
-          "q": "What does a defensible logical-follow-on rationale actually contain?",
-          "h": "The regulation names the three axes of the relationship.",
-          "d": "It describes why the follow-on relationship is logical in terms of scope, period of performance, or value — concretely: same technical baseline, continuity of a defined effort, transition costs that make re-competition uneconomical for this order. The trap is circularity: 'it's a follow-on because it follows on.'"
-        },
-        {
-          "q": "What does DoD add for exactly this situation?",
-          "h": "DoD saw the chaining problem coming.",
-          "d": "R-DFARS 216.507-6: for an order above the SAT that is a follow-on to an order previously issued for the same supply or service under the (b)(2) or (b)(3) exceptions, follow the PGI procedures — extra scrutiny aimed precisely at serial follow-ons. Volunteering the deviation is what separates the Air Force answer from the textbook answer."
-        },
-        {
-          "q": "One of the other four awardees says they never see these orders. Where does that complaint go?",
-          "h": "There's a designated official independent of you.",
-          "d": "The task-order ombudsman — a senior agency official, independent of the contracting officer, who reviews complaints and ensures awardees are afforded fair opportunity consistent with the contract's procedures (16.507-2(b)). Knowing the ombudsman exists, and that this pattern is exactly what draws one in, shows ordering-vehicle maturity."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "16.507-6",
-          "quote": "it is a logical follow-on to an order already issued under the contract, provided that all awardees were given a fair opportunity to be considered for the original order"
-        },
-        {
-          "src": "rfo",
-          "sec": "16.507-6",
-          "quote": "the justification must be approved by the advocate for competition of the activity placing the order"
-        },
-        {
-          "src": "r-dfars",
-          "sec": "216.507-6",
-          "quote": "that is a follow-on to an order previously issued for the same supply or service based on a justification for an exception to fair opportunity citing the authority at FAR 16.507- 6(b)(2) or (3)"
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "IDIQ Ordering & Fair Opportunity",
-      "scenario": "A delivery order on a single-award IDIQ for aircraft ground-equipment maintenance has grown by modification: first a software-sustainment task was added, and now the PM wants to fold in facility repairs at a second base. \"There's plenty of ceiling left on the contract,\" he says.",
-      "ask": "Ceiling is available. What's your analysis before you sign the next modification?",
-      "script": "Ceiling isn't authority — scope is. Orders escape part 6 only conditionally: the exemption holds when the underlying contract was competed and all responsible sources were realistically permitted to compete for the requirements contained in the order. Work outside the scope of what was competed inherits no exemption; it's a new procurement wearing a mod number, and it must be competed or justified under 6.103 with its own approval. So I test the mod against what offerors reasonably anticipated when the IDIQ was competed. Software sustainment on a GSE-maintenance contract was already a stretch; facility repair at another base fails on arrival. In scope, I sign. Out of scope, the honest answer is a new action — compete it, or write the J&A and take the approval that comes with it.",
-      "follow_ups": [
-        {
-          "q": "The PM says a modification can't be protested, so where's the risk?",
-          "h": "What kind of modification does 6.001 actually except from part 6?",
-          "d": "Only modifications within the scope of the contract are excepted. An out-of-scope mod is functionally a new sole-source award made without authority — and that is a protestable, sustainable ground. The shield is scope, not the instrument. A strong candidate says the risk isn't the mod form, it's the unauthorized award hiding inside it."
-        },
-        {
-          "q": "What if the IDIQ itself had been awarded under a J&A rather than competed?",
-          "h": "The conditional exemption has a second prong.",
-          "d": "Then orders are exempt only where the justification and approval adequately covers the requirements contained in the order (6.001(e)(2)). An order the J&A never contemplated has no exemption to inherit — the J&A's own scope becomes the fence line. That's the subtlety most candidates miss."
-        },
-        {
-          "q": "Funds on the order expire in three weeks. Does that tip the call?",
-          "h": "What can never justify skipping competition?",
-          "d": "No — funding concerns are expressly barred as a basis for other than full and open competition (6.103(b)(2)). Expiring money makes the conversation urgent; it doesn't make the mod in scope. The disciplined answer is to size a bridge inside scope if one honestly exists, and start the new action for the rest."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "6.001",
-          "quote": "The contract was awarded under 6.101 or 6.102, and all responsible sources were realistically permitted to compete for the requirements contained in the order"
-        },
-        {
-          "src": "rfo",
-          "sec": "6.103",
-          "quote": "Concerns related to the amount of funds available to the agency or activity for acquisition"
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "IDIQ Ordering & Fair Opportunity",
-      "scenario": "You're placing an $8.5 million task order for logistics IT support on a seven-awardee MAC. Last cycle, the program office solicited two favorites by email and a losing awardee went to the ombudsman. Your chief wants this one clean.",
-      "ask": "Design the order competition for me. What does an order above $7.5 million require that a smaller one doesn't?",
-      "script": "Above $7.5 million the procedures stiffen: a fair notice of intent to all awardees offering the service — not two favorites — with a clear statement of the requirement, a reasonable response period, and disclosure of the significant evaluation factors and subfactors, including cost or price, and their relative importance. Then I document that every response was fairly considered, and on a best-value selection, the relative importance of quality against price. Postaward, notices and debriefings run per part 15 and a summary of the debriefing goes in the order file. What I don't need is part 15 machinery: no formal evaluation plan, no scoring, no competitive range — the ordering process is exempt from part 6 and subpart 15.3. Streamlined is legal; selective solicitation is not. That distinction is the whole game.",
-      "follow_ups": [
-        {
-          "q": "With options the order lands at $10.2 million. What changes about debriefings?",
-          "h": "DoD drew its own line above the RFO's.",
-          "d": "R-DFARS 216.507-5: at $10 million or more a written or oral postaward debriefing is required — for successful and unsuccessful awardees — following the 215.301 procedures. Below that, part 15 debriefing practice applies via 16.507-5(c). Missing the DoD $10M line is the most common miss on this question."
-        },
-        {
-          "q": "Your fair notice goes to all seven and exactly one offer comes back. Now what?",
-          "h": "DoD has a one-offer rule for competitive orders.",
-          "d": "R-DFARS 216.507-70: one offer on a competitive order above the SAT sends you to the 215.271-6 procedures before award. One response to a genuinely fair notice can be a fine outcome — but DoD makes you verify the price stands without competitive pressure, not just shrug and award."
-        },
-        {
-          "q": "The program office asks for scoring sheets and a competitive range 'to be safe.' Is safer better here?",
-          "h": "What is the ordering process expressly not subject to?",
-          "d": "Not subject to part 6, subpart 15.3, or part 14 — no evaluation plans, scoring, or competitive range required. Importing part 15 wholesale isn't safety, it's self-inflicted schedule and protest surface. The mature answer: tailor procedures to the order's risk and complexity, and put the discipline where the rule puts it — fair notice, fair consideration, documentation."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "16.507-5",
-          "quote": "A summary of the debriefing must be included in the task or delivery order file."
-        },
-        {
-          "src": "r-dfars",
-          "sec": "216.507-5",
-          "quote": "a written or oral postaward debriefing of successful and unsuccessful awardees is required for task orders and delivery orders valued at $10 million or more"
-        },
-        {
-          "src": "r-dfars",
-          "sec": "216.507-70",
-          "quote": "If only one offer is received in response to an order exceeding the simplified acquisition threshold that is placed on a competitive basis"
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "IDIQ Ordering & Fair Opportunity",
-      "scenario": "Closing out the ordering period on a multiple-award IDIQ, your specialist discovers one awardee never received a single order — and its contract minimum guarantee was never satisfied. The PM sees an opening: \"Perfect. Give them the new $3 million requirement sole source and we solve both problems.\"",
-      "ask": "Does the minimum guarantee get you there? What do you actually do?",
-      "script": "There is a real exception here — an order may be placed sole source when necessary to satisfy a minimum guarantee — but it's sized to the problem it solves. The guarantee is whatever the contract promised that awardee, and the exception covers satisfying it, not decorating it with a $3 million requirement that happens to be convenient. If the minimum is, say, $50K, I place an order sized to the minimum, with the justification the exception requires above the micro-purchase threshold, and the new requirement gets fair opportunity like any other order. I'd also say the quiet part: an unmet minimum at closeout means our ordering discipline failed this awardee for years — the ombudsman conversation we never had. The fix going forward is honest minimums and consideration at award, not a rescue order at twilight.",
-      "follow_ups": [
-        {
-          "q": "So how large should the sole-source order be?",
-          "h": "The exception reaches only as far as its purpose.",
-          "d": "Large enough to satisfy the minimum guarantee — that's the necessity the exception names. Anything beyond rides on a different exception or on fair opportunity. Bundling the pet requirement in is using a $50K key to open a $3M door, and the justification you'd have to write would say so out loud."
-        },
-        {
-          "q": "What paper does even the right-sized order need?",
-          "h": "Sole source above the MPT is never paper-free on a MAC.",
-          "d": "A written justification per 16.507-6(d) — the exception cited with supporting rationale, a fair-and-reasonable price determination, and above the SAT the full content, approval at the level the value commands, and posting. The minimum-guarantee exception changes the rationale, not the ritual."
-        },
-        {
-          "q": "A different awardee sees the order and objects. Exposure?",
-          "h": "Think about what the justification does and doesn't shield.",
-          "d": "A properly justified minimum-guarantee order is defensible — the exception exists for exactly this. What's not defensible is the oversized version: to the other awardees it's a sole-source award of new work they never got to chase. Complaints route to the ombudsman, and an order untethered from its exception is protest bait. Size and paper are the whole defense."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "16.507-6",
-          "quote": "It is necessary to place an order to satisfy a minimum guarantee."
-        },
-        {
-          "src": "rfo",
-          "sec": "16.507-6",
-          "quote": "A determination by the contracting officer that the anticipated cost to the Government will be fair and reasonable."
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "Small Business Programs",
-      "scenario": "Market research for a $3.4 million grounds-maintenance recompete: the incumbent is a large business. One capable small business answered the sources sought with directly relevant past performance; a second small firm sent a capability statement that's thin but plausible. The PM wants full and open \"so we can keep the incumbent.\"",
-      "ask": "Set-aside or not — and whose decision is it?",
-      "script": "Above the micro-purchase threshold the rule is mandatory, not a preference: the contract must be set aside when there's a reasonable expectation of offers from two or more responsible small businesses, competitive on fair market price, quality, and delivery. Reasonable expectation — not certainty. A strong first responder plus a thin-but-plausible second can carry it, so my next move is to pressure-test the second firm: targeted questions, their contract history, capacity. If the expectation holds, the set-aside isn't optional, and keeping the incumbent is not a factor the regulation recognizes. If it doesn't hold, I document why — the rule requires documenting the reason a contract is not set aside. Either way the determination is the contracting officer's, informed by the small business specialist and SBA, not the PM's.",
-      "follow_ups": [
-        {
-          "q": "What if the honest answer is only one responsible small business?",
-          "h": "The rule of two failing doesn't end the small business analysis.",
-          "d": "No mandatory total set-aside — but 19.104-1 expressly doesn't preclude award under the HUBZone, SDVOSB, WOSB, or 8(a) programs, several of which have sole-source lanes. The disciplined sequence is socioeconomic programs before defaulting to full and open. Weak answers stop at 'rule of two fails, compete it.'"
-        },
-        {
-          "q": "Move the same requirement onto a multiple-award contract as an order. Does the mandatory rule follow?",
-          "h": "Order set-asides run on different statutory footing.",
-          "d": "No — order set-asides under MACs are discretionary: contracting officers may, at their discretion, set aside orders, and that decision is an exercise of discretion that is not a basis for protest. Knowing the mandatory contract-level rule from the discretionary order-level authority is exactly the kind of distinction boards probe."
-        },
-        {
-          "q": "SBA formally recommends the set-aside and you still disagree. Can you just proceed?",
-          "h": "Rejecting an SBA recommendation has its own path.",
-          "d": "Not quietly — rejecting the SBA recommendation triggers the 19.102(f) process rather than a unilateral shrug, and the file carries the documented reason the contract is not set aside. The point the panel is testing: the decision is yours, but it is reviewable, documented, and made against a mandatory standard."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "19.104-1",
-          "quote": "there is a reasonable expectation of obtaining offers— (1) From two or more responsible small business concerns; and (2) That are competitive in terms of fair market prices, quality, and delivery"
-        },
-        {
-          "src": "rfo",
-          "sec": "19.111-2",
-          "quote": "contracting officers may, at their discretion, set aside orders placed under multiple-award contracts"
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "Contract Types",
-      "scenario": "A $15 million sustainment-engineering requirement arrives with the acquisition plan already marked CPFF. The entire rationale reads: \"Requirements uncertainty — consistent with prior contract.\" The prior contract was also CPFF. So was the one before it.",
-      "ask": "How do you make the contract-type call here, and what has to be in the file to defend it?",
-      "script": "Type follows risk, and the file has to prove the risk, not recite it. For anything other than fixed-price, 16.103 demands the full package: an analysis of why non-fixed-price is appropriate, specific facts and circumstances — not \"uncertainty\" as an incantation — an assessment that the Government has the resources to manage it, and planned actions to transition toward fixed-price on the next buy. Three CPFF generations with no transition story is the tell that nobody has done the analysis. Then the cost-reimbursement gates: an acquisition plan approved a level above me, a contractor accounting system that can segregate, accumulate, and allocate costs to this contract, and a designated COR before award. My move is to decompose the requirement — after years of performance, the stable core prices firm-fixed; keep cost-type only for the genuinely uncertain slice.",
-      "follow_ups": [
-        {
-          "q": "The contractor's accounting system hasn't been looked at in years. Proceed?",
-          "h": "It's a condition of use, not a nice-to-have.",
-          "d": "No — an adequate accounting system that can segregate, accumulate, and allocate costs during performance is a precondition for cost-reimbursement (16.301-3(a)(3)). Award first and verify later is exactly backwards; the verification gates the type. A strong candidate also names who they'd ask — DCAA/DCMA — without being prompted."
-        },
-        {
-          "q": "Your specialist proposes T&M instead, 'for flexibility.' React.",
-          "h": "T&M has the harshest determination in part 16.",
-          "d": "T&M requires a D&F that no other contract type is suitable — signed before the base period, approved by the HCA when base plus options exceed three years — and a ceiling price the contractor exceeds at its own risk. It's the type of last resort with the least cost discipline, not the flexible middle ground. 'Flexibility' is precisely the argument the D&F standard exists to kill."
-        },
-        {
-          "q": "What's the transition story the file owes, and why does anyone care?",
-          "h": "The (a)(5) package looks forward, not just backward.",
-          "d": "Planned actions to minimize non-fixed-price use on future acquisitions of the same requirement and transition to fixed-price to the maximum extent practicable. It matters because it converts this award into the setup for the next one — defined workload data, stabilized requirements. Its absence across three CPFF cycles is how a board knows the office is coasting."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "16.103",
-          "quote": "transition to fixed-price contracts to the maximum extent practicable"
-        },
-        {
-          "src": "rfo",
-          "sec": "16.301-3",
-          "quote": "The contractor’s accounting system can adequately segregate, accumulate and allocate costs specifically attributed to the contract or order during contract performance"
-        },
-        {
-          "src": "rfo",
-          "sec": "16.601-3",
-          "quote": "no other contract type is suitable"
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "Commercial Products & Services",
-      "scenario": "The requiring office delivers a government-unique performance spec for vehicle-fleet telematics units — \"our operating environment is unique.\" Your market research turns up three commercial products doing this work for utility fleets today, one of them available on an existing governmentwide contract.",
-      "ask": "The PM is standing firm on the unique spec. What does the regulation require of you here, and in what order?",
-      "script": "The preference isn't advisory: agencies must acquire commercial products and services when they're available to meet the need, and 10.001(f) hands me the priority ladder — first, a commercial solution on an existing governmentwide contract; second, whether the requirement can be modified so an existing contract works; then commercial from another source; then modified commercial; and only when nothing satisfies, a nondevelopmental item. My research already found rung one. So the burden runs against the unique spec: I take \"unique environment\" back to the requiring office and make it testable — temperature range, shock, security interface — because most uniqueness collapses into ruggedization the market already sells. If a genuine gap survives, the honest path is modifying the requirement or a modified commercial product, documented at the level the buy deserves — not a clean-sheet development.",
-      "follow_ups": [
-        {
-          "q": "Fine — it's commercial. Now the PM wants cost-reimbursement 'until we understand the usage patterns.'",
-          "h": "Part 12 has a flat answer.",
-          "d": "Prohibited, full stop — no cost-reimbursement contract type for commercial products or services (12.104(d)), and 16.301-3(b) says the same from the part 16 side. Usage uncertainty is handled with structure — quantity bands, EPA, T&M under its conditions — not by importing cost-type into part 12."
-        },
-        {
-          "q": "What about T&M for the commercial installation services piece?",
-          "h": "T&M for commercial services has three conditions.",
-          "d": "Available if the services are acquired competitively and are commonly sold to the public on a T&M basis, with a D&F that firm-fixed-price or FPEPA is not suitable and a ceiling price the contractor exceeds at its own risk (12.104(b)). The trap is treating T&M as the default for services — the D&F burden runs the other way."
-        },
-        {
-          "q": "The PM asks what the commercial determination actually buys anyone.",
-          "h": "Think about what part 12 changes downstream.",
-          "d": "It moves the buy into part 12's streamlined solicitation, evaluation, and clause structure, opens the market that actually makes the product, and preserves fixed-price discipline — 12.104(a) drives FFP or FPEPA to the maximum extent practicable. The determination isn't paperwork; it's the gate between buying what industry sells and paying to reinvent it."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "12.101",
-          "quote": "Agencies must acquire commercial products or commercial services when the agency determines that they are available to meet the agency’s needs"
-        },
-        {
-          "src": "rfo",
-          "sec": "10.001",
-          "quote": "A commercial product or commercial service on an existing governmentwide contract can meet the agency's requirements"
-        },
-        {
-          "src": "rfo",
-          "sec": "12.104",
-          "quote": "Do not use any cost-reimbursement contract type to procure commercial products or commercial services."
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "Market Research",
-      "scenario": "A sources-sought for depot-level repair of a legacy radar ran ten days over the winter holidays and drew zero responses. The PM declares victory: \"Market research complete — nobody else can do it. Write the sole-source J&A to the OEM.\"",
-      "ask": "Does this market research carry a sole-source justification? What do you do next?",
-      "script": "Zero responses to a badly aimed notice proves the notice, not the market. The standard is research appropriate to the circumstances — and for a repair market where third-party shops are known to exist, ten days over the holidays isn't it. Before any J&A, I rerun the research like I mean it: a properly timed notice, direct outreach to known repair houses, and real exchanges with industry, which the regulation encourages within the procurement-integrity rails. The J&A itself will force the issue anyway — it must contain the market research conducted and the results, the efforts to solicit as many sources as possible, any sources that expressed interest in writing, and the actions we'll take to remove barriers next time. A justification built on a dead notice hands the advocate every reason to bounce it. And if honest research still says one source, the J&A then writes itself — honestly.",
-      "follow_ups": [
-        {
-          "q": "What if market research genuinely wasn't conducted at all?",
-          "h": "The J&A content rule anticipates that case — read it closely.",
-          "d": "The J&A must state the reason market research was not conducted. But that's a confession with a signature line, not an escape hatch — for a multi-million-dollar repair requirement there is no reason the approving official should accept. The clause exists for edge cases, and this isn't one."
-        },
-        {
-          "q": "The PM worries that calling repair vendors directly is a procurement-integrity problem.",
-          "h": "The regulation takes a side on talking to industry.",
-          "d": "It says the opposite: agencies should engage in responsible and constructive exchanges with industry, so long as no firm gains an unfair advantage and 3.104 is respected. Silence isn't compliance — it's how offices end up sole-sourcing by ignorance. The discipline is evenhandedness and documentation, not avoidance."
-        },
-        {
-          "q": "Three weeks after the sole-source award, a repair shop emails a capability statement. Does it matter?",
-          "h": "The J&A has two forward-looking content items.",
-          "d": "It matters for the next acquisition. The J&A must list sources that expressed interest in writing and state the actions the agency may take to remove barriers to competition before the next buy — late interest is exactly the evidence those provisions exist to capture. Filing it as noise repeats this year's mistake on next year's requirement."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "10.001",
-          "quote": "Agencies must conduct market research appropriate to the circumstances"
-        },
-        {
-          "src": "rfo",
-          "sec": "6.104-1",
-          "quote": "The market research conducted (see part 10) and the results or a statement of the reason market research was not conducted."
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "Options",
-      "scenario": "A firm-fixed-price services option must be exercised by 30 September; it's the 12th. Performance has been acceptable with one recent dip. Then the checks come back: the contractor's NIST SP 800-171 assessment in SPRS is three and a half years old, and market rates for this labor mix have fallen roughly fifteen percent since award.",
-      "ask": "Walk the panel through your option-exercise decision.",
-      "script": "An option exercise is a determination, not a reflex. The base checklist: written notice within the contract's window, funds confirmed, then the determinations — a continuing requirement, synopsis posture settled, no active SAM exclusion, acceptable performance, and the one with teeth here: the option price is fair and reasonable based on current market conditions and exercise is in the Government's best interest. A fifteen-percent market drop puts that determination genuinely in question — I need current pricing evidence, and if the option price can't be defended today, the best-interest answer may be to let it lapse and compete. And for DoD the gate gets longer before I ever reach price: SAM record active and accurate, and SPRS verification that the NIST assessment is current — not more than three years old — and the CMMC certificate at the required level. A 3.5-year-old assessment fails that check on its face; the contractor refreshes it or the option doesn't get exercised.",
-      "follow_ups": [
-        {
-          "q": "The contract requires 30 days' preliminary notice and you have 18. What are your options now?",
-          "h": "The unilateral right lives and dies by the contract's terms.",
-          "d": "Exercise per the contract's terms or not at all — 17.204-1(b)(1) conditions exercise on notice within the time specified. Miss the window and the unilateral right is gone; what's left is a bilateral agreement, which is new sole-source work needing its own part 6 authority, or a new competition. The trap is 'the contractor won't mind' — consent doesn't resurrect authority."
-        },
-        {
-          "q": "Why does an option exercise escape a J&A in the first place?",
-          "h": "The exemption was earned at the original award.",
-          "d": "Because part 6 was satisfied up front: the option was evaluated as part of the initial competition and is exercisable at an amount specified in or reasonably determinable from the contract — and 6.001(c) excepts in-scope mods including priced, evaluated options. An option that was never evaluated, or whose price isn't determinable from the contract, has no exemption to stand on."
-        },
-        {
-          "q": "Performance is rated marginal in one area on the last CPARS. Does that kill the exercise?",
-          "h": "The standard is a determination, not a spotless record.",
-          "d": "Not automatically — the determination is that performance has been acceptable, for example satisfactory or better ratings. One marginal area is weighed by the CO: is it material, trending, corrected? What the board wants is the documented judgment — and the recognition that exercising an option is endorsing the contractor for another year with the Government's money."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "17.204-1",
-          "quote": "the option price is fair and reasonable based on current market conditions and exercise of the option is in the Government's best interest"
-        },
-        {
-          "src": "r-dfars",
-          "sec": "217.204-170",
-          "quote": "The contractor has a CMMC certificate at the level required by the contract, and that it is current (i.e., not more than 3 years old)."
-        },
-        {
-          "src": "rfo",
-          "sec": "6.001",
-          "quote": "exercising priced options that were evaluated as part of the original competition"
-        }
-      ]
-    },
-    {
-      "rung": "5m",
-      "topic": "Options",
-      "scenario": "Mid-source-selection, behind schedule, the PM proposes a shortcut: \"Drop the option-year evaluation — we'll just exercise them later if we like the contractor.\" The solicitation includes four one-year options worth more than the base.",
-      "ask": "What do you tell the PM — and what does her shortcut cost the Government downstream?",
-      "script": "The rule runs the other way: offers for option quantities and periods are evaluated before award of the basic contract. Skipping is possible but deliberately hard — reserved for rare instances where evaluation would not benefit the Government, in writing, approved a level above me, in the file. Here the options are most of the contract's value, so unevaluated options mean the true price of the deal was never competed. The downstream bill is the real answer: an option exercise complies with part 6 only because the option was evaluated in the initial competition at a price determinable from the contract. Skip the evaluation and each later exercise is naked new sole-source work — J&A, approval level set by the option's value, protest surface — arriving at exactly the moment the program has no time. Two weeks saved now, bought back at retail four times.",
-      "follow_ups": [
-        {
-          "q": "When is skipping the option evaluation actually defensible?",
-          "h": "The exception has three procedural locks and one adjective.",
-          "d": "When evaluation would not benefit the Government — 'rare instances' is the regulation's own phrase — and even then only in writing, approved above the contracting officer, and filed. Think options overwhelmingly unlikely to be exercised. It is a documented exception, never a schedule-recovery tool."
-        },
-        {
-          "q": "Step back — when are options the wrong structure entirely?",
-          "h": "17.201-1 lists both the not-beneficial and the must-not cases.",
-          "d": "Options are normally not beneficial with minimum economic quantities and delivery needs far enough out for a new competition — and must not be used when price or availability isn't reasonably foreseeable or market prices are likely to change significantly. Volatile-market options lock tomorrow's price with today's ignorance; a requirements or indefinite-quantity vehicle may fit better."
-        },
-        {
-          "q": "The PM's fallback: 'Then we'll just extend the contract when the time comes.'",
-          "h": "An extension the contract doesn't provide for is not an option.",
-          "d": "A bilateral extension outside the contract's terms is new work awarded without competition — part 6 applies with no evaluated-option exemption to lean on, which means a J&A the office will hate writing. The honest choices are evaluated options now or a planned recompete later; 'we'll extend' is the unplanned J&A on layaway."
-        }
-      ],
-      "cites": [
-        {
-          "src": "rfo",
-          "sec": "17.202",
-          "quote": "The contracting officer may skip the evaluation of option quantities when such evaluation would not benefit the Government. This exception should be reserved for rare instances."
-        },
-        {
-          "src": "rfo",
-          "sec": "17.204-1",
-          "quote": "the option was evaluated as part of the initial competition and is exercisable at an amount specified in or reasonably determinable from the terms of the contract"
-        },
-        {
-          "src": "rfo",
-          "sec": "17.201-1",
-          "quote": "Market prices for the supplies or services are likely to change significantly."
-        }
-      ]
+     "q": "The PM adds: \"We're out of runway to compete this — the money expires.\"",
+     "h": "What can never be the basis for other than full and open competition?",
+     "d": "6.103(b): lack of planning by the requiring activity and funding concerns are expressly barred as justification. The answer isn't 'no' — it's that urgency of the calendar has to trace to a legitimate authority and the Government's need, and the file must never lean on the schedule the office burned."
     }
-  ]
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "6.103-1",
+     "quote": "Substantial duplication of cost to the Government that is not expected to be recovered through competition"
+    },
+    {
+     "src": "rfo",
+     "sec": "6.104-2",
+     "quote": "A justification must include the estimated dollar value of all options to determine the approval level."
+    },
+    {
+     "src": "rfo",
+     "sec": "6.103",
+     "quote": "A lack of planning by the requiring activity"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Competition (CICA)",
+   "scenario": "A repair requirement sat in the program office for eight months. Now a fielded system has failed a safety inspection, operations wants it fixed within weeks, and an engineer has already obtained a quote from the vendor he likes. The PM hands you a draft urgency J&A with that vendor's name in it.",
+   "ask": "Is this an urgency action at all — and what do you do with the J&A already on your desk?",
+   "script": "Two separate questions. First, is the urgency real: the test is that the Government would be seriously injured, financially or otherwise, unless sources are limited. A safety failure can genuinely qualify even when the office also slept on the requirement — but the injury must be the Government's, now, not the schedule they burned, because lack of planning can never be the basis. Second, the process: urgency limits competition, it doesn't eliminate it — I still solicit as many sources as practicable under the circumstances. The pre-selected vendor is the red flag I run down: the file has to show why sources were limited, not that somebody's favorite got ratified. Then I scope the period of performance to the urgency and get the competitive successor moving in parallel.",
+   "follow_ups": [
+    {
+     "q": "How long can an urgency contract run?",
+     "h": "There are two ceilings — one tied to the need, one in months.",
+     "d": "No longer than necessary to meet the urgent need and to award a competitive successor, and not more than one year including all options unless the head of the agency determines exceptional circumstances apply — a determination separate from the J&A and documented in the file. The trap: writing a three-year PoP 'for stability' under an urgency authority."
+    },
+    {
+     "q": "Ops says there's no time for approvals. Can the J&A come after award?",
+     "h": "Urgency has a documented timing exception.",
+     "d": "Yes — 6.103-2(d) allows the justification and approval after award when doing it before would unreasonably delay the acquisition. A good answer treats that as a documented exception with the full content requirement intact, not a license to paper the file at leisure."
+    },
+    {
+     "q": "The PM argues the eight months of delay is itself the urgency. Answer him.",
+     "h": "What does 6.103(b) prohibit?",
+     "d": "Other than full and open competition must not be justified on lack of planning or funding concerns. The urgency must stand on present harm to the Government — the safety failure — and the J&A should be written on that harm, with the delay acknowledged honestly. Hiding the history is how justifications die at the advocate's desk."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "6.103-2",
+     "quote": "the Government would be seriously injured, financially or otherwise, unless the agency is permitted to limit the number of sources"
+    },
+    {
+     "src": "rfo",
+     "sec": "6.103-2",
+     "quote": "May not exceed one year, including all options, unless the head of the agency determines that exceptional circumstances apply"
+    },
+    {
+     "src": "rfo",
+     "sec": "6.103",
+     "quote": "Contracting without providing for full and open competition must not be justified on the basis of"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Commercial Products & Services",
+   "scenario": "A requiring office sends you a purchase description for commercial network hardware, about $2.1 million: \"Brand X Model 4400 or equal.\" Reading the salient characteristics, you realize they were lifted from Brand X's own spec sheet — down to a proprietary management protocol no other manufacturer implements.",
+   "ask": "What do you do with this purchase description before anything goes on the street?",
+   "script": "An \"or equal\" whose salient characteristics only one product can meet is a brand-name spec wearing a costume — no equal can ever qualify, so it restricts competition exactly like pure brand name. True brand-name descriptions prevent full and open competition and ride on a justification; a genuine or-equal preserves it. So my first move is back to the requiring activity: strip the salient characteristics to actual minimum needs, stated in performance terms — a proprietary protocol is only salient if the mission truly requires it. If brand name survives that scrub, this commercial buy over the SAT takes a written justification approved per 6.104. And for DoD there's no documentation escape by adding \"or equal\" — the 12.102 documentation is required for brand-name-or-equal and proprietary specs too.",
+   "follow_ups": [
+    {
+     "q": "Same item, but the buy is at or below the SAT. What changes?",
+     "h": "12.102 splits the documentation duty at the SAT.",
+     "d": "Below the SAT you document the decision that only one source is available and the basis; above it you prepare a written justification and get it approved per 6.104. Lighter paper, same discipline. The trap is treating below-SAT as no-documentation territory."
+    },
+    {
+     "q": "Now it's an order under a multiple-award IDIQ instead of a new contract. Does the brand-name discipline follow it?",
+     "h": "Items peculiar to one manufacturer have their own ordering rule.",
+     "d": "Yes — 16.507-7: a brand-name item, even if available on more than one contract, is an item peculiar to one manufacturer. The restriction is justified in the 16.507-6(d)-(e) format, and above $40,000 the justification gets posted or sent with the solicitation to all awardees. Weak candidates think fair-opportunity-land has no brand-name rules."
+    },
+    {
+     "q": "Who owns the claim that the proprietary protocol is a real minimum need?",
+     "h": "The J&A's supporting data has certifiers besides the contracting officer.",
+     "d": "Technical and requirements personnel are responsible for providing — and certifying as accurate and complete — the data supporting other than full and open competition (6.104(b)). The CO signs the justification, but the requirement owner signs for the requirement. A good answer assigns that accountability out loud."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "6.103-1",
+     "quote": "use of brand-name descriptions, or specification of attributes peculiar to one manufacturer, prevents full and open competition"
+    },
+    {
+     "src": "r-dfars",
+     "sec": "212.102-70",
+     "quote": "the documentation addressed in FAR 12.102 is required to use brand name or equal descriptions or proprietary specifications and standards"
+    },
+    {
+     "src": "rfo",
+     "sec": "16.507-7",
+     "quote": "A brand-name item, even if available on more than one contract, is an item peculiar to one manufacturer."
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Small Business Programs",
+   "scenario": "An Air Force base-operations-support requirement, roughly $40 million, is headed to the 8(a) program, and SBA has identified a participant for a sole-source award. A sharp new specialist objects: \"Anything sole source over $900K needs a J&A through the competition advocate\" — and drafts one for your signature.",
+   "ask": "Is your specialist right? What actually governs this award, and what do you do with the draft?",
+   "script": "The instinct is right and the answer is still no — this is the classic DoD deviation. Under 206.104-70, implementing section 823 of the FY20 NDAA, no justification and approval is required for a sole-source 8(a) award up to $100 million. The 8(a) authority is its own statutory lane, not a 6.103 exception riding the approval ladder. What I do owe the file: the acquisition sits far above the 8(a) competitive thresholds — $8.5M manufacturing, $5.5M for everything else — so the real question is why this isn't a competitive 8(a) among eligible participants, and that conversation happens with SBA before acceptance, not in a J&A. I thank the specialist for the reflex, park the draft, and document the offering-and-acceptance trail instead.",
+   "follow_ups": [
+    {
+     "q": "Same requirement at $120 million. Now what?",
+     "h": "The $100 million line flips the whole posture.",
+     "d": "Above $100M DoD requires the works: a justification with the FAR 6.104-1 content, approval by the head of the procuring activity — delegable only to an official above brigadier general or rear admiral (lower half), or the civilian equivalent — and public posting after award. A strong candidate states the approval level and the delegation floor; a weak one says 'SPE, probably.'"
+    },
+    {
+     "q": "Why isn't this simply competed among 8(a) firms?",
+     "h": "What do the competitive thresholds command when two participants exist?",
+     "d": "Above the thresholds, the acquisition must be awarded competitively among eligible 8(a) participants when there's a reasonable expectation of two responsible participants and award at fair market price. Sole source above the threshold is the exception that has to be walked through SBA acceptance — that's the pressure point the board wants you to feel."
+    },
+    {
+     "q": "The PM offers a fix: split it into two $20 million packages and place both sole source.",
+     "h": "There's an express prohibition on exactly this.",
+     "d": "19.108-7(c): a requirement exceeding the competitive threshold shall not be divided into lesser amounts to use 8(a) sole-source procedures for a single firm. That's not creativity, it's splitting — and the answer the panel wants is the flat no, followed by the legitimate alternatives: competitive 8(a), or a defensible sole-source case at full value."
+    }
+   ],
+   "cites": [
+    {
+     "src": "r-dfars",
+     "sec": "206.104-70",
+     "quote": "no justification and approval is required for a sole- source contract under the 8(a) authority (15 U.S.C. 637(a)) for an amount not exceeding $100 million"
+    },
+    {
+     "src": "r-dfars",
+     "sec": "206.104-72",
+     "quote": "the head of the procuring activity is the approval authority for a proposed sole-source 8(a) contract exceeding $100 million"
+    },
+    {
+     "src": "rfo",
+     "sec": "19.108-7",
+     "quote": "shall not be divided into several requirements for lesser amounts in order to use 8(a) sole source procedures for award to a single firm"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "IDIQ Ordering & Fair Opportunity",
+   "scenario": "On a five-awardee services MAC, one vendor won the original engineering-support order in open competition two years ago. Since then the program has issued two \"logical follow-on\" orders to the same vendor without notifying the field, and a third — $4.8 million — just arrived with a one-line justification: \"continuation of ongoing work.\"",
+   "ask": "The third order is on your desk. Take the panel through your review.",
+   "script": "Fair opportunity is the default for every order above the micro-purchase threshold; the logical follow-on exception exists for economy and efficiency, but it's earned order by order, never inherited as a habit. Three checks. Anchor: the exception is available only if all awardees had a fair opportunity at the original order — and if these chained follow-ons have drifted in scope, the chain back to that competed order may already be broken. Content: above the SAT the justification carries the full 16.507-6(d)(2) package, and the rationale must say why the relationship is logical in terms of scope, period of performance, or value — \"continuation of ongoing work\" is a wish, not a rationale. Approval and posting: at $4.8M this goes to the advocate for competition, not delegable, and the justification gets posted. If the package can't clear those, the order competes.",
+   "follow_ups": [
+    {
+     "q": "What does a defensible logical-follow-on rationale actually contain?",
+     "h": "The regulation names the three axes of the relationship.",
+     "d": "It describes why the follow-on relationship is logical in terms of scope, period of performance, or value — concretely: same technical baseline, continuity of a defined effort, transition costs that make re-competition uneconomical for this order. The trap is circularity: 'it's a follow-on because it follows on.'"
+    },
+    {
+     "q": "What does DoD add for exactly this situation?",
+     "h": "DoD saw the chaining problem coming.",
+     "d": "R-DFARS 216.507-6: for an order above the SAT that is a follow-on to an order previously issued for the same supply or service under the (b)(2) or (b)(3) exceptions, follow the PGI procedures — extra scrutiny aimed precisely at serial follow-ons. Volunteering the deviation is what separates the Air Force answer from the textbook answer."
+    },
+    {
+     "q": "One of the other four awardees says they never see these orders. Where does that complaint go?",
+     "h": "There's a designated official independent of you.",
+     "d": "The task-order ombudsman — a senior agency official, independent of the contracting officer, who reviews complaints and ensures awardees are afforded fair opportunity consistent with the contract's procedures (16.507-2(b)). Knowing the ombudsman exists, and that this pattern is exactly what draws one in, shows ordering-vehicle maturity."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "16.507-6",
+     "quote": "it is a logical follow-on to an order already issued under the contract, provided that all awardees were given a fair opportunity to be considered for the original order"
+    },
+    {
+     "src": "rfo",
+     "sec": "16.507-6",
+     "quote": "the justification must be approved by the advocate for competition of the activity placing the order"
+    },
+    {
+     "src": "r-dfars",
+     "sec": "216.507-6",
+     "quote": "that is a follow-on to an order previously issued for the same supply or service based on a justification for an exception to fair opportunity citing the authority at FAR 16.507-6(b)(2) or (3)"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "IDIQ Ordering & Fair Opportunity",
+   "scenario": "A delivery order on a single-award IDIQ for aircraft ground-equipment maintenance has grown by modification: first a software-sustainment task was added, and now the PM wants to fold in facility repairs at a second base. \"There's plenty of ceiling left on the contract,\" he says.",
+   "ask": "Ceiling is available. What's your analysis before you sign the next modification?",
+   "script": "Ceiling isn't authority — scope is. Orders escape part 6 only conditionally: the exemption holds when the underlying contract was competed and all responsible sources were realistically permitted to compete for the requirements contained in the order. Work outside the scope of what was competed inherits no exemption; it's a new procurement wearing a mod number, and it must be competed or justified under 6.103 with its own approval. So I test the mod against what offerors reasonably anticipated when the IDIQ was competed. Software sustainment on a GSE-maintenance contract was already a stretch; facility repair at another base fails on arrival. In scope, I sign. Out of scope, the honest answer is a new action — compete it, or write the J&A and take the approval that comes with it.",
+   "follow_ups": [
+    {
+     "q": "The PM says a modification can't be protested, so where's the risk?",
+     "h": "What kind of modification does 6.001 actually except from part 6?",
+     "d": "Only modifications within the scope of the contract are excepted. An out-of-scope mod is functionally a new sole-source award made without authority — and that is a protestable, sustainable ground. The shield is scope, not the instrument. A strong candidate says the risk isn't the mod form, it's the unauthorized award hiding inside it."
+    },
+    {
+     "q": "What if the IDIQ itself had been awarded under a J&A rather than competed?",
+     "h": "The conditional exemption has a second prong.",
+     "d": "Then orders are exempt only where the justification and approval adequately covers the requirements contained in the order (6.001(e)(2)). An order the J&A never contemplated has no exemption to inherit — the J&A's own scope becomes the fence line. That's the subtlety most candidates miss."
+    },
+    {
+     "q": "Funds on the order expire in three weeks. Does that tip the call?",
+     "h": "What can never justify skipping competition?",
+     "d": "No — funding concerns are expressly barred as a basis for other than full and open competition (6.103(b)(2)). Expiring money makes the conversation urgent; it doesn't make the mod in scope. The disciplined answer is to size a bridge inside scope if one honestly exists, and start the new action for the rest."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "6.001",
+     "quote": "The contract was awarded under 6.101 or 6.102, and all responsible sources were realistically permitted to compete for the requirements contained in the order"
+    },
+    {
+     "src": "rfo",
+     "sec": "6.103",
+     "quote": "Concerns related to the amount of funds available to the agency or activity for acquisition"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "IDIQ Ordering & Fair Opportunity",
+   "scenario": "You're placing an $8.5 million task order for logistics IT support on a seven-awardee MAC. Last cycle, the program office solicited two favorites by email and a losing awardee went to the ombudsman. Your chief wants this one clean.",
+   "ask": "Design the order competition for me. What does an order above $7.5 million require that a smaller one doesn't?",
+   "script": "Above $7.5 million the procedures stiffen: a fair notice of intent to all awardees offering the service — not two favorites — with a clear statement of the requirement, a reasonable response period, and disclosure of the significant evaluation factors and subfactors, including cost or price, and their relative importance. Then I document that every response was fairly considered, and on a best-value selection, the relative importance of quality against price. Postaward, notices and debriefings run per part 15 and a summary of the debriefing goes in the order file. What I don't need is part 15 machinery: no formal evaluation plan, no scoring, no competitive range — the ordering process is exempt from part 6 and subpart 15.3. Streamlined is legal; selective solicitation is not. That distinction is the whole game.",
+   "follow_ups": [
+    {
+     "q": "With options the order lands at $10.2 million. What changes about debriefings?",
+     "h": "DoD drew its own line above the RFO's.",
+     "d": "R-DFARS 216.507-5: at $10 million or more a written or oral postaward debriefing is required — for successful and unsuccessful awardees — following the 215.301 procedures. Below that, part 15 debriefing practice applies via 16.507-5(c). Missing the DoD $10M line is the most common miss on this question."
+    },
+    {
+     "q": "Your fair notice goes to all seven and exactly one offer comes back. Now what?",
+     "h": "DoD has a one-offer rule for competitive orders.",
+     "d": "R-DFARS 216.507-70: one offer on a competitive order above the SAT sends you to the 215.271-6 procedures before award. One response to a genuinely fair notice can be a fine outcome — but DoD makes you verify the price stands without competitive pressure, not just shrug and award."
+    },
+    {
+     "q": "The program office asks for scoring sheets and a competitive range 'to be safe.' Is safer better here?",
+     "h": "What is the ordering process expressly not subject to?",
+     "d": "Not subject to part 6, subpart 15.3, or part 14 — no evaluation plans, scoring, or competitive range required. Importing part 15 wholesale isn't safety, it's self-inflicted schedule and protest surface. The mature answer: tailor procedures to the order's risk and complexity, and put the discipline where the rule puts it — fair notice, fair consideration, documentation."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "16.507-5",
+     "quote": "A summary of the debriefing must be included in the task or delivery order file."
+    },
+    {
+     "src": "r-dfars",
+     "sec": "216.507-5",
+     "quote": "a written or oral postaward debriefing of successful and unsuccessful awardees is required for task orders and delivery orders valued at $10 million or more"
+    },
+    {
+     "src": "r-dfars",
+     "sec": "216.507-70",
+     "quote": "If only one offer is received in response to an order exceeding the simplified acquisition threshold that is placed on a competitive basis"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "IDIQ Ordering & Fair Opportunity",
+   "scenario": "Closing out the ordering period on a multiple-award IDIQ, your specialist discovers one awardee never received a single order — and its contract minimum guarantee was never satisfied. The PM sees an opening: \"Perfect. Give them the new $3 million requirement sole source and we solve both problems.\"",
+   "ask": "Does the minimum guarantee get you there? What do you actually do?",
+   "script": "There is a real exception here — an order may be placed sole source when necessary to satisfy a minimum guarantee — but it's sized to the problem it solves. The guarantee is whatever the contract promised that awardee, and the exception covers satisfying it, not decorating it with a $3 million requirement that happens to be convenient. If the minimum is, say, $50K, I place an order sized to the minimum, with the justification the exception requires above the micro-purchase threshold, and the new requirement gets fair opportunity like any other order. I'd also say the quiet part: an unmet minimum at closeout means our ordering discipline failed this awardee for years — the ombudsman conversation we never had. The fix going forward is honest minimums and consideration at award, not a rescue order at twilight.",
+   "follow_ups": [
+    {
+     "q": "So how large should the sole-source order be?",
+     "h": "The exception reaches only as far as its purpose.",
+     "d": "Large enough to satisfy the minimum guarantee — that's the necessity the exception names. Anything beyond rides on a different exception or on fair opportunity. Bundling the pet requirement in is using a $50K key to open a $3M door, and the justification you'd have to write would say so out loud."
+    },
+    {
+     "q": "What paper does even the right-sized order need?",
+     "h": "Sole source above the MPT is never paper-free on a MAC.",
+     "d": "A written justification per 16.507-6(d) — the exception cited with supporting rationale, a fair-and-reasonable price determination, and above the SAT the full content, approval at the level the value commands, and posting. The minimum-guarantee exception changes the rationale, not the ritual."
+    },
+    {
+     "q": "A different awardee sees the order and objects. Exposure?",
+     "h": "Think about what the justification does and doesn't shield.",
+     "d": "A properly justified minimum-guarantee order is defensible — the exception exists for exactly this. What's not defensible is the oversized version: to the other awardees it's a sole-source award of new work they never got to chase. Complaints route to the ombudsman, and an order untethered from its exception is protest bait. Size and paper are the whole defense."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "16.507-6",
+     "quote": "It is necessary to place an order to satisfy a minimum guarantee."
+    },
+    {
+     "src": "rfo",
+     "sec": "16.507-6",
+     "quote": "A determination by the contracting officer that the anticipated cost to the Government will be fair and reasonable."
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Small Business Programs",
+   "scenario": "Market research for a $3.4 million grounds-maintenance recompete: the incumbent is a large business. One capable small business answered the sources sought with directly relevant past performance; a second small firm sent a capability statement that's thin but plausible. The PM wants full and open \"so we can keep the incumbent.\"",
+   "ask": "Set-aside or not — and whose decision is it?",
+   "script": "Above the micro-purchase threshold the rule is mandatory, not a preference: the contract must be set aside when there's a reasonable expectation of offers from two or more responsible small businesses, competitive on fair market price, quality, and delivery. Reasonable expectation — not certainty. A strong first responder plus a thin-but-plausible second can carry it, so my next move is to pressure-test the second firm: targeted questions, their contract history, capacity. If the expectation holds, the set-aside isn't optional, and keeping the incumbent is not a factor the regulation recognizes. If it doesn't hold, I document why — the rule requires documenting the reason a contract is not set aside. Either way the determination is the contracting officer's, informed by the small business specialist and SBA, not the PM's.",
+   "follow_ups": [
+    {
+     "q": "What if the honest answer is only one responsible small business?",
+     "h": "The rule of two failing doesn't end the small business analysis.",
+     "d": "No mandatory total set-aside — but 19.104-1 expressly doesn't preclude award under the HUBZone, SDVOSB, WOSB, or 8(a) programs, several of which have sole-source lanes. The disciplined sequence is socioeconomic programs before defaulting to full and open. Weak answers stop at 'rule of two fails, compete it.'"
+    },
+    {
+     "q": "Move the same requirement onto a multiple-award contract as an order. Does the mandatory rule follow?",
+     "h": "Order set-asides run on different statutory footing.",
+     "d": "No — order set-asides under MACs are discretionary: contracting officers may, at their discretion, set aside orders, and that decision is an exercise of discretion that is not a basis for protest. Knowing the mandatory contract-level rule from the discretionary order-level authority is exactly the kind of distinction boards probe."
+    },
+    {
+     "q": "SBA formally recommends the set-aside and you still disagree. Can you just proceed?",
+     "h": "Rejecting an SBA recommendation has its own path.",
+     "d": "Not quietly — rejecting the SBA recommendation triggers the 19.102(f) process rather than a unilateral shrug, and the file carries the documented reason the contract is not set aside. The point the panel is testing: the decision is yours, but it is reviewable, documented, and made against a mandatory standard."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "19.104-1",
+     "quote": "there is a reasonable expectation of obtaining offers— (1) From two or more responsible small business concerns; and (2) That are competitive in terms of fair market prices, quality, and delivery"
+    },
+    {
+     "src": "rfo",
+     "sec": "19.111-2",
+     "quote": "contracting officers may, at their discretion, set aside orders placed under multiple-award contracts"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Contract Types",
+   "scenario": "A $15 million sustainment-engineering requirement arrives with the acquisition plan already marked CPFF. The entire rationale reads: \"Requirements uncertainty — consistent with prior contract.\" The prior contract was also CPFF. So was the one before it.",
+   "ask": "How do you make the contract-type call here, and what has to be in the file to defend it?",
+   "script": "Type follows risk, and the file has to prove the risk, not recite it. For anything other than fixed-price, 16.103 demands the full package: an analysis of why non-fixed-price is appropriate, specific facts and circumstances — not \"uncertainty\" as an incantation — an assessment that the Government has the resources to manage it, and planned actions to transition toward fixed-price on the next buy. Three CPFF generations with no transition story is the tell that nobody has done the analysis. Then the cost-reimbursement gates: an acquisition plan approved a level above me, a contractor accounting system that can segregate, accumulate, and allocate costs to this contract, and a designated COR before award. My move is to decompose the requirement — after years of performance, the stable core prices firm-fixed; keep cost-type only for the genuinely uncertain slice.",
+   "follow_ups": [
+    {
+     "q": "The contractor's accounting system hasn't been looked at in years. Proceed?",
+     "h": "It's a condition of use, not a nice-to-have.",
+     "d": "No — an adequate accounting system that can segregate, accumulate, and allocate costs during performance is a precondition for cost-reimbursement (16.301-3(a)(3)). Award first and verify later is exactly backwards; the verification gates the type. A strong candidate also names who they'd ask — DCAA/DCMA — without being prompted."
+    },
+    {
+     "q": "Your specialist proposes T&M instead, 'for flexibility.' React.",
+     "h": "T&M has the harshest determination in part 16.",
+     "d": "T&M requires a D&F that no other contract type is suitable — signed before the base period, approved by the HCA when base plus options exceed three years — and a ceiling price the contractor exceeds at its own risk. It's the type of last resort with the least cost discipline, not the flexible middle ground. 'Flexibility' is precisely the argument the D&F standard exists to kill."
+    },
+    {
+     "q": "What's the transition story the file owes, and why does anyone care?",
+     "h": "The (a)(5) package looks forward, not just backward.",
+     "d": "Planned actions to minimize non-fixed-price use on future acquisitions of the same requirement and transition to fixed-price to the maximum extent practicable. It matters because it converts this award into the setup for the next one — defined workload data, stabilized requirements. Its absence across three CPFF cycles is how a board knows the office is coasting."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "16.103",
+     "quote": "transition to fixed-price contracts to the maximum extent practicable"
+    },
+    {
+     "src": "rfo",
+     "sec": "16.301-3",
+     "quote": "The contractor’s accounting system can adequately segregate, accumulate and allocate costs specifically attributed to the contract or order during contract performance"
+    },
+    {
+     "src": "rfo",
+     "sec": "16.601-3",
+     "quote": "no other contract type is suitable"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Commercial Products & Services",
+   "scenario": "The requiring office delivers a government-unique performance spec for vehicle-fleet telematics units — \"our operating environment is unique.\" Your market research turns up three commercial products doing this work for utility fleets today, one of them available on an existing governmentwide contract.",
+   "ask": "The PM is standing firm on the unique spec. What does the regulation require of you here, and in what order?",
+   "script": "The preference isn't advisory: agencies must acquire commercial products and services when they're available to meet the need, and 10.001(f) hands me the priority ladder — first, a commercial solution on an existing governmentwide contract; second, whether the requirement can be modified so an existing contract works; then commercial from another source; then modified commercial; and only when nothing satisfies, a nondevelopmental item. My research already found rung one. So the burden runs against the unique spec: I take \"unique environment\" back to the requiring office and make it testable — temperature range, shock, security interface — because most uniqueness collapses into ruggedization the market already sells. If a genuine gap survives, the honest path is modifying the requirement or a modified commercial product, documented at the level the buy deserves — not a clean-sheet development.",
+   "follow_ups": [
+    {
+     "q": "Fine — it's commercial. Now the PM wants cost-reimbursement 'until we understand the usage patterns.'",
+     "h": "Part 12 has a flat answer.",
+     "d": "Prohibited, full stop — no cost-reimbursement contract type for commercial products or services (12.104(d)), and 16.301-3(b) says the same from the part 16 side. Usage uncertainty is handled with structure — quantity bands, EPA, T&M under its conditions — not by importing cost-type into part 12."
+    },
+    {
+     "q": "What about T&M for the commercial installation services piece?",
+     "h": "T&M for commercial services has three conditions.",
+     "d": "Available if the services are acquired competitively and are commonly sold to the public on a T&M basis, with a D&F that firm-fixed-price or FPEPA is not suitable and a ceiling price the contractor exceeds at its own risk (12.104(b)). The trap is treating T&M as the default for services — the D&F burden runs the other way."
+    },
+    {
+     "q": "The PM asks what the commercial determination actually buys anyone.",
+     "h": "Think about what part 12 changes downstream.",
+     "d": "It moves the buy into part 12's streamlined solicitation, evaluation, and clause structure, opens the market that actually makes the product, and preserves fixed-price discipline — 12.104(a) drives FFP or FPEPA to the maximum extent practicable. The determination isn't paperwork; it's the gate between buying what industry sells and paying to reinvent it."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "12.101",
+     "quote": "Agencies must acquire commercial products or commercial services when the agency determines that they are available to meet the agency’s needs"
+    },
+    {
+     "src": "rfo",
+     "sec": "10.001",
+     "quote": "A commercial product or commercial service on an existing governmentwide contract can meet the agency's requirements"
+    },
+    {
+     "src": "rfo",
+     "sec": "12.104",
+     "quote": "Do not use any cost-reimbursement contract type to procure commercial products or commercial services."
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Market Research",
+   "scenario": "A sources-sought for depot-level repair of a legacy radar ran ten days over the winter holidays and drew zero responses. The PM declares victory: \"Market research complete — nobody else can do it. Write the sole-source J&A to the OEM.\"",
+   "ask": "Does this market research carry a sole-source justification? What do you do next?",
+   "script": "Zero responses to a badly aimed notice proves the notice, not the market. The standard is research appropriate to the circumstances — and for a repair market where third-party shops are known to exist, ten days over the holidays isn't it. Before any J&A, I rerun the research like I mean it: a properly timed notice, direct outreach to known repair houses, and real exchanges with industry, which the regulation encourages within the procurement-integrity rails. The J&A itself will force the issue anyway — it must contain the market research conducted and the results, the efforts to solicit as many sources as possible, any sources that expressed interest in writing, and the actions we'll take to remove barriers next time. A justification built on a dead notice hands the advocate every reason to bounce it. And if honest research still says one source, the J&A then writes itself — honestly.",
+   "follow_ups": [
+    {
+     "q": "What if market research genuinely wasn't conducted at all?",
+     "h": "The J&A content rule anticipates that case — read it closely.",
+     "d": "The J&A must state the reason market research was not conducted. But that's a confession with a signature line, not an escape hatch — for a multi-million-dollar repair requirement there is no reason the approving official should accept. The clause exists for edge cases, and this isn't one."
+    },
+    {
+     "q": "The PM worries that calling repair vendors directly is a procurement-integrity problem.",
+     "h": "The regulation takes a side on talking to industry.",
+     "d": "It says the opposite: agencies should engage in responsible and constructive exchanges with industry, so long as no firm gains an unfair advantage and 3.104 is respected. Silence isn't compliance — it's how offices end up sole-sourcing by ignorance. The discipline is evenhandedness and documentation, not avoidance."
+    },
+    {
+     "q": "Three weeks after the sole-source award, a repair shop emails a capability statement. Does it matter?",
+     "h": "The J&A has two forward-looking content items.",
+     "d": "It matters for the next acquisition. The J&A must list sources that expressed interest in writing and state the actions the agency may take to remove barriers to competition before the next buy — late interest is exactly the evidence those provisions exist to capture. Filing it as noise repeats this year's mistake on next year's requirement."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "10.001",
+     "quote": "Agencies must conduct market research appropriate to the circumstances"
+    },
+    {
+     "src": "rfo",
+     "sec": "6.104-1",
+     "quote": "The market research conducted (see part 10) and the results or a statement of the reason market research was not conducted."
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Options",
+   "scenario": "A firm-fixed-price services option must be exercised by 30 September; it's the 12th. Performance has been acceptable with one recent dip. Then the checks come back: the contractor's NIST SP 800-171 assessment in SPRS is three and a half years old, and market rates for this labor mix have fallen roughly fifteen percent since award.",
+   "ask": "Walk the panel through your option-exercise decision.",
+   "script": "An option exercise is a determination, not a reflex. The base checklist: written notice within the contract's window, funds confirmed, then the determinations — a continuing requirement, synopsis posture settled, no active SAM exclusion, acceptable performance, and the one with teeth here: the option price is fair and reasonable based on current market conditions and exercise is in the Government's best interest. A fifteen-percent market drop puts that determination genuinely in question — I need current pricing evidence, and if the option price can't be defended today, the best-interest answer may be to let it lapse and compete. And for DoD the gate gets longer before I ever reach price: SAM record active and accurate, and SPRS verification that the NIST assessment is current — not more than three years old — and the CMMC certificate at the required level. A 3.5-year-old assessment fails that check on its face; the contractor refreshes it or the option doesn't get exercised.",
+   "follow_ups": [
+    {
+     "q": "The contract requires 30 days' preliminary notice and you have 18. What are your options now?",
+     "h": "The unilateral right lives and dies by the contract's terms.",
+     "d": "Exercise per the contract's terms or not at all — 17.204-1(b)(1) conditions exercise on notice within the time specified. Miss the window and the unilateral right is gone; what's left is a bilateral agreement, which is new sole-source work needing its own part 6 authority, or a new competition. The trap is 'the contractor won't mind' — consent doesn't resurrect authority."
+    },
+    {
+     "q": "Why does an option exercise escape a J&A in the first place?",
+     "h": "The exemption was earned at the original award.",
+     "d": "Because part 6 was satisfied up front: the option was evaluated as part of the initial competition and is exercisable at an amount specified in or reasonably determinable from the contract — and 6.001(c) excepts in-scope mods including priced, evaluated options. An option that was never evaluated, or whose price isn't determinable from the contract, has no exemption to stand on."
+    },
+    {
+     "q": "Performance is rated marginal in one area on the last CPARS. Does that kill the exercise?",
+     "h": "The standard is a determination, not a spotless record.",
+     "d": "Not automatically — the determination is that performance has been acceptable, for example satisfactory or better ratings. One marginal area is weighed by the CO: is it material, trending, corrected? What the board wants is the documented judgment — and the recognition that exercising an option is endorsing the contractor for another year with the Government's money."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "17.204-1",
+     "quote": "the option price is fair and reasonable based on current market conditions and exercise of the option is in the Government's best interest"
+    },
+    {
+     "src": "r-dfars",
+     "sec": "217.204-170",
+     "quote": "The contractor has a CMMC certificate at the level required by the contract, and that it is current (i.e., not more than 3 years old)."
+    },
+    {
+     "src": "rfo",
+     "sec": "6.001",
+     "quote": "exercising priced options that were evaluated as part of the original competition"
+    }
+   ]
+  },
+  {
+   "rung": "5m",
+   "topic": "Options",
+   "scenario": "Mid-source-selection, behind schedule, the PM proposes a shortcut: \"Drop the option-year evaluation — we'll just exercise them later if we like the contractor.\" The solicitation includes four one-year options worth more than the base.",
+   "ask": "What do you tell the PM — and what does her shortcut cost the Government downstream?",
+   "script": "The rule runs the other way: offers for option quantities and periods are evaluated before award of the basic contract. Skipping is possible but deliberately hard — reserved for rare instances where evaluation would not benefit the Government, in writing, approved a level above me, in the file. Here the options are most of the contract's value, so unevaluated options mean the true price of the deal was never competed. The downstream bill is the real answer: an option exercise complies with part 6 only because the option was evaluated in the initial competition at a price determinable from the contract. Skip the evaluation and each later exercise is naked new sole-source work — J&A, approval level set by the option's value, protest surface — arriving at exactly the moment the program has no time. Two weeks saved now, bought back at retail four times.",
+   "follow_ups": [
+    {
+     "q": "When is skipping the option evaluation actually defensible?",
+     "h": "The exception has three procedural locks and one adjective.",
+     "d": "When evaluation would not benefit the Government — 'rare instances' is the regulation's own phrase — and even then only in writing, approved above the contracting officer, and filed. Think options overwhelmingly unlikely to be exercised. It is a documented exception, never a schedule-recovery tool."
+    },
+    {
+     "q": "Step back — when are options the wrong structure entirely?",
+     "h": "17.201-1 lists both the not-beneficial and the must-not cases.",
+     "d": "Options are normally not beneficial with minimum economic quantities and delivery needs far enough out for a new competition — and must not be used when price or availability isn't reasonably foreseeable or market prices are likely to change significantly. Volatile-market options lock tomorrow's price with today's ignorance; a requirements or indefinite-quantity vehicle may fit better."
+    },
+    {
+     "q": "The PM's fallback: 'Then we'll just extend the contract when the time comes.'",
+     "h": "An extension the contract doesn't provide for is not an option.",
+     "d": "A bilateral extension outside the contract's terms is new work awarded without competition — part 6 applies with no evaluated-option exemption to lean on, which means a J&A the office will hate writing. The honest choices are evaluated options now or a planned recompete later; 'we'll extend' is the unplanned J&A on layaway."
+    }
+   ],
+   "cites": [
+    {
+     "src": "rfo",
+     "sec": "17.202",
+     "quote": "The contracting officer may skip the evaluation of option quantities when such evaluation would not benefit the Government. This exception should be reserved for rare instances."
+    },
+    {
+     "src": "rfo",
+     "sec": "17.204-1",
+     "quote": "the option was evaluated as part of the initial competition and is exercisable at an amount specified in or reasonably determinable from the terms of the contract"
+    },
+    {
+     "src": "rfo",
+     "sec": "17.201-1",
+     "quote": "Market prices for the supplies or services are likely to change significantly."
+    }
+   ]
+  }
+ ]
 }

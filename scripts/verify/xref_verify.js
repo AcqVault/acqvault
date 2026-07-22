@@ -1,6 +1,8 @@
 // Verify the cross-reference engine against the REAL corpus, using the REAL shipped code.
 const fs = require('fs'), path = require('path'), vm = require('vm');
-const BASE = path.join(process.env.HOME, 'Documents/Projects/acqvault');
+// Resolve from THIS file, not $HOME: hard-coding the owner's path made these
+// unrunnable from any other clone — and therefore impossible to wire into a gate.
+const BASE = path.resolve(__dirname, '..', '..');
 const { grabFunction, grabConst, grabLine } = require(path.join(BASE, 'scripts', 'extract_js_fns.js'));
 const src = fs.readFileSync(path.join(BASE, 'assets/app.js'), 'utf8');
 

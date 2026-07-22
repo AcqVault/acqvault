@@ -648,6 +648,27 @@ def append_changes_log(entry):
     CHANGES_LOG.write_text(json.dumps(log, ensure_ascii=False, indent=1))
 
 
+def run_health_gates(abort_msg="✗ SHIP ABORTED — fix the failing check(s) above, then re-run."):
+    """The two read-only gates, so they can run on a no-RFO-diff run too.
+
+    They used to live only inside ship(), which is unreachable when the RFO text
+    has not moved — precisely the path taken when another source is re-extracted
+    in-session. A run that only touched R-DFARS/PGI/SSP therefore validated
+    nothing at all. Returns True when both pass.
+    """
+    print("\nCorpus health…")
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "corpus_health.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
+        print("\n" + abort_msg)
+        return False
+    print("\nRender health…")
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "render_health.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
+        print("\n" + abort_msg)
+        return False
+    return True
+
+
 def ship(summary_line):
     print("\nShipping…")
     subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "gen_doc_hashes.py")],
@@ -657,27 +678,26 @@ def ship(summary_line):
     # wedged mid-section, swallowed PGI attachments, PDF lines broken
     # mid-sentence, un-ingested memos). A non-zero exit stops the ship and the
     # failing check names the repair script to run.
+    # Render health proves the RENDERERS can read what corpus_health says is valid.
+    # The DFARS PGI passed every corpus check and shipped with all 427 section
+    # numbers unparsed, one citation shared by 27 sections, and no Browse entry
+    # point at all. A FAIL there usually means fix a FUNCTION, not the corpus.
+    # Derived artefacts the renderers depend on must be regenerated between the
+    # two: xref-index.json is what makes in-app cross-references resolve at all
+    # (ACQ_INDEX is only populated on the offline fallback path); part-labels.json
+    # is what gives the hub pages their part names.
     print("\nCorpus health…")
-    health = subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "corpus_health.py")],
-                            cwd=str(BASE_DIR))
-    if health.returncode != 0:
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "corpus_health.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
         print("\n✗ SHIP ABORTED — fix the failing check(s) above, then re-run.")
         sys.exit(1)
-    # Render health gate — corpus_health above proves the DATA is valid; this proves the
-    # RENDERERS can actually read it. The DFARS PGI passed every corpus check and shipped
-    # with all 427 section numbers unparsed, one citation shared by 27 sections, and no
-    # Browse entry point at all. A FAIL here usually means fix a FUNCTION, not the corpus.
-    # Derived artefacts the renderers depend on. xref-index.json is what makes in-app
-    # cross-references resolve at all (ACQ_INDEX is only populated on the offline
-    # fallback path); part-labels.json is what gives the hub pages their part names.
     for gen in (("scripts", "gen_xref_index.py"), ("scripts", "gen_part_labels.js")):
         tool = "node" if gen[1].endswith(".js") else sys.executable
         subprocess.run([tool, str(BASE_DIR.joinpath(*gen))], cwd=str(BASE_DIR), check=True)
 
     print("\nRender health…")
-    render = subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "render_health.py")],
-                            cwd=str(BASE_DIR))
-    if render.returncode != 0:
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "render_health.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
         print("\n✗ SHIP ABORTED — fix the failing check(s) above, then re-run.")
         sys.exit(1)
     new_cache = bump_service_worker()
@@ -791,6 +811,12 @@ def main():
             # corpus. renderChangesPage already handles a zero-change run — it
             # prints "No RFO text changes in this re-index."
             append_changes_log(report)
+            # Still gate. ship() is unreachable from here, so this path used to
+            # validate nothing — while being exactly the path an in-session
+            # re-extract of a non-RFO source takes.
+            if not run_health_gates("✗ CORPUS IS UNHEALTHY — the RFO did not move, "
+                                    "but the checks above failed on what is on disk."):
+                sys.exit(1)
         return
 
     if args.dry_run:
