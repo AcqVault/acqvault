@@ -666,6 +666,16 @@ def run_health_gates(abort_msg="✗ SHIP ABORTED — fix the failing check(s) ab
                       cwd=str(BASE_DIR)).returncode != 0:
         print("\n" + abort_msg)
         return False
+    # Deck health — the shipped assets/study-deck.json is a committed artefact
+    # that nothing here rebuilds or reads, so a corpus edit could silently
+    # invalidate a study card's verbatim quote or deep link. Rejoining 113 split
+    # citations rewrote text five ladder quotes span; they survived, but only
+    # because someone checked by hand.
+    print("\nDeck health…")
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "deck_health.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
+        print("\n" + abort_msg)
+        return False
     return True
 
 
@@ -699,6 +709,14 @@ def ship(summary_line):
     if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "render_health.py")],
                       cwd=str(BASE_DIR)).returncode != 0:
         print("\n✗ SHIP ABORTED — fix the failing check(s) above, then re-run.")
+        sys.exit(1)
+    # Deck health — proves the SHIPPED study deck still agrees with the corpus
+    # being shipped in the same commit. Nothing else here reads it.
+    print("\nDeck health…")
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "deck_health.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
+        print("\n✗ SHIP ABORTED — the shipped deck disagrees with this corpus. "
+              "Rebuild with python3 study-tool/build_deck_v2.py, then re-run.")
         sys.exit(1)
     new_cache = bump_service_worker()
     if new_cache:
