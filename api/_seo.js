@@ -14,7 +14,7 @@ const SOURCES = {
   'far-companion':       { name: 'FAR Companion', short: 'FAR Companion',
     desc: 'Practitioner guidance accompanying the Revolutionary FAR Overhaul.' },
   'afi-63-138':          { name: 'DAFI 63-138', short: 'DAFI 63-138',
-    desc: 'Department of the Air Force Instruction 63-138, Acquisition Program Management.' },
+    desc: 'Department of the Air Force Instruction 63-138, Acquisition of Services.' },
   'category-management': { name: 'Category Management Buying Guide', short: 'Category Management',
     desc: 'Federal category management buying guidance.' },
   'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
@@ -53,6 +53,32 @@ function displayPartForSource(source, part) {
   return String(part);
 }
 function partWord(source) { return source === 'fmr' ? 'Volume' : 'Part'; }
+// What a source's top-level divisions are actually CALLED. The FMR has Volumes (the
+// hub linked to "Volume 1…Volume 16" while the lede said "20 parts"), and the SSP has
+// numbered sections plus lettered appendices, never "parts".
+// Google prints these verbatim, so cut on a word boundary and mark the elision —
+// a hard slice ended /fmr's description on "…by volum".
+function clampDesc(text, max) {
+  const t = String(text || '').trim();
+  if (t.length <= max) return t;
+  return t.slice(0, max - 1).replace(/\s+\S*$/, '') + '…';
+}
+// The authority depends on the SOURCE. A single global line claiming "the signed DoD
+// class deviations and acquisition.gov" was stamped on the FMR (authority: DoD
+// Comptroller, DoD 7000.14-R) and the DoD SSP (authority: OUSD A&S/DPC), which is
+// simply the wrong provenance for those documents.
+function authorityLine(source) {
+  if (source === 'fmr') return 'The authoritative source is the official DoD Financial Management Regulation (DoD 7000.14-R) published by the Under Secretary of Defense (Comptroller).';
+  if (source === 'ssp') return 'The authoritative source is the official DoD Source Selection Procedures issued by OUSD(A&amp;S)/DPC.';
+  if (source === 'afi-63-138') return 'The authoritative source is the official Department of the Air Force Instruction published on e-Publishing.';
+  if (source === 'category-management') return 'The authoritative source is the official category management guidance published by the FAR Council.';
+  return 'The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.';
+}
+function hubUnit(source, n) {
+  if (source === 'fmr') return n === 1 ? 'volume' : 'volumes';
+  if (source === 'ssp') return 'sections and appendices';
+  return n === 1 ? 'part' : 'parts';
+}
 function partLabel(source, part) {
   return (PART_LABELS[source] && PART_LABELS[source][part])
     || `${partWord(source)} ${displayPartForSource(source, part)}`;
@@ -340,9 +366,12 @@ function spliceTables(content, tables) {
 }
 function tableHtml(rows, escFn) {
   if (!rows || rows.length < 2) return '';
-  const head = rows[0].map(c => `<th scope="col">${escFn(c)}</th>`).join('');
+  // An EMPTY header cell is worse than no header: a screen reader announces a column
+  // header with no name. Some extracted tables have blank leading/trailing cells, so
+  // emit a plain cell for those rather than a nameless th. KEEP IN SYNC across renderers.
+  const head = rows[0].map(c => String(c || '').trim() ? `<th scope="col">${escFn(c)}</th>` : '<td></td>').join('');
   const body = rows.slice(1).map(r => '<tr>' + r.map((c, ci) =>
-    ci === 0 ? `<th scope="row">${escFn(c)}</th>` : `<td>${escFn(c)}</td>`).join('') + '</tr>').join('');
+    ci === 0 ? (String(c || '').trim() ? `<th scope="row">${escFn(c)}</th>` : '<td></td>') : `<td>${escFn(c)}</td>`).join('') + '</tr>').join('');
   return `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
 // Paragraph depth from the token a line opens with — see assets/app.js tokenLevel().
@@ -722,7 +751,7 @@ function renderContent(content, title, anchorBase, tables, source, partNum) {
 
 function metaDescription(docs) {
   const text = String((docs[0] && docs[0].content) || '').replace(/^L\d+:\s*/gm, '').replace(/\s+/g, ' ').trim();
-  return esc(text.slice(0, 155));
+  return esc(clampDesc(text, 155));
 }
 
 const STYLE = `@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
@@ -944,7 +973,7 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .lfoot-legal a{color:var(--accent)}
 @media(max-width:560px){.lband-inner{padding:40px 18px}.lhero .lband-inner{padding:40px 18px 38px}.lhero h1{font-size:30px}}`;
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
 <html lang="en">
@@ -972,7 +1001,7 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed, ogIma
 ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
 <header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></header>
 <main>${body}</main>
-<footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</footer>
+<footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. ${authorityLine(source)} Always verify before relying on any result in a contract file.</footer>
 </div>`}
 </body>
 </html>`;
@@ -1037,7 +1066,7 @@ ${partPairBanner(source, part, pairIdx)}
 ${partSrc}
 ${sections}`;
 
-  return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}-v2.png` });
+  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png` });
 }
 
 function renderHubPage(source) {
@@ -1047,7 +1076,7 @@ function renderHubPage(source) {
   if (!parts.length) return null;
   const canonical = `${SITE}/${source}`;
   const title = `${meta.name} — full text & parts | AcqVault`;
-  const description = esc(meta.desc.slice(0, 155));
+  const description = esc(clampDesc(meta.desc, 155));
 
   const links = parts.map(p =>
     `<a href="/${source}/part-${encodeURIComponent(p)}">${esc(partLabel(source, p))}</a>`).join('\n');
@@ -1063,11 +1092,11 @@ function renderHubPage(source) {
     : '';
   const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › ${esc(meta.name)}</nav>
 <h1>${esc(meta.name)}</h1>
-<p class="lede">${esc(meta.desc)} Browse all ${parts.length} parts below, or <a href="/?home=1">search the full text</a>.</p>
+<p class="lede">${esc(meta.desc)} Browse all ${parts.length} ${hubUnit(source, parts.length)} below, or <a href="/?home=1">search the full text</a>.</p>
 ${devLink}
 <div class="parts">${links}</div>`;
 
-  return shell({ title, description, canonical, jsonld, body, ogImage: `og-src-${source}-v2.png` });
+  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png` });
 }
 
 function renderDeviationsPage() {
@@ -1093,7 +1122,7 @@ function renderDeviationsPage() {
 
   const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/r-dfars">R-DFARS Deviations</a> › Index</nav>
 <h1>R-DFARS Deviations Index</h1>
-<p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul (${rows.length} parts), with its RFO part, legacy DFARS reference, effective date, and DARS tracking number. Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
+<p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul (${rows.length} deviations), with its RFO part, legacy DFARS reference, effective date, and DARS tracking number. Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
 <table class="devtable">
 <thead><tr><th scope="col">RFO Part</th><th scope="col">Legacy DFARS ref</th><th scope="col">Effective</th><th scope="col">DARS Tracking #</th><th scope="col">Read</th></tr></thead>
 <tbody>
@@ -1110,7 +1139,7 @@ function renderLibraryPage() {
   const canonical = `${SITE}/library`;
   const title = `AcqVault Library — field guides, templates & source PDFs | AcqVault`;
   const totalItems = cats.reduce((n, c) => n + c.items.length, 0);
-  const description = esc(`Free downloadable AcqVault field guides and templates for the DoD acquisition community, plus the full text of every indexed source (RFO, R-DFARS, FAR Companion, Category Management, DAFI 63-138, the DoD FMR, and the DoD Source Selection Procedures). ${totalItems} resources, no account required.`);
+  const description = esc(`Free downloadable AcqVault field guides and templates for the DoD acquisition community, plus the full text of every indexed source (RFO, R-DFARS, the R-DFARS PGI, FAR Companion, Category Management, DAFI 63-138, the DoD FMR, and the DoD Source Selection Procedures). ${totalItems} resources, no account required.`);
 
   // engraved brass vault emblem (line-art, no glow) — matches the homepage covers
   const EMBLEM = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>';
@@ -1205,7 +1234,7 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 ${catHtml}
 </main>
 <footer class="lband lband--foot"><div class="lband-inner">
-<p class="lfoot-note"><strong>Originals</strong> are written by AcqVault as research aids. <strong>Source documents</strong> are compiled from official material and regenerated monthly — always verify against the signed DoD class deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on any result in a contract file.</p>
+<p class="lfoot-note"><strong>Originals</strong> are written by AcqVault as research aids. <strong>Source documents</strong> are compiled from official material and regenerated monthly.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. The authoritative sources are the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>. Always verify before relying on any result in a contract file.</p>
 </div></footer>`;
 

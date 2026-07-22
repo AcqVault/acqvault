@@ -1,157 +1,157 @@
 {
- "updated": "2026-06-29",
- "categories": [
-  {
-   "key": "field-guides",
-   "name": "Field Guides",
-   "blurb": "AcqVault originals — plain-English study guides written for the acquisition workforce. Built for the warrant board and the day-to-day.",
-   "items": [
+  "updated": "2026-06-29",
+  "categories": [
     {
-     "id": "field-guide-vol-1",
-     "title": "AcqVault Field Guide — Vol. 1",
-     "subtitle": "Contracting Foundations",
-     "desc": "The foundations you actually use day to day — thresholds, methods, and the RFO framing — distilled into a working reference.",
-     "file": "/pdfs/acqvault-field-guide-vol-1.pdf?v=5",
-     "download": "AcqVault-Field-Guide-Vol-1.pdf",
-     "type": "PDF",
-     "pages": 39,
-     "origin": "AcqVault original",
-     "updated": "2026-07"
+      "key": "field-guides",
+      "name": "Field Guides",
+      "blurb": "AcqVault originals — plain-English study guides written for the acquisition workforce. Built for the warrant board and the day-to-day.",
+      "items": [
+        {
+          "id": "field-guide-vol-1",
+          "title": "AcqVault Field Guide — Vol. 1",
+          "subtitle": "Contracting Foundations",
+          "desc": "The foundations you actually use day to day — thresholds, methods, and the RFO framing — distilled into a working reference.",
+          "file": "/pdfs/acqvault-field-guide-vol-1.pdf?v=5",
+          "download": "AcqVault-Field-Guide-Vol-1.pdf",
+          "type": "PDF",
+          "pages": 39,
+          "origin": "AcqVault original",
+          "updated": "2026-07"
+        },
+        {
+          "id": "field-guide-vol-2",
+          "title": "AcqVault Field Guide — Vol. 2",
+          "subtitle": "The Unlimited Warrant Board",
+          "desc": "Board-prep rebuilt around how the panel actually tests: 29 topics each with trigger cues, a step-by-step walkthrough, know-cold facts, pre-answered follow-ups, and messy drill scenarios — plus an unlabeled scenario bank.",
+          "file": "/pdfs/acqvault-field-guide-vol-2.pdf?v=4",
+          "download": "AcqVault-Field-Guide-Vol-2.pdf",
+          "type": "PDF",
+          "pages": 97,
+          "origin": "AcqVault original",
+          "updated": "2026-07"
+        }
+      ]
     },
     {
-     "id": "field-guide-vol-2",
-     "title": "AcqVault Field Guide — Vol. 2",
-     "subtitle": "The Unlimited Warrant Board",
-     "desc": "Board-prep rebuilt around how the panel actually tests: 29 topics each with trigger cues, a step-by-step walkthrough, know-cold facts, pre-answered follow-ups, and messy drill scenarios — plus an unlabeled scenario bank.",
-     "file": "/pdfs/acqvault-field-guide-vol-2.pdf?v=4",
-     "download": "AcqVault-Field-Guide-Vol-2.pdf",
-     "type": "PDF",
-     "pages": 97,
-     "origin": "AcqVault original",
-     "updated": "2026-07"
+      "key": "templates",
+      "name": "Templates",
+      "blurb": "Reusable, fillable documents you can adapt for a contract file. Built as interactive PDFs.",
+      "items": [
+        {
+          "id": "casper-mfr",
+          "title": "CASPER MFR",
+          "subtitle": "Contract Acquisition Strategy, Pricing & Execution Review",
+          "desc": "A fillable, multi-phase CASPER review record — with collapsible Phase II/III sections that grow and shrink as needed. Adapt it and drop it in the contract file. Best in Adobe Acrobat (Pro or Standard).",
+          "file": "/pdfs/casper-mfr-template.pdf?v=2",
+          "download": "AcqVault-CASPER-MFR-Template.pdf",
+          "type": "Interactive PDF",
+          "pages": 5,
+          "origin": "AcqVault original",
+          "updated": "2026-06"
+        }
+      ]
+    },
+    {
+      "key": "source-documents",
+      "name": "Source Documents",
+      "blurb": "The full text of every indexed source. Most are compiled into one clean PDF per source with an AcqVault watermark and regenerated monthly; the DoD FMR links to the official publisher, and the DoD SSP and R-DFARS PGI are read in-app. Always verify against the official source before relying on a result in a contract file.",
+      "items": [
+        {
+          "id": "src-rfo",
+          "title": "Revolutionary FAR Overhaul",
+          "subtitle": "RFO · Parts 1–53",
+          "desc": "Full text of the RFO, compiled in sequential part order from the live index.",
+          "file": "/pdfs/rfo.pdf",
+          "download": "AcqVault-RFO.pdf",
+          "type": "PDF",
+          "meta": "49 parts covered",
+          "origin": "Official source, compiled by AcqVault",
+          "updated": "monthly"
+        },
+        {
+          "id": "src-r-dfars",
+          "title": "R-DFARS",
+          "subtitle": "DoD deviations · Parts 201–252",
+          "desc": "The DoD class deviations implementing the FAR overhaul, compiled into one document.",
+          "file": "/pdfs/r-dfars.pdf",
+          "download": "AcqVault-R-DFARS.pdf",
+          "type": "PDF",
+          "meta": "46 parts covered",
+          "origin": "Official source, compiled by AcqVault",
+          "updated": "monthly"
+        },
+        {
+          "id": "src-far-companion",
+          "title": "FAR Companion",
+          "subtitle": "Version 2.0 · FAR Council",
+          "desc": "Practitioner guidance accompanying the overhaul, compiled into one document.",
+          "file": "/pdfs/far-companion.pdf",
+          "download": "AcqVault-FAR-Companion.pdf",
+          "type": "PDF",
+          "meta": "40 parts covered",
+          "origin": "Official source, compiled by AcqVault",
+          "updated": "monthly"
+        },
+        {
+          "id": "src-category-management",
+          "title": "Category Management Buying Guide",
+          "subtitle": "Beta 0.1 · FAR Council",
+          "desc": "Federal category management buying guidance, compiled into one document.",
+          "file": "/pdfs/category-management-buying-guide.pdf",
+          "download": "AcqVault-Category-Management-Buying-Guide.pdf",
+          "type": "PDF",
+          "meta": "12 sections covered",
+          "origin": "Official source, compiled by AcqVault",
+          "updated": "Oct 30, 2025"
+        },
+        {
+          "id": "src-dafi-63-138",
+          "title": "DAFI 63-138",
+          "subtitle": "Acquisition of Services · Dept. of the Air Force",
+          "desc": "Department of the Air Force Instruction 63-138, compiled into one document.",
+          "file": "/pdfs/dafi63-138.pdf",
+          "download": "AcqVault-DAFI-63-138.pdf",
+          "type": "PDF",
+          "meta": "41 sections · 6 chapters",
+          "origin": "Official source, compiled by AcqVault",
+          "updated": "Jan 2, 2024"
+        },
+        {
+          "id": "src-fmr",
+          "title": "DoD Financial Management Regulation",
+          "subtitle": "DoD 7000.14-R · Volumes 1–16",
+          "desc": "The full DoD Financial Management Regulation — searchable and browsable in-app by volume and chapter. The official combined PDF (all 16 volumes) is hosted by the DoD Comptroller and opens on their site.",
+          "file": "https://comptroller.war.gov/portals/45/documents/fmr/Combined_Volume1-16.pdf",
+          "download": "",
+          "type": "Official PDF",
+          "meta": "304 chapters · 16 volumes",
+          "origin": "Official source (DoD Comptroller)",
+          "updated": "Mar 2024"
+        },
+        {
+          "id": "src-ssp",
+          "title": "DoD Source Selection Procedures",
+          "subtitle": "USA000740-22-DPC · Aug 20, 2022",
+          "desc": "The Department of Defense Source Selection Procedures — searchable and browsable in-app by section and appendix.",
+          "file": "/ssp",
+          "download": "",
+          "type": "In-app",
+          "meta": "5 sections · 5 appendices",
+          "origin": "Official source (OUSD A&S · DPC)",
+          "updated": "Aug 20, 2022"
+        },
+        {
+          "id": "src-pgi",
+          "title": "R-DFARS Procedures, Guidance, and Information",
+          "subtitle": "PGI · the procedural companion to the R-DFARS",
+          "desc": "The PGI attachment that ships with each DoD class deviation — how to build a PIID, what a contract action report must carry, how to run a mentor-protégé agreement. Guidance on executing the rule, not a rule itself.",
+          "file": "/pgi",
+          "type": "In-app",
+          "meta": "42 parts · 427 sections",
+          "origin": "Official source, extracted by AcqVault",
+          "updated": "2026-07"
+        }
+      ]
     }
-   ]
-  },
-  {
-   "key": "templates",
-   "name": "Templates",
-   "blurb": "Reusable, fillable documents you can adapt for a contract file. Built as interactive PDFs.",
-   "items": [
-    {
-     "id": "casper-mfr",
-     "title": "CASPER MFR",
-     "subtitle": "Contract Acquisition Strategy, Pricing & Execution Review",
-     "desc": "A fillable, multi-phase CASPER review record — with collapsible Phase II/III sections that grow and shrink as needed. Adapt it and drop it in the contract file. Best in Adobe Acrobat (Pro or Standard).",
-     "file": "/pdfs/casper-mfr-template.pdf?v=2",
-     "download": "AcqVault-CASPER-MFR-Template.pdf",
-     "type": "Interactive PDF",
-     "pages": 5,
-     "origin": "AcqVault original",
-     "updated": "2026-06"
-    }
-   ]
-  },
-  {
-   "key": "source-documents",
-   "name": "Source Documents",
-   "blurb": "The full text of every indexed source, compiled into one clean PDF per source with an AcqVault watermark. Regenerated monthly alongside the index. Always verify against the official source before relying on a result in a contract file.",
-   "items": [
-    {
-     "id": "src-rfo",
-     "title": "Revolutionary FAR Overhaul",
-     "subtitle": "RFO · Parts 1–53",
-     "desc": "Full text of the RFO, compiled in sequential part order from the live index.",
-     "file": "/pdfs/rfo.pdf",
-     "download": "AcqVault-RFO.pdf",
-     "type": "PDF",
-     "meta": "43 parts covered",
-     "origin": "Official source, compiled by AcqVault",
-     "updated": "monthly"
-    },
-    {
-     "id": "src-r-dfars",
-     "title": "R-DFARS",
-     "subtitle": "DoD deviations · Parts 201–252",
-     "desc": "The DoD class deviations implementing the FAR overhaul, compiled into one document.",
-     "file": "/pdfs/r-dfars.pdf",
-     "download": "AcqVault-R-DFARS.pdf",
-     "type": "PDF",
-     "meta": "46 parts covered",
-     "origin": "Official source, compiled by AcqVault",
-     "updated": "monthly"
-    },
-    {
-     "id": "src-far-companion",
-     "title": "FAR Companion",
-     "subtitle": "Version 2.0 · FAR Council",
-     "desc": "Practitioner guidance accompanying the overhaul, compiled into one document.",
-     "file": "/pdfs/far-companion.pdf",
-     "download": "AcqVault-FAR-Companion.pdf",
-     "type": "PDF",
-     "meta": "27 parts covered",
-     "origin": "Official source, compiled by AcqVault",
-     "updated": "monthly"
-    },
-    {
-     "id": "src-category-management",
-     "title": "Category Management Buying Guide",
-     "subtitle": "Beta 0.1 · FAR Council",
-     "desc": "Federal category management buying guidance, compiled into one document.",
-     "file": "/pdfs/category-management-buying-guide.pdf",
-     "download": "AcqVault-Category-Management-Buying-Guide.pdf",
-     "type": "PDF",
-     "meta": "12 sections covered",
-     "origin": "Official source, compiled by AcqVault",
-     "updated": "Oct 30, 2025"
-    },
-    {
-     "id": "src-dafi-63-138",
-     "title": "DAFI 63-138",
-     "subtitle": "Acquisition of Services · Dept. of the Air Force",
-     "desc": "Department of the Air Force Instruction 63-138, compiled into one document.",
-     "file": "/pdfs/dafi63-138.pdf",
-     "download": "AcqVault-DAFI-63-138.pdf",
-     "type": "PDF",
-     "meta": "41 sections · 6 chapters",
-     "origin": "Official source, compiled by AcqVault",
-     "updated": "Jan 2, 2024"
-    },
-    {
-     "id": "src-fmr",
-     "title": "DoD Financial Management Regulation",
-     "subtitle": "DoD 7000.14-R · Volumes 1–16",
-     "desc": "The full DoD Financial Management Regulation — searchable and browsable in-app by volume and chapter. The official combined PDF (all 16 volumes) is hosted by the DoD Comptroller and opens on their site.",
-     "file": "https://comptroller.war.gov/portals/45/documents/fmr/Combined_Volume1-16.pdf",
-     "download": "",
-     "type": "Official PDF",
-     "meta": "20 volume-parts · 304 chapters",
-     "origin": "Official source (DoD Comptroller)",
-     "updated": "Mar 2024"
-    },
-    {
-     "id": "src-ssp",
-     "title": "DoD Source Selection Procedures",
-     "subtitle": "USA000740-22-DPC · Aug 20, 2022",
-     "desc": "The Department of Defense Source Selection Procedures — searchable and browsable in-app by section and appendix.",
-     "file": "/ssp",
-     "download": "",
-     "type": "In-app",
-     "meta": "5 sections · 5 appendices",
-     "origin": "Official source (OUSD A&S · DPC)",
-     "updated": "Aug 20, 2022"
-    },
-    {
-     "id": "src-pgi",
-     "title": "R-DFARS Procedures, Guidance, and Information",
-     "subtitle": "PGI · the procedural companion to the R-DFARS",
-     "desc": "The PGI attachment that ships with each DoD class deviation — how to build a PIID, what a contract action report must carry, how to run a mentor-protégé agreement. Guidance on executing the rule, not a rule itself.",
-     "file": "/pgi",
-     "type": "In-app",
-     "meta": "42 parts · 427 sections",
-     "origin": "Official source, extracted by AcqVault",
-     "updated": "2026-07"
-    }
-   ]
-  }
- ]
+  ]
 }

@@ -1146,9 +1146,12 @@ function spliceBrowseTables(content, tables) {
 }
 function browseTableHtml(rows) {
   if (!rows || rows.length < 2) return '';
-  const head = rows[0].map(c => `<th scope="col">${esc(c)}</th>`).join('');
+  // An EMPTY header cell is worse than no header: a screen reader announces a column
+  // header with no name. Some extracted tables have blank leading/trailing cells, so
+  // emit a plain cell for those rather than a nameless th. KEEP IN SYNC across renderers.
+  const head = rows[0].map(c => String(c || '').trim() ? `<th scope="col">${esc(c)}</th>` : '<td></td>').join('');
   const body = rows.slice(1).map(r => '<tr>' + r.map((c, ci) =>
-    ci === 0 ? `<th scope="row">${esc(c)}</th>` : `<td>${esc(c)}</td>`).join('') + '</tr>').join('');
+    ci === 0 ? (String(c || '').trim() ? `<th scope="row">${esc(c)}</th>` : '<td></td>') : `<td>${esc(c)}</td>`).join('') + '</tr>').join('');
   return `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
 // Paragraph depth from the token a line opens with. The FAR/DFARS nesting order is
