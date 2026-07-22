@@ -33,7 +33,21 @@ LMARK = re.compile(r"^L\d+:")
 RESERVED_GROUP = re.compile(r"^(\d+\.\d+) \[Reserved\]$")
 # leading section/subpart number of any RFO title
 SECTION_NUM = re.compile(r"^(Subpart\s+[\d.]+|[\d.]+(?:-\d+)*)")
-PGI_HEAD = re.compile(r"PGI\s+\d+(\.\d+)?\s*[—–]")
+# ⚠ This once required an EM-DASH after the number, because that is how the 2026-07
+# sample happened to be punctuated. Four R-DFARS documents used a plain heading
+# ("PGI 209.105-1 Obtaining information.") and the check reported PASS on 16,665 chars
+# of guidance sitting inside RULE documents — with no Guidance badge and no clay colour
+# on an R-DFARS page, it reads as regulation. Match the heading SHAPE, not the sample's
+# punctuation: a PGI part banner, or a PGI section number followed by a title word.
+# ⚠ TWO traps here, both of which produced a wrong answer at some point:
+# (1) it once required an EM-DASH after the number, because that is how the 2026-07
+#     sample was punctuated — four docs used a plain heading and the gate passed on
+#     16,665 chars of guidance sitting inside RULE documents; and
+# (2) the trailing class must be [ \t], NOT \s. With \s the match runs across the
+#     newline and hits the NEXT line's "L1:" marker, so an ordinary inline reference
+#     that merely wraps at end-of-line ("…following the procedures at\nL0:PGI 217.7405.")
+#     reads as a heading. Match a heading's SHAPE, on ONE line.
+PGI_HEAD = re.compile(r"(?m)^(?:L\d+:)?PGI[ \t]+(?:PART\b|\d{3}\.\d[\d.\-]*(?:[ \t]*[—–]|[ \t]+[A-Z]))")
 FURNITURE = re.compile(
     r"^(Attachment [A-Z]\d?"
     r"|DARS Tracking Number:.*"
@@ -101,6 +115,26 @@ def main():
     ids = [d["id"] for d in docs]
     dups = len(ids) - len(set(ids))
     check("unique ids", dups == 0, f"{dups} duplicate id(s)")
+
+    # LAYOUT CONTRACT rule 7 — a corpus write may ADD tables, never silently drop them.
+    # The span checks below validate the tables that are present and say nothing about
+    # tables that vanished, so when extract_tables.py cleared the DAFI's 5 hand-built
+    # tables at 1aac202 every check still passed and Part 2 went back to drawing table
+    # captions with nothing underneath. Raise a floor here when a source legitimately
+    # gains tables; never lower one to make a run go green.
+    # r-dfars is 10, not 11: one table on 252.225-7964 spanned lines inside a swallowed
+    # PGI attachment, so when strip_pgi_tails.py cut that guidance out the table's rows
+    # described text the document no longer holds. It left with its text — the honest
+    # follow-up is recovering it onto PGI 225.070, not keeping an orphan here.
+    TABLE_FLOOR = {'afi-63-138': 5, 'far-companion': 7, 'fmr': 130, 'pgi': 9, 'r-dfars': 10, 'rfo': 56}
+    have = {}
+    for d in docs:
+        if d.get("tables"):
+            have[d["source"]] = have.get(d["source"], 0) + len(d["tables"])
+    lost = [f"{s}: {have.get(s, 0)} < {n}" for s, n in TABLE_FLOOR.items() if have.get(s, 0) < n]
+    check("no source lost tables", not lost,
+          f"table count fell below the recorded floor — {'; '.join(lost)}",
+          "a table-attaching pass cleared tables it did not write; check HAND_ATTACHED in scripts/extract_tables.py")
 
     # LAYOUT CONTRACT rule 3 — the title is copied VERBATIM into the citation a
     # contracting officer pastes into a contract file, so page whitespace must not

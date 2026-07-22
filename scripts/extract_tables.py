@@ -56,6 +56,14 @@ PDF_SOURCES = {
     "afi-63-138": ["DAFI 63-138"],
 }
 
+# Sources whose text came from a PDF but whose TABLES are hand-built, because the PDF
+# flattened them into unusable cell runs (scripts/attach_dafi_tables.py). This pass can
+# never match them, so without this set the clear-branch below deletes them — which is
+# exactly what happened at 1aac202: adding the PGI to PDF_SOURCES silently dropped the
+# DAFI's 5 tables, and Part 2 went back to drawing captions with nothing underneath.
+# The existing guard only protects sources OUTSIDE PDF_SOURCES; these are inside it.
+HAND_ATTACHED = {"afi-63-138"}
+
 MIN_ROWS = 2
 MIN_COLS = 2
 
@@ -329,7 +337,7 @@ def main():
                     keep.append({"start": t["start"], "end": t["end"], "rows": t["rows"]})
                     last_end = t["end"]
             d["tables"] = keep
-        elif "tables" in d and d.get("source") in PDF_SOURCES:
+        elif "tables" in d and d.get("source") in PDF_SOURCES and d.get("source") not in HAND_ATTACHED:
             # Only clear tables for the sources this pass actually looked at. Without
             # the guard, excluding a source from PDF_SOURCES silently deletes the
             # tables it got from somewhere better — which is exactly what happened to
