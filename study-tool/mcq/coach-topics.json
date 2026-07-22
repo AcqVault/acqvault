@@ -19,8 +19,8 @@
   },
   "Organizational Conflict of Interest": {
     "qtype": "an organizational-conflict-of-interest question — RFO 9.5: the type drives the remedy.",
-    "smes": "Legal (JA) and your reviewing chain; the HCA owns any waiver, non-delegable.",
-    "rule": "Identify the type first — unequal access, impaired objectivity, biased ground rules — then avoid, neutralize, or mitigate under RFO 9.5, in that order. A firewall can't fix ground rules already written.",
+    "smes": "Legal (JA) and your reviewing chain; a waiver runs to the agency head or a designee and is never delegated below the HCA (RFO 9.503).",
+    "rule": "Identify the type first — unequal access, impaired objectivity, biased ground rules — then avoid, neutralize, or mitigate under RFO 9.5, in that order. A firewall can't fix ground rules already written. On a significant potential conflict the CO analyses and recommends; the chief of the contracting office approves, modifies, or rejects the course of action in writing before the solicitation issues (RFO 9.506(b)-(c)).",
     "cite": "RFO 9.5 · Vol. 2, OCI"
   },
   "Contractor Qualifications — Responsibility": {
@@ -32,7 +32,7 @@
   "Market Research": {
     "qtype": "a market-research question — RFO Part 10: evidence before decisions.",
     "smes": "the requiring activity's SMEs, your Small Business Professional, and industry itself — sources sought, RFIs, industry days.",
-    "rule": "RFO Part 10 research is the evidence; the commerciality, competition, and set-aside calls are decisions built on it. Undocumented research supports nothing downstream — and RFO 10.001 treats it as current for 18 months.",
+    "rule": "RFO Part 10 research is the evidence; the commerciality, competition, and set-aside calls are decisions built on it. Undocumented research supports nothing downstream — and RFO 10.001(b) ties research to the event it supports (a new requirements document, a solicitation over the SAT, an order over the SAT), not to a shelf life.",
     "cite": "RFO Part 10 (10.001) · Vol. 2, Market Research"
   },
   "Required Sources of Supplies & Services": {
@@ -68,7 +68,7 @@
   "Contracting by Negotiation — Source Selection": {
     "qtype": "a source-selection question — RFO Part 15: fair process, documented judgment.",
     "smes": "the SSA, your SSEB chairs, Legal, and the pricing office for the cost/price side.",
-    "rule": "The solicitation is the contract of the competition: evaluate exactly as Section M promised, keep RFO Part 15 exchanges in their lanes — clarifications, communications, discussions — and make discussions meaningful.",
+    "rule": "The solicitation is the contract of the competition: evaluate exactly as Section M promised, keep RFO Part 15 exchanges in their lanes — clarifications under 15.202(a)(2), which never permit a proposal revision, and competitive negotiations under 15.204-2, which must at minimum surface each offeror's deficiencies and significant weaknesses.",
     "cite": "RFO Part 15 · Vol. 2, Source Selection"
   },
   "Certified Cost or Pricing Data & Proposal Analysis": {
@@ -79,21 +79,21 @@
   },
   "Contract Types": {
     "qtype": "a contract-type question — RFO Part 16: who carries the cost risk, and why.",
-    "smes": "your pricing office, the PM on requirement certainty, and your reviewing chain for the D&F.",
-    "rule": "RFO Part 16 matches risk to definition: FFP when the work prices firmly; cost-type (approved accounting system + D&F) when it can't. Forcing FFP onto the unknowable is risk denial, not risk transfer — and E.O. 14402 makes other-than-FFP a justified decision (RFO 16.104).",
+    "smes": "your pricing office, the PM on requirement certainty, and your reviewing chain for the acquisition plan, and the HCA for any incentive- or award-fee D&F.",
+    "rule": "RFO Part 16 matches risk to definition: FFP when the work prices firmly; cost-type when it can't — gated by RFO 16.301-3 on an acquisition plan approved one level above the CO, an accounting system that can segregate, accumulate and allocate costs, and sufficient Government resources including a designated COR. The HCA-signed D&F belongs to incentive- and award-fee contracts (RFO 16.401-2(a)), not to cost-type. Forcing FFP onto the unknowable is risk denial, not risk transfer — and E.O. 14402 makes other-than-FFP a justified decision (RFO 16.104).",
     "cite": "RFO Part 16 (16.104) · Vol. 2, Contract Types"
   },
   "IDIQ Ordering & Fair Opportunity": {
     "qtype": "a fair-opportunity question — RFO 16.507: every holder's real chance, or a documented exception.",
-    "smes": "the vehicle's PCO and ordering guide, the Competition Advocate for over-SAT D&As, and the ombudsman lane for holder complaints.",
-    "rule": "RFO 16.507-2 makes fair opportunity the default on multiple-award vehicles; exceptions (16.507-6) ride a D&A up the same approval ladder as J&As, and consideration must be genuine — not rotation paperwork.",
+    "smes": "the vehicle's PCO and ordering guide, the Competition Advocate for over-SAT justifications, and the ombudsman lane for holder complaints.",
+    "rule": "RFO 16.507-2 makes fair opportunity the default on multiple-award vehicles; exceptions (16.507-6) ride a written Justification for an Exception to Fair Opportunity — the document the RFO names — up the same approval ladder as J&As, and consideration must be genuine — not rotation paperwork.",
     "cite": "RFO 16.507 · Vol. 2, IDIQ"
   },
   "Options": {
     "qtype": "an options question — RFO Part 17: the exercise gates, applied to today.",
     "smes": "FM for funds, the COR and PM on performance and continuing need, and Legal if the notice window slipped.",
-    "rule": "Exercise only through the RFO Part 17 gates: funds, continuing need, most-advantageous check, SAM exclusions, performance considered — with timely written notice, or the unilateral right lapses into a bilateral negotiation.",
-    "cite": "RFO Part 17 · Vol. 2, Options"
+    "rule": "Exercise only through the RFO 17.204-1(b) gates: timely written notice, funds available, an existing requirement, synopsized or exempt, no active SAM exclusion, acceptable performance, a fair and reasonable price in the Government's best interest, and part 6 compliance — and for DoD, R-DFARS 217.204-170 adds an active and accurate SAM record plus SPRS verification of the NIST SP 800-171 score and a current CMMC certificate. Miss the notice window and the unilateral right lapses into a bilateral negotiation.",
+    "cite": "RFO 17.204-1 · R-DFARS 217.204-170 · Vol. 2, Options"
   },
   "Interagency Acquisitions & the Economy Act": {
     "qtype": "an interagency question — RFO Part 17 interagency acquisition and the Economy Act (31 U.S.C. 1535): direct vs. assisted, and whose rules travel with the money.",
@@ -128,7 +128,7 @@
   "Undefinitized Contract Actions": {
     "qtype": "a UCA question — R-DFARS 217.74: undefinitized work and decaying negotiation leverage.",
     "smes": "your pricing office, the clearance authority, and Legal; DCMA for actuals once performance starts.",
-    "rule": "R-DFARS 217.74 makes UCAs the exception: 50% obligation cap (75% after the qualifying proposal), definitize within 180 days, clearance at definitization — and neither poor planning nor administrative convenience ever justifies one.",
+    "rule": "R-DFARS 217.74 makes UCAs the exception: obligations capped at 50% of the not-to-exceed price, raised to no more than 75% only if the qualifying proposal arrives before that 50% point (217.7404-4(a)); definitization by the earlier of 180 days after the qualifying proposal or the date obligations pass 50% of the NTE (217.7404-3(a)); clearance at definitization — and neither poor planning nor administrative convenience ever justifies one.",
     "cite": "R-DFARS 217.74 · Vol. 2, UCAs"
   },
   "Clearance — Independent Review & Approval": {
@@ -140,8 +140,8 @@
   "Protests": {
     "qtype": "a protest question — RFO Part 33 and CICA: venue, stay math, and the record you built months earlier.",
     "smes": "Legal drives; GAO or COFC counsel through Legal; the HCA owns any override decision.",
-    "rule": "Know the RFO 33.105 machinery cold — the 10-day/5-day stay rule, three venues with different powers — and remember the real defense was built earlier: criteria stated, followed, and documented.",
-    "cite": "RFO 33.104 · RFO 33.105 · CICA · Vol. 2, Protests"
+    "rule": "Know the stay machinery cold — RFO 33.105-3(b)(1) is the government-wide 10-day/5-day rule, but for DoD R-DFARS 233.105-370 substitutes a four-part whichever-is-later test in its place, and there are three venues with different powers — and remember the real defense was built earlier: criteria stated, followed, and documented.",
+    "cite": "RFO 33.104 · RFO 33.105 · R-DFARS 233.105-370 · CICA · Vol. 2, Protests"
   },
   "REAs & Claims": {
     "qtype": "a disputes question — the Contract Disputes Act and RFO Part 33: REA lane or CDA claim, and substance beats the label.",
@@ -150,10 +150,10 @@
     "cite": "Contract Disputes Act · RFO Part 33 · Vol. 2, REAs & Claims"
   },
   "Terminations": {
-    "qtype": "a termination question — RFO Part 49 (or the commercial clause under RFO 12.403): fault drives the remedy.",
+    "qtype": "a termination question — RFO Part 49 (or, for commercial products and services, RFO 12.304): fault drives the remedy.",
     "smes": "Legal (mandatory), your termination contracting officer channel, and DCMA on settlement.",
-    "rule": "Who's at fault decides what's owed under RFO Part 49: T4C makes the contractor whole for work done, no anticipatory profit; T4D demands the full runway — cure, show cause, excusability — because a wrongful default converts to a T4C.",
-    "cite": "RFO Part 49 (commercial: 12.403) · Vol. 2, Terminations"
+    "rule": "Who's at fault decides what's owed under RFO Part 49: T4C makes the contractor whole for work done, no anticipatory profit; T4D demands the full runway — cure, show cause, excusability — because a wrongful default converts to a T4C. Commercial buys run on RFO 12.304 and the termination paragraphs of 52.212-4, not part 49 procedures — and a cure notice is still required unless the reason is late delivery (12.304(b)(1)).",
+    "cite": "RFO Part 49 (commercial: RFO 12.304) · Vol. 2, Terminations"
   },
   "R&D Contracting — BAAs, SBIR & OTs": {
     "qtype": "an R&D-authorities question — RFO Part 35, the SBIR statute, and 10 U.S.C. 4022 OTs: the right instrument for genuine uncertainty.",

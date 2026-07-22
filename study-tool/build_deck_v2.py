@@ -128,7 +128,7 @@ NORM = {
     'differing site conditions': 'Construction & Service Contracting',
     'contractor performance/service administration': 'Construction & Service Contracting',
     'competition': 'Competition (CICA)',
-    'd&a mechanics': 'IDIQ Ordering & Fair Opportunity',
+    'fair opportunity justifications': 'IDIQ Ordering & Fair Opportunity',
     'fair opportunity exceptions': 'IDIQ Ordering & Fair Opportunity',
     'interagency': 'Interagency Acquisitions & the Economy Act',
     'modifications & scope': 'Contract Modifications & Scope',
