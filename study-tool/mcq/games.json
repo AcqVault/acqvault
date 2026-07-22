@@ -50,10 +50,22 @@
       "cat": "Contract changes"
     },
     {
+      "w": "OPTION",
+      "def": "A unilateral Government right priced up front — not beneficial when material prices or availability are likely to move.",
+      "cite": "RFO 17.201-1",
+      "cat": "Options & duration"
+    },
+    {
       "w": "CLAIM",
       "def": "A written demand for payment as a matter of right — certified over $100K, and the clocks start running.",
       "cite": "RFO 33.2",
       "cat": "Disputes & appeals"
+    },
+    {
+      "w": "PROTEST",
+      "def": "A GAO filing inside the window forces a stay; for DoD the clock runs from the latest of four dates.",
+      "cite": "RFO 33.105-3 · R-DFARS 233.105-370",
+      "cat": "Protests"
     },
     {
       "w": "AWARD",
@@ -62,10 +74,22 @@
       "cat": "Getting on contract"
     },
     {
+      "w": "NOVATION",
+      "def": "Recognizing a successor after an asset transfer — a pure stock purchase needs none, because the contracting party never changed.",
+      "cite": "RFO 42.903",
+      "cat": "Contractor changes"
+    },
+    {
       "w": "OFFER",
       "def": "A response the Government can accept to form a binding contract — quotes aren't one.",
       "cite": "RFO 2.101",
       "cat": "Forming the contract"
+    },
+    {
+      "w": "RATIFY",
+      "def": "Blessing an unauthorized commitment after the fact — only if funds were available when it was made.",
+      "cite": "RFO 1.405",
+      "cat": "Authority"
     },
     {
       "w": "PRICE",
@@ -74,10 +98,22 @@
       "cat": "Cost & pricing"
     },
     {
+      "w": "DEBRIEF",
+      "def": "Request it in writing within 3 days of the award notice — accommodating a late request does not extend protest deadlines.",
+      "cite": "RFO 15.301-1",
+      "cat": "Source selection"
+    },
+    {
       "w": "AUDIT",
       "def": "The examination of contractor records that backs up cost analysis on the big ones.",
       "cite": "RFO 15.404",
       "cat": "Cost & pricing"
+    },
+    {
+      "w": "WARRANTY",
+      "def": "Never mandatory — you weigh its cost against how hard the defect would be to detect before acceptance.",
+      "cite": "RFO 46.703",
+      "cat": "Quality assurance"
     },
     {
       "w": "BONDS",
@@ -86,10 +122,22 @@
       "cat": "Construction & sureties"
     },
     {
+      "w": "MARKET",
+      "def": "Research required before any solicitation over the simplified acquisition threshold, and it drives the commercial-first order of priority.",
+      "cite": "RFO 10.001",
+      "cat": "Acquisition planning"
+    },
+    {
       "w": "QUOTE",
       "def": "Information, not an offer — the Government's order is the offer; the vendor can still walk.",
       "cite": "RFO 13.2",
       "cat": "Simplified buys"
+    },
+    {
+      "w": "WARRANT",
+      "def": "The SF 1402 certificate of appointment — it states your limits, and outside them you bind nobody.",
+      "cite": "RFO 1.403-2",
+      "cat": "Authority"
     },
     {
       "w": "DELAY",
@@ -98,10 +146,22 @@
       "cat": "Performance problems"
     },
     {
+      "w": "TRADEOFF",
+      "def": "Paying more than the lowest price on purpose — the added benefit has to merit the added cost, in writing.",
+      "cite": "RFO 15.103-1",
+      "cat": "Source selection"
+    },
+    {
       "w": "FUNDS",
       "def": "No money, no contract — obligation without appropriation is an Antideficiency Act problem.",
       "cite": "RFO 32.7 · DoD FMR",
       "cat": "Fiscal law"
+    },
+    {
+      "w": "CLAUSE",
+      "def": "Incorporate by reference wherever you can — but you still owe the full text to anyone who asks.",
+      "cite": "RFO 52.102",
+      "cat": "Clauses"
     },
     {
       "w": "WAIVE",
@@ -110,10 +170,22 @@
       "cat": "Cost & pricing"
     },
     {
+      "w": "CEILING",
+      "def": "On time-and-materials the contractor exceeds it at its own risk, and a D&F must say no other contract type fits.",
+      "cite": "RFO 16.601-3",
+      "cat": "Contract types"
+    },
+    {
       "w": "TERMS",
       "def": "The clauses that allocate risk — read them before the contractor does.",
       "cite": "RFO Part 52",
       "cat": "Clauses"
+    },
+    {
+      "w": "PROGRESS",
+      "def": "Cost-based financing at a customary 80 percent, 85 for small business, and held to 80 on undefinitized actions.",
+      "cite": "RFO 32.501-1",
+      "cat": "Contract financing"
     },
     {
       "w": "COSTS",
@@ -122,10 +194,22 @@
       "cat": "Cost principles"
     },
     {
+      "w": "PROFIT",
+      "def": "Analyzed only when the negotiation rests on cost analysis, and statute caps the fixed fee at 10 or 15 percent.",
+      "cite": "RFO 15.404-9",
+      "cat": "Cost & pricing"
+    },
+    {
       "w": "FINAL",
       "def": "The contracting officer's final decision — the document that starts every appeal clock.",
       "cite": "RFO 33.205-6",
       "cat": "Disputes & appeals"
+    },
+    {
+      "w": "CHANGES",
+      "def": "A change order is signed by the contracting officer alone; the equitable adjustment gets negotiated bilaterally afterward.",
+      "cite": "RFO 43.203",
+      "cat": "Contract changes"
     },
     {
       "w": "VALUE",
@@ -134,10 +218,22 @@
       "cat": "Source selection"
     },
     {
+      "w": "CLOSEOUT",
+      "def": "The administrative checklist — patents, royalties, property and plant clearance all cleared before the file can close.",
+      "cite": "RFO 4.308-1",
+      "cat": "Contract closeout"
+    },
+    {
       "w": "TITLE",
       "def": "Who owns the property — it passes by the clause, not by who paid.",
       "cite": "RFO 45.401",
       "cat": "Government property"
+    },
+    {
+      "w": "SURETY",
+      "def": "The third party on the hook if the contractor fails — corporate ones must appear on Treasury Circular 570.",
+      "cite": "RFO 28.202",
+      "cat": "Construction & sureties"
     },
     {
       "w": "BOARD",
@@ -146,10 +242,22 @@
       "cat": "Disputes & appeals"
     },
     {
+      "w": "CONSENT",
+      "def": "Still required for subcontracts the contracting officer names, even when the purchasing system is approved.",
+      "cite": "RFO 44.201-1",
+      "cat": "Subcontracting"
+    },
+    {
       "w": "AGENT",
       "def": "Only a warranted agent binds the United States — apparent authority binds nothing.",
       "cite": "RFO 1.402",
       "cat": "Authority"
+    },
+    {
+      "w": "EXERCISE",
+      "def": "Written notice inside the contract's window, funds confirmed, performance acceptable — miss any one and the option is gone.",
+      "cite": "RFO 17.204-1",
+      "cat": "Options & duration"
     },
     {
       "w": "ORDER",
@@ -158,10 +266,22 @@
       "cat": "Task & delivery orders"
     },
     {
+      "w": "LETTER",
+      "def": "An undefinitized commitment so work can start — definitize in 180 days or 40 percent of the work, whichever is first.",
+      "cite": "RFO 16.603-2",
+      "cat": "Contract types"
+    },
+    {
       "w": "DEBAR",
       "def": "Exclusion from Government contracting — check SAM before every award.",
       "cite": "RFO 9.406",
       "cat": "Responsibility"
+    },
+    {
+      "w": "DEFAULT",
+      "def": "The remedy for failure to perform — but if the Government let deadlines slip it must reinstate them by notice first.",
+      "cite": "RFO 49.402-3",
+      "cat": "Terminations"
     },
     {
       "w": "TRADE",
@@ -170,10 +290,22 @@
       "cat": "Foreign acquisition"
     },
     {
+      "w": "INDIRECT",
+      "def": "What is left after direct charges, pooled and allocated — the same cost cannot be both in like circumstances.",
+      "cite": "RFO 31.203",
+      "cat": "Cost principles"
+    },
+    {
       "w": "GOALS",
       "def": "Small-business participation targets — the subcontracting plan carries them past $900K.",
       "cite": "RFO 19.109",
       "cat": "Small business"
+    },
+    {
+      "w": "TARGET",
+      "def": "The negotiated cost the share formula swings off — beat it and the contractor earns more than target profit.",
+      "cite": "RFO 16.403-1",
+      "cat": "Incentive contracts"
     },
     {
       "w": "FRAUD",
@@ -182,10 +314,22 @@
       "cat": "Ethics & integrity"
     },
     {
+      "w": "DAMAGES",
+      "def": "Liquidated damages compensate, never punish — the rate must be a reasonable forecast of the harm from late delivery.",
+      "cite": "RFO 11.401",
+      "cat": "Describing the need"
+    },
+    {
       "w": "SPECS",
       "def": "Describe the need, not the vendor — restrictive specifications kill competition.",
       "cite": "RFO Part 11",
       "cat": "Describing the need"
+    },
+    {
+      "w": "PROPERTY",
+      "def": "Contractors normally furnish their own; the contractor's unwillingness to do so is not a reason to hand over Government property.",
+      "cite": "RFO 45.102",
+      "cat": "Government property"
     },
     {
       "w": "WAGES",
@@ -194,10 +338,22 @@
       "cat": "Labor standards"
     },
     {
+      "w": "BIDDER",
+      "def": "A bid must comply in all material respects with the invitation; nonresponsive is dead no matter how low.",
+      "cite": "RFO 14.306-1",
+      "cat": "Sealed bidding"
+    },
+    {
       "w": "HOURS",
       "def": "Labor-hour and T&M contracting — the ceiling and surveillance are the safeguards.",
       "cite": "RFO 16.601",
       "cat": "Contract types"
+    },
+    {
+      "w": "LICENSE",
+      "def": "Data clauses allocate rights, not deliverables — if you want the data itself the contract has to say so separately.",
+      "cite": "RFO 27.403",
+      "cat": "Data rights"
     },
     {
       "w": "FIXED",
@@ -206,10 +362,22 @@
       "cat": "Contract types"
     },
     {
+      "w": "SYNOPSIS",
+      "def": "The solicitation notice posted to the governmentwide point of entry — skip it only on a listed exemption.",
+      "cite": "RFO 5.201",
+      "cat": "Publicizing"
+    },
+    {
       "w": "GRANT",
       "def": "Assistance, not acquisition — if the purpose is public benefit, it isn't a contract at all.",
       "cite": "RFO 2.101",
       "cat": "Types of agreements"
+    },
+    {
+      "w": "CANCEL",
+      "def": "After opening it takes a compelling reason and a written agency-head determination — every price is already public.",
+      "cite": "RFO 14.305",
+      "cat": "Sealed bidding"
     },
     {
       "w": "LIMIT",
@@ -218,10 +386,22 @@
       "cat": "Contract financing"
     },
     {
+      "w": "MISTAKE",
+      "def": "Correction before award takes clear and convincing evidence of both the error and the bid actually intended.",
+      "cite": "RFO 14.304-3",
+      "cat": "Sealed bidding"
+    },
+    {
       "w": "INDEX",
       "def": "Economic price adjustment rides a published index — protection, not speculation.",
       "cite": "RFO 16.203",
       "cat": "Contract types"
+    },
+    {
+      "w": "KICKBACK",
+      "def": "Anything of value for favorable subcontract treatment — criminal and civil exposure, and the amount can be offset from payments.",
+      "cite": "RFO 3.502-2",
+      "cat": "Ethics & integrity"
     },
     {
       "w": "RATIO",
@@ -230,10 +410,22 @@
       "cat": "Incentive contracts"
     },
     {
+      "w": "DEFECT",
+      "def": "Nonconforming supplies are normally rejected; accepting them anyway costs the contractor an equitable price reduction.",
+      "cite": "RFO 46.407",
+      "cat": "Quality assurance"
+    },
+    {
       "w": "EQUAL",
       "def": "'Brand name or equal' — the salient characteristics define what equal means.",
       "cite": "RFO Part 11",
       "cat": "Describing the need"
+    },
+    {
+      "w": "AUCTION",
+      "def": "Reverse auctions suit competitive, clearly defined requirements — they set price, they do not replace the rest of the process.",
+      "cite": "RFO 17.802-1",
+      "cat": "Source selection"
     },
     {
       "w": "CURES",
@@ -242,10 +434,22 @@
       "cat": "Terminations"
     },
     {
+      "w": "CONFLICT",
+      "def": "Organizational conflicts get avoided, neutralized or mitigated before award; only a waiver lets an unresolved one ride.",
+      "cite": "RFO 9.504",
+      "cat": "Responsibility"
+    },
+    {
       "w": "MERGE",
       "def": "A novation moves the contract when companies do — the Government must recognize the successor.",
       "cite": "RFO Part 42",
       "cat": "Contractor changes"
+    },
+    {
+      "w": "NOTICE",
+      "def": "Cure notice or show cause — 10 days either way, and picking the wrong one sinks a default termination.",
+      "cite": "RFO 49.607",
+      "cat": "Terminations"
     },
     {
       "w": "BUYER",
@@ -254,10 +458,22 @@
       "cat": "Purchase cards"
     },
     {
+      "w": "VETERAN",
+      "def": "An SDVOSB set-aside needs a reasonable expectation of two offers at fair market price, and comes before any sole source.",
+      "cite": "RFO 19.106-2",
+      "cat": "Small business"
+    },
+    {
       "w": "RATED",
       "def": "DPAS-rated orders jump the queue — DO and DX ratings are mandatory to accept.",
       "cite": "RFO Part 11",
       "cat": "Priorities & allocations"
+    },
+    {
+      "w": "ORDERING",
+      "def": "Every order must be within scope, inside the ordering period, and under the contract maximum.",
+      "cite": "RFO 16.506",
+      "cat": "Task & delivery orders"
     },
     {
       "w": "RIGHT",
@@ -266,10 +482,22 @@
       "cat": "Data rights"
     },
     {
+      "w": "SETTLE",
+      "def": "Negotiate the termination settlement if you can; settlement by TCO determination is the fallback, not the plan.",
+      "cite": "RFO 49.103",
+      "cat": "Terminations"
+    },
+    {
       "w": "YEARS",
       "def": "Multiyear and options stretch a contract — about five is the services rail.",
       "cite": "RFO 17.101",
       "cat": "Options & duration"
+    },
+    {
+      "w": "CERTIFY",
+      "def": "Certified cost or pricing data is required at or above $2.5 million unless an exception applies.",
+      "cite": "RFO 15.403-3",
+      "cat": "Cost & pricing"
     },
     {
       "w": "NEEDS",
@@ -278,10 +506,22 @@
       "cat": "Fiscal law"
     },
     {
+      "w": "PROPOSAL",
+      "def": "Late is late — the narrow exceptions turn on Government control of the document, not on the offeror's excuse.",
+      "cite": "RFO 15.107",
+      "cat": "Source selection"
+    },
+    {
       "w": "STAYS",
       "def": "The CICA stay — file at GAO within 10 days of award or 5 of debrief, and performance stops.",
       "cite": "RFO 33.105-3",
       "cat": "Protests"
+    },
+    {
+      "w": "DIRECT",
+      "def": "A cost identified with one final cost objective — treat like costs the same way or the allocation collapses.",
+      "cite": "RFO 31.202",
+      "cat": "Cost principles"
     },
     {
       "w": "PLANS",
@@ -290,9 +530,21 @@
       "cat": "Acquisition planning"
     },
     {
+      "w": "MINIMUM",
+      "def": "The guaranteed quantity that makes an indefinite-quantity contract binding — nominal is not enough consideration.",
+      "cite": "RFO 16.504-1",
+      "cat": "Task & delivery orders"
+    },
+    {
       "w": "LEASE",
       "def": "Rent or buy? The lease-versus-purchase analysis you run before committing the government to owning something.",
       "cat": "Acquisition planning"
+    },
+    {
+      "w": "ECONOMIC",
+      "def": "Price adjustment that moves both ways on established prices, actual costs, or a named index — not a claim for relief.",
+      "cite": "RFO 16.203-1",
+      "cat": "Contract types"
     },
     {
       "w": "DRAFT",
@@ -301,9 +553,21 @@
       "cat": "Getting on contract"
     },
     {
+      "w": "TRAVEL",
+      "def": "Allowable only up to the FTR or JTR per diem ceiling; anything above needs an approved written justification.",
+      "cite": "RFO 31.205-46",
+      "cat": "Cost principles"
+    },
+    {
       "w": "BASIS",
       "def": "The legal reason you're competing less than fully — one of the named exceptions, each carrying its own justification.",
       "cite": "RFO 6.103",
+      "cat": "Competition"
+    },
+    {
+      "w": "URGENCY",
+      "def": "Unusual and compelling urgency caps performance at one year including options, absent an exceptional-circumstances determination.",
+      "cite": "RFO 6.103-2",
       "cat": "Competition"
     },
     {
@@ -313,9 +577,21 @@
       "cat": "Source selection"
     },
     {
+      "w": "BUNDLING",
+      "def": "Consolidating work past small-business reach — takes a senior-executive determination that the benefits substantially exceed the alternatives.",
+      "cite": "RFO 7.107-2",
+      "cat": "Small business"
+    },
+    {
       "w": "RANGE",
       "def": "The short list after the first cut — the offerors still realistically in the running, the ones you hold discussions with.",
       "cat": "Source selection"
+    },
+    {
+      "w": "FRINGE",
+      "def": "Benefits the wage determination adds on top of the hourly rate — a successor inherits the predecessor's CBA rates.",
+      "cite": "RFO 22.1002-3",
+      "cat": "Labor standards"
     },
     {
       "w": "CLASS",
@@ -324,10 +600,22 @@
       "cat": "Authority"
     },
     {
+      "w": "FACTORS",
+      "def": "Evaluation factors and their relative importance must be stated in the RFP — unstated ones cannot drive the award.",
+      "cite": "RFO 15.104",
+      "cat": "Source selection"
+    },
+    {
       "w": "LEVEL",
       "def": "You're buying the effort, not a deliverable — a set level of labor aimed at a broadly stated task.",
       "cite": "RFO 16.206",
       "cat": "Contract types"
+    },
+    {
+      "w": "RESEARCH",
+      "def": "Contract only when the Government is the direct beneficiary; supporting someone else's public purpose belongs in a grant.",
+      "cite": "RFO 35.002",
+      "cat": "Research & development"
     },
     {
       "w": "RISKS",
@@ -336,10 +624,22 @@
       "cat": "Contract types"
     },
     {
+      "w": "PATENT",
+      "def": "A rights clause belongs in every research or development contract; the contractor normally keeps title to subject inventions.",
+      "cite": "RFO 27.303",
+      "cat": "Data rights"
+    },
+    {
       "w": "SHARE",
       "def": "The split that decides how much of an overrun or underrun each side eats — the heart of an incentive arrangement.",
       "cite": "RFO 16.404",
       "cat": "Incentive contracts"
+    },
+    {
+      "w": "SUSPEND",
+      "def": "Temporary exclusion on adequate evidence pending investigation — immediate, governmentwide, and extendable to named affiliates.",
+      "cite": "RFO 9.407-1",
+      "cat": "Responsibility"
     },
     {
       "w": "RATES",
@@ -348,15 +648,33 @@
       "cat": "Cost & pricing"
     },
     {
+      "w": "OVERTIME",
+      "def": "Premium pay needs written approval tied to schedules, excusable delay, or bottlenecks — and only on some contract types.",
+      "cite": "RFO 22.104-2",
+      "cat": "Labor standards"
+    },
+    {
       "w": "CLOSE",
       "def": "The paperwork endgame — final invoice paid, property disposed, releases signed, file closed.",
       "cite": "RFO 4.308",
       "cat": "Contract closeout"
     },
     {
+      "w": "SOURCE",
+      "def": "Only one responsible source is an exception to full and open competition — it still needs a justification and approval.",
+      "cite": "RFO 6.103-1",
+      "cat": "Competition"
+    },
+    {
       "w": "DEBTS",
       "def": "Money the contractor owes back — overpayments, unliquidated advances, financing the government will collect.",
       "cite": "RFO 32.6",
+      "cat": "Contract financing"
+    },
+    {
+      "w": "INVOICE",
+      "def": "Payment runs on a proper invoice; miss one required element and the payment clock never starts.",
+      "cite": "RFO 32.905",
       "cat": "Contract financing"
     },
     {
@@ -366,10 +684,22 @@
       "cat": "Protests"
     },
     {
+      "w": "INTEREST",
+      "def": "The Prompt Payment penalty runs automatically on a late payment — the contractor never has to ask for it.",
+      "cite": "RFO 32.907",
+      "cat": "Contract financing"
+    },
+    {
       "w": "COURT",
       "def": "The Court of Federal Claims — where a contractor can take a claim instead of, or after, the board of contract appeals.",
       "cite": "RFO 33.2",
       "cat": "Disputes & appeals"
+    },
+    {
+      "w": "OFFSET",
+      "def": "In foreign military sales DoD neither encourages nor commits U.S. firms — the company negotiates its own.",
+      "cite": "R-DFARS 225.7306",
+      "cat": "Foreign acquisition"
     },
     {
       "w": "PRIME",
@@ -377,14 +707,32 @@
       "cat": "Subcontracting"
     },
     {
+      "w": "ADVANCE",
+      "def": "The least preferred financing method — needs adequate security and an agency-head public-interest or national-defense finding.",
+      "cite": "RFO 32.402",
+      "cat": "Contract financing"
+    },
+    {
       "w": "GIFTS",
       "def": "What you can't accept from someone doing business with the government — the line between a courtesy and a bribe.",
       "cat": "Ethics & integrity"
     },
     {
+      "w": "SOFTWARE",
+      "def": "Commercial software arrives on the license offered to the public; more rights than that is a negotiation, not a default.",
+      "cite": "RFO 12.107",
+      "cat": "Data rights"
+    },
+    {
       "w": "WASTE",
       "def": "The quiet sibling of fraud and abuse — not criminal, just money spent with nothing to show for it.",
       "cat": "Ethics & integrity"
+    },
+    {
+      "w": "TIERED",
+      "def": "Cascading small-business evaluations are barred on multiple-award solicitations unless the agency has statutory authority.",
+      "cite": "RFO 15.105-3",
+      "cat": "Source selection"
     },
     {
       "w": "SEALS",
@@ -393,10 +741,22 @@
       "cat": "Sealed bidding"
     },
     {
+      "w": "ROYALTY",
+      "def": "Patent payments built into the price — the Refund of Royalties clause claws them back if they were never owed.",
+      "cite": "RFO 27.202-5",
+      "cat": "Data rights"
+    },
+    {
       "w": "AMEND",
       "def": "Changed the requirement mid-solicitation? Amend it — in writing, to every offeror, before proposals are due.",
       "cite": "RFO 15.106",
       "cat": "Getting on contract"
+    },
+    {
+      "w": "SCHEDULE",
+      "def": "GSA's Federal Supply Schedule — volume pricing on commercial buys, but GSA's ordering procedures still govern.",
+      "cite": "RFO 8.401",
+      "cat": "Task & delivery orders"
     },
     {
       "w": "WORTH",

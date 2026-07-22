@@ -754,7 +754,7 @@ PN = GAMES['part_names']
 combo = GAMES['combination']
 if len({c['w'] for c in combo}) != len(combo): sys.exit('FATAL: duplicate combination words')
 for gc in combo:
-    if not re.match(r'^[A-Z]{5}$', gc.get('w', '')): sys.exit(f'FATAL: combination word must be 5 caps: {gc.get("w")}')
+    if not re.match(r'^[A-Z]{5,8}$', gc.get('w', '')): sys.exit(f'FATAL: combination word must be 5-8 caps: {gc.get("w")}')
     if not gc.get('def'): sys.exit(f'FATAL: combination word {gc["w"]} missing def')
     if not gc.get('cat'): sys.exit(f'FATAL: combination word {gc["w"]} missing cat (category hint)')
     gc['links'] = cite_links(gc.get('cite', ''))
@@ -780,15 +780,33 @@ for gg in gov:
     links = cite_links(part_cite(gg['p']))
     if not links: sys.exit(f'FATAL: governs part unresolvable: {gg["p"]}')
     gg['link'] = links[0]
-# accept-list for Combination guesses — Wordle's own allowed-words list (+ our answers),
-# committed at study-tool/mcq/wordlist5.txt; shipped as one concatenated string (5 chars/word)
+# Accept lists for Combination guesses. Five letters is Wordle's own allowed-words list,
+# committed at study-tool/mcq/wordlist5.txt and shipped as one concatenated string.
+# Six to eight come from wordlist_ext.json, drawn from the corpus by
+# scripts/build_combo_dict.py — general English at those lengths costs ~530KB and would
+# roughly double the deck, which is a bad trade for an offline PWA.
 with open(os.path.join(MCQ, 'wordlist5.txt')) as f:
     wl = [w.strip() for w in f if w.strip()]
 if any(not re.match(r'^[A-Z]{5}$', w) for w in wl): sys.exit('FATAL: wordlist5.txt has a non-5-cap entry')
 wlset = set(wl)
-bad_ans = [c['w'] for c in combo if c['w'] not in wlset]
-if bad_ans: sys.exit(f'FATAL: combination answers missing from wordlist5.txt: {bad_ans}')
-deck['games'] = {'part_names': PN, 'combination': combo, 'governs': gov, 'dict': ''.join(sorted(wlset))}
+ext = load(os.path.join(MCQ, 'wordlist_ext.json'))
+ext_sets = {}
+for k, packed in ext.items():
+    n = int(k)
+    if len(packed) % n: sys.exit(f'FATAL: wordlist_ext["{k}"] is not a multiple of {n}')
+    seq = [packed[i:i + n] for i in range(0, len(packed), n)]
+    words = set(seq)
+    if any(not re.match(r'^[A-Z]{' + str(n) + r'}$', w) for w in words):
+        sys.exit(f'FATAL: wordlist_ext["{k}"] has a malformed entry')
+    if len(words) != len(seq): sys.exit(f'FATAL: wordlist_ext["{k}"] has duplicates')
+    if seq != sorted(seq): sys.exit(f'FATAL: wordlist_ext["{k}"] is not sorted by word')
+    ext_sets[n] = words
+# every answer must be guessable, or the target can never be entered
+bad_ans = [c['w'] for c in combo
+           if c['w'] not in wlset and c['w'] not in ext_sets.get(len(c['w']), set())]
+if bad_ans: sys.exit(f'FATAL: combination answers not in any accept list: {bad_ans}')
+deck['games'] = {'part_names': PN, 'combination': combo, 'governs': gov,
+                 'dict': ''.join(sorted(wlset)), 'dict_ext': ext}
 
 # ---- 3. final validation + stats ----
 ids = [c['id'] for pool in ('recall_basic', 'recall_advanced', 'scenarios', 'thresholds') for c in deck[pool]]

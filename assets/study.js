@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=31';
+  var DECK_URL = '/assets/study-deck.json?v=32';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -534,14 +534,25 @@
     S.games.log = S.games.log || {}; // dayNum → true when any game was completed that day
     return S.games;
   }
-  var _comboDict = null;
-  function comboDictHas(w) { // Wordle-style accept list, shipped in the deck as one string
-    if (!_comboDict) {
-      _comboDict = new Set();
-      var d = (deck.games && deck.games.dict) || '';
-      for (var i = 0; i + 5 <= d.length; i += 5) _comboDict.add(d.slice(i, i + 5));
+  // Accept lists, packed as fixed-width strings and unpacked per length on first use.
+  // Five letters keeps Wordle's generous list (games.dict, already shipped); 6-8 come from
+  // games.dict_ext, drawn from the corpus itself by scripts/build_combo_dict.py — general
+  // English at those lengths costs ~530KB and would roughly double the deck, which is a bad
+  // trade for an offline PWA. A rejected guess reads "Not in the rulebook."
+  var _comboDict = {};
+  function comboDictHas(w) {
+    var n = w.length, i;
+    if (!_comboDict[n]) {
+      var set = new Set();
+      if (n === 5) {
+        var d = (deck.games && deck.games.dict) || '';
+        for (i = 0; i + 5 <= d.length; i += 5) set.add(d.slice(i, i + 5));
+      }
+      var ext = (deck.games && deck.games.dict_ext && deck.games.dict_ext[n]) || '';
+      for (i = 0; i + n <= ext.length; i += n) set.add(ext.slice(i, i + n));
+      _comboDict[n] = set;
     }
-    return _comboDict.has(w);
+    return _comboDict[n].has(w);
   }
   function gamesMarkToday() { gamesState().log[comboToday()] = true; }
   function gamesHubStreak() { // consecutive active days, weekends never break it
@@ -550,14 +561,42 @@
     while (log[d] || isWeekend(d)) { if (log[d]) run++; d--; if (run > 400) break; }
     return run;
   }
-  var COMBO_EPOCH = Math.floor(Date.UTC(2026, 6, 12) / 86400000); // No. 1 = 12 Jul 2026 (Zulu)
-  function comboToday() { return Math.floor(Date.now() / 86400000); }
+  // The combination flips at 5 a.m. Central, not midnight Zulu (which landed at 7pm Central
+  // the evening before). A FIXED UTC OFFSET WOULD BE WRONG HALF THE YEAR: 5am CST is 11:00Z
+  // but 5am CDT is 10:00Z, so a hardcoded offset drifts an hour twice a year. Ask Intl for
+  // Chicago's actual offset at the instant in question instead. Everyone still flips at one
+  // global instant, so "same word for everyone" holds.
+  var COMBO_TZ = 'America/Chicago', COMBO_RESET_H = 5;
+  function tzOffsetMs(t) {
+    try {
+      var p = {}, f = new Intl.DateTimeFormat('en-US', {
+        timeZone: COMBO_TZ, hour12: false, year: 'numeric', month: '2-digit',
+        day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+      f.formatToParts(new Date(t)).forEach(function (x) { p[x.type] = x.value; });
+      return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second)
+             - Math.floor(t / 1000) * 1000;
+    } catch (e) { return -6 * 3600000; }   // no Intl: fall back to standard time
+  }
+  function comboToday(t) {
+    t = (t === undefined) ? Date.now() : t;
+    return Math.floor((t + tzOffsetMs(t) - COMBO_RESET_H * 3600000) / 86400000);
+  }
+  function comboResetAt(day) {   // the instant round `day` ends, in real epoch ms
+    var approx = (day + 1) * 86400000 + COMBO_RESET_H * 3600000;
+    return approx - tzOffsetMs(approx);
+  }
+  var COMBO_EPOCH = comboToday(Date.UTC(2026, 6, 12, 12)); // No. 1 = 12 Jul 2026, Central
   function comboNo(day) { return day - COMBO_EPOCH + 1; }
   function comboWordFor(day) {
     var pool = deck.games.combination;
     return pool[((day - COMBO_EPOCH) % pool.length + pool.length) % pool.length];
   }
-  function isWeekend(day) { var dow = new Date(day * 86400000).getUTCDay(); return dow === 0 || dow === 6; }
+  // day index counts from the 5am boundary, so add it back to land on the Central calendar date
+  function isWeekend(day) {
+    var dow = new Date(day * 86400000 + COMBO_RESET_H * 3600000).getUTCDay();
+    return dow === 0 || dow === 6;
+  }
   function comboBumpStreak(win) { // duty-day streak: weekends never break it
     var st = gamesState().combo.streak, day = comboToday();
     if (!win) { st.run = 0; st.last = day; return; }
@@ -569,18 +608,17 @@
   var DIAL_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="50" cy="50" r="34"/><circle cx="50" cy="50" r="12"/></g><g stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="8" x2="50" y2="20"/><line x1="50" y1="92" x2="50" y2="80"/><line x1="8" y1="50" x2="20" y2="50"/><line x1="92" y1="50" x2="80" y2="50"/><line x1="20.3" y1="20.3" x2="28.8" y2="28.8"/><line x1="79.7" y1="20.3" x2="71.2" y2="28.8"/><line x1="20.3" y1="79.7" x2="28.8" y2="71.2"/><line x1="79.7" y1="79.7" x2="71.2" y2="71.2"/></g><circle cx="50" cy="50" r="4" fill="currentColor"/></svg>';
 
   function nextRoundLine() {
-    var ms = 86400000 - (Date.now() % 86400000);
+    var at = comboResetAt(comboToday()), ms = Math.max(0, at - Date.now());
     var h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000);
-    var at = new Date(Date.now() + ms);
-    var local = at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    var local = new Date(at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     return 'New round in ' + h + 'h ' + (m < 10 ? '0' : '') + m + 'm — ' + local + ' your time';
   }
   function comboGridMini(G) { // tiny result grid for the status card
-    var entry = comboWordFor(G.day), target = entry.w;
+    var entry = comboWordFor(G.day), target = entry.w, n = target.length;
     return G.rows.map(function (g) {
       var res = [], left = {}, i;
-      for (i = 0; i < 5; i++) { if (g[i] === target[i]) res[i] = 'c'; else { res[i] = 'a'; left[target[i]] = (left[target[i]] || 0) + 1; } }
-      for (i = 0; i < 5; i++) if (res[i] === 'a' && left[g[i]]) { res[i] = 'p'; left[g[i]]--; }
+      for (i = 0; i < n; i++) { if (g[i] === target[i]) res[i] = 'c'; else { res[i] = 'a'; left[target[i]] = (left[target[i]] || 0) + 1; } }
+      for (i = 0; i < n; i++) if (res[i] === 'a' && left[g[i]]) { res[i] = 'p'; left[g[i]]--; }
       return '<span class="st-hub-gridrow">' + res.map(function (r) { return '<i class="st-hub-cell st-hub-cell-' + r + '"></i>'; }).join('') + '</span>';
     }).join('');
   }
@@ -613,7 +651,7 @@
           return '<span class="st-mini-tile' + (i === 1 || i === 4 ? ' st-mini-hit' : (i === 2 ? ' st-mini-near' : '')) + '">' + ch + '</span>';
         }).join('') + '</span>' +
         '<b>The Combination</b>' +
-        '<span class="st-plate-sub">Guess today\u2019s five-letter term of the trade in six tries \u2014 Wordle, for the acquisition world. Same word for everyone.</span>' +
+        '<span class="st-plate-sub">Guess today\u2019s term of the trade in six tries \u2014 Wordle, for the acquisition world. Same word for everyone.</span>' +
         '<span class="st-plate-meta">Play today\u2019s word \u2192</span></button>';
     var govMeta = govToday
       ? 'Today\u2019s best ' + govToday.best.toLocaleString() + (gvBest > govToday.best ? ' \u00b7 record ' + gvBest.toLocaleString() : ' \u00b7 that\u2019s your record') + ' \u00b7 run it again \u2192'
@@ -1157,22 +1195,24 @@
   }
 
   /* ---- The Combination — the daily vault word ---- */
+  var NUMWORD = { 5: 'five', 6: 'six', 7: 'seven', 8: 'eight' };
   var KB_ROWS = ['QWERTYUIOP', 'ASDFGHJKL', '⏎ZXCVBNM⌫'];
   function viewCombo() {
     var G = gamesState().combo;
     var day = comboToday();
     if (G.day !== day) { G.day = day; G.rows = []; G.done = false; G.win = false; save(); }
     var entry = comboWordFor(day), target = entry.w;
+    var LEN = target.length;              // 5-8; the board, keyboard and accept list all follow it
     var guess = '';
     var motion = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
     function evalRow(g) { // standard two-pass: correct first, then presents against remaining letters
       var res = [], left = {};
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < LEN; i++) {
         if (g[i] === target[i]) res[i] = 'c';
         else { res[i] = 'a'; left[target[i]] = (left[target[i]] || 0) + 1; }
       }
-      for (i = 0; i < 5; i++) {
+      for (i = 0; i < LEN; i++) {
         if (res[i] === 'a' && left[g[i]]) { res[i] = 'p'; left[g[i]]--; }
       }
       return res;
@@ -1181,7 +1221,7 @@
       var ks = {};
       G.rows.forEach(function (g) {
         var r = evalRow(g);
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < LEN; i++) {
           var cur = ks[g[i]];
           if (r[i] === 'c' || (r[i] === 'p' && cur !== 'c') || (r[i] === 'a' && !cur)) ks[g[i]] = r[i];
         }
@@ -1192,7 +1232,7 @@
       var html = '';
       for (var r = 0; r < 6; r++) {
         html += '<div class="st-cb-row" data-r="' + r + '">';
-        for (var c = 0; c < 5; c++) {
+        for (var c = 0; c < LEN; c++) {
           var ch = '', cls = '';
           if (r < G.rows.length) {
             ch = G.rows[r][c];
@@ -1221,7 +1261,7 @@
     function helpHtml(first) {
       return '<div class="st-cb-help">' +
         '<div class="st-cb-help-head">How to crack it</div>' +
-        '<p>Guess the day&rsquo;s <b>five-letter acquisition term</b> in six tries. Type on your keyboard or tap the keys below. <b>Enter</b> submits a row; the <b>⌫ key removes a letter</b> (tapping the row does too).</p>' +
+        '<p>Guess the day&rsquo;s <b>acquisition term</b> — five to eight letters, shown by the row — in six tries. Type on your keyboard or tap the keys below. <b>Enter</b> submits a row; the <b>⌫ key removes a letter</b> (tapping the row does too).</p>' +
         '<p>After each guess, the tiles tell you how close you are:</p>' +
         '<div class="st-cb-help-row">' + exTile('S', 'c') + exTile('C', '') + exTile('O', '') + exTile('P', '') + exTile('E', '') + '<span><b>S</b> is in the word, in the right spot</span></div>' +
         '<div class="st-cb-help-row">' + exTile('A', '') + exTile('U', 'p') + exTile('D', '') + exTile('I', '') + exTile('T', '') + '<span><b>U</b> is in the word, in a different spot</span></div>' +
@@ -1229,8 +1269,8 @@
         '<p>Same word for everyone, everywhere — a new one every day. Crack it and the vault teaches you the term.</p>' +
         '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="cb-help-go">' + (first ? 'Got it — open the board' : 'Back to the board') + '</button></div></div>';
     }
-    function zuluCountdown() {
-      var ms = 86400000 - (Date.now() % 86400000);
+    function zuluCountdown() {   // time left in this round — the 5 a.m. Central roll
+      var ms = Math.max(0, comboResetAt(day) - Date.now());
       var h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000);
       return h + 'h ' + (m < 10 ? '0' : '') + m + 'm';
     }
@@ -1274,8 +1314,8 @@
         (helping && !G.done ? helpHtml(firstTime) :
          G.done ? resultHtml() :
           (entry.cat ? '<div class="st-cb-cat"><span>Category</span>' + esc(entry.cat) + '</div>' : '') +
-          '<p class="st-cb-prompt">Guess the five-letter acquisition term — type or tap, then press <b>Enter</b>.</p>' +
-          '<div class="st-cb-board" id="cb-board">' + boardHtml() + '</div>' +
+          '<p class="st-cb-prompt">Guess the ' + NUMWORD[LEN] + '-letter acquisition term — type or tap, then press <b>Enter</b>.</p>' +
+          '<div class="st-cb-board" id="cb-board" style="--cb-len:' + LEN + (LEN > 6 ? ';--cb-gap:4px' : '') + '">' + boardHtml() + '</div>' +
           '<div class="st-cb-legend" aria-label="What the colors mean">' +
           '<span><i class="st-cb-tile st-cb-c"></i>right spot</span>' +
           '<span><i class="st-cb-tile st-cb-p"></i>in the word, wrong spot</span>' +
@@ -1372,18 +1412,20 @@
       if (G.done) return;
       if (k === 'BACK') { guess = guess.slice(0, -1); updateRow(); return; }
       if (k === 'ENTER') { submit(); return; }
-      if (guess.length < 5) { guess += k; updateRow(); }
+      if (guess.length < LEN) { guess += k; updateRow(); }
     }
     function submit() {
       var m = el('cb-msg');
-      if (guess.length < 5) {
-        if (m) m.textContent = 'Five letters.';
+      if (guess.length < LEN) {
+        if (m) m.textContent = NUMWORD[LEN].charAt(0).toUpperCase() + NUMWORD[LEN].slice(1) + ' letters.';
         var row = app.querySelector('.st-cb-row[data-r="' + G.rows.length + '"]');
         if (row && motion) { row.classList.add('st-cb-row-shake'); setTimeout(function () { row.classList.remove('st-cb-row-shake'); }, 350); }
         return;
       }
       if (!comboDictHas(guess)) {
-        if (m) m.textContent = 'Not in the word list.';
+        // at 6-8 the accept list IS the corpus, so say so — a rejected guess is a word
+        // the regulations never use, which is the point of drawing the list from them
+        if (m) m.textContent = LEN > 5 ? 'Not in the rulebook.' : 'Not in the word list.';
         var row2 = app.querySelector('.st-cb-row[data-r="' + G.rows.length + '"]');
         if (row2 && motion) { row2.classList.add('st-cb-row-shake'); setTimeout(function () { row2.classList.remove('st-cb-row-shake'); }, 350); }
         return;
@@ -1408,7 +1450,9 @@
           setTimeout(function () { tile.classList.add('st-cb-flip'); }, i * 130);
           setTimeout(function () { tile.classList.add('st-cb-' + res[i]); }, i * 130 + 160);
         });
-        setTimeout(function () { paint(); }, 5 * 130 + 420);
+        // repaint only after the LAST tile has flipped — a fixed 5-tile wait would cut
+        // the reveal short on longer words (8 tiles finish at 8*130+160)
+        setTimeout(function () { paint(); }, LEN * 130 + 420);
       } else paint();
     }
     paint();

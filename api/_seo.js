@@ -1691,10 +1691,16 @@ function renderStudyPage() {
 .st-plate-ring-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#f4f8fc;font-variant-numeric:tabular-nums}
 /* The Combination */
 .st-cb-card{padding:22px 18px 18px}
-.st-cb-board{display:flex;flex-direction:column;gap:6px;align-items:center}
-.st-cb-row{display:flex;gap:6px}
+/* Tiles size themselves from the word length: study.js sets --cb-len (and a tighter
+   --cb-gap past six letters) on the board, and the tiles inherit the result. The
+   binding constraint on length is mobile legibility, not difficulty — at 375px an
+   8-letter row lands near 36px per tile, the floor we were willing to ship. vw math
+   rather than %, because a percentage inside a custom property would resolve against
+   the tile itself, not the row. */
+.st-cb-board{--cb-len:5;--cb-gap:6px;--cb-size:min(58px,calc((100vw - 56px - (var(--cb-len) - 1) * var(--cb-gap)) / var(--cb-len)));display:flex;flex-direction:column;gap:var(--cb-gap);align-items:center}
+.st-cb-row{display:flex;gap:var(--cb-gap)}
 .st-cb-row-shake{animation:st-shake .3s ease-in-out 1}
-.st-cb-tile{width:clamp(46px,11vw,58px);height:clamp(46px,11vw,58px);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:clamp(22px,5vw,27px);font-weight:700;color:var(--ink);background:#fff;border:2px solid var(--line2);border-radius:8px;transition:transform .16s,background .16s,border-color .16s,color .16s}
+.st-cb-tile{width:var(--cb-size);height:var(--cb-size);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:calc(var(--cb-size) * .47);font-weight:700;color:var(--ink);background:#fff;border:2px solid var(--line2);border-radius:8px;transition:transform .16s,background .16s,border-color .16s,color .16s}
 .st-cb-fill{border-color:rgba(23,58,96,.55);transform:scale(1.04)}
 .st-cb-flip{animation:st-cb-flip .34s ease-in-out 1}
 @keyframes st-cb-flip{0%{transform:rotateX(0)}50%{transform:rotateX(88deg)}100%{transform:rotateX(0)}}
@@ -1863,7 +1869,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=61"></script>`;
+<script defer src="/assets/study.js?v=62"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }
