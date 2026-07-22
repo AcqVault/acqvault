@@ -1,5 +1,20 @@
 // Audit: every study-deck link with a #frag must exist as an id on its rendered part page.
 // Run: node study-tool/audit_links.js   (exits 1 on any missing anchor)
+//
+// ⚠ PARTIAL COVERAGE — scripts/deck_health.py supersedes this for link checking
+// and is the one refresh.py actually runs. This file reads only the `links`
+// arrays on recall_basic / recall_advanced / thresholds plus one scenario per
+// qtype, and the regex below silently drops any URL that is not rfo or r-dfars:
+// 143 URLs against roughly 1,000 in the deck. It never sees the ladder, the
+// board sims or the games. DO NOT read a green run here as "the deck's links
+// are fine" — that is the same trap check_ladder_file.py set before it was
+// rewritten to invoke the real gate instead of restating it.
+//
+// It is kept because it checks anchors the expensive, honest way — by rendering
+// the real part page and looking for the id — where deck_health compares against
+// the corpus `anchor`/`id` field. Those two were verified equivalent (200
+// anchors across all 8 sources, 0 mismatches), so this stands as a cross-check
+// of that assumption, not as a substitute for the gate.
 const { renderPartPage } = require('../api/_seo.js') || require('./api/_seo.js');
 const fs = require('fs');
 const deck = JSON.parse(fs.readFileSync(__dirname + '/../assets/study-deck.json'));
