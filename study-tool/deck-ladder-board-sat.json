@@ -24,9 +24,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.101", "quote": "Agencies must promote competition to the maximum extent practicable when procuring noncommercial products and services valued at or below the SAT." },
-        { "src": "rfo", "sec": "13.102", "quote": "Acquisitions of supplies or services that have an anticipated dollar value above the MPT, but at or below the SAT, must be set aside for small business concerns (see part 19)." },
-        { "src": "rfo", "sec": "12.201-1", "quote": "Solicit quotations from at least three sources" }
+        {
+          "src": "rfo",
+          "sec": "13.101",
+          "quote": "Agencies must promote competition to the maximum extent practicable when procuring noncommercial products and services valued at or below the SAT."
+        },
+        {
+          "src": "rfo",
+          "sec": "13.102",
+          "quote": "Acquisitions of supplies or services that have an anticipated dollar value above the MPT, but at or below the SAT, must be set aside for small business concerns (see part 19)."
+        },
+        {
+          "src": "rfo",
+          "sec": "12.201-1",
+          "quote": "Solicit quotations from at least three sources"
+        }
       ]
     },
     {
@@ -53,9 +65,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.202", "quote": "Exercise good business judgment in deciding whether or not to accept a quotation received after the due date or time." },
-        { "src": "rfo", "sec": "12.201-1", "quote": "Neither a quotation nor the purchase order issued by the Government in response to a quotation form a binding contract." },
-        { "src": "rfo", "sec": "13.203", "quote": "Include in the contract file a written description of the procedures used in awarding the purchase order and the number of quotations received." }
+        {
+          "src": "rfo",
+          "sec": "13.202",
+          "quote": "Exercise good business judgment in deciding whether or not to accept a quotation received after the due date or time."
+        },
+        {
+          "src": "rfo",
+          "sec": "12.201-1",
+          "quote": "Neither a quotation nor the purchase order issued by the Government in response to a quotation form a binding contract."
+        },
+        {
+          "src": "rfo",
+          "sec": "13.203",
+          "quote": "Include in the contract file a written description of the procedures used in awarding the purchase order and the number of quotations received."
+        }
       ]
     },
     {
@@ -82,9 +106,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "1.402-1", "quote": "Only contracting officers may sign, administer, or terminate contracts on behalf of the Government." },
-        { "src": "rfo", "sec": "1.405", "quote": "Unauthorized commitment means an agreement that is not binding solely because the Government representative who made it lacked the authority to enter into that agreement on behalf of the Government." },
-        { "src": "rfo", "sec": "1.405", "quote": "Agencies cannot delegate this authority below the level of the chief of the contracting office." }
+        {
+          "src": "rfo",
+          "sec": "1.402-1",
+          "quote": "Only contracting officers may sign, administer, or terminate contracts on behalf of the Government."
+        },
+        {
+          "src": "rfo",
+          "sec": "1.405",
+          "quote": "Unauthorized commitment means an agreement that is not binding solely because the Government representative who made it lacked the authority to enter into that agreement on behalf of the Government."
+        },
+        {
+          "src": "rfo",
+          "sec": "1.405",
+          "quote": "Agencies cannot delegate this authority below the level of the chief of the contracting office."
+        }
       ]
     },
     {
@@ -111,9 +147,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.101", "quote": "Contracting officers may solicit from a single source based on a determination and findings (see subpart 1.5) that only one source is reasonably available (e.g., urgency, exclusive licensing agreements, brand-name or industrial mobilization)." },
-        { "src": "rfo", "sec": "12.102", "quote": "For acquisitions valued at or below the simplified acquisition threshold (SAT), document the decision that only one source is available and the basis for the decision." },
-        { "src": "r-dfars", "sec": "212.102-70", "quote": "the documentation addressed in FAR 12.102 is required to use brand name or equal descriptions or proprietary specifications and standards." }
+        {
+          "src": "rfo",
+          "sec": "13.101",
+          "quote": "Contracting officers may solicit from a single source based on a determination and findings (see subpart 1.5) that only one source is reasonably available (e.g., urgency, exclusive licensing agreements, brand-name or industrial mobilization)."
+        },
+        {
+          "src": "rfo",
+          "sec": "12.102",
+          "quote": "For acquisitions valued at or below the simplified acquisition threshold (SAT), document the decision that only one source is available and the basis for the decision."
+        },
+        {
+          "src": "r-dfars",
+          "sec": "212.102-70",
+          "quote": "the documentation addressed in FAR 12.102 is required to use brand name or equal descriptions or proprietary specifications and standards."
+        }
       ]
     },
     {
@@ -140,9 +188,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.001", "quote": "There are no commercial products or commercial services that can satisfy the agency’s needs" },
-        { "src": "rfo", "sec": "12.201-1", "quote": "For acquisitions valued up to $9 million, issue a request for quotations (RFQ) followed by a purchase order." },
-        { "src": "rfo", "sec": "10.001", "quote": "Agencies must procure commercial products and commercial services to the maximum extent practicable." }
+        {
+          "src": "rfo",
+          "sec": "13.001",
+          "quote": "There are no commercial products or commercial services that can satisfy the agency’s needs"
+        },
+        {
+          "src": "rfo",
+          "sec": "12.201-1",
+          "quote": "For acquisitions valued up to $9 million, issue a request for quotations (RFQ) followed by a purchase order."
+        },
+        {
+          "src": "rfo",
+          "sec": "10.001",
+          "quote": "Agencies must procure commercial products and commercial services to the maximum extent practicable."
+        }
       ]
     },
     {
@@ -169,9 +229,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.001", "quote": "Do not divide requirements, the aggregate value of which exceeds the SAT, merely to permit use of the procedures in this part." },
-        { "src": "rfo", "sec": "2.101", "quote": "Simplified acquisition threshold means $350,000, except for—" },
-        { "src": "rfo", "sec": "2.101", "quote": "Micro-purchase threshold means $15,000" }
+        {
+          "src": "rfo",
+          "sec": "13.001",
+          "quote": "Do not divide requirements, the aggregate value of which exceeds the SAT, merely to permit use of the procedures in this part."
+        },
+        {
+          "src": "rfo",
+          "sec": "2.101",
+          "quote": "Simplified acquisition threshold means $350,000, except for—"
+        },
+        {
+          "src": "rfo",
+          "sec": "2.101",
+          "quote": "Micro-purchase threshold means $15,000"
+        }
       ]
     },
     {
@@ -198,9 +270,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.102", "quote": "must be set aside for small business concerns" },
-        { "src": "rfo", "sec": "19.104-1", "quote": "For contracts above the micro-purchase threshold, the contracting officer must set the contract aside for small business if there is a reasonable expectation of obtaining offers—" },
-        { "src": "r-dfars", "sec": "219.104-1", "quote": "The requirements at FAR 19.104-1(a) and (b) apply to acquisitions for—" }
+        {
+          "src": "rfo",
+          "sec": "13.102",
+          "quote": "must be set aside for small business concerns"
+        },
+        {
+          "src": "rfo",
+          "sec": "19.104-1",
+          "quote": "For contracts above the micro-purchase threshold, the contracting officer must set the contract aside for small business if there is a reasonable expectation of obtaining offers—"
+        },
+        {
+          "src": "r-dfars",
+          "sec": "219.104-1",
+          "quote": "The requirements at FAR 19.104-1(a) and (b) apply to acquisitions for—"
+        }
       ]
     },
     {
@@ -227,9 +311,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "1.404", "quote": "A COR has no authority to make any commitments or changes that affect price, quality, quantity, delivery, or other terms and conditions of the contract." },
-        { "src": "rfo", "sec": "1.402-1", "quote": "Only contracting officers may sign, administer, or terminate contracts on behalf of the Government." },
-        { "src": "rfo", "sec": "1.405", "quote": "Agencies should take actions to avoid the need for ratifications." }
+        {
+          "src": "rfo",
+          "sec": "1.404",
+          "quote": "A COR has no authority to make any commitments or changes that affect price, quality, quantity, delivery, or other terms and conditions of the contract."
+        },
+        {
+          "src": "rfo",
+          "sec": "1.402-1",
+          "quote": "Only contracting officers may sign, administer, or terminate contracts on behalf of the Government."
+        },
+        {
+          "src": "rfo",
+          "sec": "1.405",
+          "quote": "Agencies should take actions to avoid the need for ratifications."
+        }
       ]
     },
     {
@@ -237,7 +333,7 @@
       "topic": "Contract Finance & Fiscal Law",
       "scenario": "The vendor on your $85K purchase order emails an invoice missing the contract number and the defective-invoice notice contact. It sits in an org inbox for 12 days before anyone forwards it to the billing office. Now the vendor is on the phone demanding late-payment interest and threatening to stop work on the follow-on.",
       "ask": "The vendor wants interest. Do they have a case? Walk me through how invoices are supposed to move on this order.",
-      "script": "Both sides fumbled, and prompt-payment rules score each fumble separately. RFO 32.905(a): payment rides on a proper invoice plus satisfactory performance. This invoice isn't proper — 32.905(b) lists the required content, and the contract number is on it. But the Government has a clock too: the designated billing office must return a defective invoice within 7 days with the reasons, and if it doesn't, the due date adjusts for interest-penalty purposes. Twelve days in an org inbox means we own part of this. So: get the invoice back to the vendor today with the specific defects, fix my routing so invoices land at the designated billing office, confirm the receiving report is in place per 32.905(c), and walk the vendor through what a proper invoice looks like so round two pays clean.",
+      "script": "Both sides fumbled, and prompt-payment rules score each fumble separately. RFO 32.905(a): payment rides on a proper invoice plus satisfactory performance. This invoice isn't proper — 32.905(b) lists the required content, and the contract number is part of that list, so an invoice missing it fails on its face. But the Government has a clock too: the designated billing office must return a defective invoice within 7 days with the reasons, and if it doesn't, the due date adjusts for interest-penalty purposes. Twelve days in an org inbox means we own part of this. So: get the invoice back to the vendor today with the specific defects, fix my routing so invoices land at the designated billing office, confirm the receiving report is in place per 32.905(c), and walk the vendor through what a proper invoice looks like so round two pays clean.",
       "follow_ups": [
         {
           "q": "Name the load-bearing elements of a proper invoice.",
@@ -256,9 +352,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "32.905", "quote": "Payment will be based on receipt of a proper invoice and satisfactory contract performance." },
-        { "src": "rfo", "sec": "32.905", "quote": "the designated billing office must return it within 7 days after receipt" },
-        { "src": "r-dfars", "sec": "232.009-1", "quote": "10 U.S.C. 3801(b) requires DoD to provide accelerated payments to small business contractors and subcontractors, to the fullest extent permitted by law, with a goal of 15 days." }
+        {
+          "src": "rfo",
+          "sec": "32.905",
+          "quote": "Payment will be based on receipt of a proper invoice and satisfactory contract performance."
+        },
+        {
+          "src": "rfo",
+          "sec": "32.905",
+          "quote": "the designated billing office must return it within 7 days after receipt"
+        },
+        {
+          "src": "r-dfars",
+          "sec": "232.009-1",
+          "quote": "10 U.S.C. 3801(b) requires DoD to provide accelerated payments to small business contractors and subcontractors, to the fullest extent permitted by law, with a goal of 15 days."
+        }
       ]
     },
     {
@@ -285,8 +393,16 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "52.213-4", "quote": "The Contractor shall be liable for default unless nonperformance is caused by an occurrence beyond the reasonable control of the Contractor and without its fault or negligence." },
-        { "src": "rfo", "sec": "13.204", "quote": "Contracting officers may use the clause at 52.213-4, Terms and Conditions—Simplified Acquisitions (Noncommercial), to provide a streamlined set of terms and conditions for inspection/acceptance, excusable delays, terminations, and warranties." }
+        {
+          "src": "rfo",
+          "sec": "52.213-4",
+          "quote": "The Contractor shall be liable for default unless nonperformance is caused by an occurrence beyond the reasonable control of the Contractor and without its fault or negligence."
+        },
+        {
+          "src": "rfo",
+          "sec": "13.204",
+          "quote": "Contracting officers may use the clause at 52.213-4, Terms and Conditions—Simplified Acquisitions (Noncommercial), to provide a streamlined set of terms and conditions for inspection/acceptance, excusable delays, terminations, and warranties."
+        }
       ]
     },
     {
@@ -313,9 +429,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.302", "quote": "The Government may withdraw, amend, or cancel purchase orders by written notice to the supplier at any time before acceptance of the order occurs" },
-        { "src": "rfo", "sec": "12.201-1", "quote": "A binding contract is formed when the supplier accepts the Government’s offer, either by written acceptance of the purchase order or substantial performance of the purchase order." },
-        { "src": "rfo", "sec": "52.213-4", "quote": "the Contractor shall be paid a percentage of the contract price reflecting the percentage of the work performed prior to the notice of termination" }
+        {
+          "src": "rfo",
+          "sec": "13.302",
+          "quote": "The Government may withdraw, amend, or cancel purchase orders by written notice to the supplier at any time before acceptance of the order occurs"
+        },
+        {
+          "src": "rfo",
+          "sec": "12.201-1",
+          "quote": "A binding contract is formed when the supplier accepts the Government’s offer, either by written acceptance of the purchase order or substantial performance of the purchase order."
+        },
+        {
+          "src": "rfo",
+          "sec": "52.213-4",
+          "quote": "the Contractor shall be paid a percentage of the contract price reflecting the percentage of the work performed prior to the notice of termination"
+        }
       ]
     },
     {
@@ -342,9 +470,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.103", "quote": "Generally, inspection and acceptance should be at destination." },
-        { "src": "rfo", "sec": "46.404", "quote": "the Government must inspect contracts at or below the simplified acquisition threshold at destination and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking, if applicable." },
-        { "src": "rfo", "sec": "52.213-4", "quote": "The Government may require repair or replacement of nonconforming supplies or reperformance of nonconforming services at no increase in contract price." }
+        {
+          "src": "rfo",
+          "sec": "13.103",
+          "quote": "Generally, inspection and acceptance should be at destination."
+        },
+        {
+          "src": "rfo",
+          "sec": "46.404",
+          "quote": "the Government must inspect contracts at or below the simplified acquisition threshold at destination and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking, if applicable."
+        },
+        {
+          "src": "rfo",
+          "sec": "52.213-4",
+          "quote": "The Government may require repair or replacement of nonconforming supplies or reperformance of nonconforming services at no increase in contract price."
+        }
       ]
     },
     {
@@ -371,9 +511,21 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "5.101", "quote": "For proposed contract actions expected to be greater than $20,000, post a presolicitation notice to the GPE unless an exemption in paragraph (b) applies." },
-        { "src": "rfo", "sec": "12.201-1", "quote": "For acquisitions at or below the SAT, the contracting officer may choose to solicit quotations directly from suppliers." },
-        { "src": "rfo", "sec": "13.301", "quote": "Upon request, provide a brief explanation of the award decision that explains why the unsuccessful quoter was not selected." }
+        {
+          "src": "rfo",
+          "sec": "5.101",
+          "quote": "For proposed contract actions expected to be greater than $20,000, post a presolicitation notice to the GPE unless an exemption in paragraph (b) applies."
+        },
+        {
+          "src": "rfo",
+          "sec": "12.201-1",
+          "quote": "For acquisitions at or below the SAT, the contracting officer may choose to solicit quotations directly from suppliers."
+        },
+        {
+          "src": "rfo",
+          "sec": "13.301",
+          "quote": "Upon request, provide a brief explanation of the award decision that explains why the unsuccessful quoter was not selected."
+        }
       ]
     },
     {
@@ -400,8 +552,16 @@
         }
       ],
       "cites": [
-        { "src": "rfo", "sec": "13.203", "quote": "The contracting officer must determine the price to be fair and reasonable. Whenever possible, base price reasonableness on competitive quotations." },
-        { "src": "r-dfars", "sec": "215.202-71", "quote": "The requirements at 215.202-71(b) do not apply to— (i) Acquisitions at or below the simplified acquisition threshold" }
+        {
+          "src": "rfo",
+          "sec": "13.203",
+          "quote": "The contracting officer must determine the price to be fair and reasonable. Whenever possible, base price reasonableness on competitive quotations."
+        },
+        {
+          "src": "r-dfars",
+          "sec": "215.202-71",
+          "quote": "The requirements at 215.202-71(b) do not apply to— (i) Acquisitions at or below the simplified acquisition threshold"
+        }
       ]
     }
   ]
