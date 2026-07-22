@@ -1,5 +1,9 @@
 # Corpus invariants — read before any re-ingest or re-extraction
 
+> **Start with [`LAYOUT_CONTRACT.md`](LAYOUT_CONTRACT.md)** if you are ingesting or repairing a
+> source. It is the *why* and the order of operations, with the RFO as the reference
+> implementation. This file is the checks themselves.
+
 `output/documents.json` is the product. Every rule below exists because the
 problem **shipped to production at least once**. `scripts/corpus_health.py`
 enforces all of them and `refresh.py` runs it as a ship gate, so you should

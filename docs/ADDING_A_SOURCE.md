@@ -5,6 +5,13 @@ Every source added to AcqVault must behave identically to the existing six
 This file is the contract: the enumeration sites you must touch, and the
 behaviors the new source must inherit. Work through it top to bottom.
 
+## 0a. Read the layout contract
+
+[`LAYOUT_CONTRACT.md`](LAYOUT_CONTRACT.md) is the structural target and, more usefully,
+the ORDER to do things in — notably **rewrap physical lines into paragraphs BEFORE
+attaching tables**, because tables are stored as line-index spans and rejoining lines
+renumbers them.
+
 ## 0. Run the gate — this checklist is now enforced, not just written
 
 ```bash

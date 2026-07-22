@@ -33,7 +33,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 DOCS = REPO / "output" / "documents.json"
-SOURCES = {"r-dfars", "far-companion"}
+SOURCES = {"r-dfars", "far-companion", "pgi"}
 
 LMARK = re.compile(r"^(L\d+:)")
 # a new enumerated item starts its own paragraph: "(a)", "(1)", "(iv)", "(A)"
@@ -101,28 +101,48 @@ def main():
 
     docs = json.loads(DOCS.read_text(encoding="utf-8"))
     touched, total_joins = 0, 0
+    skipped_tables = []
     for d in docs:
         if not d or d.get("source") not in SOURCES:
             continue
         content = d.get("content", "")
         if not content:
             continue
+        # ⚠ A doc's tables are stored as LINE-INDEX spans ({"start": 75, "end": 77}),
+        # and the renderers draw the table INSTEAD of those lines. Rejoining lines
+        # renumbers them, so rewrapping a doc that already carries tables would slide
+        # every span onto the wrong text — silently deleting regulation and drawing the
+        # table in the wrong place. (r-dfars and far-companion escaped this only because
+        # they were rewrapped BEFORE tables were attached.) Leave those docs alone; the
+        # honest order for a new source is REWRAP FIRST, then extract tables.
+        if d.get("tables"):
+            skipped_tables.append(d["id"])
+            continue
         new, joins = rewrap(content)
         if not joins:
             continue
         assert norm(new) == norm(content), f"{d['id']}: text changed, not just line breaks"
         assert new.strip(), f"{d['id']}: would empty the doc"
-        # marker style must match the source exactly (all-marked or unmarked)
-        had = bool(LMARK.match(content.split("\n")[0]))
-        assert bool(LMARK.match(new.split("\n")[0])) == had, f"{d['id']}: marker style changed"
-        assert sum(1 for l in new.split("\n") if LMARK.match(l)) == (len(new.split("\n")) if had else 0), \
-            f"{d['id']}: inconsistent markers after rewrap"
+        # Marker style must not change. The original all-or-nothing test assumed the
+        # FIRST line carries a marker, which is false for the PGI — its first line is
+        # the unmarked title echo above a fully-marked body. Compare COUNTS instead,
+        # which states the real invariant in both directions: an unmarked source must
+        # not gain markers, and no marker may be invented. A join legitimately REDUCES
+        # the count (two marked lines become one), so the bound is <=, and the joined
+        # line keeps the marker of the line it continues — which is the point, since
+        # the continuation used to sit at L0 and render outdented to the margin.
+        marked_before = sum(1 for l in content.split("\n") if LMARK.match(l))
+        marked_after = sum(1 for l in new.split("\n") if LMARK.match(l))
+        assert (marked_after > 0) == (marked_before > 0), f"{d['id']}: marker style changed"
+        assert marked_after <= marked_before, f"{d['id']}: rewrap invented markers"
         touched += 1
         total_joins += joins
         if args.apply:
             d["content"] = new
 
     print(f"docs rewrapped: {touched}")
+    if skipped_tables:
+        print(f"skipped (carry index-span tables): {len(skipped_tables)} -> {', '.join(skipped_tables[:4])}")
     print(f"line joins:     {total_joins:,}")
     if not args.apply:
         print("\n(dry run — pass --apply to write)")

@@ -102,6 +102,41 @@ def main():
     dups = len(ids) - len(set(ids))
     check("unique ids", dups == 0, f"{dups} duplicate id(s)")
 
+    # LAYOUT CONTRACT rule 3 — the title is copied VERBATIM into the citation a
+    # contracting officer pastes into a contract file, so page whitespace must not
+    # ride along. 20 titles carried a double space straight from the source PDF.
+    ws_bad = [d["id"] for d in docs if "  " in (d.get("title") or "").strip()
+              or (d.get("title") or "") != (d.get("title") or "").strip()]
+    check("titles carry no stray whitespace", not ws_bad,
+          f"{len(ws_bad)} title(s) with doubled or edge whitespace: {ws_bad[:3]}",
+          "python3 - <<'X'\nimport json,re;p='output/documents.json';d=json.load(open(p))\nfor x in d: x['title']=re.sub(r'[ \\t]{2,}',' ',x['title']).strip()\nopen(p,'w').write(json.dumps(d,ensure_ascii=False))\nX")
+
+    # LAYOUT CONTRACT rule 1 — one logical paragraph per stored line. A source whose
+    # long lines end mid-sentence far above the ~26% baseline was extracted straight
+    # from PDF physical lines and never rewrapped: every sentence renders as several
+    # paragraphs, and its continuations sit at the wrong indent level. The PGI shipped
+    # at 78% and read that way live. Sources with a bespoke line renderer are exempt
+    # (rewrapping them would break the renderer) — see LAYOUT_CONTRACT.md rule 1a.
+    REWRAP_EXEMPT = {"afi-63-138", "category-management", "fmr", "compass"}
+    wrap_bad = []
+    for src in sorted({d.get("source") for d in docs} - REWRAP_EXEMPT):
+        tot = mid = 0
+        for d in docs:
+            if d.get("source") != src:
+                continue
+            for line in (d.get("content") or "").split("\n"):
+                t = re.sub(r"^L\d+:", "", line).strip()
+                if len(t) > 40:
+                    tot += 1
+                    if not re.search(r"[.:;)\]\"”]$", t):
+                        mid += 1
+        pct = (100 * mid // tot) if tot else 0
+        if pct > 45:
+            wrap_bad.append(f"{src} {pct}%")
+    check("prose is rewrapped into paragraphs", not wrap_bad,
+          f"{', '.join(wrap_bad)} of long lines end mid-sentence (baseline ~26%)",
+          "python3 scripts/rewrap_pdf_lines.py --apply  (REWRAP BEFORE ATTACHING TABLES)")
+
     empty = [d["id"] for d in docs if not (d.get("content") or "").strip()]
     check("no empty docs", not empty, f"{len(empty)} empty: {empty[:3]}")
 
