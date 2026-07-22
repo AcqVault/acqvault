@@ -448,7 +448,16 @@ def study_deck_watch(final_rfo, all_docs, modified):
         base = sec.split("-")[0]                       # 6.103-1 → 6.103
         if base in rfo_sections or base in rfo_subparts:
             return True
-        return sec.split(".")[0] in rfo_parts          # last resort: the part still exists
+        # A bare part number written without the word "Part" ("RFO 14") is a real
+        # reference; anything with a dot must name something that exists.
+        #
+        # This used to fall back to `sec.split(".")[0] in rfo_parts` for EVERY
+        # cite, so a section deleted from part 6 still "resolved" because part 6
+        # exists. That hid a live one: a scenario cited "RFO 19.8, the 8(a)
+        # follow-on trap" — legacy FAR numbering. The RFO restructured part 19
+        # into subparts 19.1/19.2/19.3 only; there is no 19.8, and the follow-on
+        # rule is at 19.108-11. The blanket fallback reported it green.
+        return "." not in sec and sec in rfo_parts
 
     def rd_resolves(sec):
         if any(t == sec or t.startswith(sec + ".") for t in rd_tokens):
@@ -676,6 +685,14 @@ def run_health_gates(abort_msg="✗ SHIP ABORTED — fix the failing check(s) ab
                       cwd=str(BASE_DIR)).returncode != 0:
         print("\n" + abort_msg)
         return False
+    # Source Selection Simulator citations. assets/source-selection.js says in its
+    # own header that these "are gated by scripts/check_sim_citations.py before
+    # ship" — which was not true of anything: nothing invoked it. Now it is.
+    print("\nSource-selection citations…")
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "check_sim_citations.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
+        print("\n" + abort_msg)
+        return False
     return True
 
 
@@ -717,6 +734,11 @@ def ship(summary_line):
                       cwd=str(BASE_DIR)).returncode != 0:
         print("\n✗ SHIP ABORTED — the shipped deck disagrees with this corpus. "
               "Rebuild with python3 study-tool/build_deck_v2.py, then re-run.")
+        sys.exit(1)
+    print("\nSource-selection citations…")
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "check_sim_citations.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
+        print("\n✗ SHIP ABORTED — fix the failing citation(s) above, then re-run.")
         sys.exit(1)
     new_cache = bump_service_worker()
     if new_cache:
