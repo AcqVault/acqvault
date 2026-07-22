@@ -66,7 +66,15 @@ FURNITURE = re.compile(
 PROSE_SOURCES = {"r-dfars", "far-companion"}
 MIDSENT_LIMIT = 5.0          # percent of line breaks that may fall mid-sentence
 # expected marker style per source: True = every line carries an L-marker
-MARKER_STYLE = {"r-dfars": True, "far-companion": False, "fmr": False, "ssp": False}
+# Measured, not assumed: r-dfars 100.0% marked; far-companion / fmr / ssp /
+# afi-63-138 / category-management / compass all 0.0%. rfo (89.3%) and pgi (93.5%)
+# are genuinely mixed — the RFO's own HTML marks most but not all lines — so a
+# boolean cannot describe them and they stay out, which is what the `want is None`
+# skip below is for. The three added here were simply never listed; they are as
+# uniform as the ones that were, and unlisted means unprotected against a script
+# blindly emitting L0: on a source that has none (invariant 3).
+MARKER_STYLE = {"r-dfars": True, "far-companion": False, "fmr": False, "ssp": False,
+                "afi-63-138": False, "category-management": False, "compass": False}
 
 results = []
 
