@@ -84,6 +84,19 @@ function partLabel(source, part) {
     || `${partWord(source)} ${displayPartForSource(source, part)}`;
 }
 
+// Descriptive part names, generated from PARTS_BY_SOURCE in assets/app.js by
+// scripts/gen_part_labels.js. Without these the hub pages listed 49 links all reading
+// "Part 1 … Part 53" while the in-app grid showed "Small Business Programs" for the
+// same parts. Missing file degrades to the plain numbers rather than throwing.
+let partNamesCache = null;
+function partNames() {
+  if (partNamesCache) return partNamesCache;
+  try {
+    partNamesCache = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'output', 'part-labels.json'), 'utf8'));
+  } catch (e) { partNamesCache = {}; }
+  return partNamesCache;
+}
+
 let docsCache = null;
 function loadDocs() {
   if (docsCache) return docsCache;
@@ -804,6 +817,7 @@ section.sec:target>h2{color:var(--accent)}
 @media(prefers-reduced-motion:reduce){section.sec:target{animation:none}}
 .srcref{font-size:12.5px;color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
+.parts a .hublabel{display:block;font-size:12.5px;font-weight:500;color:var(--muted);margin-top:2px;line-height:1.3}
 section.sec p a.xref{color:var(--accent);text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(135,101,28,.45)}
 section.sec p a.xref:hover{text-decoration-color:var(--accent)}
 /* Rule ⇄ procedure pairing — KEEP IN SYNC with .br-pair/.br-partpair in assets/app.css.
@@ -1078,8 +1092,12 @@ function renderHubPage(source) {
   const title = `${meta.name} — full text & parts | AcqVault`;
   const description = esc(clampDesc(meta.desc, 155));
 
-  const links = parts.map(p =>
-    `<a href="/${source}/part-${encodeURIComponent(p)}">${esc(partLabel(source, p))}</a>`).join('\n');
+  const names = partNames()[source] || {};
+  const links = parts.map(p => {
+    const nm = names[String(p)] || names[String(displayPartForSource(source, p))];
+    return `<a href="/${source}/part-${encodeURIComponent(p)}">${esc(partLabel(source, p))}` +
+           (nm ? `<span class="hublabel">${esc(nm)}</span>` : '') + `</a>`;
+  }).join('\n');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'CollectionPage',

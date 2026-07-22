@@ -692,8 +692,8 @@ function setBrowseSource(source) {
   document.getElementById('browse-reader-inner').innerHTML =
     `<div class="browse-empty" id="browse-empty">
       <div class="browse-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/></svg></div>
-      <div class="browse-empty-title">Select a part to read</div>
-      <div class="browse-empty-sub">Choose a part from the left panel to load the full text.</div>
+      <div class="browse-empty-title">Select a ${partWord(source).toLowerCase()} to read</div>
+      <div class="browse-empty-sub">Choose a ${partWord(source).toLowerCase()} from the left panel to load the full text.</div>
     </div>`;
 }
 
@@ -1610,7 +1610,9 @@ function normalizeBrowseLines(rawLines, source, parsed, partNum) {
 function parseBrowseTitle(hit, source) {
   const title = hit.title || '';
   const anchor = `sec-${hit.id}`;
-  const subM = title.match(/^(Subpart\s+[\d.]+)\s*[-–]?\s*(.*)/i);
+  // [-–—], not [-–]: R-DFARS and PGI subpart titles use an EM dash, so the Contents
+  // label rendered "SUBPART 252.2 — — TEXT OF PROVISIONS AND CLAUSES".
+  const subM = title.match(/^(Subpart\s+[\d.]+)[\s-–—]*(.*)/i);
   if (subM) return { type: 'subpart', num: subM[1], label: subM[2] || '', anchor };
 
   if (source === 'far-companion' || hit.source === 'far-companion') {
@@ -2122,6 +2124,9 @@ async function selectPart(tile, partNum, partLabel) {
     }
     // Resolved BEFORE the build (not decorated after) so the cached HTML below carries
     // the pairing too — otherwise a reload repaints a part with its cross-links missing.
+    // The xref index must be in hand before the synchronous render, or the first
+    // part a reader opens draws its cross-references as plain text.
+    await loadXrefIndex();
     const pairIdx = await pairIndexSoon(browseSrc, indexPart);
     try {
       reader.innerHTML = buildReaderHTML(hits, browseSrc, partNum, partLabel, hits.length, pairIdx);
@@ -2329,8 +2334,35 @@ const XREF_BARE_ORDER = { rfo: ['rfo', 'r-dfars'], 'r-dfars': ['r-dfars', 'rfo']
 // 219.101 "Small business goals".
 const XREF_FOREIGN = /(?:\bC\.?F\.?R\.?|U\.?\s?S\.?\s?C\.?|Public\s+Law|Pub\.?\s*L\.?|DoD[IDM]|DFAS|E\.?O\.?|Executive\s+Order|Chapter)\s*$/i;
 
+// The lookup the links actually need, without the 27 MB corpus. acqLoadCorpus() runs
+// ONLY on the offline fallback paths, so for an online reader ACQ_INDEX is null — which
+// meant buildXrefMap() returned null and every in-app cross-reference silently rendered
+// as plain text, while the same part server-rendered had 87 working links. This is the
+// ~56 KB (gzipped) of numbers instead: {source: {sectionNumber: [docId, part]}}.
+let XREF_FALLBACK_INDEX = null;
+function loadXrefIndex() {
+  if (XREF_FALLBACK_INDEX) return Promise.resolve(XREF_FALLBACK_INDEX);
+  return fetch('/output/xref-index.json')
+    .then(r => r.ok ? r.json() : null)
+    .then(j => { XREF_FALLBACK_INDEX = j || {}; XREF_MAP = null; return XREF_FALLBACK_INDEX; })
+    .catch(() => { XREF_FALLBACK_INDEX = {}; return XREF_FALLBACK_INDEX; });
+}
+
 function buildXrefMap() {
-  if (XREF_MAP || !ACQ_INDEX) return XREF_MAP;
+  if (XREF_MAP) return XREF_MAP;
+  if (!ACQ_INDEX) {
+    // index-only path: enough to resolve and link; the hover preview fetches the doc.
+    if (!XREF_FALLBACK_INDEX) return null;
+    const m = { rfo: new Map(), 'r-dfars': new Map(), pgi: new Map() };
+    for (const src of Object.keys(m)) {
+      const t = XREF_FALLBACK_INDEX[src] || {};
+      for (const num of Object.keys(t)) {
+        m[src].set(num, { id: t[num][0], part: t[num][1], source: src, title: '' });
+      }
+    }
+    XREF_MAP = m;
+    return XREF_MAP;
+  }
   const map = { rfo: new Map(), 'r-dfars': new Map(), pgi: new Map() };
   for (const { doc } of ACQ_INDEX) {
     const table = map[doc.source];
@@ -2415,11 +2447,24 @@ function positionXrefPop(pop, a) {
   pop.style.left = left + 'px';
   pop.style.visibility = '';
 }
+const _xrefDocCache = new Map();
 function showXrefPop(a) {
   const id = a.dataset.xref;
   const entry = ACQ_INDEX && ACQ_INDEX.find(x => String(x.doc.id) === String(id));
-  if (!entry) return;
-  const doc = entry.doc;
+  // Without the on-device corpus the link still resolves (index-only path), so fetch
+  // just this one document for the preview rather than 27 MB for all of them.
+  if (!entry) {
+    if (_xrefDocCache.has(id)) { renderXrefPop(a, _xrefDocCache.get(id)); return; }
+    meiliDocument(id).then(doc => {
+      if (!doc) return;
+      _xrefDocCache.set(id, doc);
+      if (document.body.contains(a)) renderXrefPop(a, doc);
+    }).catch(() => {});
+    return;
+  }
+  renderXrefPop(a, entry.doc);
+}
+function renderXrefPop(a, doc) {
   const pop = xrefPopEl();
   pop.innerHTML =
     `<div class="xp-head">${sourceTag(doc.source)}<span class="xp-title">${esc(doc.title || '')}</span></div>` +
@@ -2439,7 +2484,11 @@ function hideXrefPop() {
 function openXref(a) {
   const id = a.dataset.xref;
   const entry = ACQ_INDEX && ACQ_INDEX.find(x => String(x.doc.id) === String(id));
-  if (!entry) return false;
+  if (!entry) {
+    // index-only path: let the anchor's real href navigate to the reader.
+    hideXrefPop();
+    return false;
+  }
   hideXrefPop();
   openDrawer(entry.doc);
   return true;
@@ -3020,6 +3069,14 @@ function statusClass(status) {
   // PGI is procedural guidance, not a rule. It must never wear the same badge as a
   // deviation, or someone will cite it as one.
   if (s.includes('guidance')) return 'rc-badge-guidance';
+  // The branches above were written against status values the corpus does not use. The
+  // values actually present are "Active deviation" (3,073), "active" (2,154),
+  // "Guidance" (427), "Current" (395), "Live" (48) and "Beta 0.1" (12) — so 5,682 of
+  // 6,317 sections wore the neutral grey "unknown" badge, and the legally significant
+  // "Active deviation" was indistinguishable from "Current".
+  if (s.includes('deviation')) return 'rc-badge-class';
+  if (s.includes('active') || s.includes('current') || s.includes('live')) return 'rc-badge-final';
+  if (s.includes('beta'))     return 'rc-badge-interim';
   return 'rc-badge-unknown';
 }
 function badgeTag(status) {
@@ -3395,6 +3452,7 @@ async function loadFullPartInReader(hit) {
       if (!page.length || page.length < pageSize || allHits.length >= total) break;
       offset += pageSize;
     }
+    await loadXrefIndex();
     const pairIdx = await pairIndexSoon(hit.source, indexPart);
     if (!allHits.length) {
       renderReaderAsBrowse(contentEl, [hit], hit.source, dispPart, partLabel, pairIdx);
@@ -3552,6 +3610,9 @@ function openDrawer(hit) {
 
 async function loadFullPartInDrawer(hit) {
   const contentEl = document.getElementById('drawer-content');
+  // formatContent() below linkifies cross-references synchronously, so the index has to
+  // be resolved first — this is the surface where the feature was entirely dead online.
+  await loadXrefIndex();
   // Show the clicked section IMMEDIATELY — the words the CO searched for, no blank spinner —
   // then hydrate the rest of the part around it.
   contentEl.innerHTML =
@@ -3663,6 +3724,7 @@ function renderDrawerDeviation(hit) {
   el.hidden = false;
 }
 loadDeviations(); // warm the small (~14KB) crosswalk on load
+loadXrefIndex();  // ~56KB gzipped — what makes in-app cross-references resolve at all
 
 document.getElementById('drawer-close').addEventListener('click', closeDrawer);
 document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
@@ -3970,7 +4032,15 @@ window.acqExitToLanding = exitToLanding;
   // hijack the boot into search-at-top while the user was deep in the browse reader.
   let savedView = null;
   try { savedView = sessionStorage.getItem('acq-view-v1'); } catch (e) {}
-  if (savedView === 'browse' && !readerMode && await restoreBrowseState()) return;
+  // …but only when the URL is LEFTOVER, not freshly navigated. A discarded tab that
+  // Chrome reloads reports navigation type 'reload'; a shared link someone pasted
+  // reports 'navigate'. Without that distinction, opening a colleague's ?q= link in a
+  // tab that had ever used Browse silently showed the browse view and an empty search
+  // box, and the link looked broken.
+  let navType = '';
+  try { navType = (performance.getEntriesByType('navigation')[0] || {}).type || ''; } catch (e) {}
+  const freshLink = navType === 'navigate' && (q || docId);
+  if (savedView === 'browse' && !readerMode && !freshLink && await restoreBrowseState()) return;
   // No shareable search/reader in the URL → this may be a discarded browse tab
   // Chrome just reloaded. Re-enter the last browse view (source/part/scroll) —
   // unless the tab had explicitly moved on to another view (search/fulltext).

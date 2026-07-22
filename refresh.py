@@ -667,6 +667,13 @@ def ship(summary_line):
     # RENDERERS can actually read it. The DFARS PGI passed every corpus check and shipped
     # with all 427 section numbers unparsed, one citation shared by 27 sections, and no
     # Browse entry point at all. A FAIL here usually means fix a FUNCTION, not the corpus.
+    # Derived artefacts the renderers depend on. xref-index.json is what makes in-app
+    # cross-references resolve at all (ACQ_INDEX is only populated on the offline
+    # fallback path); part-labels.json is what gives the hub pages their part names.
+    for gen in (("scripts", "gen_xref_index.py"), ("scripts", "gen_part_labels.js")):
+        tool = "node" if gen[1].endswith(".js") else sys.executable
+        subprocess.run([tool, str(BASE_DIR.joinpath(*gen))], cwd=str(BASE_DIR), check=True)
+
     print("\nRender health…")
     render = subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "render_health.py")],
                             cwd=str(BASE_DIR))

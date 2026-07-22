@@ -1038,6 +1038,7 @@ body.work-mode #spending-dashboard{display:none;}
 .br-section-num-pgi{color:var(--pgi-txt);}
 .br-section-num-pgi::before{background:var(--pgi-solid);}
 
+.ss-btn svg,.ss-cite-src svg{width:1em;height:1em;flex-shrink:0;vertical-align:-0.1em;}
 /* ── RULE ⇄ PROCEDURE PAIRING ───────────────────────────────────────────────────
    The per-section link between a rule and the procedure that implements it. The two
    directions are styled apart on purpose: clay = you are being sent to guidance,
@@ -1343,6 +1344,7 @@ body.reader-mode .about-bar,body.reader-mode nav,body.reader-mode .hero,
 body.reader-mode .source-tiles-section,body.reader-mode #results-section,
 body.reader-mode #browse-section,body.reader-mode #fulltext-section,
 body.reader-mode #features,body.reader-mode #sources,body.reader-mode #quick-links,body.reader-mode #market-research,body.reader-mode #library,
+body.reader-mode #daily-strip,body.reader-mode #study,
 body.reader-mode footer,
 body.reader-mode #drawer,body.reader-mode #drawer-backdrop{display:none !important;}
 body.reader-mode #reader-page{display:block;}
