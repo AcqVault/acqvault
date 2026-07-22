@@ -169,11 +169,53 @@ def main():
     else:
         print(f'  PASS  all {len(ids)} deck ids unique')
 
+    # ── 4. dollar figures asserted in shipped JS must be in the section cited ──
+    # Same contract as the deck: if we print a number next to a citation, that
+    # citation has to contain the number. Nothing checked these, on a site whose
+    # standing rule is that MPT=$15,000 and SAT=$350,000 must never be "corrected".
+    # It caught two glossary entries citing an empty grouping header (RFO 22.1002
+    # and 22.402 are title-only "Presolicitation" headings — the RFO has 33 such
+    # in part 22 alone; the rules live in numbered subsections).
+    label_src = {'RFO': 'rfo', 'R-DFARS': 'r-dfars', 'PGI': 'pgi'}
+    quoted = re.compile(r"'([^']*\$[\d,][^']*)'")
+    cite_re = re.compile(r'\b(RFO|R-DFARS|PGI)\s+(\d{1,3}\.\d{1,4}(?:-\d+)*)')
+    money = re.compile(r'\$[\d][\d,]*(?:\.\d+)?')
+    n_fig = bad_fig = 0
+    for jsname in ('widgets.js', 'app.js'):
+        jspath = os.path.join(ROOT, 'assets', jsname)
+        if not os.path.exists(jspath):
+            continue
+        for m in quoted.finditer(open(jspath, encoding='utf-8').read()):
+            text = m.group(1)
+            c = cite_re.search(text)
+            if not c:
+                continue
+            src, sec = label_src[c.group(1)], c.group(2)
+            cand = by_section.get((src, sec), [])
+            body = norm(strip_markers(cand[0].get('content'))) if cand else ''
+            for amount in money.findall(text):
+                n_fig += 1
+                if not cand:
+                    bad_fig += 1
+                    fail(f'{jsname}: {amount} cites {c.group(1)} {sec}, which does not exist'
+                         f' — "{text[:60]}"')
+                elif amount not in body and amount.replace(',', '') not in body:
+                    bad_fig += 1
+                    fail(f'{jsname}: {amount} is not in the section it cites '
+                         f'({c.group(1)} {sec}) — "{text[:60]}"',
+                         'fix: cite the subsection that states the figure, not a grouping header')
+    if not bad_fig:
+        print(f'  PASS  all {n_fig} cited dollar figures appear in the section they cite')
+
     print()
     if failures:
-        print(f'✗ {len(failures)} deck health failure(s) — the shipped deck disagrees with '
-              f'the corpus it ships beside.')
-        print('  Rebuild with: python3 study-tool/build_deck_v2.py')
+        print(f'✗ {len(failures)} failure(s) — what ships disagrees with the corpus '
+              f'shipping beside it.')
+        # Only the deck is rebuildable; a bad figure in widgets.js is a hand edit.
+        if any('.js:' not in m for m, _ in failures):
+            print('  For deck failures, rebuild with: python3 study-tool/build_deck_v2.py')
+        if any('.js:' in m for m, _ in failures):
+            print('  For assets/*.js failures, correct the citation or the figure by hand.')
         return 1
     print('All deck health checks passed.')
     return 0
