@@ -15,6 +15,10 @@ Run it any time you touch the corpus:
 python3 scripts/corpus_health.py     # exit 1 = not ship-ready
 ```
 
+It is the first of four ship gates — see [**The gate chain**](#the-gate-chain) at
+the end of this file. If you edited corpus TEXT, run `scripts/deck_health.py` too:
+the shipped study deck quotes that text verbatim, and nothing else compares them.
+
 ---
 
 ## The invariants
@@ -179,7 +183,7 @@ complete." Every one of those defects lives in the gap between *the corpus is va
 
 These are enforced by **`scripts/render_health.py`**, a SEPARATE gate from
 `corpus_health.py` because the fix is a code change, not a repair script. `refresh.py`
-runs both before shipping. It drives the REAL renderer functions — `scripts/render_probe.js`
+runs it as one of four ship gates (see "The gate chain" at the end of this file). It drives the REAL renderer functions — `scripts/render_probe.js`
 slices them verbatim out of `assets/app.js` (which cannot be `require()`d; it touches
 `document` at top level) using `scripts/extract_js_fns.js`. A reimplementation would
 agree with itself while the shipped code stayed broken, which is exactly what happened.
@@ -264,3 +268,69 @@ rejoins title + continuation, touches ONLY the `title` field (asserted), and doc
 hashes are content-only so no pinned clause fired a false "changed" alert. ⚠ Its
 tail heuristic must require real words: 252.227-7037's next line is a LIST OF CLAUSE
 NUMBERS, which a naive join would have welded into the title.
+
+---
+
+## The gate chain
+
+`refresh.py` runs four gates before it ships, in this order, each fatal:
+
+```bash
+python3 scripts/corpus_health.py        # is the DATA valid?
+python3 scripts/render_health.py        # can the RENDERERS read it?
+python3 scripts/deck_health.py          # does what we SHIP still match the corpus?
+python3 scripts/check_sim_citations.py  # Source Selection Simulator citations
+```
+
+They run on **both** paths — the normal ship, and the early return taken when the
+RFO text has not moved. That second path used to run nothing at all, which is
+exactly the path an in-session re-extract of a non-RFO source takes.
+
+### Why `deck_health.py` exists
+
+`assets/study-deck.json` is a committed artefact that `refresh.py` neither
+rebuilds nor reads. Nothing compared it to the corpus shipping in the same
+commit, so a corpus edit could silently invalidate a study card's verbatim quote
+or its deep link, and nothing would notice until somebody happened to re-run
+`build_deck_v2.py`. Rejoining 113 split citations rewrote text that five ladder
+quotes span; they survived only because they were checked by hand at the time.
+
+It asserts, against the SHIPPED deck rather than the authoring files:
+
+1. every `cite` / `cites[]` / `dod` quote is verbatim **in the section it names** —
+   scoped per section, so a correct quote filed under a wrong section number still
+   fails. A whole-source search would pass it.
+2. every internal link resolves: the part exists **and** the `#anchor` exists on it
+3. deck ids are unique
+4. every dollar figure printed next to a citation in `assets/widgets.js` /
+   `app.js` appears in that section — the rule that caught two glossary entries
+   citing an empty grouping header
+
+⚠ **The corpus stores a per-line indent prefix (`L0:`/`L1:`/…).** Any quote
+spanning a stored line break contains one mid-sentence, so a naive substring test
+returns false negatives. Strip the markers before comparing. Getting this wrong
+made four perfectly good board quotes look broken.
+
+⚠ **An empty section is not necessarily a defect.** The RFO uses title-only
+"Presolicitation"/"Postaward" grouping headers — 33 in part 22 alone — with the
+substance in numbered subsections. Check upstream before "repairing" one; the
+usual bug is a citation pointing at the header instead of the subsection.
+
+### Gates that only ratchet
+
+Two checks bound a known backlog rather than failing on it, because making them
+fatal today would block every build behind content review, and printing them
+unbounded is the validate-then-discard pattern this repo keeps getting caught by:
+
+* `_BOARD_DOD_BASELINE` in `study-tool/build_deck_v2.py` — 40 board RFO cites rest
+  on a section R-DFARS supplements. Lower it as boards are reviewed; at 0, make it
+  fatal and delete the baseline.
+* `ALLOWED_COLLISIONS` in `scripts/verify/cite_verify.js` — the one allow-listed
+  citation pair `render_health.py` sanctions via `CITE_DUP_OK`.
+
+**A checker that restates a gate will drift away from it.** `check_ladder_file.py`
+was a 145-line copy of the build's `ladder_gate` and ended up reporting the
+opposite of the truth in both directions — calling 387 citeable sections "no such
+section" while passing three items the build fatals on. It now runs the real build
+with `ACQVAULT_GATE_ONLY=1` (every gate, no write). Do the same with any new
+checker: invoke the gate, do not reimplement it.

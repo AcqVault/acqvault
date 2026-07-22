@@ -12,12 +12,20 @@ node scripts/verify/xref_verify.js     # cross-reference resolution and its guar
 node scripts/verify/dedup_verify.js    # one search hit per clause; part 52 labelled legacy
 ```
 
-These complement, not replace, the two gates `refresh.py` runs before shipping:
+These complement, not replace, the four gates `refresh.py` runs before shipping:
 
 ```bash
-python3 scripts/corpus_health.py       # is the DATA valid?
-python3 scripts/render_health.py       # can the RENDERERS read it?
+python3 scripts/corpus_health.py        # is the DATA valid?
+python3 scripts/render_health.py        # can the RENDERERS read it?
+python3 scripts/deck_health.py          # does what we SHIP still match the corpus?
+python3 scripts/check_sim_citations.py  # Source Selection Simulator citations
 ```
+
+`deck_health.py` supersedes `study-tool/audit_links.js` for link checking:
+audit_links reads only the `links` arrays on recall / thresholds / scenarios —
+143 URLs — skipping the ladder, the board sims and the games entirely, and
+silently dropping any URL that is not `rfo` or `r-dfars`. deck_health checks all
+~1,000, and verifies the `#anchor` exists rather than just the part.
 
 ## What each one is protecting
 
