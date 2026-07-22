@@ -10,7 +10,7 @@ const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
     desc: 'Full text of the Revolutionary FAR Overhaul (RFO) — the overhauled acquisition rulebook agencies cite for new awards, implemented for DoD via class deviations under E.O. 14275.' },
   'r-dfars':             { name: 'R-DFARS Deviations', short: 'R-DFARS',
-    desc: 'DoD class deviations implementing the RFO for the Department of Defense — the deviation set you cite in place of the legacy supplement.' },
+    desc: 'DoD class deviations implementing the RFO for the Department of Defense — the deviation set you cite in place of the legacy supplement. Part 252 additionally carries the pre-deviation clause library, kept for reference and labelled as such.' },
   'far-companion':       { name: 'FAR Companion', short: 'FAR Companion',
     desc: 'Practitioner guidance accompanying the Revolutionary FAR Overhaul.' },
   'afi-63-138':          { name: 'DAFI 63-138', short: 'DAFI 63-138',
@@ -1340,7 +1340,7 @@ ul.chg-other{font-size:13.5px;color:var(--muted);margin:4px 0 0;padding-left:22p
 
   const body = `${CHG_STYLE}<nav class="crumbs"><a href="/?home=1">AcqVault</a> › What changed</nav>
 <h1>What changed</h1>
-<p class="lede">AcqVault re-indexes its sources monthly and logs exactly which sections changed. This is that log — cite it when you need to show a regulation moved under you. Section links open the current full text; always verify against the signed deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on a result in a contract file.</p>
+<p class="lede">Each time AcqVault re-fetches a source it diffs the new text against the last copy and records the sections whose wording moved. This is that log — cite it when you need to show a regulation changed under you. It records CHANGES to text already indexed, so a source&rsquo;s first ingest does not appear here, and a source is listed only for the runs in which it was re-fetched. Section links open the current full text; always verify against the signed deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on a result in a contract file.</p>
 ${runHtml}`;
 
   return shell({ title, description, canonical, jsonld, body });
@@ -1768,7 +1768,7 @@ ${SEAL_SVG}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Study</nav>
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Know it cold</h1>
-<p class="lede">Knowledge checks, threshold sprints, and board-style scenarios built from the AcqVault Field Guides — every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
+<p class="lede">Knowledge checks, threshold sprints, and board-style scenarios from the AcqVault Field Guides; The Warrant Ladder, four warrant-ceiling decks whose cards each carry a verbatim quote from the governing text; and the Source Selection Simulator, run against the DoD Source Selection Procedures. Every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
 <div class="stats"><span class="stat"><b>500+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">

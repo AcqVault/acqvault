@@ -685,6 +685,9 @@ function setBrowseSource(source) {
     p.setAttribute('aria-pressed', String(active));
   });
   renderPartsGrid(source);
+  // The FMR's left panel lists Volumes, so don't leave the label hardcoded to "Part".
+  const plabel = document.getElementById('browse-parts-label');
+  if (plabel) plabel.textContent = 'Select a ' + partWord(source);
   // Reset reader to empty state
   document.getElementById('browse-reader-inner').innerHTML =
     `<div class="browse-empty" id="browse-empty">
