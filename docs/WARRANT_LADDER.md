@@ -46,7 +46,8 @@ Deep Study and the Sprint down with it.
 
 ## Why the build refuses to ship a bad card
 
-`build_deck_v2.py` FATALs unless every card satisfies all of:
+`build_deck_v2.py` FATALs unless every **recall card** (`deck-ladder.json`,
+`deck-ladder-<rung>.json`) satisfies all of:
 
 1. the cited section exists — exact match, no prefix fallback
 2. it is not `[Reserved]` and not an empty stub (measured on the body, not title+body)
@@ -56,6 +57,20 @@ Deep Study and the Sprint down with it.
 6. every RFO cite whose section has a substantive DoD supplement carries a `dod` field —
    either the deviation that changes the answer, or the string `"n/a"` meaning it was read
    and does not
+
+⚠ **The board sims are gated by rules 1–3 only.** `ladder_board_gate` verifies every one
+of the 101 `cites` the same way — exact section, not `[Reserved]`, quote verbatim — but the
+board schema has no `dod` field at all, so rule 6 never applied to them. This document
+previously said "every card", which was not true of the 47 boards.
+
+That gap is real, not theoretical: **40 of the 83 board RFO cites, across 27 distinct
+sections, rest on a section R-DFARS supplements** — and the first SME read found one live
+(a board cited RFO 15.403-2 without its DoD carve-out, the same failure rule 6 exists to
+stop). It is now a **ratchet**: `_board_dod_overlay` prints the count on every build and
+FATALs if it grows past `_BOARD_DOD_BASELINE`. Making it fatal outright today would block
+every deck build behind 27 sections of review; printing it unbounded would be the
+validate-then-discard pattern that keeps biting this repo. **Lower the baseline as boards
+are reviewed. When it reaches 0, make it fatal and delete the baseline.**
 
 Rule 6 exists because the first pass shipped fifteen cards that cited the RFO correctly and
 quoted it exactly and were still wrong for an Air Force reader: the architect-engineer fee

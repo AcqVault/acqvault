@@ -557,7 +557,56 @@ def ladder_board_gate(items):
     n = sum(len(v) for v in out.values())
     print('  ladder boards: ' + ' · '.join(f'{r} {len(out[r])}' for r in LADDER_RUNGS) +
           f' — {n} scenarios, all cites corpus-verified' if n else '  ladder boards: none authored yet')
+    _board_dod_overlay(items)
     return out
+
+
+# The board schema has no `dod` field, so _dod_overlay_check — which reads the
+# recall schema's singular `cite` — never saw a single board card. 40 of the 83
+# board RFO cites rest on a section R-DFARS supplements, across 27 distinct
+# sections. That is the defect class that shipped 15 wrong recall cards, and the
+# SME read found it live on a board too: board-25m[8] cited RFO 15.403-2 without
+# its DoD carve-out.
+#
+# A RATCHET, not a FATAL and not a bare warning. Making it fatal today would
+# block every deck build behind 27 sections of content review; printing it
+# without a bound is the validate-then-discard pattern this repo keeps getting
+# caught by. So the existing backlog stays visible and counted, and the build
+# FAILS the moment it GROWS. Lower the baseline as cards get reviewed; the goal
+# is 0, at which point this should become fatal.
+_BOARD_DOD_BASELINE = 40
+
+
+def _board_dod_overlay(items):
+    idx = {}
+    for _d in docs:
+        if _d.get('source') != 'r-dfars': continue
+        _m = re.match(r'^(\d{3}\.[\d.-]+)', _d['title'])
+        if _m: idx.setdefault(_m.group(1), _d)
+    unreviewed = []
+    for it in items:
+        for c in (it.get('cites') or []):
+            if c.get('src') != 'rfo': continue
+            head, _, tail = (c.get('sec') or '').partition('.')
+            if not head.isdigit() or not tail: continue
+            base = '2%02d.%s' % (int(head), tail)
+            for key in sorted(idx):
+                if not _dod_supplements(base, key): continue
+                if len(_norm(idx[key]['content'])) < 160: continue
+                unreviewed.append((it.get('rung'), c['sec'], key))
+                break
+    n = len(unreviewed)
+    if n > _BOARD_DOD_BASELINE:
+        secs = sorted({f'RFO {s} <- R-DFARS {k}' for _, s, k in unreviewed})
+        sys.exit(f'FATAL: ladder board DoD overlay grew to {n} (baseline {_BOARD_DOD_BASELINE}). '
+                 f'A new board cite rests on a section R-DFARS supplements:\n    ' +
+                 '\n    '.join(secs))
+    if n:
+        print(f'  ⚠ ladder board DoD overlay: {n} RFO cite(s) rest on a section R-DFARS '
+              f'supplements, unreviewed (baseline {_BOARD_DOD_BASELINE}, '
+              f'{len({s for _, s, _ in unreviewed})} distinct sections)')
+    else:
+        print('  ladder board DoD overlay: clean')
 
 # ACQVAULT_BOARD_FILE mirrors ACQVAULT_LADDER_FILE, so one rung's sims can be gated
 # on their own — scripts/check_ladder_file.py needs it to check a single board file
