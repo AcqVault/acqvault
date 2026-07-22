@@ -559,7 +559,12 @@ def ladder_board_gate(items):
           f' — {n} scenarios, all cites corpus-verified' if n else '  ladder boards: none authored yet')
     return out
 
-_board_paths = sorted(glob.glob(os.path.join(_here, 'deck-ladder-board-*.json')))
+# ACQVAULT_BOARD_FILE mirrors ACQVAULT_LADDER_FILE, so one rung's sims can be gated
+# on their own — scripts/check_ladder_file.py needs it to check a single board file
+# without racing the others.
+_board_pin = os.environ.get('ACQVAULT_BOARD_FILE')
+_board_paths = [_board_pin] if _board_pin else sorted(
+    glob.glob(os.path.join(_here, 'deck-ladder-board-*.json')))
 _board_items = []
 for _p in _board_paths: _board_items.extend(load(_p)['items'])
 deck['ladder_boards'] = ladder_board_gate(_board_items)
@@ -744,8 +749,16 @@ deck['version'] = 6
 from datetime import date
 deck['generated'] = date.today().isoformat()
 
-with open(DECK, 'w') as f:
-    json.dump(deck, f, ensure_ascii=False, separators=(',', ':'))
+# ACQVAULT_GATE_ONLY: run every gate, write nothing. This is what lets
+# scripts/check_ladder_file.py be the REAL gate instead of a second copy of it —
+# the copy drifted until it reported the opposite of the truth in both
+# directions, passing items the build FATALs on while calling 387 citeable
+# sections "no such section".
+if os.environ.get('ACQVAULT_GATE_ONLY'):
+    print('\n(gate-only: every gate ran, deck NOT written)')
+else:
+    with open(DECK, 'w') as f:
+        json.dump(deck, f, ensure_ascii=False, separators=(',', ':'))
 
 recall = deck['recall_basic'] + deck['recall_advanced']
 mcq_n = sum(1 for c in recall if 'd' in c)
