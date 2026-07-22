@@ -35,6 +35,36 @@ duplicated clause number must resolve to the substantive copy rather than a stub
 **dedup_verify** — one search hit per clause number, with the memo copy winning and
 part 52 kept as the labelled pre-deviation library.
 
+## cdp.js — for anything the browser has to actually *do*
+
+The three suites above check logic. `cdp.js` checks the rendered page: it launches the
+real Chrome headless at an exact viewport and evaluates an expression in the **page**
+world, printing whatever JSON you return.
+
+```bash
+node scripts/verify/cdp.js <url> <width> <height> <exprFile>
+```
+
+```js
+// expr.js — must evaluate to a Promise or value; return a string and it prints raw
+(async () => {
+  const btn = document.querySelector('.pn-top');
+  window.scrollTo(0, 2500);
+  await new Promise(r => setTimeout(r, 400));
+  return JSON.stringify({ visible: btn.classList.contains('visible') });
+})()
+```
+
+⚠ **Reach for this instead of the in-app browser pane for anything scroll-, animation-,
+or viewport-driven.** That pane cannot verify such behaviour and fails *silently* in ways
+that read as product bugs: `requestAnimationFrame` never fires, programmatic scrolling
+dispatches no `scroll` events, CSS transitions never advance (so a correctly-toggled
+class still computes `opacity: 0`), its JS runs in an isolated world where `window`-level
+listeners and events do not cross (the DOM does, which is the confusing part), and it will
+not size below 388px CSS wide — so it cannot measure the 375px case at all. Three
+"defects" in `assets/part-nav.js` were chased down to exactly these before `cdp.js`
+existed. It needs no dependencies: Node 18+ ships a global `WebSocket`.
+
 ## The trap these exist because of
 
 `assets/app.js` cannot be `require()`d — it touches `document` at top level. The
