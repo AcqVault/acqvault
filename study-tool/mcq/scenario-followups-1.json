@@ -87,8 +87,8 @@
   "0f4c23c21c0d": [
     {
       "q": "What questions must market research answer?",
-      "h": "Sources, commerciality, small business, practices — and one about consolidation.",
-      "d": "RFO Part 10: are there capable sources; is the requirement commercial (or satisfiable by non-developmental items); can small businesses perform; what are the industry's customary practices and terms; and is any bundling or consolidation justified. Those answers drive the set-aside call, the commerciality determination, the competition strategy, and how the requirement itself gets defined."
+      "h": "Five steps, in priority order — commercial first, nondevelopmental last.",
+      "d": "RFO 10.001(f) sets the questions, and it sets them in a fixed order of priority. Using the market research results, I determine whether — (1) a commercial product or commercial service on an existing governmentwide contract can meet the requirement; (2) the requirement could be modified so an existing governmentwide contract could be used; (3) a commercial product or commercial service is available from another source; (4) a commercial product or commercial service could be modified to meet the requirement; or (5) the requirement can only be satisfied by a nondevelopmental item. The order is the whole point: 10.001(f) opens by directing agencies to procure commercial to the maximum extent practicable, so nondevelopmental is the last rung, not the first, and 10.001(d) says I must not ask sources for more than the minimum information needed to make those determinations. Research also has to tell me whether small businesses can perform, because that drives the Rule of Two. Bundling and consolidation are not Part 10 questions at all — those determinations live at RFO 7.107."
     },
     {
       "q": "How long is research current, and what document carries it?",
@@ -109,8 +109,8 @@
     },
     {
       "q": "How does the ladder change for services?",
-      "h": "The statutory program leads.",
-      "d": "For services: AbilityOne first, then Federal Supply Schedules, then Federal Prison Industries, then commercial sources. Shorter ladder, same discipline — and the same rule that being on the AbilityOne procurement list makes the source mandatory, with price alone never unlocking the open market."
+      "h": "One mandatory source, not a ladder.",
+      "d": "There is no four-rung ladder for services. RFO 8.102 gives one mandatory source: unless otherwise required by law or by 8.101, services on the Procurement List maintained by the Committee must be procured from AbilityOne Participating Nonprofit Agencies under subpart 8.2. Other sources may be used only as prescribed in 41 CFR 101-26.301, and under an unusual and compelling urgency as prescribed in 6.302-2 and 41 CFR 101-25.101-5. Inventory, excess, and FPI are supply rungs — RFO 8.103(a) — and they have no services counterpart. Above 8.102 sits 8.101, which routes specific services to specific procedures: public utility services to part 41, Government printing to subpart 8.5. Everything else is a schedule or open-market choice, not a mandatory rung. And price alone never unlocks the open market."
     },
     {
       "q": "If this lands on a schedule buy — who determines the order price fair and reasonable?",
@@ -121,13 +121,13 @@
   "760c637d2966": [
     {
       "q": "Recite the commercial-item definition for me.",
-      "h": "Who it's sold to, plus the evolution and minor-mod branches.",
-      "d": "RFO 2.101: an item sold, leased, or licensed to the general public — or evolved from such an item and available in time to meet the Government's need — including minor modifications that don't alter the item's form, fit, or function. For services: installation, maintenance, repair, or training for commercial products, or services sold competitively at catalog or market prices. The general-public element is what one foreign military sale and an affiliate transaction both fail."
+      "h": "Six paragraphs — general public, evolved, two modification branches, combinations, affiliate transfers, NDI.",
+      "d": "RFO 2.101, commercial product, has six paragraphs: (1) a product of a type customarily used by the general public for nongovernmental purposes that has been sold, leased, or licensed — or offered for sale, lease, or license — to the general public; (2) a product that evolved from a paragraph (1) product and will be available in the commercial marketplace in time to satisfy the delivery requirements; (3) a product that would meet (1) or (2) except for (i) modifications of a type customarily available in the commercial marketplace, or (ii) minor modifications of a type NOT customarily available made to meet Federal Government requirements; (4) combinations of the above customarily combined and sold to the general public; (5) any of (1) through (4) even though transferred between or among separate divisions, subsidiaries, or affiliates of a contractor; and (6) a nondevelopmental item developed exclusively at private expense and sold in substantial quantities competitively to multiple State and local or foreign governments. Two traps live in there. First, the minor-modification test is not form, fit, or function — RFO 2.101(3)(ii) says a minor modification is one that does not significantly alter the function or essential physical characteristics of an item or component, or change the purpose of a process, and (3)(i) is a separate category entirely for modifications the commercial marketplace customarily offers. Second, an affiliate transfer does not break commerciality: paragraph (5) expressly preserves it, and commercial service paragraph (3) says the same for services. What the military-only sales history actually attacks is the general-public element in paragraph (1)."
     },
     {
       "q": "What does the written CID require, and who approves it?",
-      "h": "Over the SAT, one level up, with a comparison behind it.",
-      "d": "For DoD actions over the SAT ($350K): a written Commercial Item Determination approved one level above the contracting officer — describing the item, stating the basis for meeting the definition with a comparison analysis, signed and dated. Relying on a prior CID requires addressing how current market conditions affect the earlier finding. The determination is the Government's call, made on evidence the vendor supplies."
+      "h": "Over the SAT, in writing — and one level up only for certain paragraphs.",
+      "d": "R-DFARS 212.001-70(c): when using Part 12 procedures above the SAT, I determine in writing that the acquisition meets the RFO 2.101 commercial product or commercial service definition, put that determination in the contract file, and follow PGI 212.001-70(b) for file documentation. Approval one level above the contracting officer is conditional, not universal — 212.001-70(c)(3) requires it only when the determination relies on paragraph (1)(ii), (3), or (4) of the commercial product definition, or paragraph (2) of the commercial service definition. Here the assertion rides on paragraph (3), so one level up applies. Prior determinations run the opposite direction from what people expect: under 212.001-70(b)(1) and 10 U.S.C. 3456(c), if the Commercial Item Database holds a prior commerciality determination — or I have other evidence DoD previously acquired the item under Part 12 — that prior contract MUST serve as the determination, and I document the file accordingly. If I question it and want to buy outside Part 12 anyway, 212.001-70(b)(2) makes me request a review by the head of the contracting activity, who has 30 days to either confirm the prior use was appropriate and still applicable or issue a written determination that it was improper or is no longer appropriate. The determination is the Government's call, made on evidence the vendor supplies."
     },
     {
       "q": "Say it holds up as commercial — what pricing data can you still demand?",
@@ -139,7 +139,7 @@
     {
       "q": "What are the three SAP buying methods, and their dollar boundaries?",
       "h": "A card, an order, and an account.",
-      "d": "RFO Part 13: the Government Purchase Card for micro-purchases at or under $15K; purchase orders from $15K up to the $350K SAT — a Government order the contractor accepts in writing or by performance; and Blanket Purchase Agreements for repetitive needs from established sources — an account, not a contract, with no obligation until a call is placed."
+      "d": "Pick the part before you pick the method, because Part 13 is narrower than most people teach it. RFO 13.000 scopes it to noncommercial products and services at or below the SAT, and 13.001(a) allows it only if there are no commercial products or commercial services that can satisfy the need and the supplies or services are not available from a required source under Part 8. Everything in this scenario is catalog commercial, so these buys ride Part 12. The methods: the Government Purchase Card for micro-purchases at or under the $15K MPT; a request for quotations followed by a purchase order under RFO 12.201-1(a), which covers commercial acquisitions valued up to $9 million — raised to $15 million by RFO 12.001(c) when the head of the agency determines the buy supports a contingency operation, defense against or recovery from a cyber/nuclear/biological/chemical/radiological attack, international disaster assistance, or response to an emergency or major disaster; and blanket purchase agreements under RFO 12.201-1(e)(3) for repetitive needs from established sources — an account, not a contract, with no obligation until a call is placed. The $350K SAT is not the purchase-order ceiling. It is the Part 13 ceiling, and RFO 13.201 additionally caps each individual purchase under a Part 13 BPA at the SAT."
     },
     {
       "q": "What competition does SAP actually require at these values?",
@@ -205,7 +205,7 @@
     {
       "q": "Who does what — SSA, SSEB, SSAC, PCO?",
       "h": "Decide, evaluate, compare, run the business.",
-      "d": "The SSA is the decision-maker — appoints the boards, approves the range, can award without discussions if the solicitation allowed it; under $10M the PCO typically serves as SSA. The SSEB evaluates each proposal against Section M — individually, never comparing offerors. The SSAC (required over $100M) does the comparative analysis and recommends. The PCO runs the business side: the range determination, exchanges, award, debriefs — and protects proposal confidentiality."
+      "d": "The SSA is the decision-maker — appoints the boards, approves the range, can award without discussions if the solicitation allowed it. The DoD Source Selection Procedures set the appointment rule by dollars: for acquisitions with a total estimated value greater than or equal to $100 million, including options and planned orders, the agency head must appoint in writing an individual other than the PCO as the SSA; for all other acquisitions the PCO may serve as the SSA. The SSEB evaluates each proposal against Section M — individually, never comparing offerors. The SSAC does the comparative analysis and recommends. Get its trigger exactly right: it is greater than or equal to $100 million, not over $100M. The SSA must establish an SSAC for acquisitions with a total estimated value of $100 million or more unless a waiver is approved, and an SSAC is optional but strongly encouraged for special-interest acquisitions valued under $100 million. An acquisition at exactly $100 million is in. The PCO runs the business side: the range determination, exchanges, award, debriefs — and protects proposal confidentiality."
     }
   ],
   "c530d151efa8": [
@@ -227,7 +227,7 @@
     {
       "q": "What dollar thresholds bring in DCMA and DCAA?",
       "h": "Field pricing versus audit — two ladders.",
-      "d": "DCMA field pricing assistance: over $2.5M fixed-price, over $10M cost-type (over $2.5M cost-type with system deficiencies). DCAA audits: over $10M fixed-price, over $100M cost-type. This $14M sole-source FPIF action sits squarely in DCMA field-pricing territory with DCAA audit available — and the $6M subcontract's rates ride the same support."
+      "d": "PGI 215.406(a)(1) ties field pricing to the certified cost or pricing data threshold rather than to a hard number: consider requesting field pricing assistance for fixed-price proposals exceeding the certified cost or pricing data threshold; for cost-type proposals exceeding that threshold from offerors with material weaknesses; and for cost-type proposals exceeding $10 million from offerors without material weaknesses. R-DFARS 215.403-3(a) sets that threshold at $10 million for a prime contract awarded after June 30, 2026, so on this July 2026 action all three triggers read $10 million — the $2.5 million figure only survives for contracts awarded on or before that date. DCAA audit assistance is its own ladder at PGI 215.406(b)(1): fixed-price proposals exceeding $10 million, cost-type proposals exceeding $100 million. Say material weaknesses, not system deficiencies — material weaknesses is the PGI's term and the one the board will be listening for. This $14M sole-source FPIF action sits squarely in field-pricing territory with DCAA audit available, and the $6M subcontract's rates ride the same support."
     }
   ],
   "d707f7ff05cc": [
@@ -238,8 +238,8 @@
     },
     {
       "q": "What gates must every cost-type contract clear?",
-      "h": "A system and a signature.",
-      "d": "An adequate contractor accounting system — because the Government pays incurred costs, the system that captures them must be trustworthy — and a D&F justifying the type. No system, no cost-type award, whatever the mission pressure. That's why this scenario's accounting-system question comes before any structure conversation."
+      "h": "Four gates at 16.301-3(a) — and no D&F among them.",
+      "d": "RFO 16.301-3(a) lists four, and a D&F is not one of them. (1) A written acquisition plan approved at least one level above the contracting officer, per 7.102(d). (2) Agency head approval of a justification if 16.104 requires one — that is the Executive Order 14402 justification, and for DoD it starts at $100 million, so a $28M action doesn't trigger it. (3) A contractor accounting system that can adequately segregate, accumulate, and allocate costs specifically attributed to the contract or order during performance — because the Government pays incurred costs, the system that captures them must be trustworthy. (4) Before award, sufficient Government resources available to award and manage a contract other than firm-fixed-price, including a designated contracting officer's representative to monitor contractor performance and cost controls. Then 16.301-3(b): cost-reimbursement is not allowed at all for commercial products and commercial services. The HCA-signed D&F people reflexively attach to cost-type belongs somewhere else — RFO 16.401-2(a) requires it for all incentive- and award-fee contracts. No accounting system, no cost-type award, whatever the mission pressure, which is why this scenario's accounting-system question comes before any structure conversation."
     },
     {
       "q": "If they push T&M for the improvement work — what does the D&F have to say?",

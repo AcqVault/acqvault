@@ -110,7 +110,7 @@
   "Data Rights": {
     "qtype": "a data-rights question — R-DFARS 227: the funding source drives the license.",
     "smes": "Legal (IP counsel), the program engineers on the component map, and DCMA on assertion administration.",
-    "rule": "R-DFARS 227: who paid for development answers most of it — Government funds → unlimited, mixed → GPR, private → limited/restricted. The contractor proves the restriction (the 252.227-7017 assertion list); honor the markings until a challenge resolves.",
+    "rule": "R-DFARS 227: who paid for development answers most of it — Government funds → unlimited, mixed → GPR, private → limited/restricted. The contractor proves the restriction — the assertion list comes from the provision at 252.227-7992, Identification and Assertion of Use, Release, or Disclosure Restrictions (DEVIATION 2026-O0036), inserted under R-DFARS 227.7103-6(g)(2); 252.227-7017 is the legacy pre-deviation provision. Honor the markings until a challenge resolves.",
     "cite": "R-DFARS 227 · Vol. 2, Data Rights"
   },
   "Contract Modifications & Scope": {
