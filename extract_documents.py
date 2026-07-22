@@ -101,6 +101,16 @@ def part_number_from_filename(filename):
     return m.group(1).lstrip("0") if m else None
 
 
+# Sources whose status is a property of the SOURCE, not of any sentence in it.
+# detect_status reads a rule notice's own words ("interim rule", "final rule"),
+# and the FAR Companion contains none of them — so all 256 of its sections came
+# out "Unknown", and badgeTag() renders "unknown" as no badge at all. It was the
+# only source on the site wearing no status chip. Its own source description
+# calls it "Practitioner guidance accompanying the Revolutionary FAR Overhaul",
+# and the PGI — guidance in the same sense — already carries exactly this value.
+STATUS_OVERRIDE = {"far-companion": "Guidance"}
+
+
 def detect_status(text):
     """
     Best-effort status detection from document text.
@@ -288,7 +298,7 @@ def chunk_single_pdf(text, chunk_regex, source_key, label, filename, pdf_path):
                 "title":        header[:120],
                 "content":      chunk,
                 "filename":     filename,
-                "status":       detect_status(chunk),
+                "status":       STATUS_OVERRIDE.get(source_key) or detect_status(chunk),
                 "indexed_at":   datetime.now(timezone.utc).isoformat(),
             })
     else:
@@ -308,7 +318,7 @@ def chunk_single_pdf(text, chunk_regex, source_key, label, filename, pdf_path):
                 "title":        detect_title(block, f"{label} — Block {idx + 1}"),
                 "content":      block,
                 "filename":     filename,
-                "status":       detect_status(block),
+                "status":       STATUS_OVERRIDE.get(source_key) or detect_status(block),
                 "indexed_at":   datetime.now(timezone.utc).isoformat(),
             })
 
@@ -389,7 +399,7 @@ def process_multi_source(cfg):
                 "title":        title,
                 "content":      text,
                 "filename":     pdf_path.name,
-                "status":       detect_status(text),
+                "status":       STATUS_OVERRIDE.get(cfg["source_key"]) or detect_status(text),
                 "indexed_at":   datetime.now(timezone.utc).isoformat(),
             })
             report.append({

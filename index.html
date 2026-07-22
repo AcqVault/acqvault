@@ -34,8 +34,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
-<link rel="preconnect" href="https://www.federalregister.gov" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=132">
+<link rel="stylesheet" href="/assets/app.css?v=133">
 </head>
 <body>
 
@@ -119,7 +118,7 @@
           <span class="search-count" id="search-count"></span>
           <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
           <kbd class="search-kbd" aria-hidden="true">/</kbd>
-          <button type="button" class="search-go" id="search-go" data-action="search-go" aria-label="Search">Search<span class="search-go-arrow" aria-hidden="true">→</span></button>
+          <button type="button" class="search-go" id="search-go" data-action="search-go" aria-label="Search"><span class="search-go-label">Search</span><span class="search-go-arrow" aria-hidden="true">→</span></button>
         </div>
         <div class="answer-mode" id="answer-mode" role="group" aria-label="Answer with">
           <span class="answer-mode-k">Answer with</span>
@@ -243,12 +242,15 @@
           <button type="button" class="fpill active" data-source="all" aria-pressed="true">All Sources</button>
           <button type="button" class="fpill" data-source="rfo" aria-pressed="false">RFO</button>
           <button type="button" class="fpill" data-source="r-dfars" aria-pressed="false">R-DFARS</button>
+          <!-- PGI sits next to the rule it implements, matching the hero strip, the
+               browse picker and the coverage chips. It was last here, which read as
+               unrelated to R-DFARS — the exact pairing the rest of the app defends. -->
+          <button type="button" class="fpill" data-source="pgi" aria-pressed="false">R-DFARS PGI</button>
           <button type="button" class="fpill" data-source="far-companion" aria-pressed="false">FAR Companion</button>
           <button type="button" class="fpill" data-source="category-management" aria-pressed="false">Category Management</button>
           <button type="button" class="fpill" data-source="afi-63-138" aria-pressed="false">DAFI 63-138</button>
           <button type="button" class="fpill" data-source="fmr" aria-pressed="false">DoD FMR</button>
           <button type="button" class="fpill" data-source="ssp" aria-pressed="false">DoD SSP</button>
-          <button type="button" class="fpill" data-source="pgi" aria-pressed="false">R-DFARS PGI</button>
         </div>
       </div>
     </div>
@@ -406,7 +408,7 @@
         </div>
         <div class="market-panel market-results-panel" aria-live="polite">
           <div class="market-results-head">
-          <div>
+          <div class="market-head-left">
               <div class="market-results-title">Opportunity results</div>
               <div class="market-results-sub" id="market-results-sub">Run a search to review official SAM.gov opportunities inside AcqVault.</div>
           </div>
@@ -628,7 +630,7 @@
     <button class="cite-copy-btn cite-link-btn" id="cite-link-btn" style="margin-left:6px">Copy link</button>
   </div>
   <div class="drawer-filter-wrap">
-    <input type="text" class="drawer-filter-input" id="drawer-filter-input" placeholder="Filter within this document…" autocomplete="off" />
+    <input type="text" class="drawer-filter-input" id="drawer-filter-input" placeholder="Filter within this document…" aria-label="Filter within this document" autocomplete="off" />
     <div class="drawer-filter-count" id="drawer-filter-count"></div>
   </div>
   <div class="drawer-body">
@@ -646,9 +648,9 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=91"></script>
-<script defer src="/assets/saved.js?v=8"></script>
-<script defer src="/assets/widgets.js?v=56"></script>
+<script defer src="/assets/app.js?v=92"></script>
+<script defer src="/assets/saved.js?v=9"></script>
+<script defer src="/assets/widgets.js?v=57"></script>
 <script defer src="/assets/polish.js?v=3"></script>
 </body>
 </html>

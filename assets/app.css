@@ -285,56 +285,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 #acro-tip.show { opacity: 1; transform: translateY(0); }
 #acro-tip .at-term { font-weight:var(--fw-heavy); color: #7fb8ff; font-size:var(--fs-xs); letter-spacing:var(--ls-wide); text-transform: uppercase; display: block; margin-bottom: 2px; }
 
-/* ── WHAT'S NEW FEED ──────────────────────────────────────────── */
-.wn-card { padding-bottom: 6px; }
-.wn-meta {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 10px; padding: 11px 18px; background: var(--accent-soft);
-  border-bottom: 1px solid var(--line2);
-}
-.wn-meta-left { font-size:var(--fs-sm); color: var(--muted); }
-.wn-meta-left b { color: var(--ink2); font-weight:var(--fw-bold); }
-.wn-badge {
-  font-size:var(--fs-2xs); font-weight:var(--fw-heavy); letter-spacing:var(--ls-wide);
-  background: var(--dfars-solid); color: #fff;
-  padding: 3px 9px; border-radius: 999px; white-space: nowrap;
-}
-.wn-badge.zero { background: var(--off2); color: var(--muted2); }
-.wn-list { padding: 6px 8px 4px; }
-.wn-item {
-  display: grid; grid-template-columns: 46px 1fr; gap: 12px;
-  padding: 11px 10px; border-radius: 10px; text-decoration: none;
-  transition: background .15s; position: relative;
-}
-.wn-item + .wn-item { border-top: 1px solid var(--line2); }
-.wn-item:hover { background: var(--off); }
-.wn-item.is-new::before {
-  content: ''; position: absolute; left: 1px; top: 14px; bottom: 14px;
-  width: 3px; border-radius: 3px; background: var(--dfars-solid);
-}
-.wn-date {
-  font-size:var(--fs-2xs); font-weight:var(--fw-bold); color: var(--muted2);
-  text-align: center; line-height:var(--lh-snug); padding-top: 2px;
-}
-.wn-date b { display: block; font-size:var(--fs-16); color: var(--ink2); letter-spacing: -0.03em; }
-.wn-body { min-width: 0; }
-.wn-title {
-  font-size:var(--fs-base); font-weight:var(--fw-semibold); color: var(--ink2);
-  line-height: 1.35; letter-spacing:var(--ls-snug);
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.wn-tags { display: flex; align-items: center; gap: 7px; margin-top: 6px; flex-wrap: wrap; }
-.wn-type { font-size:var(--fs-2xs); font-weight: 750; letter-spacing: .03em; text-transform: uppercase; padding: 2px 7px; border-radius: 5px; }
-.wn-type-proposed { background: var(--rfo-bg); color: var(--rfo-txt); }
-.wn-type-interim  { background: var(--cmp-bg); color: var(--cmp-txt); }
-.wn-type-final    { background: var(--dfars-bg); color: var(--dfars-txt); }
-.wn-type-other    { background: var(--off2); color: var(--muted); }
-.wn-newtag { font-size:var(--fs-3xs); font-weight:var(--fw-heavy); letter-spacing:var(--ls-wide); color: var(--dfars-solid); }
-.wn-docnum { font-size:var(--fs-2xs); color: var(--muted2); font-family:var(--font-mono); }
-.wn-foot { padding: 11px 18px; border-top: 1px solid var(--line2); }
-.wn-foot a { font-size:var(--fs-sm); font-weight: 650; color: var(--accent); }
-.wn-foot a:hover { text-decoration: underline; }
-.wn-loading, .acro-loading { padding: 26px 16px; text-align: center; font-size:var(--fs-sm); color: var(--muted2); }
+.acro-loading { padding: 26px 16px; text-align: center; font-size:var(--fs-sm); color: var(--muted2); }
 
 /* ── SPENDING DASHBOARD ───────────────────────────────────────── */
 #spending-dashboard .dash-head-row {
@@ -618,6 +569,21 @@ body{font-family:var(--font-sans);background:var(--white);color:var(--ink);-webk
 a{color:inherit;text-decoration:none;}
 button,input,textarea{font-family:inherit;}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+/* Available to screen readers, absent from the page — for labels on controls
+   whose purpose a sighted user already reads from context. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+/* WCAG 1.4.11 wants 3:1 against the ADJACENT colour, and the brass ring only
+   clears that on light surfaces. Measured against the accent #87651c:
+   white 5.37:1 ✓ · warm paper 4.97:1 ✓ · navy #0f2540 2.88:1 ✗ · on brass
+   itself 1:1 — the ring vanishes completely on the skip link. Bright brass
+   reads 9.17:1 on navy and 3.19:1 on brass, so dark surfaces switch to it. */
+.hero :focus-visible,
+.about-bar :focus-visible,
+.daily-strip :focus-visible,
+.study-mode :focus-visible,
+.market-action.primary:focus-visible,
+.skip-link:focus,
+.skip-link:focus-visible{outline-color:var(--brass-bright);}
 .skip-link{position:absolute;left:8px;top:-60px;z-index:2000;background:var(--accent);color:#fff;padding:10px 16px;border-radius:8px;font-family:var(--font-sans);font-weight:var(--fw-semibold);font-size:var(--fs-md);text-decoration:none;transition:top .15s ease;}
 .skip-link:focus{top:8px;}
 
@@ -735,7 +701,10 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(135,101,2
 .search-bar{display:flex;align-items:center;gap:10px;background:var(--white);border:2px solid rgba(135,101,28,0.24);border-radius:var(--r-xl);padding:0 20px;height:64px;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);box-shadow:0 4px 24px rgba(15,37,64,0.1),0 1px 4px rgba(0,0,0,0.06);}
 .search-bar:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow),0 8px 32px rgba(15,37,64,0.15);transform:translateY(-2px);}
 .search-icon{font-size:19px;color:var(--muted2);flex-shrink:0;}
-#search-input{flex:1;background:transparent;border:none;outline:none;font-size:18.5px;font-weight:var(--fw-regular);color:var(--ink);letter-spacing:var(--ls-tight);}
+/* align-self:stretch, not a taller font box: the input's own hit area was 20px
+   inside a 64px bar, so two thirds of the thing that looks like a text field
+   did nothing when tapped. Transparent background — nothing changes visually. */
+#search-input{flex:1;align-self:stretch;background:transparent;border:none;outline:none;font-size:18.5px;font-weight:var(--fw-regular);color:var(--ink);letter-spacing:var(--ls-tight);}
 #search-input::placeholder{color:var(--muted2);}
 .search-count{font-size:var(--fs-sm);color:var(--muted2);white-space:nowrap;}
 .search-clear{background:transparent;border:none;cursor:pointer;color:var(--muted2);font-size:var(--fs-16);padding:0;display:none;transition:color 0.15s;}
@@ -1020,6 +989,13 @@ body.work-mode #spending-dashboard{display:none;}
 .br-toc{background:var(--off);border:1px solid var(--line2);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:36px;}
 .br-toc-title{font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wider);text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
 .br-toc-list{list-style:none;display:flex;flex-direction:column;gap:1px;}
+/* FMR volume index only: a title filter over the chapter rows. Every other
+   source gets the .br-part-search bar from buildReaderHTML; this list has no
+   .br-section nodes for that bar to filter, so it carries its own. */
+.br-fmr-filter{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:0 12px;min-height:40px;background:var(--white);border:1px solid var(--line2);border-radius:var(--r-md);}
+.br-fmr-filter:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+.br-fmr-filter-input{flex:1;min-width:0;align-self:stretch;border:none;outline:none;background:transparent;font:inherit;font-size:var(--fs-sm);color:var(--ink);}
+.br-fmr-filter-count{font-size:var(--fs-2xs);font-weight:var(--fw-bold);color:var(--muted2);white-space:nowrap;font-variant-numeric:tabular-nums;}
 .br-toc-subpart{margin-top:8px;}
 .br-toc-subpart-label{font-size:var(--fs-base);font-weight:var(--fw-semibold);color:var(--muted);padding:3px 0;display:block;}
 .br-toc-link{display:flex;align-items:baseline;gap:8px;padding:4px 8px;border-radius:6px;text-decoration:none;transition:background 0.1s;cursor:pointer;}
@@ -1465,12 +1441,18 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 /* Narrow screens: the pill radius + wrapped text makes an egg — switch to a
    full-width card anchored to the screen edges instead. */
 @media(max-width:480px){
-  .update-toast{left:16px;right:16px;max-width:none;transform:translateY(140%);border-radius:14px;justify-content:space-between;gap:12px;}
+  /* Cleared of the drawer's fixed mobile footer, which sits inside #drawer's own
+     z-400 stacking context and so cannot be raised above the z-3200 toast. */
+  .update-toast{left:16px;right:16px;max-width:none;transform:translateY(140%);border-radius:14px;justify-content:space-between;gap:8px;bottom:calc(78px + env(safe-area-inset-bottom));}
   .update-toast span{flex:1;min-width:0;}
   .update-toast.show{transform:translateY(0);}
 }
 .update-toast button{flex-shrink:0;background:var(--accent);color:#fff;border:none;font-weight:var(--fw-bold);font-size:var(--fs-base);padding:8px 16px;border-radius:999px;cursor:pointer;transition:background .15s,transform .15s;}
 .update-toast button:hover{background:var(--accent-h);transform:translateY(-1px);}
+/* Dismiss reads as the quiet option next to Refresh — declining an update is not
+   a brass-button action. 44px so it is actually tappable. */
+.update-toast .ut-close{background:transparent;color:rgba(234,241,251,0.72);font-size:15px;font-weight:var(--fw-semibold);padding:0;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;}
+.update-toast .ut-close:hover{background:rgba(255,255,255,0.1);color:#fff;transform:none;}
 .source-status-note{font-size:var(--fs-base);line-height:1.6;color:rgba(226,232,240,0.7);max-width:760px;}
 .src{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-xl);padding:22px;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);}
 .src:hover{border-color:rgba(255,255,255,0.16);background:rgba(255,255,255,0.06);transform:translateY(-2px);}
@@ -1595,7 +1577,11 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .market-resource-note{font-size:var(--fs-sm);line-height:var(--lh-base);color:var(--muted);max-width:520px;}
 .market-resource-row .market-actions{padding:0;background:transparent;border-top:none;}
 .market-results-panel{margin-top:18px;padding:0;overflow:hidden;}
-.market-results-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(135,101,28,0.08);}
+/* Wraps rather than clips: the panel is overflow:hidden, so an unwrapped head
+   pushed the Board button clean off the right edge at 375 (scrollWidth 404 in a
+   295 box) — unreachable, while the flow copy tells users to pin to their board. */
+.market-results-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(135,101,28,0.08);}
+.market-head-left{flex:1 1 240px;min-width:0;}
 .market-results-title{font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--ink);letter-spacing:var(--ls-tight);}
 .market-results-sub{font-size:var(--fs-xs);color:var(--muted2);margin-top:2px;}
 .market-results-count{font-size:var(--fs-2xs);font-weight:var(--fw-black);letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--accent);background:rgba(135,101,28,0.07);border:1px solid rgba(135,101,28,0.12);border-radius:999px;padding:5px 9px;white-space:nowrap;}
@@ -1651,7 +1637,7 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .market-opp-pin:hover{border-color:var(--accent);color:var(--accent);background:var(--brass-bg);}
 .market-opp-pin.pinned{color:var(--brass-ink);border-color:rgba(135,101,28,0.4);background:var(--brass-bg);}
 .market-opp-pin.pinned svg{fill:currentColor;}
-.market-head-right{display:inline-flex;align-items:center;gap:10px;}
+.market-head-right{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px;}
 .market-board-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(135,101,28,0.2);background:#fff;color:var(--ink2);border-radius:999px;padding:6px 12px;font-size:var(--fs-2xs);font-weight:var(--fw-black);letter-spacing:var(--ls-caps);text-transform:uppercase;cursor:pointer;transition:color .15s,border-color .15s,background .15s;white-space:nowrap;}
 .market-board-btn svg{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;}
 .market-board-btn:hover{border-color:var(--accent);color:var(--accent);}
@@ -2207,7 +2193,10 @@ mark{background:rgba(135,101,28,0.20);color:var(--ink);border-radius:2px;padding
 /* Headings never orphan a single word on their last line; regulation paragraphs
    get the better greedy-fit wrap where supported. */
 h1,h2,h3,.br-part-title,.browse-empty-title,.nr-title{text-wrap:balance;}
-.br-p,.br-para-text,.dc-text,.dc-para-text{text-wrap:pretty;}
+/* break-word matches the server-rendered reader (api/_seo.js .lvl): the corpus
+   stores bare URLs as plain text, and overflow-wrap:normal clipped their tails
+   in the in-app reader exactly as it overflowed the SSR page. */
+.br-p,.br-para-text,.dc-text,.dc-para-text{text-wrap:pretty;overflow-wrap:break-word;}
 /* Numbers that sit next to numbers align like a ledger. */
 .hero-statstrip-count strong,#search-count,.br-meta,.rc-part,.br-toc-link-num,.part-tile-num{font-variant-numeric:tabular-nums;}
 /* Touch: no gray tap flash; no 300ms double-tap delay on controls. */
@@ -2581,7 +2570,12 @@ button,a,[role="button"],input,select{touch-action:manipulation;}
 @media (max-width:420px){
   .hero-inner-b .hero-headline{font-size:clamp(26px,7.6vw,33px);line-height:1.06;}
   .hero-inner-b .hero-sub{font-size:var(--fs-lg);line-height:var(--lh-loose);}
-  .search-go{padding:0 12px;font-size:var(--fs-base);}
+  /* The Search button's word cost 92px of a 311px bar, leaving the input 145px —
+     too narrow to read your own query back. The button keeps its aria-label, so
+     dropping to the arrow alone loses nothing for assistive tech and returns
+     ~48px to the field. 44px wide keeps it a real tap target. */
+  .search-go{padding:0;font-size:var(--fs-base);min-width:44px;justify-content:center;gap:0;}
+  .search-go-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
   .vault-panel{width:92%;}
 }
 
@@ -3077,3 +3071,18 @@ nav#main-nav.over-hero .nav-saved-btn,nav#main-nav.over-hero .nav-feedback-btn{c
   .daily-copy b{white-space:normal;line-height:1.2;}
   .daily-cta{flex:1 0 100%;text-align:center;}
 }
+
+/* ── Touch target floors (WCAG 2.2 SC 2.5.8, 24×24 minimum) ──────────────────
+   Six controls measured under 24px: about-feedback-btn 16 · hero-newhere-link
+   17.4 · cra-dl 12 · about-dismiss 22 · cite-copy-btn 22 · modal-close 25.5.
+   Expanded with an absolutely-positioned ::after rather than padding, so the
+   hit area grows to 32px while the control looks exactly as it did — none of
+   these are visual-size decisions, they are missed taps.
+   Deliberately NOT touched: the market NAICS/PSC/agency fields, whose 16-17px
+   inputs sit inside a 59px clickable <label>, and the 28-36px pill buttons,
+   which clear the AA floor and are a coherent scale. */
+.about-feedback-btn,.hero-newhere-link,.cra-dl,.cite-copy-btn,.modal-close{position:relative;}
+.about-feedback-btn::after,.hero-newhere-link::after,.cra-dl::after,
+.about-dismiss::after,.cite-copy-btn::after,.modal-close::after{
+  content:"";position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
+  height:32px;min-width:32px;}

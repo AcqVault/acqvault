@@ -785,6 +785,12 @@ def main():
         print("\n✓ RFO corpus is already current — nothing to apply.")
         if not args.dry_run:
             REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=1))
+            # Record the run even when the RFO text did not move. The ledger was
+            # gated on an RFO diff, so a run that only touched R-DFARS / PGI /
+            # SSP left no entry at all and /changes silently fell behind the
+            # corpus. renderChangesPage already handles a zero-change run — it
+            # prints "No RFO text changes in this re-index."
+            append_changes_log(report)
         return
 
     if args.dry_run:

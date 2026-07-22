@@ -396,11 +396,22 @@
 
   function openPanel() {
     buildPanel(); renderPanel();
+    // The Saved panel (z-2001) paints OVER the drawer (z-400), so opening it on
+    // top of an open drawer put two aria-modal dialogs on screen at once with two
+    // visible ✕ — the drawer's one unreachable behind the scrim. Dismiss the
+    // lower layer rather than covering it. This also keeps trapFocus's single
+    // _focusReturnEl meaningful: it would otherwise be overwritten and the
+    // drawer's focus-return lost.
+    var d = document.getElementById('drawer');
+    if (d && d.classList.contains('open') && typeof window.closeDrawer === 'function') {
+      try { window.closeDrawer(); } catch (e) {}
+    }
     var p = document.getElementById('saved-panel');
     var b = document.getElementById('saved-backdrop');
     p.classList.add('open'); p.setAttribute('aria-hidden', 'false'); p.inert = false;
     b.classList.add('visible'); panelOpen = true;
-    document.body.style.overflow = 'hidden';
+    if (typeof window.syncBodyScrollLock === 'function') window.syncBodyScrollLock();
+    else document.body.style.overflow = 'hidden';
     if (typeof window.trapFocus === 'function') { try { window.trapFocus(p); } catch (e) {} }
     var close = document.getElementById('saved-close');
     if (close) close.focus();
@@ -411,9 +422,8 @@
     if (p) { p.classList.remove('open'); p.setAttribute('aria-hidden', 'true'); p.inert = true; }
     if (b) b.classList.remove('visible');
     panelOpen = false;
-    if (!document.getElementById('drawer') || !document.getElementById('drawer').classList.contains('open')) {
-      document.body.style.overflow = '';
-    }
+    if (typeof window.syncBodyScrollLock === 'function') window.syncBodyScrollLock();
+    else document.body.style.overflow = '';
     if (typeof window.releaseFocus === 'function') { try { window.releaseFocus(); } catch (e) {} }
     var nav = document.getElementById('nav-saved'); if (nav) nav.focus();
   }

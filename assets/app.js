@@ -270,13 +270,24 @@ function showUpdateToast(reg) {
   if (document.getElementById('update-toast')) return;
   var t = document.createElement('div');
   t.id = 'update-toast'; t.className = 'update-toast'; t.setAttribute('role', 'status');
-  t.innerHTML = '<span>A new version of AcqVault is ready.</span><button type="button">Refresh</button>';
-  t.querySelector('button').addEventListener('click', function () {
+  t.innerHTML = '<span>A new version of AcqVault is ready.</span>'
+    + '<button type="button" class="ut-refresh">Refresh</button>'
+    + '<button type="button" class="ut-close" aria-label="Dismiss">✕</button>';
+  t.querySelector('.ut-refresh').addEventListener('click', function () {
     acqUserUpdate = true;
     if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
   });
+  // The toast had no dismiss and no auto-hide: once shown it sat there for the
+  // life of the page, and on mobile it covers the drawer's fixed footer.
+  // Refreshing is an offer, not an order — it must be possible to decline it.
+  var dismiss = function () {
+    t.classList.remove('show');
+    setTimeout(function () { if (t.parentNode) t.remove(); }, 500);  // matches the .45s transition
+  };
+  t.querySelector('.ut-close').addEventListener('click', dismiss);
   document.body.appendChild(t);
   requestAnimationFrame(function () { t.classList.add('show'); });
+  setTimeout(dismiss, 12000);
 }
 // Offline indicator — search keeps working from the cached corpus; live data won't.
 (function () {
@@ -1673,9 +1684,33 @@ function renderFmrVolumeIndex(scroll) {
       <div class="br-part-title">${esc(String(st.partLabel))}</div>
       <div class="br-meta"><span>${st.hits.length} chapter${st.hits.length !== 1 ? 's' : ''}</span><span class="br-meta-dot"></span><span>Select a chapter to read</span></div>
     </div>
-    <div class="br-toc"><div class="br-toc-title">Chapters</div><ul class="br-toc-list">${items}</ul></div>`;
+    <div class="br-toc"><div class="br-toc-title">Chapters</div>
+      <div class="br-fmr-filter">
+        <label class="sr-only" for="fmr-ch-filter">Filter chapters in this volume</label>
+        <input type="text" id="fmr-ch-filter" class="br-fmr-filter-input" autocomplete="off" spellcheck="false"
+               placeholder="Filter ${st.hits.length} chapter${st.hits.length !== 1 ? 's' : ''}…">
+        <span class="br-fmr-filter-count" id="fmr-ch-count"></span>
+      </div>
+      <ul class="br-toc-list">${items}</ul></div>`;
   reader.querySelectorAll('.br-toc-link[data-fmr-ch]').forEach(a =>
     a.addEventListener('click', e => { e.preventDefault(); openFmrChapter(Number(a.dataset.fmrCh)); }));
+  // A volume can carry hundreds of chapters and this index was the one browse
+  // surface with no way to narrow it — every other source renders through
+  // buildReaderHTML, which ships the .br-part-search bar. That bar can't be
+  // reused here: polish.js filters `.br-section` nodes and this list has none.
+  // So: a self-contained title filter over the chapter rows.
+  const fmrFilter = document.getElementById('fmr-ch-filter');
+  const fmrCount = document.getElementById('fmr-ch-count');
+  if (fmrFilter) fmrFilter.addEventListener('input', () => {
+    const q = fmrFilter.value.trim().toLowerCase();
+    let shown = 0;
+    reader.querySelectorAll('.br-toc-list li').forEach(li => {
+      const match = !q || (li.textContent || '').toLowerCase().includes(q);
+      li.hidden = !match;
+      if (match) shown++;
+    });
+    fmrCount.textContent = !q ? '' : (shown ? `${shown} of ${st.hits.length}` : 'No matches');
+  });
   if (scroll !== false) requestAnimationFrame(scrollBrowseReaderToTop);
 }
 function openFmrChapter(idx) {
@@ -2978,6 +3013,10 @@ const RESULTS_PAGE_SIZE = 40;
 let lastSearchQuery = '';
 let lastSearchHits = [];
 let lastSearchTotal = 0;
+// Generation token for in-flight searches. Clearing the box tears the results
+// down, but a response already in flight used to land afterwards and repaint
+// all 40 cards — plus put ?q= back in the URL — under an empty search box.
+let searchGen = 0;
 async function search(query, offset = 0) {
   const filter = buildFilter(activeSources, activeStatuses);
   const body   = { q: query, offset, limit: RESULTS_PAGE_SIZE, attributesToHighlight: ['title','content'],
@@ -2988,7 +3027,10 @@ async function search(query, offset = 0) {
 
 function buildFilter(sources, statuses) {
   const parts = [];
-  const liveSources = ['rfo', 'r-dfars', 'far-companion', 'category-management', 'afi-63-138', 'fmr', 'ssp', 'pgi'];
+  // Order is not semantic here (these get OR'd into one filter clause), but it
+  // follows the site's canonical source order so this does not read as a third,
+  // conflicting ordering to whoever edits it next.
+  const liveSources = ['rfo', 'r-dfars', 'pgi', 'far-companion', 'category-management', 'afi-63-138', 'fmr', 'ssp'];
   const selectedSources = sources.size > 0 ? [...sources].filter(s => liveSources.includes(s)) : liveSources;
   if (selectedSources.length) parts.push('(' + selectedSources.map(s => `source = "${s}"`).join(' OR ') + ')');
   if (statuses.length)  parts.push('(' + statuses.map(s => `status = "${s}"`).join(' OR ') + ')');
@@ -3561,6 +3603,24 @@ function releaseFocus() {
   _focusReturnEl = null;
 }
 
+// ── One owner for the body scroll lock ──────────────────────────────────────
+// Three overlays (the drawer, the Saved panel, the feedback modal) each wrote
+// document.body.style.overflow directly, with no counter and no shared view of
+// who else was open. closeDrawer cleared it unconditionally, so closing the
+// drawer under an open Saved panel let the page scroll behind a modal; and
+// closePanel kept it locked whenever the drawer was still open, so the panel
+// could vanish leaving the body locked with nothing on screen. Ask the DOM
+// instead of tracking it: whoever closes, the answer stays correct.
+function syncBodyScrollLock() {
+  const drawer = document.getElementById('drawer');
+  const feedback = document.getElementById('feedback-modal');
+  const anyOpen = (drawer && drawer.classList.contains('open'))
+    || !!document.querySelector('.saved-panel.open')
+    || (feedback && feedback.classList.contains('open'));
+  document.body.style.overflow = anyOpen ? 'hidden' : '';
+}
+window.syncBodyScrollLock = syncBodyScrollLock;
+
 function openDrawer(hit) {
   activeDocId = hit.id; currentHit = hit;
   cacheDocumentForNewTab(hit);
@@ -3599,7 +3659,7 @@ function openDrawer(hit) {
   drawer.setAttribute('aria-hidden', 'false');
   drawer.inert = false;
   document.getElementById('drawer-backdrop').classList.add('visible');
-  document.body.style.overflow = 'hidden';
+  syncBodyScrollLock();
   trapFocus(drawer);
   document.querySelectorAll('.result-card').forEach(c => c.classList.toggle('active', c.dataset.id === hit.id));
   if (!document.body.classList.contains('reader-mode')) setDocParams(hit);
@@ -3670,7 +3730,7 @@ function closeDrawer() {
   drawer.setAttribute('aria-hidden', 'true');
   drawer.inert = true;
   document.getElementById('drawer-backdrop').classList.remove('visible');
-  document.body.style.overflow = '';
+  syncBodyScrollLock();
   document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
   resetDrawerFilter();
   releaseFocus();
@@ -3912,7 +3972,7 @@ async function runAsk(q) {
 async function runSearch(options = {}) {
   const preserveScroll = Boolean(options.preserveScroll);
   const q = searchInput.value.trim();
-  if (!q) { deactivateSearch(); return; }
+  if (!q) { searchGen++; deactivateSearch(); return; }   // invalidate anything in flight
   // Opt-in AI lane: when the user has flipped the answer-mode toggle to AI,
   // every search submission becomes an Ask instead (forceAuth escapes — used by
   // the "see authoritative results" link inside the answer panel).
@@ -3922,8 +3982,10 @@ async function runSearch(options = {}) {
   const resultsList = document.getElementById('results-list');
   resultsList.setAttribute('aria-busy', 'true'); // tell AT a fetch is in progress
   resultsList.innerHTML = Array.from({ length: 4 }, () => '<div class="skel-card"><div class="skel-line skel-tag"></div><div class="skel-line skel-title"></div><div class="skel-line skel-snippet"></div><div class="skel-line skel-snippet short"></div></div>').join('');
+  const gen = ++searchGen;
   try {
     const data = await search(q, 0);
+    if (gen !== searchGen) return;   // superseded or cleared while in flight — drop it
     lastSearchQuery = q;
     lastSearchHits = data.hits || [];
     lastSearchTotal = data.estimatedTotalHits || lastSearchHits.length;
@@ -3934,6 +3996,7 @@ async function runSearch(options = {}) {
     const total = data.estimatedTotalHits || (data.hits || []).length;
     searchCount.textContent = total ? `${total} results` : '';
   } catch (e) {
+    if (gen !== searchGen) return;  // a stale failure must not paint over a cleared box
     const msg = e && e.message ? e.message : 'Please try again.';
     resultsList.innerHTML = '<div class="no-results"><strong>Search unavailable</strong>' + esc(msg) + '</div>';
     searchCount.textContent = '';
@@ -3959,6 +4022,13 @@ function deactivateSearch() {
   adjustNavForAboutBar(); // about-bar returns on the landing → restore its offset
   hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
   searchClear.classList.remove('visible'); searchCount.textContent = ''; closeDrawer();
+  // Tear the results down too. Hiding the section left ~40 cards and the count
+  // label sitting in the DOM under an empty box, ready to reappear on the next
+  // activateSearch() or on a back/forward restore — and a "No matches for …"
+  // panel whose recovery buttons are themselves gated on a non-empty box.
+  var rl = document.getElementById('results-list'); if (rl) rl.innerHTML = '';
+  var rcl = document.getElementById('result-count-label'); if (rcl) rcl.innerHTML = '';
+  lastSearchQuery = ''; lastSearchHits = []; lastSearchTotal = 0;
   var aiP = document.getElementById('ai-answer'); if (aiP) { aiP.hidden = true; aiP.innerHTML = ''; }
   var asEl = document.getElementById('acr-suggest'); if (asEl) { asEl.hidden = true; asEl.innerHTML = ''; }
   setSearchParams('');
@@ -4107,7 +4177,7 @@ function openFeedback() {
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
   modal.inert = false;
-  document.body.style.overflow = 'hidden';
+  syncBodyScrollLock();
   trapFocus(modal);
 }
 function closeFeedback() {
@@ -4115,7 +4185,7 @@ function closeFeedback() {
   modal.inert = true;
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
-  if (!document.getElementById('drawer').classList.contains('open')) document.body.style.overflow = '';
+  syncBodyScrollLock();
   releaseFocus();
 }
 document.getElementById('feedback-modal').addEventListener('click', e => { if (e.target === document.getElementById('feedback-modal')) closeFeedback(); });
@@ -4165,63 +4235,6 @@ setTimeout(tick,900);
 // (Handled by the staggered reveal observer at the top of this file; this
 //  duplicate is intentionally disabled so it doesn't race the cascade delays.)
 
-// ── REGULATION NEWS FEED ──────────────────────────────────────────────────────
-async function loadNewsFeed() {
-  const el = document.getElementById('news-feed-list');
-  if (!el) return;
-  try {
-    // Fetch latest RFO-related documents from Federal Register API
-    const res = await fetch(
-      'https://www.federalregister.gov/api/v1/documents.json?conditions[agencies][]=defense-acquisition-regulations-system&conditions[agencies][]=office-of-the-under-secretary-of-defense-for-acquisition-and-sustainment&per_page=5&order=newest&fields[]=title&fields[]=publication_date&fields[]=type&fields[]=document_number&fields[]=html_url',
-      { mode: 'cors' }
-    );
-    if (!res.ok) throw new Error('FR API unavailable');
-    const data = await res.json();
-    const docs = data.results || [];
-    if (!docs.length) throw new Error('No results');
-
-    const typeLabel = (t) => {
-      if (!t) return { label: 'Notice', cls: 'nfi-type-other' };
-      const tl = t.toLowerCase();
-      if (tl.includes('proposed')) return { label: 'Proposed Rule', cls: 'nfi-type-proposed' };
-      if (tl.includes('interim') || tl.includes('rule')) return { label: 'Interim Rule', cls: 'nfi-type-interim' };
-      if (tl.includes('final')) return { label: 'Final Rule', cls: 'nfi-type-final' };
-      return { label: t, cls: 'nfi-type-other' };
-    };
-
-    const fmtDate = (d) => {
-      if (!d) return '';
-      const dt = new Date(d + 'T00:00:00');
-      return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    };
-
-    el.innerHTML = docs.map(doc => {
-      const { label, cls } = typeLabel(doc.type);
-      return `<a class="news-feed-item" href="${doc.html_url || '#'}" target="_blank" rel="noopener">
-        <div class="nfi-date">${fmtDate(doc.publication_date)}</div>
-        <div class="nfi-body">
-          <div class="nfi-title">${esc(doc.title || 'Untitled')}</div>
-          <div class="nfi-meta">
-            <span class="nfi-type ${cls}">${label}</span>
-            <span class="nfi-doc">${esc(doc.document_number || '')}</span>
-          </div>
-        </div>
-      </a>`;
-    }).join('') + `<div class="news-feed-footer"><a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">View all on Federal Register →</a></div>`;
-  } catch(e) {
-    // Fallback: show curated static items
-    el.innerHTML = `
-      <a class="news-feed-item" href="https://www.federalregister.gov/documents/search?conditions%5Bagencies%5D%5B%5D=defense-acquisition-regulations-system" target="_blank" rel="noopener">
-        <div class="nfi-date">Live</div>
-        <div class="nfi-body">
-          <div class="nfi-title">View latest RFO / R-DFARS updates</div>
-          <div class="nfi-meta"><span class="nfi-type nfi-type-other">Federal Register</span></div>
-        </div>
-      </a>
-      <div class="news-feed-footer"><a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">Open Federal Register →</a></div>
-    `;
-  }
-}
 
 
 

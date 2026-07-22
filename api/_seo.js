@@ -6,6 +6,10 @@ const path = require('path');
 
 const SITE = 'https://www.acqvault.com';
 
+// /assets/* is served immutable for 30 days, so a changed part-nav.js MUST come
+// with a bumped ?v or every client that already holds it keeps the old file.
+const PART_NAV_V = 1;
+
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
     desc: 'Full text of the Revolutionary FAR Overhaul (RFO) — the overhauled acquisition rulebook agencies cite for new awards, implemented for DoD via class deviations under E.O. 14275.' },
@@ -876,7 +880,11 @@ section.sec p a.xref:hover{text-decoration-color:var(--accent)}
    markers, so match their scale rather than inventing one. Every level keeps the
    SAME ink: in a regulation the operative rule is often at (1)(i), and fading the
    deeper paragraphs makes the binding text the hardest to read on the page. */
-.lvl{margin:0 0 10px}
+/* break-word, not normal: the corpus carries bare URLs as plain text (e.g. the
+   Mentor-Protege program address in 19.302-2), and an unbreakable token pushed
+   12px of the page off-screen at 375 while the tail of the URL was clipped
+   unreadably — the one thing a reader needs to be able to copy by eye. */
+.lvl{margin:0 0 10px;overflow-wrap:break-word}
 .lvl-1{padding-left:24px}
 .lvl-2{padding-left:48px}
 .lvl-3{padding-left:72px}
@@ -895,7 +903,7 @@ section.sec p a.xref:hover{text-decoration-color:var(--accent)}
 .alt-head{scroll-margin-top:18px;font-family:var(--serif);font-size:20px;font-weight:700;margin:34px 0 10px;padding-top:14px;border-top:1px solid var(--line2)}
 .alt-head a{color:var(--ink);text-decoration:none}
 .alt-head a:hover{color:var(--accent)}
-.sec p{margin:.5em 0;font-size:15px}
+.sec p{margin:.5em 0;font-size:15px;overflow-wrap:break-word}
 .sec p a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}.sec p a:hover{color:var(--brass-ink)}
 .parts{columns:2;gap:24px}.parts a{display:block;padding:7px 0;color:var(--accent);text-decoration:none;font-size:15px;break-inside:avoid}
 .parts a:hover{text-decoration:underline}
@@ -922,7 +930,12 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .libcat h2{font-size:22px;letter-spacing:-0.02em;margin:0 0 5px}
 .libcat .catblurb{color:var(--muted);font-size:14px;margin:0 0 18px;max-width:660px;line-height:1.55}
 /* feature "report cover" cards — matte federal-ink + brass seal + engraved vault emblem */
-.libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+/* auto-FIT, not auto-fill: the container resolves to 4 tracks, so the 1-card
+   Templates band left 3 empty tracks and the 2-card Field Guides band left 2.
+   auto-fit collapses the empties so each band fills its row. .libsrc-grid below
+   stays auto-fill — its 8 cards fill 4 tracks exactly, and fitting would
+   stretch them. */
+.libgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:14px}
 .libfeat{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 1px 2px rgba(13,17,23,.04);transition:box-shadow .2s,transform .18s,border-color .18s}
 .libfeat:hover{border-color:rgba(135,101,28,.35);box-shadow:0 16px 34px -16px rgba(15,37,64,.34);transform:translateY(-3px)}
 .libcover{position:relative;height:120px;padding:14px 16px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;background:linear-gradient(158deg,#173a60,#0f2540 56%,#0a1c33)}
@@ -985,9 +998,47 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .lfoot-note{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.55;max-width:840px}
 .lfoot-legal{font-size:12.5px;color:var(--muted);line-height:1.55;margin:0;max-width:840px}
 .lfoot-legal a{color:var(--accent)}
-@media(max-width:560px){.lband-inner{padding:40px 18px}.lhero .lband-inner{padding:40px 18px 38px}.lhero h1{font-size:30px}}`;
+@media(max-width:560px){.lband-inner{padding:40px 18px}.lhero .lband-inner{padding:40px 18px 38px}.lhero h1{font-size:30px}}
+/* ── PART NAV: Contents · in-part search · back-to-top (assets/part-nav.js) ──
+   The Contents is server-rendered and works without JS; the search bar and the
+   back-to-top button are built by the script, so nothing here is a dead control
+   when JS is off. Brass on warm paper, matching the in-app reader. */
+.ptoc{border:1px solid var(--line2);border-left:3px solid var(--brass);border-radius:10px;background:rgba(135,101,28,.035);margin:0 0 26px;overflow:hidden}
+.ptoc-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 16px 9px;border-bottom:1px solid var(--line2)}
+.ptoc-head h2{font-family:var(--serif);font-size:17px;font-weight:700;margin:0;letter-spacing:-.01em}
+.ptoc-count{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+/* Scrolls internally: a 60-section part must not cost 60 rows of page before
+   the reader reaches the text they came for. */
+.ptoc-list{list-style:none;margin:0;padding:8px 6px;max-height:min(46vh,380px);overflow-y:auto;overscroll-behavior:contain}
+.ptoc-list li{margin:0}
+.ptoc-list a{display:block;padding:9px 12px;border-radius:7px;font-size:14px;line-height:1.4;color:var(--ink);text-decoration:none;overflow-wrap:break-word}
+.ptoc-list a:hover{background:rgba(135,101,28,.09);color:var(--brass-ink)}
+.pn-search{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:9px;margin:0 0 16px;padding:0 8px 0 13px;min-height:48px;border:1.5px solid rgba(135,101,28,.2);border-radius:12px;background:rgba(255,255,255,.97);backdrop-filter:blur(12px) saturate(160%);-webkit-backdrop-filter:blur(12px) saturate(160%);box-shadow:0 6px 20px rgba(15,37,64,.07)}
+.pn-search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(135,101,28,.16)}
+/* Visually hidden, not absent: the input needs a real label, not a placeholder. */
+.pn-search-lbl{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.pn-search-icon{display:flex;color:var(--muted);flex-shrink:0}
+.pn-search-icon svg{width:15px;height:15px;display:block}
+.pn-search-input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:inherit;font-size:15px;color:var(--ink);padding:12px 0}
+.pn-search-input::-webkit-search-cancel-button{display:none}
+.pn-search-count{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pn-search-nav{display:none;gap:2px}
+.pn-search-nav.visible{display:inline-flex}
+.pn-step,.pn-clear{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:0;background:transparent;color:var(--muted);font-size:15px;line-height:1;cursor:pointer;border-radius:8px}
+.pn-step:hover:not(:disabled),.pn-clear:hover{background:rgba(135,101,28,.1);color:var(--brass-ink)}
+.pn-step:disabled{opacity:.35;cursor:default}
+.pn-clear{display:none}
+.pn-clear.visible{display:inline-flex}
+mark.pn-mark{background:rgba(135,101,28,.22);color:var(--ink);border-radius:2px;padding:0 1px}
+mark.pn-mark.active{background:var(--brass-bright);box-shadow:0 0 0 2px rgba(135,101,28,.45)}
+.pn-top{position:fixed;right:18px;bottom:18px;z-index:60;display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 16px;border:1px solid var(--brass-line);border-radius:999px;background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 10px 26px rgba(15,37,64,.28);opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .18s,transform .18s,visibility .18s}
+.pn-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+.pn-top:hover{border-color:rgba(228,196,119,.6)}
+.pn-top svg{width:15px;height:15px;display:block}
+@media(prefers-reduced-motion:reduce){.pn-top{transition:none}}
+@media(max-width:560px){.ptoc-list{max-height:min(40vh,300px)}.pn-top{right:12px;bottom:12px}}`;
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1017,6 +1068,7 @@ ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
 <main>${body}</main>
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. ${authorityLine(source)} Always verify before relying on any result in a contract file.</footer>
 </div>`}
+${partNav ? `<script src="/assets/part-nav.js?v=${PART_NAV_V}" defer></script>` : ''}
 </body>
 </html>`;
 }
@@ -1073,14 +1125,28 @@ ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
     mainEntityOfPage: canonical
   };
 
+  // Contents — server-rendered so it works, and crawls, with JavaScript off.
+  // These pages run 62,000–137,000px tall and had no way to move within them;
+  // the in-app reader has had a Contents for months. Scrolls internally rather
+  // than growing with the section count, so a 60-section part costs the same
+  // screen as a 6-section one.
+  const toc = docs.length > 1 ? `<nav class="ptoc" id="ptoc" aria-labelledby="ptoc-h">
+<div class="ptoc-head"><h2 id="ptoc-h">Contents</h2><span class="ptoc-count">${docs.length} section${docs.length !== 1 ? 's' : ''}</span></div>
+<ol class="ptoc-list">${docs.map(d => {
+    const a = esc(d.anchor || d.id);
+    return `<li><a href="#${a}">${esc(d.title)}</a></li>`;
+  }).join('')}</ol>
+</nav>` : '';
+
   const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › ${esc(label)}</nav>
 <h1>${esc(meta.name)} · ${esc(label)}</h1>
 <p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${partPairBanner(source, part, pairIdx)}
 ${partSrc}
+${toc}
 ${sections}`;
 
-  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png` });
+  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png`, partNav: true });
 }
 
 function renderHubPage(source) {
