@@ -1704,9 +1704,9 @@ function renderStudyPage() {
    in the word" was unreadable without normal color vision. The trio is now navy/brass/
    slate: blue-vs-yellow survives every red-green deficiency AND it's the brand axis, and
    the luminances ladder (L .04 / .57 / .18) so a pure-greyscale viewer reads the board. */
-.st-cb-c{background:#173a60;border-color:#0f2540;color:#fff}
-.st-cb-p{background:#e4c477;border-color:#c9a44c;color:#3b2f10}
-.st-cb-a{background:#6e7683;border-color:#6e7683;color:#fff}
+.st-cb-c{background:#6aaa64;border-color:#6aaa64;color:#13151b}
+.st-cb-p{background:#c9b458;border-color:#c9b458;color:#13151b}
+.st-cb-a{background:#787c7e;border-color:#787c7e;color:#fff}
 .st-cb-cat{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 auto 10px;font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);text-align:center}
 .st-cb-cat span{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:linear-gradient(158deg,#173a60,#0f2540);border-radius:999px;padding:4px 10px}
 .st-cb-prompt{text-align:center;font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.5}
@@ -1720,9 +1720,9 @@ function renderStudyPage() {
 .st-cb-key{min-width:clamp(22px,7vw,40px);height:50px;padding:0 5px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:7px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;text-transform:uppercase}
 .st-cb-key:active{transform:translateY(1px)}
 .st-cb-key-wide{min-width:clamp(44px,12vw,62px);font-size:11px}
-.st-cb-key-c{background:#173a60;border-color:#0f2540;color:#fff}
-.st-cb-key-p{background:#e4c477;border-color:#c9a44c;color:#3b2f10}
-.st-cb-key-a{background:#6e7683;border-color:#6e7683;color:#fff}
+.st-cb-key-c{background:#6aaa64;border-color:#6aaa64;color:#13151b}
+.st-cb-key-p{background:#c9b458;border-color:#c9b458;color:#13151b}
+.st-cb-key-a{background:#787c7e;border-color:#787c7e;color:#fff}
 .st-cb-result{text-align:center;padding:6px 4px}
 .st-cb-dial{width:74px;height:74px;margin:0 auto 6px;color:var(--brass)}
 .st-cb-dial svg{width:100%;height:100%}
