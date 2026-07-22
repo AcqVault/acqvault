@@ -323,6 +323,14 @@ def check_static_pdf(label, url, local_glob, download=True):
     lm, size = head_info(url)
     local = sorted(BASE_DIR.glob(local_glob))
     lsize = local[0].stat().st_size if local else 0
+    # head_info returns -1 when the probe itself failed (timeout, DNS, 5xx). That
+    # is "I could not tell", not "it changed" — reporting a network blip as
+    # "CHANGED upstream (remote -1B)" would send someone re-extracting a source
+    # that never moved, and would also trigger the download branch below.
+    # check_rdfars already guards this with `size > 0`; this call site did not.
+    if size < 0:
+        return "{}: probe FAILED (no response from acquisition.gov) — " \
+               "unknown, not assumed changed".format(label), False
     if size == lsize:
         return "{}: current".format(label), False
     msg = "{}: CHANGED upstream (remote {:,}B vs local {:,}B, last-modified {})".format(

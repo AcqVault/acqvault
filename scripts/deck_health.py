@@ -207,15 +207,52 @@ def main():
     if not bad_fig:
         print(f'  PASS  all {n_fig} cited dollar figures appear in the section they cite')
 
+    # ── 5. every shipped JSON asset parses, and its ?v is referenced ─────────
+    # These are fetched at runtime, so a parse error is a broken feature on the
+    # live site, not a build error. refresh.py's vehicle_watch prints a warning
+    # when vehicles.json fails to parse and then ships anyway.
+    shipped = {}
+    for name in sorted(os.listdir(os.path.join(ROOT, 'assets'))):
+        if name.endswith('.json'):
+            path = os.path.join(ROOT, 'assets', name)
+            try:
+                json.load(open(path))
+                shipped[name] = True
+            except Exception as e:                       # noqa: BLE001
+                shipped[name] = False
+                fail(f'assets/{name} is not valid JSON ({e}) — it is fetched at '
+                     f'runtime, so this breaks the feature on the live site')
+    # every shipped JSON must be requested with a ?v= somewhere, or the immutable
+    # asset cache pins it forever
+    refs = ''
+    for f in ('index.html',):
+        refs += open(os.path.join(ROOT, f), encoding='utf-8').read()
+    for f in os.listdir(os.path.join(ROOT, 'assets')):
+        if f.endswith('.js'):
+            refs += open(os.path.join(ROOT, 'assets', f), encoding='utf-8').read()
+    for name in shipped:
+        if f'/assets/{name}?v=' not in refs and f"assets/{name}?v=" not in refs:
+            fail(f'assets/{name} is shipped but never requested with a ?v= — '
+                 f'/assets/* is immutable for 30 days, so clients would pin it')
+    if all(shipped.values()):
+        print(f'  PASS  all {len(shipped)} shipped JSON assets parse and are '
+              f'version-stamped')
+
     print()
     if failures:
         print(f'✗ {len(failures)} failure(s) — what ships disagrees with the corpus '
               f'shipping beside it.')
-        # Only the deck is rebuildable; a bad figure in widgets.js is a hand edit.
-        if any('.js:' not in m for m, _ in failures):
-            print('  For deck failures, rebuild with: python3 study-tool/build_deck_v2.py')
-        if any('.js:' in m for m, _ in failures):
-            print('  For assets/*.js failures, correct the citation or the figure by hand.')
+        # Route the advice: only the deck is rebuildable. A bad figure in
+        # widgets.js or a malformed vehicles.json is a hand edit, and telling
+        # someone to rebuild the deck for those wastes their time.
+        deck_f = [m for m, _ in failures if not m.startswith('assets/') and '.js:' not in m]
+        hand_f = [m for m, _ in failures if m.startswith('assets/') or '.js:' in m]
+        if deck_f:
+            print('  For the deck failures, rebuild with: '
+                  'python3 study-tool/build_deck_v2.py')
+        if hand_f:
+            print('  For the assets/* failures, fix the file by hand — nothing '
+                  'regenerates those.')
         return 1
     print('All deck health checks passed.')
     return 0
