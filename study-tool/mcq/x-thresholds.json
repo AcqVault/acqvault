@@ -93,14 +93,14 @@
  },
  "a8937df338c9": {
   "x": "The DoD REA certification kicks in above the SAT ($350K) — an R-DFARS requirement, and a different certification from the CDA claim cert at $100K. Two certs, two thresholds, two purposes.",
-  "ref": "R-DFARS · Vol. 2, REAs & Claims"
+  "ref": "R-DFARS 243.371 · Vol. 2, Changes"
  },
  "b76ac785923e": {
   "x": "50% of the not-to-exceed before the qualifying proposal; 75% once it's in. The caps are the Government's leverage — an undefinitized contractor runs out of funded runway unless the proposal shows up.",
   "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
  },
  "65924aa98b6f": {
-  "x": "180 days from the qualifying proposal — or earlier if obligations hit the caps. The clock runs from the proposal, not from award; that's what makes slow-rolling the proposal a leverage play.",
+  "x": "R-DFARS 217.7404-3(a): definitization by the EARLIER of (1) 180 days after the contractor submits a qualifying proposal — extendable by up to 90 more only on a written determination by the HCA without power of redelegation, the combatant commander, or USD(A&S) — or (2) “the date on which the amount of funds obligated under the contract action is equal to more than 50 percent of the not-to-exceed price.” ⚠ One specific obligation trigger at 50%, not a vague “when obligations hit the caps”. The 75% figure is the post-qualifying-proposal obligation ceiling, a different rule.",
   "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
  },
  "e3866ad99322": {
