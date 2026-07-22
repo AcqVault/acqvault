@@ -1,387 +1,387 @@
 {
-  "16ab3e99a934": {
-    "ref": "RFO Part 16 · Vol. 2, Contract Types"
-  },
-  "14098e56ac12": {
-    "x": "PTA = (Ceiling − Target Price) ÷ Government share + Target Cost. Past that point every cost dollar comes out of profit — the contractor is effectively on FFP to the ceiling. The distractors shuffle the same terms; write the formula once, correctly, and check the units.",
-    "ref": "Vol. 2, Contract Types · FPIF mechanics"
-  },
-  "27c7b7ae60aa": {
-    "x": "Two gates, no exceptions: an adequate (approved) accounting system — because the Government pays incurred costs — and a D&F justifying the type. Audits and EVMS may follow on big programs, but they aren't the entry gates.",
-    "ref": "RFO Part 16 · Vol. 2, Contract Types"
-  },
-  "914312282d4c": {
-    "x": "E.O. 14402: other-than-FFP needs justification above $100M for DoD, $10M for most agencies (DHS $25M, NASA $35M). The 10× DoD asymmetry is the memorable part — and the point: DoD buys more uncertainty than anyone.",
-    "ref": "E.O. 14402 · RFO 16.104"
-  },
-  "4a53dd3a86a4": {
-    "ref": "Vol. 2, Contract Types · FPIF mechanics"
-  },
-  "00a3e3b0f091": {
-    "x": "FFP on truly uncertain work doesn't transfer risk — it denies it. The contractor either pads the price (you pay for phantom certainty) or fails trying (you pay in schedule and litigation). Matching type to requirement definition IS the risk management.",
-    "ref": "RFO Part 16 · Vol. 2, Contract Types"
-  },
-  "09238d21878e": {
-    "ref": "RFO Part 16 · Vol. 2, Contract Types"
-  },
-  "cbfaf59067d1": {
-    "x": "Urgency, only-one-capable, logical follow-on, minimum guarantee, statute, and order-level small-business set-aside — the six fair-opportunity exceptions. Note what's absent: 'bridge,' 'incumbent continuity,' and 'best value' are not exceptions, however often they're pitched as one.",
-    "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
-  },
-  "371dd965aeaf": {
-    "x": "$7.5M starts order-level debriefing rights; GAO order protests start at $35M DoD / $10M civilian — except scope/period/ceiling growth protests, which land at any value. Three numbers plus the exception: that's the full answer.",
-    "ref": "RFO 16.508 · Vol. 2, IDIQ"
-  },
-  "e55b451c54d0": {
-    "x": "Over-SAT fair-opportunity exceptions ride a D&A (not a J&A — different instrument, same ladder). $12M lands with the Competition Advocate. Instrument first, tier second: that order of answer shows you know both.",
-    "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
-  },
-  "7f8ae2a073cc": {
-    "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
-  },
-  "411383984316": {
-    "x": "Order-placement complaints go to the task-order ombudsman, not GAO (below the protest thresholds). And the complaint is a mirror: consideration must be genuine — if the record shows rotation paperwork instead of real evaluation, the ombudsman will find it.",
-    "ref": "RFO 16.507-2 · Vol. 2, IDIQ"
-  },
-  "a84f89841e2d": {
-    "x": "Yes — order-level set-asides are a recognized fair-opportunity exception lane. Document the Rule-of-Two logic among the vehicle's holders. No SBA waiver, no HCA approval, no vehicle-level bar: the analysis just moves down to the order.",
-    "ref": "RFO 16.507-2 · RFO Part 19 · Vol. 2, IDIQ"
-  },
-  "d3ad752c3a10": {
-    "x": "Five gates, all of them: funds, continuing need, most-advantageous (a fresh market/price look), not excluded in SAM, and performance considered. The distractors swap in process artifacts — CPARS thresholds, JA review, synopses — that aren't gates.",
-    "ref": "RFO Part 17 · Vol. 2, Options"
-  },
-  "6c5a58ff220f": {
-    "x": "Miss the notice date and the unilateral right lapses — continuing becomes a bilateral negotiation where the contractor holds leverage. No grace period, no self-execution: the option's power was the calendar, and the calendar is unforgiving.",
-    "ref": "RFO Part 17 · Vol. 2, Options"
-  },
-  "601bc4a3f51d": {
-    "x": "About 5 years base+options is the services rail; the extension-of-services clause adds at most 6 months. The pair works together: the rail bounds the structure, the clause bridges a transition — once.",
-    "ref": "RFO Part 17 · Vol. 2, Options"
-  },
-  "b44fe61a6e11": {
-    "x": "Skip options when there's no realistic exercise chance (they still get evaluated and priced), when pricing is too volatile to hold, or when the full requirement is already known and funded (just buy it). Options are a tool for probable futures — not a default template.",
-    "ref": "RFO Part 17 · Vol. 2, Options"
-  },
-  "475b34081f6a": {
-    "ref": "RFO Part 17 · Vol. 2, Options"
-  },
-  "ba30d92e9d08": {
-    "ref": "RFO Part 17 · Vol. 2, Options"
-  },
-  "f97057872250": {
-    "x": "The performance gate exists for exactly this moment. Exercising past known flags teaches the contractor the flags are decorative — options are leverage only if a shaky record can actually cost the renewal. Decide from the documented record, not from transition dread.",
-    "ref": "RFO Part 17 · Vol. 2, Options"
-  },
-  "1a7280063aa0": {
-    "x": "Direct: our CO places orders on their vehicle under its terms. Assisted: their contracting shop buys FOR us — which is why a signed interagency agreement defining roles must exist before money moves. The MIPR is how funds travel; the agreement is how accountability does.",
-    "ref": "RFO Part 17 IA · Vol. 2, Interagency"
-  },
-  "03912734ae0e": {
-    "x": "The Economy Act is the fallback — it applies only when no more specific authority (schedules, GWACs) covers the buy, and it rides with a MIPR plus a D&F finding it's in the Government's interest and not more cheaply available from the private sector.",
-    "ref": "31 U.S.C. §1535 · Vol. 2, Interagency"
-  },
-  "81c22ad0ff0e": {
-    "x": "The fiscal clock never stops at the transfer: purpose, time, and amount rules travel WITH the money. Parking expiring funds at another agency doesn't extend their life — that's a bona fide need violation with extra steps.",
-    "ref": "GAO Red Book · Vol. 2, Interagency"
-  },
-  "1c73eb1e13f9": {
-    "x": "Accountability doesn't transfer with a MIPR — the requirement, the fiscal rules, and the outcome remain yours. The D&F exists precisely to prove the lane was chosen deliberately, not to outsource a problem.",
-    "ref": "31 U.S.C. §1535 · Vol. 2, Interagency"
-  },
-  "d47826054011": {
-    "ref": "Vol. 2, Interagency"
-  },
-  "31fa4c1d65e4": {
-    "ref": "31 U.S.C. §1535 · Vol. 2, Interagency"
-  },
-  "865c5b59889b": {
-    "x": "Time = period of availability plus bona fide need. Purpose = only what Congress appropriated it for. Amount = the Anti-Deficiency lines — never more than, never before, availability. Say what each letter TESTS and you've shown the framework, not the acronym.",
-    "ref": "GAO Red Book · Vol. 1 §5"
-  },
-  "f811078a5729": {
-    "x": "O&M 1 year, RDT&E 2, Procurement 3 (MILCON 5). The 1-2-3 ladder decides which year's money a need belongs to — and every 'can we use this money?' question starts here.",
-    "ref": "DoD FMR · Vol. 1 §5"
-  },
-  "92137dc41e3b": {
-    "x": "Severable services: up to 12 months on current funds, may cross fiscal years. Non-severable: one end product, fully funded up front, can run long. Funding a non-severable effort incrementally is the violation this pair exists to catch.",
-    "ref": "GAO Red Book · Vol. 2, Fiscal"
-  },
-  "206519197f54": {
-    "x": "Limitation of Cost rides fully funded cost contracts; Limitation of Funds rides incrementally funded ones — both demand notice around 75%. The clause name follows the funding structure; the notice duty is the contractor's.",
-    "ref": "RFO 52.232 pattern · Vol. 2, Finance"
-  },
-  "bf3e0d2d35a5": {
-    "x": "Private financing first, then customary contract financing (PBPs preferred), then unusual, then advance payments — last, rare, and heavily approved. The order exists because each step moves Government money earlier than the work.",
-    "ref": "RFO Part 32 · Vol. 2, Finance"
-  },
-  "0940c9e30eca": {
-    "ref": "RFO 52.232 pattern · Vol. 2, Finance"
-  },
-  "4786456e7df2": {
-    "x": "PBPs pay for demonstrated events, not incurred costs — better incentive alignment, recoverable if the contractor defaults, and lighter administration. Progress payments finance effort; performance-based payments finance results.",
-    "ref": "RFO Part 32 · Vol. 2, Finance"
-  },
-  "5287299658a9": {
-    "x": "Expired funds still pay adjustments to their own properly made obligations for 5 years — a claim on an old contract is exactly that. After cancellation, nothing: the account is gone for all purposes and current funds (with their own rules) are the only recourse.",
-    "ref": "31 U.S.C. §1553 · Vol. 2, Finance"
-  },
-  "10d9176e0623": {
-    "x": "Funding source drives the license: all Government money → unlimited rights; mixed → Government Purpose Rights (converting to unlimited after the period); all private → limited (tech data) / restricted (software). Delivery and markings implement the rights — the money CREATED them.",
-    "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
-  },
-  "dc9d63e216de": {
-    "x": "The contractor asserting a restriction bears the burden of proving it — development at private expense, at the claimed component level. The Government doesn't have to disprove markings; it can challenge them and the assertion must survive.",
-    "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
-  },
-  "1897287818e5": {
-    "x": "GPR data serves any GOVERNMENT purpose — including handing it to competitors for a reprocurement under nondisclosure protections. What it can't do is go commercial. That's the entire design: competition enabled, market value protected.",
-    "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
-  },
-  "1e541a005b1d": {
-    "x": "Written challenge → contractor response (60 days) → CO final decision → appeal. And through all of it: honor the markings. Using challenged data before resolution converts your challenge into their claim.",
-    "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
-  },
-  "032b56dd9559": {
-    "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
-  },
-  "aec2a5f0d5a4": {
-    "x": "Competitive reprocurement is precisely what GPR exists for — release to competitors under nondisclosure protections is a Government purpose. No consent needed, no conversion triggered. If GPR couldn't do this, it would be limited rights with better branding.",
-    "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
-  },
-  "d9728d22f03d": {
-    "x": "Integration doesn't launder rights. Rights attach component by component, following each component's funding — a private module stays restricted, the Government-funded integration doesn't 'absorb' it, and majority funding owns nothing. Demand the assertion list at that granularity.",
-    "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
-  },
-  "6a11574a91ff": {
-    "x": "The scope test's four corners: what the competition anticipated, contract type, period, and cumulative cost. Price/schedule/quality is contract administration; the scope question is about the BARGAIN — what the original field of competitors signed up to compete for.",
-    "ref": "Vol. 2, Mods & Scope"
-  },
-  "9a4b9a27a8a7": {
-    "x": "Unilateral: administrative changes, in-scope change orders, option exercises — the CO acting alone under existing authority. Bilateral: substantive negotiated changes, both signatures. Dollar value doesn't pick the instrument; the nature of the change does.",
-    "ref": "RFO Part 43 pattern · Vol. 2, Mods & Scope"
-  },
-  "586079a92783": {
-    "x": "Constructive: Government CONDUCT changes the work without formal direction — and may owe an equitable adjustment. Cardinal: change so profound it exceeds what was competed — potential breach that no Changes clause authorizes. One is an accident with a bill; the other is a boundary with consequences.",
-    "ref": "Vol. 2, Mods & Scope"
-  },
-  "9bc383dbae8c": {
-    "x": "Mod 100 is judged against the ORIGINAL contract with all mods cumulative — never against mod 99. Judging increment-to-increment is how scope creep launders itself: each step looks small while the total walks out of the competition.",
-    "ref": "Vol. 2, Mods & Scope"
-  },
-  "8aa5f01751f6": {
-    "x": "The PCO decides scope, with Legal, documented — a judgment call with a four-corner test behind it. Not Legal alone (they advise), not the requiring activity (they want), and not GAO (they review the record you built).",
-    "ref": "Vol. 2, Mods & Scope"
-  },
-  "31c163317cef": {
-    "ref": "Vol. 2, Mods & Scope"
-  },
-  "6504b5459390": {
-    "ref": "Vol. 2, Mods & Scope"
-  },
-  "0dfb17f96311": {
-    "x": "Default: contractors furnish their own property. GFP takes ALL FOUR: Government's best interest, benefit exceeding burden, no substantial risk increase, and no other way to meet the need. 'Any one' or a PM certification is exactly the shortcut the test forbids.",
-    "ref": "RFO Part 45 pattern · Vol. 2, Property"
-  },
-  "b28157767da0": {
-    "x": "The requiring activity (PM) writes the GFP justification to the PCO — they own the need, so they owe the case. The property administrator manages property after the decision; the contractor benefits from it and certainly doesn't author it.",
-    "ref": "Vol. 2, Property"
-  },
-  "3158001b7994": {
-    "ref": "RFO Part 45 pattern · Vol. 2, Property"
-  },
-  "341dd8c15189": {
-    "x": "Late or faulty GFP is a GOVERNMENT-caused delay: schedule relief and equitable-adjustment exposure follow. Furnishing property puts the Government's own performance on the contract's critical path — the cost the four-part test makes you price in.",
-    "ref": "Vol. 2, Property"
-  },
-  "d65fd276392a": {
-    "ref": "Vol. 2, Property"
-  },
-  "6ca80abcd3f9": {
-    "x": "Lower proposed prices are one line of a longer ledger: administration burden, risk shifted to the Government, and Government performance obligations all cost money the price doesn't show. The four-part test forces the whole ledger onto the table.",
-    "ref": "RFO Part 45 pattern · Vol. 2, Property"
-  },
-  "73f5d430e209": {
-    "x": "Repair, modification, and overhaul work needs no GFP justification — the property IS the requirement; you can't overhaul an engine you don't furnish. Everywhere else, the four-part test applies at every dollar value.",
-    "ref": "Vol. 2, Property"
-  },
-  "a3f545156ece": {
-    "x": "50% of the not-to-exceed before the qualifying proposal, 75% after. The caps are the taxpayer's brake: an undefinitized contractor who wants more funded runway has to produce the proposal that starts real negotiation.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "2681c1606b97": {
-    "x": "180 days from the qualifying proposal — or when obligations hit the caps, whichever bites first. From the PROPOSAL, not award: that anchoring is what makes proposal slow-rolling a leverage play, and cap enforcement the counter.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "9da327c97058": {
-    "x": "Lack of planning and administrative convenience never justify a UCA. Real urgency can. If the 'emergency' traces to a requirement everyone saw coming, the UCA is the symptom and the finding writes itself.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "1ea9123b0f07": {
-    "x": "UCO: an unpriced unilateral change WITHIN an existing contract's scope. UCA: a NEW undefinitized contract action. Same discipline (definitize fast, caps bite), different starting points — one modifies a bargain, the other opens one.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "1a7f42afd631": {
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "8cb02d32afa8": {
-    "ref": "DD 1547 weighted guidelines · Vol. 2, UCAs"
-  },
-  "5ec5181c0dc4": {
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "228ce47e2920": {
-    "x": "Business clearance approves releasing the solicitation / opening negotiations — the strategy gate. Contract clearance approves the negotiated result — the deal gate. Two different failures get caught: a bad strategy well executed, and a good strategy badly landed.",
-    "ref": "AF clearance policy · Vol. 2, Clearance"
-  },
-  "75e3e1529066": {
-    "x": "The selector can't approve the selection — independence is the entire value of the review. A reviewer inside the deal inherits its blind spots; the senior independent look before commitment is what catches them while they're still cheap.",
-    "ref": "Vol. 2, Clearance"
-  },
-  "9bc237c6018b": {
-    "x": "UCAs clear at DEFINITIZATION — that's when there's finally a negotiated result to review. Award-stage clearance isn't the gate, because at award there was no price to bless. It's the exception that proves what clearance is for.",
-    "ref": "Vol. 2, Clearance · UCAs"
-  },
-  "6094599fbe8c": {
-    "x": "Two gates catch two different failures: a sound strategy can still land a bad deal, and a good deal can execute an unapproved strategy. One clearance would have to be blind in one eye — the pair sees both.",
-    "ref": "Vol. 2, Clearance"
-  },
-  "dab112eccc73": {
-    "ref": "Vol. 2, Clearance"
-  },
-  "0f9e4ecf763b": {
-    "x": "Clearance said no → fix what they flagged and come back. There's no appeal-to-the-SSA, no award-anyway memo, no HCA override of an independent review. Clearance friction is cheaper than every failure it prevents — treat the authority as a teammate with veto power.",
-    "ref": "Vol. 2, Clearance"
-  },
-  "8b9c7e3d137c": {
-    "x": "Stay if filed within 10 days of award OR 5 days of the required debrief — whichever is LATER. Two branches, take the later one, and the debrief branch exists only when a required debrief was requested. That word 'later' decides real protests.",
-    "ref": "CICA · RFO 33.105-3"
-  },
-  "1780c6714f52": {
-    "x": "Agency: fastest, self-correcting. GAO: the 100-day clock and the automatic stay. COFC: binding judgment, injunction instead of a stay. Venue choice is strategy — each offers a different weapon, and protesters pick accordingly.",
-    "ref": "CICA · Vol. 2, Protests"
-  },
-  "947a8f844e14": {
-    "x": "Only the HCA authorizes an override, in writing, on two bases: urgent and compelling circumstances, or best interests of the United States. It's deliberately hard — the stay is CICA's teeth, and overriding it casually invites COFC review.",
-    "ref": "CICA · RFO 33.105-3"
-  },
-  "4fdb9f60ae5d": {
-    "x": "$35M DoD / $10M civilian for task-order protests at GAO — plus the exception that eats the rule: ANY value when the protest alleges the order grew beyond the vehicle's scope, period, or ceiling. Quote the thresholds without the exception and you've given half the answer.",
-    "ref": "10 U.S.C. §3406 · RFO 16.508"
-  },
-  "6e8893851cd4": {
-    "x": "Day 9 sits inside the 10-day award window — the stay applies. The 5-day debrief branch only SUBSTITUTES when a required debrief was requested and given later; skipping the debrief doesn't forfeit the award-window branch.",
-    "ref": "CICA · RFO 33.105-3"
-  },
-  "18e23264741c": {
-    "x": "GAO recommendations are legally advisory and practically binding: non-compliance gets reported to Congress and torches the agency's credibility in every future protest. Treat a sustain as a to-do list with a deadline — because that's how your leadership will treat it.",
-    "ref": "CICA · Vol. 2, Protests"
-  },
-  "0a27e0de658c": {
-    "ref": "Vol. 2, Protests"
-  },
-  "44ae24d63ca8": {
-    "x": "Four seams between REA and claim: interest (claim only), decision deadlines (claim only), prep costs (allowable REA / unallowable claim), and formality-certification. The lanes carry different economics — which is why contractors choose deliberately and you classify by substance.",
-    "ref": "CDA · Vol. 2, REAs & Claims"
-  },
-  "150d636afcc2": {
-    "x": "$100K triggers claim certification; 6 years from accrual is the CDA limitations period. Two numbers that anchor the whole disputes timeline — everything else (decisions, appeals) hangs off them.",
-    "ref": "CDA · Vol. 2, REAs & Claims"
-  },
-  "48a719c5e4a9": {
-    "x": "CO silence past the decision deadline operates as a denial — the 'deemed denial' — and it starts the contractor's appeal clock. Silence isn't neutral in the CDA: it's a decision with consequences, made by default.",
-    "ref": "CDA · Vol. 2, REAs & Claims"
-  },
-  "75398b17ddc6": {
-    "x": "Board of Contract Appeals: 90 days. Court of Federal Claims: 12 months. Both run from receipt of the final decision. Miss the Board window and COFC remains; miss both and the decision is final forever.",
-    "ref": "CDA · Vol. 2, REAs & Claims"
-  },
-  "b98328fb0570": {
-    "x": "Substance over label: sum certain + certification + decision demanded = a claim, whatever the cover letter says — and CDA interest and deadlines may already be running. Classify with Legal fast; treating a functional claim as an REA doesn't stop the clock, it just means you missed it.",
-    "ref": "CDA · Vol. 2, REAs & Claims"
-  },
-  "581360f06c10": {
-    "x": "Contractors pick the REA lane for relationship preservation, allowable prep costs, speed, and settlement flexibility. The claim lane is leverage — interest and deadlines — at the price of goodwill. Knowing WHY they choose tells you how the negotiation will behave.",
-    "ref": "Vol. 2, REAs & Claims"
-  },
-  "6f4312b0e4da": {
-    "x": "Notice first: the clause requires prompt written notice BEFORE the condition is disturbed, so the Government can investigate the ground as found. Recovery weakens without it — causation and cost analysis come after, but notice is the gate.",
-    "ref": "RFO Part 36 pattern · Vol. 2, Construction"
-  },
-  "c8626d42c415": {
-    "x": "T4C settlement: costs incurred on the terminated work + reasonable profit on work PERFORMED + settlement expenses — and never anticipatory profit on work never done. The Government buys its way out whole-ish, not generous.",
-    "ref": "RFO Part 49 · Vol. 2, Terminations"
-  },
-  "05859e980773": {
-    "x": "Cure notice → show cause → excusability analysis → T4D notice as the final decision. The order is the defense: each step builds the record that the failure was real, inexcusable, and fairly handled — skip one and the conversion risk is yours.",
-    "ref": "RFO Part 49 · Vol. 2, Terminations"
-  },
-  "83222d5bfd4d": {
-    "x": "Acts of God, sovereign/Government acts, and fires/epidemics/similar events beyond control without fault. The distractors — supplier trouble, labor shortages, price spikes — are ordinary business risk the contractor priced when it signed FFP.",
-    "ref": "RFO Part 49 · Vol. 2, Terminations"
-  },
-  "448ba74b0aca": {
-    "x": "A wrongful T4D converts to a T4C: instead of collecting reprocurement costs, the Government owes a convenience settlement. That flip — from creditor to debtor — is why the excusability record precedes the notice, not the litigation.",
-    "ref": "RFO Part 49 · Vol. 2, Terminations"
-  },
-  "47b904708b93": {
-    "x": "Costs incurred on the terminated work, reasonable profit on what was DONE, settlement expenses — never the profit they hoped to earn on the unperformed balance. 'Made whole for work performed' is the whole principle in six words.",
-    "ref": "RFO Part 49 · Vol. 2, Terminations"
-  },
-  "dc324798e91b": {
-    "x": "Excusable failure → the T4D converts to a T4C, and the Government pays a settlement instead of collecting reprocurement costs. The board isn't being generous; it's enforcing the clause. The excusability analysis you run BEFORE the notice is what prevents this ending.",
-    "ref": "RFO Part 49 · Vol. 2, Terminations"
-  },
-  "2112ab63ad7b": {
-    "x": "Pure late delivery needs no cure notice — the delivery schedule WAS the cure period. Mixed or murky facts: send it anyway. A needless cure notice costs ten days; a missing one can cost the entire termination on conversion.",
-    "ref": "RFO Part 49 · Vol. 2, Terminations"
-  },
-  "b1cc73cb77fe": {
-    "x": "A BAA is lawful competition because of three pieces: broad public announcement, stated evaluation criteria, and independent scientific merit review — selection against the standard, not between offerors. Miss a piece and it's just a sole source with a science vocabulary.",
-    "ref": "RFO Part 35 pattern · Vol. 2, R&D"
-  },
-  "5088aa5be62d": {
-    "x": "Phase I feasibility, II prototype, III production — and Phase III is special: no dollar cap, sole-source eligible off competed early phases, SBIR data rights persist. The competition happened in Phases I/II; Phase III harvests it. Document the derivation.",
-    "ref": "SBIR statute · Vol. 2, R&D"
-  },
-  "c7271e26f78b": {
-    "x": "Honest OT reasons: nontraditional participation, and terms flexibility a prototype genuinely needs. The dishonest one — 'skipping the rules' — is how OTs end up in hearings. The authority is a tool with a purpose, not an exit from oversight.",
-    "ref": "10 U.S.C. §4022 · Vol. 2, R&D"
-  },
-  "b500c514c03b": {
-    "ref": "RFO Part 35 pattern · Vol. 2, R&D"
-  },
-  "7c66b5157704": {
-    "x": "Phase III sole source rides the SBIR statute itself — the 'authorized by statute' lane — when the work derives from competed Phase I/II. No J&A, but the derivation documentation is mandatory: the statute covers continuation, not anything wearing the vendor's logo.",
-    "ref": "SBIR statute · Vol. 2, R&D"
-  },
-  "b3c52e3b00a7": {
-    "ref": "10 U.S.C. §4022 · Vol. 2, R&D"
-  },
-  "aabfa1cb40d8": {
-    "x": "Performance bond protects the Government's work; payment bond protects subs and suppliers — who can't lien Government property, so the bond replaces the lien they'd have on a commercial job. Knowing WHY the payment bond exists is what elevates the answer.",
-    "ref": "Miller Act pattern · RFO Part 28"
-  },
-  "2af78ede4e1a": {
-    "x": "Written notice BEFORE disturbing the condition — so the Government can investigate the site as found. Disturb first and the evidence is gone; the notice rule protects both parties' ability to know what was actually in the ground.",
-    "ref": "RFO Part 36 pattern · Vol. 2, Construction"
-  },
-  "5f664e95e8b3": {
-    "x": "The test is continuous Government supervision of contractor employees — that's what creates the employer-employee relationship the law forbids without specific authority. Location, duration, and individual expertise are all red herrings; SUPERVISION is the trigger.",
-    "ref": "RFO Part 37 pattern · Vol. 2, Services"
-  },
-  "f5668d4fac43": {
-    "x": "PBA requires: a PWS (or SOO), measurable standards, a QASP, and incentives where appropriate. The set is a system — outcomes defined, measured, surveilled, and motivated. Drop one element and it's a staffing contract with aspirational adjectives.",
-    "ref": "RFO Part 37 pattern · Vol. 2, Services"
-  },
-  "060e325f1be2": {
-    "x": "A&E selection is qualifications-based by statute: rank on qualifications, then negotiate a fair price with the most qualified. The logic: design quality drives lifecycle cost far more than the design fee does — saving 1% on design that costs 10% in construction is bad math.",
-    "ref": "Brooks Act pattern · Vol. 2, Construction"
-  },
-  "0f741a1992a4": {
-    "ref": "RFO Part 37 pattern · Vol. 2, Services"
-  },
-  "65de9d8587af": {
-    "ref": "RFO Part 37 pattern · Vol. 2, Services"
-  }
+ "16ab3e99a934": {
+  "ref": "RFO Part 16 · Vol. 2, Contract Types"
+ },
+ "14098e56ac12": {
+  "x": "PTA = (Ceiling − Target Price) ÷ Government share + Target Cost. Past that point every cost dollar comes out of profit — the contractor is effectively on FFP to the ceiling. The distractors shuffle the same terms; write the formula once, correctly, and check the units.",
+  "ref": "Vol. 2, Contract Types · FPIF mechanics"
+ },
+ "27c7b7ae60aa": {
+  "x": "Two gates, no exceptions: an adequate (approved) accounting system — because the Government pays incurred costs — and a D&F justifying the type. Audits and EVMS may follow on big programs, but they aren't the entry gates.",
+  "ref": "RFO Part 16 · Vol. 2, Contract Types"
+ },
+ "914312282d4c": {
+  "x": "E.O. 14402: other-than-FFP needs justification above $100M for DoD, $10M for most agencies (DHS $25M, NASA $35M). The 10× DoD asymmetry is the memorable part — and the point: DoD buys more uncertainty than anyone.",
+  "ref": "E.O. 14402 · RFO 16.104"
+ },
+ "4a53dd3a86a4": {
+  "ref": "Vol. 2, Contract Types · FPIF mechanics"
+ },
+ "00a3e3b0f091": {
+  "x": "FFP on truly uncertain work doesn't transfer risk — it denies it. The contractor either pads the price (you pay for phantom certainty) or fails trying (you pay in schedule and litigation). Matching type to requirement definition IS the risk management.",
+  "ref": "RFO Part 16 · Vol. 2, Contract Types"
+ },
+ "09238d21878e": {
+  "ref": "RFO Part 16 · Vol. 2, Contract Types"
+ },
+ "cbfaf59067d1": {
+  "x": "RFO 16.507-6(b): urgency, only-one-capable, logical follow-on, minimum guarantee, statute, and — the one that matters most to a DoD candidate — (b)(6): “For DoD, NASA, and the Coast Guard, the order satisfies one of the exceptions permitting the use of other than full and open competition listed in part 6.103.” ⚠ An order-level small business set-aside is NOT an exception: 16.507-6(c) makes set-asides a separate authority that is not subject to the justification, approval and posting requirements at all. And ‘bridge’, ‘incumbent continuity’ and ‘best value’ are not exceptions, however often they are pitched as one.",
+  "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
+ },
+ "371dd965aeaf": {
+  "x": "$7.5M starts order-level debriefing rights; GAO order protests start at $35M DoD / $10M civilian — except scope/period/ceiling growth protests, which land at any value. Three numbers plus the exception: that's the full answer.",
+  "ref": "RFO 16.508 · Vol. 2, IDIQ"
+ },
+ "e55b451c54d0": {
+  "x": "Over-SAT fair-opportunity exceptions ride a D&A (not a J&A — different instrument, same ladder). $12M lands with the Competition Advocate. Instrument first, tier second: that order of answer shows you know both.",
+  "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
+ },
+ "7f8ae2a073cc": {
+  "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
+ },
+ "411383984316": {
+  "x": "Order-placement complaints go to the task-order ombudsman, not GAO (below the protest thresholds). And the complaint is a mirror: consideration must be genuine — if the record shows rotation paperwork instead of real evaluation, the ombudsman will find it.",
+  "ref": "RFO 16.507-2 · Vol. 2, IDIQ"
+ },
+ "a84f89841e2d": {
+  "x": "Yes — order-level set-asides are a recognized fair-opportunity exception lane. Document the Rule-of-Two logic among the vehicle's holders. No SBA waiver, no HCA approval, no vehicle-level bar: the analysis just moves down to the order.",
+  "ref": "RFO 16.507-2 · RFO Part 19 · Vol. 2, IDIQ"
+ },
+ "d3ad752c3a10": {
+  "x": "Five gates, all of them: funds, continuing need, most-advantageous (a fresh market/price look), not excluded in SAM, and performance considered. The distractors swap in process artifacts — CPARS thresholds, JA review, synopses — that aren't gates.",
+  "ref": "RFO Part 17 · Vol. 2, Options"
+ },
+ "6c5a58ff220f": {
+  "x": "Miss the notice date and the unilateral right lapses — continuing becomes a bilateral negotiation where the contractor holds leverage. No grace period, no self-execution: the option's power was the calendar, and the calendar is unforgiving.",
+  "ref": "RFO Part 17 · Vol. 2, Options"
+ },
+ "601bc4a3f51d": {
+  "x": "The 5 years does not come from the options subpart. RFO 22.1002-2(a)(2): “Under 41 U.S.C. 6707(d), service contracts may not exceed 5 years.” That is a Service Contract Labor Standards limit, so it binds SCLS-covered services — not every service contract. RFO subpart 17.2 sets no 5-year cap; 17.201-2(b)(2) just says to follow any statutory limit on duration and points at part 22. ⚠ RFO 17.101 is the MULTIYEAR contracting authority and says nothing about options or five years. 52.217-8 remains the 6-month extension cap.",
+  "ref": "RFO 22.1002-2 · RFO 52.217-8 · Vol. 2, Options"
+ },
+ "b44fe61a6e11": {
+  "x": "Skip options when there's no realistic exercise chance (they still get evaluated and priced), when pricing is too volatile to hold, or when the full requirement is already known and funded (just buy it). Options are a tool for probable futures — not a default template.",
+  "ref": "RFO Part 17 · Vol. 2, Options"
+ },
+ "475b34081f6a": {
+  "ref": "RFO Part 17 · Vol. 2, Options"
+ },
+ "ba30d92e9d08": {
+  "ref": "RFO Part 17 · Vol. 2, Options"
+ },
+ "f97057872250": {
+  "x": "The performance gate exists for exactly this moment. Exercising past known flags teaches the contractor the flags are decorative — options are leverage only if a shaky record can actually cost the renewal. Decide from the documented record, not from transition dread.",
+  "ref": "RFO Part 17 · Vol. 2, Options"
+ },
+ "1a7280063aa0": {
+  "x": "Direct: our CO places orders on their vehicle under its terms. Assisted: their contracting shop buys FOR us — which is why a signed interagency agreement defining roles must exist before money moves. The MIPR is how funds travel; the agreement is how accountability does.",
+  "ref": "RFO Part 17 IA · Vol. 2, Interagency"
+ },
+ "03912734ae0e": {
+  "x": "The Economy Act is the fallback — it applies only when no more specific authority (schedules, GWACs) covers the buy, and it rides with a MIPR plus a D&F finding it's in the Government's interest and not more cheaply available from the private sector.",
+  "ref": "31 U.S.C. §1535 · Vol. 2, Interagency"
+ },
+ "81c22ad0ff0e": {
+  "x": "The fiscal clock never stops at the transfer: purpose, time, and amount rules travel WITH the money. Parking expiring funds at another agency doesn't extend their life — that's a bona fide need violation with extra steps.",
+  "ref": "GAO Red Book · Vol. 2, Interagency"
+ },
+ "1c73eb1e13f9": {
+  "x": "Accountability doesn't transfer with a MIPR — the requirement, the fiscal rules, and the outcome remain yours. The D&F exists precisely to prove the lane was chosen deliberately, not to outsource a problem.",
+  "ref": "31 U.S.C. §1535 · Vol. 2, Interagency"
+ },
+ "d47826054011": {
+  "ref": "Vol. 2, Interagency"
+ },
+ "31fa4c1d65e4": {
+  "ref": "31 U.S.C. §1535 · Vol. 2, Interagency"
+ },
+ "865c5b59889b": {
+  "x": "Time = period of availability plus bona fide need. Purpose = only what Congress appropriated it for. Amount = the Anti-Deficiency lines — never more than, never before, availability. Say what each letter TESTS and you've shown the framework, not the acronym.",
+  "ref": "GAO Red Book · Vol. 1 §5"
+ },
+ "f811078a5729": {
+  "x": "O&M 1 year, RDT&E 2, Procurement 3 (MILCON 5). The 1-2-3 ladder decides which year's money a need belongs to — and every 'can we use this money?' question starts here.",
+  "ref": "DoD FMR · Vol. 1 §5"
+ },
+ "92137dc41e3b": {
+  "x": "Severable services: up to 12 months on current funds, may cross fiscal years. Non-severable: one end product, fully funded up front, can run long. Funding a non-severable effort incrementally is the violation this pair exists to catch.",
+  "ref": "GAO Red Book · Vol. 2, Fiscal"
+ },
+ "206519197f54": {
+  "x": "Limitation of Cost rides fully funded cost contracts; Limitation of Funds rides incrementally funded ones — both demand notice around 75%. The clause name follows the funding structure; the notice duty is the contractor's.",
+  "ref": "RFO 52.232 pattern · Vol. 2, Finance"
+ },
+ "bf3e0d2d35a5": {
+  "x": "Private financing first, then customary contract financing (PBPs preferred), then unusual, then advance payments — last, rare, and heavily approved. The order exists because each step moves Government money earlier than the work.",
+  "ref": "RFO Part 32 · Vol. 2, Finance"
+ },
+ "0940c9e30eca": {
+  "ref": "RFO 52.232 pattern · Vol. 2, Finance"
+ },
+ "4786456e7df2": {
+  "x": "PBPs pay for demonstrated events, not incurred costs — better incentive alignment, recoverable if the contractor defaults, and lighter administration. Progress payments finance effort; performance-based payments finance results.",
+  "ref": "RFO Part 32 · Vol. 2, Finance"
+ },
+ "5287299658a9": {
+  "x": "Expired funds still pay adjustments to their own properly made obligations for 5 years — a claim on an old contract is exactly that. After cancellation, nothing: the account is gone for all purposes and current funds (with their own rules) are the only recourse.",
+  "ref": "31 U.S.C. §1553 · Vol. 2, Finance"
+ },
+ "10d9176e0623": {
+  "x": "Funding source drives the license: all Government money → unlimited rights; mixed → Government Purpose Rights (converting to unlimited after the period); all private → limited (tech data) / restricted (software). Delivery and markings implement the rights — the money CREATED them.",
+  "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
+ },
+ "dc9d63e216de": {
+  "x": "The contractor asserting a restriction bears the burden of proving it — development at private expense, at the claimed component level. The Government doesn't have to disprove markings; it can challenge them and the assertion must survive.",
+  "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
+ },
+ "1897287818e5": {
+  "x": "GPR data serves any GOVERNMENT purpose — including handing it to competitors for a reprocurement under nondisclosure protections. What it can't do is go commercial. That's the entire design: competition enabled, market value protected.",
+  "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
+ },
+ "1e541a005b1d": {
+  "x": "Written challenge → contractor response (60 days) → CO final decision → appeal. And through all of it: honor the markings. Using challenged data before resolution converts your challenge into their claim.",
+  "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
+ },
+ "032b56dd9559": {
+  "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
+ },
+ "aec2a5f0d5a4": {
+  "x": "Competitive reprocurement is precisely what GPR exists for — release to competitors under nondisclosure protections is a Government purpose. No consent needed, no conversion triggered. If GPR couldn't do this, it would be limited rights with better branding.",
+  "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
+ },
+ "d9728d22f03d": {
+  "x": "Integration doesn't launder rights. Rights attach component by component, following each component's funding — a private module stays restricted, the Government-funded integration doesn't 'absorb' it, and majority funding owns nothing. Demand the assertion list at that granularity.",
+  "ref": "R-DFARS 227 pattern · Vol. 2, Data Rights"
+ },
+ "6a11574a91ff": {
+  "x": "The scope test's four corners: what the competition anticipated, contract type, period, and cumulative cost. Price/schedule/quality is contract administration; the scope question is about the BARGAIN — what the original field of competitors signed up to compete for.",
+  "ref": "Vol. 2, Mods & Scope"
+ },
+ "9a4b9a27a8a7": {
+  "x": "Unilateral: administrative changes, in-scope change orders, option exercises — the CO acting alone under existing authority. Bilateral: substantive negotiated changes, both signatures. Dollar value doesn't pick the instrument; the nature of the change does.",
+  "ref": "RFO Part 43 pattern · Vol. 2, Mods & Scope"
+ },
+ "586079a92783": {
+  "x": "Constructive: Government CONDUCT changes the work without formal direction — and may owe an equitable adjustment. Cardinal: change so profound it exceeds what was competed — potential breach that no Changes clause authorizes. One is an accident with a bill; the other is a boundary with consequences.",
+  "ref": "Vol. 2, Mods & Scope"
+ },
+ "9bc383dbae8c": {
+  "x": "Mod 100 is judged against the ORIGINAL contract with all mods cumulative — never against mod 99. Judging increment-to-increment is how scope creep launders itself: each step looks small while the total walks out of the competition.",
+  "ref": "Vol. 2, Mods & Scope"
+ },
+ "8aa5f01751f6": {
+  "x": "The PCO decides scope, with Legal, documented — a judgment call with a four-corner test behind it. Not Legal alone (they advise), not the requiring activity (they want), and not GAO (they review the record you built).",
+  "ref": "Vol. 2, Mods & Scope"
+ },
+ "31c163317cef": {
+  "ref": "Vol. 2, Mods & Scope"
+ },
+ "6504b5459390": {
+  "ref": "Vol. 2, Mods & Scope"
+ },
+ "0dfb17f96311": {
+  "x": "Default: contractors furnish their own property. GFP takes ALL FOUR: Government's best interest, benefit exceeding burden, no substantial risk increase, and no other way to meet the need. 'Any one' or a PM certification is exactly the shortcut the test forbids.",
+  "ref": "RFO Part 45 pattern · Vol. 2, Property"
+ },
+ "b28157767da0": {
+  "x": "The requiring activity (PM) writes the GFP justification to the PCO — they own the need, so they owe the case. The property administrator manages property after the decision; the contractor benefits from it and certainly doesn't author it.",
+  "ref": "Vol. 2, Property"
+ },
+ "3158001b7994": {
+  "ref": "RFO Part 45 pattern · Vol. 2, Property"
+ },
+ "341dd8c15189": {
+  "x": "Late or faulty GFP is a GOVERNMENT-caused delay: schedule relief and equitable-adjustment exposure follow. Furnishing property puts the Government's own performance on the contract's critical path — the cost the four-part test makes you price in.",
+  "ref": "Vol. 2, Property"
+ },
+ "d65fd276392a": {
+  "ref": "Vol. 2, Property"
+ },
+ "6ca80abcd3f9": {
+  "x": "Lower proposed prices are one line of a longer ledger: administration burden, risk shifted to the Government, and Government performance obligations all cost money the price doesn't show. The four-part test forces the whole ledger onto the table.",
+  "ref": "RFO Part 45 pattern · Vol. 2, Property"
+ },
+ "73f5d430e209": {
+  "x": "Repair, modification, and overhaul work needs no GFP justification — the property IS the requirement; you can't overhaul an engine you don't furnish. Everywhere else, the four-part test applies at every dollar value.",
+  "ref": "Vol. 2, Property"
+ },
+ "a3f545156ece": {
+  "x": "50% of the not-to-exceed before the qualifying proposal, 75% after. The caps are the taxpayer's brake: an undefinitized contractor who wants more funded runway has to produce the proposal that starts real negotiation.",
+  "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "2681c1606b97": {
+  "x": "180 days from the qualifying proposal — or when obligations hit the caps, whichever bites first. From the PROPOSAL, not award: that anchoring is what makes proposal slow-rolling a leverage play, and cap enforcement the counter.",
+  "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "9da327c97058": {
+  "x": "Lack of planning and administrative convenience never justify a UCA. Real urgency can. If the 'emergency' traces to a requirement everyone saw coming, the UCA is the symptom and the finding writes itself.",
+  "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "1ea9123b0f07": {
+  "x": "UCO: an unpriced unilateral change WITHIN an existing contract's scope. UCA: a NEW undefinitized contract action. Same discipline (definitize fast, caps bite), different starting points — one modifies a bargain, the other opens one.",
+  "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "1a7f42afd631": {
+  "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "8cb02d32afa8": {
+  "ref": "DD 1547 weighted guidelines · Vol. 2, UCAs"
+ },
+ "5ec5181c0dc4": {
+  "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "228ce47e2920": {
+  "x": "Business clearance approves releasing the solicitation / opening negotiations — the strategy gate. Contract clearance approves the negotiated result — the deal gate. Two different failures get caught: a bad strategy well executed, and a good strategy badly landed.",
+  "ref": "AF clearance policy · Vol. 2, Clearance"
+ },
+ "75e3e1529066": {
+  "x": "The selector can't approve the selection — independence is the entire value of the review. A reviewer inside the deal inherits its blind spots; the senior independent look before commitment is what catches them while they're still cheap.",
+  "ref": "Vol. 2, Clearance"
+ },
+ "9bc237c6018b": {
+  "x": "UCAs clear at DEFINITIZATION — that's when there's finally a negotiated result to review. Award-stage clearance isn't the gate, because at award there was no price to bless. It's the exception that proves what clearance is for.",
+  "ref": "Vol. 2, Clearance · UCAs"
+ },
+ "6094599fbe8c": {
+  "x": "Two gates catch two different failures: a sound strategy can still land a bad deal, and a good deal can execute an unapproved strategy. One clearance would have to be blind in one eye — the pair sees both.",
+  "ref": "Vol. 2, Clearance"
+ },
+ "dab112eccc73": {
+  "ref": "Vol. 2, Clearance"
+ },
+ "0f9e4ecf763b": {
+  "x": "Clearance said no → fix what they flagged and come back. There's no appeal-to-the-SSA, no award-anyway memo, no HCA override of an independent review. Clearance friction is cheaper than every failure it prevents — treat the authority as a teammate with veto power.",
+  "ref": "Vol. 2, Clearance"
+ },
+ "8b9c7e3d137c": {
+  "x": "FAR 33.105-3(b)(1) is the civilian rule, and it is the wrong one to recite at a DoD board. R-DFARS 233.105-370 applies “in lieu of the time periods in FAR 33.105-3(b)(1)” and runs to whichever of four is LATER: (a) 10 days after award; (b) 10 days after a task or delivery order over $25 million is issued; (c) 5 days after the date a debriefing is offered; (d) 5 days after a postaward debriefing is concluded. ‘Concluded’ is itself defined — R-DFARS 215.301-270 makes it the later of delivery or the agency’s written answers to follow-up questions. Apply the civilian two-branch test and you will conclude no stay attached when one did.",
+  "ref": "CICA · RFO 33.105-3"
+ },
+ "1780c6714f52": {
+  "x": "Agency: fastest, self-correcting. GAO: the 100-day clock and the automatic stay. COFC: binding judgment, injunction instead of a stay. Venue choice is strategy — each offers a different weapon, and protesters pick accordingly.",
+  "ref": "CICA · Vol. 2, Protests"
+ },
+ "947a8f844e14": {
+  "x": "Only the HCA authorizes an override, in writing, on two bases: urgent and compelling circumstances, or best interests of the United States. It's deliberately hard — the stay is CICA's teeth, and overriding it casually invites COFC review.",
+  "ref": "CICA · RFO 33.105-3"
+ },
+ "4fdb9f60ae5d": {
+  "x": "$35M DoD / $10M civilian for task-order protests at GAO — plus the exception that eats the rule: ANY value when the protest alleges the order grew beyond the vehicle's scope, period, or ceiling. Quote the thresholds without the exception and you've given half the answer.",
+  "ref": "10 U.S.C. §3406 · RFO 16.508"
+ },
+ "6e8893851cd4": {
+  "x": "Day 9 sits inside the 10-day award window — the stay applies. The 5-day debrief branch only SUBSTITUTES when a required debrief was requested and given later; skipping the debrief doesn't forfeit the award-window branch.",
+  "ref": "CICA · RFO 33.105-3"
+ },
+ "18e23264741c": {
+  "x": "GAO recommendations are legally advisory and practically binding: non-compliance gets reported to Congress and torches the agency's credibility in every future protest. Treat a sustain as a to-do list with a deadline — because that's how your leadership will treat it.",
+  "ref": "CICA · Vol. 2, Protests"
+ },
+ "0a27e0de658c": {
+  "ref": "Vol. 2, Protests"
+ },
+ "44ae24d63ca8": {
+  "x": "Four seams between REA and claim: interest (claim only), decision deadlines (claim only), prep costs (allowable REA / unallowable claim), and formality-certification. The lanes carry different economics — which is why contractors choose deliberately and you classify by substance.",
+  "ref": "CDA · Vol. 2, REAs & Claims"
+ },
+ "150d636afcc2": {
+  "x": "$100K triggers claim certification; 6 years from accrual is the CDA limitations period. Two numbers that anchor the whole disputes timeline — everything else (decisions, appeals) hangs off them.",
+  "ref": "CDA · Vol. 2, REAs & Claims"
+ },
+ "48a719c5e4a9": {
+  "x": "CO silence past the decision deadline operates as a denial — the 'deemed denial' — and it starts the contractor's appeal clock. Silence isn't neutral in the CDA: it's a decision with consequences, made by default.",
+  "ref": "CDA · Vol. 2, REAs & Claims"
+ },
+ "75398b17ddc6": {
+  "x": "Board of Contract Appeals: 90 days. Court of Federal Claims: 12 months. Both run from receipt of the final decision. Miss the Board window and COFC remains; miss both and the decision is final forever.",
+  "ref": "CDA · Vol. 2, REAs & Claims"
+ },
+ "b98328fb0570": {
+  "x": "Substance over label: sum certain + certification + decision demanded = a claim, whatever the cover letter says — and CDA interest and deadlines may already be running. Classify with Legal fast; treating a functional claim as an REA doesn't stop the clock, it just means you missed it.",
+  "ref": "CDA · Vol. 2, REAs & Claims"
+ },
+ "581360f06c10": {
+  "x": "Contractors pick the REA lane for relationship preservation, allowable prep costs, speed, and settlement flexibility. The claim lane is leverage — interest and deadlines — at the price of goodwill. Knowing WHY they choose tells you how the negotiation will behave.",
+  "ref": "Vol. 2, REAs & Claims"
+ },
+ "6f4312b0e4da": {
+  "x": "Notice first: the clause requires prompt written notice BEFORE the condition is disturbed, so the Government can investigate the ground as found. Recovery weakens without it — causation and cost analysis come after, but notice is the gate.",
+  "ref": "RFO Part 36 pattern · Vol. 2, Construction"
+ },
+ "c8626d42c415": {
+  "x": "T4C settlement: costs incurred on the terminated work + reasonable profit on work PERFORMED + settlement expenses — and never anticipatory profit on work never done. The Government buys its way out whole-ish, not generous.",
+  "ref": "RFO Part 49 · Vol. 2, Terminations"
+ },
+ "05859e980773": {
+  "x": "Cure notice → show cause → excusability analysis → T4D notice as the final decision. The order is the defense: each step builds the record that the failure was real, inexcusable, and fairly handled — skip one and the conversion risk is yours.",
+  "ref": "RFO Part 49 · Vol. 2, Terminations"
+ },
+ "83222d5bfd4d": {
+  "x": "Acts of God, sovereign/Government acts, and fires/epidemics/similar events beyond control without fault. The distractors — supplier trouble, labor shortages, price spikes — are ordinary business risk the contractor priced when it signed FFP.",
+  "ref": "RFO Part 49 · Vol. 2, Terminations"
+ },
+ "448ba74b0aca": {
+  "x": "A wrongful T4D converts to a T4C: instead of collecting reprocurement costs, the Government owes a convenience settlement. That flip — from creditor to debtor — is why the excusability record precedes the notice, not the litigation.",
+  "ref": "RFO Part 49 · Vol. 2, Terminations"
+ },
+ "47b904708b93": {
+  "x": "Costs incurred on the terminated work, reasonable profit on what was DONE, settlement expenses — never the profit they hoped to earn on the unperformed balance. 'Made whole for work performed' is the whole principle in six words.",
+  "ref": "RFO Part 49 · Vol. 2, Terminations"
+ },
+ "dc324798e91b": {
+  "x": "Excusable failure → the T4D converts to a T4C, and the Government pays a settlement instead of collecting reprocurement costs. The board isn't being generous; it's enforcing the clause. The excusability analysis you run BEFORE the notice is what prevents this ending.",
+  "ref": "RFO Part 49 · Vol. 2, Terminations"
+ },
+ "2112ab63ad7b": {
+  "x": "Pure late delivery needs no cure notice — the delivery schedule WAS the cure period. Mixed or murky facts: send it anyway. A needless cure notice costs ten days; a missing one can cost the entire termination on conversion.",
+  "ref": "RFO Part 49 · Vol. 2, Terminations"
+ },
+ "b1cc73cb77fe": {
+  "x": "A BAA is lawful competition because of three pieces: broad public announcement, stated evaluation criteria, and independent scientific merit review — selection against the standard, not between offerors. Miss a piece and it's just a sole source with a science vocabulary.",
+  "ref": "RFO Part 35 pattern · Vol. 2, R&D"
+ },
+ "5088aa5be62d": {
+  "x": "Phase I feasibility, II prototype, III production — and Phase III is special: no dollar cap, sole-source eligible off competed early phases, SBIR data rights persist. The competition happened in Phases I/II; Phase III harvests it. Document the derivation.",
+  "ref": "SBIR statute · Vol. 2, R&D"
+ },
+ "c7271e26f78b": {
+  "x": "Honest OT reasons: nontraditional participation, and terms flexibility a prototype genuinely needs. The dishonest one — 'skipping the rules' — is how OTs end up in hearings. The authority is a tool with a purpose, not an exit from oversight.",
+  "ref": "10 U.S.C. §4022 · Vol. 2, R&D"
+ },
+ "b500c514c03b": {
+  "ref": "RFO Part 35 pattern · Vol. 2, R&D"
+ },
+ "7c66b5157704": {
+  "x": "Phase III sole source rides the SBIR statute itself — the 'authorized by statute' lane — when the work derives from competed Phase I/II. No J&A, but the derivation documentation is mandatory: the statute covers continuation, not anything wearing the vendor's logo.",
+  "ref": "SBIR statute · Vol. 2, R&D"
+ },
+ "b3c52e3b00a7": {
+  "ref": "10 U.S.C. §4022 · Vol. 2, R&D"
+ },
+ "aabfa1cb40d8": {
+  "x": "Performance bond protects the Government's work; payment bond protects subs and suppliers — who can't lien Government property, so the bond replaces the lien they'd have on a commercial job. Knowing WHY the payment bond exists is what elevates the answer.",
+  "ref": "Miller Act pattern · RFO Part 28"
+ },
+ "2af78ede4e1a": {
+  "x": "Written notice BEFORE disturbing the condition — so the Government can investigate the site as found. Disturb first and the evidence is gone; the notice rule protects both parties' ability to know what was actually in the ground.",
+  "ref": "RFO Part 36 pattern · Vol. 2, Construction"
+ },
+ "5f664e95e8b3": {
+  "x": "The test is continuous Government supervision of contractor employees — that's what creates the employer-employee relationship the law forbids without specific authority. Location, duration, and individual expertise are all red herrings; SUPERVISION is the trigger.",
+  "ref": "RFO Part 37 pattern · Vol. 2, Services"
+ },
+ "f5668d4fac43": {
+  "x": "PBA requires: a PWS (or SOO), measurable standards, a QASP, and incentives where appropriate. The set is a system — outcomes defined, measured, surveilled, and motivated. Drop one element and it's a staffing contract with aspirational adjectives.",
+  "ref": "RFO Part 37 pattern · Vol. 2, Services"
+ },
+ "060e325f1be2": {
+  "x": "A&E selection is qualifications-based by statute: rank on qualifications, then negotiate a fair price with the most qualified. The logic: design quality drives lifecycle cost far more than the design fee does — saving 1% on design that costs 10% in construction is bad math.",
+  "ref": "Brooks Act pattern · Vol. 2, Construction"
+ },
+ "0f741a1992a4": {
+  "ref": "RFO Part 37 pattern · Vol. 2, Services"
+ },
+ "65de9d8587af": {
+  "ref": "RFO Part 37 pattern · Vol. 2, Services"
+ }
 }

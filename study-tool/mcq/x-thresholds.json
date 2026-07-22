@@ -1,162 +1,162 @@
 {
-  "668e8c2a3f2f": {
-    "x": "$15,000 since the 1 Oct 2025 adjustment. $10K is the legacy figure old guides still print; contingency operations carry higher MPTs. Below it: GPC lane, fair distribution, no formal competition file.",
-    "ref": "RFO Part 13 · Vol. 1 §9"
-  },
-  "ae0debb7c9f8": {
-    "x": "$350,000 since 1 Oct 2025 ($250K is the pre-adjustment reflex). The SAT is the biggest fork: above it, CICA and formal procedures; the MPT-to-SAT band is auto-reserved for small business.",
-    "ref": "RFO Part 13 · Vol. 1 §9"
-  },
-  "40843b428d74": {
-    "x": "FY26 NDAA §1804 raised the trigger to $10M for actions entered after 30 June 2026. The statute controls even where printed regulation text still shows the old figure — know which side of the date line your action sits on.",
-    "ref": "10 U.S.C. §§3701–3708 · FY26 NDAA §1804"
-  },
-  "d27e176014b3": {
-    "x": "Contracts entered on or before 30 June 2026 — and their modifications — keep the $2.5M trigger. A mod to an old contract doesn't graduate to the new $10M line; the contract's entry date governs.",
-    "ref": "FY26 NDAA §1804 · RFO Part 15"
-  },
-  "14ba343b8025": {
-    "x": "At or below the SAT ($350K), requiring certified data is prohibited — not optional. Between the SAT and the trigger you work with data other than certified when the market evidence is thin.",
-    "ref": "RFO 15.403 · Vol. 2, Pricing"
-  },
-  "7a979edf562a": {
-    "x": "$9M is the streamlined-commercial ceiling at RFO 12.201-1 — the lane that lets commercial buys move on SAP-like speed well above the SAT. Confusable with the $7.5M market-research and debrief lines; keep the three apart.",
-    "ref": "RFO 12.201-1"
-  },
-  "8d842486424e": {
-    "x": "Over $7.5M non-commercial, documented market research is required, and research is treated as current for 18 months. Two numbers, one card: the dollar trigger and the shelf life.",
-    "ref": "RFO 10.001"
-  },
-  "8cb1c429ea52": {
-    "x": "Up to $900K the CO's own certification on the J&A is the approval — no separate signature needed. The ladder starts above that: Competition Advocate to $20M.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
-  },
-  "3cc4afd547e2": {
-    "x": "Both $5M and $15M sit in the Competition Advocate's band, which runs from above $900K to $20M. Boards love asking two values inside one tier to see if you know the band, not just a number.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
-  },
-  "00794581889d": {
-    "x": "$60M sits in the HPA/PEO tier, which for DoD runs from above $20M to $150M. The $150M DoD line (vs. $90M elsewhere) is the detail that separates the prepared from the guessing.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
-  },
-  "adcba9449eb9": {
-    "x": "Above $150M (DoD) the J&A goes to the Senior Procurement Executive. There's no USD(A&S) tier in this ladder — SPE is the top rung.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
-  },
-  "5edb3a487fb9": {
-    "x": "14 days after award is the standard posting window; urgency awards get 30 — the one exception where posting trails longer, because the buy couldn't wait for paperwork. Posting before award isn't the rule.",
-    "ref": "RFO 6.301 · SAM.gov"
-  },
-  "0df8e100e849": {
-    "x": "8(a) sole source without a J&A runs to $100M for DoD, $30M civilian — the program's statutory basis covers it below those lines. The $10M/$25M-style figures belong to other ladders.",
-    "ref": "RFO Part 19 · SBA 8(a)"
-  },
-  "ba6d444cbe87": {
-    "x": "Competitive 8(a) begins at $8.5M manufacturing / $5.5M other — above those, requirements in the program compete among 8(a) firms. Same numbers as the HUBZone/WOSB caps; that's not a coincidence, it's the pattern.",
-    "ref": "RFO Part 19 · SBA 8(a)"
-  },
-  "0f1980679faa": {
-    "x": "HUBZone and WOSB sole-source caps: $8.5M manufacturing / $5.5M other. The SDVOSB 'other' cap is $5M — half a million lower — which is exactly the confusion this card exists to kill.",
-    "ref": "RFO Part 19"
-  },
-  "d0ca25b8dc94": {
-    "x": "SDVOSB: $8.5M manufacturing / $5M other. The $5M (not $5.5M) 'other' figure is the odd one out among the program caps — the detail that catches people who memorized one pair.",
-    "ref": "RFO Part 19"
-  },
-  "da815bd4830a": {
-    "x": "Subcontracting plans trigger at $900K ($2M construction) for other-than-small primes. Small businesses never owe one — the plan is how large primes account for small-business opportunity.",
-    "ref": "RFO Part 19"
-  },
-  "892446f9ab1c": {
-    "x": "GAO hears task-order protests at $35M+ (DoD) / $10M+ (civilian) — but at ANY value when the protest says the order grew beyond the vehicle's scope, period, or ceiling. That exception is the half everyone forgets.",
-    "ref": "10 U.S.C. §3406 · RFO 16.508"
-  },
-  "16cac2656f7e": {
-    "x": "Order-level debriefing rights begin at $7.5M under RFO 16.507. Below that, unsuccessful holders get brief explanations, not the full debrief machinery.",
-    "ref": "RFO 16.507"
-  },
-  "0d274e32d3e5": {
-    "x": "Fair-opportunity exceptions ride a D&A up the same ladder as J&As: CO to $900K, Competition Advocate to $20M, HPA/PEO to $90M ($150M DoD), SPE above. One ladder, two documents — learn it once, cite it twice.",
-    "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
-  },
-  "cdf19e4ec307": {
-    "x": "Claims over $100,000 must be certified — accuracy, good faith, and authority to bind. It's a CDA requirement, distinct from the DoD REA certification that starts at the SAT.",
-    "ref": "Contract Disputes Act · RFO Part 33"
-  },
-  "523202d92bea": {
-    "x": "Six years from accrual — the CDA statute of limitations. It runs from when the claim accrued (events fixing liability), not from award, invoice, or closeout.",
-    "ref": "Contract Disputes Act"
-  },
-  "3fa7dbdd6f41": {
-    "x": "90 days to the Board of Contract Appeals, 12 months to the Court of Federal Claims — from receipt of the CO's final decision. Miss the Board window and COFC is the only door left.",
-    "ref": "Contract Disputes Act · Vol. 2, REAs & Claims"
-  },
-  "a8937df338c9": {
-    "x": "The DoD REA certification kicks in above the SAT ($350K) — an R-DFARS requirement, and a different certification from the CDA claim cert at $100K. Two certs, two thresholds, two purposes.",
-    "ref": "R-DFARS · Vol. 2, REAs & Claims"
-  },
-  "b76ac785923e": {
-    "x": "50% of the not-to-exceed before the qualifying proposal; 75% once it's in. The caps are the Government's leverage — an undefinitized contractor runs out of funded runway unless the proposal shows up.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "65924aa98b6f": {
-    "x": "180 days from the qualifying proposal — or earlier if obligations hit the caps. The clock runs from the proposal, not from award; that's what makes slow-rolling the proposal a leverage play.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "e3866ad99322": {
-    "x": "Performance and payment bonds are required for construction over $150,000 — the Miller Act pattern. Payment bonds exist because subs and suppliers can't lien Government property.",
-    "ref": "RFO Part 28 · Vol. 2, Construction"
-  },
-  "429b12a0f587": {
-    "x": "CPFF fee ceilings: 15% R&D, 10% most other work, 6% A&E. Statutory lids, not negotiation targets — and the A&E 6% applies to the design fee, a favorite board follow-up.",
-    "ref": "10 U.S.C. §3322 · RFO Part 15"
-  },
-  "6f92260c64f4": {
-    "x": "E.O. 14402 requires justification for other-than-FFP above $100M for DoD and $10M for most agencies (DHS $25M, NASA $35M). The DoD line being 10× the default is the memorable asymmetry.",
-    "ref": "E.O. 14402 · RFO 16.104"
-  },
-  "70337063204b": {
-    "x": "Ratification approval sits with the HCA (delegable) over the SAT, and at the COCO level at or under it. It never belongs to the person who made the commitment — that's the point.",
-    "ref": "RFO 1.405 · Vol. 2, Authority"
-  },
-  "ed23a8e28274": {
-    "x": "The CICA stay attaches if the protest is filed within 10 days of award or 5 days of the required debrief — whichever is LATER. 'Later' is the word that decides real cases; the debrief branch only exists when a required debrief was requested.",
-    "ref": "CICA · RFO 33.105-3"
-  },
-  "d0650ad9021f": {
-    "x": "GAO must decide within 100 days by statute; agency protests target roughly 35. The 100-day certainty is why agencies take GAO seriously — the clock never slips.",
-    "ref": "CICA · GAO Bid Protest Regulations"
-  },
-  "ddb0b0391d2b": {
-    "x": "The extension-of-services clause buys at most 6 months of continuation — a bridge for transition, not a strategy. Reaching for it twice on the same contract is a planning finding wearing a clause number.",
-    "ref": "RFO 52.217-8 pattern · Vol. 2, Options"
-  },
-  "f20605790f3c": {
-    "x": "About 5 years, base plus options, is the standard services rail. Longer structures exist but need authority and justification — the 5-year instinct keeps you honest.",
-    "ref": "RFO Part 17 · Vol. 2, Options"
-  },
-  "de3be767f6f4": {
-    "x": "Severable services on annual money: up to 12 months, and they MAY cross fiscal years — the crossing is legal, the 13th month isn't. Non-severable work follows a different rule entirely (fully funded, single product).",
-    "ref": "10 U.S.C. §3133 pattern · GAO Red Book"
-  },
-  "8e87862c50b3": {
-    "x": "O&M lives 1 year, RDT&E 2, Procurement 3 (MILCON 5). After the window funds expire (adjustments only, 5 more years), then cancel. The 1-2-3 ladder is the fiscal skeleton under every funding question.",
-    "ref": "DoD FMR · Vol. 1 §5"
-  },
-  "364be33ffc3b": {
-    "x": "Both limitation clauses require notice around 75% — of the total estimate (Limitation of Cost, fully funded) or of the allotted amount (Limitation of Funds, incremental). The notice is the contractor's duty; missing it forfeits overrun entitlement.",
-    "ref": "RFO 52.232 pattern · Vol. 2, Finance"
-  },
-  "62b9fa59741f": {
-    "x": "Expired funds pay adjustments to their own obligations for 5 years, then the account cancels and the money is gone for every purpose. 'Expired' and 'cancelled' are different states — one adjusts, the other is dead.",
-    "ref": "31 U.S.C. §1553 · GAO Red Book"
-  },
-  "9c7428726fef": {
-    "x": "The automatic small-business reservation covers the band between the MPT ($15K) and SAT ($350K) — when the Rule of Two is met. The reservation comes from the dollar band itself, not from using SAP procedures.",
-    "ref": "RFO Part 19 · Vol. 1 §9"
-  },
-  "38fc939f9b1e": {
-    "x": "The cure notice gives 10 days to fix a performance failure before T4D — but it's NOT required for a pure failure to deliver on time; the delivery schedule was the cure period. Mixed facts? Send it anyway: it costs ten days, not the termination.",
-    "ref": "RFO Part 49 · Vol. 2, Terminations"
-  }
+ "668e8c2a3f2f": {
+  "x": "$15,000 since the 1 Oct 2025 adjustment. $10K is the legacy figure old guides still print; contingency operations carry higher MPTs. Below it: GPC lane, fair distribution, no formal competition file.",
+  "ref": "RFO Part 13 · Vol. 1 §9"
+ },
+ "ae0debb7c9f8": {
+  "x": "$350,000 since 1 Oct 2025 ($250K is the pre-adjustment reflex). The SAT is the biggest fork: above it, CICA and formal procedures; the MPT-to-SAT band is auto-reserved for small business.",
+  "ref": "RFO Part 13 · Vol. 1 §9"
+ },
+ "40843b428d74": {
+  "x": "FY26 NDAA §1804 raised the trigger to $10M for actions entered after 30 June 2026. The statute controls even where printed regulation text still shows the old figure — know which side of the date line your action sits on.",
+  "ref": "10 U.S.C. §§3701–3708 · FY26 NDAA §1804"
+ },
+ "d27e176014b3": {
+  "x": "Contracts entered on or before 30 June 2026 — and their modifications — keep the $2.5M trigger. A mod to an old contract doesn't graduate to the new $10M line; the contract's entry date governs.",
+  "ref": "FY26 NDAA §1804 · RFO Part 15"
+ },
+ "14ba343b8025": {
+  "x": "At or below the SAT ($350K), requiring certified data is prohibited — not optional. Between the SAT and the trigger you work with data other than certified when the market evidence is thin.",
+  "ref": "RFO 15.403 · Vol. 2, Pricing"
+ },
+ "7a979edf562a": {
+  "x": "$9M is the streamlined-commercial ceiling at RFO 12.201-1 — the lane that lets commercial buys move on SAP-like speed well above the SAT. Confusable with the $7.5M market-research and debrief lines; keep the three apart.",
+  "ref": "RFO 12.201-1"
+ },
+ "8d842486424e": {
+  "x": "Three triggers, no dollar amount on the documentation: before developing new requirements documents, before soliciting over the SAT, and before awarding a task or delivery order over the SAT (RFO 10.001(b)). Scale the write-up to the size and complexity of the buy. ⚠ The $7.5 million you may remember is not a research trigger — RFO 10.002 prescribes the clause at 52.210-1 for noncommercial acquisitions over $7.5 million. Different rule, different section. There is no “research is current for N months” shelf life anywhere in the RFO.",
+  "ref": "RFO 10.001"
+ },
+ "8cb1c429ea52": {
+  "x": "Up to $900K the CO's own certification on the J&A is the approval — no separate signature needed. The ladder starts above that: Competition Advocate to $20M.",
+  "ref": "RFO 6.104 · Vol. 2, Competition"
+ },
+ "3cc4afd547e2": {
+  "x": "Both $5M and $15M sit in the Competition Advocate's band, which runs from above $900K to $20M. Boards love asking two values inside one tier to see if you know the band, not just a number.",
+  "ref": "RFO 6.104 · Vol. 2, Competition"
+ },
+ "00794581889d": {
+  "x": "$60M sits in the HPA/PEO tier, which for DoD runs from above $20M to $150M. The $150M DoD line (vs. $90M elsewhere) is the detail that separates the prepared from the guessing.",
+  "ref": "RFO 6.104 · Vol. 2, Competition"
+ },
+ "adcba9449eb9": {
+  "x": "Above $150M (DoD) the J&A goes to the Senior Procurement Executive. There's no USD(A&S) tier in this ladder — SPE is the top rung.",
+  "ref": "RFO 6.104 · Vol. 2, Competition"
+ },
+ "5edb3a487fb9": {
+  "x": "14 days after award is the standard posting window; urgency awards get 30 — the one exception where posting trails longer, because the buy couldn't wait for paperwork. Posting before award isn't the rule.",
+  "ref": "RFO 6.301 · SAM.gov"
+ },
+ "0df8e100e849": {
+  "x": "8(a) sole source without a J&A runs to $100M for DoD, $30M civilian — the program's statutory basis covers it below those lines. The $10M/$25M-style figures belong to other ladders.",
+  "ref": "RFO Part 19 · SBA 8(a)"
+ },
+ "ba6d444cbe87": {
+  "x": "Competitive 8(a) begins at $8.5M manufacturing / $5.5M other — above those, requirements in the program compete among 8(a) firms. Same numbers as the HUBZone/WOSB caps; that's not a coincidence, it's the pattern.",
+  "ref": "RFO Part 19 · SBA 8(a)"
+ },
+ "0f1980679faa": {
+  "x": "HUBZone and WOSB sole-source caps: $8.5M manufacturing / $5.5M other. The SDVOSB 'other' cap is $5M — half a million lower — which is exactly the confusion this card exists to kill.",
+  "ref": "RFO Part 19"
+ },
+ "d0ca25b8dc94": {
+  "x": "SDVOSB: $8.5M manufacturing / $5M other. The $5M (not $5.5M) 'other' figure is the odd one out among the program caps — the detail that catches people who memorized one pair.",
+  "ref": "RFO Part 19"
+ },
+ "da815bd4830a": {
+  "x": "Subcontracting plans trigger at $900K ($2M construction) for other-than-small primes. Small businesses never owe one — the plan is how large primes account for small-business opportunity.",
+  "ref": "RFO Part 19"
+ },
+ "892446f9ab1c": {
+  "x": "GAO hears task-order protests at $35M+ (DoD) / $10M+ (civilian) — but at ANY value when the protest says the order grew beyond the vehicle's scope, period, or ceiling. That exception is the half everyone forgets.",
+  "ref": "10 U.S.C. §3406 · RFO 16.508"
+ },
+ "16cac2656f7e": {
+  "x": "Order-level debriefing rights begin at $7.5M under RFO 16.507. Below that, unsuccessful holders get brief explanations, not the full debrief machinery.",
+  "ref": "RFO 16.507"
+ },
+ "0d274e32d3e5": {
+  "x": "Fair-opportunity exceptions ride a D&A up the same ladder as J&As: CO to $900K, Competition Advocate to $20M, HPA/PEO to $90M ($150M DoD), SPE above. One ladder, two documents — learn it once, cite it twice.",
+  "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
+ },
+ "cdf19e4ec307": {
+  "x": "Claims over $100,000 must be certified — accuracy, good faith, and authority to bind. It's a CDA requirement, distinct from the DoD REA certification that starts at the SAT.",
+  "ref": "Contract Disputes Act · RFO Part 33"
+ },
+ "523202d92bea": {
+  "x": "Six years from accrual — the CDA statute of limitations. It runs from when the claim accrued (events fixing liability), not from award, invoice, or closeout.",
+  "ref": "Contract Disputes Act"
+ },
+ "3fa7dbdd6f41": {
+  "x": "90 days to the Board of Contract Appeals, 12 months to the Court of Federal Claims — from receipt of the CO's final decision. Miss the Board window and COFC is the only door left.",
+  "ref": "Contract Disputes Act · Vol. 2, REAs & Claims"
+ },
+ "a8937df338c9": {
+  "x": "The DoD REA certification kicks in above the SAT ($350K) — an R-DFARS requirement, and a different certification from the CDA claim cert at $100K. Two certs, two thresholds, two purposes.",
+  "ref": "R-DFARS · Vol. 2, REAs & Claims"
+ },
+ "b76ac785923e": {
+  "x": "50% of the not-to-exceed before the qualifying proposal; 75% once it's in. The caps are the Government's leverage — an undefinitized contractor runs out of funded runway unless the proposal shows up.",
+  "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "65924aa98b6f": {
+  "x": "180 days from the qualifying proposal — or earlier if obligations hit the caps. The clock runs from the proposal, not from award; that's what makes slow-rolling the proposal a leverage play.",
+  "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "e3866ad99322": {
+  "x": "Performance and payment bonds are required for construction over $150,000 — the Miller Act pattern. Payment bonds exist because subs and suppliers can't lien Government property.",
+  "ref": "RFO Part 28 · Vol. 2, Construction"
+ },
+ "429b12a0f587": {
+  "x": "CPFF fee ceilings: 15% R&D, 10% most other work, 6% A&E. Statutory lids, not negotiation targets — and the A&E 6% applies to the design fee, a favorite board follow-up.",
+  "ref": "10 U.S.C. §3322 · RFO Part 15"
+ },
+ "6f92260c64f4": {
+  "x": "E.O. 14402 requires justification for other-than-FFP above $100M for DoD and $10M for most agencies (DHS $25M, NASA $35M). The DoD line being 10× the default is the memorable asymmetry.",
+  "ref": "E.O. 14402 · RFO 16.104"
+ },
+ "70337063204b": {
+  "x": "RFO 1.405(b)(2): “The head of the contracting activity may ratify an unauthorized commitment… Agencies may delegate the authority to ratify an unauthorized commitment. Agencies cannot delegate this authority below the level of the chief of the contracting office.” ⚠ There is no SAT split in the RFO — the section contains no dollar figure at all, and no section anywhere in the corpus pairs ratification with the simplified acquisition threshold. What varies is the delegation FLOOR, not a dollar tier. If your command sets one by local policy, that is a supplement, not the RFO.",
+  "ref": "RFO 1.405 · Vol. 2, Authority"
+ },
+ "ed23a8e28274": {
+  "x": "The CICA stay attaches if the protest is filed within 10 days of award or 5 days of the required debrief — whichever is LATER. 'Later' is the word that decides real cases; the debrief branch only exists when a required debrief was requested.",
+  "ref": "CICA · RFO 33.105-3"
+ },
+ "d0650ad9021f": {
+  "x": "GAO must decide within 100 days by statute; agency protests target roughly 35. The 100-day certainty is why agencies take GAO seriously — the clock never slips.",
+  "ref": "CICA · GAO Bid Protest Regulations"
+ },
+ "ddb0b0391d2b": {
+  "x": "The extension-of-services clause buys at most 6 months of continuation — a bridge for transition, not a strategy. Reaching for it twice on the same contract is a planning finding wearing a clause number.",
+  "ref": "RFO 52.217-8 pattern · Vol. 2, Options"
+ },
+ "f20605790f3c": {
+  "x": "About 5 years, base plus options — but know where it comes from. RFO 22.1002-2(a)(2): “Under 41 U.S.C. 6707(d), service contracts may not exceed 5 years.” That is a Service Contract Labor Standards limit, so it binds SCLS-covered services rather than every service contract. ⚠ RFO subpart 17.2 (Options) sets no 5-year cap at all, and RFO 17.101 is the MULTIYEAR contracting authority — neither is the basis, though both get cited for it.",
+  "ref": "RFO 22.1002-2 · Vol. 2, Options"
+ },
+ "de3be767f6f4": {
+  "x": "Severable services on annual money: up to 12 months, and they MAY cross fiscal years — the crossing is legal, the 13th month isn't. Non-severable work follows a different rule entirely (fully funded, single product).",
+  "ref": "10 U.S.C. §3133 pattern · GAO Red Book"
+ },
+ "8e87862c50b3": {
+  "x": "O&M lives 1 year, RDT&E 2, Procurement 3 (MILCON 5). After the window funds expire (adjustments only, 5 more years), then cancel. The 1-2-3 ladder is the fiscal skeleton under every funding question.",
+  "ref": "DoD FMR · Vol. 1 §5"
+ },
+ "364be33ffc3b": {
+  "x": "Both limitation clauses require notice around 75% — of the total estimate (Limitation of Cost, fully funded) or of the allotted amount (Limitation of Funds, incremental). The notice is the contractor's duty; missing it forfeits overrun entitlement.",
+  "ref": "RFO 52.232 pattern · Vol. 2, Finance"
+ },
+ "62b9fa59741f": {
+  "x": "Expired funds pay adjustments to their own obligations for 5 years, then the account cancels and the money is gone for every purpose. 'Expired' and 'cancelled' are different states — one adjusts, the other is dead.",
+  "ref": "31 U.S.C. §1553 · GAO Red Book"
+ },
+ "9c7428726fef": {
+  "x": "The automatic small-business reservation covers the band between the MPT ($15K) and SAT ($350K) — when the Rule of Two is met. The reservation comes from the dollar band itself, not from using SAP procedures.",
+  "ref": "RFO Part 19 · Vol. 1 §9"
+ },
+ "38fc939f9b1e": {
+  "x": "The cure notice gives 10 days to fix a performance failure before T4D — but it's NOT required for a pure failure to deliver on time; the delivery schedule was the cure period. Mixed facts? Send it anyway: it costs ten days, not the termination.",
+  "ref": "RFO Part 49 · Vol. 2, Terminations"
+ }
 }
