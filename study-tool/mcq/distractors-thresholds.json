@@ -1,202 +1,202 @@
 {
- "668e8c2a3f2f": [
-  "$10,000",
-  "$25,000",
-  "$3,500"
- ],
- "ae0debb7c9f8": [
-  "$250,000",
-  "$500,000",
-  "$100,000"
- ],
- "40843b428d74": [
-  "$2,000,000 (unchanged by the FY26 NDAA)",
-  "$5,000,000 (FY25 NDAA §811)",
-  "$7,500,000 (FY26 NDAA §1804)"
- ],
- "d27e176014b3": [
-  "$2,000,000",
-  "$750,000",
-  "$10,000,000"
- ],
- "14ba343b8025": [
-  "the MPT ($15,000)",
-  "$2,500,000",
-  "$9,000,000"
- ],
- "7a979edf562a": [
-  "$7,500,000",
-  "$12,000,000",
-  "the SAT ($350,000)"
- ],
- "8d842486424e": [
-  "Only before soliciting over the SAT — new requirements documents carry no research duty.",
-  "Only on noncommercial acquisitions over $7.5 million, where the market research clause is prescribed.",
-  "Before every acquisition regardless of value, with documentation scaled to the dollar threshold."
- ],
- "8cb1c429ea52": [
-  "The Competition Advocate",
-  "One level above the CO",
-  "The HCA (delegable)"
- ],
- "3cc4afd547e2": [
-  "The contracting officer (certification = approval)",
-  "HPA/PEO (tier runs to $150M DoD)",
-  "The SPE — everything above $900K"
- ],
- "00794581889d": [
-  "Competition Advocate (tier to $90M DoD)",
-  "Senior Procurement Executive (everything above $20M)",
-  "The HCA, non-delegable, at any value over $50M"
- ],
- "adcba9449eb9": [
-  "Head of the Procuring Activity / PEO (no upper limit)",
-  "USD(A&S) — above $100M DoD",
-  "Competition Advocate with SPE concurrence"
- ],
- "5edb3a487fb9": [
-  "30 days after award; 14 days for urgency",
-  "10 days after award; 20 days for urgency",
-  "Before award in all cases — that's the point of posting"
- ],
- "0df8e100e849": [
-  "$50M DoD; $25M civilian",
-  "$100M DoD; $10M civilian",
-  "$150M DoD; $30M civilian"
- ],
- "ba6d444cbe87": [
-  "$7M manufacturing / $4M other",
-  "$10M manufacturing / $5M other",
-  "$8.5M across all industries"
- ],
- "0f1980679faa": [
-  "$7.5M manufacturing / $4.5M other",
-  "$8.5M manufacturing / $5M other",
-  "$10M manufacturing / $6.5M other"
- ],
- "d0ca25b8dc94": [
-  "$8.5M manufacturing / $5.5M other",
-  "$7M manufacturing / $4M other",
-  "$10M manufacturing / $5.5M other"
- ],
- "da815bd4830a": [
-  "$750K ($1.5M construction), non-small primes",
-  "$1M ($2.5M construction), all primes",
-  "the SAT ($350K), non-small primes"
- ],
- "892446f9ab1c": [
-  "$25M DoD / $10M civilian (no exceptions)",
-  "$35M for both DoD and civilian",
-  "$10M DoD / $5M civilian (any value for scope growth)"
- ],
- "16cac2656f7e": [
-  "$5.5M",
-  "$9M",
-  "the SAT ($350K)"
- ],
- "0d274e32d3e5": [
-  "One flat tier: the fair-opportunity ombudsman approves all D&As",
-  "The head of the contracting activity at every value — non-delegable",
-  "One level above the CO at any value, per the CID pattern"
- ],
- "cdf19e4ec307": [
-  "$150,000",
-  "$250,000",
-  "the SAT ($350,000)"
- ],
- "523202d92bea": [
-  "3 years of accrual",
-  "1 year of the CO's final decision",
-  "10 years of contract closeout"
- ],
- "3fa7dbdd6f41": [
-  "12 months Board / 90 days COFC",
-  "60 days Board / 6 months COFC",
-  "90 days for both venues"
- ],
- "a8937df338c9": [
-  "$100,000 — same as the claim certification",
-  "$900,000",
-  "all REAs regardless of value"
- ],
- "b76ac785923e": [
-  "75% of NTE; 90% after",
-  "50% of NTE; 80% after",
-  "25% of NTE; 50% after"
- ],
- "65924aa98b6f": [
-  "90 days from the qualifying proposal",
-  "180 days from award, regardless of proposal",
-  "One year from the undefinitized award"
- ],
- "e3866ad99322": [
-  "$100,000",
-  "the SAT ($350,000)",
-  "$250,000"
- ],
- "429b12a0f587": [
-  "10% · 8% · 5%",
-  "15% · 12% · 8%",
-  "20% · 10% · 6%"
- ],
- "6f92260c64f4": [
-  "$50M DoD; $10M most agencies (RFO 16.104)",
-  "$100M DoD; $25M most agencies (RFO 16.104)",
-  "$150M DoD; $35M most agencies (RFO 16.104)"
- ],
- "70337063204b": [
-  "HCA over the SAT; chief of the contracting office at or under it.",
-  "Contracting officer at any value, with HCA notification.",
-  "Senior procurement executive, non-delegable, at every value."
- ],
- "ed23a8e28274": [
-  "5 days from award or 10 days from the debrief — whichever is later",
-  "10 days from award, full stop — the debrief has no effect",
-  "30 days from award or 10 days from the debrief — whichever is earlier"
- ],
- "d0650ad9021f": [
-  "60 days GAO; ~30 days agency",
-  "100 days GAO; ~65 days agency",
-  "120 days GAO; ~45 days agency"
- ],
- "ddb0b0391d2b": [
-  "3 months",
-  "12 months",
-  "90 days"
- ],
- "f20605790f3c": [
-  "About 3 years",
-  "About 7 years",
-  "No limit, if priced at award"
- ],
- "de3be767f6f4": [
-  "Up to 12 months, within one fiscal year only",
-  "Up to 24 months, may cross fiscal years",
-  "Through 30 September only, then new-year funds"
- ],
- "8e87862c50b3": [
-  "1 year · 3 years · 5 years",
-  "2 years · 3 years · 5 years",
-  "1 year · 2 years · 5 years"
- ],
- "364be33ffc3b": [
-  "~50% of the estimate or allotted amount",
-  "~85% of the estimate or allotted amount",
-  "~90% of the estimate (LoC) or 75% (LoF)"
- ],
- "62b9fa59741f": [
-  "3 years, then cancelled",
-  "5 years, then returned to Treasury but recoverable",
-  "1 year, then cancelled"
- ],
- "9c7428726fef": [
-  "Everything at or under the SAT ($350K)",
-  "Between $25K and $500K",
-  "Above the SAT, up to $1M"
- ],
- "38fc939f9b1e": [
-  "30 days to cure, required in every default",
-  "10 days to cure, required in every default",
-  "5 days to cure (not required for late delivery)"
- ]
+  "668e8c2a3f2f": [
+    "$10,000",
+    "$25,000",
+    "$3,500"
+  ],
+  "ae0debb7c9f8": [
+    "$250,000",
+    "$500,000",
+    "$100,000"
+  ],
+  "40843b428d74": [
+    "$2,000,000 (unchanged by the FY26 NDAA)",
+    "$5,000,000 (FY25 NDAA §811)",
+    "$7,500,000 (FY26 NDAA §1804)"
+  ],
+  "d27e176014b3": [
+    "$2,000,000",
+    "$750,000",
+    "$10,000,000"
+  ],
+  "14ba343b8025": [
+    "the MPT ($15,000)",
+    "$2,500,000",
+    "$9,000,000"
+  ],
+  "7a979edf562a": [
+    "$7,500,000",
+    "$12,000,000",
+    "the SAT ($350,000)"
+  ],
+  "8d842486424e": [
+    "Only before soliciting over the SAT — new requirements documents carry no research duty.",
+    "Only on noncommercial acquisitions over $7.5 million, where the market research clause is prescribed.",
+    "Before every acquisition regardless of value, with documentation scaled to the dollar threshold."
+  ],
+  "8cb1c429ea52": [
+    "The Competition Advocate",
+    "One level above the CO",
+    "The HCA (delegable)"
+  ],
+  "3cc4afd547e2": [
+    "The contracting officer (certification = approval)",
+    "HPA/PEO (tier runs to $150M DoD)",
+    "The SPE — everything above $900K"
+  ],
+  "00794581889d": [
+    "Competition Advocate (tier to $90M DoD)",
+    "Senior Procurement Executive (everything above $20M)",
+    "The HCA, non-delegable, at any value over $50M"
+  ],
+  "adcba9449eb9": [
+    "Head of the Procuring Activity / PEO (no upper limit)",
+    "USD(A&S) — above $100M DoD",
+    "Competition Advocate with SPE concurrence"
+  ],
+  "5edb3a487fb9": [
+    "30 days after award; 14 days for urgency",
+    "10 days after award; 20 days for urgency",
+    "Before award in all cases — that's the point of posting"
+  ],
+  "0df8e100e849": [
+    "$50M DoD; $25M civilian",
+    "$100M DoD; $10M civilian",
+    "$150M DoD; $30M civilian"
+  ],
+  "ba6d444cbe87": [
+    "$7M manufacturing / $4M other",
+    "$10M manufacturing / $5M other",
+    "$8.5M across all industries"
+  ],
+  "0f1980679faa": [
+    "$7.5M manufacturing / $4.5M other",
+    "$8.5M manufacturing / $5M other",
+    "$10M manufacturing / $6.5M other"
+  ],
+  "d0ca25b8dc94": [
+    "$8.5M manufacturing / $5.5M other",
+    "$7M manufacturing / $4M other",
+    "$10M manufacturing / $5.5M other"
+  ],
+  "da815bd4830a": [
+    "$750K ($1.5M construction), non-small primes",
+    "$1M ($2.5M construction), all primes",
+    "the SAT ($350K), non-small primes"
+  ],
+  "892446f9ab1c": [
+    "$25M DoD / $10M civilian (no exceptions)",
+    "$35M for both DoD and civilian",
+    "$10M DoD / $5M civilian (any value for scope growth)"
+  ],
+  "16cac2656f7e": [
+    "$5.5M",
+    "$9M",
+    "the SAT ($350K)"
+  ],
+  "0d274e32d3e5": [
+    "One flat tier: the fair-opportunity ombudsman approves every justification",
+    "The head of the contracting activity at every value — non-delegable",
+    "One level above the CO at any value, per the CID pattern"
+  ],
+  "cdf19e4ec307": [
+    "$150,000",
+    "$250,000",
+    "the SAT ($350,000)"
+  ],
+  "523202d92bea": [
+    "3 years of accrual",
+    "1 year of the CO's final decision",
+    "10 years of contract closeout"
+  ],
+  "3fa7dbdd6f41": [
+    "12 months Board / 90 days COFC",
+    "60 days Board / 6 months COFC",
+    "90 days for both venues"
+  ],
+  "a8937df338c9": [
+    "$100,000 — same as the claim certification",
+    "$900,000",
+    "all REAs regardless of value"
+  ],
+  "b76ac785923e": [
+    "75% of NTE; 90% after",
+    "50% of NTE; 80% after",
+    "25% of NTE; 50% after"
+  ],
+  "65924aa98b6f": [
+    "90 days from the qualifying proposal",
+    "180 days from award, regardless of proposal",
+    "One year from the undefinitized award"
+  ],
+  "e3866ad99322": [
+    "$100,000",
+    "the SAT ($350,000)",
+    "$250,000"
+  ],
+  "429b12a0f587": [
+    "10% · 8% · 5%",
+    "15% · 12% · 8%",
+    "20% · 10% · 6%"
+  ],
+  "6f92260c64f4": [
+    "$50M DoD; $10M most agencies (RFO 16.104)",
+    "$100M DoD; $25M most agencies (RFO 16.104)",
+    "$150M DoD; $35M most agencies (RFO 16.104)"
+  ],
+  "70337063204b": [
+    "HCA over the SAT; chief of the contracting office at or under it.",
+    "Contracting officer at any value, with HCA notification.",
+    "Senior procurement executive, non-delegable, at every value."
+  ],
+  "ed23a8e28274": [
+    "5 days from award or 10 days from the debrief — whichever is later",
+    "10 days from award, full stop — the debrief has no effect",
+    "30 days from award or 10 days from the debrief — whichever is earlier"
+  ],
+  "d0650ad9021f": [
+    "60 days GAO; ~30 days agency",
+    "100 days GAO; ~65 days agency",
+    "120 days GAO; ~45 days agency"
+  ],
+  "ddb0b0391d2b": [
+    "3 months",
+    "12 months",
+    "90 days"
+  ],
+  "f20605790f3c": [
+    "About 3 years",
+    "About 7 years",
+    "No limit, if priced at award"
+  ],
+  "de3be767f6f4": [
+    "Up to 12 months, within one fiscal year only",
+    "Up to 24 months, may cross fiscal years",
+    "Through 30 September only, then new-year funds"
+  ],
+  "8e87862c50b3": [
+    "1 year · 3 years · 5 years",
+    "2 years · 3 years · 5 years",
+    "1 year · 2 years · 5 years"
+  ],
+  "364be33ffc3b": [
+    "~50% of the estimate or allotted amount",
+    "~85% of the estimate or allotted amount",
+    "~90% of the estimate (LoC) or 75% (LoF)"
+  ],
+  "62b9fa59741f": [
+    "3 years, then cancelled",
+    "5 years, then returned to Treasury but recoverable",
+    "1 year, then cancelled"
+  ],
+  "9c7428726fef": [
+    "Everything at or under the SAT ($350K)",
+    "Between $25K and $500K",
+    "Above the SAT, up to $1M"
+  ],
+  "38fc939f9b1e": [
+    "30 days to cure, required in every default",
+    "10 days to cure, required in every default",
+    "5 days to cure (not required for late delivery)"
+  ]
 }
