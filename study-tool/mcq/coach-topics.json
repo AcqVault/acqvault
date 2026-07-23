@@ -1,182 +1,182 @@
 {
-  "Acquisition Planning & Strategy": {
-    "qtype": "an acquisition-strategy question — RFO Part 7 planning built on RFO Part 10 market research: competitive posture, timing, and what the file must prove.",
-    "smes": "the PM/requiring activity, Legal (JA), the Competition Advocate, and your pricing office.",
-    "rule": "Strategy precedes paper: no solicitation, bridge, or J&A before the rights-deliverables-market inventory is done — and lack of advance planning never justifies skipping it (RFO Part 6).",
-    "cite": "RFO Parts 7 & 10 · Vol. 2, Acquisition Planning"
-  },
-  "Authority, Unauthorized Commitments & Ratification": {
-    "qtype": "an authority question — RFO 1.402 warrant authority and the RFO 1.405 ratification lane: who can bind the Government, and what happens when someone who can't, did.",
-    "smes": "Legal (JA) first, your COCO/flight chief, and FM for the funds picture.",
-    "rule": "Only a warranted CO binds the Government (RFO 1.402). Apparent authority binds nothing — an unauthorized commitment stays unratified until an official with actual authority runs all six RFO 1.405 elements.",
-    "cite": "RFO 1.402 / 1.405 · Vol. 2, Authority"
-  },
-  "Procurement Integrity": {
-    "qtype": "a Procurement Integrity Act question — RFO 3.104: protected information and what its movement does to the competition.",
-    "smes": "Legal (JA) immediately; the HCA channel if the procurement is impacted.",
-    "rule": "RFO 3.104 protects two classes — source selection information and contractor bid/proposal data. Contain first, document everything; the written record closes the incident, not a reply email.",
-    "cite": "RFO 3.104 · Vol. 2, Procurement Integrity"
-  },
-  "Organizational Conflict of Interest": {
-    "qtype": "an organizational-conflict-of-interest question — RFO 9.5: the type drives the remedy.",
-    "smes": "Legal (JA) and your reviewing chain; a waiver runs to the agency head or a designee and is never delegated below the HCA (RFO 9.503).",
-    "rule": "Identify the type first — unequal access, impaired objectivity, biased ground rules — then avoid, neutralize, or mitigate under RFO 9.5, in that order. A firewall can't fix ground rules already written. On a significant potential conflict the CO analyses and recommends; the chief of the contracting office approves, modifies, or rejects the course of action in writing before the solicitation issues (RFO 9.506(b)-(c)).",
-    "cite": "RFO 9.5 · Vol. 2, OCI"
-  },
-  "Contractor Qualifications — Responsibility": {
-    "qtype": "a responsibility question — the seven RFO 9.104 standards, applied to today's facts.",
-    "smes": "your contracting chain, Legal, and the SBA — a small-business referral is mandatory under RFO Part 19, and a CoC is conclusive.",
-    "rule": "Doubt cuts in the Government's favor — doubt means no. But the 'no' must stand on the RFO 9.104 standards and documented facts, never on undocumented distrust.",
-    "cite": "RFO 9.104 · Vol. 2, Responsibility"
-  },
-  "Market Research": {
-    "qtype": "a market-research question — RFO Part 10: evidence before decisions.",
-    "smes": "the requiring activity's SMEs, your Small Business Professional, and industry itself — sources sought, RFIs, industry days.",
-    "rule": "RFO Part 10 research is the evidence; the commerciality, competition, and set-aside calls are decisions built on it. Undocumented research supports nothing downstream — and RFO 10.001(b) ties research to the event it supports (a new requirements document, a solicitation over the SAT, an order over the SAT), not to a shelf life.",
-    "cite": "RFO Part 10 (10.001) · Vol. 2, Market Research"
-  },
-  "Required Sources of Supplies & Services": {
-    "qtype": "a required-sources question — the RFO Part 8 priority ladder before the open market.",
-    "smes": "your policy shop, the AbilityOne/UNICOR program channels, and the schedule's ordering guide.",
-    "rule": "Work the RFO Part 8 ladder in order — inventory, excess, UNICOR, AbilityOne, schedules — and mandatory means mandatory; price alone doesn't unlock the open market.",
-    "cite": "RFO Part 8 · Vol. 2, Required Sources"
-  },
-  "Commercial Products & Services": {
-    "qtype": "a commerciality question — the RFO 2.101 definition, the CID, and what RFO Part 12 changes.",
-    "smes": "your pricing office, Legal, and the CID approval level one above you.",
-    "rule": "Commercial rides the market: the RFO 2.101 definition (including minor mods that keep form, fit, and function) is a documented CID call over the SAT, and RFO Part 12 trades certified data for market evidence.",
-    "cite": "RFO 2.101 & Part 12 · Vol. 2, Commercial"
-  },
-  "Simplified Acquisition Procedures": {
-    "qtype": "a simplified-acquisition question — RFO Part 13: the right lane by dollar band.",
-    "smes": "your GPC program coordinator, Small Business Professional, and COCO.",
-    "rule": "The band picks the RFO Part 13 lane: GPC to $15K, purchase orders to the $350K SAT — reserved for small business under the RFO Part 19 Rule of Two — and splitting a known requirement to stay under a threshold is a bright-line violation.",
-    "cite": "RFO Part 13 · Vol. 2, SAP"
-  },
-  "Small Business Programs": {
-    "qtype": "a small-business question — RFO Part 19: the Rule of Two and the program lanes.",
-    "smes": "your Small Business Professional and the SBA PCR; DD Form 2579 documents the coordination.",
-    "rule": "RFO Part 19: a reasonable expectation of two or more capable small businesses at fair market prices → set it aside. The rule tests the expectation at strategy time, not the final offer count.",
-    "cite": "RFO Part 19 · Vol. 2, Small Business"
-  },
-  "Competition (CICA)": {
-    "qtype": "a competition question — CICA and RFO Part 6: the default and the exception ladder.",
-    "smes": "the Competition Advocate, Legal, and fresh market research to test the premise.",
-    "rule": "Full and open is the default over the SAT (RFO 6.101). 'Other than' takes one of the seven RFO 6.103 exceptions in a J&A approved at the RFO 6.104 tier — and 'we've always used them' is not one of the seven.",
-    "cite": "CICA · RFO 6.103/6.104 · Vol. 2, Competition"
-  },
-  "Contracting by Negotiation — Source Selection": {
-    "qtype": "a source-selection question — RFO Part 15: fair process, documented judgment.",
-    "smes": "the SSA, your SSEB chairs, Legal, and the pricing office for the cost/price side.",
-    "rule": "The solicitation is the contract of the competition: evaluate exactly as Section M promised, keep RFO Part 15 exchanges in their lanes — clarifications under 15.202(a)(2), which never permit a proposal revision, and competitive negotiations under 15.204-2, which must at minimum surface each offeror's deficiencies and significant weaknesses.",
-    "cite": "RFO Part 15 · Vol. 2, Source Selection"
-  },
-  "Certified Cost or Pricing Data & Proposal Analysis": {
-    "qtype": "a pricing question — RFO 15.403 on what data you're owed, RFO 15.404 on the analysis the file needs.",
-    "smes": "your pricing office, DCMA for field pricing and rates, DCAA for audit, and Legal on defective-pricing exposure.",
-    "rule": "Price analysis always (RFO 15.404-1). Certified data only past the threshold with the RFO 15.403-2 CLAWM exceptions checked first — and no award without a documented fair-and-reasonable determination.",
-    "cite": "RFO 15.403/15.404 · 10 U.S.C. §§3701–3708 · Vol. 2, Pricing"
-  },
-  "Contract Types": {
-    "qtype": "a contract-type question — RFO Part 16: who carries the cost risk, and why.",
-    "smes": "your pricing office, the PM on requirement certainty, and your reviewing chain for the acquisition plan, and the HCA for any incentive- or award-fee D&F.",
-    "rule": "RFO Part 16 matches risk to definition: FFP when the work prices firmly; cost-type when it can't — gated by RFO 16.301-3 on an acquisition plan approved one level above the CO, an accounting system that can segregate, accumulate and allocate costs, and sufficient Government resources including a designated COR. The HCA-signed D&F belongs to incentive- and award-fee contracts (RFO 16.401-2(a)), not to cost-type. Forcing FFP onto the unknowable is risk denial, not risk transfer — and E.O. 14402 makes other-than-FFP a justified decision (RFO 16.104).",
-    "cite": "RFO Part 16 (16.104) · Vol. 2, Contract Types"
-  },
-  "IDIQ Ordering & Fair Opportunity": {
-    "qtype": "a fair-opportunity question — RFO 16.507: every holder's real chance, or a documented exception.",
-    "smes": "the vehicle's PCO and ordering guide, the Competition Advocate for over-SAT justifications, and the ombudsman lane for holder complaints.",
-    "rule": "RFO 16.507-2 makes fair opportunity the default on multiple-award vehicles; exceptions (16.507-6) ride a written Justification for an Exception to Fair Opportunity — the document the RFO names — up the same approval ladder as J&As, and consideration must be genuine — not rotation paperwork.",
-    "cite": "RFO 16.507 · Vol. 2, IDIQ"
-  },
-  "Options": {
-    "qtype": "an options question — RFO Part 17: the exercise gates, applied to today.",
-    "smes": "FM for funds, the COR and PM on performance and continuing need, and Legal if the notice window slipped.",
-    "rule": "Exercise only through the RFO 17.204-1(b) gates: timely written notice, funds available, an existing requirement, synopsized or exempt, no active SAM exclusion, acceptable performance, a fair and reasonable price in the Government's best interest, and part 6 compliance — and for DoD, R-DFARS 217.204-170 adds an active and accurate SAM record plus SPRS verification of the NIST SP 800-171 score and a current CMMC certificate. Miss the notice window and the unilateral right lapses into a bilateral negotiation.",
-    "cite": "RFO 17.204-1 · R-DFARS 217.204-170 · Vol. 2, Options"
-  },
-  "Interagency Acquisitions & the Economy Act": {
-    "qtype": "an interagency question — RFO Part 17 interagency acquisition and the Economy Act (31 U.S.C. 1535): direct vs. assisted, and whose rules travel with the money.",
-    "smes": "FM (the fiscal rules travel with the funds), Legal, and the servicing agency's contracting office.",
-    "rule": "Pick the lane deliberately: direct (our CO orders on their vehicle) vs. assisted (their CO buys for us under a signed agreement). The Economy Act applies only absent a more specific authority — MIPR plus D&F.",
-    "cite": "RFO Part 17 · 31 U.S.C. 1535 · Vol. 2, Interagency"
-  },
-  "Contract Finance & Fiscal Law": {
-    "qtype": "a fiscal-law question — Time, Purpose, Amount under the appropriations statutes, with RFO Part 32 carrying the financing side.",
-    "smes": "FM/Comptroller first and always, then Legal; the GAO Red Book and DoD FMR are the references.",
-    "rule": "Run T-P-A on every dollar: the right-year money for a bona fide need of that period, the appropriated purpose (31 U.S.C. 1301), within the available amount — Anti-Deficiency violations are the serious, reportable kind.",
-    "cite": "RFO Part 32 · GAO Red Book / DoD FMR · Vol. 2, Fiscal"
-  },
-  "Data Rights": {
-    "qtype": "a data-rights question — R-DFARS 227: the funding source drives the license.",
-    "smes": "Legal (IP counsel), the program engineers on the component map, and DCMA on assertion administration.",
-    "rule": "R-DFARS 227: who paid for development answers most of it — Government funds → unlimited, mixed → GPR, private → limited/restricted. The contractor proves the restriction — the assertion list comes from the provision at 252.227-7992, Identification and Assertion of Use, Release, or Disclosure Restrictions (DEVIATION 2026-O0036), inserted under R-DFARS 227.7103-6(g)(2); 252.227-7017 is the legacy pre-deviation provision. Honor the markings until a challenge resolves.",
-    "cite": "R-DFARS 227 · Vol. 2, Data Rights"
-  },
-  "Contract Modifications & Scope": {
-    "qtype": "a scope question — RFO Part 43: a modification, or a new procurement in disguise.",
-    "smes": "Legal, the PCO chain, and the original competition record itself.",
-    "rule": "The test is what the original competitors reasonably anticipated — judged against the original contract with all mods cumulative. In scope: modify under RFO Part 43. Beyond it: compete it or justify it under RFO Part 6.",
-    "cite": "RFO Part 43 · Vol. 2, Mods & Scope"
-  },
-  "Government Property": {
-    "qtype": "a Government-property question — RFO Part 45: the default rule and the four-part exception.",
-    "smes": "the property administrator, DCMA, and the PM — who owes the written justification.",
-    "rule": "RFO Part 45: contractors furnish property. GFP only when all four parts hold — best interest, benefit over burden, no substantial risk shift, not otherwise satisfiable — and furnishing it puts the Government's own performance on the schedule.",
-    "cite": "RFO Part 45 · Vol. 2, Property"
-  },
-  "Undefinitized Contract Actions": {
-    "qtype": "a UCA question — R-DFARS 217.74: undefinitized work and decaying negotiation leverage.",
-    "smes": "your pricing office, the clearance authority, and Legal; DCMA for actuals once performance starts.",
-    "rule": "R-DFARS 217.74 makes UCAs the exception: obligations capped at 50% of the not-to-exceed price, raised to no more than 75% only if the qualifying proposal arrives before that 50% point (217.7404-4(a)); definitization by the earlier of 180 days after the qualifying proposal or the date obligations pass 50% of the NTE (217.7404-3(a)); clearance at definitization — and neither poor planning nor administrative convenience ever justifies one.",
-    "cite": "R-DFARS 217.74 · Vol. 2, UCAs"
-  },
-  "Clearance — Independent Review & Approval": {
-    "qtype": "a clearance question — DAF clearance procedures: independent review before the Government commits.",
-    "smes": "the clearance authority itself, your chief, and Legal on any compliance flags.",
-    "rule": "Two gates catching two failures: business clearance blesses the strategy before release; contract clearance blesses the negotiated result before award. The selector never approves the selection.",
-    "cite": "DAF clearance procedures · Vol. 2, Clearance"
-  },
-  "Protests": {
-    "qtype": "a protest question — RFO Part 33 and CICA: venue, stay math, and the record you built months earlier.",
-    "smes": "Legal drives; GAO or COFC counsel through Legal; the HCA owns any override decision.",
-    "rule": "Know the stay machinery cold — RFO 33.105-3(b)(1) is the government-wide 10-day/5-day rule, but for DoD R-DFARS 233.105-370 substitutes a four-part whichever-is-later test in its place, and there are three venues with different powers — and remember the real defense was built earlier: criteria stated, followed, and documented.",
-    "cite": "RFO 33.104 · RFO 33.105 · R-DFARS 233.105-370 · CICA · Vol. 2, Protests"
-  },
-  "REAs & Claims": {
-    "qtype": "a disputes question — the Contract Disputes Act and RFO Part 33: REA lane or CDA claim, and substance beats the label.",
-    "smes": "Legal early, FM on funding the outcome, and the COR/PM for the facts record.",
-    "rule": "Classify by substance under the CDA: a sum certain, certified, with a decision demanded is a claim — interest and decision deadlines already running. The machinery doesn't care what the cover letter says.",
-    "cite": "Contract Disputes Act · RFO Part 33 · Vol. 2, REAs & Claims"
-  },
-  "Terminations": {
-    "qtype": "a termination question — RFO Part 49 (or, for commercial products and services, RFO 12.304): fault drives the remedy.",
-    "smes": "Legal (mandatory), your termination contracting officer channel, and DCMA on settlement.",
-    "rule": "Who's at fault decides what's owed under RFO Part 49: T4C makes the contractor whole for work done, no anticipatory profit; T4D demands the full runway — cure, show cause, excusability — because a wrongful default converts to a T4C. Commercial buys run on RFO 12.304 and the termination paragraphs of 52.212-4, not part 49 procedures — and a cure notice is still required unless the reason is late delivery (12.304(b)(1)).",
-    "cite": "RFO Part 49 (commercial: RFO 12.304) · Vol. 2, Terminations"
-  },
-  "R&D Contracting — BAAs, SBIR & OTs": {
-    "qtype": "an R&D-authorities question — RFO Part 35, the SBIR statute, and 10 U.S.C. 4022 OTs: the right instrument for genuine uncertainty.",
-    "smes": "your agreements officer channel, Legal, and the S&T program office.",
-    "rule": "Pick the authority for a reason: RFO Part 35 BAAs compete proposals against a published standard, SBIR Phase III carries statutory sole-source off competed early phases, and 10 U.S.C. 4022 OTs trade the mature protections framework for agility — 'skipping the rules' is never the reason.",
-    "cite": "RFO Part 35 · SBIR statute · 10 U.S.C. 4022 · Vol. 2, R&D"
-  },
-  "Construction & Service Contracting": {
-    "qtype": "a construction/services question — RFO Parts 36 and 37, with RFO Part 28 bonds: specialized statutory machinery.",
-    "smes": "Legal, the labor advisor on wage determinations, and the installation civil engineers.",
-    "rule": "Construction and services run on their own rails: RFO Part 28 bonds over $150K, written notice before disturbing a differing site condition (RFO Part 36), qualifications-based A&E selection, and no personal-services drift (RFO Part 37).",
-    "cite": "RFO Parts 36/37 · Part 28 bonds · Vol. 2, Construction"
-  },
-  "Openers & Perspective": {
-    "qtype": "a perspective question — the panel is testing how you think as a business leader, not what you can recite.",
-    "smes": "Nobody to phone — this one is yours. Anchor on your own experience, your office, and what you actually control.",
-    "rule": "Answer in your own voice with a definition, a concrete plan, and one example — and show the judgment to know where the boring answer is the right one.",
-    "cite": "Your own experience — verify anything you cite at acquisition.gov/far-overhaul"
-  },
-  "_generic": {
-    "qtype": "a frameworks question — name it, then walk it.",
-    "smes": "your CO/chief, Legal (JA), and FM — the standing phone-a-friends.",
-    "rule": "State the default rule first, then the exception you'd need, then the facts that earn it — in that order, out loud.",
-    "cite": "Verify at acquisition.gov/far-overhaul"
-  }
+ "Acquisition Planning & Strategy": {
+  "qtype": "an acquisition-strategy question — RFO Part 7 planning built on RFO Part 10 market research: competitive posture, timing, and what the file must prove.",
+  "smes": "the PM/requiring activity, Legal (JA), the Competition Advocate, and your pricing office.",
+  "rule": "Strategy precedes paper: no solicitation, bridge, or J&A before the rights-deliverables-market inventory is done — and lack of advance planning never justifies skipping it (RFO Part 6).",
+  "cite": "RFO Parts 7 & 10 · Vol. 2, Acquisition Planning"
+ },
+ "Authority, Unauthorized Commitments & Ratification": {
+  "qtype": "an authority question — RFO 1.402 warrant authority and the RFO 1.405 ratification lane: who can bind the Government, and what happens when someone who can't, did.",
+  "smes": "Legal (JA) first, your COCO/flight chief, and FM for the funds picture.",
+  "rule": "Only a warranted CO binds the Government (RFO 1.402). Apparent authority binds nothing — an unauthorized commitment stays unratified until an official with actual authority runs all six RFO 1.405 elements.",
+  "cite": "RFO 1.402-1 / 1.405 · Vol. 2, Authority"
+ },
+ "Procurement Integrity": {
+  "qtype": "a Procurement Integrity Act question — RFO 3.104: protected information and what its movement does to the competition.",
+  "smes": "Legal (JA) immediately; the HCA channel if the procurement is impacted.",
+  "rule": "RFO 3.104 protects two classes — source selection information and contractor bid/proposal data. Contain first, document everything; the written record closes the incident, not a reply email.",
+  "cite": "RFO 3.104-3 · Vol. 2, Procurement Integrity"
+ },
+ "Organizational Conflict of Interest": {
+  "qtype": "an organizational-conflict-of-interest question — RFO 9.5: the type drives the remedy.",
+  "smes": "Legal (JA) and your reviewing chain; a waiver runs to the agency head or a designee and is never delegated below the HCA (RFO 9.503).",
+  "rule": "Identify the type first — unequal access, impaired objectivity, biased ground rules — then avoid, neutralize, or mitigate under RFO 9.5, in that order. A firewall can't fix ground rules already written. On a significant potential conflict the CO analyses and recommends; the chief of the contracting office approves, modifies, or rejects the course of action in writing before the solicitation issues (RFO 9.506(b)-(c)).",
+  "cite": "RFO 9.504 · Vol. 2, OCI"
+ },
+ "Contractor Qualifications — Responsibility": {
+  "qtype": "a responsibility question — the seven RFO 9.104 standards, applied to today's facts.",
+  "smes": "your contracting chain, Legal, and the SBA — a small-business referral is mandatory under RFO Part 19, and a CoC is conclusive.",
+  "rule": "Doubt cuts in the Government's favor — doubt means no. But the 'no' must stand on the RFO 9.104 standards and documented facts, never on undocumented distrust.",
+  "cite": "RFO 9.104-1 · Vol. 2, Responsibility"
+ },
+ "Market Research": {
+  "qtype": "a market-research question — RFO Part 10: evidence before decisions.",
+  "smes": "the requiring activity's SMEs, your Small Business Professional, and industry itself — sources sought, RFIs, industry days.",
+  "rule": "RFO Part 10 research is the evidence; the commerciality, competition, and set-aside calls are decisions built on it. Undocumented research supports nothing downstream — and RFO 10.001(b) ties research to the event it supports (a new requirements document, a solicitation over the SAT, an order over the SAT), not to a shelf life.",
+  "cite": "RFO Part 10 (10.001) · Vol. 2, Market Research"
+ },
+ "Required Sources of Supplies & Services": {
+  "qtype": "a required-sources question — the RFO Part 8 priority ladder before the open market.",
+  "smes": "your policy shop, the AbilityOne/UNICOR program channels, and the schedule's ordering guide.",
+  "rule": "Work the RFO Part 8 ladder in order — inventory, excess, UNICOR, AbilityOne, schedules — and mandatory means mandatory; price alone doesn't unlock the open market.",
+  "cite": "RFO Part 8 · Vol. 2, Required Sources"
+ },
+ "Commercial Products & Services": {
+  "qtype": "a commerciality question — the RFO 2.101 definition, the CID, and what RFO Part 12 changes.",
+  "smes": "your pricing office, Legal, and the CID approval level one above you.",
+  "rule": "Commercial rides the market: the RFO 2.101 definition (including minor mods that keep form, fit, and function) is a documented CID call over the SAT, and RFO Part 12 trades certified data for market evidence.",
+  "cite": "RFO 2.101 & Part 12 · Vol. 2, Commercial"
+ },
+ "Simplified Acquisition Procedures": {
+  "qtype": "a simplified-acquisition question — RFO Part 13: the right lane by dollar band.",
+  "smes": "your GPC program coordinator, Small Business Professional, and COCO.",
+  "rule": "The band picks the RFO Part 13 lane: GPC to $15K, purchase orders to the $350K SAT — reserved for small business under the RFO Part 19 Rule of Two — and splitting a known requirement to stay under a threshold is a bright-line violation.",
+  "cite": "RFO Part 13 · Vol. 2, SAP"
+ },
+ "Small Business Programs": {
+  "qtype": "a small-business question — RFO Part 19: the Rule of Two and the program lanes.",
+  "smes": "your Small Business Professional and the SBA PCR; DD Form 2579 documents the coordination.",
+  "rule": "RFO Part 19: a reasonable expectation of two or more capable small businesses at fair market prices → set it aside. The rule tests the expectation at strategy time, not the final offer count.",
+  "cite": "RFO Part 19 · Vol. 2, Small Business"
+ },
+ "Competition (CICA)": {
+  "qtype": "a competition question — CICA and RFO Part 6: the default and the exception ladder.",
+  "smes": "the Competition Advocate, Legal, and fresh market research to test the premise.",
+  "rule": "Full and open is the default over the SAT (RFO 6.101). 'Other than' takes one of the seven RFO 6.103 exceptions in a J&A approved at the RFO 6.104 tier — and 'we've always used them' is not one of the seven.",
+  "cite": "CICA · RFO 6.103/6.104 · Vol. 2, Competition"
+ },
+ "Contracting by Negotiation — Source Selection": {
+  "qtype": "a source-selection question — RFO Part 15: fair process, documented judgment.",
+  "smes": "the SSA, your SSEB chairs, Legal, and the pricing office for the cost/price side.",
+  "rule": "The solicitation is the contract of the competition: evaluate exactly as Section M promised, keep RFO Part 15 exchanges in their lanes — clarifications under 15.202(a)(2), which never permit a proposal revision, and competitive negotiations under 15.204-2, which must at minimum surface each offeror's deficiencies and significant weaknesses.",
+  "cite": "RFO Part 15 · Vol. 2, Source Selection"
+ },
+ "Certified Cost or Pricing Data & Proposal Analysis": {
+  "qtype": "a pricing question — RFO 15.403 on what data you're owed, RFO 15.404 on the analysis the file needs.",
+  "smes": "your pricing office, DCMA for field pricing and rates, DCAA for audit, and Legal on defective-pricing exposure.",
+  "rule": "Price analysis always (RFO 15.404-1). Certified data only past the threshold with the RFO 15.403-2 CLAWM exceptions checked first — and no award without a documented fair-and-reasonable determination.",
+  "cite": "RFO 15.403-3/15.404 · 10 U.S.C. §§3701–3708 · Vol. 2, Pricing"
+ },
+ "Contract Types": {
+  "qtype": "a contract-type question — RFO Part 16: who carries the cost risk, and why.",
+  "smes": "your pricing office, the PM on requirement certainty, and your reviewing chain for the acquisition plan, and the HCA for any incentive- or award-fee D&F.",
+  "rule": "RFO Part 16 matches risk to definition: FFP when the work prices firmly; cost-type when it can't — gated by RFO 16.301-3 on an acquisition plan approved one level above the CO, an accounting system that can segregate, accumulate and allocate costs, and sufficient Government resources including a designated COR. The HCA-signed D&F belongs to incentive- and award-fee contracts (RFO 16.401-2(a)), not to cost-type. Forcing FFP onto the unknowable is risk denial, not risk transfer — and E.O. 14402 makes other-than-FFP a justified decision (RFO 16.104).",
+  "cite": "RFO Part 16 (16.104) · Vol. 2, Contract Types"
+ },
+ "IDIQ Ordering & Fair Opportunity": {
+  "qtype": "a fair-opportunity question — RFO 16.507: every holder's real chance, or a documented exception.",
+  "smes": "the vehicle's PCO and ordering guide, the Competition Advocate for over-SAT justifications, and the ombudsman lane for holder complaints.",
+  "rule": "RFO 16.507-2 makes fair opportunity the default on multiple-award vehicles; exceptions (16.507-6) ride a written Justification for an Exception to Fair Opportunity — the document the RFO names — up the same approval ladder as J&As, and consideration must be genuine — not rotation paperwork.",
+  "cite": "RFO 16.507-2 · Vol. 2, IDIQ"
+ },
+ "Options": {
+  "qtype": "an options question — RFO Part 17: the exercise gates, applied to today.",
+  "smes": "FM for funds, the COR and PM on performance and continuing need, and Legal if the notice window slipped.",
+  "rule": "Exercise only through the RFO 17.204-1(b) gates: timely written notice, funds available, an existing requirement, synopsized or exempt, no active SAM exclusion, acceptable performance, a fair and reasonable price in the Government's best interest, and part 6 compliance — and for DoD, R-DFARS 217.204-170 adds an active and accurate SAM record plus SPRS verification of the NIST SP 800-171 score and a current CMMC certificate. Miss the notice window and the unilateral right lapses into a bilateral negotiation.",
+  "cite": "RFO 17.204-1 · R-DFARS 217.204-170 · Vol. 2, Options"
+ },
+ "Interagency Acquisitions & the Economy Act": {
+  "qtype": "an interagency question — RFO Part 17 interagency acquisition and the Economy Act (31 U.S.C. 1535): direct vs. assisted, and whose rules travel with the money.",
+  "smes": "FM (the fiscal rules travel with the funds), Legal, and the servicing agency's contracting office.",
+  "rule": "Pick the lane deliberately: direct (our CO orders on their vehicle) vs. assisted (their CO buys for us under a signed agreement). The Economy Act applies only absent a more specific authority — MIPR plus D&F.",
+  "cite": "RFO Part 17 · 31 U.S.C. 1535 · Vol. 2, Interagency"
+ },
+ "Contract Finance & Fiscal Law": {
+  "qtype": "a fiscal-law question — Time, Purpose, Amount under the appropriations statutes, with RFO Part 32 carrying the financing side.",
+  "smes": "FM/Comptroller first and always, then Legal; the GAO Red Book and DoD FMR are the references.",
+  "rule": "Run T-P-A on every dollar: the right-year money for a bona fide need of that period, the appropriated purpose (31 U.S.C. 1301), within the available amount — Anti-Deficiency violations are the serious, reportable kind.",
+  "cite": "RFO Part 32 · GAO Red Book / DoD FMR · Vol. 2, Fiscal"
+ },
+ "Data Rights": {
+  "qtype": "a data-rights question — R-DFARS 227: the funding source drives the license.",
+  "smes": "Legal (IP counsel), the program engineers on the component map, and DCMA on assertion administration.",
+  "rule": "R-DFARS 227: who paid for development answers most of it — Government funds → unlimited, mixed → GPR, private → limited/restricted. The contractor proves the restriction — the assertion list comes from the provision at 252.227-7992, Identification and Assertion of Use, Release, or Disclosure Restrictions (DEVIATION 2026-O0036), inserted under R-DFARS 227.7103-6(g)(2); 252.227-7017 is the legacy pre-deviation provision. Honor the markings until a challenge resolves.",
+  "cite": "R-DFARS 227 · Vol. 2, Data Rights"
+ },
+ "Contract Modifications & Scope": {
+  "qtype": "a scope question — RFO Part 43: a modification, or a new procurement in disguise.",
+  "smes": "Legal, the PCO chain, and the original competition record itself.",
+  "rule": "The test is what the original competitors reasonably anticipated — judged against the original contract with all mods cumulative. In scope: modify under RFO Part 43. Beyond it: compete it or justify it under RFO Part 6.",
+  "cite": "RFO Part 43 · Vol. 2, Mods & Scope"
+ },
+ "Government Property": {
+  "qtype": "a Government-property question — RFO Part 45: the default rule and the four-part exception.",
+  "smes": "the property administrator, DCMA, and the PM — who owes the written justification.",
+  "rule": "RFO Part 45: contractors furnish property. GFP only when all four parts hold — best interest, benefit over burden, no substantial risk shift, not otherwise satisfiable — and furnishing it puts the Government's own performance on the schedule.",
+  "cite": "RFO Part 45 · Vol. 2, Property"
+ },
+ "Undefinitized Contract Actions": {
+  "qtype": "a UCA question — R-DFARS 217.74: undefinitized work and decaying negotiation leverage.",
+  "smes": "your pricing office, the clearance authority, and Legal; DCMA for actuals once performance starts.",
+  "rule": "R-DFARS 217.74 makes UCAs the exception: obligations capped at 50% of the not-to-exceed price, raised to no more than 75% only if the qualifying proposal arrives before that 50% point (217.7404-4(a)); definitization by the earlier of 180 days after the qualifying proposal or the date obligations pass 50% of the NTE (217.7404-3(a)); clearance at definitization — and neither poor planning nor administrative convenience ever justifies one.",
+  "cite": "R-DFARS 217.74 · Vol. 2, UCAs"
+ },
+ "Clearance — Independent Review & Approval": {
+  "qtype": "a clearance question — DAF clearance procedures: independent review before the Government commits.",
+  "smes": "the clearance authority itself, your chief, and Legal on any compliance flags.",
+  "rule": "Two gates catching two failures: business clearance blesses the strategy before release; contract clearance blesses the negotiated result before award. The selector never approves the selection.",
+  "cite": "DAF clearance procedures · Vol. 2, Clearance"
+ },
+ "Protests": {
+  "qtype": "a protest question — RFO Part 33 and CICA: venue, stay math, and the record you built months earlier.",
+  "smes": "Legal drives; GAO or COFC counsel through Legal; the HCA owns any override decision.",
+  "rule": "Know the stay machinery cold — RFO 33.105-3(b)(1) is the government-wide 10-day/5-day rule, but for DoD R-DFARS 233.105-370 substitutes a four-part whichever-is-later test in its place, and there are three venues with different powers — and remember the real defense was built earlier: criteria stated, followed, and documented.",
+  "cite": "RFO 33.104-1 · RFO 33.105-3 · R-DFARS 233.105-370 · CICA · Vol. 2, Protests"
+ },
+ "REAs & Claims": {
+  "qtype": "a disputes question — the Contract Disputes Act and RFO Part 33: REA lane or CDA claim, and substance beats the label.",
+  "smes": "Legal early, FM on funding the outcome, and the COR/PM for the facts record.",
+  "rule": "Classify by substance under the CDA: a sum certain, certified, with a decision demanded is a claim — interest and decision deadlines already running. The machinery doesn't care what the cover letter says.",
+  "cite": "Contract Disputes Act · RFO Part 33 · Vol. 2, REAs & Claims"
+ },
+ "Terminations": {
+  "qtype": "a termination question — RFO Part 49 (or, for commercial products and services, RFO 12.304): fault drives the remedy.",
+  "smes": "Legal (mandatory), your termination contracting officer channel, and DCMA on settlement.",
+  "rule": "Who's at fault decides what's owed under RFO Part 49: T4C makes the contractor whole for work done, no anticipatory profit; T4D demands the full runway — cure, show cause, excusability — because a wrongful default converts to a T4C. Commercial buys run on RFO 12.304 and the termination paragraphs of 52.212-4, not part 49 procedures — and a cure notice is still required unless the reason is late delivery (12.304(b)(1)).",
+  "cite": "RFO Part 49 (commercial: RFO 12.304) · Vol. 2, Terminations"
+ },
+ "R&D Contracting — BAAs, SBIR & OTs": {
+  "qtype": "an R&D-authorities question — RFO Part 35, the SBIR statute, and 10 U.S.C. 4022 OTs: the right instrument for genuine uncertainty.",
+  "smes": "your agreements officer channel, Legal, and the S&T program office.",
+  "rule": "Pick the authority for a reason: RFO Part 35 BAAs compete proposals against a published standard, SBIR Phase III carries statutory sole-source off competed early phases, and 10 U.S.C. 4022 OTs trade the mature protections framework for agility — 'skipping the rules' is never the reason.",
+  "cite": "RFO Part 35 · SBIR statute · 10 U.S.C. 4022 · Vol. 2, R&D"
+ },
+ "Construction & Service Contracting": {
+  "qtype": "a construction/services question — RFO Parts 36 and 37, with RFO Part 28 bonds: specialized statutory machinery.",
+  "smes": "Legal, the labor advisor on wage determinations, and the installation civil engineers.",
+  "rule": "Construction and services run on their own rails: RFO Part 28 bonds over $150K, written notice before disturbing a differing site condition (RFO Part 36), qualifications-based A&E selection, and no personal-services drift (RFO Part 37).",
+  "cite": "RFO Parts 36/37 · Part 28 bonds · Vol. 2, Construction"
+ },
+ "Openers & Perspective": {
+  "qtype": "a perspective question — the panel is testing how you think as a business leader, not what you can recite.",
+  "smes": "Nobody to phone — this one is yours. Anchor on your own experience, your office, and what you actually control.",
+  "rule": "Answer in your own voice with a definition, a concrete plan, and one example — and show the judgment to know where the boring answer is the right one.",
+  "cite": "Your own experience — verify anything you cite at acquisition.gov/far-overhaul"
+ },
+ "_generic": {
+  "qtype": "a frameworks question — name it, then walk it.",
+  "smes": "your CO/chief, Legal (JA), and FM — the standing phone-a-friends.",
+  "rule": "State the default rule first, then the exception you'd need, then the facts that earn it — in that order, out loud.",
+  "cite": "Verify at acquisition.gov/far-overhaul"
+ }
 }

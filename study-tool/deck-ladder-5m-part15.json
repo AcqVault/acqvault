@@ -1,0 +1,166 @@
+{
+ "items": [
+  {
+   "topic": "Contracting by Negotiation — Source Selection",
+   "q": "You are running a $5 million competitive negotiated buy. Is the Part 15 source-selection framework really for you, or just for big programs?",
+   "a": "It is for you. Part 15 governs every competitive negotiated acquisition above the simplified acquisition threshold — nothing about it switches off below a big-program dollar line. The goal is the same at $5 million as at $500 million: select the proposal that represents the best value to the Government, using an approach (tradeoff, LPTA, or highest-technically-rated-fair-and-reasonable-price) matched to the buy. The same tools — competitive range, negotiations, a documented source-selection decision, and debriefings — are yours to run at smaller scale.",
+   "x": "The trap is treating source selection as a 'major systems' regime. A $5M CO is a source-selection authority running the same process; the framework scales down, it does not disappear.",
+   "cite": {
+    "src": "rfo",
+    "sec": "15.103",
+    "quote": "The goal of source selection is to select the proposal that represents the best value to the Government."
+   },
+   "dod": "n/a",
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Contracting by Negotiation — Source Selection",
+   "q": "On your $5 million source selection you will hold negotiations. What must you establish first, and may you cap how many proposals go into it?",
+   "a": "You must establish a competitive range — the group of evaluated proposals the contracting officer determines are best suited for further negotiation — whenever negotiations will occur after evaluating competitive proposals. You may cap it: when the number of most highly rated proposals exceeds the number at which an efficient competition can be run, you may limit the range to the greatest number that will permit an efficient competition among the most highly evaluated proposals. Unsuccessful offerors get written notice.",
+   "x": "Two ideas a $5M board tests: the competitive range is a negotiation gate (no negotiations, no required range), and 'efficiency narrowing' is a real, authorized tool — not favoritism — but it keeps the MOST highly rated, never the cheapest.",
+   "cite": {
+    "src": "rfo",
+    "sec": "15.204-1",
+    "quote": "A competitive range is the group of evaluated proposals that the contracting officer determines are best suited for further negotiation. Contracting officers must establish a competitive range if negotiations will occur after evaluating competitive proposals."
+   },
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Contracting by Negotiation — Source Selection",
+   "q": "You opened negotiations on your $5 million buy with the front-runner. Must you negotiate with the others still in the competitive range?",
+   "a": "Yes. You must negotiate with each responsible offeror within the competitive range, and at a minimum indicate to — or negotiate with — each offeror any deficiencies or significant weaknesses in its proposal. You may then negotiate further with one offeror without owing the same extra rounds to the others, and you need not negotiate every area a proposal could be improved. Negotiating with only the apparent winner is the classic sustained-protest error.",
+   "x": "'I only need to talk to the one I'm going to pick' is wrong. Once you enter negotiations, every offeror in the range gets the minimum — its deficiencies and significant weaknesses. Further, deeper rounds with one do not obligate you to the rest.",
+   "cite": {
+    "src": "rfo",
+    "sec": "15.204-2",
+    "quote": "Negotiate with each responsible offeror within the competitive range; and"
+   },
+   "dod": "n/a",
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Contracting by Negotiation — Source Selection",
+   "q": "A $5 million offeror made a clerical slip in an otherwise strong proposal. Can a clarification fix it without opening negotiations with everyone?",
+   "a": "A clarification can resolve a minor or clerical error or clarify aspects of a proposal, and you may hold one with a single offeror without holding one with the others. But a clarification is not a mini-negotiation: clarifications do not permit offerors to revise their proposal and cannot be used to cure proposal deficiencies or material omissions or materially alter the technical or cost elements of the proposal. If fixing it would change price or a material element, that is negotiations — and negotiations require a competitive range and the minimum exchanges with everyone in it.",
+   "x": "The line is 'revise vs. clarify.' A clerical typo — clarification. Curing a deficiency or moving price — that is negotiations, and you cannot do it with one offeror and award.",
+   "cite": {
+    "src": "rfo",
+    "sec": "15.202",
+    "quote": "Clarifications do not permit offerors to revise their proposal and cannot be used to cure proposal deficiencies or material omissions or materially alter the technical or cost elements of the proposal."
+   },
+   "dod": "n/a",
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Contracting by Negotiation — Source Selection",
+   "q": "You just made your $5 million award. An unsuccessful offeror wants to know why. What is the clock on a postaward debriefing?",
+   "a": "An unsuccessful (or the successful) offeror may request a postaward debriefing by submitting a written request to the contracting officer within 3 days after receiving the award notice; to the maximum extent practicable the debriefing should occur within 5 days of that request. The debriefing furnishes the basis for the selection decision and award, but must never become a point-by-point comparison with other proposals or reveal another offeror's protected data. At $5 million the debriefing is request-driven — but note the DoD deviation: R-DFARS 215.301-170 makes a debriefing mandatory on request for DoD contract awards valued at $15 million or more, so the mandatory trigger sits above this rung while the 3-day/5-day clock governs your $5 million award. Getting the timing right matters because the debriefing date drives the protest-filing clock.",
+   "x": "Two numbers a $5M CO must own: 3 days to request, target 5 days to hold. The debriefing is not a courtesy — a mishandled one both invites a protest and can extend the window to file it. (DoD makes it mandatory at $15M+; below that it is request-driven.)",
+   "cite": {
+    "src": "rfo",
+    "sec": "15.301-1",
+    "quote": "Offerors may request a postaward debriefing by submitting a written request for the debriefing to the contracting officer within 3 days after receipt of the award notice"
+   },
+   "dod": {
+    "src": "r-dfars",
+    "sec": "215.301-170",
+    "quote": "when requested by a successful or unsuccessful offeror, a written or oral debriefing is required for contract awards valued at $15 million or more"
+   },
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+   "q": "At $5 million you still owe a fair-and-reasonable determination. What is price analysis, and is it enough on its own?",
+   "a": "Price analysis is the process of examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit. It is the front-line technique for establishing a fair and reasonable price at $5 million: the RFO's preferred methods are comparing the proposed prices received in response to the RFP and comparing them to historical prices paid. Note the DoD refinement: under R-DFARS 215.404-170, in the absence of adequate price competition, pricing based on market prices is the preferred method, and you must not base price reasonableness solely on historical prices paid by the Government. When competition or those comparisons establish reasonableness, price analysis alone can carry the determination; you reach for cost analysis only when price analysis cannot get you there.",
+   "x": "'Fair and reasonable' is not optional below the big-program line. Price analysis — no digging into cost elements or profit — is your primary tool. For DoD without adequate competition, market prices are the preferred basis, and Government price history alone is not enough.",
+   "cite": {
+    "src": "rfo",
+    "sec": "15.404-1",
+    "quote": "Price analysis is the process of examining and evaluating a proposed price without evaluating its separate cost elements and proposed profit."
+   },
+   "dod": {
+    "src": "r-dfars",
+    "sec": "215.404-170",
+    "quote": "In the absence of adequate price competition in response to the solicitation, pricing based on market prices is the preferred method to establish a fair and reasonable price"
+   },
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Certified Cost or Pricing Data & Proposal Analysis",
+   "q": "Your $5 million DoD negotiated action is not commercial and lacks adequate price competition. Must you obtain certified cost or pricing data?",
+   "a": "Watch the deviation. Under the RFO, certified cost or pricing data are required at or above $2.5 million (for prime contracts awarded on or after July 1, 2018) unless an exception applies — which would sweep in a $5 million action. But for DoD, R-DFARS 215.403-3 raises the threshold: in lieu of FAR 15.403-3(a), obtain certified cost or pricing data when a prime contract is expected to exceed $10 million and is awarded after June 30, 2026. So a $5 million DoD award today is below the DoD threshold — no certified data required — though you must still obtain data other than certified cost or pricing data to the extent necessary to find the price fair and reasonable.",
+   "x": "The bait is the civilian $2.5M line. For a DoD prime awarded after June 30, 2026, the number is $10 million — a $5M buy is under it. Below the threshold is not 'no analysis'; you still get data other than certified data to prove fair and reasonable.",
+   "cite": {
+    "src": "rfo",
+    "sec": "15.403-3",
+    "quote": "contracting officers must obtain certified cost or pricing data when an action meets or exceeds the threshold of $2.5 million (for prime contracts awarded on or after July 1, 2018).",
+    "amount": "$2.5 million"
+   },
+   "dod": {
+    "src": "r-dfars",
+    "sec": "215.403-3",
+    "quote": "In lieu of the requirements of FAR 15.403-3(a), obtain certified cost or pricing data when a prime contract is expected to exceed $10 million and is awarded after June 30, 2026, unless an exception at FAR 15.403-2 or DFARS 215.403-270 applies."
+   },
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Organizational Conflict of Interest",
+   "q": "You spot a significant potential OCI on your $5 million acquisition. What must you do before the solicitation goes out?",
+   "a": "OCI has no dollar floor — you must identify and evaluate it as early as possible and avoid, neutralize, or mitigate it before award. When you decide a particular acquisition involves a significant potential OCI, before issuing the solicitation you must submit for approval to the chief of the contracting office (unless the agency designates a higher official) a written analysis with a recommended course of action, a draft solicitation provision, and, if appropriate, a proposed clause. You award to the apparent successful offeror unless a conflict that cannot be avoided or mitigated exists — and awarding over an unresolved OCI requires a waiver under 9.503.",
+   "x": "The move a $5M board wants to hear is 'escalate before the solicitation.' A significant OCI is not the CO's to quietly resolve — it goes up for written approval first, with a recommended course of action.",
+   "cite": {
+    "src": "rfo",
+    "sec": "9.506",
+    "quote": "the contracting officer must, before issuing the solicitation, submit for approval to the chief of the contracting office"
+   },
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Procurement Integrity",
+   "q": "Your $5 million source selection is underway. What is the core procurement-integrity prohibition on the information in front of you?",
+   "a": "During a source selection over the simplified acquisition threshold, a person must not knowingly obtain contractor bid or proposal information or source selection information before the agency awards the contract to which it relates — and, in parallel, must not knowingly disclose it. The prohibition binds present and former officials and anyone acting for or advising the Government who had access by virtue of that role. It applies to your $5 million buy exactly as it would to a major program; the Procurement Integrity Act keys to source selections over the SAT, not to a large-dollar threshold.",
+   "x": "Procurement integrity is not a big-program rule. The disclose/obtain prohibition on bid-proposal and source-selection information covers your $5M evaluation, and it reaches advisors and former officials, not just the CO.",
+   "cite": {
+    "src": "rfo",
+    "sec": "3.104-3",
+    "quote": "A person must not knowingly obtain contractor bid or proposal information or source selection information before a Federal agency awards the procurement contract to which the information relates."
+   },
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Protests",
+   "q": "An offeror files an agency-level protest before you award your $5 million contract. May you still make award?",
+   "a": "Generally no. On a protest before award, a contract may not be awarded until the agency resolves the protest, unless a written justification is made for urgent and compelling reasons, or award is determined in writing to be in the best interest of the Government. Consult your designated legal advisor as soon as you learn of any protest. (This is the contract-level agency protest rule and applies at $5 million; the separate GAO stay and the DoD $25 million task-/delivery-order protest bar are higher-rung mechanics.)",
+   "x": "A $5M CO faces protests like anyone else. Preaward, the default is 'hold award until resolved,' and overriding that default takes a written urgent-and-compelling or best-interest justification — not a verbal call.",
+   "cite": {
+    "src": "rfo",
+    "sec": "33.104-2",
+    "quote": "A contract may not be awarded until the agency resolves the protest, unless a written justification is made for urgent and compelling reasons, or award is determined in writing to be in the best interest of the Government."
+   },
+   "rung": "5m",
+   "type": "recall"
+  },
+  {
+   "topic": "Contractor Qualifications — Responsibility",
+   "q": "Your apparent awardee on a $5 million buy is a small business you cannot find responsible. Can you simply move to the next offeror?",
+   "a": "No. You may not award before making an affirmative determination of contractor responsibility, and without a clear indication of responsibility you must make a determination of nonresponsibility. But when the prospective contractor is a small business concern, you cannot just skip to the next offeror — you must refer the matter to the SBA under the Certificates of Competency and Determinations of Responsibility procedures in part 19, and an SBA Certificate of Competency is binding. Responsibility is required on every award, so this applies squarely at $5 million.",
+   "x": "The trap is treating a small-business nonresponsibility like any other pass-over. A negative responsibility finding on a small business triggers a mandatory SBA CoC referral — the CO does not have the last word.",
+   "cite": {
+    "src": "rfo",
+    "sec": "9.103",
+    "quote": "Do not award a contract award before making an affirmative determination of contractor responsibility. Without a clear indication of responsibility, make a determination of nonresponsibility."
+   },
+   "rung": "5m",
+   "type": "recall"
+  }
+ ]
+}
