@@ -34,7 +34,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=138">
+<link rel="stylesheet" href="/assets/app.css?v=139">
 </head>
 <body>
 
@@ -361,7 +361,7 @@
         </div>
         <p class="market-query-hint">Keyword matches the notice <strong>title</strong> only. Add a NAICS or PSC code below for a full market scan across awards and closed notices.</p>
         <div class="market-filter-grid market-filter-grid-wide">
-          <label class="market-field"><span class="market-label">NAICS</span><input type="text" value="" placeholder="optional" aria-label="NAICS code" id="market-naics-input" /></label>
+          <label class="market-field"><span class="market-label">NAICS</span><input type="text" inputmode="numeric" value="" placeholder="optional" aria-label="NAICS code" id="market-naics-input" /></label>
           <label class="market-field"><span class="market-label">PSC</span><input type="text" value="" placeholder="optional" aria-label="PSC code" id="market-psc-input" /></label>
           <label class="market-field"><span class="market-label">Agency</span><select aria-label="Agency" id="market-agency-input"><option value="">All agencies</option><option>Department of the Air Force</option><option>Department of the Army</option><option>Department of the Navy</option><option>Defense Logistics Agency</option><option>General Services Administration</option><option>Department of Homeland Security</option><option>Department of Veterans Affairs</option><option>National Aeronautics and Space Administration</option><option>Department of Energy</option><option>Department of Health and Human Services</option></select></label>
           <label class="market-field"><span class="market-label">Window</span><select aria-label="Search window" id="market-window-select"><option value="90">Last 90 days</option><option value="365" selected>Last 12 months</option><option value="730">Last 2 years</option><option value="1095">Last 3 years</option></select></label>
@@ -584,7 +584,7 @@
       <a href="/?home=1" class="reader-brand" aria-label="AcqVault — home"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28" role="img" aria-hidden="true" style="display:block;flex-shrink:0;"><rect x="3" y="3" width="94" height="94" rx="20" fill="#0f2540"/><rect x="11" y="11" width="78" height="78" rx="14" fill="none" stroke="#87651c" stroke-width="2"/><circle cx="50" cy="50" r="24" fill="none" stroke="#e4c477" stroke-width="3.5"/><g stroke="#e4c477" stroke-width="4" stroke-linecap="round"><line x1="50" y1="29" x2="50" y2="39"/><line x1="50" y1="71" x2="50" y2="61"/><line x1="29" y1="50" x2="39" y2="50"/><line x1="71" y1="50" x2="61" y2="50"/></g><circle cx="50" cy="50" r="6" fill="#e4c477"/></svg><span style="font-family:Inter,system-ui,sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.04em;color:var(--ink2);">AcqVault</span></a>
       <div class="reader-find" role="search">
         <span class="reader-find-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
-        <input type="text" class="reader-find-input" id="reader-search-input" placeholder="Search within this document…" autocomplete="off" />
+        <input type="text" class="reader-find-input" id="reader-search-input" aria-label="Search within this document" placeholder="Search within this document…" autocomplete="off" />
         <span class="reader-find-count" id="reader-search-count"></span>
         <button type="button" class="reader-find-clear" id="reader-search-clear" aria-label="Clear">✕</button>
       </div>
