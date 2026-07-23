@@ -619,6 +619,10 @@ for _p in _board_paths: _board_items.extend(load(_p)['items'])
 deck['ladder_boards'] = ladder_board_gate(_board_items)
 
 SRC_WORD = {'RFO': 'rfo', 'R-DFARS': 'r-dfars'}
+# DoD FMR chapters are deep-linkable (the part page renders id="fmr-vol-V-ch-C").
+# Fiscal-law cards (bona fide need, purpose statute, Anti-Deficiency Act) live in the FMR,
+# not the RFO — so a "DoD FMR Vol V Ch C" cite resolves to that chapter, verified to exist.
+FMR_IDS = {d['id'] for d in docs if d.get('source') == 'fmr'}
 def cite_links(cite):
     """Parse a cite string ('RFO 6.103/6.104 · R-DFARS 217.74 · Vol. 2, Competition') into
     resolved links. Non-rulebook tokens (guides, statutes, forms) resolve to nothing."""
@@ -628,7 +632,15 @@ def cite_links(cite):
     for tok in re.split(r'\s*[;·]\s*', cite or ''):
         m = re.match(r'^(RFO|R-DFARS)\b\s*(.*)$', tok.strip())
         if not m:
-            if tok.strip() == 'DoD FMR': push({'t': 'DoD FMR', 'u': '/fmr'})
+            t = tok.strip()
+            mf = re.match(r'^DoD FMR\s+Vol\s+(\d+)\s+Ch\s+(\d+)$', t)
+            if mf:
+                did = 'fmr-vol-%s-ch-%s' % (mf.group(1), mf.group(2))
+                if did in FMR_IDS:
+                    push({'t': 'DoD FMR Vol %s Ch %s' % (mf.group(1), mf.group(2)),
+                          'u': '/fmr/part-%s#%s' % (mf.group(1), did)})
+            elif t == 'DoD FMR':
+                push({'t': 'DoD FMR', 'u': '/fmr'})
             continue
         src, body = SRC_WORD[m.group(1)], m.group(2)
         if not body:
