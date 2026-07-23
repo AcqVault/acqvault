@@ -532,6 +532,16 @@
     S.games.combo = S.games.combo || { streak: { last: 0, run: 0 }, hist: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, X: 0 }, day: 0, rows: [], done: false, win: false };
     S.games.governs = S.games.governs || { best: 0, bestCombo: 0 };
     S.games.log = S.games.log || {}; // dayNum → true when any game was completed that day
+    // Normalize today's Combination round in one place (both the hub card and the game view
+    // read state through here): roll over on a new day, AND reset when the word for today
+    // changed — so a stale round played against the old (longer) word can't render against
+    // the new five-letter answer. Guarded to no-op until the deck/pool is available.
+    if (deck && deck.games && deck.games.combination && deck.games.combination.length) {
+      var _cd = comboToday(), _e = comboWordFor(_cd), _cb = S.games.combo;
+      if (_e && _e.w && (_cb.day !== _cd || _cb.wk !== comboKey(_e.w))) {
+        _cb.day = _cd; _cb.wk = comboKey(_e.w); _cb.rows = []; _cb.done = false; _cb.win = false; save();
+      }
+    }
     return S.games;
   }
   // Accept lists, packed as fixed-width strings and unpacked per length on first use.
@@ -588,10 +598,23 @@
   }
   var COMBO_EPOCH = comboToday(Date.UTC(2026, 6, 12, 12)); // No. 1 = 12 Jul 2026, Central
   function comboNo(day) { return day - COMBO_EPOCH + 1; }
+  // FIVE LETTERS ONLY. The 6-8 letter words played as too hard / arbitrary (owner call,
+  // 2026-07-23), so the pool is filtered to length 5. The full pool stays in the deck data
+  // and the 6-8 accept lists remain shipped, so the longer ladder can be restored by
+  // dropping this filter — no data regen needed.
+  var _combo5 = null;
+  function comboPool() {
+    if (!_combo5) _combo5 = (deck.games.combination || []).filter(function (e) { return e.w && e.w.length === 5; });
+    return _combo5;
+  }
   function comboWordFor(day) {
-    var pool = deck.games.combination;
+    var pool = comboPool();
+    if (!pool.length) return { w: '' };
     return pool[((day - COMBO_EPOCH) % pool.length + pool.length) % pool.length];
   }
+  // Non-reversible key for the day's answer, so a changed word invalidates a stale saved
+  // round (length/word mismatch) without ever storing the answer in plaintext.
+  function comboKey(w) { var h = 0, i; for (i = 0; i < w.length; i++) h = (h * 31 + w.charCodeAt(i)) | 0; return h; }
   // day index counts from the 5am boundary, so add it back to land on the Central calendar date
   function isWeekend(day) {
     var dow = new Date(day * 86400000 + COMBO_RESET_H * 3600000).getUTCDay();
@@ -1262,7 +1285,7 @@
     function helpHtml(first) {
       return '<div class="st-cb-help">' +
         '<div class="st-cb-help-head">How to crack it</div>' +
-        '<p>Guess the day&rsquo;s <b>acquisition term</b> — five to eight letters, shown by the row — in six tries. Type on your keyboard or tap the keys below. <b>Enter</b> submits a row; the <b>⌫ key removes a letter</b> (tapping the row does too).</p>' +
+        '<p>Guess the day&rsquo;s <b>acquisition term</b> — a five-letter word — in six tries. Type on your keyboard or tap the keys below. <b>Enter</b> submits a row; the <b>⌫ key removes a letter</b> (tapping the row does too).</p>' +
         '<p>After each guess, the tiles tell you how close you are:</p>' +
         '<div class="st-cb-help-row">' + exTile('S', 'c') + exTile('C', '') + exTile('O', '') + exTile('P', '') + exTile('E', '') + '<span><b>S</b> is in the word, in the right spot</span></div>' +
         '<div class="st-cb-help-row">' + exTile('A', '') + exTile('U', 'p') + exTile('D', '') + exTile('I', '') + exTile('T', '') + '<span><b>U</b> is in the word, in a different spot</span></div>' +
