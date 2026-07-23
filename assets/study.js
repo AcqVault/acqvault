@@ -716,15 +716,16 @@
   function ladderCiteHtml(c) { // the point of the feature: the regulation's own words, in the card body
     if (!c.cite || !c.cite.quote) return '';
     var l = c.cite.link;
-    var out = '<div class="st-lad-quote">“' + esc(c.cite.quote) + '”' +
-      (l ? ' — <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+    var out = '<figure class="st-lad-q">' +
+      (l ? '<figcaption class="st-lad-q-bar"><a class="st-lad-q-src" href="' + esc(l.u) + '">' + esc(l.t) + '</a></figcaption>' : '') +
+      '<blockquote class="st-lad-q-body">“' + esc(c.cite.quote) + '”</blockquote></figure>';
     // Where DoD deviates, the deviation is the operative rule for this audience — so it
     // gets the same treatment as the baseline, not a footnote.
     var d = c.dod;
     if (d && d.quote && d.link) {
-      out += '<div class="st-lad-quote st-lad-dod"><span class="st-lad-dod-tag">DoD</span> “' +
-        esc(d.quote) + '” — <a class="st-lad-quote-link" href="' + esc(d.link.u) + '">' +
-        esc(d.link.t) + '</a></div>';
+      out += '<figure class="st-lad-q st-lad-q-dod"><figcaption class="st-lad-q-bar"><span class="st-lad-q-dodtag">DoD deviation</span><a class="st-lad-q-src" href="' + esc(d.link.u) + '">' +
+        esc(d.link.t) + '</a></figcaption><blockquote class="st-lad-q-body">“' +
+        esc(d.quote) + '”</blockquote></figure>';
     }
     return out;
   }
