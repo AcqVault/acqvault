@@ -34,7 +34,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=137">
+<link rel="stylesheet" href="/assets/app.css?v=138">
 </head>
 <body>
 
@@ -359,6 +359,7 @@
           <input type="text" placeholder="Search a requirement (e.g. base operations support)" aria-label="Market research query" id="market-query-input" />
           <button class="market-btn" type="button" id="market-snapshot-btn">Search market</button>
         </div>
+        <p class="market-query-hint">Keyword matches the notice <strong>title</strong> only. Add a NAICS or PSC code below for a full market scan across awards and closed notices.</p>
         <div class="market-filter-grid market-filter-grid-wide">
           <label class="market-field"><span class="market-label">NAICS</span><input type="text" value="" placeholder="optional" aria-label="NAICS code" id="market-naics-input" /></label>
           <label class="market-field"><span class="market-label">PSC</span><input type="text" value="" placeholder="optional" aria-label="PSC code" id="market-psc-input" /></label>
@@ -650,7 +651,7 @@
 
 <script defer src="/assets/app.js?v=93"></script>
 <script defer src="/assets/saved.js?v=9"></script>
-<script defer src="/assets/widgets.js?v=60"></script>
+<script defer src="/assets/widgets.js?v=61"></script>
 <script defer src="/assets/polish.js?v=4"></script>
 </body>
 </html>

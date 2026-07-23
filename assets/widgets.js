@@ -1050,6 +1050,41 @@
       { label: 'IT services · NAICS 541512', query: '', naics: '541512' },
       { label: 'Janitorial · NAICS 561720', query: '', naics: '561720' }
     ];
+    // High-confidence keyword → code nudges. SAM's keyword only matches notice TITLES,
+    // so a bare "iPad" misses most of the market. When a typed term maps to a code we're
+    // sure of, we offer a one-click scan by that code (adding it KEEPS the keyword, which
+    // then only ranks the pool — see the server's broaden mode). Only rock-solid codes
+    // live here; anything unmatched falls back to generic "add a NAICS/PSC" guidance.
+    const CODE_HINTS = [
+      { re: /\b(ipad|ipads|tablet|tablets|laptop|laptops|desktop|desktops|computer|computers|workstation|workstations|notebook)\b/i, naics: '334111', psc: '7021', label: 'Computers & tablets' },
+      { re: /\b(monitor|monitors|printer|printers|scanner|scanners|peripheral|peripherals)\b/i, naics: '334118', psc: '7025', label: 'Computer peripherals' },
+      { re: /\b(software|saas|licen[sc]e|licen[sc]es|licen[sc]ing)\b/i, naics: '513210', label: 'Software' },
+      { re: /\b(it services|help ?desk|network|networking|cyber|cybersecurity|information technology)\b/i, naics: '541512', label: 'IT services' },
+      { re: /\b(janitorial|custodial|cleaning)\b/i, naics: '561720', label: 'Janitorial' },
+      { re: /\b(guard|guards|security services)\b/i, naics: '561612', label: 'Security guards' },
+      { re: /\b(base operations|base operating|\bbos\b|facilities support)\b/i, naics: '561210', label: 'Base operations support' },
+      { re: /\b(grounds|landscaping|mowing|lawn)\b/i, naics: '561730', label: 'Grounds maintenance' },
+      { re: /\b(aircraft parts?|aircraft components?)\b/i, psc: '1560', label: 'Aircraft parts' },
+      { re: /\b(construction|renovation)\b/i, naics: '236220', label: 'Commercial construction' },
+      { re: /\b(motor vehicles?|trucks?|automobiles?|passenger vehicles?)\b/i, naics: '336110', label: 'Motor vehicles' }
+    ];
+    function codeHintFor(q) { const s = String(q || ''); return CODE_HINTS.find(h => h.re.test(s)) || null; }
+    // Chip buttons that add the code and re-run (data-suggest-* is wired in the list handler).
+    function suggestionChips(h) {
+      if (!h) return '';
+      const chips = [];
+      if (h.naics) chips.push(`<button type="button" class="market-example" data-suggest-naics="${escAttr(h.naics)}">NAICS ${esc(h.naics)} · ${esc(h.label)}</button>`);
+      if (h.psc) chips.push(`<button type="button" class="market-example" data-suggest-psc="${escAttr(h.psc)}">PSC ${esc(h.psc)} · ${esc(h.label)}</button>`);
+      return `<div class="market-examples">${chips.join('')}</div>`;
+    }
+    // The in-results note shown after a title-scoped (keyword, no code) search.
+    function titleNoteHTML(q) {
+      const h = codeHintFor(q);
+      const tail = h
+        ? ' Most awards and closed notices are titled differently. Scan the full market by code:'
+        : ' Add a NAICS or PSC code for a full scan across awards and closed notices.';
+      return `<div class="market-note"><span>Keyword matched notice <strong>titles</strong> only.${tail}</span>${suggestionChips(h)}</div>`;
+    }
 
     /* ── PIN-TO-BOARD ──────────────────────────────────────────────
        A persistent working set of opportunities in localStorage (no
@@ -1931,12 +1966,21 @@
         if (!matched) sub.textContent = 'No SAM.gov opportunities matched the current filters.';
         else sub.textContent = `${matched.toLocaleString()}${data.capped ? '+' : ''} matching ${matched === 1 ? 'opportunity' : 'opportunities'} in the selected window${opps.length < matched ? ` · showing the top ${opps.length}` : ''}.`;
       }
+      const q = (data.query || query?.value || '').trim();
       if (!opps.length) {
+        if (data.titleScoped) {
+          if (count) count.textContent = 'No matches';
+          list.innerHTML = `<div class="market-empty"><strong>No title matches for “${esc(q)}”.</strong>The keyword only searches notice titles, so most of this market won't show here. Scan by NAICS or PSC code instead:${suggestionChips(codeHintFor(q)) || examplesHTML()}</div>`;
+          return;
+        }
         renderEmptyState('No matches', 'Nothing came back for these filters. Try removing NAICS/PSC, widening the window, or keeping Notice type on All — or start from a common market:', { examples: true, count: 'No matches' });
         return;
       }
+      // Honest coverage note: title-scoped searches see only titles; a code scan sees all.
+      const note = data.titleScoped ? titleNoteHTML(q)
+        : (data.broadened ? '<div class="market-note market-note-soft">Showing the full market for this code, with keyword-relevant notices ranked first, including awards and closed notices.</div>' : '');
       lastOppByKey = {};
-      list.innerHTML = opps.map(item => {
+      list.innerHTML = note + opps.map(item => {
         const key = oppKey(item); lastOppByKey[key] = item;
         const pinned = isPinned(key);
         const meta = [item.solicitationNumber, item.naicsCode ? `NAICS ${item.naicsCode}` : '', item.classificationCode ? `PSC ${item.classificationCode}` : '', item.setAside].filter(Boolean);
@@ -1983,6 +2027,16 @@
         if (query) query.value = spec.query || '';
         const n = $('#market-naics-input'); if (n) n.value = spec.naics || '';
         const p = $('#market-psc-input'); if (p) p.value = spec.psc || '';
+        runMarketSearch();
+        return;
+      }
+      const sg = event.target.closest('[data-suggest-naics],[data-suggest-psc]');
+      if (sg) {
+        // Keep whatever keyword is typed; adding the code flips the server into broaden
+        // mode (keyword ranks the code pool instead of hard-filtering by title).
+        event.preventDefault();
+        if (sg.dataset.suggestNaics) { const n = $('#market-naics-input'); if (n) n.value = sg.dataset.suggestNaics; }
+        if (sg.dataset.suggestPsc) { const p = $('#market-psc-input'); if (p) p.value = sg.dataset.suggestPsc; }
         runMarketSearch();
         return;
       }

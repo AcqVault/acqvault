@@ -217,6 +217,16 @@ module.exports = async function handler(req, res) {
     };
 
     const types = noticeTypes.length && !noticeTypes.includes('all') ? noticeTypes : [''];
+    // When the user scopes with a NAICS/PSC code, the CODE is the market-research
+    // filter — so we do NOT also pin SAM's title= to the keyword. SAM's keyword only
+    // matches the notice TITLE, so "iPad" AND ncode=334111 is a title-AND-code search
+    // that buries every award/closed notice whose title doesn't literally say "iPad".
+    // Instead we pull the whole code pool and let the keyword RANK it (scoreOpportunity).
+    // Keyword-only searches (no code) stay title-scoped — there's nothing to bound a
+    // code-less broad pull without amplifying SAM requests past the quota.
+    const hasCode = !!(base.naics || base.psc);
+    const broaden = hasCode && queryTerms(base.query).length > 0;
+    const fetchQuery = broaden ? '' : base.query;
     const makeRequests = (query, limitOverride = FETCH_PAGE) => {
       const requests = [];
       for (const range of ranges) {
@@ -240,10 +250,13 @@ module.exports = async function handler(req, res) {
         .sort((a, b) => b._score - a._score || String(b.postedDate || '').localeCompare(String(a.postedDate || '')));
     };
 
-    let responses = await Promise.all(makeRequests(base.query));
+    let responses = await Promise.all(makeRequests(fetchQuery));
     let matched = mergeResponses(responses);
-    if (queryTerms(base.query).length) matched = matched.filter(item => matchesAllTerms(item, queryTerms(base.query)));
-    if (!matched.length && queryTerms(base.query).length > 1) {
+    // Title mode: hard-filter to keyword matches. Broaden mode: the code defines the
+    // set and the keyword only re-orders it, so every in-scope notice stays visible
+    // with the keyword-relevant ones on top.
+    if (!broaden && queryTerms(base.query).length) matched = matched.filter(item => matchesAllTerms(item, queryTerms(base.query)));
+    if (!broaden && !matched.length && queryTerms(base.query).length > 1) {
       // Bounded per-term fallback: at most 3 terms against the most-recent range
       // only, to cap upstream SAM.gov request amplification (quota protection).
       const terms = queryTerms(base.query).slice(0, 3);
@@ -268,6 +281,10 @@ module.exports = async function handler(req, res) {
       capped,
       opportunities,
       query: base.query,
+      // titleScoped: the keyword was sent to SAM's title-only filter (keyword, no code).
+      // broadened: a NAICS/PSC pulled the full code pool and the keyword only ranked it.
+      titleScoped: !broaden && !!base.query,
+      broadened: broaden,
       postedFrom: ranges[ranges.length - 1]?.postedFrom,
       postedTo: ranges[0]?.postedTo
     });
