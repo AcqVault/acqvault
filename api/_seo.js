@@ -8,7 +8,7 @@ const SITE = 'https://www.acqvault.com';
 
 // /assets/* is served immutable for 30 days, so a changed part-nav.js MUST come
 // with a bumped ?v or every client that already holds it keeps the old file.
-const PART_NAV_V = 1;
+const PART_NAV_V = 2;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1016,6 +1016,9 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .ptoc-list a:hover{background:rgba(135,101,28,.09);color:var(--brass-ink)}
 .pn-skip{position:absolute;left:-9999px;top:0;z-index:100;padding:10px 16px;background:#0f2540;color:#fff;font-weight:600;border-radius:0 0 8px 0}
 .pn-skip:focus{left:0}
+.part-main{min-width:0}
+.ptoc-list a.ptoc-active{background:rgba(135,101,28,.10);color:var(--brass-ink);font-weight:600;box-shadow:inset 2px 0 0 var(--brass)}
+@media(min-width:1000px){.part-cols{display:grid;grid-template-columns:minmax(0,1fr) 224px;gap:44px;align-items:start}.part-main{grid-column:1;grid-row:1;min-width:0}.ptoc{grid-column:2;grid-row:1;position:sticky;top:16px;margin:0;max-height:calc(100vh - 32px);display:flex;flex-direction:column}.ptoc .ptoc-list{max-height:none;overflow-y:auto}}
 .pn-search{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:9px;margin:0 0 16px;padding:0 8px 0 13px;min-height:48px;border:1.5px solid rgba(135,101,28,.2);border-radius:12px;background:#fff;box-shadow:0 6px 20px rgba(15,37,64,.07)}
 .pn-search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(135,101,28,.16)}
 /* Visually hidden, not absent: the input needs a real label, not a placeholder. */
@@ -1147,10 +1150,9 @@ ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
 <p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${partPairBanner(source, part, pairIdx)}
 ${partSrc}
-${toc}
-${sections}`;
+<div class="part-cols">${toc}<div class="part-main">${sections}</div></div>`;
 
-  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png`, partNav: true });
+  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png`, partNav: true, wide: docs.length > 1 });
 }
 
 function renderHubPage(source) {

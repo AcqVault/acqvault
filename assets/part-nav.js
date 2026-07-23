@@ -227,4 +227,36 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   applyTopState();
+
+  // ── On-this-page: highlight the section you're reading in the Contents ──
+  // On wide screens the Contents is a sticky right rail; syncing the active
+  // item turns it into a live map of the (60,000-137,000px) document.
+  if (toc && 'IntersectionObserver' in window) {
+    var tocList = toc.querySelector('.ptoc-list');
+    var tocLinks = Array.prototype.slice.call(toc.querySelectorAll('.ptoc-list a'));
+    var linkFor = {};
+    tocLinks.forEach(function (a) {
+      var h = a.getAttribute('href') || '';
+      if (h.charAt(0) === '#') linkFor[h.slice(1)] = a;
+    });
+    var activeId = null;
+    function setActive(id) {
+      if (id === activeId || !linkFor[id]) return;
+      activeId = id;
+      tocLinks.forEach(function (a) { a.classList.remove('ptoc-active'); a.removeAttribute('aria-current'); });
+      var a = linkFor[id];
+      a.classList.add('ptoc-active');
+      a.setAttribute('aria-current', 'true');
+      // keep the active item visible within the rail WITHOUT scrolling the page
+      if (tocList && tocList.scrollHeight > tocList.clientHeight + 4) {
+        var lr = tocList.getBoundingClientRect(), ar = a.getBoundingClientRect();
+        if (ar.top < lr.top) tocList.scrollTop += ar.top - lr.top - 8;
+        else if (ar.bottom > lr.bottom) tocList.scrollTop += ar.bottom - lr.bottom + 8;
+      }
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting && e.target.id) setActive(e.target.id); });
+    }, { rootMargin: '-72px 0px -70% 0px', threshold: 0 });
+    sections.forEach(function (s) { if (s.id) io.observe(s); });
+  }
 })();
