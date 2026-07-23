@@ -1688,8 +1688,8 @@ function renderStudyPage() {
 .st-plate-meta{display:block;margin-top:11px;padding-top:9px;border-top:1px solid rgba(228,196,119,.22);font-size:11.5px;font-weight:700;color:var(--brass-bright);font-variant-numeric:tabular-nums}
 .st-plate-art{display:flex;gap:4px}
 .st-mini-tile{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#f4f8fc;background:rgba(244,248,252,.08);border:1px solid rgba(244,248,252,.25);border-radius:5px}
-.st-mini-hit{background:#f4f8fc;border-color:#f4f8fc;color:#0f2540}
-.st-mini-near{background:#c9a44c;border-color:#c9a44c;color:#0f2540}
+.st-mini-hit{background:#6aaa64;border-color:#6aaa64;color:#0f2540}
+.st-mini-near{background:#c9b458;border-color:#c9b458;color:#0f2540}
 .st-plate-art-ring{position:relative;width:46px;height:46px}
 .st-plate-art-ring svg{width:46px;height:46px}
 .st-plate-ring-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#f4f8fc;font-variant-numeric:tabular-nums}
