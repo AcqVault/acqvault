@@ -63,5 +63,38 @@ check(comboToday(r) === d0 + 1 && comboToday(r - 1000) === d0,
 const EPOCH = comboToday(Date.UTC(2026, 6, 12, 12));
 check(comboToday(Date.UTC(2026, 6, 12, 12)) - EPOCH + 1 === 1, 'No. 1 is still 12 Jul 2026');
 
+// 5. THE SERVER MUST AGREE WITH THE CLIENT. api/feedback.js computes the leaderboard day
+//    independently; when it was left on UTC midnight while study.js moved to 5am Central,
+//    boardPost rejected every submission from 19:00-04:59 Central and boardGet read the
+//    next day's key — a 10-hour dead window, every day, silently. Lift the server's own
+//    functions and assert the day index matches the client's hour by hour, in CDT and CST.
+const SRV = fs.readFileSync(path.join(__dirname, '..', '..', 'api', 'feedback.js'), 'utf8');
+function liftFrom(src, name, where) {
+  const i = src.indexOf('function ' + name + '(');
+  if (i < 0) throw new Error('combo_tz_verify: ' + name + ' not found in ' + where);
+  let depth = 0, started = false;
+  for (let j = i; j < src.length; j++) {
+    if (src[j] === '{') { depth++; started = true; }
+    else if (src[j] === '}') { depth--; if (started && depth === 0) return src.slice(i, j + 1); }
+  }
+  throw new Error('combo_tz_verify: could not bound ' + name + ' in ' + where);
+}
+const srvComboToday = new Function(
+  'const COMBO_TZ = "America/Chicago", COMBO_RESET_H = 5;\n' +
+  ['tzOffsetMs', 'comboToday'].map(n => liftFrom(SRV, n, 'api/feedback.js')).join('\n') +
+  '\nreturn comboToday;')();
+const srvEpoch = srvComboToday(Date.UTC(2026, 6, 12, 12));
+check(srvEpoch === EPOCH, `server COMBO_EPOCH matches client (${srvEpoch})`);
+let srvDrift = 0, srvDriftAt = '';
+for (const [y, m, d] of [[2026, 6, 20], [2026, 6, 23], [2026, 10, 1], [2027, 0, 15], [2026, 2, 8], [2026, 10, 1]]) {
+  for (let h = 0; h < 24; h++) {
+    const t = Date.UTC(y, m, d, h, 30, 0);
+    const cli = comboToday(t) - EPOCH + 1, srv = srvComboToday(t) - srvEpoch + 1;
+    if (cli !== srv && !srvDrift++) srvDriftAt = `${central(t)} Central: client No.${cli} vs server No.${srv}`;
+  }
+}
+check(srvDrift === 0, srvDrift ? `server/client day index DIVERGES (${srvDrift} hrs, e.g. ${srvDriftAt})`
+                         : 'server boardDayNo agrees with client comboNo across CDT/CST + both DST edges');
+
 console.log(fails ? '\nCOMBINATION TIMEZONE CHECKS FAILED' : '\nALL COMBINATION TIMEZONE CHECKS PASSED');
 process.exit(fails ? 1 : 0);

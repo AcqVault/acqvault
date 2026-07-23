@@ -789,13 +789,27 @@
     // watch reader + drawer content for new text, decorate it
     let scheduled = false;
     const queue = new Set();
-    const flush = () => { scheduled = false; queue.forEach((el) => decorate(el)); queue.clear(); };
+    const observers = new Map();
+    // decorate() wraps matches in <abbr>, i.e. it mutates the very subtree we're observing,
+    // which re-armed the observer and made it walk the whole reader a SECOND time for every
+    // render. Detach around our own mutations and drain any records they queued.
+    const flush = () => {
+      scheduled = false;
+      queue.forEach((el) => {
+        const mo = observers.get(el);
+        if (mo) mo.disconnect();
+        decorate(el);
+        if (mo) { mo.takeRecords(); mo.observe(el, { childList: true, subtree: true }); }
+      });
+      queue.clear();
+    };
     ['#drawer-content', '#reader-content'].forEach((sel) => {
       const el = $(sel); if (!el) return;
       const mo = new MutationObserver(() => {
         queue.add(el);
         if (!scheduled) { scheduled = true; setTimeout(flush, 120); }
       });
+      observers.set(el, mo);
       mo.observe(el, { childList: true, subtree: true });
       if (el.children.length) decorate(el);
     });
@@ -1996,11 +2010,16 @@
       }).join('');
       updateBoardBtn();
     }
+    // Race guard, same shape as dashReqToken above: the suggestion chips and the Enter key
+    // bypass the button-disable, so without a token a slower earlier request repaints over
+    // the newer results the user is already looking at.
+    let marketReqToken = 0;
     async function runMarketSearch() {
       if (!list) return;
       renderActiveFilters();
       renderLoading();
       btn?.setAttribute('disabled', 'disabled');
+      const token = ++marketReqToken;
       try {
         const response = await fetch('/api/market-research', {
           method: 'POST',
@@ -2008,12 +2027,14 @@
           body: JSON.stringify({ ...currentFilters(), noticeTypes: selectedTypes() })
         });
         const data = await response.json().catch(() => ({}));
+        if (token !== marketReqToken) return;   // superseded by a newer search
         if (!response.ok) throw new Error(data.detail || data.error || 'Market research search failed.');
         renderOpportunities(data);
       } catch (error) {
+        if (token !== marketReqToken) return;
         renderError(error.message || 'The market research service could not be reached.');
       } finally {
-        btn?.removeAttribute('disabled');
+        if (token === marketReqToken) btn?.removeAttribute('disabled');
       }
     }
     // Delegated: example chips (empty state) prefill + run; retry re-runs; filter chips clear.
@@ -2037,7 +2058,13 @@
         event.preventDefault();
         if (sg.dataset.suggestNaics) { const n = $('#market-naics-input'); if (n) n.value = sg.dataset.suggestNaics; }
         if (sg.dataset.suggestPsc) { const p = $('#market-psc-input'); if (p) p.value = sg.dataset.suggestPsc; }
-        runMarketSearch();
+        // Re-rendering the list destroys this button, so keyboard focus would land on
+        // <body>. Move it onto the refreshed results region instead.
+        Promise.resolve(runMarketSearch()).then(() => {
+          if (!list) return;
+          list.setAttribute('tabindex', '-1');
+          try { list.focus({ preventScroll: true }); } catch (e) { list.focus(); }
+        });
         return;
       }
       const retry = event.target.closest('[data-retry]');

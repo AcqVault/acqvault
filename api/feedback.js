@@ -26,12 +26,34 @@ function clean(v, max) {
 // owner's chosen Vercel storage integration injects, the board works with no code change.
 const U_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
 const U_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-const COMBO_EPOCH = Date.UTC(2026, 6, 12) / 86400000; // must match assets/study.js
+// The Combination rolls at 5 a.m. America/Chicago, NOT UTC midnight. This MUST stay
+// logic-identical to assets/study.js comboToday()/COMBO_EPOCH — when it didn't, every
+// submission between 19:00 and 04:59 Central was rejected as "not today's round" and the
+// homepage board read empty from 7 p.m. onward. A FIXED UTC OFFSET WOULD BE WRONG HALF THE
+// YEAR (5am CST is 11:00Z, 5am CDT is 10:00Z), so ask Intl for Chicago's actual offset at
+// the instant in question. scripts/verify/combo_tz_verify.js asserts the two agree.
+const COMBO_TZ = 'America/Chicago', COMBO_RESET_H = 5;
+function tzOffsetMs(t) {
+  try {
+    const p = {}, f = new Intl.DateTimeFormat('en-US', {
+      timeZone: COMBO_TZ, hour12: false, year: 'numeric', month: '2-digit',
+      day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+    f.formatToParts(new Date(t)).forEach(x => { p[x.type] = x.value; });
+    return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second)
+           - Math.floor(t / 1000) * 1000;
+  } catch (e) { return -6 * 3600000; }   // no Intl: fall back to standard time
+}
+function comboToday(t) {
+  t = (t === undefined) ? Date.now() : t;
+  return Math.floor((t + tzOffsetMs(t) - COMBO_RESET_H * 3600000) / 86400000);
+}
+const COMBO_EPOCH = comboToday(Date.UTC(2026, 6, 12, 12)); // No. 1 = 12 Jul 2026, Central
 const SEP = '';
 const NAME_RE = /[^A-Za-z0-9 ._\-]/g;
 const NAME_BLOCK = /\b(nigg|fagg|cunt|kike|spic|chink)\w*/i; // names are public on the homepage — hard floor
 
-function boardDayNo() { return Math.floor(Date.now() / 86400000) - COMBO_EPOCH + 1; }
+function boardDayNo() { return comboToday() - COMBO_EPOCH + 1; }
 
 async function redis(cmds) {
   const ctrl = new AbortController();

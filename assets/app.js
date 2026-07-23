@@ -1349,6 +1349,7 @@ function brCopy(citation, btn) {
   const flash = () => {
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
+    srAnnounce('Citation with link copied to clipboard');
     setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
   };
   copyCiteWithLink(citation, '', acqCiteUrl(btn.dataset.doc), flash);
@@ -2103,6 +2104,11 @@ function selectCategoryGuidePart(tile, partKey, partLabel) {
 async function selectPart(tile, partNum, partLabel) {
   browseActivePart = partNum;
   browseLabel = partLabel || '';
+  // A big part paginates over several awaits. If the user picks another part meanwhile,
+  // the slow one used to land last and overwrite the reader while the tile highlight and
+  // browseActivePart still pointed at the newer part. Bail whenever the selection moved on.
+  const srcAtStart = browseSrc;
+  const stale = () => String(browseActivePart) !== String(partNum) || browseSrc !== srcAtStart;
   // Update active tile (part ids can be strings like FMR's "7A", so compare as strings)
   document.querySelectorAll('.part-tile').forEach(t => {
     const active = String(t.dataset.part) === String(partNum);
@@ -2134,12 +2140,14 @@ async function selectPart(tile, partNum, partLabel) {
         filter: `source = "${browseSrc}" AND part = "${indexPart}"`,
         attributesToRetrieve: ['id','title','content','source','part','status','date','filename','url'],
       });
+      if (stale()) return;                      // user moved to another part mid-pagination
       const page = data.hits || [];
       allHits.push(...page);
       const total = data.estimatedTotalHits || 0;
       if (!page.length || page.length < pageSize || allHits.length >= total) break;
       offset += pageSize;
     }
+    if (stale()) return;                         // …or while the last page was in flight
     const hits = allHits;
     if (!hits.length) {
       reader.innerHTML = '<div class="browse-empty"><div class="browse-empty-icon">⊘</div><div class="browse-empty-title">No content found</div><div class="browse-empty-sub">This part may not be indexed yet for this source.</div></div>';
@@ -2327,7 +2335,9 @@ function citeBtnHTML(cite, docId) {
 
 function copyInlineCite(btn, citation) {
   const orig = btn.dataset.ciLabel || btn.textContent; btn.dataset.ciLabel = orig;
-  const flash = () => { btn.textContent = '✓'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = btn.dataset.ciLabel; btn.classList.remove('copied'); }, 1800); };
+  // srAnnounce is the ONLY success feedback a screen reader gets here: the button's
+  // aria-label ("Copy citation") overrides its text, so the ✓ swap is never announced.
+  const flash = () => { btn.textContent = '✓'; btn.classList.add('copied'); srAnnounce('Citation with link copied to clipboard'); setTimeout(() => { btn.textContent = btn.dataset.ciLabel; btn.classList.remove('copied'); }, 1800); };
   copyCiteWithLink(citation, '', acqCiteUrl(btn.dataset.doc), flash);
 }
 window.copyInlineCite = copyInlineCite;
@@ -3036,11 +3046,36 @@ function docCacheKey(docId) {
   return `acqvault:doc:${docId}`;
 }
 
+// This cache existed only to hand a document to a new tab / reader boot, but it wrote one
+// never-evicted localStorage entry per opened document. Regulation bodies are large, so a
+// heavy user eventually exhausted the origin quota — after which EVERY later setItem threw,
+// silently including saved.js's pinned clauses. Bound it, and on quota failure drop the
+// whole doc cache so the stores that actually matter can still write.
+const DOC_CACHE_MAX = 24;
+const DOC_CACHE_INDEX = 'acqvault:doc:__index';
+function docCacheIndex() {
+  try { const a = JSON.parse(localStorage.getItem(DOC_CACHE_INDEX) || '[]'); return Array.isArray(a) ? a : []; }
+  catch (e) { return []; }
+}
+function purgeDocCache() {
+  try {
+    docCacheIndex().forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+    localStorage.removeItem(DOC_CACHE_INDEX);
+  } catch (e) {}
+}
 function cacheDocumentForNewTab(hit) {
   if (!hit || !hit.id) return;
+  const key = docCacheKey(hit.id);
   try {
-    localStorage.setItem(docCacheKey(hit.id), JSON.stringify(hit));
-  } catch (e) {}
+    localStorage.setItem(key, JSON.stringify(hit));
+    let idx = docCacheIndex().filter(k => k !== key);
+    idx.push(key);
+    while (idx.length > DOC_CACHE_MAX) { const old = idx.shift(); try { localStorage.removeItem(old); } catch (e) {} }
+    localStorage.setItem(DOC_CACHE_INDEX, JSON.stringify(idx));
+  } catch (e) {
+    purgeDocCache();
+    try { localStorage.setItem(key, JSON.stringify(hit)); localStorage.setItem(DOC_CACHE_INDEX, JSON.stringify([key])); } catch (e2) {}
+  }
 }
 
 function readCachedDocument(docId) {
@@ -3078,12 +3113,10 @@ async function fetchDocumentById(docId, lookup = {}) {
   const metadataHit = await searchDocumentLookup(docId, lookup);
   if (metadataHit) return metadataHit;
 
-  try {
-    const data = await meiliSearch({ q: '', filter: `id = "${meiliFilterValue(docId)}"`, limit: 1 });
-    const hit = (data.hits || []).find(item => String(item.id) === String(docId));
-    if (hit) return hit;
-  } catch (e) {}
-
+  // (An `id = "…"` filter pass used to sit here. Neither acqLocalSearch nor api/search.js
+  // parses an `id` filter — only source/part/status — so it never matched and silently ran
+  // an UNFILTERED whole-corpus query just to throw the result away. meiliDocument is the
+  // real id lookup; go straight to it.)
   try {
     return await meiliDocument(docId);
   } catch (e) {
@@ -3207,7 +3240,12 @@ function buildCiteParts(hit) {
   body += `Unofficial copy — confirm the current/effective text at the official source before relying on it.`;
   return { ref, body };
 }
-function buildCiteBlock(hit) { const p = buildCiteParts(hit); return p.ref + '\n\n' + p.body; }
+// Plain-text block (File Builder "copy all pinned"). Carries the same deep link as every
+// other copy-citation surface — it was the one path left without it.
+function buildCiteBlock(hit) {
+  const p = buildCiteParts(hit), url = acqCiteUrl(hit && hit.id);
+  return p.ref + (url ? '\n' + url : '') + '\n\n' + p.body;
+}
 function fallbackCopy(text, cb) {
   const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
   document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); if (cb) cb();
@@ -3420,8 +3458,12 @@ function renderMoreButton(shown, total) {
 async function loadMoreResults(btn) {
   if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
   const prevCount = lastSearchHits.length;
+  // Same generation guard runSearch uses: without it a slow "Show more" page lands on
+  // whatever is on screen when it returns — a different query, or a different source filter.
+  const gen = searchGen;
   try {
     const data = await search(lastSearchQuery, prevCount);
+    if (gen !== searchGen) return;
     const newHits = data.hits || [];
     lastSearchHits = lastSearchHits.concat(newHits);
     lastSearchTotal = data.estimatedTotalHits || lastSearchTotal;
@@ -3566,7 +3608,15 @@ function renderReaderError() {
     </div>`;
 }
 
-document.getElementById('reader-search-input').addEventListener('input', function() { filterReaderContent(this.value); });
+// Debounced to match the sibling find implementations (polish.js / part-nav.js). This one
+// was the only undebounced find: it re-scanned and re-laid-out the whole part — up to ~2MB
+// of textContent — on EVERY keystroke.
+let readerFindTimer = null;
+document.getElementById('reader-search-input').addEventListener('input', function() {
+  const v = this.value;
+  clearTimeout(readerFindTimer);
+  readerFindTimer = setTimeout(() => filterReaderContent(v), 160);
+});
 document.getElementById('reader-search-clear').addEventListener('click', function() {
   resetReaderSearch();
   document.getElementById('reader-search-input').focus();
@@ -4043,6 +4093,11 @@ function activateSearch({ scrollToTop = false } = {}) {
 }
 
 function deactivateSearch() {
+  // deactivateSearch is the single teardown owner, so the in-flight guard belongs HERE:
+  // the two paths that actually clear the box (the empty-input handler and the clear
+  // button) call this directly and never reach runSearch's empty-query branch, so a
+  // stale response used to repaint results and restore ?q= under an emptied box.
+  searchGen++;
   document.body.classList.remove('work-mode');
   adjustNavForAboutBar(); // about-bar returns on the landing → restore its offset
   hero.classList.remove('search-active'); resultsSection.classList.remove('visible');
@@ -4069,11 +4124,18 @@ function deactivateSearch() {
 // showing) typing keeps the original live-search behavior untouched.
 const taPanel = document.getElementById('search-suggest');
 const taContainer = document.querySelector('.search-container');
-let taItems = [], taActive = -1, taGen = 0, taOpen = false;
+// taTimer is the type-ahead's OWN debounce handle, separate from runSearch's debounceTimer,
+// so taClose can cancel a *pending* (not yet fired) taUpdate without also cancelling a
+// queued full search in work-mode. Bumping taGen alone only invalidates in-flight requests.
+let taItems = [], taActive = -1, taGen = 0, taOpen = false, taTimer = null;
 const TA_MIN = 2, TA_MAX = 6;
 function taClose() {
   if (!taPanel) return;
-  taOpen = false; taActive = -1; taItems = [];
+  // Bump the generation so an in-flight taUpdate() can't re-open the dropdown after the
+  // user already pressed Enter, hit Escape, or blurred the field — and cancel a pending
+  // debounced one, which would otherwise still fire and pop the panel back open.
+  taOpen = false; taActive = -1; taItems = []; taGen++;
+  clearTimeout(taTimer); taTimer = null;
   taPanel.hidden = true; taPanel.innerHTML = '';
   if (taContainer) taContainer.classList.remove('ta-open');   // drop back below the command dock
   searchInput.setAttribute('aria-expanded', 'false');
@@ -4095,8 +4157,13 @@ function taRender() {
       + `<span class="ss-ico">${sourceTag(h.source)}</span>`
       + `<span class="ss-main"><span class="ss-title">${markOnly(hl.title || h.title || 'Untitled')}</span>${part ? `<span class="ss-sub">${esc(part)}</span>` : ''}</span>`
       + `</div>`;
-  }).join('') + `<div class="ss-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open · <kbd>esc</kbd> close</span></div>`;
+    // aria-hidden: the footer is a keyboard hint, not an option. A role="listbox" may only
+    // own role="option" children, and a screen reader already announces the keys it needs.
+  }).join('') + `<div class="ss-foot" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open · <kbd>esc</kbd> close</span></div>`;
   taPanel.hidden = false; taOpen = true; taActive = -1;
+  // Clear the pointer too — leaving a stale aria-activedescendant makes a screen reader
+  // announce a row that is no longer highlighted (or no longer exists after a re-render).
+  searchInput.removeAttribute('aria-activedescendant');
   if (taContainer) taContainer.classList.add('ta-open');       // lift above the command dock while open
   searchInput.setAttribute('aria-expanded', 'true');
   taPanel.querySelectorAll('.ss-item').forEach(el => {
@@ -4120,6 +4187,9 @@ async function taUpdate() {
   taRender();
 }
 function taKeydown(e) {
+  // Escape is handled even when the panel is already closed, so it also cancels a pending
+  // debounced open (user types, then hits Esc before the dropdown has appeared).
+  if (e.key === 'Escape' && (taOpen || taTimer)) { e.preventDefault(); taClose(); return true; }
   if (!taOpen) return false;
   if (e.key === 'ArrowDown') { e.preventDefault(); taSetActive(Math.min(taActive + 1, taItems.length - 1)); return true; }
   if (e.key === 'ArrowUp')   { e.preventDefault(); taSetActive(Math.max(taActive - 1, -1)); return true; }
@@ -4129,13 +4199,13 @@ function taKeydown(e) {
 }
 
 searchInput.addEventListener('input', () => {
-  clearTimeout(debounceTimer);
+  clearTimeout(debounceTimer); clearTimeout(taTimer); taTimer = null;
   if (!searchInput.value.trim()) { deactivateSearch(); taClose(); return; }
   if (document.body.classList.contains('work-mode')) {
     taClose();                                     // results already open — keep live search
     debounceTimer = setTimeout(runSearch, 300);
   } else {
-    debounceTimer = setTimeout(taUpdate, 300);     // landing — preview suggestions
+    taTimer = setTimeout(taUpdate, 300);           // landing — preview suggestions
   }
 });
 searchInput.addEventListener('keydown', (e) => {

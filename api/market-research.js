@@ -224,9 +224,16 @@ module.exports = async function handler(req, res) {
     // Instead we pull the whole code pool and let the keyword RANK it (scoreOpportunity).
     // Keyword-only searches (no code) stay title-scoped — there's nothing to bound a
     // code-less broad pull without amplifying SAM requests past the quota.
+    // ONE predicate set drives all of this. It used to be two: `broaden` tested
+    // queryTerms() (which drops tokens of 2 chars or fewer) while `titleScoped` tested the
+    // raw query, so a 1-2 character keyword plus a code silently fell back to title-only
+    // scoping AND told the user to "add a NAICS or PSC code" they had already added.
+    // A code always defines the set, so never pin SAM's title= on top of one.
     const hasCode = !!(base.naics || base.psc);
-    const broaden = hasCode && queryTerms(base.query).length > 0;
-    const fetchQuery = broaden ? '' : base.query;
+    const hasQuery = !!base.query;
+    const terms = queryTerms(base.query);
+    const broaden = hasCode && hasQuery;
+    const fetchQuery = hasCode ? '' : base.query;
     const makeRequests = (query, limitOverride = FETCH_PAGE) => {
       const requests = [];
       for (const range of ranges) {
@@ -255,17 +262,17 @@ module.exports = async function handler(req, res) {
     // Title mode: hard-filter to keyword matches. Broaden mode: the code defines the
     // set and the keyword only re-orders it, so every in-scope notice stays visible
     // with the keyword-relevant ones on top.
-    if (!broaden && queryTerms(base.query).length) matched = matched.filter(item => matchesAllTerms(item, queryTerms(base.query)));
-    if (!broaden && !matched.length && queryTerms(base.query).length > 1) {
+    if (!broaden && terms.length) matched = matched.filter(item => matchesAllTerms(item, terms));
+    if (!broaden && !matched.length && terms.length > 1) {
       // Bounded per-term fallback: at most 3 terms against the most-recent range
       // only, to cap upstream SAM.gov request amplification (quota protection).
-      const terms = queryTerms(base.query).slice(0, 3);
+      const fbTerms = terms.slice(0, 3);
       const recentRange = ranges.slice(0, 1);
-      const fbRequests = terms.flatMap(term =>
+      const fbRequests = fbTerms.flatMap(term =>
         recentRange.flatMap(range => types.map(ptype =>
           fetchSamSafe({ ...base, ...range, query: term, ptype, limit: FETCH_PAGE }, apiKey))));
       responses = await Promise.all(fbRequests);
-      matched = mergeResponses(responses).filter(item => matchesAllTerms(item, terms));
+      matched = mergeResponses(responses).filter(item => matchesAllTerms(item, fbTerms));
     }
     // `matched` = distinct opportunities actually retrieved and matched (not a
     // naive sum of per-bucket SAM totals, which over-counts in the overlapping
@@ -283,7 +290,7 @@ module.exports = async function handler(req, res) {
       query: base.query,
       // titleScoped: the keyword was sent to SAM's title-only filter (keyword, no code).
       // broadened: a NAICS/PSC pulled the full code pool and the keyword only ranked it.
-      titleScoped: !broaden && !!base.query,
+      titleScoped: !hasCode && hasQuery,
       broadened: broaden,
       postedFrom: ranges[ranges.length - 1]?.postedFrom,
       postedTo: ranges[0]?.postedTo

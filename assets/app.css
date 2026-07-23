@@ -721,7 +721,9 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(135,101,2
 /* Type-ahead suggestions — a Raycast-style dropdown that previews the top section
    matches on the landing so a user can jump straight in without the full-results
    transition. Reuses the same on-device search engine; brass tokens only. */
-.search-suggest{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:800;background:var(--white);border:1px solid rgba(135,101,28,0.22);border-radius:16px;box-shadow:0 20px 50px -14px rgba(15,37,64,0.30),0 2px 8px rgba(15,37,64,0.07);padding:6px;text-align:left;}
+/* max-height: without it the lower suggestions render below the fold on a phone the moment
+   the dropdown opens (the keyboard eats the rest of the viewport). */
+.search-suggest{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:800;background:var(--white);border:1px solid rgba(135,101,28,0.22);border-radius:16px;box-shadow:0 20px 50px -14px rgba(15,37,64,0.30),0 2px 8px rgba(15,37,64,0.07);padding:6px;text-align:left;max-height:min(56vh,440px);overflow-y:auto;overscroll-behavior:contain;}
 .search-suggest[hidden]{display:none;}
 /* The command dock below is a sibling at z-index:700 (its backdrop-filter seals a
    stacking context), so the dropdown's own z-index can't beat it across the
@@ -730,7 +732,10 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(135,101,2
 @media (prefers-reduced-motion:no-preference){.search-suggest:not([hidden]){animation:ss-drop .18s cubic-bezier(0.16,1,0.3,1) both;}}
 @keyframes ss-drop{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
 .ss-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:11px;cursor:pointer;text-decoration:none;color:inherit;}
-.ss-item.active{background:var(--accent-soft);}
+/* The keyboard-selected option must be unmistakable. --accent-soft alone is a 6%-alpha
+   tint (~1.08:1 against the panel) — effectively invisible, so arrow-key users could not
+   tell which suggestion was active. Stronger tint + a brass edge marker. */
+.ss-item.active{background:rgba(135,101,28,0.13);box-shadow:inset 3px 0 0 var(--accent);}
 .ss-ico{flex-shrink:0;display:inline-flex;align-items:center;}
 .ss-ico .rc-tag{margin:0;}
 .ss-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:1px;}
@@ -849,6 +854,7 @@ body.work-mode #spending-dashboard{display:none;}
 .result-card[data-source="compass"]{border-left-color:var(--cmp-solid);}
 .result-card[data-source="fmr"]{border-left-color:var(--fmr-solid);}
 .result-card[data-source="pgi"]{border-left-color:var(--pgi-solid);}
+.result-card[data-source="ssp"]{border-left-color:var(--ssp-solid);}
 @keyframes card-in{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 .result-card:hover{background:#fff;border-color:var(--line2);box-shadow:0 0 0 1px rgba(16,24,40,0.02),0 1px 2px rgba(16,24,40,0.05),0 10px 20px -10px rgba(16,24,40,0.14);transform:translateY(-1px);}
 .result-card.active{background:rgba(135,101,28,0.04);border-color:rgba(135,101,28,0.18);border-left-color:var(--accent);}
@@ -862,6 +868,7 @@ body.work-mode #spending-dashboard{display:none;}
 .result-card[data-source="compass"]:hover,.result-card[data-source="compass"].active{border-left-color:var(--cmp-solid);}
 .result-card[data-source="fmr"]:hover,.result-card[data-source="fmr"].active{border-left-color:var(--fmr-solid);}
 .result-card[data-source="pgi"]:hover,.result-card[data-source="pgi"].active{border-left-color:var(--pgi-solid);}
+.result-card[data-source="ssp"]:hover,.result-card[data-source="ssp"].active{border-left-color:var(--ssp-solid);}
 .rc-meta{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap;}
 .rc-tag{font-size:var(--fs-2xs);font-weight:var(--fw-bold);letter-spacing:var(--ls-wide);padding:2px 7px;border-radius:4px;text-transform:uppercase;}
 .rc-tag-rfo{background:var(--rfo-bg);color:var(--rfo-txt);}
@@ -871,6 +878,7 @@ body.work-mode #spending-dashboard{display:none;}
 .rc-tag-compass{background:var(--cmp-bg);color:var(--cmp-txt);}
 .rc-tag-fmr{background:var(--fmr-bg);color:var(--fmr-txt);}
 .rc-tag-pgi{background:var(--pgi-bg);color:var(--pgi-txt);}
+.rc-tag-ssp{background:var(--ssp-bg);color:var(--ssp-txt);}
 .rc-tag-afi-63-138{background:var(--dafi-bg);color:var(--dafi-txt);}
 .rc-badge{font-size:var(--fs-2xs);font-weight:var(--fw-semibold);padding:2px 7px;border-radius:4px;}
 .rc-badge-open{background:#fefce8;color:#854d0e;}
@@ -1075,7 +1083,7 @@ body.work-mode #spending-dashboard{display:none;}
 .br-section-heading{font-size:var(--fs-16);font-weight:var(--fw-semibold);letter-spacing:var(--ls-tighter);color:var(--ink);line-height:1.35;}
 .br-cite-btn{flex-shrink:0;font-size:var(--fs-2xs);font-weight:var(--fw-semibold);letter-spacing:0.03em;text-transform:uppercase;background:var(--off);border:1px solid var(--line);border-radius:var(--r-sm);padding:4px 9px;cursor:pointer;color:var(--muted2);transition:all 0.12s;margin-top:2px;}
 .br-cite-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
-.br-cite-btn.copied{background:#16a34a;color:#fff;border-color:#16a34a;}
+.br-cite-btn.copied{background:#15803d;color:#fff;border-color:#15803d;}
 .br-body{font-size:var(--fs-17);color:var(--ink2);line-height:1.8;min-width:0;}
 .br-body .br-p{margin-bottom:12px;}
 /* DoD SSP rating scales rendered as real tables (mirrors the SSR .ratetable) */
@@ -1137,7 +1145,7 @@ body.work-mode #spending-dashboard{display:none;}
 .br-para-row:hover .br-para-cite{opacity:1;}
 @media (hover:none){ .br-para-cite{opacity:0.55;} }
 .br-para-cite:hover{background:var(--ink);color:#fff;border-color:var(--ink);opacity:1;}
-.br-para-cite.copied{background:#16a34a;color:#fff;border-color:#16a34a;opacity:1;}
+.br-para-cite.copied{background:#15803d;color:#fff;border-color:#15803d;opacity:1;}
 .br-back-top{display:inline-flex;align-items:center;gap:5px;margin-top:44px;font-size:var(--fs-base);font-weight:var(--fw-semibold);color:var(--muted2);cursor:pointer;background:none;border:none;padding:0;transition:color 0.15s;}
 .br-back-top:hover{color:var(--accent);}
 .br-fmr-back{display:inline-flex;align-items:center;gap:5px;margin-bottom:18px;font-size:var(--fs-base);font-weight:var(--fw-semibold);color:var(--muted2);cursor:pointer;background:none;border:none;padding:0;transition:color 0.15s;}
@@ -1257,7 +1265,7 @@ body.work-mode #spending-dashboard{display:none;}
 .cite-text{flex:1;font-size:var(--fs-sm);font-weight:var(--fw-semibold);color:var(--ink2);font-family:var(--font-mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cite-copy-btn{font-size:var(--fs-xs);font-weight:var(--fw-semibold);white-space:nowrap;background:var(--ink);color:#fff;border:none;border-radius:var(--r-sm);padding:4px 9px;cursor:pointer;transition:all 0.15s;flex-shrink:0;}
 .cite-copy-btn:hover{background:var(--ink2);}
-.cite-copy-btn.copied{background:#16a34a;}
+.cite-copy-btn.copied{background:#15803d;}
 .drawer-filter-wrap{padding:9px 18px;border-bottom:1px solid var(--line2);flex-shrink:0;}
 .drawer-filter-input{width:100%;background:var(--off);border:1px solid var(--line2);border-radius:var(--r-md);padding:7px 12px;font-size:var(--fs-base);color:var(--ink);outline:none;transition:border-color 0.15s,box-shadow 0.15s;}
 .drawer-filter-input::placeholder{color:var(--muted2);}
@@ -1282,7 +1290,7 @@ body.work-mode #spending-dashboard{display:none;}
 .drawer-content mark{background:rgba(135,101,28,0.20);color:var(--ink);border-radius:2px;padding:0 1px;}
 .dc-cite-btn{display:inline-flex;align-items:center;font-size:var(--fs-3xs);font-weight:var(--fw-bold);letter-spacing:0.03em;text-transform:uppercase;padding:1px 6px;border-radius:4px;margin-left:4px;background:var(--white);border:1px solid var(--line);color:var(--muted2);cursor:pointer;transition:all 0.12s;vertical-align:middle;flex-shrink:0;white-space:nowrap;line-height:1.6;}
 .dc-cite-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
-.dc-cite-btn.copied{border-color:#16a34a;color:#16a34a;}
+.dc-cite-btn.copied{border-color:#15803d;color:#15803d;}
 .dc-link{color:var(--accent);font-weight:650;text-decoration:none;border-bottom:1px solid rgba(135,101,28,0.2);}
 /* CAC-gated DAF Compass references — marked text, not dead links */
 .dc-cac{color:var(--ink2);font-weight:var(--fw-semibold);border-bottom:1px dotted var(--line);}
@@ -1562,7 +1570,10 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .market-query{display:flex;align-items:center;gap:10px;min-height:60px;border:1px solid rgba(135,101,28,0.2);border-radius:17px;background:#fff;padding:0 12px 0 18px;box-shadow:0 12px 34px rgba(15,37,64,0.09),0 0 0 4px rgba(135,101,28,0.035);}
 .market-query:focus-within{border-color:var(--accent);box-shadow:0 12px 34px rgba(15,37,64,0.12),0 0 0 4px var(--accent-glow);}
 .market-query span{color:var(--accent);font-size:var(--fs-17);}
-.market-query input{flex:1;border:none;outline:none;background:transparent;font-size:var(--fs-16);color:var(--ink);min-width:0;}
+/* align-self:stretch for the same reason #search-input has it: the input's own hit area
+   was ~17px inside a 54px control, so most of what looks like a text field did nothing
+   when tapped. Background is already transparent — nothing changes visually. */
+.market-query input{flex:1;align-self:stretch;border:none;outline:none;background:transparent;font-size:var(--fs-16);color:var(--ink);min-width:0;}
 .market-query input::placeholder{color:var(--muted2);}
 .market-query-hint{margin:9px 2px 0;font-size:var(--fs-xs);line-height:var(--lh-base);color:var(--muted);}
 .market-query-hint strong{color:var(--ink2);font-weight:var(--fw-semibold);}
@@ -2140,7 +2151,7 @@ body.work-mode #quick-links{margin-top:0;}
 .st-stat-row:last-child { padding-bottom: 12px; }
 .st-stat-label { font-size:var(--fs-xs); color: var(--muted2); font-weight:var(--fw-medium); }
 .st-stat-val   { font-size:var(--fs-md); font-weight: 750; color: var(--ink); letter-spacing:var(--ls-tight); }
-.st-stat-val.green { color: #16a34a; }
+.st-stat-val.green { color: #15803d; }
 .st-stat-val.blue  { color: var(--accent); }
 
 
@@ -2536,7 +2547,7 @@ button,a,[role="button"],input,select{touch-action:manipulation;}
 .fcard:nth-of-type(3){animation:hero-rise 0.85s 0.6s cubic-bezier(0.16,1,0.3,1) both;}
 .fcard-lbl{display:flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:var(--fw-bold);
   letter-spacing:0.03em;text-transform:uppercase;color:var(--muted);}
-.fcard-trend{color:#16a34a;font-size:var(--fs-2xs);}
+.fcard-trend{color:#15803d;font-size:var(--fs-2xs);}
 .fcard-foot{display:flex;align-items:center;gap:6px;margin-top:9px;font-size:var(--fs-xs);font-weight:650;color:var(--muted2);}
 .fcard-foot .st-fy-dot{color:rgba(0,0,0,0.25);}
 .fcard-bignum{font-size:30px;font-weight:900;letter-spacing:-0.03em;color:var(--ink);line-height:var(--lh-none);margin-top:4px;}
