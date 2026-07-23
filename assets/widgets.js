@@ -487,7 +487,7 @@
         : esc(t.name);
       const head = t.group && (i === 0 || THRESHOLDS[i - 1].group !== t.group)
         ? `<div class="thr-group">${esc(t.group)}</div>` : '';
-      return `${head}<div class="thr-row${changed && uplift ? ' changed' : ''}" role="button" tabindex="0" aria-haspopup="dialog">
+      return `${head}<div class="thr-row${changed && uplift ? ' changed' : ''}">
         <div class="thr-row-main">
           <div class="thr-row-name">${nm}</div>
           <div class="thr-row-cite">${esc(t.cite)}</div>${t.note ? `<div class="thr-row-note">${esc(t.note)}</div>` : ''}
@@ -1775,12 +1775,15 @@
       void boardTray.offsetWidth;
       boardBackdrop.classList.add('show'); boardTray.classList.add('open');
       trayOpen = true;
+      boardTray.setAttribute('aria-modal', 'true');
       boardTray.querySelector('.market-board-close')?.focus();
+      if (typeof window.trapFocus === 'function') { try { window.trapFocus(boardTray); } catch (e) {} }
     }
     function closeTray() {
       boardTray.classList.remove('open'); boardBackdrop.classList.remove('show');
       trayOpen = false;
       setTimeout(() => { if (!trayOpen) { boardTray.hidden = true; boardBackdrop.hidden = true; } }, 300);
+      if (typeof window.releaseFocus === 'function') { try { window.releaseFocus(); } catch (e) {} }
       boardBtn?.focus();
     }
     boardTray.addEventListener('click', (e) => {

@@ -1520,6 +1520,7 @@
     }
     function next() {
       if (ended) return;   // a pending reveal-delay must not paint a question over the end screen
+      if (!el('gv-card')) return;   // navigated away (Back) before the delay fired — don't paint over the new view
       if (i >= pool.length) { shuffle(pool); i = 0; }
       var q = pool[i]; answered = false; caseNo++;
       var opts = shuffle([q.p].concat(q.d));

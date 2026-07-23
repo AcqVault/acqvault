@@ -1013,6 +1013,8 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .ptoc-list li{margin:0}
 .ptoc-list a{display:block;padding:9px 12px;border-radius:7px;font-size:14px;line-height:1.4;color:var(--ink);text-decoration:none;overflow-wrap:break-word}
 .ptoc-list a:hover{background:rgba(135,101,28,.09);color:var(--brass-ink)}
+.pn-skip{position:absolute;left:-9999px;top:0;z-index:100;padding:10px 16px;background:#0f2540;color:#fff;font-weight:600;border-radius:0 0 8px 0}
+.pn-skip:focus{left:0}
 .pn-search{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:9px;margin:0 0 16px;padding:0 8px 0 13px;min-height:48px;border:1.5px solid rgba(135,101,28,.2);border-radius:12px;background:rgba(255,255,255,.97);backdrop-filter:blur(12px) saturate(160%);-webkit-backdrop-filter:blur(12px) saturate(160%);box-shadow:0 6px 20px rgba(15,37,64,.07)}
 .pn-search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(135,101,28,.16)}
 /* Visually hidden, not absent: the input needs a real label, not a placeholder. */
@@ -1064,8 +1066,9 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed, ogIma
 </head>
 <body>
 ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
+<a class="pn-skip" href="#main">Skip to content</a>
 <header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></header>
-<main>${body}</main>
+<main id="main" tabindex="-1">${body}</main>
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. ${authorityLine(source)} Always verify before relying on any result in a contract file.</footer>
 </div>`}
 ${partNav ? `<script src="/assets/part-nav.js?v=${PART_NAV_V}" defer></script>` : ''}
@@ -1138,7 +1141,7 @@ ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
   }).join('')}</ol>
 </nav>` : '';
 
-  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › ${esc(label)}</nav>
+  const body = `<nav class="crumbs" aria-label="Breadcrumb"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › ${esc(label)}</nav>
 <h1>${esc(meta.name)} · ${esc(label)}</h1>
 <p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${partPairBanner(source, part, pairIdx)}
@@ -1869,7 +1872,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=68"></script>`;
+<script defer src="/assets/study.js?v=69"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

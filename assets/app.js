@@ -4000,6 +4000,8 @@ async function runSearch(options = {}) {
     const msg = e && e.message ? e.message : 'Please try again.';
     resultsList.innerHTML = '<div class="no-results"><strong>Search unavailable</strong>' + esc(msg) + '</div>';
     searchCount.textContent = '';
+    const rcl = document.getElementById('result-count-label');
+    if (rcl) rcl.textContent = 'Search unavailable';  // announce the failure via the live region
   } finally {
     resultsList.setAttribute('aria-busy', 'false');
   }
