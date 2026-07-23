@@ -1233,7 +1233,10 @@ body.work-mode #spending-dashboard{display:none;}
 .fulltext-note strong{color:var(--ink);font-weight:var(--fw-semibold);}
 
 /* ── DRAWER ── */
-#drawer{position:fixed;top:0;right:0;bottom:0;width:480px;background:var(--white);z-index:400;transform:translateX(100%);transition:transform 0.28s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;border-left:1px solid var(--line2);box-shadow:-16px 0 48px rgba(0,0,0,0.08);}
+/* Reading width: 480px ran ~60 chars/line, a touch under the ~66-75 comfort band; 580px
+   lands at ~75 cpl (the readable sweet spot) with more breathing room. min(…,62vw) tapers
+   it on narrower laptops so the results list behind it stays usable; ≤768px it's 100%. */
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(580px,62vw);background:var(--white);z-index:400;transform:translateX(100%);transition:transform 0.28s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;border-left:1px solid var(--line2);box-shadow:-16px 0 48px rgba(0,0,0,0.08);}
 #drawer.open{transform:translateX(0);}
 .drawer-header{padding:15px 18px 12px;border-bottom:1px solid var(--line2);display:flex;align-items:flex-start;gap:8px;flex-shrink:0;}
 .drawer-close{background:var(--off);border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--muted);font-size:var(--fs-sm);transition:background 0.15s;margin-top:2px;}
