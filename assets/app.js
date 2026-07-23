@@ -1277,7 +1277,7 @@ function renderContentLine(line, baseCitation, source, paraPath, altCtx, tables)
       }
     }
     const citeBtn = cite
-      ? `<button class="br-para-cite" data-cite="${esc(cite)}" data-action="br-copy" title="Copy citation">CITE</button>`
+      ? `<button class="br-para-cite" data-cite="${esc(cite)}" data-doc="${esc(altCtx && altCtx.id || '')}" data-action="br-copy" title="Copy citation">CITE</button>`
       : '';
     return `<div class="br-para-row br-l${Math.min(level,4)}">${citeBtn}<p class="br-para-text">${text}</p></div>`;
   }
@@ -1351,11 +1351,7 @@ function brCopy(citation, btn) {
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
   };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(citation).then(flash).catch(() => fallbackCopy(citation, flash));
-  } else {
-    fallbackCopy(citation, flash);
-  }
+  copyCiteWithLink(citation, '', acqCiteUrl(btn.dataset.doc), flash);
 }
 
 function scrollBrowseReaderToTop() {
@@ -1970,7 +1966,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount, pairIdx) {
     brXrefHit = XREF_SOURCES[source] ? hit : null;
     const visualFlags = {};
     const paraPath = makeParaPath(); // fresh token path per section
-    const altCtx = { anchor, blocks: [] }; // variant headings, scoped per section
+    const altCtx = { anchor, id: hit.id, blocks: [] }; // variant headings + doc id, scoped per section
     let bodyHTML;
     if (source === 'compass') {
       bodyHTML = formatCompassContent(content, hit, citation);
@@ -2008,7 +2004,7 @@ function buildReaderHTML(hits, source, partNum, partLabel, docCount, pairIdx) {
           ${parsed.num ? `<div class="br-section-num${source === 'pgi' ? ' br-section-num-pgi' : ''}">${esc(parsed.num)}</div>` : ''}
           <div class="br-section-heading">${esc(parsed.label || title)}</div>
         </div>
-        <button class="br-cite-btn" data-cite="${esc(citation)}" data-action="br-copy">Cite</button>
+        <button class="br-cite-btn" data-cite="${esc(citation)}" data-doc="${esc(hit.id)}" data-action="br-copy">Cite</button>
       </div>
       ${pairChipHTML(source, parsed, pairIdx, ownCounts)}
       <div class="br-body">${bodyHTML}</div>
@@ -2325,19 +2321,14 @@ function generateCitation(hit) {
   return label;
 }
 
-function citeBtnHTML(cite) {
-  return `<button class="dc-cite-btn" data-action="copy-inline-cite" data-cite="${esc(cite)}" aria-label="Copy citation">cite</button>`;
+function citeBtnHTML(cite, docId) {
+  return `<button class="dc-cite-btn" data-action="copy-inline-cite" data-cite="${esc(cite)}" data-doc="${esc(docId || '')}" aria-label="Copy citation">cite</button>`;
 }
 
 function copyInlineCite(btn, citation) {
-  navigator.clipboard.writeText(citation).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = citation; ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-  });
-  const orig = btn.textContent;
-  btn.textContent = '✓'; btn.classList.add('copied');
-  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+  const orig = btn.dataset.ciLabel || btn.textContent; btn.dataset.ciLabel = orig;
+  const flash = () => { btn.textContent = '✓'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = btn.dataset.ciLabel; btn.classList.remove('copied'); }, 1800); };
+  copyCiteWithLink(citation, '', acqCiteUrl(btn.dataset.doc), flash);
 }
 window.copyInlineCite = copyInlineCite;
 
@@ -2815,7 +2806,7 @@ function formatContent(text, hit) {
         const tokM = content.match(/^\(([^)]+)\)/);
         if (tokM) updateParagraphPath([tokM[1]]);
         const cl = Math.min(level, 4);
-        html += `<div class="dc-para dc-l${cl}"><span class="dc-para-text">${linkifyXrefs(esc(content), hit)}</span>${citeBtnHTML(buildCite())}</div>`;
+        html += `<div class="dc-para dc-l${cl}"><span class="dc-para-text">${linkifyXrefs(esc(content), hit)}</span>${citeBtnHTML(buildCite(), hit.id)}</div>`;
       }
       continue;
     }
@@ -2826,24 +2817,24 @@ function formatContent(text, hit) {
 
     if (/^PART\s+\d+/i.test(line) && line.length < 140) {
       curSection = null; resetParagraphPath();
-      html += `<div class="dc-part">${esc(line)} ${citeBtnHTML(baseCite)}</div>`;
+      html += `<div class="dc-part">${esc(line)} ${citeBtnHTML(baseCite, hit.id)}</div>`;
     } else if (/^FC\s+/i.test(line) && line.length < 240) {
       const m = line.match(/^FC\s+(.+?)(?:\s+[A-Z][^.]*\.|$)/);
       if (m) { curSection = m[1].trim(); resetParagraphPath(); }
-      if (isToc) { html += `<div class="dc-section dc-toc-entry">${esc(line)}</div>`; } else { html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite())}</div>`; }
+      if (isToc) { html += `<div class="dc-section dc-toc-entry">${esc(line)}</div>`; } else { html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite(), hit.id)}</div>`; }
     } else if (/^Subpart\s+[\d.]+/i.test(line) && line.length < 140) {
       resetParagraphPath();
       const m = line.match(/Subpart\s+([\d.]+)/i); if (m) curSection = m[1];
-      if (isToc) { html += `<div class="dc-subpart dc-toc-entry">${esc(line)}</div>`; } else { html += `<div class="dc-subpart">${esc(line)} ${citeBtnHTML(buildCite())}</div>`; }
+      if (isToc) { html += `<div class="dc-subpart dc-toc-entry">${esc(line)}</div>`; } else { html += `<div class="dc-subpart">${esc(line)} ${citeBtnHTML(buildCite(), hit.id)}</div>`; }
     } else if (/^\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*[\s,.-]+/.test(line) && line.length < 240) {
       const m = line.match(/^(\d{1,3}\.\d{1,6}(?:-\d+)?(?:\([^)]+\))*)/);
       if (m) { curSection = m[1]; resetParagraphPath(); }
-      html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite())}</div>`;
+      html += `<div class="dc-section">${esc(line)} ${citeBtnHTML(buildCite(), hit.id)}</div>`;
     } else if (leadingParagraphTokens(line)) {
       const tokens = leadingParagraphTokens(line);
       updateParagraphPath(tokens);
       const level = Math.min(paragraphNodes.length || 1, 4);
-      html += `<div class="dc-para dc-l${level}"><span class="dc-para-text">${linkifyXrefs(esc(line), hit)}</span>${citeBtnHTML(buildCite())}</div>`;
+      html += `<div class="dc-para dc-l${level}"><span class="dc-para-text">${linkifyXrefs(esc(line), hit)}</span>${citeBtnHTML(buildCite(), hit.id)}</div>`;
     } else if (/^●\s+/.test(line)) {
       html += `<div class="dc-para dc-l1"><span class="dc-para-text">${esc(line)}</span></div>`;
     } else if (line === line.toUpperCase() && line.length > 3 && line.length < 80 && /[A-Z]{3}/.test(line)) {
@@ -2924,7 +2915,7 @@ function formatCompassContent(text, hit, baseCite) {
         html += `<div class="dc-compass-kicker">${formatInlineLinks(heading)}</div>`;
       } else {
         html += closeSupport();
-        html += `<div class="dc-section">${formatInlineLinks(heading)} ${citeBtnHTML(baseCite)}</div>`;
+        html += `<div class="dc-section">${formatInlineLinks(heading)} ${citeBtnHTML(baseCite, hit.id)}</div>`;
       }
     } else if (/^###\s+/.test(line)) {
       html += `<div class="dc-subpart">${formatInlineLinks(line.replace(/^###\s+/, ''))}</div>`;
@@ -3176,18 +3167,47 @@ function deviationLineFor(hit) {
   return ` (DoD Class Deviation ${e.dars}${e.effective ? ', eff. ' + e.effective : ''})`;
 }
 
-function buildCiteBlock(hit) {
+// Deep link straight to a cited section on this site — opens the reader to that doc.
+// Uses the stable doc id (works for every source; no fragile per-source anchor rebuild).
+function acqCiteUrl(id) { return id ? location.origin + '/?view=reader&doc=' + encodeURIComponent(id) : ''; }
+function escCiteHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+// Copy a citation as BOTH a clickable hyperlink (the reference line becomes an <a href> —
+// pastes as a link in Word/Outlook/Google Docs) AND plain text (reference + the URL on its
+// own line [+ any body], for email/chat/plain editors). Falls back to plain-only where the
+// clipboard's rich write isn't available. onDone is the caller's own flash/restore.
+function copyCiteWithLink(ref, body, url, onDone) {
+  const plain = ref + (url ? '\n' + url : '') + (body ? '\n\n' + body : '');
+  const html = url
+    ? '<a href="' + escCiteHtml(url) + '">' + escCiteHtml(ref) + '</a>' + (body ? '<br><br>' + escCiteHtml(body).replace(/\n/g, '<br>') : '')
+    : null;
+  const plainCopy = () => (navigator.clipboard && navigator.clipboard.writeText)
+    ? navigator.clipboard.writeText(plain).then(onDone).catch(() => fallbackCopy(plain, onDone))
+    : fallbackCopy(plain, onDone);
+  if (html && navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+    try {
+      const item = new ClipboardItem({
+        'text/plain': new Blob([plain], { type: 'text/plain' }),
+        'text/html':  new Blob([html],  { type: 'text/html' })
+      });
+      navigator.clipboard.write([item]).then(onDone).catch(plainCopy);
+      return;
+    } catch (e) { /* older engines can throw constructing ClipboardItem — fall back */ }
+  }
+  plainCopy();
+}
+function buildCiteParts(hit) {
   // generateCitation already returns "<REF> — <Title>", so use it verbatim as the reference line.
   const ref = ((typeof generateCitation === 'function' ? generateCitation(hit) : '') || hit.filename || hit.title || 'Citation') + deviationLineFor(hit);
   const text = cleanClauseText(hit.content);
   const label = SOURCE_FULL[hit.source] || hit.source || '';
   const asof = hit.indexed_at ? `copy retrieved ${fmtAsOf(hit.indexed_at)}` : '';
-  let out = ref;
-  if (text) out += `\n\n"${text}"`;
-  out += `\n\nSource: AcqVault · ${label}${asof ? ' · ' + asof : ''}`;
-  out += `\nUnofficial copy — confirm the current/effective text at the official source before relying on it.`;
-  return out;
+  let body = '';
+  if (text) body += `"${text}"\n\n`;
+  body += `Source: AcqVault · ${label}${asof ? ' · ' + asof : ''}\n`;
+  body += `Unofficial copy — confirm the current/effective text at the official source before relying on it.`;
+  return { ref, body };
 }
+function buildCiteBlock(hit) { const p = buildCiteParts(hit); return p.ref + '\n\n' + p.body; }
 function fallbackCopy(text, cb) {
   const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
   document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); if (cb) cb();
@@ -3207,10 +3227,9 @@ function srAnnounce(msg) {
 }
 
 function copyResultCite(hit, btn) {
-  const block = buildCiteBlock(hit);
-  const flash = () => { const o = btn.dataset.label || btn.textContent; btn.dataset.label = o; btn.textContent = '✓ Copied'; btn.classList.add('copied'); srAnnounce('Citation copied to clipboard'); setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove('copied'); }, 1800); };
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(block).then(flash).catch(() => fallbackCopy(block, flash));
-  else fallbackCopy(block, flash);
+  const { ref, body } = buildCiteParts(hit);
+  const flash = () => { const o = btn.dataset.label || btn.textContent; btn.dataset.label = o; btn.textContent = '✓ Copied'; btn.classList.add('copied'); srAnnounce('Citation with link copied to clipboard'); setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove('copied'); }, 1800); };
+  copyCiteWithLink(ref, body, acqCiteUrl(hit.id), flash);
 }
 (function checkCorpusFreshness() {
   fetch('/output/corpus-meta.json').then(r => r.ok ? r.json() : null).then(meta => {
@@ -3634,7 +3653,7 @@ function openDrawer(hit) {
   document.getElementById('cite-text').textContent = citation;
   const copyBtn = document.getElementById('cite-copy-btn');
   copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied');
-  copyBtn.onclick = () => copyCitation(citation, copyBtn);
+  copyBtn.onclick = () => copyCitation(citation, copyBtn, hit);
   const linkBtn = document.getElementById('cite-link-btn');
   if (linkBtn) {
     linkBtn.textContent = 'Copy link'; linkBtn.classList.remove('copied');
@@ -3750,7 +3769,10 @@ function copyTextTo(text, btn, label) {
     document.body.removeChild(ta); done();
   });
 }
-function copyCitation(citation, btn) { copyTextTo(citation, btn, 'Copy'); }
+function copyCitation(citation, btn, hit) {
+  const flash = () => { btn.textContent = 'Copied!'; btn.classList.add('copied'); srAnnounce('Citation with link copied to clipboard'); setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200); };
+  copyCiteWithLink(citation, '', acqCiteUrl(hit && hit.id), flash);
+}
 
 // ── Deviation crosswalk: mechanical pointer from a clause's part to the DoD class deviation ──
 let DEVIATIONS = null, deviationsPromise = null;
