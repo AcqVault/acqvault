@@ -4046,12 +4046,14 @@ function deactivateSearch() {
 // 300ms debounce the live search already used). In work-mode (results already
 // showing) typing keeps the original live-search behavior untouched.
 const taPanel = document.getElementById('search-suggest');
+const taContainer = document.querySelector('.search-container');
 let taItems = [], taActive = -1, taGen = 0, taOpen = false;
 const TA_MIN = 2, TA_MAX = 6;
 function taClose() {
   if (!taPanel) return;
   taOpen = false; taActive = -1; taItems = [];
   taPanel.hidden = true; taPanel.innerHTML = '';
+  if (taContainer) taContainer.classList.remove('ta-open');   // drop back below the command dock
   searchInput.setAttribute('aria-expanded', 'false');
   searchInput.removeAttribute('aria-activedescendant');
 }
@@ -4073,6 +4075,7 @@ function taRender() {
       + `</div>`;
   }).join('') + `<div class="ss-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open · <kbd>esc</kbd> close</span></div>`;
   taPanel.hidden = false; taOpen = true; taActive = -1;
+  if (taContainer) taContainer.classList.add('ta-open');       // lift above the command dock while open
   searchInput.setAttribute('aria-expanded', 'true');
   taPanel.querySelectorAll('.ss-item').forEach(el => {
     const i = Number(el.dataset.i);
