@@ -34,7 +34,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=139">
+<link rel="stylesheet" href="/assets/app.css?v=140">
 </head>
 <body>
 
@@ -114,12 +114,13 @@
         <span class="search-glow" aria-hidden="true"></span>
         <div class="search-bar">
           <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
-          <input type="text" id="search-input" aria-label="Search regulations, parts, and guidance" placeholder="Search regulations, parts, guidance…" autocomplete="off" spellcheck="false" />
+          <input type="text" id="search-input" role="combobox" aria-expanded="false" aria-controls="search-suggest" aria-autocomplete="list" aria-label="Search regulations, parts, and guidance" placeholder="Search regulations, parts, guidance…" autocomplete="off" spellcheck="false" />
           <span class="search-count" id="search-count"></span>
           <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
           <kbd class="search-kbd" aria-hidden="true">/</kbd>
           <button type="button" class="search-go" id="search-go" data-action="search-go" aria-label="Search"><span class="search-go-label">Search</span><span class="search-go-arrow" aria-hidden="true">→</span></button>
         </div>
+        <div class="search-suggest" id="search-suggest" role="listbox" aria-label="Section suggestions" hidden></div>
         <div class="answer-mode" id="answer-mode" role="group" aria-label="Answer with">
           <span class="answer-mode-k">Answer with</span>
           <button type="button" class="answer-mode-btn active" data-action="set-answer-mode" data-arg="auth" aria-pressed="true">Authoritative text</button>
@@ -649,7 +650,7 @@
 </div>
 
 
-<script defer src="/assets/app.js?v=93"></script>
+<script defer src="/assets/app.js?v=94"></script>
 <script defer src="/assets/saved.js?v=9"></script>
 <script defer src="/assets/widgets.js?v=61"></script>
 <script defer src="/assets/polish.js?v=4"></script>

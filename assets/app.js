@@ -3970,6 +3970,7 @@ async function runAsk(q) {
 }
 
 async function runSearch(options = {}) {
+  if (typeof taClose === 'function') taClose();          // dismiss the type-ahead when a full search starts
   const preserveScroll = Boolean(options.preserveScroll);
   const q = searchInput.value.trim();
   if (!q) { searchGen++; deactivateSearch(); return; }   // invalidate anything in flight
@@ -4037,13 +4038,88 @@ function deactivateSearch() {
   if (window.acqUpdateNav) window.acqUpdateNav(); // restore dark over-hero nav on the landing
 }
 
+// ── Search type-ahead (landing only) ──────────────────────────────────────────
+// A Raycast-style dropdown that previews the top section matches while typing on
+// the landing, so a user can jump straight into a section without the full-results
+// transition. It reuses the SAME on-device/API engine (meiliSearch → acqLocalSearch)
+// and the existing openDrawer() — no separate scorer, no new network profile (same
+// 300ms debounce the live search already used). In work-mode (results already
+// showing) typing keeps the original live-search behavior untouched.
+const taPanel = document.getElementById('search-suggest');
+let taItems = [], taActive = -1, taGen = 0, taOpen = false;
+const TA_MIN = 2, TA_MAX = 6;
+function taClose() {
+  if (!taPanel) return;
+  taOpen = false; taActive = -1; taItems = [];
+  taPanel.hidden = true; taPanel.innerHTML = '';
+  searchInput.setAttribute('aria-expanded', 'false');
+  searchInput.removeAttribute('aria-activedescendant');
+}
+function taPick(hit) { if (!hit) return; taClose(); openDrawer(hit); }
+function taSetActive(i) {
+  const els = taPanel.querySelectorAll('.ss-item');
+  if (taActive >= 0 && els[taActive]) { els[taActive].classList.remove('active'); els[taActive].setAttribute('aria-selected', 'false'); }
+  taActive = i;
+  if (i >= 0 && els[i]) { els[i].classList.add('active'); els[i].setAttribute('aria-selected', 'true'); searchInput.setAttribute('aria-activedescendant', 'ss-opt-' + i); els[i].scrollIntoView({ block: 'nearest' }); }
+  else searchInput.removeAttribute('aria-activedescendant');
+}
+function taRender() {
+  taPanel.innerHTML = taItems.map((h, i) => {
+    const hl = h._formatted || h;
+    const part = h.part ? `${partWord(h.source)} ${esc(displayPartForSource(h.source, h.part))}` : '';
+    return `<div class="ss-item" role="option" id="ss-opt-${i}" data-i="${i}" aria-selected="false">`
+      + `<span class="ss-ico">${sourceTag(h.source)}</span>`
+      + `<span class="ss-main"><span class="ss-title">${markOnly(hl.title || h.title || 'Untitled')}</span>${part ? `<span class="ss-sub">${esc(part)}</span>` : ''}</span>`
+      + `</div>`;
+  }).join('') + `<div class="ss-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open · <kbd>esc</kbd> close</span></div>`;
+  taPanel.hidden = false; taOpen = true; taActive = -1;
+  searchInput.setAttribute('aria-expanded', 'true');
+  taPanel.querySelectorAll('.ss-item').forEach(el => {
+    const i = Number(el.dataset.i);
+    el.addEventListener('mousedown', (e) => { e.preventDefault(); taPick(taItems[i]); });
+    el.addEventListener('mousemove', () => { if (taActive !== i) taSetActive(i); });
+  });
+}
+async function taUpdate() {
+  if (!taPanel) return;
+  const q = searchInput.value.trim();
+  if (q.length < TA_MIN || answerMode === 'ai') { taClose(); return; }
+  const gen = ++taGen;
+  let data;
+  try { data = await meiliSearch({ q, limit: TA_MAX, cropLength: 0 }); }
+  catch (_e) { return; }                               // network hiccup — leave prior state
+  if (gen !== taGen) return;                           // superseded
+  if (searchInput.value.trim() !== q) return;          // input moved on
+  taItems = (data.hits || []).slice(0, TA_MAX);
+  if (!taItems.length) { taClose(); return; }
+  taRender();
+}
+function taKeydown(e) {
+  if (!taOpen) return false;
+  if (e.key === 'ArrowDown') { e.preventDefault(); taSetActive(Math.min(taActive + 1, taItems.length - 1)); return true; }
+  if (e.key === 'ArrowUp')   { e.preventDefault(); taSetActive(Math.max(taActive - 1, -1)); return true; }
+  if (e.key === 'Enter' && taActive >= 0) { e.preventDefault(); taPick(taItems[taActive]); return true; }
+  if (e.key === 'Escape') { e.preventDefault(); taClose(); return true; }
+  return false;
+}
+
 searchInput.addEventListener('input', () => {
   clearTimeout(debounceTimer);
-  if (!searchInput.value.trim()) { deactivateSearch(); return; }
-  debounceTimer = setTimeout(runSearch, 300);
+  if (!searchInput.value.trim()) { deactivateSearch(); taClose(); return; }
+  if (document.body.classList.contains('work-mode')) {
+    taClose();                                     // results already open — keep live search
+    debounceTimer = setTimeout(runSearch, 300);
+  } else {
+    debounceTimer = setTimeout(taUpdate, 300);     // landing — preview suggestions
+  }
 });
-searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(debounceTimer); if (searchInput.value.trim()) runSearch(); } });
-searchClear.addEventListener('click', () => { searchInput.value = ''; deactivateSearch(); searchInput.focus(); });
+searchInput.addEventListener('keydown', (e) => {
+  if (taKeydown(e)) return;
+  if (e.key === 'Enter') { clearTimeout(debounceTimer); taClose(); if (searchInput.value.trim()) runSearch(); }
+});
+searchInput.addEventListener('blur', () => setTimeout(taClose, 150));
+document.addEventListener('click', (e) => { if (taPanel && !taPanel.contains(e.target) && e.target !== searchInput) taClose(); });
+searchClear.addEventListener('click', () => { searchInput.value = ''; deactivateSearch(); taClose(); searchInput.focus(); });
 
 // ── Work-mode nav guard: home-section links restore the landing before the anchor scroll ──
 // (work-mode hides the landing sections, so the target must be revealed first)

@@ -718,6 +718,26 @@ nav.scrolled{background:rgba(255,255,255,0.9);border-bottom-color:rgba(135,101,2
 .search-container:focus-within .search-kbd,.search-clear.visible ~ .search-kbd{display:none;}
 @media (max-width:768px){.search-kbd{display:none;}}
 
+/* Type-ahead suggestions — a Raycast-style dropdown that previews the top section
+   matches on the landing so a user can jump straight in without the full-results
+   transition. Reuses the same on-device search engine; brass tokens only. */
+.search-suggest{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:800;background:var(--white);border:1px solid rgba(135,101,28,0.22);border-radius:16px;box-shadow:0 20px 50px -14px rgba(15,37,64,0.30),0 2px 8px rgba(15,37,64,0.07);padding:6px;text-align:left;}
+.search-suggest[hidden]{display:none;}
+@media (prefers-reduced-motion:no-preference){.search-suggest:not([hidden]){animation:ss-drop .18s cubic-bezier(0.16,1,0.3,1) both;}}
+@keyframes ss-drop{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.ss-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:11px;cursor:pointer;text-decoration:none;color:inherit;}
+.ss-item.active{background:var(--accent-soft);}
+.ss-ico{flex-shrink:0;display:inline-flex;align-items:center;}
+.ss-ico .rc-tag{margin:0;}
+.ss-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:1px;}
+.ss-title{font-size:var(--fs-base);font-weight:600;color:var(--ink);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ss-title mark{background:var(--accent-soft);color:var(--accent);padding:0 1px;border-radius:2px;}
+.ss-sub{font-size:var(--fs-xs);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ss-meta{flex-shrink:0;font-size:var(--fs-2xs);font-weight:var(--fw-semibold);letter-spacing:0.02em;text-transform:uppercase;color:var(--muted2);}
+.ss-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px;padding:8px 12px 4px;border-top:1px solid var(--line2);font-size:var(--fs-2xs);color:var(--muted2);}
+.ss-foot kbd{font-family:var(--font-mono);font-weight:600;color:var(--muted);background:var(--off);border:1px solid var(--line2);border-radius:5px;padding:0 5px;margin:0 1px;}
+@media (max-width:768px){.ss-foot{display:none;}.ss-meta{display:none;}}
+
 /* Command dock */
 .hero-command-dock{position:relative;z-index:700;width:100%;max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.68);border:1px solid rgba(135,101,28,0.16);border-radius:18px;padding:6px;box-shadow:0 4px 22px rgba(15,37,64,0.09),0 1px 4px rgba(0,0,0,0.04);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);animation:hero-rise 0.85s 0.24s cubic-bezier(0.16,1,0.3,1) both;}
 .mode-toggle{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:4px;}
