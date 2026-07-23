@@ -811,6 +811,7 @@ h1{font-family:var(--serif);font-weight:700;font-size:30px;letter-spacing:-0.02e
 .lede a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
 section.sec{padding:18px 0;border-top:1px solid var(--line);scroll-margin-top:14px}
 section.sec h2{font-size:18px;letter-spacing:-0.02em;margin:0 0 6px;scroll-margin-top:16px}
+.sec-hd{display:flex;align-items:baseline;flex-wrap:wrap}
 section.sec h2 a{color:inherit;text-decoration:none}
 /* Landing from a deep link (study chips, TOC, copied anchors): bathe the exact section
    in the house brass so the reader spots it without sweeping the page. The :target wash
@@ -861,15 +862,15 @@ section.sec p a.xref:hover{text-decoration-color:var(--accent)}
 .cm-continuum-grid{display:grid;grid-template-columns:132px 1fr 1fr;}
 .cm-cont-row{display:contents;}
 .cm-cont-label,.cm-cont-cell{padding:13px 14px;border-top:1px solid var(--line2);font-size:var(--fs-base);line-height:1.45;}
-.cm-cont-label{font-size:var(--fs-xs);font-weight:var(--fw-black);letter-spacing:0.065em;text-transform:uppercase;color:var(--muted);background:#f8fafc;}
+.cm-cont-label{font-size:var(--fs-xs);font-weight:var(--fw-black);letter-spacing:0.065em;text-transform:uppercase;color:var(--muted);background:var(--off);}
 .cm-cont-cell{color:var(--ink2);}
 .cm-cont-cell strong{display:block;color:var(--ink);font-size:var(--fs-md);margin-bottom:3px;}
 .cm-spend-wrap{width:100%;max-width:100%;overflow-x:auto;}
 .cm-spend-table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px;}
 .cm-spend-table th{background:#142f4d;color:#fff;text-align:left;font-size:var(--fs-sm);font-weight:var(--fw-heavy);letter-spacing:0.035em;text-transform:uppercase;padding:12px 14px;}
 .cm-spend-table td{vertical-align:top;padding:13px 14px;border-top:1px solid var(--line2);font-size:var(--fs-base);line-height:1.45;color:var(--ink2);}
-.cm-spend-table td:first-child{width:22%;font-weight:var(--fw-heavy);color:var(--ink);background:#f8fafc;}
-.cm-spend-table tr:nth-child(even) td:not(:first-child){background:#fbfdff;}
+.cm-spend-table td:first-child{width:22%;font-weight:var(--fw-heavy);color:var(--ink);background:var(--off);}
+.cm-spend-table tr:nth-child(even) td:not(:first-child){background:var(--off);}
 .cm-vehicle-table td:first-child{width:15%;font-weight:var(--fw-black);color:var(--cm-txt);background:var(--cm-bg);}
 .cm-vehicle-table td:nth-child(2){width:31%;font-weight:var(--fw-heavy);color:var(--ink);}
 .cm-vehicle-table td:nth-child(4){width:12%;font-weight:var(--fw-heavy);color:var(--muted);}
@@ -1015,13 +1016,13 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .ptoc-list a:hover{background:rgba(135,101,28,.09);color:var(--brass-ink)}
 .pn-skip{position:absolute;left:-9999px;top:0;z-index:100;padding:10px 16px;background:#0f2540;color:#fff;font-weight:600;border-radius:0 0 8px 0}
 .pn-skip:focus{left:0}
-.pn-search{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:9px;margin:0 0 16px;padding:0 8px 0 13px;min-height:48px;border:1.5px solid rgba(135,101,28,.2);border-radius:12px;background:rgba(255,255,255,.97);backdrop-filter:blur(12px) saturate(160%);-webkit-backdrop-filter:blur(12px) saturate(160%);box-shadow:0 6px 20px rgba(15,37,64,.07)}
+.pn-search{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:9px;margin:0 0 16px;padding:0 8px 0 13px;min-height:48px;border:1.5px solid rgba(135,101,28,.2);border-radius:12px;background:#fff;box-shadow:0 6px 20px rgba(15,37,64,.07)}
 .pn-search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(135,101,28,.16)}
 /* Visually hidden, not absent: the input needs a real label, not a placeholder. */
 .pn-search-lbl{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .pn-search-icon{display:flex;color:var(--muted);flex-shrink:0}
 .pn-search-icon svg{width:15px;height:15px;display:block}
-.pn-search-input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:inherit;font-size:15px;color:var(--ink);padding:12px 0}
+.pn-search-input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:inherit;font-size:16px;color:var(--ink);padding:12px 0}
 .pn-search-input::-webkit-search-cancel-button{display:none}
 .pn-search-count{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 .pn-search-nav{display:none;gap:2px}
@@ -1111,7 +1112,7 @@ function renderPartPage(source, part) {
       : '';
     const compassNote = (d.url && !sharedUrl && /dps\.mil/i.test(d.url)) ? srcref(d.url) : '';
     return `<section class="sec" id="${anchor}">
-<h2><a href="#${anchor}">${esc(d.title)}</a>${src}</h2>
+<div class="sec-hd"><h2><a href="#${anchor}">${esc(d.title)}</a></h2>${src}</div>
 ${compassNote}
 ${pairChip(source, d, pairIdx, ownCounts)}
 ${supersededChip(d)}
@@ -1726,7 +1727,7 @@ function renderStudyPage() {
 .st-cb-msg{min-height:20px;text-align:center;font-size:13px;font-weight:700;color:var(--brass-ink);margin:8px 0 2px}
 .st-cb-kb{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .st-cb-kbrow{display:flex;gap:4px;justify-content:center}
-.st-cb-key{min-width:clamp(22px,7vw,40px);height:50px;padding:0 5px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:7px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;text-transform:uppercase}
+.st-cb-key{min-width:clamp(24px,7vw,40px);height:50px;padding:0 5px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:7px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;text-transform:uppercase}
 .st-cb-key:active{transform:translateY(1px)}
 .st-cb-key-wide{min-width:clamp(44px,12vw,62px);font-size:11px}
 .st-cb-key-c{background:#6aaa64;border-color:#6aaa64;color:#13151b}
@@ -1746,7 +1747,7 @@ function renderStudyPage() {
 .st-cb-hist{max-width:300px;margin:14px auto 0;display:grid;gap:4px}
 .st-cb-hrow{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
 .st-cb-hbar{flex:1;height:16px;background:#ece8dd;border-radius:4px;overflow:hidden}
-.st-cb-hbar span{display:flex;align-items:center;justify-content:flex-end;padding-right:6px;height:100%;min-width:16px;background:#9aa3ad;border-radius:4px;color:#fff;font-size:10.5px}
+.st-cb-hbar span{display:flex;align-items:center;justify-content:flex-end;padding-right:6px;height:100%;min-width:16px;background:#6e6a60;border-radius:4px;color:#fff;font-size:10.5px}
 .st-cb-hbar span.st-cb-hbar-me{background:linear-gradient(90deg,#6f521a,#b8934a)}
 /* Combination: today's board (result view) */
 .st-cb-board-mod{max-width:330px;margin:16px auto 0}
@@ -1780,7 +1781,9 @@ function renderStudyPage() {
 .st-gv-q{font-family:var(--serif);font-size:21px;line-height:1.35;color:var(--ink);letter-spacing:-.008em;min-height:58px}
 .st-gv-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
 @media(max-width:480px){.st-gv-opts{grid-template-columns:1fr}}
-.st-gv-opt{text-align:left;background:#fff;border:1px solid var(--line2);border-radius:10px;padding:12px 14px;cursor:pointer;min-height:60px;transition:border-color .12s,transform .12s,box-shadow .12s}
+.st-gv-opt{position:relative;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:10px;padding:12px 34px 12px 14px;cursor:pointer;min-height:60px;transition:border-color .12s,transform .12s,box-shadow .12s}
+.st-gv-mark{position:absolute;top:8px;right:10px;font-size:15px;font-weight:800;line-height:1;color:#1e6b43}
+.st-gv-mark-x{color:#b3261e}
 .st-gv-opt:hover:not(:disabled){border-color:rgba(135,101,28,.5);transform:translateY(-1px);box-shadow:0 8px 18px -12px rgba(15,37,64,.3)}
 .st-gv-opt:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
 .st-gv-opt b{display:block;font-family:var(--serif);font-size:17px;color:var(--ink)}
@@ -1872,7 +1875,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=69"></script>`;
+<script defer src="/assets/study.js?v=70"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }

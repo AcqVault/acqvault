@@ -1559,7 +1559,7 @@
       var fast = (Date.now() - qShownAt) < 4000;
       Array.prototype.forEach.call(app.querySelectorAll('.st-gv-opt'), function (b) {
         b.disabled = true;
-        if (b.getAttribute('data-p') === q.p) b.classList.add('st-gv-opt-right');
+        if (b.getAttribute('data-p') === q.p) { b.classList.add('st-gv-opt-right'); b.insertAdjacentHTML('beforeend', '<span class="st-gv-mark" aria-hidden="true">✓</span>'); }
       });
       if (right) {
         combo++; bestCombo = Math.max(bestCombo, combo);
@@ -1573,6 +1573,7 @@
         pend = setTimeout(next, 340);
       } else {
         btn.classList.add('st-gv-opt-wrong');
+        btn.insertAdjacentHTML('beforeend', '<span class="st-gv-mark st-gv-mark-x" aria-hidden="true">✗</span>');
         combo = 0;
         var pips2 = el('gv-pips'); if (pips2) pips2.outerHTML = pipsHtml();
         misses.push(q);

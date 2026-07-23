@@ -1941,14 +1941,14 @@
         const pinned = isPinned(key);
         const meta = [item.solicitationNumber, item.naicsCode ? `NAICS ${item.naicsCode}` : '', item.classificationCode ? `PSC ${item.classificationCode}` : '', item.setAside].filter(Boolean);
         const foot = [deadlineFlag(item), item.attachments ? `<span class="market-opp-attach">${item.attachments} attachment${item.attachments === 1 ? '' : 's'}</span>` : ''].filter(Boolean).join('');
-        return `<a class="market-opp-card" href="${escAttr(item.uiLink || 'https://sam.gov/search/?index=opp')}" target="_blank" rel="noopener">
+        return `<div class="market-opp-card">
           <div class="market-opp-top"><span class="market-opp-type">${esc(item.type || 'Opportunity')}</span><span class="market-opp-top-right"><span class="market-opp-date">${esc(item.postedDate || '')}</span><button type="button" class="market-opp-pin${pinned ? ' pinned' : ''}" data-pin="${escAttr(key)}" aria-pressed="${pinned}" aria-label="${pinned ? 'Remove from board' : 'Pin to board'}" title="${pinned ? 'Pinned to your board' : 'Pin to your board'}">${PIN_SVG}</button></span></div>
-          <div class="market-opp-title">${esc(item.title)}</div>
+          <div class="market-opp-title"><a class="market-opp-title-link" href="${escAttr(item.uiLink || 'https://sam.gov/search/?index=opp')}" target="_blank" rel="noopener">${esc(item.title)}</a></div>
           <div class="market-opp-org">${esc(item.organization || 'SAM.gov opportunity')}</div>
           <div class="market-opp-meta">${meta.map(value => `<span>${esc(value)}</span>`).join('')}</div>
           ${awardLine(item)}
           ${foot ? `<div class="market-opp-foot">${foot}</div>` : ''}
-        </a>`;
+        </div>`;
       }).join('');
       updateBoardBtn();
     }

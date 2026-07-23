@@ -153,7 +153,13 @@ window.runExampleQuery = function (q) {
       }, { passive: true });
     }
 
-    inp.addEventListener('input', () => { filter(inp.value); clr.classList.toggle('visible', !!inp.value); updateCompactState(); });
+    var searchDebounce;
+    inp.addEventListener('input', () => {
+      clr.classList.toggle('visible', !!inp.value);
+      updateCompactState();
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => filter(inp.value), 160);  // mirror part-nav.js — don't re-highlight the whole reader on every keystroke
+    });
     clr.addEventListener('click', () => { inp.value = ''; filter(''); clr.classList.remove('visible'); inp.focus(); updateCompactState(); });
     inp.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -238,7 +244,8 @@ window.runExampleQuery = function (q) {
       current.classList.add('active');
       if (count) count.textContent = `${activeIndex + 1} of ${marks.length}`;
       updateCompactState();
-      current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      current.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
     }
 
     function filter(q) {
