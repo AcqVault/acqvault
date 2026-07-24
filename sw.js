@@ -1,6 +1,6 @@
 /* AcqVault service worker — offline shell + corpus, leaves live data network-only.
    Bump CACHE on any change here, or when the cached corpus must refresh. */
-const CACHE = 'acqvault-v153';
+const CACHE = 'acqvault-v154';
 const SHELL = [
   '/',
   '/assets/fonts/inter-latin.woff2',
@@ -119,7 +119,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.match(req).then((cached) =>
         cached || fetch(req).then((res) => {
-          if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
+          if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {}); }
           return res;
         })
       )
@@ -130,7 +130,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(req).then((cached) => {
       const network = fetch(req).then((res) => {
-        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
+        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {}); }
         return res;
       }).catch(() => cached);
       return cached || network;

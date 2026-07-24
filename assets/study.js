@@ -239,6 +239,9 @@
     if (!rendered) { rendered = true; return; }
     var y = Math.max(0, app.getBoundingClientRect().top + window.scrollY - 20);
     if (Math.abs(y - window.scrollY) > 2) window.scrollTo({ top: y, behavior: 'instant' });
+    // Move focus into the new view (skipping the first paint, like the scroll above) so a
+    // keyboard user isn't dropped on <body> and a screen reader announces the new card.
+    try { app.focus({ preventScroll: true }); } catch (e) { try { app.focus(); } catch (e2) {} }
   }
 
   var VAULT_GLYPH = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="2"><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="10"/></g><g stroke="#cdb277" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="27" x2="50" y2="38"/><line x1="50" y1="73" x2="50" y2="62"/><line x1="27" y1="50" x2="38" y2="50"/><line x1="73" y1="50" x2="62" y2="50"/></g><circle cx="50" cy="50" r="3.6" fill="#cdb277"/></svg>';
@@ -1942,6 +1945,12 @@
   document.addEventListener('DOMContentLoaded', function () {
     app = el('study-app');
     if (!app) return;
+    // render() replaces the whole view, destroying the focused control — so after each swap
+    // focus fell to <body> and a screen reader announced nothing. Make the view container a
+    // programmatic focus target (never in the tab order) so render() can move focus into the
+    // new card; outline suppressed because it's a -1 target, not a keyboard-tabbable control.
+    app.setAttribute('tabindex', '-1');
+    app.style.outline = 'none';
     fetch(DECK_URL).then(function (r) { return r.json(); }).then(function (d) {
       deck = d;
       history.replaceState({ st: 0 }, '');

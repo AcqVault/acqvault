@@ -128,8 +128,6 @@ module.exports = async function handler(req, res) {
       recipientsScope = 'sample';
     }
 
-    // Data is stable historical record → cache hard at the edge.
-    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
     return res.status(200).json({
       awards: results.slice(0, 12),
       recipients,
@@ -295,8 +293,6 @@ async function vehiclesMode(res, body) {
       };
     }));
 
-    // Data is stable day-to-day → cache hard at the edge.
-    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
     return res.status(200).json({
       vehicles: vehicles.filter(v => v.piid || v.recipient || v.desc),
       sampledOrders: orderPages.length,
@@ -361,7 +357,6 @@ async function competitionMode(res, body) {
     // Data hygiene: extent-competed is unlabeled on some older actions, so the two
     // buckets may not sum to the total. Report shares of LABELED dollars and say so.
     const labeled = competedDollars + notCompetedDollars;
-    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
     return res.status(200).json({
       years: 3,
       totalDollars: Math.round(totalDollars),
