@@ -116,7 +116,16 @@ async function boardPost(req, res, body) {
   if (gate[0] && gate[0].result === null) {
     return res.status(409).json({ error: 'Today’s result is already on the board from this connection.' });
   }
-  const secs = Math.floor((Date.now() % 86400000) / 1000);
+  // Tie-break = seconds INTO THE ROUND, not seconds since UTC midnight. The round runs
+  // 05:00-05:00 Central, so a midnight-based counter wrapped to 0 mid-round and every post
+  // after that outranked the ones before it. Derive the round start the same way the day
+  // index is derived, so the two can't disagree.
+  const roundStartMs = (() => {
+    const approx = boardDayNo() === null ? Date.now() : (comboToday() * 86400000) + COMBO_RESET_H * 3600000;
+    const t = approx - tzOffsetMs(approx);
+    return approx - tzOffsetMs(t);
+  })();
+  const secs = Math.max(0, Math.floor((Date.now() - roundStartMs) / 1000));
   const score = (g === 'X' ? 9 : g) * 1e6 + secs; // fewer guesses first; earlier post breaks ties
   const member = Date.now().toString(36) + Math.random().toString(36).slice(2, 7) + SEP + name + SEP + g;
   const out = await redis([

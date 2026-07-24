@@ -142,6 +142,9 @@ window.runExampleQuery = function (q) {
     const next  = document.getElementById(NEXT_ID);
     if (!inp || attached) return;
     attached = true;
+    // Module-scope state survives a part re-render, so Enter in the fresh, empty search box
+    // used to jump using the PREVIOUS part's match list.
+    marks = []; activeIndex = -1;
     compactTarget = bar;
     compactAnchorY = bar ? bar.getBoundingClientRect().top + window.scrollY : 0;
     if (!compactScrollBound) {
@@ -164,6 +167,7 @@ window.runExampleQuery = function (q) {
     inp.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
+        if (!inp.value.trim()) return;                 // nothing typed: no stale jump
         if (marks.length) activate(e.shiftKey ? activeIndex - 1 : activeIndex + 1);
       }
     });

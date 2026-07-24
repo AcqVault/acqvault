@@ -593,8 +593,13 @@
     return Math.floor((t + tzOffsetMs(t) - COMBO_RESET_H * 3600000) / 86400000);
   }
   function comboResetAt(day) {   // the instant round `day` ends, in real epoch ms
+    // `approx` is a pseudo-LOCAL timestamp, so asking for the offset AT approx samples the
+    // zone ~5h before the true roll — on a DST-transition day that is the wrong side of the
+    // change and the countdown came out an hour off. Converge: offset at approx gives a
+    // first real instant, then re-read the offset there.
     var approx = (day + 1) * 86400000 + COMBO_RESET_H * 3600000;
-    return approx - tzOffsetMs(approx);
+    var t = approx - tzOffsetMs(approx);
+    return approx - tzOffsetMs(t);
   }
   var COMBO_EPOCH = comboToday(Date.UTC(2026, 6, 12, 12)); // No. 1 = 12 Jul 2026, Central
   function comboNo(day) { return day - COMBO_EPOCH + 1; }
@@ -994,7 +999,7 @@
   ];
   var BD_VERDICT = { 1: 'Rough', 2: 'Getting there', 3: 'Board-ready' };
 
-  function ladderBoardSession(rung, label, pickId, startStage) {
+  function ladderBoardSession(rung, label, pickId, startStage, hintWasUsed) {
     var pool = ladderBoardPool(rung);
     if (!pool.length) { viewLadder(); return; }
     var done = ladderBoardMap();
@@ -1007,7 +1012,7 @@
     var fus = sc.follow_ups || [];
     var CHECK_STAGE = 2 + fus.length, RECORD_STAGE = CHECK_STAGE + 1;
     var stage = Math.min(startStage || 0, RECORD_STAGE);
-    var fuRevealed = false, hintUsed = false;
+    var fuRevealed = false, hintUsed = !!hintWasUsed;   // survives a reload; see saveResume below
     var bluf = '';
     var checks = [false, false, false];
 
@@ -1030,7 +1035,9 @@
          fired the last follow-up's advance — skipping the grade and showing a verdict
          that was never saved. */
       keyHandler(null);
-      saveResume('ladderBoard', rung, [sc], stage, 0, label);
+      // hintUsed must ride along: without it a reload before self-grading silently lifted
+      // the documented hint cap and let a hinted answer score "Board-ready".
+      saveResume('ladderBoard', rung, [sc], stage, 0, label, { hintUsed: hintUsed });
       var body = '<div class="st-chip">Board sim · ' + esc(sc.topic) + '</div>';
       if (stage === 0) {
         body += '<div class="st-scenario"><div class="st-scen-eyebrow">The scenario</div>' + esc(sc.scenario) + '</div>' +
@@ -1166,7 +1173,7 @@
     if (!ladderBoardPool(r.rung).some(function (s) { return s.id === r.ids[0]; })) { clearResume(); return false; }
     S.ladderRung = r.rung; save();
     depth1View = viewLadder;
-    goDepth(2, function () { ladderBoardSession(r.rung, r.label, r.ids[0], r.i); });
+    goDepth(2, function () { ladderBoardSession(r.rung, r.label, r.ids[0], r.i, r.hintUsed); });
     return true;
   }
   /* render() deliberately skips its anchor-scroll on the very first paint so a cold arrival
@@ -1265,7 +1272,13 @@
             ch = guess[c] || '';
             if (ch) cls = ' st-cb-fill';
           }
-          html += '<span class="st-cb-tile' + cls + '">' + ch + '</span>';
+          // Right-spot / wrong-spot / not-in-word was conveyed by colour alone. Give each
+          // SCORED tile a text equivalent so it is usable without colour perception.
+          var st = (r < G.rows.length) ? evalRow(G.rows[r])[c] : '';
+          var lbl = st === 'c' ? 'right spot' : st === 'p' ? 'in the word, wrong spot' : st === 'a' ? 'not in the word' : '';
+          html += '<span class="st-cb-tile' + cls + '"' +
+                  (lbl ? ' role="img" aria-label="' + ch + ', ' + lbl + '"' : '') +
+                  '>' + ch + '</span>';
         }
         html += '</div>';
       }
@@ -1384,10 +1397,15 @@
       try { if (document.execCommand('copy')) ok(); } catch (e) {}
       document.body.removeChild(ta);
     }
-    function boardListHtml(top, mine) {
+    // Matching on display name alone highlighted EVERY entry called "Anonymous" as the
+    // current user. The server hands back the poster's rank, so require the position to
+    // match too; if the rank has since shifted we simply highlight nothing, which is far
+    // better than pointing at a stranger.
+    function boardListHtml(top, mine, myRank) {
       if (!top.length) return '<p class="st-sub" style="text-align:center;margin:6px 0 0">No one on the board yet — be first.</p>';
       return '<ol class="st-lb-list">' + top.slice(0, 10).map(function (e, i) {
-        return '<li' + (mine && e.n === mine ? ' class="st-lb-me"' : '') + '><span class="st-lb-rank">' + (i + 1) + '</span><span class="st-lb-name">' + esc(e.n) + '</span><span class="st-lb-g">' + (e.g === 'X' ? '—' : e.g + '/6') + '</span></li>';
+        var isMe = !!mine && e.n === mine && (myRank ? (i + 1) === Number(myRank) : true);
+        return '<li' + (isMe ? ' class="st-lb-me"' : '') + '><span class="st-lb-rank">' + (i + 1) + '</span><span class="st-lb-name">' + esc(e.n) + '</span><span class="st-lb-g">' + (e.g === 'X' ? '—' : e.g + '/6') + '</span></li>';
       }).join('') + '</ol>';
     }
     function wireBoard() {
@@ -1397,7 +1415,7 @@
         if (!b.configured) { box.innerHTML = ''; return; }
         var head = '<div class="st-lb-head">Today&rsquo;s board · ' + b.count + ' on it</div>';
         if (posted) {
-          box.innerHTML = head + boardListHtml(b.top, G.postedName) +
+          box.innerHTML = head + boardListHtml(b.top, G.postedName, G.postedRank) +
             (G.postedRank ? '<p class="st-sub" style="text-align:center;margin-top:6px">You&rsquo;re #' + G.postedRank + ' today.</p>' : '');
           return;
         }
@@ -1882,6 +1900,10 @@
   function keyHandler(fn) { keyFn = fn; }
   document.addEventListener('keydown', function (e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.metaKey || e.ctrlKey || e.altKey) return;
+    // Also bail on focused interactive elements: Space/Enter on a focused <button> must
+    // activate that button, not run a study shortcut. preventDefault() here swallowed the
+    // click a keyboard user was trying to make.
+    if (e.target.closest && e.target.closest('button,a,select,[role="button"],[contenteditable="true"]')) return;
     if (keyFn && keyFn(e.key)) e.preventDefault();
   });
 
@@ -1897,7 +1919,20 @@
     var f = e.target.files[0]; if (!f) return;
     var r = new FileReader();
     r.onload = function () {
-      try { var s = JSON.parse(r.result); if (s && s.cards) { S = s; save(); viewHome(); } else alert('Not a study-progress file.'); }
+      // Normalise before adopting. A file carrying `cards` but no scen/sprint/games used to be
+      // saved raw, and every later read of the missing branch threw — permanently bricking the
+      // dashboard with no route back short of clearing storage.
+      try {
+        var s = JSON.parse(r.result);
+        if (s && s.cards && typeof s.cards === 'object') {
+          S = Object.assign({ track: null, cards: {}, scen: {}, sprint: { best: 0 }, games: {}, created: Date.now() }, s);
+          if (!S.cards || typeof S.cards !== 'object') S.cards = {};
+          if (!S.scen || typeof S.scen !== 'object') S.scen = {};
+          if (!S.sprint || typeof S.sprint !== 'object') S.sprint = { best: 0 };
+          if (!S.games || typeof S.games !== 'object') S.games = {};
+          save(); viewHome();
+        } else alert('Not a study-progress file.');
+      }
       catch (err) { alert('Could not read that file.'); }
     };
     r.readAsText(f);

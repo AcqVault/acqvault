@@ -37,8 +37,28 @@
                searches: Array.isArray(o.searches) ? o.searches : [] };
     } catch (e) { return { clauses: [], searches: [] }; }
   }
+  // Each pin keeps the clause body as a wording baseline for the change diff, so a user with
+  // a number of large pins could exhaust the quota — after which EVERY later write failed
+  // silently and new pins simply vanished on reload. Cap each baseline, and on a quota throw
+  // shed the oldest baselines (the diff degrades to "earlier wording not captured", which the
+  // UI already handles at line 159) and retry rather than losing the pin itself.
+  var TEXT_BASELINE_MAX = 8000;
+  function capBaseline(t) {
+    return (typeof t === 'string' && t.length > TEXT_BASELINE_MAX) ? t.slice(0, TEXT_BASELINE_MAX) : t;
+  }
   function persist() {
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* private mode / quota: degrade */ }
+    try { localStorage.setItem(KEY, JSON.stringify(state)); return true; }
+    catch (e) {
+      // Shed wording baselines oldest-first until it fits; the pins themselves survive.
+      try {
+        var withText = (state.clauses || []).filter(function (c) { return c.text != null; });
+        for (var i = 0; i < withText.length; i++) {
+          withText[i].text = null;
+          try { localStorage.setItem(KEY, JSON.stringify(state)); return true; } catch (e2) { /* keep shedding */ }
+        }
+      } catch (e3) {}
+      return false;   // private mode, or genuinely out of room even with no baselines
+    }
   }
   var state = load();
   var panelOpen = false;
@@ -68,14 +88,14 @@
     var c = state.clauses.find(function (x) { return x.id === id; });
     if (c && HASHES && HASHES[id]) {
       c.chash = HASHES[id];
-      fetchClauseText(c).then(function (t) { if (t) { c.text = t; persist(); } }); // re-baseline wording to current
+      fetchClauseText(c).then(function (t) { if (t) { c.text = capBaseline(t); persist(); } }); // re-baseline wording to current
       persist(); updateCounts(); if (panelOpen) renderPanel();
     }
   }
   function markAllSeen() {
     if (!HASHES) return;
     state.clauses.forEach(function (c) {
-      if (clauseChanged(c)) { c.chash = HASHES[c.id]; fetchClauseText(c).then(function (t) { if (t) { c.text = t; persist(); } }); }
+      if (clauseChanged(c)) { c.chash = HASHES[c.id]; fetchClauseText(c).then(function (t) { if (t) { c.text = capBaseline(t); persist(); } }); }
     });
     persist(); updateCounts(); if (panelOpen) renderPanel();
   }
@@ -124,7 +144,7 @@
   }
   function ensurePinText(c) {           // capture a baseline of the wording at pin/seen time
     if (c.text != null) return;
-    fetchClauseText(c).then(function (t) { if (t && c.text == null) { c.text = t; persist(); } });
+    fetchClauseText(c).then(function (t) { if (t && c.text == null) { c.text = capBaseline(t); persist(); } });
   }
   function wordDiff(oldStr, newStr) {   // LCS over whitespace-preserving word tokens
     var a = (oldStr || '').split(/(\s+)/), b = (newStr || '').split(/(\s+)/);
@@ -179,7 +199,7 @@
         filename: d.filename || '', url: d.url || '', anchor: d.anchor || '',
         indexed_at: d.indexed_at || '', status: d.status || '',
         chash: (HASHES && HASHES[d.id]) || null, // content-hash baseline for change tracking
-        text: (d.content != null ? cleanText(d.content) : null), // wording baseline for the diff
+        text: (d.content != null ? capBaseline(cleanText(d.content)) : null), // wording baseline for the diff
         savedAt: Date.now()
       };
       state.clauses.push(nc);
@@ -233,7 +253,12 @@
   function runSavedSearch(s) {
     closePanel();
     var el = searchInputEl();
-    if (el) el.value = s.q;
+    // Fill the query box AFTER the pills are driven. The app's filter handler ends with
+    // `if (searchInput.value.trim()) runSearch(...)`, so populating it first made every
+    // synthetic pill .click() below fire its own full search — and in AI answer mode a
+    // separate Ask request each. Left empty, those clicks are no-ops and only the single
+    // intended search at the end runs.
+    if (el) el.value = '';
     // Restore the source scope by driving the app's own filter pills (which own activeSources).
     var allPill = document.querySelector('#source-filters .fpill[data-source="all"]');
     if (s.sources && s.sources.length) {
@@ -249,6 +274,7 @@
     } else if (allPill && !allPill.classList.contains('active')) {
       allPill.click(); // back to All sources
     }
+    if (el) el.value = s.q;   // now that the pills are settled, one search runs below
     if (typeof window.setMode === 'function') window.setMode('search');
     if (typeof window.runSearch === 'function') window.runSearch();
   }

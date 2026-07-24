@@ -3053,13 +3053,32 @@ function docCacheKey(docId) {
 // whole doc cache so the stores that actually matter can still write.
 const DOC_CACHE_MAX = 24;
 const DOC_CACHE_INDEX = 'acqvault:doc:__index';
+// Scan by PREFIX, never trust the index alone: builds before the cache was bounded wrote
+// unbounded acqvault:doc:<id> entries with no index at all, so an index-only sweep frees
+// nothing for exactly the upgrading users whose legacy entries filled the quota.
+function docCacheKeysInStorage() {
+  const out = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.indexOf('acqvault:doc:') === 0 && k !== DOC_CACHE_INDEX) out.push(k);
+    }
+  } catch (e) {}
+  return out;
+}
 function docCacheIndex() {
-  try { const a = JSON.parse(localStorage.getItem(DOC_CACHE_INDEX) || '[]'); return Array.isArray(a) ? a : []; }
-  catch (e) { return []; }
+  let idx = [];
+  try { const a = JSON.parse(localStorage.getItem(DOC_CACHE_INDEX) || '[]'); if (Array.isArray(a)) idx = a; }
+  catch (e) { idx = []; }
+  // Seed from a prefix scan so pre-upgrade entries are counted by the bound too. Unknown
+  // (legacy) keys go first, i.e. they are the first evicted.
+  const known = new Set(idx);
+  const legacy = docCacheKeysInStorage().filter(k => !known.has(k));
+  return legacy.concat(idx);
 }
 function purgeDocCache() {
   try {
-    docCacheIndex().forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+    docCacheKeysInStorage().forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
     localStorage.removeItem(DOC_CACHE_INDEX);
   } catch (e) {}
 }
@@ -3585,7 +3604,9 @@ function filterReaderContent(q) {
   }
 }
 
+let readerFindTimer = null;        // declared before resetReaderSearch, which clears it
 function resetReaderSearch() {
+  clearTimeout(readerFindTimer);   // else a pending find repaints after the box is cleared
   const input = document.getElementById('reader-search-input');
   const countEl = document.getElementById('reader-search-count');
   const clearBtn = document.getElementById('reader-search-clear');
@@ -3610,8 +3631,8 @@ function renderReaderError() {
 
 // Debounced to match the sibling find implementations (polish.js / part-nav.js). This one
 // was the only undebounced find: it re-scanned and re-laid-out the whole part — up to ~2MB
-// of textContent — on EVERY keystroke.
-let readerFindTimer = null;
+// of textContent — on EVERY keystroke. (readerFindTimer is declared above resetReaderSearch,
+// which clears it — a `let` here would sit in the TDZ for that earlier caller.)
 document.getElementById('reader-search-input').addEventListener('input', function() {
   const v = this.value;
   clearTimeout(readerFindTimer);

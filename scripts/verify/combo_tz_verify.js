@@ -54,10 +54,15 @@ let drift = 0;
 for (let d = 0; d < 365; d++) if (comboToday(base + d * 86400000) !== start + d) drift++;
 check(drift === 0, `365 consecutive days advance by exactly 1 (${365 - drift}/365)`);
 
-// 3. the countdown target is the instant the index actually increments
-const t0 = Date.parse('2026-07-15T12:00:00Z'), d0 = comboToday(t0), r = comboResetAt(d0);
-check(comboToday(r) === d0 + 1 && comboToday(r - 1000) === d0,
-  `comboResetAt is exactly the roll instant (${central(r)} Central)`);
+// 3. the countdown target is the instant the index actually increments — including on the
+//    DST-transition days, where sampling the zone offset at a pseudo-local timestamp put
+//    comboResetAt an hour off (the countdown lied once each spring and autumn).
+for (const [label, day] of [['mid-summer', '2026-07-15'], ['DST-eve spring', '2026-03-07'],
+                            ['DST-eve autumn', '2026-10-31'], ['mid-winter', '2026-01-15']]) {
+  const t = Date.parse(day + 'T12:00:00Z'), d = comboToday(t), rr = comboResetAt(d);
+  check(comboToday(rr) === d + 1 && comboToday(rr - 1000) === d && hhmm(rr) === '05:00',
+    `comboResetAt is exactly the roll instant, ${label} (${central(rr)} Central)`);
+}
 
 // 4. puzzle numbering is unchanged by the move off midnight Zulu
 const EPOCH = comboToday(Date.UTC(2026, 6, 12, 12));

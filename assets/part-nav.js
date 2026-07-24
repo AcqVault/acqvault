@@ -147,7 +147,9 @@
     var term = q.trim();
     if (!term) { updateNav(); return; }
     // One character matches most of the page and costs a full re-walk for nothing.
-    if (term.length < 2) { updateNav(); return; }
+    // Don't run updateNav here: it writes "No matches" into the aria-live region, which is
+    // a false negative on a page full of matches — the search simply hasn't started yet.
+    if (term.length < 2) { if (countEl) countEl.textContent = ''; return; }
     var regex = new RegExp(escapeRegExp(term), 'gi');
     for (var i = 0; i < sections.length; i++) highlightSection(sections[i], regex);
     updateNav();

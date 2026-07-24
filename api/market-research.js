@@ -232,8 +232,15 @@ module.exports = async function handler(req, res) {
     const hasCode = !!(base.naics || base.psc);
     const hasQuery = !!base.query;
     const terms = queryTerms(base.query);
-    const broaden = hasCode && hasQuery;
-    const fetchQuery = hasCode ? '' : base.query;
+    // Broaden ONLY when the keyword can actually rank. queryTerms drops tokens of 2 chars
+    // or fewer, so "AI"/"IT"/"3D" yield no terms — dropping SAM's title= for those would
+    // discard the keyword entirely and collapse the sort to posted-date order while the UI
+    // still claimed "keyword-relevant notices ranked first". A short keyword therefore
+    // stays on SAM's title filter (alongside the code), and `broadened` stays false so no
+    // ranking claim is made. titleScoped stays gated on hasCode so the "add a NAICS or PSC"
+    // note can never appear to someone who already supplied one.
+    const broaden = hasCode && terms.length > 0;
+    const fetchQuery = broaden ? '' : base.query;
     const makeRequests = (query, limitOverride = FETCH_PAGE) => {
       const requests = [];
       for (const range of ranges) {

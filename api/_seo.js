@@ -8,7 +8,7 @@ const SITE = 'https://www.acqvault.com';
 
 // /assets/* is served immutable for 30 days, so a changed part-nav.js MUST come
 // with a bumped ?v or every client that already holds it keeps the old file.
-const PART_NAV_V = 2;
+const PART_NAV_V = 3;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -766,15 +766,18 @@ function renderContent(content, title, anchorBase, tables, source, partNum) {
   return out.join('\n');
 }
 
+// Returns PLAIN text. Escape at the HTML-attribute site; JSON-LD must get the raw string
+// (JSON.stringify does its own escaping, so feeding it entity-encoded text published
+// "R&amp;D" / "Officer&#39;s" inside structured data).
 function metaDescription(docs) {
   const text = String((docs[0] && docs[0].content) || '').replace(/^L\d+:\s*/gm, '').replace(/\s+/g, ' ').trim();
-  return esc(clampDesc(text, 155));
+  return clampDesc(text, 155);
 }
 
 const STYLE = `@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
 @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
 @font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}
-:root{--ink:#13151b;--muted:#5e5d66;--line:#948b7c;--line2:#e8e5de;--accent:#87651c;--bg:#fff;--brass:#87651c;--brass-ink:#5e4715;--brass-bright:#e4c477;--brass-deep:#6f521a;--brass-line:rgba(154,115,32,0.40);--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif}
+:root{--ink:#13151b;--muted:#5e5d66;--line:#948b7c;--line2:#e8e5de;--accent:#87651c;--bg:#fff;--brass:#87651c;--brass-ink:#5e4715;--brass-bright:#e4c477;--brass-deep:#6f521a;--brass-line:rgba(154,115,32,0.40);--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif;--ink2:#262a31;--cm-bg:#e6e8ea;--cm-txt:#333f49;--fs-xs:11px;--fs-sm:12px;--fs-base:13px;--fs-md:14px;--fs-lg:15px;--fw-heavy:800;--fw-black:850}
 *{box-sizing:border-box}body{margin:0;font-family:'Inter',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
 ::selection{background:rgba(135,101,28,0.16);color:var(--ink)}
 mark{background:rgba(135,101,28,0.20);color:var(--ink);border-radius:2px;padding:0 1px}
@@ -1088,7 +1091,8 @@ function renderPartPage(source, part) {
   const canonical = `${SITE}/${source}/part-${encodeURIComponent(part)}`;
   const label = partLabel(source, part);   // "Part 6" for most; "Appendix A — Debriefing Guide" for ssp
   const title = `${meta.short} ${label} — ${meta.name} | AcqVault`;
-  const description = metaDescription(docs);
+  const descPlain = metaDescription(docs);
+  const description = esc(descPlain);   // meta/og attributes need escaping; JSON-LD does not
 
   // Sources published as one document (the SSP, for instance) give every section the
   // same landing page, so a per-section credit repeats one URL dozens of times down
@@ -1126,7 +1130,7 @@ ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'Article',
     headline: `${meta.name} — ${label}`,
-    description: description,
+    description: descPlain,
     isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE },
     publisher: { '@type': 'Organization', name: 'AcqVault', url: SITE },
     mainEntityOfPage: canonical
@@ -1877,7 +1881,7 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=72"></script>`;
+<script defer src="/assets/study.js?v=73"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }
