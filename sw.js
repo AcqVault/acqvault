@@ -1,10 +1,14 @@
 /* AcqVault service worker — offline shell + corpus, leaves live data network-only.
    Bump CACHE on any change here, or when the cached corpus must refresh. */
-const CACHE = 'acqvault-v151';
+const CACHE = 'acqvault-v152';
 const SHELL = [
   '/',
   '/assets/fonts/inter-latin.woff2',
-  '/assets/fonts/inter-latin-ext.woff2'
+  '/assets/fonts/inter-latin-ext.woff2',
+  // Referenced only from app.css, so the install-time parse of index.html never reaches
+  // them and the mono faces were missing offline.
+  '/assets/fonts/ibm-plex-mono-latin.woff2',
+  '/assets/fonts/ibm-plex-mono-sb-latin.woff2'
 ];
 
 self.addEventListener('install', (event) => {
@@ -64,16 +68,24 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(new Promise((resolve) => {
       let settled = false;
       const finish = (r) => { if (!settled && r) { settled = true; resolve(r); } };
-      const timer = setTimeout(() => caches.match('/').then(finish), 3000);
+      // Offline fallback prefers THIS page, then the home shell.
+      const cachedFallback = () => caches.match(req).then((r) => r || caches.match('/'));
+      const timer = setTimeout(() => cachedFallback().then(finish), 3000);
       fetch(req).then((res) => {
         clearTimeout(timer);
-        // Only cache a genuine same-origin 2xx shell — never poison '/' with an
-        // error page, redirect, or opaque response.
+        // Only cache a genuine same-origin 2xx shell — never poison the cache with an
+        // error page, redirect, or opaque response. Store under the request's OWN key:
+        // writing every navigation to '/' meant the last page you visited became your
+        // offline "home", and no other page was available offline at all.
         if (res && res.ok && res.type === 'basic') {
-          caches.open(CACHE).then((c) => c.put('/', res.clone()));
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => {
+            c.put(req, copy.clone());
+            if (new URL(req.url).pathname === '/') c.put('/', copy.clone());
+          });
         }
         finish(res);
-      }).catch(() => { clearTimeout(timer); caches.match('/').then((c) => finish(c || Response.error())); });
+      }).catch(() => { clearTimeout(timer); cachedFallback().then((c) => finish(c || Response.error())); });
     }));
     return;
   }

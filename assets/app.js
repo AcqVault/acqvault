@@ -66,7 +66,7 @@ let ACQ_INDEX = null;            // [{ doc, titleLc, contentLc }]
 let acqCorpusPromise = null;
 function acqQueryTerms(q){ return String(q||'').toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>=2); }
 function acqValueFilters(filter, field){ const re=new RegExp(field+'\\s*=\\s*"([^"]+)"','g'); return [...String(filter||'').matchAll(re)].map(m=>m[1]); }
-function acqScore(entry, terms, phrase){
+function acqScore(entry, terms, phraseRe){
   if(!terms.length) return 1;
   let score=0, titleHits=0;
   for(const term of terms){
@@ -76,9 +76,11 @@ function acqScore(entry, terms, phrase){
     if(inContent) score+=2;
   }
   if(titleHits===terms.length) score+=15;
-  if(phrase && terms.length>1){
-    if(entry.titleLc.includes(phrase)) score+=100;
-    else if(entry.contentLc.includes(phrase)) score+=25;
+  // MIRRORS api/search.js scoreEntry: allow any non-alphanumeric run between terms so the
+  // hyphenated spelling the corpus uses earns the same phrase bonus as the spaced one.
+  if(phraseRe && terms.length>1){
+    if(phraseRe.test(entry.titleLc)) score+=100;
+    else if(phraseRe.test(entry.contentLc)) score+=25;
   }
   return score;
 }
@@ -174,7 +176,10 @@ function clauseSuppressSet(entries){
 function acqLocalSearch(body){
   const filter=body.filter||'';
   const sources=acqValueFilters(filter,'source'), parts=acqValueFilters(filter,'part'), statuses=acqValueFilters(filter,'status');
-  const terms=acqQueryTerms(body.q), phrase=terms.join(' ');
+  const terms=acqQueryTerms(body.q);
+  // terms are already [a-z0-9]-only, so no regex escaping is needed. MIRRORS api/search.js.
+  const phraseRe=terms.length>1 ? new RegExp(terms.join('[^a-z0-9]+')) : null;
+  const rawQ=String(body.q||'').trim().toLowerCase();
   let entries=ACQ_INDEX.filter(({doc})=>{
     if(sources.length && !sources.includes(String(doc.source||''))) return false;
     if(parts.length && !parts.includes(String(doc.part||''))) return false;
@@ -184,11 +189,19 @@ function acqLocalSearch(body){
   if(terms.length){
     // Dedup applies to QUERIES only — a part filter (browse) must keep every doc.
     const suppress=clauseSuppressSet(ACQ_INDEX);
-    entries=entries.filter(({doc})=>!suppress.has(doc.id)).map(e=>({e,s:acqScore(e,terms,phrase)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.e);
+    entries=entries.filter(({doc})=>!suppress.has(doc.id)).map(e=>({e,s:acqScore(e,terms,phraseRe)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.e);
+  } else if(rawQ){
+    // MIRRORS api/search.js: a query that tokenized away entirely ("J&A", "8(a)", "T&M")
+    // must NOT fall through to the browse listing, which returned the whole corpus.
+    const suppress=clauseSuppressSet(ACQ_INDEX);
+    entries=entries.filter(({doc})=>!suppress.has(doc.id))
+      .map(e=>({e,s:(e.titleLc.includes(rawQ)?100:0)+(e.contentLc.includes(rawQ)?10:0)}))
+      .filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.e);
   } else {
     entries=entries.sort((a,b)=>acqPartNum(a.doc)-acqPartNum(b.doc)||regTitleCmp(a.doc.title,b.doc.title));
   }
-  const total=entries.length, offset=Number(body.offset)||0, limit=Math.min(Number(body.limit)||20,100);
+  // Clamp both sides — MIRRORS api/search.js.
+  const total=entries.length, offset=Math.max(0,Number(body.offset)||0), limit=Math.max(1,Math.min(Number(body.limit)||20,100));
   const hits=entries.slice(offset,offset+limit).map(({doc})=>({ ...doc, _formatted:{ title:acqHighlight(doc.title,body.q), content:acqHighlight(acqCrop(doc.content,body.q,body.cropLength),body.q) } }));
   return { hits, estimatedTotalHits:total, offset, limit, processingTimeMs:0, query:body.q||'' };
 }

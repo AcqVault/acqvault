@@ -837,6 +837,7 @@ body.work-mode #spending-dashboard{display:none;}
 .fpill[data-source="compass"].active{background:var(--cmp-solid);border-color:var(--cmp-solid);}
 .fpill[data-source="fmr"].active{background:var(--fmr-solid);border-color:var(--fmr-solid);}
 .fpill[data-source="pgi"].active{background:var(--pgi-solid);border-color:var(--pgi-solid);}
+.fpill[data-source="ssp"].active{background:var(--ssp-solid);border-color:var(--ssp-solid);}
 .fpill.disabled{opacity:0.4;cursor:not-allowed;pointer-events:none;}
 .result-meta{padding:16px 0 10px;}
 .result-count-label{font-size:var(--fs-base);font-weight:var(--fw-medium);color:var(--muted);}

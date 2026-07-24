@@ -1,13 +1,13 @@
 {
   "name": "AcqVault — Acquisition Research",
   "short_name": "AcqVault",
-  "description": "Free full-text search across the Revolutionary FAR Overhaul (RFO), R-DFARS deviations, FAR Companion, Category Management, DAFI 63-138, and the DAF Contracting Compass. Works offline.",
+  "description": "Free full-text search across all eight official sources: the Revolutionary FAR Overhaul (RFO), R-DFARS deviations, the FAR Companion, Category Management guidance, DAFI 63-138, the DoD FMR, DoD source selection procedures, and the R-DFARS PGI. Works offline.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#0f2540",
-  "theme_color": "#155FBF",
+  "theme_color": "#0f2540",
   "categories": ["government", "productivity", "reference"],
   "icons": [
     { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },

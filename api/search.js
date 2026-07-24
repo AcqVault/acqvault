@@ -47,7 +47,7 @@ function queryTerms(query) {
 // Relevance: every term must appear somewhere (AND). Title hits and full-phrase
 // hits dominate so the specific on-point section beats the big part-overview
 // doc (raw occurrence count is deliberately NOT used — it biases to long docs).
-function scoreEntry(entry, terms, phrase) {
+function scoreEntry(entry, terms, phraseRe) {
   if (!terms.length) return 1;
   let score = 0, titleHits = 0;
   for (const term of terms) {
@@ -58,9 +58,13 @@ function scoreEntry(entry, terms, phrase) {
     if (inContent) score += 2;
   }
   if (titleHits === terms.length) score += 15;
-  if (phrase && terms.length > 1) {
-    if (entry.titleLc.includes(phrase)) score += 100;
-    else if (entry.contentLc.includes(phrase)) score += 25;
+  // phraseRe allows ANY non-alphanumeric run between the terms, so the hyphenated spelling
+  // the corpus actually uses ("micro-purchase threshold") earns the same phrase bonus as the
+  // spaced one. Rebuilding the phrase with single spaces made the dominant +100 signal fire
+  // only on the rare spaced spelling, ranking a tangential section above every canonical one.
+  if (phraseRe && terms.length > 1) {
+    if (phraseRe.test(entry.titleLc)) score += 100;
+    else if (phraseRe.test(entry.contentLc)) score += 25;
   }
   return score;
 }
@@ -165,7 +169,9 @@ function searchDocs(body = {}) {
   const parts = parseValueFilters(filter, 'part');
   const statuses = parseValueFilters(filter, 'status');
   const terms = queryTerms(body.q);
-  const phrase = terms.join(' ');
+  // terms are already [a-z0-9]-only, so they need no regex escaping.
+  const phraseRe = terms.length > 1 ? new RegExp(terms.join('[^a-z0-9]+')) : null;
+  const rawQ = String(body.q || '').trim().toLowerCase();
 
   let entries = loadIndex().filter(({ doc }) => {
     if (sources.length && !sources.includes(String(doc.source || ''))) return false;
@@ -179,7 +185,18 @@ function searchDocs(body = {}) {
     const suppress = clauseSuppressSet(loadIndex());
     entries = entries
       .filter(({ doc }) => !suppress.has(doc.id))
-      .map(entry => ({ entry, score: scoreEntry(entry, terms, phrase) }))
+      .map(entry => ({ entry, score: scoreEntry(entry, terms, phraseRe) }))
+      .filter(x => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(x => x.entry);
+  } else if (rawQ) {
+    // The query tokenized away entirely — every token was 1 char ("J&A", "8(a)", "T&M").
+    // These are everyday acquisition terms, and falling through to the browse branch
+    // returned the WHOLE corpus as if it were results. Match the literal string instead.
+    const suppress = clauseSuppressSet(loadIndex());
+    entries = entries
+      .filter(({ doc }) => !suppress.has(doc.id))
+      .map(entry => ({ entry, score: (entry.titleLc.includes(rawQ) ? 100 : 0) + (entry.contentLc.includes(rawQ) ? 10 : 0) }))
       .filter(x => x.score > 0)
       .sort((a, b) => b.score - a.score)
       .map(x => x.entry);
@@ -189,8 +206,10 @@ function searchDocs(body = {}) {
   }
 
   const total = entries.length;
-  const offset = Number(body.offset) || 0;
-  const limit = Math.min(Number(body.limit) || 20, 100);
+  // Clamp both sides: a negative limit made slice(0, -1) return nearly the entire corpus
+  // (each hit spreads the full doc) from a public unauthenticated POST.
+  const offset = Math.max(0, Number(body.offset) || 0);
+  const limit = Math.max(1, Math.min(Number(body.limit) || 20, 100));
   const hits = entries.slice(offset, offset + limit).map(({ doc }) => ({
     ...doc,
     _formatted: {
@@ -371,7 +390,7 @@ function retrieve(question) {
 
   // EVERY source in the corpus must appear here. A missing key falls through to the raw
   // lowercase source id and prints it as a citation ("pgi — PGI 204.201 Unique procu…").
-  const SRC_LABEL = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management', 'afi-63-138': 'DAFI 63-138', 'fmr': 'DoD FMR', 'ssp': 'DoD Source Selection Procedures', 'pgi': 'PGI', 'compass': 'DAF Contracting Compass' };
+  const SRC_LABEL = { 'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management', 'afi-63-138': 'DAFI 63-138', 'fmr': 'DoD FMR', 'ssp': 'DoD SSP', 'pgi': 'R-DFARS PGI', 'compass': 'DAF Contracting Compass' };
   // ⭐ Sources whose text is GUIDANCE, not a binding requirement. The badge and the clay
   // colour keep this straight on the browse and result surfaces; this is the same
   // protection for the one surface that answers in sentences, where a model could

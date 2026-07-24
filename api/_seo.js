@@ -8,7 +8,7 @@ const SITE = 'https://www.acqvault.com';
 
 // /assets/* is served immutable for 30 days, so a changed part-nav.js MUST come
 // with a bumped ?v or every client that already holds it keeps the old file.
-const PART_NAV_V = 3;
+const PART_NAV_V = 4;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
