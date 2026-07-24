@@ -751,8 +751,13 @@ def ship(summary_line):
     new_cache = bump_service_worker()
     if new_cache:
         print("  service worker cache → " + new_cache)
+    # xref-index.json and part-labels.json are REGENERATED above (gen_xref_index.py /
+    # gen_part_labels.js) and render_health validates against them — but they were missing
+    # from this list, so a refresh shipped the new corpus with the OLD derived files: in-app
+    # cross-references and hub part-names would drift out of sync with the corpus beside them.
     files = ["output/documents.json", "output/doc-hashes.json", "output/corpus-meta.json",
-             "output/changes-log.json", "output/refresh-report.json", "sw.js", "index.html"]
+             "output/changes-log.json", "output/refresh-report.json",
+             "output/xref-index.json", "output/part-labels.json", "sw.js", "index.html"]
     subprocess.run(["git", "add"] + files, cwd=str(BASE_DIR), check=True)
     subprocess.run(["git", "commit",
                     "--author=AcqVault <287015657+AcqVault@users.noreply.github.com>",

@@ -93,7 +93,7 @@ async function boardGet(req, res) {
 }
 
 async function boardPost(req, res, body) {
-  if (await enforce(req, res, { max: 6 })) return;
+  if (await enforce(req, res, { max: 6, name: 'fb-board' })) return;
   if (!U_URL || !U_TOKEN) {
     return res.status(503).json({ configured: false, error: 'The board isn’t switched on yet.' });
   }
@@ -151,7 +151,7 @@ module.exports = async function handler(req, res) {
   const preBody = req.body || {};
   if (preBody.kind === 'board') return boardPost(req, res, preBody);
   // Feedback is infrequent — keep the limit tight to deter abuse.
-  if (await enforce(req, res, { max: 5 })) return;
+  if (await enforce(req, res, { max: 5, name: 'fb-msg' })) return;
 
   const body = req.body || {};
   const message = clean(body.message, 5000);

@@ -122,6 +122,10 @@ function acqCrop(content, query, cropLength){
 function acqHighlight(text, query){
   let out=String(text||'');
   const terms=[...new Set(String(query||'').toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>2))];
+  // MIRRORS api/search.js highlight(): mark the literal query when it tokenizes to nothing
+  // (J&A / 8(a) / T&M — the rawQ substring branch), else those hits render unhighlighted.
+  const rawQ=String(query||'').trim();
+  if(!terms.length && /[a-z0-9]/i.test(rawQ)){ const esc=rawQ.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); return out.replace(new RegExp('('+esc+')','ig'),'<mark>$1</mark>'); }
   for(const term of terms){ const esc=term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); out=out.replace(new RegExp('('+esc+')','ig'),'<mark>$1</mark>'); }
   return out;
 }

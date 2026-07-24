@@ -119,6 +119,13 @@ function cropContent(content, query, cropLength) {
 function highlight(text, query) {
   let out = String(text || '');
   const terms = [...new Set(String(query || '').toLowerCase().split(/[^a-z0-9]+/).filter(term => term.length > 2))];
+  // When the query tokenizes to nothing (e.g. "J&A", "8(a)", "T&M" — the rawQ substring
+  // branch of searchDocs), mark the literal query instead, or those hits render unhighlighted.
+  const rawQ = String(query || '').trim();
+  if (!terms.length && /[a-z0-9]/i.test(rawQ)) {
+    const escaped = rawQ.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return out.replace(new RegExp(`(${escaped})`, 'ig'), '<mark>$1</mark>');
+  }
   for (const term of terms) {
     const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     out = out.replace(new RegExp(`(${escaped})`, 'ig'), '<mark>$1</mark>');
@@ -345,7 +352,7 @@ function loadDeckEntries() {
 function askTerms(question) {
   return [...new Set(queryTerms(question).filter(t => !STOPWORDS.has(t)))];
 }
-function softScore(titleLc, contentLc, terms, phrase, concepts) {
+function softScore(titleLc, contentLc, terms, phraseRe, concepts) {
   let matched = 0, score = 0, conceptHits = 0;
   for (const t of terms) {
     const inT = hasTerm(titleLc, t), inC = hasTerm(contentLc, t);
@@ -354,7 +361,7 @@ function softScore(titleLc, contentLc, terms, phrase, concepts) {
     if (inT) score += 20;
     if (inC) score += 2;
   }
-  if (phrase && terms.length > 1 && contentLc.includes(phrase)) score += 25;
+  if (phraseRe && terms.length > 1 && phraseRe.test(contentLc)) score += 25;
   for (const p of (concepts || [])) {
     const inT = hasPhrase(titleLc, p), inC = hasPhrase(contentLc, p);
     if (!inT && !inC) continue;
@@ -378,13 +385,15 @@ function retrieve(question) {
   const terms = askTerms(question);
   const concepts = askConceptPhrases(String(question || '').toLowerCase());
   if (!terms.length && !concepts.length) return [];
-  const phrase = terms.join(' ');
+  // Same hyphen-tolerant phrase rule as scoreEntry (round 3): the corpus writes these
+  // terms hyphenated, so a space-joined includes() was near-dead. terms are [a-z0-9]-only.
+  const phraseRe = terms.length > 1 ? new RegExp(terms.join('[^a-z0-9]+')) : null;
   const need = Math.max(1, Math.ceil(terms.length / 2));
   // A doc qualifies by matching enough of the question's own words OR by
   // containing a concept phrase the lexicon mapped from the question — chatty
   // wording must not disqualify the section that actually governs the topic.
   const rank = (items, titleOf, contentOf) => items
-    .map(e => ({ e, ...softScore(titleOf(e), contentOf(e), terms, phrase, concepts) }))
+    .map(e => ({ e, ...softScore(titleOf(e), contentOf(e), terms, phraseRe, concepts) }))
     .filter(x => x.matched >= need || x.conceptHits > 0)
     .sort((a, b) => b.score - a.score || (b.matched + b.conceptHits) - (a.matched + a.conceptHits));
 
@@ -529,7 +538,7 @@ module.exports = async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  if (await enforce(req, res, { max: 40 })) return;
+  if (await enforce(req, res, { max: 40, name: 'search' })) return;
 
   // A malformed JSON body makes Vercel's parser throw the moment req.body is
   // read — catch it here so the client gets a clean 400, not a generic 500.

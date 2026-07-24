@@ -85,7 +85,7 @@ module.exports = async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  if (await enforce(req, res, { max: 20 })) return;
+  if (await enforce(req, res, { max: 20, name: 'usa' })) return;
 
   const body0 = req.body || {};
   if (body0.mode === 'vehicles') return vehiclesMode(res, body0); // folded in — Hobby plan caps at 12 functions

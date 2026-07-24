@@ -1,6 +1,6 @@
 /* AcqVault service worker — offline shell + corpus, leaves live data network-only.
    Bump CACHE on any change here, or when the cached corpus must refresh. */
-const CACHE = 'acqvault-v152';
+const CACHE = 'acqvault-v153';
 const SHELL = [
   '/',
   '/assets/fonts/inter-latin.woff2',
@@ -10,6 +10,25 @@ const SHELL = [
   '/assets/fonts/ibm-plex-mono-latin.woff2',
   '/assets/fonts/ibm-plex-mono-sb-latin.woff2'
 ];
+// Cap how many non-root navigated pages we keep offline. Part pages run 1-2.5MB of HTML
+// each, so without a bound the cache grew unbounded until the next CACHE bump. FIFO-evict
+// the oldest once over the cap; '/' and the precached SHELL/asset entries are exempt.
+const NAV_MAX = 15;
+async function trimNavCache(c) {
+  try {
+    const keys = await c.keys();
+    const shell = new Set(SHELL.map((u) => new URL(u, self.location.origin).href));
+    // Navigated HTML pages only: not the precached shell, not '/', and not one of the
+    // cache-first asset/corpus entries that share this cache (r.mode isn't reliable on
+    // cached Requests, so filter by path).
+    const nav = keys.filter((r) => {
+      if (shell.has(r.url)) return false;
+      const pth = new URL(r.url).pathname;
+      return pth !== '/' && !/^\/(assets|output|pdfs)\//.test(pth);
+    });
+    for (let i = 0; i < nav.length - NAV_MAX; i++) await c.delete(nav[i]);
+  } catch (e) { /* best effort */ }
+}
 
 self.addEventListener('install', (event) => {
   // Don't skipWaiting automatically — wait for the page's "Refresh" prompt so an open
@@ -73,16 +92,20 @@ self.addEventListener('fetch', (event) => {
       const timer = setTimeout(() => cachedFallback().then(finish), 3000);
       fetch(req).then((res) => {
         clearTimeout(timer);
-        // Only cache a genuine same-origin 2xx shell — never poison the cache with an
-        // error page, redirect, or opaque response. Store under the request's OWN key:
-        // writing every navigation to '/' meant the last page you visited became your
-        // offline "home", and no other page was available offline at all.
-        if (res && res.ok && res.type === 'basic') {
+        // Only cache a genuine same-origin 2xx HTML shell. Guards, in order: never poison
+        // the cache with an error/redirect/opaque response; only text/html (a PDF opened in
+        // a tab is also a 'navigate' — without this it was stored forever); '/' is always
+        // kept; other pages are bounded to the most-recent NAV_MAX so the cache can't grow
+        // without limit (activate only prunes on a CACHE bump). put() is caught so a
+        // QuotaExceededError is observed, not left as an unhandled rejection.
+        const ct = res && res.headers ? (res.headers.get('content-type') || '') : '';
+        if (res && res.ok && res.type === 'basic' && ct.indexOf('text/html') === 0) {
           const copy = res.clone();
+          const isRoot = new URL(req.url).pathname === '/';
           caches.open(CACHE).then((c) => {
-            c.put(req, copy.clone());
-            if (new URL(req.url).pathname === '/') c.put('/', copy.clone());
-          });
+            const put = isRoot ? c.put('/', copy.clone()) : c.put(req, copy.clone());
+            return Promise.resolve(put).then(() => { if (!isRoot) return trimNavCache(c); });
+          }).catch(() => {});
         }
         finish(res);
       }).catch(() => { clearTimeout(timer); cachedFallback().then((c) => finish(c || Response.error())); });

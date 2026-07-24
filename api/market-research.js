@@ -178,14 +178,14 @@ module.exports = async function handler(req, res) {
   // (s-maxage on POST responses is ignored by the CDN — every POST would burn
   // SAM entity quota). GET /api/market-research?mode=sources&naics=XXXXXX
   if (req.method === 'GET' && req.query && req.query.mode === 'sources') {
-    if (await enforce(req, res, { max: 20 })) return;
+    if (await enforce(req, res, { max: 20, name: 'mr' })) return;
     return sourcesMode({ body: { naics: req.query.naics } }, res, process.env.SAM_API_KEY);
   }
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST, GET');
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  if (await enforce(req, res, { max: 20 })) return;
+  if (await enforce(req, res, { max: 20, name: 'mr' })) return;
 
   const apiKey = process.env.SAM_API_KEY;
   if ((req.body || {}).mode === 'sources') return sourcesMode(req, res, apiKey);
