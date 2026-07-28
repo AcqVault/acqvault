@@ -9,6 +9,9 @@ const SITE = 'https://www.acqvault.com';
 // /assets/* is served immutable for 30 days, so a changed part-nav.js MUST come
 // with a bumped ?v or every client that already holds it keeps the old file.
 const PART_NAV_V = 4;
+// study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
+// bump can never reach one page and not the other.
+const STUDY_V = 75;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1047,7 +1050,7 @@ mark.pn-mark.active{background:var(--brass-bright);box-shadow:0 0 0 2px rgba(135
 @media(prefers-reduced-motion:reduce){.pn-top{transition:none}}
 @media(max-width:560px){.ptoc-list{max-height:min(40vh,300px)}.pn-top{right:12px;bottom:12px}}`;
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1056,7 +1059,7 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed, ogIma
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(title)}</title>
 <meta name="description" content="${description}">
-<link rel="canonical" href="${canonical}">
+${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<link rel="canonical" href="${canonical}">
 <meta property="og:type" content="article">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${description}">
@@ -1441,20 +1444,8 @@ ${runHtml}`;
 }
 
 // ── /study — the client-side drill room (Basic/Advanced tracks; assets/study.js does the work) ──
-function renderStudyPage() {
-  const canonical = `${SITE}/study`;
-  const title = 'AcqVault Study — practice & spaced review for the acquisition community | AcqVault';
-  const description = esc('Free, no-login practice for contracting professionals: spaced-repetition knowledge checks from the AcqVault Field Guides, rapid threshold sprints, and board-style scenario simulations with follow-up questions. Works offline. No account needed.');
-
-  const jsonld = {
-    '@context': 'https://schema.org', '@type': 'WebApplication',
-    name: 'AcqVault Study', applicationCategory: 'EducationalApplication',
-    operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    description, url: canonical,
-    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
-  };
-
-  const STUDY_CSS = `<style>
+// Shared by /study and the unlisted /48cons page — module scope so the two cannot drift.
+const STUDY_CSS = `<style>
 .lband--room{position:relative;overflow:hidden;background:var(--off);border-top:1px solid rgba(135,101,28,.16)}
 .st-guilloche{position:absolute;right:-150px;top:-120px;width:520px;height:520px;opacity:.06;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%)}
 .st-guilloche svg{width:100%;height:100%}
@@ -1464,10 +1455,34 @@ function renderStudyPage() {
 .st-sub{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.55}
 .st-intro{font-size:14.5px;line-height:1.6;color:var(--ink3,#474c55);margin:0 0 22px;max-width:60ch}
 .st-intro b{color:var(--ink);font-weight:700}
-.st-step{display:flex;align-items:center;gap:9px;margin:34px 0 0;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-ink)}
-.st-step:first-of-type{margin-top:6px}
-.st-step-n{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;border-radius:50%;background:#f6efdd;border:1px solid rgba(135,101,28,.4);color:var(--brass-ink);font-size:12px;font-weight:800;letter-spacing:0}
 .st-lad-cum{display:inline;color:var(--brass-ink);font-weight:700}
+/* Board Introduction Builder (48 CONS page). Reuses the board-sim input idiom (.st-bd-bluf)
+   so the builder reads as the same tool, not a bolted-on form.
+   .st-sim-feature is an <a> on /study but a <button> here (it swaps a view, it does not
+   navigate) — and a button resets width, text-align and font, so the card came out narrow
+   and centred. Normalise those three, and add the press feedback a real button owes you;
+   the base rule already transitions transform, so :active only needs the value. */
+button.st-sim-feature{width:100%;text-align:left;font:inherit;cursor:pointer}
+button.st-sim-feature:active{transform:scale(.99)}
+@media (prefers-reduced-motion:reduce){button.st-sim-feature:active{transform:none}}
+.st-intro-ta{resize:vertical;min-height:52px;font-family:inherit}
+.st-intro-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:18px}
+.st-intro-out:empty{display:none}
+.st-intro-paper{margin-top:22px;padding:20px 22px;background:var(--off);border:1px solid var(--line2);border-radius:10px}
+.st-intro-h{margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-ink)}
+.st-intro-h+.st-intro-script{margin-bottom:18px}
+.st-intro-script{margin:0;font-family:var(--serif);font-size:17px;line-height:1.62;color:var(--ink)}
+.st-intro-script:last-child{margin-bottom:0}
+.st-intro-note{font-size:12.5px;color:var(--muted);max-width:44ch}
+@media print{
+  /* Print the script alone — the board wants a card to rehearse from, not the whole page. */
+  body>*{display:none !important}
+  body>main{display:block !important}
+  main .lband:not(.lband--room){display:none !important}
+  .st-session-head,.st-bd-bluf-lab,.st-intro-ta,.st-intro-actions,.st-quit,.st-guilloche{display:none !important}
+  .st-intro-paper{border:none;background:none;padding:0}
+  .st-intro-script{font-size:15pt}
+}
 .st-tools-label{margin:40px 0 0;padding-top:24px;border-top:1px solid var(--line2);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-ink)}
 .st-head{display:flex;justify-content:flex-end;margin:0 0 12px}
 .st-track-chip{font-size:12.5px;font-weight:700;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(135,101,28,.28);border-radius:999px;padding:5px 12px}
@@ -1859,6 +1874,19 @@ function renderStudyPage() {
 .st-lad-sink-item{font-size:14px;line-height:1.6;color:#2a3140;padding:8px 0;border-top:1px solid var(--line2)}
 </style>`;
 
+function renderStudyPage() {
+  const canonical = `${SITE}/study`;
+  const title = 'AcqVault Study — practice & spaced review for the acquisition community | AcqVault';
+  const description = esc('Free, no-login practice for contracting professionals: spaced-repetition knowledge checks from the AcqVault Field Guides, rapid threshold sprints, and board-style scenario simulations with follow-up questions. Works offline. No account needed.');
+
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'WebApplication',
+    name: 'AcqVault Study', applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description, url: canonical,
+    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
+  };
+
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
 
   const SEAL_SVG = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="st-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#st-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
@@ -1870,8 +1898,8 @@ ${SEAL_SVG}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Study</nav>
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Know it cold</h1>
-<p class="lede">Knowledge checks, threshold sprints, and board-style scenarios from the AcqVault Field Guides; The Warrant Ladder, four warrant-ceiling decks whose cards each carry a verbatim quote from the governing text; and the Source Selection Simulator, run against the DoD Source Selection Procedures. Every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
-<div class="stats"><span class="stat"><b>500+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+<p class="lede">Knowledge checks, threshold sprints, and board-style scenarios from the AcqVault Field Guides, plus the Source Selection Simulator, run against the DoD Source Selection Procedures. Every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
+<div class="stats"><span class="stat"><b>400+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
 <div id="study-app"><noscript><p>AcqVault Study is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
@@ -1881,9 +1909,51 @@ ${SEAL_SVG}
 <p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/study.js?v=74"></script>`;
+<script defer src="/assets/study.js?v=${STUDY_V}"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
+}
+
+/* Unlisted page for 48 CONS/DBO. Not in renderSitemap(), not in robots.txt (listing it there
+   would advertise it), no inbound link anywhere on the site, noindex on both the meta tag and
+   an X-Robots-Tag header in vercel.json. It rides the /api/study function rather than adding
+   an api/ file — the project sits exactly at the Vercel Hobby 12-function cap.
+   Unlisted is NOT private: anything shown here is public to anyone holding the URL, so this
+   page carries only corpus-built cards and the user's own typing. */
+function render48ConsPage() {
+  const canonical = `${SITE}/48cons`;
+  const title = 'Warrant board prep — 48 CONS/DBO | AcqVault';
+  const description = esc('Warrant board preparation for 48 CONS/DBO: the AcqVault Warrant Ladder by warrant ceiling, every card quoting the governing rule, plus a board introduction builder.');
+
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'WebApplication',
+    name: 'AcqVault — 48 CONS Warrant Prep', applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description, url: canonical,
+    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
+  };
+
+  const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(228,196,119,.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
+
+  const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/study">Study</a><a class="cta" href="/?q=">Search all sources &rarr;</a></span></div></header>
+<main>
+<section class="lband lhero"><div class="lband-inner">
+<div class="eyebrow">AcqVault &middot; 48 CONS/DBO</div>
+<h1>Hold the ceiling</h1>
+<p class="lede">Warrant board preparation for the 48th Contracting Squadron. The Warrant Ladder scopes your prep to the warrant you&rsquo;re testing for &mdash; SAT through unlimited &mdash; and every card carries the governing rule in its own words, with the DoD deviation where one applies. The cards are rebuilt from the AcqVault corpus each time the rulebook moves, so this page follows the RFO rather than a snapshot of it.</p>
+<div class="stats"><span class="stat"><b>253</b> cards &amp; board sims</span><span class="stat">Every card quotes the rule</span><span class="stat">Free &middot; no account</span><span class="stat">Progress stays on your device</span></div>
+</div></section>
+<section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
+<div id="study-app" data-mode="48cons"><noscript><p>This page is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck&hellip;</p></div>
+</div></section>
+</main>
+<footer class="lband lband--foot"><div class="lband-inner">
+<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress and anything you type into the introduction builder live only in this browser and are never uploaded.</p>
+<p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> &mdash; not legal advice and not an official source, and nothing here is squadron policy. Verify anything you&rsquo;ll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
+</div></footer>
+<script defer src="/assets/study.js?v=${STUDY_V}"></script>`;
+
+  return shell({ title, description, canonical, jsonld, body, bleed: true, noindex: true, ogImage: 'og-study-v2.png' });
 }
 
 function renderSourceSelectionPage() {
@@ -2125,4 +2195,4 @@ function renderNotFoundPage() {
   return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Page not found — AcqVault</title>\n<meta name=\"robots\" content=\"noindex\">\n<link rel=\"icon\" href=\"/assets/favicon-vault.svg\" type=\"image/svg+xml\">\n<style>\n@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}\n*{box-sizing:border-box;margin:0;padding:0;}\nbody{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;\n  background:radial-gradient(120% 140% at 12% 8%,#1b436b 0%,#123253 42%,#0a1c33 100%);\n  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color:#eaf1fb;}\n.card{max-width:520px;width:100%;text-align:center;padding:48px 32px;}\n.dial{width:88px;height:88px;margin:0 auto 28px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.4));}\n.eyebrow{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#e4c477;margin-bottom:14px;}\nh1{font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:clamp(30px,6vw,42px);line-height:1.05;letter-spacing:-.015em;color:#fff;margin-bottom:14px;}\np{font-size:16px;line-height:1.55;color:rgba(230,238,248,.82);margin-bottom:28px;}\n.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}\n.btn{display:inline-block;font-size:14.5px;font-weight:700;text-decoration:none;padding:11px 22px;border-radius:999px;transition:transform .15s,background .15s;}\n.btn:hover{transform:translateY(-1px);}\n.btn-brass{background:#e4c477;color:#0a1c33;}\n.btn-brass:hover{background:#f0d79a;}\n.btn-ghost{color:#eaf1fb;border:1px solid rgba(255,255,255,.22);}\n.btn-ghost:hover{background:rgba(255,255,255,.07);}\n.links{margin-top:26px;font-size:14px;color:rgba(230,238,248,.6);}\n.links a{color:#e4c477;text-decoration:none;margin:0 8px;}\n.links a:hover{text-decoration:underline;}\na:focus-visible,.btn:focus-visible{outline:2px solid #e4c477;outline-offset:3px;}\n</style>\n</head>\n<body>\n<main class=\"card\">\n  <svg class=\"dial\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"94\" height=\"94\" rx=\"20\" fill=\"#0f2540\" stroke=\"#6f521a\" stroke-width=\"1\"/><rect x=\"11\" y=\"11\" width=\"78\" height=\"78\" rx=\"14\" fill=\"none\" stroke=\"#87651c\" stroke-width=\"2\"/><circle cx=\"50\" cy=\"50\" r=\"24\" fill=\"none\" stroke=\"#e4c477\" stroke-width=\"3.5\"/><g stroke=\"#e4c477\" stroke-width=\"4\" stroke-linecap=\"round\"><line x1=\"50\" y1=\"29\" x2=\"50\" y2=\"39\"/><line x1=\"50\" y1=\"71\" x2=\"50\" y2=\"61\"/><line x1=\"29\" y1=\"50\" x2=\"39\" y2=\"50\"/><line x1=\"71\" y1=\"50\" x2=\"61\" y2=\"50\"/></g><circle cx=\"50\" cy=\"50\" r=\"6\" fill=\"#e4c477\"/></svg>\n  <div class=\"eyebrow\">404 · Not found</div>\n  <h1>This one isn&rsquo;t in the vault.</h1>\n  <p>The page you&rsquo;re after doesn&rsquo;t exist — it may have moved when the rulebook did. Search the full text instead, or start from the front door.</p>\n  <div class=\"actions\">\n    <a class=\"btn btn-brass\" href=\"/?q=\">Search the rulebook</a>\n    <a class=\"btn btn-ghost\" href=\"/?home=1\">Go home</a>\n  </div>\n  <div class=\"links\">\n    <a href=\"/rfo\">RFO</a>·<a href=\"/r-dfars\">R-DFARS</a>·<a href=\"/library\">Library</a>·<a href=\"/study\">Study</a>\n  </div>\n</main>\n</body>\n</html>\n";
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, partLabel, displayPartForSource, partWord, regOrderKey, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSourceSelectionPage, renderSitemap, renderNotFoundPage, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, partLabel, displayPartForSource, partWord, regOrderKey, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSourceSelectionPage, render48ConsPage, renderSitemap, renderNotFoundPage, SITE };

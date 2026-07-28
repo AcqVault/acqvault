@@ -10,6 +10,13 @@
 
   var deck = null;
   var S = load();
+  /* Which page this engine booted on. The shell sets data-mode on #study-app: '48cons' is
+     the unlisted 48 CONS/DBO page, anything else is public /study. The Warrant Ladder and
+     its board sims render ONLY in '48cons' mode — same engine, same corpus-built deck, same
+     progress key, so the ladder keeps tracking the corpus refresh instead of forking a copy
+     that would silently rot. LADDER_ENABLED still kills it everywhere. */
+  var MODE = 'study';
+  function isOrg() { return MODE === '48cons'; }
 
   function load() {
     try { var s = JSON.parse(localStorage.getItem(LS_KEY)); if (s && s.cards) return s; } catch (e) {}
@@ -245,9 +252,6 @@
   }
 
   var VAULT_GLYPH = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="2"><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="10"/></g><g stroke="#cdb277" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="27" x2="50" y2="38"/><line x1="50" y1="73" x2="50" y2="62"/><line x1="27" y1="50" x2="38" y2="50"/><line x1="73" y1="50" x2="62" y2="50"/></g><circle cx="50" cy="50" r="3.6" fill="#cdb277"/></svg>';
-  function stepKicker(n, label) {
-    return '<div class="st-step"><span class="st-step-n">' + n + '</span>' + label + '</div>';
-  }
   function viewTrack() {
     var last = S.track;
     function cardHtml(id, kicker, name, blurb, active, vol) {
@@ -261,8 +265,7 @@
         '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
     render(
-      '<p class="st-intro"><b>Learn</b> the whole domain, then <b>prove</b> you can hold a warrant at your ceiling — with interactive tools to sharpen any time.</p>' +
-      stepKicker(1, 'Learn the domain') +
+      '<p class="st-intro"><b>Learn</b> the whole domain, then <b>practice by deciding</b> — with interactive tools to sharpen any time.</p>' +
       '<h2 class="st-h2" style="margin-top:2px">Pick your depth</h2>' +
       '<p class="st-sub">Start shallow or go deep — progress saves per card, and you can switch any time without losing it.</p>' +
       '<div class="st-tracks">' +
@@ -271,11 +274,9 @@
       cardHtml('t-adv', 'The full board-prep deck', 'The Board',
         'Everything in Foundations plus Vol. 2 — board-probe questions, threshold sprints, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
       '</div>' +
-      ladderSectionHtml() +
       gamesSectionHtml());
     el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewHome; save(); goDepth(1, viewHome); };
     el('t-adv').onclick = function () { S.track = 'advanced'; depth1View = viewHome; save(); goDepth(1, viewHome); };
-    wireLadderSection();
     wireGamesSection();
   }
 
@@ -714,13 +715,14 @@
   }
 
   /* ---- The Warrant Ladder — rung-scoped recall, every answer backed by the regulation's
-     own words (deck.ladder, built + verified by build_deck_v2.py). UNLISTED beta: renders
-     only once ?ladder=1 has set S.ladderBeta. The four rungs are legal authority levels —
-     all always available, never gated. Ladder ids are globally unique and share the same
-     per-card scheduler (grade/cardState) but the pools stay out of recallPool() entirely. */
-  /* KILL SWITCH. Set to false and the ladder disappears for everyone, including people
-     holding the ?ladder=1 link — no other edit required, no deck rebuild, nothing else on
-     /study affected. Flip it, bump the study.js ?v in api/_seo.js and the sw.js cache, push.
+     own words (deck.ladder, built + verified by build_deck_v2.py). Lives ONLY on the
+     unlisted /48cons page (MODE === '48cons'); it no longer renders on public /study. The
+     four rungs are legal authority levels — all always available, never gated. Ladder ids
+     are globally unique and share the same per-card scheduler (grade/cardState) but the
+     pools stay out of recallPool() entirely. */
+  /* KILL SWITCH. Set to false and the ladder disappears from /48cons — no other edit
+     required, no deck rebuild, nothing else on that page or /study affected. Flip it, bump
+     STUDY_V in api/_seo.js and the sw.js cache, push.
      To remove the feature outright rather than hide it, see docs/WARRANT_LADDER.md. */
   var LADDER_ENABLED = true;
 
@@ -772,12 +774,12 @@
   }
   function ladderCountLine(pool) { return '<p class="st-lad-count">' + pool.length + ' cards, every one cited to the rulebook.</p>'; }
   function ladderSectionHtml() {
-    // Public as of the beta launch — S.ladderBeta is no longer a gate, only a record that
-    // someone arrived through the original unlisted link. LADDER_ENABLED still kills it.
+    // The ladder is the 48 CONS page's main event now — no step kicker, it isn't step 2 of
+    // anything. S.ladderBeta is a leftover record of the original unlisted link and is no
+    // longer a gate; LADDER_ENABLED still kills the whole feature.
     if (!LADDER_ENABLED || !deck.ladder) return '';
     var sel = ladderRung();
-    return stepKicker(2, 'Prove your readiness') +
-      '<h2 class="st-h2" style="margin-top:2px">The Warrant Ladder <span class="st-beta">Beta</span></h2>' +
+    return '<h2 class="st-h2" style="margin-top:2px">The Warrant Ladder <span class="st-beta">Beta</span></h2>' +
       '<p class="st-sub">A warrant lets you sign up to a ceiling — and holds you to every rule below it. ' +
       'Scope your prep to the warrant you’re testing for; each card quotes the regulation in its own words, ' +
       'and flags where DoD deviates. <span class="st-lad-cum">Each ceiling includes everything under it.</span></p>' +
@@ -791,6 +793,123 @@
         depth1View = viewLadder; goDepth(1, viewLadder);
       };
     });
+  }
+
+  /* ---- 48 CONS/DBO page ----------------------------------------------------------------
+     The unlisted org page: the Warrant Ladder plus the Board Introduction Builder. The cards
+     are the same corpus-built deck the rest of the site uses, so a corpus refresh reaches
+     this page automatically — the whole reason the ladder was not forked into a static copy
+     when it moved off /study. */
+  function view48Cons() {
+    // No orienting paragraph here — the hero lede directly above already says this, and
+    // saying it twice weakens both.
+    render(
+      ladderSectionHtml() +
+      '<div class="st-tools-label">Board day · prepare what you say</div>' +
+      '<button class="st-sim-feature st-intro-open" id="st-intro-open">' +
+      '<span class="st-sim-kick">Builder</span>' +
+      '<b class="st-sim-title">Board Introduction Builder</b>' +
+      '<span class="st-sim-desc">Boards open with “tell us about yourself” and close by asking ' +
+      'why you are ready. Draft both in your own words, keep them on this device, and print ' +
+      'them to rehearse.</span>' +
+      '<span class="st-sim-chips"><span class="st-sim-chip">' + introDoneChip() + '</span>' +
+      '<span class="st-sim-meta">Stays in this browser · nothing uploaded</span></span>' +
+      '<span class="st-sim-go" aria-hidden="true">→</span></button>');
+    wireLadderSection();
+    el('st-intro-open').onclick = function () { depth1View = viewIntro; goDepth(1, viewIntro); };
+  }
+
+  /* ---- Board Introduction Builder -------------------------------------------------------
+     Robert Maughan's idea: the ladder drills the rules but never the opening question every
+     board actually asks first. This assembles the candidate's OWN words into a spoken opener
+     and closer — a template fill, never generated prose, and it touches no corpus content,
+     so there is nothing here to verify and nothing that can drift. */
+  var INTRO_FIELDS = [
+    { k: 'years', lab: 'Total years of contracting experience',
+      ph: 'e.g. six years, the last four at 48 CONS', ml: 140 },
+    { k: 'breadth', lab: 'Breadth of experience — the work you have actually run or signed',
+      ph: 'e.g. commercial services, construction, A-E, IDIQ task orders', ml: 260 },
+    { k: 'creds', lab: 'Degrees and certifications',
+      ph: 'e.g. DAWIA Contracting Practitioner, MBA', ml: 200 },
+    { k: 'why', lab: 'Why you are seeking this warrant',
+      ph: 'e.g. the squadron needs a second signature at this ceiling to hold award timelines', ml: 320 }
+  ];
+  function introState() {
+    if (!S.intro) S.intro = { years: '', breadth: '', creds: '', why: '' };
+    return S.intro;
+  }
+  function introFilled() {
+    var I = introState();
+    return INTRO_FIELDS.filter(function (f) { return String(I[f.k] || '').trim(); }).length;
+  }
+  function introDoneChip() {
+    var n = introFilled();
+    return n === 0 ? 'Not started' : n === INTRO_FIELDS.length ? 'Draft ready' : n + ' of ' + INTRO_FIELDS.length + ' answered';
+  }
+  function viewIntro() {
+    var I = introState();
+    var sel = ladderRung();
+    var ceiling = (RUNGS.filter(function (r) { return r.k === sel; })[0] || RUNGS[0]).ceiling;
+    render(
+      '<div class="st-session-head"><span>Board Introduction Builder</span>' +
+      '<span>' + esc(ceiling) + ' ceiling</span></div>' +
+      '<div class="st-card">' +
+      '<p class="st-sub" style="margin-top:0">Answer in your own words — plain speech, not résumé ' +
+      'bullets. The script below is assembled from exactly what you type; nothing is invented ' +
+      'for you, and nothing leaves this browser.</p>' +
+      INTRO_FIELDS.map(function (f) {
+        return '<label class="st-bd-bluf-lab" for="in-' + f.k + '">' + esc(f.lab) + '</label>' +
+          '<textarea class="st-bd-bluf st-intro-ta" id="in-' + f.k + '" rows="2" maxlength="' + f.ml +
+          '" autocomplete="off" placeholder="' + esc(f.ph) + '">' + esc(I[f.k] || '') + '</textarea>';
+      }).join('') +
+      '<div class="st-intro-actions">' +
+      '<button class="st-btn" id="in-build">Build my script</button>' +
+      '<button class="st-link" id="in-clear">Clear</button>' +
+      '</div>' +
+      '<div id="in-out" class="st-intro-out"></div>' +
+      '</div>' +
+      '<button class="st-link st-quit" id="st-quit">Back to the ladder</button>');
+
+    INTRO_FIELDS.forEach(function (f) {
+      el('in-' + f.k).addEventListener('input', function () {
+        introState()[f.k] = this.value; save();
+      });
+    });
+    el('in-build').onclick = function () { paintIntroScript(); };
+    el('in-clear').onclick = function () {
+      S.intro = { years: '', breadth: '', creds: '', why: '' }; save(); viewIntro();
+    };
+    el('st-quit').onclick = function () { goDepth(0, view48Cons); };
+    if (introFilled()) paintIntroScript();
+  }
+  function introSentences() {
+    var I = introState();
+    var sel = ladderRung();
+    var r = RUNGS.filter(function (x) { return x.k === sel; })[0] || RUNGS[0];
+    function t(k) { return String(I[k] || '').trim().replace(/\s+/g, ' '); }
+    var open = [], close = [];
+    if (t('years')) open.push('Good morning. I have ' + t('years') + '.');
+    if (t('breadth')) open.push('My experience covers ' + t('breadth') + '.');
+    if (t('creds')) open.push('I hold ' + t('creds') + '.');
+    open.push('I am here today for the ' + r.ceiling + ' warrant.');
+    if (t('why')) close.push('I am seeking this warrant because ' + t('why') + '.');
+    close.push('I understand a warrant at this ceiling holds me to every rule below it, ' +
+      'and I am prepared to be held to it. Thank you — I am happy to take your questions.');
+    return { open: open, close: close };
+  }
+  function paintIntroScript() {
+    var s = introSentences();
+    function block(title, lines) {
+      return '<h3 class="st-intro-h">' + title + '</h3><p class="st-intro-script">' +
+        lines.map(esc).join(' ') + '</p>';
+    }
+    el('in-out').innerHTML =
+      '<div class="st-intro-paper">' +
+      block('Introduction', s.open) + block('Closing', s.close) +
+      '</div>' +
+      '<div class="st-intro-actions"><button class="st-btn" id="in-print">Print both</button>' +
+      '<span class="st-intro-note">Read it out loud once before you print it — if a line is hard to say, rewrite it above.</span></div>';
+    el('in-print').onclick = function () { window.print(); };
   }
   function viewLadder() {
     var sel = ladderRung();
@@ -1214,6 +1333,12 @@
   function resumeSession() {
     var r = S.resume;
     if (!r) return false;
+    // Sessions don't cross pages. A ladder session saved on /48cons must not repaint the
+    // ladder onto public /study (progress is one shared key), and the org page has no track
+    // views to resume into. Leave the other page's session parked rather than clearing it —
+    // clearing would cost someone their place just for opening the other page.
+    var isLadder = r.mode === 'ladder' || r.mode === 'ladderBoard';
+    if (isLadder !== isOrg()) return false;
     // ladder, board sims and the games need no track selected; the track-bound modes do.
     if (r.mode !== 'ladder' && r.mode !== 'ladderBoard' && r.mode !== 'governs' && !S.track) { clearResume(); return false; }
     rendered = true;
@@ -1945,6 +2070,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     app = el('study-app');
     if (!app) return;
+    MODE = app.getAttribute('data-mode') || 'study';
     // render() replaces the whole view, destroying the focused control — so after each swap
     // focus fell to <body> and a screen reader announced nothing. Make the view container a
     // programmatic focus target (never in the tab order) so render() can move focus into the
@@ -1956,10 +2082,17 @@
       history.replaceState({ st: 0 }, '');
       navDepth = 0;
       var qs = new URLSearchParams(location.search);
-      if (qs.get('ladder') === '1') { // unlisted beta unlock — persists, then the param goes away
-        S.ladderBeta = true; save();
+      // The old ?ladder=1 beta unlock is gone with the ladder — it now lives at /48cons and
+      // needs no unlock. Strip the param if an old link still carries it so nobody is left
+      // staring at a /study URL that looks like it should have done something.
+      if (qs.get('ladder') === '1') {
         qs.delete('ladder');
         try { history.replaceState({ st: 0 }, '', location.pathname + (qs.toString() ? '?' + qs.toString() : '')); } catch (e) {}
+      }
+      if (isOrg()) {
+        // The org page is the ladder's only home now. No track picker, no games hub.
+        if (resumeSession()) return;
+        view48Cons(); return;
       }
       if (qs.get('play') === 'daily') {
         if (qs.get('fresh') === '1') { // replay today's word (streak & history untouched)

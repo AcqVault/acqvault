@@ -5,12 +5,19 @@
     { "source": "/changes", "destination": "/api/changes" },
     { "source": "/study", "destination": "/api/study" },
     { "source": "/source-selection", "destination": "/api/study?view=srcsel" },
+    { "source": "/48cons", "destination": "/api/study?view=48cons" },
     { "source": "/library", "destination": "/api/library" },
     { "source": "/what-is-the-rfo", "destination": "/api/explainer" },
     { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr|ssp|pgi)", "destination": "/api/hub?source=:source" },
     { "source": "/:source(rfo|r-dfars|far-companion|afi-63-138|category-management|fmr|ssp|pgi)/part-:part", "destination": "/api/page?source=:source&part=:part" }
   ],
   "headers": [
+    {
+      "source": "/48cons",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
     {
       "source": "/assets/(.*)",
       "headers": [

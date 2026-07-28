@@ -1,8 +1,12 @@
-const { renderStudyPage, renderSourceSelectionPage } = require('./_seo.js');
+const { renderStudyPage, renderSourceSelectionPage, render48ConsPage } = require('./_seo.js');
 
 module.exports = function handler(req, res) {
-  // /source-selection rides this function (Hobby 12-function cap — no new api/ file).
-  const html = (req.query && req.query.view === 'srcsel') ? renderSourceSelectionPage() : renderStudyPage();
+  // /source-selection and the unlisted /48cons both ride this function (Hobby 12-function
+  // cap — no new api/ file).
+  const view = req.query && req.query.view;
+  const html = view === 'srcsel' ? renderSourceSelectionPage()
+    : view === '48cons' ? render48ConsPage()
+    : renderStudyPage();
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   if (!html) {
     res.status(404);

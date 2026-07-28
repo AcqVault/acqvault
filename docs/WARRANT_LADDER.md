@@ -1,13 +1,25 @@
 # The Warrant Ladder — what it is, and how to turn it off
 
-A public beta on `/study`: four warrant-authority rungs (SAT $350K / $5M / $25M /
-Unlimited) of recall cards, where every answer carries the regulation's own words and a
-link to the governing section on this site — plus a rung-scoped board sim for each.
+Four warrant-authority rungs (SAT $350K / $5M / $25M / Unlimited) of recall cards, where
+every answer carries the regulation's own words and a link to the governing section on this
+site — plus a rung-scoped board sim for each.
 
-**It is public**, labelled Beta in muted ink. It was originally unlisted behind
-`?ladder=1`; that link still works and still sets `S.ladderBeta`, but the flag is now only
-a record that someone arrived that way, not a gate. `LADDER_ENABLED` is the only switch
-that matters.
+**It lives on `/48cons` only** — the unlisted page for 48 CONS/DBO. It is NOT on public
+`/study` and has not been since the move; `/study` keeps Foundations, The Board and the
+Practice Range. The page is reached by direct link only: no inbound link anywhere on the
+site, excluded from `renderSitemap()`, `noindex` on both a meta tag and an `X-Robots-Tag`
+header in `vercel.json`, and deliberately absent from `robots.txt` (a `Disallow` line would
+advertise the path). **Unlisted is not private** — treat anything on it as public.
+
+`study.js` decides which page it is on by reading `data-mode` off `#study-app`
+(`'48cons'` vs anything else) and renders the ladder only in org mode; `resumeSession()`
+is gated the same way, so a ladder session saved on `/48cons` can never repaint onto
+`/study`. The cards come from the same corpus-built `assets/study-deck.json` as the rest of
+the site — **not a forked copy** — so `refresh.py` and `deck_health.py` keep covering them
+and a corpus refresh reaches the org page automatically.
+
+The old `?ladder=1` beta unlock is gone; the param is now stripped if an old link carries
+it. `LADDER_ENABLED` is the only switch that matters.
 
 ## Turning it off
 
@@ -19,9 +31,9 @@ In `assets/study.js`:
 var LADDER_ENABLED = false;
 ```
 
-Then bump `study.js?v=` in `api/_seo.js` and `CACHE` in `sw.js`, and push. Nothing else on
-`/study` is touched — tracks, Daily Review, Threshold Sprint, Board Sim and the games are
-unaffected, because the ladder shares no pool with them.
+Then bump `STUDY_V` in `api/_seo.js` and `CACHE` in `sw.js`, and push. Nothing else is
+touched — `/48cons` keeps the Board Introduction Builder, and `/study` is unaffected
+either way, because the ladder shares no pool with the tracks or the games.
 
 ### 2. Remove it outright
 
