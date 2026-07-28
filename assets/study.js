@@ -19,8 +19,16 @@
   function isOrg() { return MODE === '48cons'; }
 
   function load() {
-    try { var s = JSON.parse(localStorage.getItem(LS_KEY)); if (s && s.cards) return s; } catch (e) {}
-    return { track: null, cards: {}, scen: {}, sprint: { best: 0 }, created: Date.now() };
+    var s = null;
+    try { s = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
+    if (!s || !s.cards) s = { track: null, cards: {}, scen: {}, sprint: { best: 0 }, created: Date.now() };
+    // A state saved by an older build can be missing sub-objects that views read straight
+    // through (S.sprint.best paints on the org page's FIRST frame, so an absent sprint would
+    // take the whole page down, not just one control). Normalise once, here, not at each use.
+    if (!s.sprint || typeof s.sprint !== 'object') s.sprint = { best: 0 };
+    if (!s.scen || typeof s.scen !== 'object') s.scen = {};
+    if (!s.cards || typeof s.cards !== 'object') s.cards = {};
+    return s;
   }
   function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {} }
   function today() { return Math.floor(Date.now() / 86400000); }
@@ -530,7 +538,8 @@
       render('<div class="st-card st-summary"><div class="st-chip">Threshold Sprint</div>' +
         '<div class="st-sum-num">' + (S.sprint.best || 0) + '<span> best streak</span></div>' +
         '<p class="st-sub">Numbers rot fastest — sprint a few times a week and the board can’t rattle you with a dollar figure.</p>' +
-        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
+        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">' +
+        (isOrg() ? 'Back to the tools' : 'Back to dashboard') + '</button></div></div>');
       el('st-home').onclick = backHome;
     }
     step();
@@ -815,9 +824,10 @@
   function view48Cons() {
     // No orienting paragraph here — the hero lede directly above already says this, and
     // saying it twice weakens both.
+    var nThresh = (deck.thresholds && deck.thresholds.length) || 0;
     render(
       ladderSectionHtml() +
-      '<div class="st-tools-label">Board day · prepare what you say</div>' +
+      '<div class="st-tools-label">Tools</div>' +
       '<button class="st-sim-feature st-intro-open" id="st-intro-open">' +
       '<span class="st-sim-kick">Builder</span>' +
       '<b class="st-sim-title">Board Introduction Builder</b>' +
@@ -826,9 +836,23 @@
       'them to rehearse.</span>' +
       '<span class="st-sim-chips"><span class="st-sim-chip">' + introDoneChip() + '</span>' +
       '<span class="st-sim-meta">Stays in this browser · nothing uploaded</span></span>' +
+      '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
+      // The same corpus-built threshold drill /study has run for months — surfaced here rather
+      // than rebuilt, so there is one quizzer to keep correct instead of two.
+      '<button class="st-sim-feature" id="st-sprint-open">' +
+      '<span class="st-sim-kick">Drill</span>' +
+      '<b class="st-sim-title">Threshold Sprint</b>' +
+      '<span class="st-sim-desc">Rapid-fire multiple choice on the dollar figures a panel can ' +
+      'rattle you with. Every answer names the section the number comes from, so a wrong guess ' +
+      'sends you to the rule rather than to a flashcard.</span>' +
+      '<span class="st-sim-chips"><span class="st-sim-chip">' + nThresh + ' thresholds</span>' +
+      '<span class="st-sim-meta">Best streak ' + (S.sprint.best || 0) + '</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">→</span></button>');
     wireLadderSection();
     el('st-intro-open').onclick = function () { depth1View = viewIntro; goDepth(1, viewIntro); };
+    // Activities launched from the org page live at depth 1 (the ladder's own sessions sit at
+    // depth 2 under viewLadder), matching the Introduction Builder above.
+    el('st-sprint-open').onclick = function () { depth1View = viewSprint; goDepth(1, viewSprint); };
   }
 
   /* ---- Board Introduction Builder -------------------------------------------------------
@@ -988,7 +1012,11 @@
      point of the ladder — dumped you back at the track picker with the drill gone, which
      punished the exact behaviour the feature exists to create. Stores card ids, not cards. */
   function saveResume(mode, rung, q, i, got, label, extra) {
-    S.resume = { mode: mode, rung: rung, ids: q.map(function (c) { return c.id; }),
+    // Stamp the page the session belongs to. resumeSession() used to INFER this from whether
+    // the mode was a ladder mode, which only held while the ladder was the org page's sole
+    // activity — the moment a shared activity (Threshold Sprint) runs on both pages, the
+    // inference is wrong in both directions.
+    S.resume = { mode: mode, rung: rung, org: isOrg(), ids: q.map(function (c) { return c.id; }),
                  i: i, got: got, label: label, at: Date.now() };
     if (extra) for (var k in extra) if (extra.hasOwnProperty(k)) S.resume[k] = extra[k];
     save();
@@ -1491,8 +1519,11 @@
     var r = S.resume;
     var q = r.ids ? cardsByIdFromPool(deck.thresholds, r.ids) : null;
     if (!q || r.i >= q.length) { clearResume(); return false; }
-    depth1View = homeFn();
-    goDepth(2, function () { viewSprint(q, r.i, r.streak || 0); });
+    // The sprint sits at depth 1 on the org page (a tool off the front page) and depth 2 on
+    // /study (an activity off the dashboard) — resume into the depth it was launched from, or
+    // Back walks out to the wrong place.
+    depth1View = isOrg() ? viewSprint : homeFn();
+    goDepth(isOrg() ? 1 : 2, function () { viewSprint(q, r.i, r.streak || 0); });
     return true;
   }
   function resumeSession() {
@@ -1502,10 +1533,15 @@
     // ladder onto public /study (progress is one shared key), and the org page has no track
     // views to resume into. Leave the other page's session parked rather than clearing it —
     // clearing would cost someone their place just for opening the other page.
-    var isLadder = r.mode === 'ladder' || r.mode === 'ladderBoard';
-    if (isLadder !== isOrg()) return false;
-    // ladder, board sims and the games need no track selected; the track-bound modes do.
-    if (r.mode !== 'ladder' && r.mode !== 'ladderBoard' && r.mode !== 'governs' && !S.track) { clearResume(); return false; }
+    // Sessions saved before this stamp existed fall back to the old inference, so nobody
+    // loses their place on the upgrade.
+    var homeOrg = (typeof r.org === 'boolean') ? r.org
+      : (r.mode === 'ladder' || r.mode === 'ladderBoard');
+    if (homeOrg !== isOrg()) return false;
+    // ladder, board sims, the games and the threshold sprint need no track selected; the
+    // track-bound modes do. (Sprint runs on the org page, which has no track picker at all.)
+    if (r.mode !== 'ladder' && r.mode !== 'ladderBoard' && r.mode !== 'governs' &&
+        r.mode !== 'sprint' && !S.track) { clearResume(); return false; }
     rendered = true;
     var ok = r.mode === 'ladderBoard' ? resumeLadderBoard()
       : r.mode === 'recall' ? resumeRecall()
