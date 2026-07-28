@@ -961,10 +961,14 @@
     var faced = boards.filter(function (b) { return bmap[b.id]; });
     var ready = faced.filter(function (b) { return bmap[b.id].g === 3; }).length;
     var rough = faced.filter(function (b) { return bmap[b.id].g === 1; }).length;
+    // Notes are counted across every rung, not just this one — the export is one file.
+    var nNotes = bdNoteCount();
     var boardHtml = !boards.length ? ''
       : '<div class="st-lad-boards"><span class="st-lad-boards-lab">Board sims</span>' +
         '<span class="st-lad-boards-n">' + faced.length + ' of ' + boards.length + ' faced</span>' +
         (faced.length ? '<span class="st-lad-boards-split">' + ready + ' board-ready · ' + rough + ' rough</span>' : '') +
+        (nNotes ? '<button class="st-lad-notes" id="lad-notes">Export ' + nNotes + ' note' +
+          (nNotes === 1 ? '' : 's') + ' (.txt)</button>' : '') +
         '</div>';
     /* Senior-authority rung only: the source-selection simulator lives on its own page
        (/source-selection). A full best-value tradeoff is too big for a card drill, so it's
@@ -1005,6 +1009,9 @@
     el('lad-start').onclick = function () { goDepth(2, function () { ladderSession(pool, label); }); };
     if (el('lad-board')) {
       el('lad-board').onclick = function () { goDepth(2, function () { ladderBoardSession(sel, label); }); };
+    }
+    if (el('lad-notes')) {
+      el('lad-notes').onclick = function () { exportBoardNotes(); };
     }
     keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('lad-start').onclick(); return true; } });
   }
@@ -1303,6 +1310,52 @@
   // A recording belongs to ONE scenario and must not outlive the page.
   window.addEventListener('pagehide', recRelease);
 
+  /* ---- Board-sim notes ------------------------------------------------------------------
+     The other half of Robert Maughan's idea: "record then play back AND ASSESS THROUGH
+     NOTES". The recording is the performance; this is what you decide to change about it.
+
+     Unlike the audio, notes are text the candidate wants to keep, so these DO persist — the
+     same treatment the Introduction Builder's answers already get. Capped per note, and they
+     leave this device only into a file the user asks for. */
+  var NOTE_MAX = 600;
+  function bdNotes() { if (!S.bdNotes) S.bdNotes = {}; return S.bdNotes; }
+  function bdNote(id) { return bdNotes()[id] || ''; }
+  function bdNoteSet(id, v) {
+    var N = bdNotes();
+    v = String(v || '').slice(0, NOTE_MAX);
+    if (v.trim()) N[id] = v; else delete N[id];   // an emptied note is removed, not stored blank
+    save();
+  }
+  function bdNoteCount() { var N = bdNotes(), n = 0; for (var k in N) if (N.hasOwnProperty(k)) n++; return n; }
+  /* Robert's downloadAllNotes(), scoped to what we actually hold: the panel's question and
+     what the candidate wrote about their own answer. Built by walking the corpus deck, so a
+     note whose scenario has left the deck is skipped rather than exported against a dead id. */
+  function exportBoardNotes() {
+    var N = bdNotes(), out = [], total = 0;
+    RUNGS.forEach(function (r) {
+      var hits = ladderBoardPool(r.k).filter(function (sc) { return N[sc.id]; });
+      if (!hits.length) return;
+      out.push(r.label.toUpperCase(), new Array(r.label.length + 1).join('='), '');
+      hits.forEach(function (sc) {
+        total++;
+        out.push('Topic: ' + sc.topic, 'The panel asked: ' + sc.ask, '', 'Your note:', N[sc.id], '',
+          '--------------------------------------------------', '');
+      });
+    });
+    if (!total) return false;
+    var head = ['48 CONS — Warrant board sim notes',
+      'AcqVault · ' + total + ' note' + (total === 1 ? '' : 's'),
+      'Unofficial research aid — verify against the signed DoD class deviations.', '',
+      '==================================================', ''];
+    var blob = new Blob([head.concat(out).join('\n')], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'board-sim-notes.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) {} }, 0);
+    return true;
+  }
+
   function ladderBoardSession(rung, label, pickId, startStage, hintWasUsed) {
     recRelease();   // a new scenario never inherits the last one's take
     var pool = ladderBoardPool(rung);
@@ -1367,6 +1420,13 @@
             : '') +
           '<div class="st-script"><div class="st-script-head">Say it like this</div><p>' + esc(sc.script) + '</p></div>' +
           boardCitesText(sc.cites) +
+          // The assess step: you have just heard yourself and read the model answer, so this
+          // is the moment the difference between them is obvious.
+          '<label class="st-bd-note-lab" for="bd-note">What you would fix next time</label>' +
+          '<textarea class="st-bd-bluf st-bd-note" id="bd-note" rows="3" maxlength="' + NOTE_MAX +
+          '" autocomplete="off" placeholder="e.g. I never named the section — lead with R-DFARS 215.306 next time.">' +
+          esc(bdNote(sc.id)) + '</textarea>' +
+          '<p class="st-bd-note-meta" id="bd-note-meta">Kept on this device · export from the ladder</p>' +
           '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' +
           (fus.length ? 'The panel follows up… <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
       } else if (stage < CHECK_STAGE) {
@@ -1415,6 +1475,14 @@
         '</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
         '<button class="st-link st-quit" id="st-quit">End this sim</button>');
       el('st-quit').onclick = function () { recRelease(); clearResume(); viewLadder(); };
+
+      // Notes autosave silently, like the Introduction Builder's fields. No per-keystroke
+      // "Saved" flash: .st-card is an aria-live region, so that would interrupt a screen
+      // reader on every character. The static line under the box carries the reassurance.
+      if (el('bd-note')) {
+        var ta = el('bd-note');
+        ta.addEventListener('input', function () { bdNoteSet(sc.id, ta.value); });
+      }
 
       if (stage === 0) {
         wireRecorder();

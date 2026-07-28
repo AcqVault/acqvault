@@ -11,7 +11,7 @@ const SITE = 'https://www.acqvault.com';
 const PART_NAV_V = 4;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 79;
+const STUDY_V = 80;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1593,6 +1593,12 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-lad-sim:hover .st-lad-sim-go{transform:translateY(-50%) translateX(4px)}
 .st-lad-sim:focus-visible{outline:3px solid rgba(228,196,119,.6);outline-offset:2px}
 .st-bd-bluf-lab{display:block;margin-top:15px;margin-bottom:6px;font-size:12.5px;font-weight:700;color:var(--ink)}
+/* Board-sim notes: the written half of the record-and-assess loop. */
+.st-bd-note{resize:vertical;min-height:66px;font-family:inherit}
+.st-bd-note-lab{display:block;margin-top:18px;margin-bottom:6px;font-size:12.5px;font-weight:700;color:var(--ink)}
+.st-bd-note-meta{margin:6px 0 0;font-size:11.5px;color:var(--muted)}
+.st-lad-notes{margin-left:auto;border:1px solid rgba(135,101,28,.35);background:#f6efdd;color:#5e4715;border-radius:7px;padding:5px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;min-height:32px}
+.st-lad-notes:hover{border-color:var(--accent)}
 .st-bd-bluf{display:block;width:100%;box-sizing:border-box;padding:11px 13px;font-size:15px;line-height:1.45;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:8px}
 .st-bd-bluf:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px rgba(135,101,28,.13)}
 .st-bd-echo{margin-top:2px;padding:12px 15px;background:#f6efdd;border:1px solid rgba(135,101,28,.3);border-left:3px solid var(--brass);border-radius:0 10px 10px 0;font-size:15px;line-height:1.55;color:#2a3140}
@@ -1966,7 +1972,7 @@ function render48ConsPage() {
 </div></section>
 </main>
 <footer class="lband lband--foot"><div class="lband-inner">
-<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress and anything you type into the introduction builder live only in this browser and are never uploaded. A board-sim recording is not stored at all &mdash; it stays in the tab and is gone the moment you leave the sim.</p>
+<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress, your board-sim notes and anything you type into the introduction builder live only in this browser and are never uploaded &mdash; notes leave this device only into a file you ask for. A board-sim recording is not stored at all &mdash; it stays in the tab and is gone the moment you leave the sim.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> &mdash; not legal advice and not an official source, and nothing here is squadron policy. Verify anything you&rsquo;ll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
 <script defer src="/assets/study.js?v=${STUDY_V}"></script>`;
