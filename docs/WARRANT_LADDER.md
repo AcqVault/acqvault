@@ -4,7 +4,7 @@ Four warrant-authority rungs (SAT $350K / $5M / $25M / Unlimited) of recall card
 every answer carries the regulation's own words and a link to the governing section on this
 site — plus a rung-scoped board sim for each.
 
-**It lives on `/48cons` only** — the unlisted page for 48 CONS/DBO. It is NOT on public
+**It lives on `/48cons` only** — the unlisted page for 48 CONS. It is NOT on public
 `/study` and has not been since the move; `/study` keeps Foundations, The Board and the
 Practice Range. The page is reached by direct link only: no inbound link anywhere on the
 site, excluded from `renderSitemap()`, `noindex` on both a meta tag and an `X-Robots-Tag`

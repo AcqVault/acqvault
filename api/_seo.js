@@ -11,7 +11,7 @@ const SITE = 'https://www.acqvault.com';
 const PART_NAV_V = 4;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 75;
+const STUDY_V = 76;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1863,7 +1863,7 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-rung:hover{border-color:var(--line);box-shadow:0 1px 3px rgba(16,24,40,.06)}
 .st-rung:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
 .st-rung-on,.st-rung-on:hover{border-left-color:var(--brass);color:var(--ink)}
-.st-beta{display:inline-block;vertical-align:4px;margin-left:10px;color:var(--ink);opacity:.45;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}.st-lad-count{color:var(--muted);font-size:13px;margin:10px 0 0;font-variant-numeric:tabular-nums}
+.st-lad-count{color:var(--muted);font-size:13px;margin:10px 0 0;font-variant-numeric:tabular-nums}
 .st-lad-ready{display:flex;align-items:center;gap:10px;max-width:440px;margin:16px 0 0}
 .st-lad-ready .st-bar{flex:1}
 .st-lad-ready-lab{flex:none;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
@@ -1914,7 +1914,7 @@ ${SEAL_SVG}
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
 }
 
-/* Unlisted page for 48 CONS/DBO. Not in renderSitemap(), not in robots.txt (listing it there
+/* Unlisted page for 48 CONS. Not in renderSitemap(), not in robots.txt (listing it there
    would advertise it), no inbound link anywhere on the site, noindex on both the meta tag and
    an X-Robots-Tag header in vercel.json. It rides the /api/study function rather than adding
    an api/ file — the project sits exactly at the Vercel Hobby 12-function cap.
@@ -1922,8 +1922,8 @@ ${SEAL_SVG}
    page carries only corpus-built cards and the user's own typing. */
 function render48ConsPage() {
   const canonical = `${SITE}/48cons`;
-  const title = 'Warrant board prep — 48 CONS/DBO | AcqVault';
-  const description = esc('Warrant board preparation for 48 CONS/DBO: the AcqVault Warrant Ladder by warrant ceiling, every card quoting the governing rule, plus a board introduction builder.');
+  const title = 'Warrant board prep — 48 CONS | AcqVault';
+  const description = esc('Warrant board preparation for 48 CONS: the AcqVault Warrant Ladder by warrant ceiling, every card quoting the governing rule, plus a board introduction builder.');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'WebApplication',
@@ -1938,7 +1938,8 @@ function render48ConsPage() {
   const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/study">Study</a><a class="cta" href="/?q=">Search all sources &rarr;</a></span></div></header>
 <main>
 <section class="lband lhero"><div class="lband-inner">
-<div class="eyebrow">AcqVault &middot; 48 CONS/DBO</div>
+<nav class="crumbs"><a href="/?home=1">AcqVault</a> &rsaquo; <a href="/study">Study</a> &rsaquo; Warrant board prep</nav>
+<div class="eyebrow">AcqVault &middot; 48 CONS</div>
 <h1>Hold the ceiling</h1>
 <p class="lede">Warrant board preparation for the 48th Contracting Squadron. The Warrant Ladder scopes your prep to the warrant you&rsquo;re testing for &mdash; SAT through unlimited &mdash; and every card carries the governing rule in its own words, with the DoD deviation where one applies. The cards are rebuilt from the AcqVault corpus each time the rulebook moves, so this page follows the RFO rather than a snapshot of it.</p>
 <div class="stats"><span class="stat"><b>253</b> cards &amp; board sims</span><span class="stat">Every card quotes the rule</span><span class="stat">Free &middot; no account</span><span class="stat">Progress stays on your device</span></div>

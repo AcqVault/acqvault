@@ -11,7 +11,7 @@
   var deck = null;
   var S = load();
   /* Which page this engine booted on. The shell sets data-mode on #study-app: '48cons' is
-     the unlisted 48 CONS/DBO page, anything else is public /study. The Warrant Ladder and
+     the unlisted 48 CONS page, anything else is public /study. The Warrant Ladder and
      its board sims render ONLY in '48cons' mode — same engine, same corpus-built deck, same
      progress key, so the ladder keeps tracking the corpus refresh instead of forking a copy
      that would silently rot. LADDER_ENABLED still kills it everywhere. */
@@ -777,9 +777,12 @@
     // The ladder is the 48 CONS page's main event now — no step kicker, it isn't step 2 of
     // anything. S.ladderBeta is a leftover record of the original unlisted link and is no
     // longer a gate; LADDER_ENABLED still kills the whole feature.
+    // The heading carried a "Beta" chip while the ladder sat on public /study behind an
+    // unlisted link. It is not a beta any more, and the hero eyebrow, the crumb and the lede
+    // all name 48 CONS already — a chip here only said it a third time, so there is none.
     if (!LADDER_ENABLED || !deck.ladder) return '';
     var sel = ladderRung();
-    return '<h2 class="st-h2" style="margin-top:2px">The Warrant Ladder <span class="st-beta">Beta</span></h2>' +
+    return '<h2 class="st-h2" style="margin-top:2px">The Warrant Ladder</h2>' +
       '<p class="st-sub">A warrant lets you sign up to a ceiling — and holds you to every rule below it. ' +
       'Scope your prep to the warrant you’re testing for; each card quotes the regulation in its own words, ' +
       'and flags where DoD deviates. <span class="st-lad-cum">Each ceiling includes everything under it.</span></p>' +
@@ -795,7 +798,7 @@
     });
   }
 
-  /* ---- 48 CONS/DBO page ----------------------------------------------------------------
+  /* ---- 48 CONS page ---------------------------------------------------------------------
      The unlisted org page: the Warrant Ladder plus the Board Introduction Builder. The cards
      are the same corpus-built deck the rest of the site uses, so a corpus refresh reaches
      this page automatically — the whole reason the ladder was not forked into a static copy
