@@ -753,6 +753,257 @@
     { k: '25m', label: '$25M', ceiling: '$25M', what: 'Source selection &amp; pricing' },
     { k: 'unlimited', label: 'Unlimited', ceiling: 'Unlimited', what: 'Senior authority' }
   ];
+  /* ---- My Cards -------------------------------------------------------------------------
+     Robert Maughan's deck-customisation idea, built so it cannot dilute the corpus deck.
+
+     ⚠ THE THREE RULES THIS DEPENDS ON — do not relax them:
+     1. User cards NEVER merge into the ladder rungs, the recall pools or any count. They are
+        a separate deck with a separate study view. A card typed with a wrong threshold would
+        otherwise be indistinguishable from a corpus-verified one, and the bank this idea came
+        from teaches SAT $250K and MPT $10K. Every card here is labelled as theirs and
+        unverified, on the list AND while studying.
+     2. Its own localStorage key. S is written through save(), a silent try/catch — a 100-card
+        deck sharing that key could push the whole object past quota and destroy study
+        progress with nothing surfaced. Separate key, hard caps, and a real message when it
+        will not fit.
+     3. Files, not servers. Export/import is the entire sync story; the repo is pinned at the
+        Vercel Hobby 12-function cap, so there is no endpoint to add even if we wanted one.
+     Import accepts only files this tool exported — the legacy decks this idea came from carry
+     289 legacy FAR citations and superseded thresholds. */
+  var MY_KEY = 'acq-mycards-v1';
+  var MY_MAX = 100;              // cards
+  var MY_BYTES = 64 * 1024;      // serialized ceiling, well inside a 5MB origin budget
+  var MY_Q = 300, MY_A = 1200, MY_SUBJ = 60;
+  var MY = null, myErr = '', myEditId = null;
+
+  function myDeck() {
+    if (!MY) {
+      MY = { v: 1, cards: [] };
+      try {
+        var raw = JSON.parse(localStorage.getItem(MY_KEY));
+        if (raw && Object.prototype.toString.call(raw.cards) === '[object Array]') {
+          MY = { v: 1, cards: raw.cards.filter(myValid).slice(0, MY_MAX) };
+        }
+      } catch (e) {}
+    }
+    return MY;
+  }
+  function myValid(c) {
+    return !!(c && typeof c.q === 'string' && typeof c.a === 'string' && c.q.trim() && c.a.trim());
+  }
+  function myBytes() { try { return JSON.stringify(myDeck()).length; } catch (e) { return 0; } }
+  /* Returns false and sets myErr rather than failing silently — the quota-swallow that once
+     cost people their saved clauses started exactly like this. */
+  function mySave() {
+    var s;
+    try { s = JSON.stringify(myDeck()); } catch (e) { myErr = 'Could not read your deck.'; return false; }
+    if (s.length > MY_BYTES) {
+      myErr = 'Your deck is at its size limit. Delete a card, or export and trim it.';
+      return false;
+    }
+    try { localStorage.setItem(MY_KEY, s); myErr = ''; return true; }
+    catch (e) {
+      myErr = 'Your browser refused to save — storage may be full, or blocked in private ' +
+        'browsing. Export your deck so you do not lose it.';
+      return false;
+    }
+  }
+  function myId() {
+    return 'my-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1e6).toString(36);
+  }
+  function myAdd(q, a, subj) {
+    var d = myDeck();
+    if (d.cards.length >= MY_MAX) { myErr = 'That is ' + MY_MAX + ' cards — the most this holds.'; return false; }
+    d.cards.push({ id: myId(), q: String(q).slice(0, MY_Q).trim(),
+                   a: String(a).slice(0, MY_A).trim(), subj: String(subj || '').slice(0, MY_SUBJ).trim() });
+    return mySave();
+  }
+  function myUpdate(id, q, a, subj) {
+    var c = myDeck().cards.filter(function (x) { return x.id === id; })[0];
+    if (!c) return false;
+    c.q = String(q).slice(0, MY_Q).trim(); c.a = String(a).slice(0, MY_A).trim();
+    c.subj = String(subj || '').slice(0, MY_SUBJ).trim();
+    return mySave();
+  }
+  function myDelete(id) {
+    var d = myDeck();
+    d.cards = d.cards.filter(function (x) { return x.id !== id; });
+    return mySave();
+  }
+  function myExport() {
+    var blob = new Blob([JSON.stringify({ acqvault_mycards: 1, v: 1, cards: myDeck().cards }, null, 2)],
+      { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'my-cards.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) {} }, 0);
+  }
+  function myImport(ev) {
+    var f = ev.target.files && ev.target.files[0];
+    ev.target.value = '';                       // let the same file be chosen twice
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      var parsed;
+      try { parsed = JSON.parse(r.result); }
+      catch (e) { myErr = 'That file is not readable JSON.'; viewMyCards(); return; }
+      // Only files this tool wrote. A legacy deck would import superseded thresholds and
+      // legacy FAR citations wearing exactly the same styling as everything else here.
+      if (!parsed || !parsed.acqvault_mycards) {
+        myErr = 'That is not a My Cards export from this tool.'; viewMyCards(); return;
+      }
+      var incoming = (Object.prototype.toString.call(parsed.cards) === '[object Array]' ? parsed.cards : [])
+        .filter(myValid).slice(0, MY_MAX);
+      if (!incoming.length) { myErr = 'That file has no usable cards in it.'; viewMyCards(); return; }
+      var have = myDeck().cards.length;
+      if (have && !confirm('Replace your ' + have + ' card' + (have === 1 ? '' : 's') +
+          ' with the ' + incoming.length + ' in this file? This cannot be undone.')) return;
+      MY = { v: 1, cards: incoming.map(function (c) {
+        return { id: c.id || myId(), q: String(c.q).slice(0, MY_Q), a: String(c.a).slice(0, MY_A),
+                 subj: String(c.subj || '').slice(0, MY_SUBJ) };
+      }) };
+      mySave(); myEditId = null; viewMyCards();
+    };
+    r.onerror = function () { myErr = 'Could not read that file.'; viewMyCards(); };
+    r.readAsText(f);
+  }
+
+  var MY_UNVERIFIED = 'Yours · not corpus-verified';
+  function myKb(n) { return n < 1024 ? n + ' B' : (n / 1024).toFixed(1) + ' KB'; }
+  // Counted, never typed. A hardcoded total is a number that goes quietly wrong the next time
+  // the deck is rebuilt — the same way "500+ questions" outlived the ladder leaving /study.
+  function ladderTotal() {
+    if (!deck || !deck.ladder) return 0;
+    return RUNGS.reduce(function (n, r) { return n + ladderPool(r.k).length; }, 0);
+  }
+  function viewMyCards() {
+    var d = myDeck(), cards = d.cards;
+    var editing = myEditId && cards.filter(function (c) { return c.id === myEditId; })[0];
+    var full = cards.length >= MY_MAX;
+    render(
+      '<div class="st-session-head"><span>My Cards</span><span>' + cards.length + ' of ' + MY_MAX + '</span></div>' +
+      '<div class="st-card">' +
+      '<p class="st-sub" style="margin-top:0">Cards you write yourself — local policy, your ' +
+      'squadron’s approval chains, anything the rulebook cannot know. They are kept apart from ' +
+      'the ' + ladderTotal() + ' corpus cards and never mixed into the ladder, because only the ' +
+      'corpus ones are checked against the regulation.</p>' +
+      (myErr ? '<p class="st-my-err" role="alert">' + esc(myErr) + '</p>' : '') +
+      '<label class="st-bd-bluf-lab" for="my-q">' + (editing ? 'Edit the question' : 'Question') + '</label>' +
+      '<textarea class="st-bd-bluf st-intro-ta" id="my-q" rows="2" maxlength="' + MY_Q + '" ' +
+      'placeholder="e.g. Who approves a sole-source above $5M at this squadron?">' +
+      esc(editing ? editing.q : '') + '</textarea>' +
+      '<label class="st-bd-bluf-lab" for="my-a">Answer</label>' +
+      '<textarea class="st-bd-bluf st-intro-ta" id="my-a" rows="3" maxlength="' + MY_A + '" ' +
+      'placeholder="Write it the way you would say it to the panel.">' +
+      esc(editing ? editing.a : '') + '</textarea>' +
+      '<label class="st-bd-bluf-lab" for="my-subj">Subject <span class="st-my-opt">(optional)</span></label>' +
+      '<input class="st-bd-bluf" id="my-subj" type="text" maxlength="' + MY_SUBJ + '" autocomplete="off" ' +
+      'placeholder="e.g. Local policy" value="' + esc(editing ? (editing.subj || '') : '') + '">' +
+      '<div class="st-actions">' +
+      '<button class="st-btn st-btn-reveal" id="my-save"' + (!editing && full ? ' disabled' : '') + '>' +
+      (editing ? 'Save changes' : 'Add card') + '</button>' +
+      (editing ? '<button class="st-btn st-btn-hint" id="my-cancel">Cancel</button>' : '') +
+      '</div>' +
+      (!editing && full ? '<p class="st-my-meta">Deck is full at ' + MY_MAX + ' cards.</p>' : '') +
+      '</div>' +
+
+      (cards.length
+        ? '<div class="st-my-list">' + cards.map(function (c) {
+            return '<div class="st-my-item"><div class="st-my-item-top">' +
+              '<span class="st-my-tag">' + MY_UNVERIFIED + '</span>' +
+              (c.subj ? '<span class="st-my-subj">' + esc(c.subj) + '</span>' : '') + '</div>' +
+              '<div class="st-my-q">' + esc(c.q) + '</div>' +
+              '<div class="st-my-a">' + esc(c.a) + '</div>' +
+              '<div class="st-my-row">' +
+              '<button class="st-link st-my-act" data-my-edit="' + esc(c.id) + '">Edit</button>' +
+              '<button class="st-link st-my-act" data-my-del="' + esc(c.id) + '">Delete</button>' +
+              '</div></div>';
+          }).join('') + '</div>'
+        : '<p class="st-my-meta">No cards yet. The box above writes your first one.</p>') +
+
+      '<div class="st-my-bar">' +
+      (cards.length ? '<button class="st-btn st-btn-reveal" id="my-study">Study these ' + cards.length + '</button>' : '') +
+      (cards.length ? '<button class="st-btn st-btn-hint" id="my-export">Export .json</button>' : '') +
+      '<button class="st-btn st-btn-hint" id="my-import-btn">Import .json</button>' +
+      '<input type="file" id="my-import" accept="application/json,.json" hidden>' +
+      '</div>' +
+      '<p class="st-my-meta">' + myKb(myBytes()) + ' used on this device · never uploaded · ' +
+      'export to move them to another machine or share them.</p>' +
+      '<button class="st-link st-quit" id="st-quit">Back to the tools</button>');
+
+    el('st-quit').onclick = function () { myEditId = null; myErr = ''; goDepth(0, view48Cons); };
+    el('my-save').onclick = function () {
+      var qv = el('my-q').value.trim(), av = el('my-a').value.trim(), sv = el('my-subj').value.trim();
+      if (!qv || !av) { myErr = 'A card needs both a question and an answer.'; viewMyCards(); return; }
+      if (myEditId) { myUpdate(myEditId, qv, av, sv); myEditId = null; }
+      else myAdd(qv, av, sv);
+      viewMyCards();
+    };
+    if (el('my-cancel')) el('my-cancel').onclick = function () { myEditId = null; myErr = ''; viewMyCards(); };
+    Array.prototype.forEach.call(app.querySelectorAll('[data-my-edit]'), function (b) {
+      b.onclick = function () { myEditId = b.getAttribute('data-my-edit'); myErr = ''; viewMyCards(); };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll('[data-my-del]'), function (b) {
+      b.onclick = function () {
+        if (!confirm('Delete this card? It is only on this device, so it cannot be recovered.')) return;
+        myDelete(b.getAttribute('data-my-del'));
+        if (myEditId === b.getAttribute('data-my-del')) myEditId = null;
+        viewMyCards();
+      };
+    });
+    if (el('my-study')) el('my-study').onclick = function () { goDepth(2, viewMyStudy); };
+    if (el('my-export')) el('my-export').onclick = myExport;
+    el('my-import-btn').onclick = function () { el('my-import').click(); };
+    el('my-import').onchange = myImport;
+  }
+
+  /* A plain flip review, deliberately NOT the corpus scheduler. grade()/S.cards is keyed by
+     corpus card ids and feeds mastery and "what would sink you"; letting user-written cards
+     into it would put unverified material into the numbers the ladder reports. */
+  function viewMyStudy(startAt) {
+    var cards = myDeck().cards.slice();
+    if (!cards.length) { viewMyCards(); return; }
+    var q = shuffle(cards), i = startAt || 0;
+    function step() {
+      if (i >= q.length) {
+        render('<div class="st-card st-summary"><div class="st-chip">My Cards</div>' +
+          '<div class="st-sum-num">' + q.length + '<span> reviewed</span></div>' +
+          '<p class="st-sub">These are your own notes, so nothing here changed your ladder ' +
+          'mastery — that number only counts cards checked against the regulation.</p>' +
+          '<div class="st-actions"><button class="st-btn st-btn-reveal" id="my-again">Go again</button>' +
+          '<button class="st-btn st-btn-hint" id="my-back">Back to my cards</button></div></div>');
+        el('my-again').onclick = function () { i = 0; q = shuffle(cards); step(); };
+        el('my-back').onclick = function () { keyHandler(null); viewMyCards(); };
+        keyHandler(null);
+        return;
+      }
+      var c = q[i];
+      render(
+        '<div class="st-session-head"><span>My Cards</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>' +
+        '<div class="st-prog" aria-hidden="true"><span style="width:' + Math.round(100 * i / q.length) + '%"></span></div>' +
+        '<div class="st-card" aria-live="polite">' +
+        '<div class="st-chip">' + esc(c.subj || 'Your card') + '</div>' +
+        '<div class="st-q">' + esc(c.q) + '</div>' +
+        '<div id="st-a" class="st-a" hidden>' + esc(c.a) +
+        '<p class="st-my-warn">' + MY_UNVERIFIED + ' — this is what you wrote, not what the ' +
+        'rulebook says. Check it against the regulation before you rely on it.</p></div>' +
+        '<div class="st-actions" id="st-act">' +
+        '<button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
+        '<button class="st-link st-quit" id="st-quit">End review</button>');
+      el('st-quit').onclick = function () { keyHandler(null); viewMyCards(); };
+      el('st-reveal').onclick = reveal;
+      keyHandler(function (k) { if (k === ' ' || k === 'Enter') { reveal(); return true; } });
+      function reveal() {
+        el('st-a').hidden = false;
+        el('st-act').innerHTML = '<button class="st-btn st-btn-reveal" id="my-next">Next <kbd>space</kbd></button>';
+        el('my-next').onclick = function () { i++; step(); };
+        keyHandler(function (k) { if (k === ' ' || k === 'Enter') { i++; step(); return true; } });
+      }
+    }
+    step();
+  }
+
   /* ---- topic vocabulary -----------------------------------------------------------------
      The authored decks drifted into split labels for one subject — "Competition (CICA)" (12
      cards) alongside a bare "Competition" (2), and "Contract Finance & Fiscal Law" (6)
@@ -795,8 +1046,23 @@
     var t = S.ladderTopic;
     return (t && ladderTopics(rung).some(function (x) { return x.t === t; })) ? t : '';
   }
+  /* Hiding a corpus card is the cheap half of deck customisation: no authoring, no storage
+     pressure, no question of provenance — just a list of ids the drill skips. Nothing is
+     deleted, so it is always reversible, and the rung chips keep showing the true totals. */
+  function hiddenMap() { if (!S.hidden) S.hidden = {}; return S.hidden; }
+  function isHidden(id) { return !!hiddenMap()[id]; }
+  function hideCard(id) { hiddenMap()[id] = 1; save(); }
+  function unhideRung(rung) {
+    var H = hiddenMap();
+    ladderPool(rung).forEach(function (c) { delete H[c.id]; });
+    save();
+  }
+  function hiddenIn(rung) {
+    return ladderPool(rung).filter(function (c) { return isHidden(c.id); }).length;
+  }
   function ladderTopicPool(rung) {
-    var sel = ladderTopicSel(rung), pool = ladderPool(rung);
+    var sel = ladderTopicSel(rung);
+    var pool = ladderPool(rung).filter(function (c) { return !isHidden(c.id); });
     return sel ? pool.filter(function (c) { return c.topic === sel; }) : pool;
   }
   function ladderRung() {
@@ -892,12 +1158,25 @@
       'sends you to the rule rather than to a flashcard.</span>' +
       '<span class="st-sim-chips"><span class="st-sim-chip">' + nThresh + ' thresholds</span>' +
       '<span class="st-sim-meta">Best streak ' + (S.sprint.best || 0) + '</span></span>' +
+      '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
+      // Kept visibly apart from the corpus decks above: its own tool, its own storage, its
+      // own study view, and every card labelled unverified.
+      '<button class="st-sim-feature" id="st-my-open">' +
+      '<span class="st-sim-kick">Yours</span>' +
+      '<b class="st-sim-title">My Cards</b>' +
+      '<span class="st-sim-desc">Write your own cards for what the rulebook cannot know — local ' +
+      'approval chains, squadron procedure, the things your board will ask that no regulation ' +
+      'states. Kept separate from the verified deck, and exportable to share or back up.</span>' +
+      '<span class="st-sim-chips"><span class="st-sim-chip">' + myDeck().cards.length + ' card' +
+      (myDeck().cards.length === 1 ? '' : 's') + '</span>' +
+      '<span class="st-sim-meta">Yours · not corpus-verified</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">→</span></button>');
     wireLadderSection();
     el('st-intro-open').onclick = function () { depth1View = viewIntro; goDepth(1, viewIntro); };
     // Activities launched from the org page live at depth 1 (the ladder's own sessions sit at
     // depth 2 under viewLadder), matching the Introduction Builder above.
     el('st-sprint-open').onclick = function () { depth1View = viewSprint; goDepth(1, viewSprint); };
+    el('st-my-open').onclick = function () { myErr = ''; myEditId = null; depth1View = viewMyCards; goDepth(1, viewMyCards); };
   }
 
   /* ---- Board Introduction Builder -------------------------------------------------------
@@ -1048,12 +1327,18 @@
         }).join('') + '</select>' +
         (tsel ? '<button class="st-lad-topic-clear" id="lad-topic-clear">Clear</button>' : '') +
         '</div>';
+    var nHidden = hiddenIn(sel);
+    var hiddenHtml = nHidden
+      ? '<p class="st-lad-hidden">' + nHidden + ' card' + (nHidden === 1 ? '' : 's') +
+        ' hidden on this rung. <button class="st-lad-unhide" id="lad-unhide">Show them again</button></p>'
+      : '';
     render(
       '<h2 class="st-h2" style="margin-top:0">The Warrant Ladder</h2>' +
       '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +
       rungStripHtml(sel) +
       topicHtml +
       ladderCountLine(pool) +
+      hiddenHtml +
       '<div class="st-lad-ready"><span class="st-lad-ready-lab">Card mastery</span>' +
       '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
       '<span class="st-topic-meta">' + m + '%</span></div>' +
@@ -1080,6 +1365,9 @@
     }
     if (el('lad-topic-clear')) {
       el('lad-topic-clear').onclick = function () { S.ladderTopic = ''; save(); viewLadder(); };
+    }
+    if (el('lad-unhide')) {
+      el('lad-unhide').onclick = function () { unhideRung(sel); viewLadder(); };
     }
     keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('lad-start').onclick(); return true; } });
   }
@@ -1135,8 +1423,11 @@
         '<div id="st-a" class="st-a" hidden>' + esc(c.a) + ladderCiteHtml(c) + explainHtml(c) + '</div>' +
         '<div class="st-actions" id="st-act">' +
         '<button class="st-btn st-btn-reveal" id="st-reveal">Reveal <kbd>space</kbd></button></div></div>' +
-        '<button class="st-link st-quit" id="st-quit">End session</button>');
+        '<div class="st-lad-foot"><button class="st-link st-quit" id="st-quit">End session</button>' +
+        '<button class="st-link st-hide" id="st-hide">Hide this card</button></div>');
       el('st-quit').onclick = summary;
+      // Hidden, not deleted — the card drops out of the drill and the ladder offers it back.
+      el('st-hide').onclick = function () { hideCard(c.id); i++; step(); };
       el('st-reveal').onclick = reveal;
       keyHandler(function (k) { if (k === ' ' || k === 'Enter') { reveal(); return true; } });
       function reveal() {

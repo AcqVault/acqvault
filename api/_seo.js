@@ -11,7 +11,7 @@ const SITE = 'https://www.acqvault.com';
 const PART_NAV_V = 4;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 81;
+const STUDY_V = 82;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1586,6 +1586,28 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-lad-topic-sel{font:inherit;font-size:13.5px;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:8px;padding:8px 11px;min-height:40px;max-width:100%;cursor:pointer}
 .st-lad-topic-sel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .st-lad-topic-clear{border:none;background:none;color:var(--accent);font:inherit;font-size:12.5px;font-weight:700;text-decoration:underline;cursor:pointer;min-height:40px;padding:0 4px}
+/* My Cards. Deliberately NOT styled like the corpus cards — a warm neutral panel with an
+   explicit unverified tag, so a card someone typed never reads as a checked one. */
+.st-my-err{margin:0 0 12px;padding:9px 12px;border-radius:8px;background:#fdf3f2;border:1px solid rgba(140,43,35,.3);color:#8c2b23;font-size:13px;line-height:1.5}
+.st-my-opt{font-weight:400;color:var(--muted)}
+.st-my-list{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+.st-my-item{padding:13px 15px;background:#fbfaf7;border:1px solid var(--line2);border-left:3px solid var(--brass);border-radius:0 10px 10px 0}
+.st-my-item-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.st-my-tag{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-ink);background:#f6efdd;border-radius:4px;padding:2px 7px}
+.st-my-subj{font-size:11.5px;color:var(--muted)}
+.st-my-q{font-size:15px;font-weight:700;color:var(--ink);line-height:1.45}
+.st-my-a{margin-top:5px;font-size:14px;color:#2a3140;line-height:1.55;white-space:pre-wrap}
+.st-my-row{display:flex;gap:14px;margin-top:9px}
+.st-my-act{font-size:12.5px}
+.st-my-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.st-my-meta{margin:10px 0 0;font-size:11.5px;color:var(--muted);line-height:1.5}
+.st-my-warn{margin:12px 0 0;padding:9px 12px;border-radius:8px;background:#f6efdd;border:1px solid rgba(135,101,28,.3);color:#5e4715;font-size:12.5px;line-height:1.5}
+/* Hide-a-card: reversible, so the ladder always says how many are out and offers them back. */
+.st-lad-foot{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap}
+.st-hide{color:var(--muted)}
+.st-hide:hover{color:var(--accent)}
+.st-lad-hidden{margin:8px 0 0;font-size:12.5px;color:var(--muted)}
+.st-lad-unhide{border:none;background:none;padding:0;font:inherit;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:underline;cursor:pointer}
 .st-lad-boards-lab{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .st-lad-boards-n{font-size:14px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .st-lad-boards-split{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
