@@ -753,7 +753,52 @@
     { k: '25m', label: '$25M', ceiling: '$25M', what: 'Source selection &amp; pricing' },
     { k: 'unlimited', label: 'Unlimited', ceiling: 'Unlimited', what: 'Senior authority' }
   ];
+  /* ---- topic vocabulary -----------------------------------------------------------------
+     The authored decks drifted into split labels for one subject — "Competition (CICA)" (12
+     cards) alongside a bare "Competition" (2), and "Contract Finance & Fiscal Law" (6)
+     alongside "Contract Financing" (1). Harmless while `topic` was an internal field; the
+     moment it became a user-facing filter it would have offered the same subject twice.
+
+     Merged HERE, once, over the loaded deck rather than in the authoring files, because
+     `topic` is also the join `bridgePool()` uses to match a board sim to the cards behind it
+     (`c.topic === sc.topic`). Rewriting one side in data and not the other would break that
+     bridge silently. Canonicalising both pools at load keeps a single source of truth and
+     needs no deck rebuild. Promote into build_deck_v2.py if the authoring files are ever
+     cleaned up. */
+  var TOPIC_CANON = {
+    'Competition': 'Competition (CICA)',
+    'Contract Financing': 'Contract Finance & Fiscal Law'
+  };
+  function canonTopic(t) { return TOPIC_CANON[t] || t; }
+  function canonTopics() {
+    if (!deck) return;
+    [deck.ladder, deck.ladder_boards].forEach(function (group) {
+      if (!group) return;
+      Object.keys(group).forEach(function (k) {
+        (group[k] || []).forEach(function (c) { if (c && c.topic) c.topic = canonTopic(c.topic); });
+      });
+    });
+  }
+
   function ladderPool(rung) { return (deck.ladder && deck.ladder[rung]) || []; }
+  /* Topics present on THIS rung, commonest first — the rungs differ a lot (18 subjects at
+     SAT, 7 at $25M), so the list is built per rung rather than from the whole ladder. */
+  function ladderTopics(rung) {
+    var n = {};
+    ladderPool(rung).forEach(function (c) { var t = c.topic || 'Other'; n[t] = (n[t] || 0) + 1; });
+    return Object.keys(n).map(function (t) { return { t: t, n: n[t] }; })
+      .sort(function (a, b) { return b.n - a.n || a.t.localeCompare(b.t); });
+  }
+  /* A selection only survives while it exists on the rung you are looking at — switching
+     rungs must never leave you filtered to a subject with nothing in it. */
+  function ladderTopicSel(rung) {
+    var t = S.ladderTopic;
+    return (t && ladderTopics(rung).some(function (x) { return x.t === t; })) ? t : '';
+  }
+  function ladderTopicPool(rung) {
+    var sel = ladderTopicSel(rung), pool = ladderPool(rung);
+    return sel ? pool.filter(function (c) { return c.topic === sel; }) : pool;
+  }
   function ladderRung() {
     var r = S.ladderRung;
     return RUNGS.some(function (x) { return x.k === r; }) ? r : 'sat';
@@ -949,7 +994,10 @@
   }
   function viewLadder() {
     var sel = ladderRung();
-    var pool = ladderPool(sel);
+    // Everything below — mastery, the count line, "what would sink you" and the cards the
+    // start button hands to the session — reads the FILTERED pool, so a subject filter is
+    // honest about what it is actually scoping.
+    var pool = ladderTopicPool(sel);
     var label = (RUNGS.filter(function (r) { return r.k === sel; })[0] || RUNGS[0]).label;
     var m = mastery(pool);
     var byId = {};
@@ -987,10 +1035,24 @@
             (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
         }).join('') + '</div>'
       : '';
+    // A select rather than a chip row: SAT alone carries 18 subjects, which would wrap into a
+    // wall of chips above the thing you came here to press.
+    var topics = ladderTopics(sel), tsel = ladderTopicSel(sel);
+    var topicHtml = topics.length < 2 ? ''
+      : '<div class="st-lad-topic"><label class="st-lad-topic-lab" for="lad-topic">Subject</label>' +
+        '<select class="st-lad-topic-sel" id="lad-topic">' +
+        '<option value="">All subjects · ' + ladderPool(sel).length + ' cards</option>' +
+        topics.map(function (x) {
+          return '<option value="' + esc(x.t) + '"' + (x.t === tsel ? ' selected' : '') + '>' +
+            esc(x.t) + ' · ' + x.n + '</option>';
+        }).join('') + '</select>' +
+        (tsel ? '<button class="st-lad-topic-clear" id="lad-topic-clear">Clear</button>' : '') +
+        '</div>';
     render(
       '<h2 class="st-h2" style="margin-top:0">The Warrant Ladder</h2>' +
       '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +
       rungStripHtml(sel) +
+      topicHtml +
       ladderCountLine(pool) +
       '<div class="st-lad-ready"><span class="st-lad-ready-lab">Card mastery</span>' +
       '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
@@ -1012,6 +1074,12 @@
     }
     if (el('lad-notes')) {
       el('lad-notes').onclick = function () { exportBoardNotes(); };
+    }
+    if (el('lad-topic')) {
+      el('lad-topic').onchange = function () { S.ladderTopic = this.value; save(); viewLadder(); };
+    }
+    if (el('lad-topic-clear')) {
+      el('lad-topic-clear').onclick = function () { S.ladderTopic = ''; save(); viewLadder(); };
     }
     keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('lad-start').onclick(); return true; } });
   }
@@ -2348,6 +2416,7 @@
     app.style.outline = 'none';
     fetch(DECK_URL).then(function (r) { return r.json(); }).then(function (d) {
       deck = d;
+      canonTopics();
       history.replaceState({ st: 0 }, '');
       navDepth = 0;
       var qs = new URLSearchParams(location.search);

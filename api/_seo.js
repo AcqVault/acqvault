@@ -11,7 +11,7 @@ const SITE = 'https://www.acqvault.com';
 const PART_NAV_V = 4;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 80;
+const STUDY_V = 81;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1580,6 +1580,12 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-followup{margin:6px 0 0}
 .st-followup>span{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
 .st-lad-boards{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:10px;padding-top:11px;border-top:1px solid var(--line2)}
+/* Ladder subject filter. A select, not chips — SAT alone carries 18 subjects. */
+.st-lad-topic{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:13px}
+.st-lad-topic-lab{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.st-lad-topic-sel{font:inherit;font-size:13.5px;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:8px;padding:8px 11px;min-height:40px;max-width:100%;cursor:pointer}
+.st-lad-topic-sel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.st-lad-topic-clear{border:none;background:none;color:var(--accent);font:inherit;font-size:12.5px;font-weight:700;text-decoration:underline;cursor:pointer;min-height:40px;padding:0 4px}
 .st-lad-boards-lab{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .st-lad-boards-n{font-size:14px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .st-lad-boards-split{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
