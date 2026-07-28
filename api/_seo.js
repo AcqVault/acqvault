@@ -11,7 +11,7 @@ const SITE = 'https://www.acqvault.com';
 const PART_NAV_V = 4;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 82;
+const STUDY_V = 83;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1000,12 +1000,25 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .lhero .stat b{color:var(--brass-bright);font-variant-numeric:tabular-nums}
 .lhero .lib-seal{position:absolute;right:24px;top:50%;transform:translateY(-50%);width:120px;height:120px;z-index:1;filter:drop-shadow(0 8px 16px rgba(0,0,0,.42))}
 @media(max-width:820px){.lhero .lib-seal{display:none}.lhero h1{font-size:34px}}
-.lband--foot{background:var(--off);border-top:1px solid var(--line2)}
+/* margin-top/padding-top zeroed: the generic footer rule above ships margin-top:40px +
+   padding-top:18px, which .lband--foot never overrode — so a 40px stripe of body white sat
+   between two identical warm-paper bands, reading as an accidental fourth background. The
+   band's own 1px rule is what should separate them. */
+.lband--foot{background:var(--off);border-top:1px solid var(--line2);margin-top:0;padding-top:0}
 .lband--foot .lband-inner{padding:30px 24px 42px}
 .lfoot-note{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.55;max-width:840px}
 .lfoot-legal{font-size:12.5px;color:var(--muted);line-height:1.55;margin:0;max-width:840px}
 .lfoot-legal a{color:var(--accent)}
 @media(max-width:560px){.lband-inner{padding:40px 18px}.lhero .lband-inner{padding:40px 18px 38px}.lhero h1{font-size:30px}}
+/* .lband--rail: opt a page's furniture onto the app column's rail. .lband-inner is 1060px and
+   .st-wrap is 880px, so the hero/footer text sat 90px left of every heading in the app band —
+   nav, hero and footer all agreed on one x, and only the middle third disagreed. Narrowing the
+   furniture (rather than widening the app) keeps the reading measure that the sprint card and
+   the intro form depend on. Opt-in by class: nothing else on the site moves. */
+.lband--rail .lband-inner{max-width:880px}
+/* The hero is 66% of a 390px viewport and never collapses, so nothing actionable was on the
+   first screen of a phone — the device this page is actually studied on. */
+@media(max-width:560px){.lband--rail.lhero .lband-inner{padding:30px 18px 28px}.lband--rail.lhero .lede{font-size:15px}.lband--rail.lhero .stats{gap:7px}.lband--rail.lhero .stat{font-size:12px;padding:5px 11px}}
 /* ── PART NAV: Contents · in-part search · back-to-top (assets/part-nav.js) ──
    The Contents is server-rendered and works without JS; the search bar and the
    back-to-top button are built by the script, so nothing here is a dead control
@@ -1451,8 +1464,14 @@ const STUDY_CSS = `<style>
 .st-guilloche svg{width:100%;height:100%}
 .st-wrap{position:relative;max-width:880px;margin:0 auto;padding:38px 24px 74px}
 #study-app{min-height:420px}
-.st-h2{font-family:var(--serif);font-size:24px;color:var(--ink);letter-spacing:-.012em;margin:30px 0 4px}
-.st-sub{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.55}
+/* line-height was inheriting body 1.6 — a 38.4px line box around a 24px cap, and the only
+   broken step in the page's leading curve (h1 1.04, .st-sim-title 1.15). Leading tracks size
+   inversely; the extra margin-bottom gives back the space the tall line box was providing. */
+.st-h2{font-family:var(--serif);font-size:24px;color:var(--ink);letter-spacing:-.012em;line-height:1.15;margin:30px 0 10px}
+#study-app>.st-h2:first-child{margin-top:0}
+/* 64ch. This was the smallest body size on the page AND the widest measure (84 cpl at 832px)
+   — the two errors compound. The neighbouring .st-intro and .st-summary .st-sub already cap. */
+.st-sub{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.55;max-width:64ch}
 .st-intro{font-size:14.5px;line-height:1.6;color:var(--ink3,#474c55);margin:0 0 22px;max-width:60ch}
 .st-intro b{color:var(--ink);font-weight:700}
 .st-lad-cum{display:inline;color:var(--brass-ink);font-weight:700}
@@ -1463,8 +1482,14 @@ const STUDY_CSS = `<style>
    and centred. Normalise those three, and add the press feedback a real button owes you;
    the base rule already transitions transform, so :active only needs the value. */
 button.st-sim-feature{width:100%;text-align:left;font:inherit;cursor:pointer}
-button.st-sim-feature:active{transform:scale(.99)}
-@media (prefers-reduced-motion:reduce){button.st-sim-feature:active{transform:none}}
+/* transform is ONE property, and button.st-sim-feature:active (0,2,1) outranks
+   .st-sim-feature:hover (0,2,0) — so pressing a hovered card REPLACED the -2px lift instead
+   of composing with it, and the card fell 2px while it shrank. The lift has to be restated in
+   the pressed state to compose. The plain :active (no lift) is what touch gets, where there
+   is no hover to preserve; :hover:active (0,3,1) wins on a mouse regardless of order. */
+button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
+@media (hover:hover) and (pointer:fine){button.st-sim-feature:hover:active{transform:translateY(-2px) scale(.985);transition-duration:.1s}}
+@media (prefers-reduced-motion:reduce){.st-sim-feature:hover,button.st-sim-feature:active,button.st-sim-feature:hover:active{transform:none}}
 .st-intro-ta{resize:vertical;min-height:52px;font-family:inherit}
 .st-intro-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:18px}
 .st-intro-out:empty{display:none}
@@ -1483,10 +1508,18 @@ button.st-sim-feature:active{transform:scale(.99)}
   .st-intro-paper{border:none;background:none;padding:0}
   .st-intro-script{font-size:15pt}
 }
-.st-tools-label{margin:40px 0 0;padding-top:24px;border-top:1px solid var(--line2);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-ink)}
+/* An <h2> now, not a <div>: the page exposed exactly two headings, so a screen-reader user
+   rotoring past the ladder found nothing. font-family/font-size are restated because the
+   element defaults to the serif h2 style, and the UA margin has to be zeroed. */
+.st-tools-label{margin:36px 0 0;padding-top:22px;border-top:1px solid var(--line2);font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink)}
 .st-head{display:flex;justify-content:flex-end;margin:0 0 12px}
 .st-track-chip{font-size:12.5px;font-weight:700;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(135,101,28,.28);border-radius:999px;padding:5px 12px}
-.st-link{background:none;border:none;color:var(--brass-ink);text-decoration:underline;cursor:pointer;font-size:12.5px;padding:0}
+/* min-height 24 clears the WCAG 2.2 AA 2.5.8 target floor: these render 14px tall otherwise,
+   and .st-quit is the ONLY exit from every view in the tool. The negative inline margin keeps
+   the optical left edge where it was for the uses that sit inside a sentence. */
+.st-link{background:none;border:none;color:var(--brass-ink);text-decoration:underline;cursor:pointer;font-size:12.5px;padding:5px 8px;margin:0 -8px;border-radius:6px;min-height:24px;display:inline-flex;align-items:center;font-family:inherit}
+@media (hover:hover) and (pointer:fine){.st-link:hover{background:#f6efdd}}
+.st-link:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
 .st-tracks{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
 @media(max-width:640px){.st-tracks{grid-template-columns:1fr}}
 .st-trackcard{display:flex;gap:0;align-items:stretch;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:14px;padding:0;overflow:hidden;cursor:pointer;transition:box-shadow .15s,transform .15s,border-color .15s;box-shadow:0 14px 34px -24px rgba(15,37,64,.35)}
@@ -1526,7 +1559,11 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-topic:hover{border-color:rgba(135,101,28,.5);transform:translateY(-1px);box-shadow:0 8px 20px -14px rgba(15,37,64,.3)}
 .st-topic-name{grid-area:name;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3}
 .st-bar{grid-area:bar;height:7px;background:#ece8dd;border-radius:99px;overflow:hidden}
-.st-bar-fill{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px}
+/* The only one of the three identical progress bars in the repo with no transition —
+   .st-prog span and .ss-prog span both slide. Same gradient, same job, so this read as an
+   oversight rather than a decision. */
+.st-bar-fill{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px;transition:width .35s cubic-bezier(.23,1,.32,1)}
+@media(prefers-reduced-motion:reduce){.st-bar-fill{transition:none}}
 .st-topic-meta{grid-area:meta}
 .st-topic-meta{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .st-topic-meta .st-due{color:var(--brass-ink);font-weight:700}
@@ -1542,9 +1579,19 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-q{font-family:var(--serif);font-size:23px;line-height:1.32;color:var(--ink);letter-spacing:-.008em}
 .st-a{margin-top:16px;padding-top:14px;border-top:1px dashed rgba(135,101,28,.4);font-size:15.5px;line-height:1.6;color:#2a3140}
 .st-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
-.st-btn{border:none;border-radius:9px;padding:11px 18px;font-size:14.5px;font-weight:700;cursor:pointer;min-height:44px}
+/* Press feedback. Every action in the tool is a .st-btn — Reveal, the three grades, Study
+   these cards, Face the board, Record — and none of them acknowledged a press at all, while
+   .st-topic (a secondary list row, 20 lines up) already lifted on hover. 100ms press / 160ms
+   release: the deliberate action snaps, the system's answer settles. */
+.st-btn{border:none;border-radius:9px;padding:11px 18px;font-size:14.5px;font-weight:700;cursor:pointer;min-height:44px;transition:transform .16s cubic-bezier(.23,1,.32,1),box-shadow .16s,border-color .16s,filter .16s}
+.st-btn:active:not(:disabled){transform:scale(.97);transition-duration:.1s}
+.st-btn:disabled{opacity:.6;cursor:default}
+@media(prefers-reduced-motion:reduce){.st-btn{transition:none}.st-btn:active:not(:disabled){transform:none}}
 .st-btn kbd{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;opacity:.65;font-weight:600;margin-left:5px;border:1px solid currentColor;border-radius:3px;padding:0 4px}
-.st-btn-reveal{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#f4f8fc}
+/* A keyboard hint on a device with no keyboard is noise. */
+@media (pointer:coarse){.st-btn kbd{display:none}}
+.st-btn-reveal{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#f4f8fc;box-shadow:0 10px 22px -14px rgba(15,37,64,.65)}
+@media (hover:hover) and (pointer:fine){.st-btn-reveal:hover{filter:brightness(1.08);box-shadow:0 14px 26px -14px rgba(15,37,64,.78)}.st-btn-hint:hover:not(:disabled){border-color:var(--accent)}}
 .st-btn-opts{background:#fff;color:var(--muted);border:1px solid var(--line2);font-weight:650}
 .st-btn-opts:hover{border-color:rgba(135,101,28,.5);color:var(--brass-ink)}
 .st-produce-hint{margin-top:14px;font-size:13px;font-style:italic;color:var(--muted2)}
@@ -1552,7 +1599,9 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-g1{background:#fdf0ef;color:#8c2b23;border:1px solid rgba(179,38,30,.3)}
 .st-g2{background:#f6efdd;color:#5e4715;border:1px solid rgba(135,101,28,.3)}
 .st-g3{background:#eef7f0;color:#155433;border:1px solid rgba(30,107,67,.3)}
-.st-quit{display:block;margin:16px auto 0}
+/* flex + max-content + auto margins keeps the old centring while the padded hit area from
+   .st-link applies — display:inline-flex alone would not centre. */
+.st-quit{display:flex;width:max-content;margin:20px auto 0;padding:9px 12px}
 .st-summary{text-align:center;padding:34px 28px}
 .st-summary .st-q{font-size:24px}
 .st-summary .st-actions{justify-content:center}
@@ -1583,8 +1632,16 @@ button.st-sim-feature:active{transform:scale(.99)}
 /* Ladder subject filter. A select, not chips — SAT alone carries 18 subjects. */
 .st-lad-topic{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:13px}
 .st-lad-topic-lab{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.st-lad-topic-sel{font:inherit;font-size:13.5px;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:8px;padding:8px 11px;min-height:40px;max-width:100%;cursor:pointer}
-.st-lad-topic-sel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* The only native-chrome control on the site: OS chevron, OS focus ring, 40px against the
+   44px every button uses, radius 8 against 9. It was also sized by its longest option, so
+   switching rung changed its width by up to 19px and dragged "Clear" sideways — hence the
+   fixed max-width. Chevron is an inline data URI: self-hosted, no request. %23 for the
+   colour is required — a raw # ends the URI. */
+.st-lad-topic-sel{font:inherit;font-size:13.5px;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:9px;padding:10px 36px 10px 12px;min-height:44px;width:100%;max-width:420px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%235e5d66' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 13px center;background-size:12px 8px;transition:border-color .15s,box-shadow .15s}
+@media (hover:hover) and (pointer:fine){.st-lad-topic-sel:hover{border-color:rgba(135,101,28,.5)}}
+.st-lad-topic-sel:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
+/* 16px stops iOS Safari zooming the viewport on focus. */
+@media(max-width:640px){.st-lad-topic-sel{font-size:16px}}
 .st-lad-topic-clear{border:none;background:none;color:var(--accent);font:inherit;font-size:12.5px;font-weight:700;text-decoration:underline;cursor:pointer;min-height:40px;padding:0 4px}
 /* My Cards. Deliberately NOT styled like the corpus cards — a warm neutral panel with an
    explicit unverified tag, so a card someone typed never reads as a checked one. */
@@ -1719,7 +1776,7 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-sim-feature{position:relative;overflow:hidden;display:block;text-decoration:none;background:linear-gradient(158deg,#173a60,#0f2540 62%,#0a1c33);border:1px solid rgba(228,196,119,.4);border-radius:16px;padding:22px 54px 20px 24px;margin:14px 0 4px;box-shadow:inset 0 0 0 1px rgba(228,196,119,.22),0 26px 50px -24px rgba(15,37,64,.6);transition:border-color .15s,transform .15s}
 .st-sim-feature::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep));z-index:2}
 .st-sim-feature::after{content:"";position:absolute;right:-60px;bottom:-150px;width:360px;height:360px;opacity:.12;background:repeating-radial-gradient(circle at 50% 50%,rgba(228,196,119,.6) 0 1px,transparent 1px 12px);pointer-events:none}
-.st-sim-feature:hover{border-color:rgba(228,196,119,.7);transform:translateY(-2px)}
+@media (hover:hover) and (pointer:fine){.st-sim-feature:hover{border-color:rgba(228,196,119,.7);transform:translateY(-2px)}}
 .st-sim-feature:focus-visible{outline:3px solid rgba(228,196,119,.6);outline-offset:2px}
 .st-sim-kick{position:relative;display:block;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-bright);margin-bottom:7px}
 .st-sim-title{position:relative;display:block;font-family:var(--serif);font-size:23px;letter-spacing:-.01em;color:#f4f8fc;line-height:1.15}
@@ -1727,8 +1784,40 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-sim-chips{position:relative;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:13px}
 .st-sim-chip{font-size:12px;font-weight:800;color:var(--brass-bright);border:1px solid rgba(228,196,119,.5);border-radius:999px;padding:4px 12px;letter-spacing:.02em;white-space:nowrap}
 .st-sim-meta{font-size:12.5px;color:rgba(221,233,246,.72);font-variant-numeric:tabular-nums}
-.st-sim-go{position:absolute;right:22px;top:24px;font-size:22px;color:var(--brass-bright);transition:transform .15s}
-.st-sim-feature:hover .st-sim-go{transform:translateX(4px)}
+.st-sim-go{position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--brass-bright);transition:transform .15s}
+@media (hover:hover) and (pointer:fine){.st-sim-feature:hover .st-sim-go{transform:translateY(-50%) translateX(4px)}}
+@media(prefers-reduced-motion:reduce){.st-sim-feature:hover .st-sim-go{transform:translateY(-50%)}}
+
+/* ---- 48 CONS: the tools are SUBORDINATE to the ladder ---------------------------------
+   On /study .st-sim-feature is a single feature card and the navy slab is right. On /48cons
+   there are THREE of them stacked, and measured against the hero band they came out at
+   532,051px² vs the hero's 531,340 — the secondary content carried the same visual mass as
+   the page header, using byte-identical decoration (::before and ::after here were the same
+   declarations as .lhero::before/::after). They were also 2.9x the height of the ladder the
+   page is named after, and every one of them opens onto a calm white paper card.
+   So on this page only they become the page's own light-card idiom — the same one .st-rung
+   and the interior views already use. #study-app carries data-mode="48cons"; /study is
+   untouched. The four text colours below are MANDATORY, not cosmetic: the defaults are tuned
+   for navy and fail AA on white. */
+/* flex column + margin-top:auto on the chips row: the grid stretches the three cards to equal
+   height, but the descriptions run 2-3 lines, so the state chips sat at three different
+   heights. Pinning the chips to the card floor lines them up across the row. */
+#study-app[data-mode="48cons"] .st-sim-feature{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line2);border-left:3px solid var(--brass);border-radius:0 10px 10px 0;padding:15px 40px 14px 17px;margin:0;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+#study-app[data-mode="48cons"] .st-sim-chips{margin-top:auto;padding-top:12px;flex-wrap:wrap;row-gap:4px}
+#study-app[data-mode="48cons"] .st-sim-feature::before,#study-app[data-mode="48cons"] .st-sim-feature::after{content:none}
+@media (hover:hover) and (pointer:fine){#study-app[data-mode="48cons"] .st-sim-feature:hover{border-color:rgba(135,101,28,.5);border-left-color:var(--brass);box-shadow:0 10px 24px -16px rgba(15,37,64,.45)}}
+#study-app[data-mode="48cons"] .st-sim-feature:focus-visible{outline:3px solid rgba(135,101,28,.4)}
+#study-app[data-mode="48cons"] .st-sim-kick{font-size:10px;letter-spacing:.14em;color:var(--brass-ink);margin-bottom:5px}
+#study-app[data-mode="48cons"] .st-sim-title{font-family:var(--serif);font-size:18px;line-height:1.2;color:var(--ink)}
+#study-app[data-mode="48cons"] .st-sim-desc{font-size:13px;line-height:1.5;color:var(--muted);margin-top:5px;max-width:46ch}
+#study-app[data-mode="48cons"] .st-sim-chips{gap:10px}
+#study-app[data-mode="48cons"] .st-sim-chip{font-size:11.5px;color:var(--brass-ink);border-color:rgba(135,101,28,.35);background:#f6efdd}
+#study-app[data-mode="48cons"] .st-sim-meta{font-size:12px;color:var(--muted)}
+#study-app[data-mode="48cons"] .st-sim-go{right:16px;font-size:18px;color:var(--brass-ink)}
+/* Three abreast on desktop, stacked on a phone. The grid is what turns a 724px stack into
+   one band; .st-tools exists only on this page. */
+#study-app[data-mode="48cons"] .st-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+@media(max-width:760px){#study-app[data-mode="48cons"] .st-tools{grid-template-columns:1fr}}
 
 
 
@@ -1910,9 +1999,19 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-rungs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
 @media(max-width:560px){.st-rungs{grid-template-columns:1fr 1fr}}
 @media(max-width:360px){.st-rungs{grid-template-columns:1fr}}
-.st-rung{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;background:#fff;border:1px solid var(--line2);border-left:3px solid transparent;border-radius:10px;padding:15px 16px 14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:border-color .13s,box-shadow .13s}.st-rung-ceiling{font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.05;color:var(--ink);letter-spacing:-.01em}.st-rung-what{font-size:12px;line-height:1.35;color:var(--muted)}.st-rung-n{margin-top:3px;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.st-rung-on{border-left-color:var(--brass);box-shadow:0 1px 3px rgba(16,24,40,.06)}.st-rung-on .st-rung-n{color:var(--brass-ink)}
-.st-rung:hover{border-color:var(--line);box-shadow:0 1px 3px rgba(16,24,40,.06)}
+/* font:inherit FIRST and unconditionally. .st-rung is a <button>, and a button resets the font
+   to the UA default — so .st-rung-what and .st-rung-n rendered in Arial while every label
+   around them was Inter. Same trap the comment above button.st-sim-feature describes: the
+   secondary card got the fix, the primary control never did. It has to precede
+   font-variant-numeric, because the font shorthand resets font-variant. */
+.st-rung{display:flex;flex-direction:column;align-items:flex-start;gap:3px;font:inherit;text-align:left;background:#fff;border:1px solid var(--line2);border-left:3px solid transparent;border-radius:10px;padding:15px 16px 14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:border-color .15s,box-shadow .15s,transform .15s}.st-rung-ceiling{font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.05;color:var(--ink);letter-spacing:-.01em}.st-rung-what{font-size:12px;line-height:1.4;color:var(--muted)}.st-rung-n{margin-top:auto;padding-top:3px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.st-rung-on{border-left-color:var(--brass);box-shadow:0 8px 20px -14px rgba(15,37,64,.3)}.st-rung-on .st-rung-n{color:var(--brass-ink)}
+/* Hover used to paint the SELECTED state's exact shadow onto an unselected rung — so hover
+   read as selection, and on the selected rung it was a no-op. Brass border + the house lift,
+   matching every other light card (.st-topic, .st-trackcard, .st-mode). */
+@media (hover:hover) and (pointer:fine){.st-rung:hover{border-color:rgba(135,101,28,.5);box-shadow:0 10px 24px -16px rgba(15,37,64,.45);transform:translateY(-2px)}}
+.st-rung:active{transform:translateY(0) scale(.985)}
 .st-rung:focus-visible{outline:3px solid rgba(135,101,28,.4);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.st-rung:hover,.st-rung:active{transform:none}}
 .st-rung-on,.st-rung-on:hover{border-left-color:var(--brass);color:var(--ink)}
 .st-lad-count{color:var(--muted);font-size:13px;margin:10px 0 0;font-variant-numeric:tabular-nums}
 .st-lad-ready{display:flex;align-items:center;gap:10px;max-width:440px;margin:16px 0 0}
@@ -1988,19 +2087,20 @@ function render48ConsPage() {
 
   const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/study">Study</a><a class="cta" href="/?q=">Search all sources &rarr;</a></span></div></header>
 <main>
-<section class="lband lhero"><div class="lband-inner">
+<section class="lband lhero lband--rail"><div class="lband-inner">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> &rsaquo; <a href="/study">Study</a> &rsaquo; Warrant board prep</nav>
 <div class="eyebrow">AcqVault &middot; 48 CONS</div>
 <h1>Hold the ceiling</h1>
-<p class="lede">Warrant board preparation for the 48th Contracting Squadron. The Warrant Ladder scopes your prep to the warrant you&rsquo;re testing for &mdash; SAT through unlimited &mdash; and every card carries the governing rule in its own words, with the DoD deviation where one applies. The cards are rebuilt from the AcqVault corpus each time the rulebook moves, so this page follows the RFO rather than a snapshot of it.</p>
-<div class="stats"><span class="stat"><b>253</b> cards &amp; board sims</span><span class="stat">Every card quotes the rule</span><span class="stat">Free &middot; no account</span><span class="stat">Progress stays on your device</span></div>
+<p class="lede">Warrant board preparation for the 48th Contracting Squadron. The Warrant Ladder scopes your prep to the warrant you&rsquo;re testing for &mdash; SAT through unlimited &mdash; and every card carries the governing rule in its own words, with the DoD deviation where one applies.</p>
+<div class="stats"><span class="stat"><b>206</b> cards &middot; <b>47</b> board sims</span><span class="stat">Rebuilt when the rulebook moves</span><span class="stat">Progress stays on your device</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
 <div id="study-app" data-mode="48cons"><noscript><p>This page is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck&hellip;</p></div>
 </div></section>
 </main>
-<footer class="lband lband--foot"><div class="lband-inner">
-<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress, your board-sim notes and anything you type into the introduction builder live only in this browser and are never uploaded &mdash; notes leave this device only into a file you ask for. A board-sim recording is not stored at all &mdash; it stays in the tab and is gone the moment you leave the sim.</p>
+<footer class="lband lband--foot lband--rail"><div class="lband-inner">
+<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Cards you miss come back sooner and mastered ones stretch out, so a rung hands you what is due rather than a fresh shuffle. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site.</p>
+<p class="lfoot-note"><strong>What stays on your device:</strong> your progress, your board-sim notes and anything you type into the introduction builder live only in this browser and are never uploaded &mdash; they leave this device only in a file you ask for. A board-sim recording is not stored at all &mdash; it stays in the tab and is gone the moment you leave the sim.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> &mdash; not legal advice and not an official source, and nothing here is squadron policy. Verify anything you&rsquo;ll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
 <script defer src="/assets/study.js?v=${STUDY_V}"></script>`;

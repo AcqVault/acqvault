@@ -496,8 +496,13 @@
       saveResume('sprint', S.track, q, i, 0, 'Threshold Sprint', { streak: streak });
       var c = q[i];
       var opts = mcqOptions(c) || [c.a];
+      /* Position + a progress bar, both of which the card session two views over already
+         renders. The tool card advertises "40 thresholds" and the drill then never said
+         where you were in them; best moves to the summary, which already leads with it. */
       render(
-        '<div class="st-session-head"><span>Threshold Sprint</span><span>streak ' + streak + ' · best ' + (S.sprint.best || 0) + '</span></div>' +
+        '<div class="st-session-head"><span>Threshold Sprint</span><span>' + (i + 1) + ' / ' + q.length +
+        ' · streak ' + streak + '</span></div>' +
+        '<div class="st-prog" aria-hidden="true"><span style="width:' + Math.round(100 * i / q.length) + '%"></span></div>' +
         '<div class="st-card st-sprint" aria-live="polite">' +
         '<div class="st-q">' + esc(c.q) + '</div>' +
         '<div class="st-opts">' + opts.map(function (o, k) {
@@ -920,7 +925,7 @@
               '<button class="st-link st-my-act" data-my-del="' + esc(c.id) + '">Delete</button>' +
               '</div></div>';
           }).join('') + '</div>'
-        : '<p class="st-my-meta">No cards yet. The box above writes your first one.</p>') +
+        : '<p class="st-sub">No cards yet. The box above writes your first one.</p>') +
 
       '<div class="st-my-bar">' +
       (cards.length ? '<button class="st-btn st-btn-reveal" id="my-study">Study these ' + cards.length + '</button>' : '') +
@@ -928,9 +933,13 @@
       '<button class="st-btn st-btn-hint" id="my-import-btn">Import .json</button>' +
       '<input type="file" id="my-import" accept="application/json,.json" hidden>' +
       '</div>' +
-      '<p class="st-my-meta">' + myKb(myBytes()) + ' used on this device · never uploaded · ' +
-      'export to move them to another machine or share them.</p>' +
-      '<button class="st-link st-quit" id="st-quit">Back to the tools</button>');
+      // Suppressed on an empty deck: it reported "18 B used on this device" for the JSON
+      // envelope alone. The privacy promise is already in the footer and on the tool card.
+      (cards.length
+        ? '<p class="st-my-meta">' + myKb(myBytes()) + ' used on this device · never uploaded · ' +
+          'export to move them to another machine or share them.</p>'
+        : '') +
+      '<button class="st-link st-quit" id="st-quit">← Warrant board prep</button>');
 
     el('st-quit').onclick = function () { myEditId = null; myErr = ''; goDepth(0, view48Cons); };
     el('my-save').onclick = function () {
@@ -1091,17 +1100,32 @@
     }
     return out;
   }
-  function rungStripHtml(sel) {
-    return '<div class="st-rungs">' + RUNGS.map(function (r) {
+  /* nav=true on the 48 CONS home view, where a rung OPENS the ladder; nav is omitted in
+     viewLadder, where the same strip FILTERS in place. The two are not the same control:
+     aria-pressed describes a toggle and is only honest in the filter case, and the ::after
+     arrow affordance only belongs on the one that navigates. The button's own text is a
+     better accessible name than the aria-label that used to replace it. */
+  function rungStripHtml(sel, nav) {
+    return '<div class="st-rungs"' + (nav ? ' data-nav="1"' : '') + '>' + RUNGS.map(function (r) {
       var n = ladderPool(r.k).length;
-      return '<button class="st-rung' + (r.k === sel ? ' st-rung-on' : '') + '" data-rung="' + r.k +
-        '" aria-pressed="' + (r.k === sel) + '" aria-label="' + esc(r.label) + ', ' + n + ' cards">' +
+      return '<button class="st-rung' + (r.k === sel ? ' st-rung-on' : '') + '" data-rung="' + r.k + '"' +
+        (nav ? ' aria-current="' + (r.k === sel ? 'true' : 'false') + '"'
+             : ' aria-pressed="' + (r.k === sel) + '"') + '>' +
         '<b class="st-rung-ceiling">' + r.ceiling + '</b>' +
         '<span class="st-rung-what">' + r.what + '</span>' +
         '<span class="st-rung-n">' + n + ' cards</span></button>';
     }).join('') + '</div>';
   }
-  function ladderCountLine(pool) { return '<p class="st-lad-count">' + pool.length + ' cards, every one cited to the rulebook.</p>'; }
+  /* role=status so the new total is spoken when a rung or subject filter repaints it. The
+     due count is the one number that tells you what to do today, so it leads when there is
+     one; "nothing due today" must never read as "done" — a candidate three weeks out who
+     clears the queue has not finished the rung. */
+  function ladderCountLine(pool, nDue) {
+    var s = nDue == null ? pool.length + ' cards, every one cited to the rulebook.'
+      : nDue ? nDue + ' of ' + pool.length + ' cards due today.'
+      : 'Nothing due today · ' + pool.length + ' cards scheduled on this rung.';
+    return '<p class="st-lad-count" role="status">' + s + '</p>';
+  }
   function ladderSectionHtml() {
     // The ladder is the 48 CONS page's main event now — no step kicker, it isn't step 2 of
     // anything. S.ladderBeta is a leftover record of the original unlisted link and is no
@@ -1111,12 +1135,15 @@
     // all name 48 CONS already — a chip here only said it a third time, so there is none.
     if (!LADDER_ENABLED || !deck.ladder) return '';
     var sel = ladderRung();
+    /* The bolded clause used to read "Each ceiling includes everything under it." It was not
+       true of the deck: the four rung pools are disjoint (64+61+51+30 = 206 cards, 206 unique
+       ids, zero overlap), and ladderPool() hands back only the selected rung. An Unlimited
+       candidate was being told their 30 cards covered the 176 below them. */
     return '<h2 class="st-h2" style="margin-top:2px">The Warrant Ladder</h2>' +
-      '<p class="st-sub">A warrant lets you sign up to a ceiling — and holds you to every rule below it. ' +
-      'Scope your prep to the warrant you’re testing for; each card quotes the regulation in its own words, ' +
-      'and flags where DoD deviates. <span class="st-lad-cum">Each ceiling includes everything under it.</span></p>' +
-      rungStripHtml(sel) +
-      ladderCountLine(ladderPool(sel));
+      '<p class="st-sub">A warrant carries signature authority up to a dollar ceiling — and holds you ' +
+      'to every rule below it. Scope your prep to the warrant you’re testing for. ' +
+      '<span class="st-lad-cum">Each rung holds the material that ceiling adds — the rungs below it still apply.</span></p>' +
+      rungStripHtml(sel, true);
   }
   function wireLadderSection() {
     Array.prototype.forEach.call(app.querySelectorAll('.st-rung'), function (b) {
@@ -1136,41 +1163,48 @@
     // No orienting paragraph here — the hero lede directly above already says this, and
     // saying it twice weakens both.
     var nThresh = (deck.thresholds && deck.thresholds.length) || 0;
+    /* The three tools sit in a grid and read as one subordinate band under the ladder. Each
+       card fills the same three slots the same way — kicker = what kind of tool, chip = YOUR
+       state, meta = what it is — because filling them with whatever each tool happened to have
+       is what made the row read as a template. The long descriptions moved into each tool's
+       own view, where there is room for them.
+       aria-label carries the tool + its state: the whole card was the button's accessible
+       name, running 40+ words, so .st-sim-desc is hidden from the name and stays visible. */
+    var nMy = myDeck().cards.length;
     render(
       ladderSectionHtml() +
-      '<div class="st-tools-label">Tools</div>' +
-      '<button class="st-sim-feature st-intro-open" id="st-intro-open">' +
+      '<h2 class="st-tools-label">The rest of your prep</h2>' +
+      '<div class="st-tools">' +
+      '<button class="st-sim-feature st-intro-open" id="st-intro-open" aria-label="Board Introduction Builder — ' + introDoneChip() + '">' +
       '<span class="st-sim-kick">Builder</span>' +
       '<b class="st-sim-title">Board Introduction Builder</b>' +
-      '<span class="st-sim-desc">Boards open with “tell us about yourself” and close by asking ' +
-      'why you are ready. Draft both in your own words, keep them on this device, and print ' +
-      'them to rehearse.</span>' +
+      '<span class="st-sim-desc" aria-hidden="true">Draft the opener and the closer every board asks for, in your own words.</span>' +
       '<span class="st-sim-chips"><span class="st-sim-chip">' + introDoneChip() + '</span>' +
-      '<span class="st-sim-meta">Stays in this browser · nothing uploaded</span></span>' +
+      '<span class="st-sim-meta">4 questions · printable</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
       // The same corpus-built threshold drill /study has run for months — surfaced here rather
       // than rebuilt, so there is one quizzer to keep correct instead of two.
-      '<button class="st-sim-feature" id="st-sprint-open">' +
+      '<button class="st-sim-feature" id="st-sprint-open" aria-label="Threshold Sprint — ' +
+      (S.sprint.best ? 'best streak ' + S.sprint.best : 'not started') + '">' +
       '<span class="st-sim-kick">Drill</span>' +
       '<b class="st-sim-title">Threshold Sprint</b>' +
-      '<span class="st-sim-desc">Rapid-fire multiple choice on the dollar figures a panel can ' +
-      'rattle you with. Every answer names the section the number comes from, so a wrong guess ' +
-      'sends you to the rule rather than to a flashcard.</span>' +
-      '<span class="st-sim-chips"><span class="st-sim-chip">' + nThresh + ' thresholds</span>' +
-      '<span class="st-sim-meta">Best streak ' + (S.sprint.best || 0) + '</span></span>' +
+      '<span class="st-sim-desc" aria-hidden="true">Rapid-fire on the dollar figures a panel can rattle you with.</span>' +
+      '<span class="st-sim-chips"><span class="st-sim-chip">' +
+      (S.sprint.best ? 'Best streak ' + S.sprint.best : 'Not started') + '</span>' +
+      '<span class="st-sim-meta">' + nThresh + ' thresholds · every answer cited</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
       // Kept visibly apart from the corpus decks above: its own tool, its own storage, its
       // own study view, and every card labelled unverified.
-      '<button class="st-sim-feature" id="st-my-open">' +
+      '<button class="st-sim-feature" id="st-my-open" aria-label="My Cards — ' +
+      (nMy ? nMy + ' card' + (nMy === 1 ? '' : 's') : 'none yet') + '">' +
       '<span class="st-sim-kick">Yours</span>' +
       '<b class="st-sim-title">My Cards</b>' +
-      '<span class="st-sim-desc">Write your own cards for what the rulebook cannot know — local ' +
-      'approval chains, squadron procedure, the things your board will ask that no regulation ' +
-      'states. Kept separate from the verified deck, and exportable to share or back up.</span>' +
-      '<span class="st-sim-chips"><span class="st-sim-chip">' + myDeck().cards.length + ' card' +
-      (myDeck().cards.length === 1 ? '' : 's') + '</span>' +
-      '<span class="st-sim-meta">Yours · not corpus-verified</span></span>' +
-      '<span class="st-sim-go" aria-hidden="true">→</span></button>');
+      '<span class="st-sim-desc" aria-hidden="true">Write the local policy the rulebook cannot know — approval chains, squadron procedure.</span>' +
+      '<span class="st-sim-chips"><span class="st-sim-chip">' +
+      (nMy ? nMy + ' card' + (nMy === 1 ? '' : 's') : 'None yet') + '</span>' +
+      '<span class="st-sim-meta">Yours · not from the rulebook</span></span>' +
+      '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
+      '</div>');
     wireLadderSection();
     el('st-intro-open').onclick = function () { depth1View = viewIntro; goDepth(1, viewIntro); };
     // Activities launched from the org page live at depth 1 (the ladder's own sessions sit at
@@ -1223,12 +1257,17 @@
           '" autocomplete="off" placeholder="' + esc(f.ph) + '">' + esc(I[f.k] || '') + '</textarea>';
       }).join('') +
       '<div class="st-intro-actions">' +
-      '<button class="st-btn" id="in-build">Build my script</button>' +
+      // Bare .st-btn sets border:none and NO background, so this landed as the UA grey
+      // buttonface — 1.15:1 against its own white card, reading as disabled. It is this
+      // view's one primary action and gets the navy every other primary action uses.
+      '<button class="st-btn st-btn-reveal" id="in-build">Build my script</button>' +
       '<button class="st-link" id="in-clear">Clear</button>' +
       '</div>' +
-      '<div id="in-out" class="st-intro-out"></div>' +
+      '<div id="in-out" class="st-intro-out" role="status" aria-live="polite"></div>' +
       '</div>' +
-      '<button class="st-link st-quit" id="st-quit">Back to the ladder</button>');
+      // Went to view48Cons (the tools view), not viewLadder — the label named a place it
+      // never reached.
+      '<button class="st-link st-quit" id="st-quit">← Warrant board prep</button>');
 
     INTRO_FIELDS.forEach(function (f) {
       el('in-' + f.k).addEventListener('input', function () {
@@ -1267,7 +1306,7 @@
       '<div class="st-intro-paper">' +
       block('Introduction', s.open) + block('Closing', s.close) +
       '</div>' +
-      '<div class="st-intro-actions"><button class="st-btn" id="in-print">Print both</button>' +
+      '<div class="st-intro-actions"><button class="st-btn st-btn-hint" id="in-print">Print both</button>' +
       '<span class="st-intro-note">Read it out loud once before you print it — if a line is hard to say, rewrite it above.</span></div>';
     el('in-print').onclick = function () { window.print(); };
   }
@@ -1332,28 +1371,60 @@
       ? '<p class="st-lad-hidden">' + nHidden + ' card' + (nHidden === 1 ? '' : 's') +
         ' hidden on this rung. <button class="st-lad-unhide" id="lad-unhide">Show them again</button></p>'
       : '';
+    /* The footer has always promised "missed cards return sooner; mastered ones stretch out",
+       and the ladder never delivered it: isDue() had three call sites, all in viewHome() on
+       /study, and the session took a uniform random 25 out of the rung. The boxes were being
+       written by grade() and read by mastery(), then thrown away at selection time. Now the
+       schedule actually drives the session. Free-form review survives as a second button. */
+    var due = pool.filter(function (c) { return isDue(c.id); });
+    var nDue = Math.min(due.length, SESSION_CAP);
+    /* At 0% the bar rendered as an empty track beside a "0%" — an empty state dressed as a
+       failing grade, on a page for people already anxious about a panel. */
+    var readyHtml = m
+      ? '<div class="st-lad-ready"><span class="st-lad-ready-lab">Card mastery</span>' +
+        '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
+        '<span class="st-topic-meta">' + m + '%</span></div>'
+      : '<div class="st-lad-ready"><span class="st-lad-ready-lab">Card mastery</span>' +
+        '<span class="st-topic-meta">Not started — grade a card and it fills in</span></div>';
     render(
       '<h2 class="st-h2" style="margin-top:0">The Warrant Ladder</h2>' +
       '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +
       rungStripHtml(sel) +
       topicHtml +
-      ladderCountLine(pool) +
+      ladderCountLine(pool, due.length) +
       hiddenHtml +
-      '<div class="st-lad-ready"><span class="st-lad-ready-lab">Card mastery</span>' +
-      '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
-      '<span class="st-topic-meta">' + m + '%</span></div>' +
+      readyHtml +
       boardHtml +
       simHtml +
-      '<div class="st-actions"><button class="st-btn st-btn-reveal" id="lad-start">Study these cards <kbd>space</kbd></button>' +
+      '<div class="st-actions">' +
+      (due.length
+        ? '<button class="st-btn st-btn-reveal" id="lad-start">Study ' + nDue +
+          (nDue < due.length ? ' of ' + due.length + ' due' : ' due') + ' <kbd>space</kbd></button>'
+        : '<button class="st-btn st-btn-hint" id="lad-start">Review all ' + pool.length + ' <kbd>space</kbd></button>') +
       (boards.length ? '<button class="st-btn st-btn-hint" id="lad-board">Face the board</button>' : '') +
+      (due.length && due.length < pool.length
+        ? '<button class="st-link" id="lad-all">Review all ' + pool.length + '</button>' : '') +
       '</div>' +
       sinkHtml +
-      '<button class="st-link st-quit" id="st-quit">← Study menu</button>');
+      '<button class="st-link st-quit" id="st-quit">← Warrant board prep</button>');
     el('st-quit').onclick = backToTools;
     Array.prototype.forEach.call(app.querySelectorAll('.st-rung'), function (b) {
-      b.onclick = function () { S.ladderRung = b.getAttribute('data-rung'); save(); viewLadder(); };
+      b.onclick = function () {
+        S.ladderRung = b.getAttribute('data-rung'); save(); viewLadder();
+        // render() replaces innerHTML and focuses the container, so the button you just
+        // pressed is gone and its state change is never announced. Put focus back on the
+        // equivalent control in the repainted strip.
+        var n = app.querySelector('.st-rung-on');
+        if (n) { try { n.focus({ preventScroll: true }); } catch (e) { n.focus(); } }
+      };
     });
-    el('lad-start').onclick = function () { goDepth(2, function () { ladderSession(pool, label); }); };
+    el('lad-start').onclick = function () {
+      var cards = due.length ? due : pool;
+      goDepth(2, function () { ladderSession(cards, label); });
+    };
+    if (el('lad-all')) {
+      el('lad-all').onclick = function () { goDepth(2, function () { ladderSession(pool, label); }); };
+    }
     if (el('lad-board')) {
       el('lad-board').onclick = function () { goDepth(2, function () { ladderBoardSession(sel, label); }); };
     }
@@ -1361,7 +1432,15 @@
       el('lad-notes').onclick = function () { exportBoardNotes(); };
     }
     if (el('lad-topic')) {
-      el('lad-topic').onchange = function () { S.ladderTopic = this.value; save(); viewLadder(); };
+      /* Re-focus the select after the repaint. render() destroys the node the change fired
+         on, so focus landed on the container — and on Windows Firefox a closed <select>
+         fires change on EVERY arrow key, which made a 19-option list keyboard-inoperable
+         after the first press. */
+      el('lad-topic').onchange = function () {
+        S.ladderTopic = this.value; save(); viewLadder();
+        var s = el('lad-topic');
+        if (s) { try { s.focus({ preventScroll: true }); } catch (e) { s.focus(); } }
+      };
     }
     if (el('lad-topic-clear')) {
       el('lad-topic-clear').onclick = function () { S.ladderTopic = ''; save(); viewLadder(); };
@@ -1570,7 +1649,7 @@
     } catch (e) {}
     recStopTracks();
     recDropAudio();
-    REC.mr = null; REC.chunks = null; REC.t0 = 0; REC.state = 'idle'; REC.err = '';
+    REC.mr = null; REC.chunks = null; REC.t0 = 0; REC.state = 'idle'; REC.err = ''; REC.busy = false;
   }
   function recClock(ms) {
     var s = Math.max(0, Math.floor(ms / 1000));
@@ -1615,8 +1694,14 @@
   function wireRecorder() {
     if (!recSupported()) return;
     recClearTick();
-    if (el('rec-go')) el('rec-go').onclick = function () { recStart(); };
-    if (el('rec-again')) el('rec-again').onclick = function () { recDiscard(); recStart(); };
+    /* REC.busy guards the gap between the click and getUserMedia settling. Without it the
+       button stayed live and undisabled through a permission prompt that can hang for seconds
+       on a managed government browser — two clicks started two streams, the second overwrote
+       REC.stream, and recStopTracks() could never reach the first, so the OS mic indicator
+       stayed lit after Stop. Nothing was ever uploaded, but "gone the moment you leave the
+       sim" was not true of the orphaned stream. */
+    if (el('rec-go')) el('rec-go').onclick = function () { recArm(this); };
+    if (el('rec-again')) el('rec-again').onclick = function () { recDiscard(); recArm(this); };
     if (el('rec-del')) el('rec-del').onclick = function () { recDiscard(); recRepaint('rec-go'); };
     if (el('rec-stop')) {
       el('rec-stop').onclick = function () { recStop(); };
@@ -1627,9 +1712,25 @@
       }, 500);
     }
   }
+  /* One entry point for both Record and Re-record: mark busy, disable, and say so, then start.
+     The label change is the only feedback the user gets while the permission prompt is up. */
+  function recArm(btn) {
+    if (REC.busy || REC.state === 'recording') return;
+    REC.busy = true;
+    if (btn) {
+      btn.disabled = true;
+      var last = btn.lastChild;
+      if (last && last.nodeType === 3) last.nodeValue = ' Starting…'; else btn.textContent = 'Starting…';
+    }
+    recStart();
+  }
   function recStart() {
     REC.err = '';
     navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      REC.busy = false;
+      // A second grant that raced the first must not orphan its tracks: if a recording is
+      // already running, stop this stream immediately rather than overwriting REC.stream.
+      if (REC.state === 'recording') { try { stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} return; }
       REC.stream = stream;
       REC.chunks = [];
       var mr;
@@ -1653,6 +1754,7 @@
       mr.start();
       recRepaint('rec-stop');
     }).catch(function (e) {
+      REC.busy = false;
       // NotAllowedError is the user, or a managed-browser policy, saying no. Say so plainly
       // and leave the sim exactly as it was.
       REC.err = (e && e.name === 'NotAllowedError')
