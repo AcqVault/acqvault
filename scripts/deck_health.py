@@ -54,6 +54,21 @@ def norm(s):
     return re.sub(r'\s+', ' ', s or '').strip()
 
 
+def fig_forms(v):
+    """The ways the corpus may write a dollar amount, for a tolerant substring
+    match. The RFO writes small figures with commas ("$150,000") but large ones
+    in words ("$9 million", "$100 million"), so a comma-only check false-fails
+    every seven- and eight-figure threshold."""
+    forms = ['${:,}'.format(v)]
+    if v >= 1_000_000 and v % 100_000 == 0:
+        for unit, div in (('billion', 1_000_000_000), ('million', 1_000_000)):
+            if v >= div:
+                q = v / div
+                forms.append('${} {}'.format(int(q) if q == int(q) else ('%g' % q), unit))
+                break
+    return forms
+
+
 SRC_OF_LABEL = {'RFO': 'rfo', 'R-DFARS': 'r-dfars', 'PGI': 'pgi', 'DoD SSP': 'ssp',
                 'DAFI 63-138': 'afi-63-138', 'FAR Companion': 'far-companion',
                 'DoD FMR': 'fmr'}
@@ -206,6 +221,56 @@ def main():
                          'fix: cite the subsection that states the figure, not a grouping header')
     if not bad_fig:
         print(f'  PASS  all {n_fig} cited dollar figures appear in the section they cite')
+
+    # ── 4b. widgets.js THRESHOLDS rows: cite a real, non-empty subsection ─────
+    # These rows store the figure as a numeric field (std:) held apart from the
+    # cite string, so the check above — which needs a $ and a citation inside one
+    # quoted string — never saw them. That blind spot is how five rows shipped
+    # citing empty "Presolicitation" grouping headers (RFO 22.402, 22.1002,
+    # 22.601, 28.102, 22.1703 are title-only; the rules live in numbered
+    # subsections). We assert the STANDARD figure only: contingency/OCONUS
+    # figures (con:) are routinely defined in a different section than the base
+    # threshold, so checking them false-fails. RFO 15.403-3 still states the
+    # pre-cutover $2.5M TINA figure while the row is forward-dated to $10M by
+    # NDAA FY26 sec. 1804(c) (see the widgets.js header comment) — so that row's
+    # figure is exempt, but its citation is still checked for existence.
+    FIG_EXEMPT = {'15.403-3'}
+    wsrc = open(os.path.join(ROOT, 'assets', 'widgets.js'), encoding='utf-8').read()
+    block = re.search(r'const THRESHOLDS\s*=\s*\[(.*?)\];', wsrc, re.S)
+    n_thr = bad_thr = 0
+    if not block:
+        fail('widgets.js: could not locate the THRESHOLDS array to check')
+    else:
+        for row in re.finditer(r'\{([^{}]*)\}', block.group(1)):
+            r = row.group(1)
+            mc = re.search(r"cite:\s*'([^']+)'", r)
+            if not mc:
+                continue
+            n_thr += 1
+            lbl, _, sec = mc.group(1).partition(' ')
+            src = label_src.get(lbl)
+            cand = by_section.get((src, sec.strip()), []) if src else []
+            if not cand:
+                bad_thr += 1
+                fail(f'widgets.js: THRESHOLDS cite {mc.group(1)} does not exist')
+                continue
+            heading = norm(cand[0].get('title'))
+            body = norm(strip_markers(cand[0].get('content')))
+            if len(body) <= len(heading) + 1:          # title-only grouping header
+                bad_thr += 1
+                fail(f'widgets.js: THRESHOLDS cite {mc.group(1)} is an empty grouping '
+                     f'header — cite the numbered subsection that states the rule')
+                continue
+            ms = re.search(r'std:\s*(\d+)', r)
+            if not ms or sec.strip() in FIG_EXEMPT:
+                continue
+            v = int(ms.group(1))
+            if not any(form in body for form in fig_forms(v)):
+                bad_thr += 1
+                fail(f'widgets.js: THRESHOLDS {"${:,}".format(v)} is not stated in the '
+                     f'section it cites ({mc.group(1)}) — cite the subsection that states it')
+    if not bad_thr:
+        print(f'  PASS  all {n_thr} THRESHOLDS rows cite a subsection that states their figure')
 
     # ── 5. every shipped JSON asset parses, and its ?v is referenced ─────────
     # These are fetched at runtime, so a parse error is a broken feature on the

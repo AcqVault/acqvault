@@ -287,6 +287,12 @@ module.exports = async function handler(req, res) {
     // the page we pulled, meaning additional records exist beyond what we ranked.
     const capped = responses.some(data => (Number(data.totalRecords) || 0) > (data.opportunitiesData?.length || 0));
     const opportunities = matched.slice(0, limit).map(({ _score, ...item }) => item);
+    // In broaden mode the code defines the set and the keyword only re-orders it,
+    // so a keyword can rank zero of the pooled notices. Count the ones it actually
+    // hit (title or metadata, _score > 0) so the UI can distinguish "N ranked
+    // first" from "none matched — showing by date". Costs no extra SAM request:
+    // the scores were already computed in mergeResponses.
+    const keywordHits = broaden ? matched.reduce((n, it) => n + (it._score > 0 ? 1 : 0), 0) : null;
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900');
     return res.status(200).json({
@@ -299,6 +305,7 @@ module.exports = async function handler(req, res) {
       // broadened: a NAICS/PSC pulled the full code pool and the keyword only ranked it.
       titleScoped: !hasCode && hasQuery,
       broadened: broaden,
+      keywordHits,
       postedFrom: ranges[ranges.length - 1]?.postedFrom,
       postedTo: ranges[0]?.postedTo
     });

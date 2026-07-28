@@ -43,15 +43,15 @@
       std: 15000, con: 25000, conNote: '$40K outside U.S.' },
     { group: G1, abbr: 'SAT', name: 'Simplified Acquisition Threshold', cite: 'RFO 2.101',
       std: 350000, con: 1000000, conNote: '$2M outside U.S.' },
-    { group: G2, abbr: 'DBA', name: 'Davis-Bacon wage rules — construction', cite: 'RFO 22.402',
+    { group: G2, abbr: 'DBA', name: 'Davis-Bacon wage rules — construction', cite: 'RFO 22.402-1',
       std: 2000, con: 2000, fixed: true, note: 'Sets the construction micro-purchase ceiling' },
-    { group: G2, abbr: 'SCA', name: 'Service Contract Labor Standards', cite: 'RFO 22.1002',
+    { group: G2, abbr: 'SCA', name: 'Service Contract Labor Standards', cite: 'RFO 22.1002-2',
       std: 2500, con: 2500, fixed: true, note: 'Sets the services micro-purchase ceiling' },
-    { group: G2, abbr: '', name: 'Walsh-Healey — supply contracts', cite: 'RFO 22.601',
+    { group: G2, abbr: '', name: 'Walsh-Healey — supply contracts', cite: 'RFO 22.601-1',
       std: 20000, con: 20000, fixed: true },
-    { group: G2, abbr: '', name: 'Performance & payment bonds — construction', cite: 'RFO 28.102',
+    { group: G2, abbr: '', name: 'Performance & payment bonds — construction', cite: 'RFO 28.102-1',
       std: 150000, con: 150000, fixed: true },
-    { group: G3, abbr: '', name: 'Trafficking compliance plan', cite: 'RFO 22.1703',
+    { group: G3, abbr: '', name: 'Trafficking compliance plan', cite: 'RFO 22.1703-1',
       std: 700000, con: 700000, fixed: true, note: 'Work performed outside the U.S.' },
     { group: G3, abbr: '', name: 'Subcontracting plan', cite: 'RFO 19.109',
       std: 900000, con: 900000, fixed: true, note: '$2M for construction of a public facility' },
@@ -123,7 +123,7 @@
     'J&A': ['Justification and Approval', 'Other than full & open — RFO 6.104-2'],
     SCA: ['Service Contract Act', 'Now “Service Contract Labor Standards” — applies above $2,500 (RFO 22.1002-2)'],
     'EO 14402': ['Promoting Efficiency, Accountability, and Performance in Federal Contracting', 'Apr 2026 E.O. — head-of-agency justification to award other than firm-fixed-price: $100M DoD, $35M NASA, $25M DHS, $10M all others (RFO 16.104)'],
-    DBA: ['Davis-Bacon Act', 'Construction wage rates — applies above $2,000 (RFO 22.402-3)'],
+    DBA: ['Davis-Bacon Act', 'Construction wage rates — applies above $2,000 (RFO 22.402-1)'],
     'D&F': ['Determination and Findings', 'RFO 1.5'],
     BAA: ['Broad Agency Announcement', 'RFO 35.102'],
     OTA: ['Other Transaction Authority', '10 U.S.C. 4021/4022'],
@@ -1097,6 +1097,19 @@
         : ' Add a NAICS or PSC code for a full scan across awards and closed notices.';
       return `<div class="market-note"><span>Keyword matched notice <strong>titles</strong> only.${tail}</span>${suggestionChips(h)}</div>`;
     }
+    // The in-results note shown after a broaden search (code defines the set, keyword
+    // ranks it). keywordHits distinguishes "N ranked first" from "none matched — by
+    // date", so we never claim relevance ranking the pool didn't actually produce.
+    function broadenNoteHTML(q, data) {
+      const hits = Number(data && data.keywordHits);
+      if (q && Number.isFinite(hits) && hits === 0) {
+        return `<div class="market-note market-note-soft">No notice in this code's pool matched <strong>“${esc(q)}”</strong>, so results are ordered by date. Clear the keyword or refine it to rank by relevance.</div>`;
+      }
+      const ranked = (q && Number.isFinite(hits) && hits > 0)
+        ? `, with ${hits.toLocaleString()} keyword-relevant ${hits === 1 ? 'notice' : 'notices'} ranked first`
+        : '';
+      return `<div class="market-note market-note-soft">Showing the full market for this code${ranked}, including awards and closed notices.</div>`;
+    }
 
     /* ── PIN-TO-BOARD ──────────────────────────────────────────────
        A persistent working set of opportunities in localStorage (no
@@ -1990,7 +2003,7 @@
       }
       // Honest coverage note: title-scoped searches see only titles; a code scan sees all.
       const note = data.titleScoped ? titleNoteHTML(q)
-        : (data.broadened ? '<div class="market-note market-note-soft">Showing the full market for this code, with keyword-relevant notices ranked first, including awards and closed notices.</div>' : '');
+        : (data.broadened ? broadenNoteHTML(q, data) : '');
       lastOppByKey = {};
       list.innerHTML = note + opps.map(item => {
         const key = oppKey(item); lastOppByKey[key] = item;
