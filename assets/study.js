@@ -43,13 +43,20 @@
   // old hub level so they sit right on the main page). depth1View remembers which one to
   // re-render on a back/forward pop.
   var depth1View = null;
+  /* Which view is "home" depends on WHICH PAGE the engine booted on. /48cons has no track
+     picker and no dashboard, so every generic exit — popstate, backHome, a resumed session —
+     must resolve through here. Without it, stepping back out of the ladder on the org page
+     painted /study's track picker ("Pick your depth") straight over it, taking the rungs and
+     the Introduction Builder with it. Declaration is hoisted for the listener below. */
+  function homeFn() { return isOrg() ? view48Cons : viewHome; }
+  function topFn() { return isOrg() ? view48Cons : viewTrack; }
   window.addEventListener('popstate', function (e) {
     var d = (e.state && typeof e.state.st === 'number') ? e.state.st : 0;
     navDepth = d; popping = true; keyHandler(null);
     // Stepping back out of a board sim ends its recording (declaration is hoisted).
     recRelease();
     if (!deck) { popping = false; return; }
-    if (d <= 0) viewTrack(); else (depth1View || viewHome)();
+    if (d <= 0) topFn()(); else (depth1View || homeFn())();
     popping = false;
   });
 
@@ -367,13 +374,13 @@
     });
   }
 
-  function backHome() { keyHandler(null); if (navDepth >= 2) history.back(); else viewHome(); }
+  function backHome() { keyHandler(null); if (navDepth >= 2) history.back(); else homeFn()(); }
   // Games sit at depth 1 (on the main page), so their "back" returns to the tool select.
   function backToTools() { keyHandler(null); if (navDepth >= 1) history.back(); else viewTrack(); }
 
   /* ---- recall session (mixed reveal + multiple-choice) ---- */
   function startSession(cards, label, startAt, startGot) {
-    if (!cards.length) { viewHome(); return; }
+    if (!cards.length) { homeFn()(); return; }
     var q = startAt == null ? interleave(shuffle(cards.slice()).slice(0, SESSION_CAP)) : cards;
     var i = startAt || 0, got = startGot || 0, shaky = [];
     function step() {
@@ -1468,7 +1475,7 @@
     var r = S.resume;
     var q = r.ids ? cardsByIdFromPool(recallPool(), r.ids) : null;
     if (!q || r.i >= q.length) { clearResume(); return false; }
-    depth1View = viewHome;
+    depth1View = homeFn();
     goDepth(2, function () { startSession(q, r.label, r.i, r.got); });
     return true;
   }
@@ -1476,7 +1483,7 @@
     var r = S.resume;
     var q = r.ids ? cardsByIdFromPool(recallPool(), r.ids) : null;
     if (!q || !q.length) { clearResume(); return false; }
-    depth1View = viewHome;
+    depth1View = homeFn();
     goDepth(2, function () { viewDeep(q[0], r.seen || 0, r.got || 0); });
     return true;
   }
@@ -1484,7 +1491,7 @@
     var r = S.resume;
     var q = r.ids ? cardsByIdFromPool(deck.thresholds, r.ids) : null;
     if (!q || r.i >= q.length) { clearResume(); return false; }
-    depth1View = viewHome;
+    depth1View = homeFn();
     goDepth(2, function () { viewSprint(q, r.i, r.streak || 0); });
     return true;
   }
@@ -1980,7 +1987,7 @@
     var r = S.resume;
     var sc = (r && r.ids && r.ids.length) ? deck.scenarios.filter(function (s) { return s.id === r.ids[0]; })[0] : null;
     if (!sc) { clearResume(); return false; }
-    depth1View = viewHome;
+    depth1View = homeFn();
     goDepth(2, function () { viewBoard(r.ids[0], r.i, r.fu, r.hs); });
     return true;
   }
@@ -2216,7 +2223,7 @@
           if (!S.scen || typeof S.scen !== 'object') S.scen = {};
           if (!S.sprint || typeof S.sprint !== 'object') S.sprint = { best: 0 };
           if (!S.games || typeof S.games !== 'object') S.games = {};
-          save(); viewHome();
+          save(); homeFn()();
         } else alert('Not a study-progress file.');
       }
       catch (err) { alert('Could not read that file.'); }
