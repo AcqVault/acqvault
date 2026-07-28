@@ -46,6 +46,8 @@
   window.addEventListener('popstate', function (e) {
     var d = (e.state && typeof e.state.st === 'number') ? e.state.st : 0;
     navDepth = d; popping = true; keyHandler(null);
+    // Stepping back out of a board sim ends its recording (declaration is hoisted).
+    recRelease();
     if (!deck) { popping = false; return; }
     if (d <= 0) viewTrack(); else (depth1View || viewHome)();
     popping = false;
@@ -1124,7 +1126,150 @@
   ];
   var BD_VERDICT = { 1: 'Rough', 2: 'Getting there', 3: 'Board-ready' };
 
+  /* ---- Board-sim answer recorder --------------------------------------------------------
+     Robert Maughan's "record your response" idea. A board answer is a SPOKEN performance, so
+     hearing your own run-through next to the model answer is the whole point of it.
+
+     ⚠ IN MEMORY ONLY, BY DESIGN — the copy on screen promises this, so any change here has to
+     keep the promise true. The blob and its object URL live in this closure and nowhere else:
+     never in S, never in localStorage, never in saveResume(), never sent anywhere. There is
+     no IndexedDB and no download. Leaving the page destroys the recording, which is the point
+     on a government machine.
+
+     The mic is opened per take and its tracks are stopped the instant recording ends, so the
+     browser's recording indicator does not stay lit between takes.
+
+     Only /48cons is granted the microphone (vercel.json scopes Permissions-Policy to that one
+     path) and these rung-scoped sims only ever render there — but this still feature-detects
+     rather than assuming, so a blocked policy, a managed browser or a missing MediaRecorder
+     degrades to the sim exactly as it was. Recording is an aid here, never a gate. */
+  var REC = { state: 'idle', blobUrl: '', mr: null, stream: null, chunks: null, t0: 0, tick: 0, err: '' };
+
+  function recSupported() {
+    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia &&
+      typeof MediaRecorder !== 'undefined' && window.isSecureContext !== false);
+  }
+  function recClearTick() { if (REC.tick) { clearInterval(REC.tick); REC.tick = 0; } }
+  function recStopTracks() {
+    if (REC.stream) {
+      try { REC.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+    }
+    REC.stream = null;
+  }
+  function recDropAudio() {
+    if (REC.blobUrl) { try { URL.revokeObjectURL(REC.blobUrl); } catch (e) {} }
+    REC.blobUrl = '';
+  }
+  /* Full teardown: the recording ceases to exist. Idempotent, so every exit path can call it
+     without coordinating. onstop is detached first or a stop() here would resurrect a blob. */
+  function recRelease() {
+    recClearTick();
+    try {
+      if (REC.mr && REC.mr.state !== 'inactive') { REC.mr.onstop = null; REC.mr.stop(); }
+    } catch (e) {}
+    recStopTracks();
+    recDropAudio();
+    REC.mr = null; REC.chunks = null; REC.t0 = 0; REC.state = 'idle'; REC.err = '';
+  }
+  function recClock(ms) {
+    var s = Math.max(0, Math.floor(ms / 1000));
+    return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+  }
+  function recAudioHtml(id) {
+    return '<audio class="st-rec-audio"' + (id ? ' id="' + id + '"' : '') +
+      ' controls preload="metadata" src="' + REC.blobUrl + '"></audio>';
+  }
+  function recorderHtml() {
+    if (!recSupported()) return '';
+    var b = '<div class="st-rec" id="st-rec">';
+    if (REC.state === 'recording') {
+      b += '<button class="st-btn st-rec-stop" id="rec-stop">' +
+        '<span class="st-rec-dot" aria-hidden="true"></span>Stop recording</button>' +
+        // aria-hidden: .st-card is an aria-live region, so a ticking clock inside it would
+        // interrupt a screen reader twice a second. State changes still announce.
+        '<span class="st-rec-time" id="rec-time" aria-hidden="true">0:00</span>' +
+        '<span class="st-rec-live">Recording&hellip;</span>';
+    } else if (REC.state === 'have') {
+      b += recAudioHtml('rec-audio') +
+        '<button class="st-btn st-btn-hint" id="rec-again">Re-record</button>' +
+        '<button class="st-link st-rec-del" id="rec-del">Discard</button>';
+    } else {
+      b += '<button class="st-btn st-btn-hint" id="rec-go">' +
+        '<span class="st-rec-dot" aria-hidden="true"></span>Record your answer</button>' +
+        (REC.err ? '<span class="st-rec-err">' + esc(REC.err) + '</span>' : '');
+    }
+    return b + '<p class="st-rec-priv">Stays in this tab &middot; never saved or uploaded</p></div>';
+  }
+  /* Repaint ONLY the recorder subtree. Re-running the view's step() would rescroll the page
+     and pull focus back to the card container on every take, so the control is swapped in
+     place and focus is handed to whatever the next action is. */
+  function recRepaint(focusId) {
+    var host = el('st-rec');
+    if (!host) return;
+    host.outerHTML = recorderHtml();
+    wireRecorder();
+    var f = focusId && el(focusId);
+    if (f) { try { f.focus(); } catch (e) {} }
+  }
+  function wireRecorder() {
+    if (!recSupported()) return;
+    recClearTick();
+    if (el('rec-go')) el('rec-go').onclick = function () { recStart(); };
+    if (el('rec-again')) el('rec-again').onclick = function () { recDiscard(); recStart(); };
+    if (el('rec-del')) el('rec-del').onclick = function () { recDiscard(); recRepaint('rec-go'); };
+    if (el('rec-stop')) {
+      el('rec-stop').onclick = function () { recStop(); };
+      REC.tick = setInterval(function () {
+        var t = el('rec-time');
+        if (!t) { recClearTick(); return; }   // view swapped out from under us
+        t.textContent = recClock(Date.now() - REC.t0);
+      }, 500);
+    }
+  }
+  function recStart() {
+    REC.err = '';
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      REC.stream = stream;
+      REC.chunks = [];
+      var mr;
+      // No mimeType is passed on purpose: Chrome records webm and Safari mp4, and letting
+      // each pick its own default is the only thing that works in both.
+      try { mr = new MediaRecorder(stream); }
+      catch (e) { REC.err = 'This browser cannot record audio.'; recStopTracks(); recRepaint('rec-go'); return; }
+      REC.mr = mr;
+      mr.ondataavailable = function (e) { if (e.data && e.data.size) REC.chunks.push(e.data); };
+      mr.onstop = function () {
+        var blob = new Blob(REC.chunks || [], { type: mr.mimeType || 'audio/webm' });
+        REC.chunks = null;
+        recStopTracks();          // drop the mic immediately; do not hold the indicator lit
+        recDropAudio();
+        REC.blobUrl = URL.createObjectURL(blob);
+        REC.state = 'have';
+        recRepaint('rec-again');
+      };
+      REC.t0 = Date.now();
+      REC.state = 'recording';
+      mr.start();
+      recRepaint('rec-stop');
+    }).catch(function (e) {
+      // NotAllowedError is the user, or a managed-browser policy, saying no. Say so plainly
+      // and leave the sim exactly as it was.
+      REC.err = (e && e.name === 'NotAllowedError')
+        ? 'Microphone blocked. You can still run the sim — answer out loud without recording.'
+        : 'Could not start the microphone.';
+      REC.state = 'idle';
+      recStopTracks();
+      recRepaint('rec-go');
+    });
+  }
+  function recStop() { recClearTick(); try { if (REC.mr && REC.mr.state !== 'inactive') REC.mr.stop(); } catch (e) {} }
+  function recDiscard() { recRelease(); }
+
+  // A recording belongs to ONE scenario and must not outlive the page.
+  window.addEventListener('pagehide', recRelease);
+
   function ladderBoardSession(rung, label, pickId, startStage, hintWasUsed) {
+    recRelease();   // a new scenario never inherits the last one's take
     var pool = ladderBoardPool(rung);
     if (!pool.length) { viewLadder(); return; }
     var done = ladderBoardMap();
@@ -1169,6 +1314,7 @@
           '<div class="st-panel-ask"><span class="st-ask-kicker">The panel asks</span>' + esc(sc.ask) + '</div>' +
           '<p class="st-outloud">Answer <b>out loud</b>, all the way through, as if the panel were in front of you. ' +
           'Take as long as you need — nothing here is timed.</p>' +
+          recorderHtml() +
           '<label class="st-bd-bluf-lab" for="bd-bluf">Bottom line up front — one line, the way you opened</label>' +
           '<input class="st-bd-bluf" id="bd-bluf" type="text" maxlength="140" autocomplete="off" ' +
           'placeholder="e.g. I’d stop the award and run a set-aside check first.">' +
@@ -1178,6 +1324,12 @@
           (bluf
             ? '<div class="st-bd-echo"><div class="st-bd-echo-head">What you said you’d do</div>' + esc(bluf) + '</div>'
             : '<div class="st-bd-echo st-bd-echo-none">No opening line — the model answer is below.</div>') +
+          // Play your own run-through immediately above the model answer — hearing the two
+          // back to back is the whole reason for recording.
+          (REC.state === 'have'
+            ? '<div class="st-bd-echo st-bd-echo-audio"><div class="st-bd-echo-head">Your recorded answer</div>' +
+              recAudioHtml('') + '</div>'
+            : '') +
           '<div class="st-script"><div class="st-script-head">Say it like this</div><p>' + esc(sc.script) + '</p></div>' +
           boardCitesText(sc.cites) +
           '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' +
@@ -1227,12 +1379,14 @@
       render('<div class="st-session-head"><span>' + esc(label) + ' · board sim</span><span>' + headNote +
         '</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
         '<button class="st-link st-quit" id="st-quit">End this sim</button>');
-      el('st-quit').onclick = function () { clearResume(); viewLadder(); };
+      el('st-quit').onclick = function () { recRelease(); clearResume(); viewLadder(); };
 
       if (stage === 0) {
+        wireRecorder();
         el('next').onclick = function () {
           var f = el('bd-bluf');
           bluf = f ? f.value.trim() : '';   // read, echoed once, never persisted
+          recStop();                        // "I'm done" ends the take as well
           advance();
         };
         // Enter in the one-line box submits it — a single-line input that swallows Enter
@@ -1267,11 +1421,12 @@
         if (el('bd-drill')) {
           el('bd-drill').onclick = function () {
             var bp2 = bridgePool();
+            recRelease();
             goDepth(2, function () { ladderSession(bp2, label); });
           };
         }
-        el('bd-next').onclick = function () { ladderBoardSession(rung, label); };
-        el('bd-home').onclick = function () { clearResume(); viewLadder(); };
+        el('bd-next').onclick = function () { ladderBoardSession(rung, label); };  // releases on entry
+        el('bd-home').onclick = function () { recRelease(); clearResume(); viewLadder(); };
       } else if (el('next')) {
         el('next').onclick = advance;
         keyHandler(function (k) { if (k === ' ' || k === 'Enter') { advance(); return true; } });

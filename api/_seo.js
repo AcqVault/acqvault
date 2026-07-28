@@ -11,7 +11,7 @@ const SITE = 'https://www.acqvault.com';
 const PART_NAV_V = 4;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 76;
+const STUDY_V = 77;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1597,6 +1597,23 @@ button.st-sim-feature:active{transform:scale(.99)}
 .st-bd-bluf:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px rgba(135,101,28,.13)}
 .st-bd-echo{margin-top:2px;padding:12px 15px;background:#f6efdd;border:1px solid rgba(135,101,28,.3);border-left:3px solid var(--brass);border-radius:0 10px 10px 0;font-size:15px;line-height:1.55;color:#2a3140}
 .st-bd-echo-head{font-size:10.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:5px}
+/* Board-sim answer recorder. The dot and the Stop button reuse #8c2b23 — the red the "Rough"
+   verdict already uses — rather than adding a colour to the palette. */
+.st-rec{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0 4px;padding:12px 14px;background:#fbfaf7;border:1px solid var(--line2);border-radius:10px}
+.st-rec-dot{display:inline-block;width:9px;height:9px;margin-right:8px;border-radius:50%;background:#8c2b23;vertical-align:-1px}
+.st-rec-stop{background:#8c2b23;color:#fff}
+.st-rec-stop .st-rec-dot{background:#fff}
+.st-rec-time{font-variant-numeric:tabular-nums;font-size:14px;font-weight:700;color:var(--ink)}
+.st-rec-live{font-size:13px;color:#8c2b23;font-weight:600}
+.st-rec-audio{height:38px;max-width:100%;flex:1 1 220px;min-width:0}
+.st-rec-del{font-size:13px}
+.st-rec-err{flex:1 1 100%;font-size:13px;color:#8c2b23;line-height:1.5}
+.st-rec-priv{flex:1 1 100%;margin:0;font-size:11.5px;color:var(--muted)}
+.st-bd-echo-audio{display:block;margin-top:10px}
+@media (prefers-reduced-motion:no-preference){
+.st-rec-stop .st-rec-dot{animation:stRecPulse 1.4s ease-in-out infinite}
+@keyframes stRecPulse{0%,100%{opacity:1}50%{opacity:.25}}
+}
 .st-bd-echo-none{background:var(--off,#f7f6f2);border-color:var(--line2);border-left-color:var(--line2);color:var(--muted);font-size:13.5px}
 .st-bd-cites{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:13px}
 .st-bd-cites-head{font-size:10.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
@@ -1949,7 +1966,7 @@ function render48ConsPage() {
 </div></section>
 </main>
 <footer class="lband lband--foot"><div class="lband-inner">
-<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress and anything you type into the introduction builder live only in this browser and are never uploaded.</p>
+<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress and anything you type into the introduction builder live only in this browser and are never uploaded. A board-sim recording is not stored at all &mdash; it stays in the tab and is gone the moment you leave the sim.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> &mdash; not legal advice and not an official source, and nothing here is squadron policy. Verify anything you&rsquo;ll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
 <script defer src="/assets/study.js?v=${STUDY_V}"></script>`;
