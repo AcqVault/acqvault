@@ -772,6 +772,69 @@ for gc in combo:
     gc['links'] = cite_links(gc.get('cite', ''))
     if gc.get('cite') and not gc['links']: sys.exit(f'FATAL: combination {gc["w"]} cite resolves to nothing')
 
+# ---- The Combination must be ANSWERABLE FROM THE RULEBOOK -------------------------------
+# The daily word is guessed against the corpus, so the answer has to be a term the corpus
+# actually uses, in the place the card points at. It was not. "AGENT" shipped citing RFO
+# 1.402 — which says "Only contracting officers may sign, administer, or terminate contracts"
+# and never once says agent. The word's 65 corpus hits are trafficking-in-persons
+# definitions, EFT financial agents and fire-fighting agent. Nobody could have guessed it,
+# because the regulation the game is drawn from does not contain the idea under that name.
+# "WARRANT" was the same defect: the corpus says certificate of appointment, always.
+#
+# Two rules, both FATAL, because a checked cite is not the same as a checked ANSWER — the
+# gate above only proved the cite RESOLVES:
+#   1. only the rulebooks this game is scoped to may be cited, and
+#   2. the answer, or an ordinary inflection of it, must appear in the cited text.
+COMBO_SRC = {'RFO': 'rfo', 'R-DFARS PGI': 'pgi', 'R-DFARS': 'r-dfars', 'FAR COMPANION': 'far-companion'}
+COMBO_CITE_RE = re.compile(r'^(RFO|R-DFARS PGI|R-DFARS|FAR Companion)\s*(?:Part\s+)?([0-9][0-9A-Za-z.\-]*)?$', re.I)
+
+def _combo_variants(w):
+    """The answer plus the inflections either side of it: the card may say CURES where the
+       regulation says cure, or SEALS where it says sealed. Both directions count."""
+    w = w.upper()
+    stems = {w}
+    if w.endswith('ES'): stems.add(w[:-2])
+    if w.endswith('S'):  stems.add(w[:-1])
+    v = set()
+    for s in stems:
+        if len(s) < 3: continue
+        v |= {s, s + 'S', s + 'ES', s + 'D', s + 'ED', s + 'ING', s + 'Y', s + 'IES'}
+        if s.endswith('E'): v |= {s[:-1] + 'ING', s[:-1] + 'ED'}
+    return {x for x in v if len(x) >= 3}
+
+_combo_by_src = {}
+for _d in docs:
+    _combo_by_src.setdefault(_d.get('source'), []).append(_d)
+
+def _combo_docs(src, num):
+    """Everything under a cite: an exact section, or every child of a subpart/part cite —
+       "32.7" has to reach 32.700, and "RFO 14" the whole part."""
+    out = []
+    for d in _combo_by_src.get(src, []):
+        k = (d.get('section_num') or (d.get('title') or '').split(' ')[0] or '').strip()
+        if k and (k == num or k.startswith(num)): out.append(d)
+        elif '.' not in num and '-' not in num and str(d.get('part') or '').strip() == num: out.append(d)
+    return out
+
+for gc in combo:
+    _cite = (gc.get('cite') or '').strip()
+    if not _cite:
+        sys.exit(f'FATAL: combination {gc["w"]} has no cite — every answer must be tied to the rulebook')
+    _refs = []
+    for _tok in [t.strip() for t in re.split(r'\s*[;·]\s*', _cite) if t.strip()]:
+        _m = COMBO_CITE_RE.match(_tok)
+        if not _m:
+            sys.exit(f'FATAL: combination {gc["w"]} cites "{_tok}" — the game may only cite '
+                     f'RFO, R-DFARS, R-DFARS PGI or the FAR Companion')
+        _refs.append((COMBO_SRC[_m.group(1).upper()], (_m.group(2) or '').rstrip('.')))
+    _hay = []
+    for _src, _num in _refs:
+        _hay += _combo_docs(_src, _num) if _num else _combo_by_src.get(_src, [])
+    _pat = re.compile(r'\b(' + '|'.join(sorted(_combo_variants(gc['w']), key=len, reverse=True)) + r')\b', re.I)
+    if not any(_pat.search(re.sub(r'(?m)^L\d+:', '', d.get('content', '') or '')) for d in _hay):
+        sys.exit(f'FATAL: combination {gc["w"]} never appears in {_cite} — the answer must be a '
+                 f'term the cited text actually uses, or the word is unguessable')
+
 def part_cite(label):
     m = re.match(r'^Part (\d+)$', label)
     if m: return 'RFO Part ' + m.group(1)
