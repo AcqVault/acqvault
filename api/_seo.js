@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 84;
+const STUDY_V = 85;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1914,6 +1914,22 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-cb-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted)}
 .st-cb-legend .st-cb-tile{width:15px;height:15px;border-radius:3.5px;border-width:1px;font-size:0;transition:none}
 .st-cb-msg{min-height:20px;text-align:center;font-size:13px;font-weight:700;color:var(--brass-ink);margin:8px 0 2px}
+/* Hints. A taken hint reads as a note pinned to the board, not as another control — it is
+   already paid for, so it should sit quietly and be legible. The row it cost is struck out
+   on the board itself (.st-cb-row-spent), which is where the trade stays visible. */
+.st-cb-hints{margin:10px auto 2px;max-width:min(460px,100%);display:flex;flex-direction:column;gap:7px}
+.st-cb-hint{display:flex;flex-direction:column;gap:2px;padding:9px 12px;background:#f6efdd;border:1px solid rgba(var(--brass-rgb),.4);border-left:3px solid var(--brass);border-radius:0 8px 8px 0}
+.st-cb-hint-k{font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--brass-ink)}
+.st-cb-hint-v{font-size:13.5px;line-height:1.5;color:var(--ink)}
+.st-cb-hintbar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.st-cb-hintbtn{display:inline-flex;align-items:baseline;gap:7px}
+.st-cb-hintbtn[disabled]{opacity:.45;cursor:not-allowed}
+.st-cb-hint-cost{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.st-cb-hint-left{font-size:11.5px;font-weight:600;color:var(--muted)}
+.st-cb-hintused{text-align:center;font-size:12px;font-weight:600;color:var(--muted);margin-top:-4px}
+/* The rows a hint bought. Dimmed and ruled through: they are gone, and the board says so. */
+.st-cb-row-spent{opacity:.4}
+.st-cb-row-spent .st-cb-tile{background:repeating-linear-gradient(135deg,#fff,#fff 5px,var(--off,#f7f6f2) 5px,var(--off,#f7f6f2) 10px);border-style:dashed}
 .st-cb-kb{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .st-cb-kbrow{display:flex;gap:4px;justify-content:center}
 .st-cb-key{min-width:clamp(24px,7vw,40px);height:50px;padding:0 5px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:7px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;text-transform:uppercase}

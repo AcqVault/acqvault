@@ -556,7 +556,7 @@
      feedback on every input, a number worth beating, and a reason to come back at 0000Z. */
   function gamesState() {
     if (!S.games) S.games = {};
-    S.games.combo = S.games.combo || { streak: { last: 0, run: 0 }, hist: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, X: 0 }, day: 0, rows: [], done: false, win: false };
+    S.games.combo = S.games.combo || { streak: { last: 0, run: 0 }, hist: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, X: 0 }, day: 0, rows: [], done: false, win: false, hints: 0 };
     S.games.governs = S.games.governs || { best: 0, bestCombo: 0 };
     S.games.log = S.games.log || {}; // dayNum → true when any game was completed that day
     // Normalize today's Combination round in one place (both the hub card and the game view
@@ -566,7 +566,7 @@
     if (deck && deck.games && deck.games.combination && deck.games.combination.length) {
       var _cd = comboToday(), _e = comboWordFor(_cd), _cb = S.games.combo;
       if (_e && _e.w && (_cb.day !== _cd || _cb.wk !== comboKey(_e.w))) {
-        _cb.day = _cd; _cb.wk = comboKey(_e.w); _cb.rows = []; _cb.done = false; _cb.win = false; save();
+        _cb.day = _cd; _cb.wk = comboKey(_e.w); _cb.rows = []; _cb.done = false; _cb.win = false; _cb.hints = 0; save();
       }
     }
     return S.games;
@@ -668,6 +668,48 @@
     var local = new Date(at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     return 'New round in ' + h + 'h ' + (m < 10 ? '0' : '') + m + 'm — ' + local + ' your time';
   }
+  /* ---- Combination hints ----------------------------------------------------------------
+     Two at most, and each one SPENDS a try. That is the whole design: a hint is not free
+     help, it is a trade you make against the six rows you were given, so the honest score
+     for a solved round is rows + hints.
+
+     A hint must narrow the field without handing the word over. The ladder runs weakest to
+     strongest — where the term lives, then what it means — because a candidate who knows the
+     part is still guessing, while one who knows the definition usually is not. */
+  var COMBO_MAX_HINTS = 2;
+  var ORD = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+
+  /* The gloss is only a clue while it does not contain the answer, and 53 of the 128 entries
+     name the term inside their own definition ("…the HCA WAIVING certified cost data", "The
+     BOARD of Contract Appeals"). Redact by STEM so inflections go with it, and replace the
+     whole token with a fixed bar — sizing the bar to the match would leak the letter count of
+     the inflected form, which is not the answer's length anyway. Over-redaction is harmless
+     here; under-redaction ends the round. */
+  function comboRedact(text, word) {
+    if (!text || !word) return text || '';
+    var stem = word.slice(0, Math.max(4, word.length - 2)).toUpperCase();
+    return text.replace(/[A-Za-z][A-Za-z’'\-]*/g, function (tok) {
+      return tok.toUpperCase().indexOf(stem) > -1 ? '▮▮▮▮' : tok;
+    });
+  }
+  /* Always exactly two rungs. 8 of the 128 entries carry no citation, and rather than offer a
+     shorter ladder on those days the last rung falls back to the smallest concrete assist
+     there is: one letter, in place. The MIDDLE letter specifically — it is fixed by the word
+     alone, so the hint cannot quietly grow into a better hint as the board fills up. */
+  function comboHintList(entry, target) {
+    var out = [];
+    if (entry.cite) out.push({ k: 'Where it lives', v: entry.cite });
+    out.push({ k: 'What it means', v: comboRedact(entry.def, target) });
+    if (out.length < COMBO_MAX_HINTS) {
+      var i = Math.floor(target.length / 2);
+      out.push({ k: 'One letter', v: 'The ' + ORD[i] + ' letter is “' + target[i] + '”.' });
+    }
+    return out.slice(0, COMBO_MAX_HINTS);
+  }
+  // Solved-in score, hints included. One place, because the board, the share text, the
+  // histogram and the hub card must never disagree about what a round cost.
+  function comboScore(G) { return G.rows.length + (G.hints || 0); }
+
   function comboGridMini(G) { // tiny result grid for the status card
     var entry = comboWordFor(G.day), target = entry.w, n = target.length;
     return G.rows.map(function (g) {
@@ -690,11 +732,11 @@
     var gvBest = gv.best_advanced || gv.best || 0;
     var donePanel = allDone
       ? '<div class="st-hub-done"><div class="st-hub-done-mark">\u2713</div><div><b>That\u2019s today\u2019s round.</b>' +
-        '<span>' + (G.combo.win ? 'Combination cracked in ' + G.combo.rows.length : 'The combination held') + ' \u00b7 tempo best today ' + govToday.best.toLocaleString() + '. ' + esc(nextRoundLine()) + '.</span></div></div>'
+        '<span>' + (G.combo.win ? 'Combination cracked in ' + comboScore(G.combo) : 'The combination held') + ' \u00b7 tempo best today ' + govToday.best.toLocaleString() + '. ' + esc(nextRoundLine()) + '.</span></div></div>'
       : '';
     var comboCard = comboDone
       ? '<button class="st-plate st-plate-done" id="g-combo">' +
-        '<span class="st-plate-eyebrow">Daily \u00b7 No. ' + no + ' \u00b7 ' + (G.combo.win ? 'Solved in ' + G.combo.rows.length : 'Sealed') + '</span>' +
+        '<span class="st-plate-eyebrow">Daily \u00b7 No. ' + no + ' \u00b7 ' + (G.combo.win ? 'Solved in ' + comboScore(G.combo) : 'Sealed') + '</span>' +
         '<span class="st-plate-art st-hub-grid" aria-hidden="true">' + comboGridMini(G.combo) + '</span>' +
         '<b>The Combination</b>' +
         '<span class="st-plate-sub">' + (G.combo.win ? 'Cracked. The word was worth knowing \u2014 the debrief has the cite.' : 'Sealed for today \u2014 see the word and its cite in the debrief.') + '</span>' +
@@ -2226,10 +2268,15 @@
   function viewCombo() {
     var G = gamesState().combo;
     var day = comboToday();
-    if (G.day !== day) { G.day = day; G.rows = []; G.done = false; G.win = false; save(); }
+    if (G.day !== day) { G.day = day; G.rows = []; G.done = false; G.win = false; G.hints = 0; save(); }
     var entry = comboWordFor(day), target = entry.w;
     var LEN = target.length;              // 5-8; the board, keyboard and accept list all follow it
     var guess = '';
+    var HINTS = comboHintList(entry, target);
+    // A hint costs a row, so the budget shrinks as hints are taken.
+    function hintsUsed() { return G.hints || 0; }
+    function rowBudget() { return 6 - hintsUsed(); }
+    function triesLeft() { return rowBudget() - G.rows.length; }
     var motion = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
     function evalRow(g) { // standard two-pass: correct first, then presents against remaining letters
@@ -2257,7 +2304,11 @@
     function boardHtml() {
       var html = '';
       for (var r = 0; r < 6; r++) {
-        html += '<div class="st-cb-row" data-r="' + r + '">';
+        // Rows past the budget are the ones the hints bought. Showing them struck through
+        // rather than deleting them is the point: the cost stays on screen next to the board.
+        var spent = r >= rowBudget();
+        html += '<div class="st-cb-row' + (spent ? ' st-cb-row-spent' : '') + '" data-r="' + r + '"' +
+          (spent ? ' aria-label="Row traded for a hint"' : '') + '>';
         for (var c = 0; c < LEN; c++) {
           var ch = '', cls = '';
           if (r < G.rows.length) {
@@ -2289,6 +2340,24 @@
         }).join('') + '</div>';
       }).join('');
     }
+    function hintsHtml() {
+      var used = hintsUsed(), out = '', i;
+      for (i = 0; i < used && i < HINTS.length; i++) {
+        out += '<div class="st-cb-hint"><span class="st-cb-hint-k">' + esc(HINTS[i].k) + '</span>' +
+          '<span class="st-cb-hint-v">' + esc(HINTS[i].v) + '</span></div>';
+      }
+      if (used < HINTS.length) {
+        /* Never let a hint end the round on the spot. With one try left the trade is not a
+           trade — you would spend the row you needed to use the hint on. */
+        var ok = triesLeft() >= 2;
+        out += '<div class="st-cb-hintbar">' +
+          '<button class="st-btn st-btn-hint st-cb-hintbtn" id="cb-hint"' + (ok ? '' : ' disabled') + '>' +
+          'Take a hint <span class="st-cb-hint-cost">costs a try</span></button>' +
+          '<span class="st-cb-hint-left">' + (HINTS.length - used) + ' of ' + HINTS.length +
+          (ok ? ' left' : ' left · not on your last try') + '</span></div>';
+      }
+      return out ? '<div class="st-cb-hints">' + out + '</div>' : '';
+    }
     function exTile(ch, state) { return '<span class="st-cb-tile st-cb-tile-ex' + (state ? ' st-cb-' + state : '') + '">' + ch + '</span>'; }
     function helpHtml(first) {
       return '<div class="st-cb-help">' +
@@ -2298,6 +2367,9 @@
         '<div class="st-cb-help-row">' + exTile('S', 'c') + exTile('C', '') + exTile('O', '') + exTile('P', '') + exTile('E', '') + '<span><b>S</b> is in the word, in the right spot</span></div>' +
         '<div class="st-cb-help-row">' + exTile('A', '') + exTile('U', 'p') + exTile('D', '') + exTile('I', '') + exTile('T', '') + '<span><b>U</b> is in the word, in a different spot</span></div>' +
         '<div class="st-cb-help-row">' + exTile('C', '') + exTile('L', '') + exTile('A', '') + exTile('I', '') + exTile('M', 'a') + '<span><b>M</b> isn&rsquo;t in the word at all</span></div>' +
+        '<p><b>Stuck?</b> Take up to <b>two hints</b> — where the term lives, then what it means. ' +
+        'Each one <b>spends a try</b>, so it is a trade rather than a freebie and your score counts it. ' +
+        'Neither one spells the word out.</p>' +
         '<p>Same word for everyone, everywhere — a new one every day. Crack it and the vault teaches you the term.</p>' +
         '<div class="st-actions" style="justify-content:center"><button class="st-btn st-btn-reveal" id="cb-help-go">' + (first ? 'Got it — open the board' : 'Back to the board') + '</button></div></div>';
     }
@@ -2312,8 +2384,12 @@
         // 🟦/🟨 mirrors the board's navy/brass — the colorblind-safe pair — not Wordle's green
         return evalRow(g).map(function (s) { return s === 'c' ? '🟦' : s === 'p' ? '🟨' : '⬛'; }).join('');
       }).join('\n');
-      var run = G.streak.run;
-      return 'AcqVault — The Combination No. ' + no + ' · ' + (G.win ? G.rows.length : 'X') + '/6\n' + grid +
+      var run = G.streak.run, hn = hintsUsed();
+      // A hint row is a spent row, so it shows in the grid as one. Sharing a 3/6 that quietly
+      // cost two hints alongside someone else's clean 3/6 would make the number meaningless.
+      if (hn) grid += (grid ? '\n' : '') + new Array(hn + 1).join('🔑');
+      return 'AcqVault — The Combination No. ' + no + ' · ' + (G.win ? comboScore(G) : 'X') + '/6\n' + grid +
+        (hn ? '\n' + hn + ' hint' + (hn === 1 ? '' : 's') : '') +
         (run > 1 ? '\n' + run + '-duty-day streak' : '') + '\nacqvault.com/study';
     }
     function resultHtml() {
@@ -2325,7 +2401,9 @@
       }
       return '<div class="st-cb-result">' +
         '<div class="st-cb-dial' + (G.win && motion ? ' st-cb-dial-spin' : '') + '">' + DIAL_SVG + '</div>' +
-        '<div class="st-cb-verdict">' + (G.win ? 'Cracked in ' + G.rows.length : 'Sealed — the combination was') + '</div>' +
+        '<div class="st-cb-verdict">' + (G.win ? 'Cracked in ' + comboScore(G) : 'Sealed — the combination was') + '</div>' +
+        (hintsUsed() ? '<div class="st-cb-hintused">' + hintsUsed() + ' hint' + (hintsUsed() === 1 ? '' : 's') +
+          ' taken — ' + hintsUsed() + ' of the six tries went to it</div>' : '') +
         '<div class="st-cb-word">' + target + '</div>' +
         '<p class="st-cb-def">' + esc(entry.def) + '</p>' +
         (entry.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(entry.cite) + '</b></div>' : '') +
@@ -2341,7 +2419,7 @@
       var firstTime = !gamesState().combo.helpSeen;
       if (firstTime && !G.done) helping = true;
       render('<div class="st-session-head"><span>The Combination · No. ' + comboNo(day) + '</span><span>' +
-        (G.done ? '' : (helping ? '' : (6 - G.rows.length) + ' tries left · ') + '<button class="st-link st-cb-helpbtn" id="cb-help">how to play</button>') + '</span></div>' +
+        (G.done ? '' : (helping ? '' : triesLeft() + (triesLeft() === 1 ? ' try left · ' : ' tries left · ')) + '<button class="st-link st-cb-helpbtn" id="cb-help">how to play</button>') + '</span></div>' +
         '<div class="st-card st-cb-card">' +
         (helping && !G.done ? helpHtml(firstTime) :
          G.done ? resultHtml() :
@@ -2353,6 +2431,7 @@
           '<span><i class="st-cb-tile st-cb-p"></i>in the word, wrong spot</span>' +
           '<span><i class="st-cb-tile st-cb-a"></i>not in the word</span></div>' +
           '<div class="st-cb-msg" id="cb-msg">' + (msg || '') + '</div>' +
+          hintsHtml() +
           '<div class="st-cb-kb" id="cb-kb">' + kbHtml() + '</div>') +
         '</div>' +
         '<button class="st-link st-quit" id="st-quit">\u2190 Study menu</button>');
@@ -2365,6 +2444,17 @@
       };
       if (G.done) { wireShare(); wireBoard(); keyHandler(null); return; }
       if (helping) { keyHandler(function (key) { if (key === 'Enter' || key === ' ') { el('cb-help-go').onclick(); return true; } }); return; }
+      if (el('cb-hint')) {
+        el('cb-hint').onclick = function () {
+          if (hintsUsed() >= HINTS.length || triesLeft() < 2) return;
+          G.hints = hintsUsed() + 1; save();
+          paint();
+          // .st-cb-card is aria-live=polite, so the new hint announces itself; put focus back
+          // on the control the user was operating rather than the repainted container.
+          var b = el('cb-hint') || el('cb-msg');
+          if (b) { try { b.focus({ preventScroll: true }); } catch (e) {} }
+        };
+      }
       Array.prototype.forEach.call(app.querySelectorAll('.st-cb-key'), function (b) {
         b.onclick = function () { input(b.getAttribute('data-k')); };
       });
@@ -2423,7 +2513,8 @@
           go.disabled = true; go.textContent = 'Posting…';
           fetch('/api/feedback', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ kind: 'board', day: comboNo(day), guesses: G.win ? G.rows.length : 'X', name: (el('lb-name') || {}).value || '' })
+            // Hints included — the board ranks by what the round cost, not by rows typed.
+            body: JSON.stringify({ kind: 'board', day: comboNo(day), guesses: G.win ? comboScore(G) : 'X', name: (el('lb-name') || {}).value || '' })
           }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); }).then(function (o) {
             if (o.ok && o.j.ok) {
               G.postedDay = day; G.postedRank = o.j.rank; G.postedName = o.j.name; save();
@@ -2473,9 +2564,10 @@
       var row = app.querySelector('.st-cb-row[data-r="' + G.rows.length + '"]');
       G.rows.push(g);
       var won = g === target;
-      if (won || G.rows.length >= 6) {
+      // The budget, not a bare 6 — a hint already took one of the rows.
+      if (won || G.rows.length >= rowBudget()) {
         G.done = true; G.win = won;
-        if (won) G.hist[G.rows.length]++; else G.hist.X++;
+        if (won) G.hist[comboScore(G)]++; else G.hist.X++;
         comboBumpStreak(won);
         gamesMarkToday();
         if (won) bumpStreak();
