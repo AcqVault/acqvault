@@ -1120,8 +1120,15 @@
      due count is the one number that tells you what to do today, so it leads when there is
      one; "nothing due today" must never read as "done" — a candidate three weeks out who
      clears the queue has not finished the rung. */
-  function ladderCountLine(pool, nDue) {
-    var s = nDue == null ? pool.length + ' cards, every one cited to the rulebook.'
+  function ladderCountLine(pool, nDue, filtered) {
+    /* An empty pool is never "nothing due on this rung" — the rung is full. It means the
+       subject filter plus whatever has been hidden has emptied the SELECTION, and saying
+       "0 cards scheduled on this rung" about a rung holding sixty-odd cards is simply untrue.
+       Name the real cause so the way out (clear the filter, or unhide) is obvious. */
+    var s = !pool.length
+      ? (filtered ? 'No cards left in this subject — clear the filter, or show hidden cards.'
+                  : 'No cards left on this rung — show hidden cards to bring them back.')
+      : nDue == null ? pool.length + ' cards, every one cited to the rulebook.'
       : nDue ? nDue + ' of ' + pool.length + ' cards due today.'
       : 'Nothing due today · ' + pool.length + ' cards scheduled on this rung.';
     return '<p class="st-lad-count" role="status">' + s + '</p>';
@@ -1391,13 +1398,16 @@
       '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +
       rungStripHtml(sel) +
       topicHtml +
-      ladderCountLine(pool, due.length) +
+      ladderCountLine(pool, due.length, !!tsel) +
       hiddenHtml +
       readyHtml +
       boardHtml +
       simHtml +
       '<div class="st-actions">' +
-      (due.length
+      // No pool, no study button: "Review all 0" started a session with nothing in it, so the
+      // control looked broken rather than inapplicable. The count line above says why.
+      (!pool.length ? ''
+        : due.length
         ? '<button class="st-btn st-btn-reveal" id="lad-start">Study ' + nDue +
           (nDue < due.length ? ' of ' + due.length + ' due' : ' due') + ' <kbd>space</kbd></button>'
         : '<button class="st-btn st-btn-hint" id="lad-start">Review all ' + pool.length + ' <kbd>space</kbd></button>') +
@@ -1418,10 +1428,13 @@
         if (n) { try { n.focus({ preventScroll: true }); } catch (e) { n.focus(); } }
       };
     });
-    el('lad-start').onclick = function () {
-      var cards = due.length ? due : pool;
-      goDepth(2, function () { ladderSession(cards, label); });
-    };
+    // Guarded: an emptied selection renders no start button at all (see above).
+    if (el('lad-start')) {
+      el('lad-start').onclick = function () {
+        var cards = due.length ? due : pool;
+        goDepth(2, function () { ladderSession(cards, label); });
+      };
+    }
     if (el('lad-all')) {
       el('lad-all').onclick = function () { goDepth(2, function () { ladderSession(pool, label); }); };
     }
@@ -1448,7 +1461,12 @@
     if (el('lad-unhide')) {
       el('lad-unhide').onclick = function () { unhideRung(sel); viewLadder(); };
     }
-    keyHandler(function (k) { if (k === ' ' || k === 'Enter') { el('lad-start').onclick(); return true; } });
+    // Space must not throw when there is nothing to start — see the emptied-selection case.
+    keyHandler(function (k) {
+      if (k !== ' ' && k !== 'Enter') return;
+      var b = el('lad-start');
+      if (b) { b.onclick(); return true; }
+    });
   }
   /* Session position survives a reload. Without this, following a citation — the whole
      point of the ladder — dumped you back at the track picker with the drill gone, which
@@ -1623,13 +1641,28 @@
      path) and these rung-scoped sims only ever render there — but this still feature-detects
      rather than assuming, so a blocked policy, a managed browser or a missing MediaRecorder
      degrades to the sim exactly as it was. Recording is an aid here, never a gate. */
-  var REC = { state: 'idle', blobUrl: '', mr: null, stream: null, chunks: null, t0: 0, tick: 0, err: '' };
+  var REC = { state: 'idle', blobUrl: '', mr: null, stream: null, chunks: null, t0: 0, tick: 0, err: '',
+    gen: 0, hintTimer: 0, waitTimer: 0, after: null, afterTimer: 0 };
+
+  /* How long a permission prompt may sit unanswered before the button stops claiming it is
+     starting. HINT relabels ("Starting…" is a lie once a dialog is up and waiting on you);
+     GIVE_UP hands the button back so the sim is never left with a dead control. */
+  var REC_PROMPT_HINT_MS = 6000, REC_PROMPT_GIVE_UP_MS = 25000;
 
   function recSupported() {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia &&
       typeof MediaRecorder !== 'undefined' && window.isSecureContext !== false);
   }
   function recClearTick() { if (REC.tick) { clearInterval(REC.tick); REC.tick = 0; } }
+  function recClearWait() {
+    if (REC.hintTimer) { clearTimeout(REC.hintTimer); REC.hintTimer = 0; }
+    if (REC.waitTimer) { clearTimeout(REC.waitTimer); REC.waitTimer = 0; }
+  }
+  // Drops the queued "run this once the take has ended" continuation AND its fallback timer.
+  function recClearAfter() {
+    if (REC.afterTimer) { clearTimeout(REC.afterTimer); REC.afterTimer = 0; }
+    REC.after = null;
+  }
   function recStopTracks() {
     if (REC.stream) {
       try { REC.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
@@ -1644,12 +1677,23 @@
      without coordinating. onstop is detached first or a stop() here would resurrect a blob. */
   function recRelease() {
     recClearTick();
+    recClearWait();
+    // Bump the generation so a getUserMedia still pending from the view we are leaving cannot
+    // come back and start recording into a scenario the user has already walked away from.
+    REC.gen++;
     try {
-      if (REC.mr && REC.mr.state !== 'inactive') { REC.mr.onstop = null; REC.mr.stop(); }
+      // Both handlers come off before stop(): onstop would resurrect a blob we are discarding,
+      // and ondataavailable would fire one last time into a take that no longer exists.
+      if (REC.mr && REC.mr.state !== 'inactive') {
+        REC.mr.onstop = null; REC.mr.ondataavailable = null; REC.mr.stop();
+      }
     } catch (e) {}
     recStopTracks();
     recDropAudio();
     REC.mr = null; REC.chunks = null; REC.t0 = 0; REC.state = 'idle'; REC.err = ''; REC.busy = false;
+    // onstop was detached above, so a queued continuation will never fire on its own — but its
+    // fallback timer still would, and leaving a view is exactly when that must not happen.
+    recClearAfter();
   }
   function recClock(ms) {
     var s = Math.max(0, Math.floor(ms / 1000));
@@ -1726,11 +1770,45 @@
   }
   function recStart() {
     REC.err = '';
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+    /* getUserMedia settles when the PROMPT is answered — and a prompt nobody answers never
+       settles at all. Neither branch below ran, so the button sat disabled reading "Starting…"
+       with no way back: clicking Record looked like it did nothing, because from the user's
+       side nothing is what it did. A permission dialog the user never noticed (or a managed
+       browser that stalls one) is the ordinary case, not the exotic one, so waiting is now
+       bounded and the control is always handed back. */
+    var gen = ++REC.gen, abandoned = false;
+    recClearWait();
+    REC.hintTimer = setTimeout(function () {
+      REC.hintTimer = 0;
+      var b = el('rec-go');
+      if (REC.gen !== gen || !REC.busy || !b) return;
+      var last = b.lastChild;
+      if (last && last.nodeType === 3) last.nodeValue = ' Waiting for permission…';
+    }, REC_PROMPT_HINT_MS);
+    REC.waitTimer = setTimeout(function () {
+      REC.waitTimer = 0;
+      if (REC.gen !== gen || REC.state === 'recording') return;
+      abandoned = true;
       REC.busy = false;
-      // A second grant that raced the first must not orphan its tracks: if a recording is
-      // already running, stop this stream immediately rather than overwriting REC.stream.
-      if (REC.state === 'recording') { try { stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} return; }
+      REC.err = 'The microphone permission prompt was never answered. Allow it from the mic ' +
+        'icon in your browser’s address bar, then press Record again.';
+      recRepaint('rec-go');
+    }, REC_PROMPT_GIVE_UP_MS);
+
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      recClearWait();
+      // A grant that arrives too late must not open a mic behind the user's back — not when
+      // this scenario is gone (gen moved), not when a racing grant already started recording,
+      // and not minutes after we gave up waiting. Stop the tracks; ask, don't surprise.
+      if (REC.gen !== gen || abandoned || REC.state === 'recording') {
+        try { stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+        if (abandoned && REC.gen === gen && REC.state === 'idle' && el('st-rec')) {
+          REC.err = 'Microphone allowed — press Record to start.';
+          recRepaint('rec-go');
+        }
+        return;
+      }
+      REC.busy = false;
       REC.stream = stream;
       REC.chunks = [];
       var mr;
@@ -1739,7 +1817,15 @@
       try { mr = new MediaRecorder(stream); }
       catch (e) { REC.err = 'This browser cannot record audio.'; recStopTracks(); recRepaint('rec-go'); return; }
       REC.mr = mr;
-      mr.ondataavailable = function (e) { if (e.data && e.data.size) REC.chunks.push(e.data); };
+      /* Bound to THIS take. stop() always flushes one final chunk asynchronously, and that
+         flush can land after the recorder was torn down — where REC.chunks is null and the
+         push threw — or after a NEW take has allocated its own array, where it would quietly
+         append a stranger's audio to it. Identity, not just a null check, is what rules the
+         second case out. */
+      mr.ondataavailable = function (e) {
+        if (REC.mr !== mr || !REC.chunks) return;
+        if (e.data && e.data.size) REC.chunks.push(e.data);
+      };
       mr.onstop = function () {
         var blob = new Blob(REC.chunks || [], { type: mr.mimeType || 'audio/webm' });
         REC.chunks = null;
@@ -1747,25 +1833,69 @@
         recDropAudio();
         REC.blobUrl = URL.createObjectURL(blob);
         REC.state = 'have';
-        recRepaint('rec-again');
+        /* stop() finishes the blob asynchronously, so anything that must SEE the finished take
+           has to run from here. "I'm done — show the model answer" used to stop the recorder and
+           render the next stage in the same tick: that stage read REC.state while it was still
+           'recording', so the player was never built, and the repaint below then found no
+           recorder on screen to fix it. The take survived in memory and vanished from the UI —
+           on the one screen the whole feature exists for. */
+        var after = REC.after;
+        recClearAfter();
+        if (after) after(); else recRepaint('rec-again');
       };
       REC.t0 = Date.now();
       REC.state = 'recording';
       mr.start();
       recRepaint('rec-stop');
     }).catch(function (e) {
+      recClearWait();
+      if (REC.gen !== gen || abandoned) return;   // the message on screen already fits
       REC.busy = false;
-      // NotAllowedError is the user, or a managed-browser policy, saying no. Say so plainly
-      // and leave the sim exactly as it was.
+      // NotAllowedError is the user, or a managed-browser policy, saying no. Say so plainly,
+      // and name the way back: the browser REMEMBERS a block, so a user who only meant to
+      // dismiss the prompt gets the same refusal on every later press with no clue why.
       REC.err = (e && e.name === 'NotAllowedError')
-        ? 'Microphone blocked. You can still run the sim — answer out loud without recording.'
+        ? 'Microphone blocked — allow it from the mic icon in your browser’s address bar. ' +
+          'You can still run the sim: answer out loud without recording.'
         : 'Could not start the microphone.';
       REC.state = 'idle';
       recStopTracks();
       recRepaint('rec-go');
     });
   }
-  function recStop() { recClearTick(); try { if (REC.mr && REC.mr.state !== 'inactive') REC.mr.stop(); } catch (e) {} }
+  /* End the current take and run `after` once it has actually ended. Callers that just want the
+     mic to stop pass nothing. A take that is still waiting on the permission prompt counts as
+     ended too: without cancelling it, a grant landing after the user pressed "I'm done" opened
+     the microphone on the model-answer screen, where there is no recorder rendered to show it
+     and no Stop button to end it. */
+  function recStop(after) {
+    recClearTick();
+    if (REC.busy) { recClearWait(); REC.gen++; REC.busy = false; }
+    var live = false;
+    try { live = !!(REC.mr && REC.mr.state !== 'inactive'); } catch (e) {}
+    if (!live) { if (after) after(); return; }
+    /* Only hand onstop a continuation when there IS one. Parking a do-nothing wrapper in
+       REC.after instead made onstop take the continuation branch every time, so the plain
+       Stop button stopped repainting and the player never appeared. */
+    var once = null;
+    if (after) {
+      var ran = false;
+      once = function () {
+        if (ran) return;
+        ran = true;
+        recClearAfter();
+        after();
+      };
+      REC.after = once;
+      /* onstop is the browser's to fire. If it never does, the sim must not strand the user on
+         a screen whose only forward button has already been pressed. The id is kept because an
+         UNCANCELLED fallback is worse than the hang it covers: press "I'm done", then Back
+         before onstop lands, and this timer fired advance() 2.5s later — repainting the sim's
+         model answer on top of the ladder, at a history depth that no longer matched it. */
+      REC.afterTimer = setTimeout(once, 2500);
+    }
+    try { REC.mr.stop(); } catch (e) { if (once) once(); }
+  }
   function recDiscard() { recRelease(); }
 
   // A recording belongs to ONE scenario and must not outlive the page.
@@ -1924,7 +2054,7 @@
           boardCitesLinked(sc.cites) +
           '<div class="st-actions">' +
           (bp.length ? '<button class="st-btn st-btn-reveal" id="bd-drill">Study the ' + bp.length +
-            ' cards behind this</button>' : '') +
+            (bp.length === 1 ? ' card' : ' cards') + ' behind this</button>' : '') +
           '<button class="st-btn' + (bp.length ? ' st-btn-hint' : ' st-btn-reveal') + '" id="bd-next">Next scenario</button>' +
           '<button class="st-btn st-btn-hint" id="bd-home">Back to the ladder</button></div>';
       }
@@ -1947,11 +2077,13 @@
 
       if (stage === 0) {
         wireRecorder();
+        var leaving = false;
         el('next').onclick = function () {
+          if (leaving) return;              // stopping is async; a second press must not double-advance
+          leaving = true;
           var f = el('bd-bluf');
           bluf = f ? f.value.trim() : '';   // read, echoed once, never persisted
-          recStop();                        // "I'm done" ends the take as well
-          advance();
+          recStop(advance);                 // "I'm done" ends the take, and the model answer waits for it
         };
         // Enter in the one-line box submits it — a single-line input that swallows Enter
         // reads as broken, and there is nowhere else for Enter to go on this screen.
@@ -2006,6 +2138,11 @@
           box.appendChild(div);
         }
         hintUsed = true;
+        /* Persist it NOW. saveResume only runs at the top of step(), and revealing a hint
+           appends the node in place without re-stepping — so a reload between taking the hint
+           and self-grading came back with hintUsed false and let a hinted answer score
+           "Board-ready", the exact cap the resume payload was added to protect. */
+        saveResume('ladderBoard', rung, [sc], stage, 0, label, { hintUsed: hintUsed });
         if (el('fu-hint')) el('fu-hint').disabled = true;
       }
     }
