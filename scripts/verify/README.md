@@ -82,3 +82,46 @@ on the context object** — only function declarations hoist onto the global. Wi
 explicit `Object.assign(globalThis, {...})` epilogue every registry reads back
 `undefined` while the functions look fine, which is a very convincing way to write a
 suite that checks nothing.
+
+## Visual regression: proving a refactor moved nothing
+
+A token consolidation or a component merge is only safe if the RENDERED result
+is identical, and comparing CSS source proves nothing — the whole change is a
+rewrite of the source. So walk the real DOM in real Chrome at real viewports and
+record what the engine actually resolved, before and after.
+
+```bash
+node scripts/verify/render_server_pages.js /tmp/pages   # /study, /48cons, /library, a part page
+# serve the repo (with /tmp/pages copied in) on :8853, then for each url+viewport:
+node scripts/verify/cdp.js "$URL" 1280 900 scripts/verify/style_snapshot_expr.js > before/<name>.json
+# …make the change, re-render, re-snapshot into after/…
+node scripts/verify/style_diff.js before after       # exits 1 on any drift
+```
+
+`style_snapshot_expr.js` fingerprints 43 computed properties (colour, border,
+radius, shadow, spacing, type, transform/transition) for every element **and**
+every generated `::before`/`::after` — this design carries a lot of its brass
+rules on pseudo-elements. `style_diff.js` reports the exact property and the
+before → after values, so a hit tells you what broke, not just that something did.
+
+**It has already caught two things nothing else would have:**
+
+- `var(--r-md)` / `var(--ls-snug)` written into `_seo.js` while those tokens
+  were declared **only in `assets/app.css`** — which never loads on a
+  server-rendered page. 831 radii and trackings had silently collapsed to `0px`
+  and `normal`. This is the documented `_seo.js` trap and it is easy to walk
+  into, because the CSS *looks* right.
+- `.st-lad-sim` is client-rendered, so it appears in **no** static snapshot.
+  Anything that touches a client-rendered component has to be measured
+  directly (build the element, read back `getComputedStyle`) — a green snapshot
+  diff does not cover it.
+
+Two drift classes are expected noise, not regressions: infinite keyframe
+animations (`kl-livepulse`, `vault-spin`, `guilloche-turn`) sample at different
+phases, and `border-radius: 980px` vs `999px` differ in the *specified* value
+while clamping to the identical rendered corner.
+
+`cdp.js` takes an optional 5th argument of emulated media features —
+`"prefers-contrast=more"`, `"prefers-reduced-motion=reduce"`,
+`"prefers-reduced-transparency=reduce"`. Without it the accessibility media
+queries cannot be tested at all, only read.

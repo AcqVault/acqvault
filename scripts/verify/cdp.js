@@ -11,7 +11,7 @@ const path = require('path');
 const os = require('os');
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const [, , url, wArg, hArg, exprFile] = process.argv;
+const [, , url, wArg, hArg, exprFile, mediaArg] = process.argv;
 
 // Print usage instead of a stack trace. This lives in scripts/verify/, where the
 // idiom is `for f in scripts/verify/*.js; do node "$f"; done` — a crash there
@@ -19,7 +19,7 @@ const [, , url, wArg, hArg, exprFile] = process.argv;
 if (!url || !exprFile) {
   console.log(`Drive real Chrome headless at an exact viewport; eval an expression in the PAGE world.
 
-    node scripts/verify/cdp.js <url> <width> <height> <exprFile>
+    node scripts/verify/cdp.js <url> <width> <height> <exprFile> [mediaFeatures]
 
 Use it for anything scroll-, animation- or viewport-driven. Not a suite — exits 0.`);
   process.exit(0);
@@ -74,6 +74,19 @@ async function go(wsUrl) {
     await S('Emulation.setDeviceMetricsOverride', {
       width: W, height: H, deviceScaleFactor: 2, mobile: true
     });
+    // Optional 5th arg: emulated media features, e.g. "prefers-contrast=more"
+    // or "prefers-reduced-motion=reduce,prefers-reduced-transparency=reduce".
+    // Without this there is no way to test the accessibility media queries at
+    // all — you can read the CSS text, but not what the engine resolves.
+    if (mediaArg) {
+      await S('Emulation.setEmulatedMedia', {
+        media: 'screen',
+        features: mediaArg.split(',').filter(Boolean).map(kv => {
+          const [name, value] = kv.split('=');
+          return { name, value };
+        })
+      });
+    }
     await S('Page.navigate', { url });
     // wait for load + fonts + deferred scripts
     await new Promise(r => setTimeout(r, 3500));
