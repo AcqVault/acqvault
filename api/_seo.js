@@ -9,6 +9,10 @@ const SITE = 'https://www.acqvault.com';
 // /assets/* is served immutable for 30 days, so a changed part-nav.js MUST come
 // with a bumped ?v or every client that already holds it keeps the old file.
 const PART_NAV_V = 4;
+// The analytics beacon rides EVERY server-rendered page, so the part pages, the
+// hubs, /study and /48cons are all counted — not just the SPA home. Same
+// immutable-asset rule applies: bump on any change to assets/analytics.js.
+const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
 const STUDY_V = 83;
@@ -1111,6 +1115,7 @@ ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. ${authorityLine(source)} Always verify before relying on any result in a contract file.</footer>
 </div>`}
 ${partNav ? `<script src="/assets/part-nav.js?v=${PART_NAV_V}" defer></script>` : ''}
+<script src="/assets/analytics.js?v=${ANALYTICS_V}" defer></script>
 </body>
 </html>`;
 }

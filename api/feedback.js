@@ -1,4 +1,5 @@
 const { enforce, clientIp } = require('./_ratelimit');
+const analytics = require('./_analytics');
 
 // Same-origin feedback relay. The browser only ever talks to acqvault.com (CAC-safe —
 // locked-down .mil networks that block third-party form endpoints still work); this
@@ -140,7 +141,47 @@ async function boardPost(req, res, body) {
   return res.status(200).json({ ok: true, rank: Number.isFinite(rank) ? rank + 1 : null, count: count, name: name });
 }
 
+// ── Analytics (rides this function too — see the 12-function note above) ──────
+// Read side: GET /api/feedback?stats=<ANALYTICS_KEY>[&days=30][&format=json].
+// Gated on an env var the owner sets in Vercel; with it unset the dashboard does
+// not exist rather than existing unprotected.
+function keyOk(supplied) {
+  const expect = process.env.ANALYTICS_KEY || '';
+  if (!expect) return false;
+  const a = Buffer.from(String(supplied || ''));
+  const b = Buffer.from(expect);
+  // timingSafeEqual throws on a length mismatch, so compare lengths first — the
+  // length of a secret is not the secret.
+  return a.length === b.length && require('crypto').timingSafeEqual(a, b);
+}
+
+async function statsGet(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  if (!keyOk(req.query.stats)) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  if (!analytics.configured()) {
+    // Honest, not silently empty: an all-zero dashboard and a dashboard with no
+    // store behind it look identical, and confusing them wastes a real afternoon.
+    return res.status(503).json({
+      configured: false,
+      error: 'Analytics storage is not configured. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in Vercel.'
+    });
+  }
+  const rep = await analytics.report(req.query.days);
+  if (!rep) return res.status(502).json({ error: 'The analytics store did not answer.' });
+  if (String(req.query.format || '').toLowerCase() === 'json') {
+    return res.status(200).json(rep);
+  }
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  return res.status(200).send(analytics.renderHTML(rep));
+}
+
 module.exports = async function handler(req, res) {
+  if (req.method === 'GET' && req.query && req.query.stats != null) {
+    return statsGet(req, res);
+  }
   if (req.method === 'GET' && req.query && req.query.board != null) {
     return boardGet(req, res);
   }
@@ -149,6 +190,23 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
   const preBody = req.body || {};
+  // Write side. Deliberately generous: a whole squadron can share one outbound IP,
+  // and under-counting the exact audience we are trying to see would defeat the
+  // point. The ACTIONS allow-list in _analytics.js bounds every field except query
+  // text, so this limit is the only thing standing between a bored person and a
+  // junk-filled query list — 600/min is ~20 concurrent real users, far below what
+  // it takes to meaningfully skew a top-40.
+  if (preBody.kind === 'px') {
+    if (await enforce(req, res, { max: 600, name: 'px' })) return;
+    // The write MUST be awaited before the response ends. A serverless instance can
+    // be frozen the instant it replies, so "respond 204 then await Redis" is a
+    // silent no-op that looks perfectly healthy from the browser. The client never
+    // waits on this — sendBeacon is out-of-band — so the latency costs nobody.
+    try { await analytics.record(req, preBody); } catch (_e) { /* never surfaces */ }
+    // 204, no body: the beacon does not read a response, and analytics must not
+    // become a way to probe whether the store is configured.
+    return res.status(204).end();
+  }
   if (preBody.kind === 'board') return boardPost(req, res, preBody);
   // Feedback is infrequent — keep the limit tight to deter abuse.
   if (await enforce(req, res, { max: 5, name: 'fb-msg' })) return;

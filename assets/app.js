@@ -615,6 +615,9 @@ function setMode(mode) {
   // restores THIS view — otherwise a stale ?q= left in the URL by an earlier search
   // would hijack the boot back into search-at-top while the user was deep in browse.
   try { sessionStorage.setItem('acq-view-v1', mode); } catch (e) {}
+  // Which of the three lanes people actually use is a question nothing could answer
+  // before analytics.js existed. Dispatch-only — nothing here depends on a listener.
+  document.dispatchEvent(new CustomEvent('acqvault:mode', { detail: { mode: mode } }));
   document.body.classList.toggle('work-mode', mode !== 'search' || Boolean(document.getElementById('search-input')?.value.trim()));
   const hero = document.getElementById('hero');
   ['search','browse','fulltext'].forEach(m => {
@@ -4073,10 +4076,12 @@ async function runAsk(q) {
     return;
   }
   if (data.refusal || data.error) {
+    document.dispatchEvent(new CustomEvent('acqvault:asked', { detail: { q: q, n: 0 } }));
     panel.innerHTML = `<div class="ai-card"><div class="ai-eyebrow">Ask the Vault · AI · beta</div>
       <p class="ai-msg">${esc(data.refusal || data.error)}</p>${fallBtn}</div>`;
     return;
   }
+  document.dispatchEvent(new CustomEvent('acqvault:asked', { detail: { q: q, n: (data.sources || []).length } }));
   const chips = (data.sources || []).map(s =>
     `<a class="ai-src" href="${esc(s.url)}"><span class="ai-src-kind">${esc(s.kind)}</span>${esc(s.cite)}</a>`).join('');
   panel.innerHTML = `<div class="ai-card">
@@ -4112,8 +4117,11 @@ async function runSearch(options = {}) {
     renderResults({ hits: lastSearchHits, estimatedTotalHits: lastSearchTotal }, q);
     setSearchParams(q);
     showAcronymAssist(q);
-    document.dispatchEvent(new CustomEvent('acqvault:searched', { detail: { q: q } }));
     const total = data.estimatedTotalHits || (data.hits || []).length;
+    // `n` rides the existing event so analytics.js can separate a search that
+    // worked from one that returned nothing — a zero-result query is a direct
+    // record of what the site failed to answer. saved.js ignores the extra field.
+    document.dispatchEvent(new CustomEvent('acqvault:searched', { detail: { q: q, n: total } }));
     searchCount.textContent = total ? `${total} results` : '';
   } catch (e) {
     if (gen !== searchGen) return;  // a stale failure must not paint over a cleared box
