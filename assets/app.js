@@ -2489,16 +2489,25 @@ function positionXrefPop(pop, a) {
   const r = a.getBoundingClientRect();
   pop.style.maxWidth = Math.min(360, window.innerWidth - 24) + 'px';
   pop.style.visibility = 'hidden';
-  pop.classList.add('show');
+  // Measured WITHOUT adding .show, which used to happen here. .show only changes
+  // opacity / transform / pointer-events — none of them affect width or height —
+  // so the rect is identical, and measuring first lets us know whether we are
+  // flipping ABOVE the trigger before the entry transition starts.
   const pr = pop.getBoundingClientRect();
-  let top = r.bottom + 8;
-  if (top + pr.height > window.innerHeight - 8 && r.top - 8 - pr.height > 8) top = r.top - 8 - pr.height;
+  let top = r.bottom + 8, flip = false;
+  if (top + pr.height > window.innerHeight - 8 && r.top - 8 - pr.height > 8) {
+    top = r.top - 8 - pr.height; flip = true;
+  }
   let left = r.left;
   if (left + pr.width > window.innerWidth - 12) left = window.innerWidth - 12 - pr.width;
   if (left < 12) left = 12;
+  // .flip mirrors the 4px entry so the panel always grows out of the citation
+  // rather than away from it (see app.css "Anchored popovers must rise FROM").
+  pop.classList.toggle('flip', flip);
   pop.style.top = Math.max(8, top) + 'px';
   pop.style.left = left + 'px';
   pop.style.visibility = '';
+  pop.classList.add('show');
 }
 const _xrefDocCache = new Map();
 function showXrefPop(a) {

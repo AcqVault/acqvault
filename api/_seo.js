@@ -1061,7 +1061,11 @@ mark.pn-mark.active{background:var(--brass-bright);box-shadow:0 0 0 2px rgba(135
 .pn-top:hover{border-color:rgba(228,196,119,.6)}
 .pn-top svg{width:15px;height:15px;display:block}
 @media(prefers-reduced-motion:reduce){.pn-top{transition:none}}
-@media(max-width:560px){.ptoc-list{max-height:min(40vh,300px)}.pn-top{right:12px;bottom:12px}}`;
+@media(max-width:560px){.ptoc-list{max-height:min(40vh,300px)}.pn-top{right:12px;bottom:12px}}
+/* Touch has no pointer to move away, so a mobile browser latches :hover on tap and
+   the lift never comes back down — the card you opened stays 3px high behind the
+   next page. Cancel the lift only; colour and shadow feedback are harmless. */
+@media (hover:none){.libfeat:hover,.libsrc:hover{transform:none}}`;
 
 function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex }) {
   const og = ogImage || 'og-home-v2.png';
@@ -2022,6 +2026,21 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-lad-sink{margin-top:24px}
 .st-lad-head{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:8px}
 .st-lad-sink-item{font-size:14px;line-height:1.6;color:#2a3140;padding:8px 0;border-top:1px solid var(--line2)}
+/* ── Touch: hover lift must not stick ──────────────────────────────────────
+   .st-sim-feature and .st-rung were gated when the 48 CONS page was reviewed;
+   the rest of the study surface was not. On touch there is no pointer to move
+   away, so the browser latches :hover on tap and the lift stays until the next
+   tap lands elsewhere. Worst on .st-opt / .st-gv-opt — the answer buttons —
+   where the option you just chose sits 1px high through the whole verdict.
+   Cancel the translate only; the border and shadow feedback are harmless, and
+   the child arrow nudges have no meaning without a pointer.
+   Literal transform values, no var(): app.css never loads on these pages. */
+@media (hover:none){
+  .st-trackcard:hover,.st-daily:hover,.st-mode:hover,.st-topic:hover,
+  .st-lad-sim:hover,.st-opt:hover:not(:disabled),.st-cite:hover,.st-plate:hover,
+  .st-gv-opt:hover:not(:disabled){transform:none}
+  .st-daily:hover .st-daily-go,.st-lad-sim:hover .st-lad-sim-go{transform:translateY(-50%)}
+}
 </style>`;
 
 function renderStudyPage() {
