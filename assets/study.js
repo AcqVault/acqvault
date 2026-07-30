@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=40';
+  var DECK_URL = '/assets/study-deck.json?v=41';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -1208,10 +1208,10 @@
        Name the real cause so the way out (clear the filter, or unhide) is obvious. */
     var s = !pool.length
       ? (filtered ? 'No cards left in this subject — clear the filter, or show hidden cards.'
-                  : 'No cards left on this rung — show hidden cards to bring them back.')
+                  : 'No cards left at this level — show hidden cards to bring them back.')
       : nDue == null ? pool.length + ' cards, every one cited to the rulebook.'
       : nDue ? nDue + ' of ' + pool.length + ' cards due today.'
-      : 'Nothing due today · ' + pool.length + ' cards scheduled on this rung.';
+      : 'Nothing due today · ' + pool.length + ' cards scheduled at this level.';
     return '<p class="st-lad-count" role="status">' + s + '</p>';
   }
   function ladderSectionHtml() {
@@ -1230,7 +1230,7 @@
     return '<h2 class="st-h2" style="margin-top:2px">The Warrant Ladder</h2>' +
       '<p class="st-sub">A warrant carries signature authority up to a dollar ceiling — and holds you ' +
       'to every rule below it. Scope your prep to the warrant you’re testing for. ' +
-      '<span class="st-lad-cum">Each rung holds the material that ceiling adds — the rungs below it still apply.</span></p>' +
+      '<span class="st-lad-cum">Each level holds the material that ceiling adds — the levels below it still apply.</span></p>' +
       rungStripHtml(sel, true);
   }
   function wireLadderSection() {
@@ -1375,16 +1375,51 @@
     var I = introState();
     var sel = ladderRung();
     var r = RUNGS.filter(function (x) { return x.k === sel; })[0] || RUNGS[0];
-    function t(k) { return String(I[k] || '').trim().replace(/\s+/g, ' '); }
-    var open = [], close = [];
-    if (t('years')) open.push('Good morning. I have ' + t('years') + '.');
-    if (t('breadth')) open.push('My experience covers ' + t('breadth') + '.');
-    if (t('creds')) open.push('I hold ' + t('creds') + '.');
+    var open = ['Good morning, and thank you for your time.'], close = [];
+    var years = introClean(I.years), breadth = introClean(I.breadth),
+        creds = introClean(I.creds), why = introClean(I.why);
+    // Frames adapt to the SHAPE of what was typed — a bare number, a phrase, or a full
+    // sentence the candidate already wrote — so nothing gets double-framed into
+    // "I have I've been in contracting..." The words are still entirely theirs.
+    if (years) {
+      if (/^i\b/i.test(years)) open.push(introCap(years) + '.');
+      else if (/^\d+$/.test(years) || /^(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty)$/i.test(years))
+        open.push('I have ' + years.toLowerCase() + ' years of contracting experience.');
+      else open.push('I have ' + introLow(years) + '.');
+    }
+    if (breadth) {
+      if (/^i\b/i.test(breadth)) open.push(introCap(breadth) + '.');
+      else open.push((years ? 'In that time my work has covered ' : 'My work has covered ') +
+        introList(introLow(breadth)) + '.');
+    }
+    if (creds) {
+      if (/^i\b/i.test(creds)) open.push(introCap(creds) + '.');
+      else open.push('Along the way I have earned ' + introList(creds) + '.');
+    }
     open.push('I am here today for the ' + r.ceiling + ' warrant.');
-    if (t('why')) close.push('I am seeking this warrant because ' + t('why') + '.');
-    close.push('I understand a warrant at this ceiling holds me to every rule below it, ' +
-      'and I am prepared to be held to it. Thank you — I am happy to take your questions.');
+    if (why) {
+      if (/^i\b/i.test(why)) close.push(introCap(why) + '.');
+      else if (/^to\s/i.test(why)) close.push('I am asking for this warrant ' + introLow(why) + '.');
+      else close.push('I am asking for this warrant because ' +
+        introLow(why.replace(/^(because|since)\s+/i, '')) + '.');
+    }
+    close.push('I understand that a warrant at this level carries every rule beneath it, and ' +
+      'I am prepared to be held to all of them. Thank you — I am glad to take your questions.');
     return { open: open, close: close };
+  }
+  /* Pure text helpers for the builder — deterministic cleanup, never invention. */
+  function introClean(s) {
+    return String(s || '').trim().replace(/\s+/g, ' ').replace(/[.,;\s]+$/, '');
+  }
+  function introCap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function introLow(s) { return /^[A-Z][a-z]/.test(s) && !/^[A-Z]{2}/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s; }
+  /* "a, b, c, d" → "a, b, c, and d" — a bare comma list read aloud needs its "and".
+     Lists that already carry one, or that use semicolons/clauses, pass through untouched. */
+  function introList(s) {
+    if (s.indexOf(';') !== -1 || /\band\b/i.test(s.substring(s.lastIndexOf(',')))) return s;
+    var i = s.lastIndexOf(',');
+    if (i === -1) return s;
+    return s.slice(0, i) + (s.indexOf(',') === i ? ' and' : ', and') + s.slice(i + 1);
   }
   function paintIntroScript() {
     var s = introSentences();
@@ -1459,7 +1494,7 @@
     var nHidden = hiddenIn(sel);
     var hiddenHtml = nHidden
       ? '<p class="st-lad-hidden">' + nHidden + ' card' + (nHidden === 1 ? '' : 's') +
-        ' hidden on this rung. <button class="st-lad-unhide" id="lad-unhide">Show them again</button></p>'
+        ' hidden at this level. <button class="st-lad-unhide" id="lad-unhide">Show them again</button></p>'
       : '';
     /* The footer has always promised "missed cards return sooner; mastered ones stretch out",
        and the ladder never delivered it: isDue() had three call sites, all in viewHome() on

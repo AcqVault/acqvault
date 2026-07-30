@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 87;
+const STUDY_V = 88;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2158,7 +2158,7 @@ function render48ConsPage() {
 </div></section>
 </main>
 <footer class="lband lband--foot lband--rail"><div class="lband-inner">
-<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Cards you miss come back sooner and mastered ones stretch out, so a rung hands you what is due rather than a fresh shuffle. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site.</p>
+<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal &mdash; out loud when you can &mdash; then grade yourself honestly. Cards you miss come back sooner and mastered ones stretch out, so each level hands you what is due rather than a fresh shuffle. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site.</p>
 <p class="lfoot-note"><strong>What stays on your device:</strong> your progress, your board-sim notes and anything you type into the introduction builder live only in this browser and are never uploaded &mdash; they leave this device only in a file you ask for. A board-sim recording is not stored at all &mdash; it stays in the tab and is gone the moment you leave the sim.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> &mdash; not legal advice and not an official source, and nothing here is squadron policy. Verify anything you&rsquo;ll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>

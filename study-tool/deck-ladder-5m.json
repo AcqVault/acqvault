@@ -119,7 +119,7 @@
    "topic": "Competition (CICA)",
    "q": "Recite the justification approval ladder.",
    "a": "Up to $900,000 — the contracting officer (the 6.104(a)(12) certification is the approval). Over $900,000 to $20 million — advocate for competition, not delegable. Over $20 million to $90 million ($150 million for DoD, NASA, and the Coast Guard) — head of the procuring activity, who may delegate to a general or flag officer or a civilian above GS-15. Above that — senior procurement executive, not delegable except in the case of USD(A&S) acting as DoD's senior procurement executive, who may send the authority to an Assistant Secretary of Defense or, for a defense agency, an official above brigadier general or rear admiral (lower half) or a civilian at a comparable grade (R-DFARS 206.104-72(a)). Include the estimated dollar value of all options when setting the level, and note that a higher-level official may always approve a lower-dollar justification. One more DoD lane: sole-source 8(a) contracts need no justification and approval at all up to $100 million, and above $100 million the head of the procuring activity — not the senior procurement executive — approves, delegable only to that same flag-or-above level (R-DFARS 206.104-70, 206.104-72(c)).",
-   "x": "Set the level on the value including all options — undervaluing the action is how J&As get approved one rung too low and die in review. Keep the ceilings straight: $90 million civilian, $150 million for DoD, NASA, and the Coast Guard. Know the DoD lanes — USD(A&S) may hand the top tier to an ASD, and sole-source 8(a) skips the ladder until $100 million, where the HPA owns it.",
+   "x": "Set the level on the value including all options — undervaluing the action is how J&As get approved one level too low and die in review. Keep the ceilings straight: $90 million civilian, $150 million for DoD, NASA, and the Coast Guard. Know the DoD lanes — USD(A&S) may hand the top tier to an ASD, and sole-source 8(a) skips the ladder until $100 million, where the HPA owns it.",
    "cite": {
     "src": "rfo",
     "sec": "6.104-2",
@@ -264,7 +264,7 @@
    "topic": "IDIQ Ordering & Fair Opportunity",
    "q": "Recite the approval ladder for a fair-opportunity exception justification.",
    "a": "Above the SAT to $900,000 — the ordering activity contracting officer's certification serves as approval, unless agency procedures set a higher level. Above $900,000 to $20 million — the advocate for competition of the activity placing the order, not delegable. Above $20 million to $90 million ($150 million for DoD, NASA, and the Coast Guard) — the head of the procuring activity, a general or flag officer, or a civilian above GS-15. Above that — the senior procurement executive, not delegable except for DoD's USD(A&S). Below the SAT, documenting the basis for the exception suffices. This is the order-level ladder — do not confuse it with the 6.104-2 contract-level J&A ladder.",
-   "x": "Two details separate pass from stumble: below the SAT there is no formal justification at all — documenting the basis suffices — and the approvers belong to the activity placing the order. The dollar rungs deliberately mirror 6.104-2, which is exactly why boards ask which ladder you are climbing; 'same numbers, different regime' shows you see both.",
+   "x": "Two details separate pass from stumble: below the SAT there is no formal justification at all — documenting the basis suffices — and the approvers belong to the activity placing the order. The dollar tiers deliberately mirror 6.104-2, which is exactly why boards ask which ladder you are climbing; 'same numbers, different regime' shows you see both.",
    "cite": {
     "src": "rfo",
     "sec": "16.507-6",
@@ -482,7 +482,7 @@
    "topic": "Market Research",
    "q": "After market research, in what order of priority must an agency source its requirement?",
    "a": "(1) A commercial product or service on an existing governmentwide contract; (2) modify the requirement so an existing governmentwide contract can be used; (3) a commercial product or service from another source; (4) a commercial product or service that could be modified; and only then (5) a nondevelopmental item.",
-   "x": "The sequence is a policy statement: existing governmentwide vehicles beat new contracts, commercial beats nondevelopmental. Step (2) is the tell — the regulation would rather you modify your requirement than duplicate an existing contract. A nondevelopmental item is the floor you reach only after the commercial rungs fail, not a peer option you may prefer.",
+   "x": "The sequence is a policy statement: existing governmentwide vehicles beat new contracts, commercial beats nondevelopmental. Step (2) is the tell — the regulation would rather you modify your requirement than duplicate an existing contract. A nondevelopmental item is the floor you reach only after the commercial options fail, not a peer option you may prefer.",
    "cite": {
     "src": "rfo",
     "sec": "10.001",
