@@ -2157,7 +2157,7 @@ function render48ConsPage() {
   const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/study">Study</a><a class="cta" href="/?q=">Search all sources &rarr;</a></span></div></header>
 <main>
 <section class="lband lhero lhero--cons lband--rail"><div class="lband-inner">
-<img class="cons-patch" src="/assets/48cons-patch.png?v=1" alt="48th Contracting Squadron emblem" width="360" height="398" decoding="async">
+<img class="cons-patch" src="/assets/48cons-patch.png?v=2" alt="48th Contracting Squadron emblem" width="396" height="365" decoding="async">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> &rsaquo; <a href="/study">Study</a> &rsaquo; Warrant board prep</nav>
 <div class="eyebrow">AcqVault &middot; 48 CONS</div>
 <h1>Hold the ceiling</h1>
