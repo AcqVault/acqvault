@@ -139,7 +139,7 @@
   {
    "topic": "Protests",
    "q": "An offeror files an agency-level protest before you award your $5 million contract. May you still make award?",
-   "a": "Generally no. On a protest before award, a contract may not be awarded until the agency resolves the protest, unless a written justification is made for urgent and compelling reasons, or award is determined in writing to be in the best interest of the Government. Consult your designated legal advisor as soon as you learn of any protest. (This is the contract-level agency protest rule and applies at $5 million; the separate GAO stay and the DoD $25 million task-/delivery-order protest bar are higher-rung mechanics.)",
+   "a": "Generally no. On a protest before award, a contract may not be awarded until the agency resolves the protest, unless a written justification is made for urgent and compelling reasons, or award is determined in writing to be in the best interest of the Government. Consult your designated legal advisor as soon as you learn of any protest. (This is the contract-level agency protest rule and applies at $5 million; the separate GAO stay and the DoD $35 million task-/delivery-order protest bar are higher-rung mechanics.)",
    "x": "A $5M CO faces protests like anyone else. Preaward, the default is 'hold award until resolved,' and overriding that default takes a written urgent-and-compelling or best-interest justification — not a verbal call.",
    "cite": {
     "src": "rfo",

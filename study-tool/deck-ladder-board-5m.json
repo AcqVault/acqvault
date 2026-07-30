@@ -374,7 +374,7 @@
     {
      "q": "Your specialist proposes T&M instead, 'for flexibility.' React.",
      "h": "T&M has the harshest determination in part 16.",
-     "d": "T&M requires a D&F that no other contract type is suitable — signed before the base period, approved by the HCA when base plus options exceed three years — and a ceiling price the contractor exceeds at its own risk. It's the type of last resort with the least cost discipline, not the flexible middle ground. 'Flexibility' is precisely the argument the D&F standard exists to kill."
+     "d": "T&M requires a D&F that no other contract type is suitable, signed before the base period, with a ceiling price the contractor exceeds at its own risk — and DoD stacks its own approval ladder on top (R-DFARS 216.601-370): one level above the contracting officer when the T&M/labor-hour portion is $1 million or less, the senior contracting official — non-delegable — when it exceeds $1 million, and the head of the contracting activity — non-delegable — when base plus options runs past three years. The D&F content is prescribed too: market research, why the work can't be estimated, why cost-type won't do, how T&M use is minimized, and the exit plan for the next buy. It's the type of last resort with the least cost discipline, not the flexible middle ground. 'Flexibility' is precisely the argument the D&F standard exists to kill."
     },
     {
      "q": "What's the transition story the file owes, and why does anyone care?",
@@ -397,6 +397,11 @@
      "src": "rfo",
      "sec": "16.601-3",
      "quote": "no other contract type is suitable"
+    },
+    {
+     "src": "r-dfars",
+     "sec": "216.601-370",
+     "quote": "the approval authority for the determination and findings must be the senior contracting official within the contracting activity. This authority may not be delegated."
     }
    ]
   },
@@ -415,7 +420,7 @@
     {
      "q": "What about T&M for the commercial installation services piece?",
      "h": "T&M for commercial services has three conditions.",
-     "d": "Available if the services are acquired competitively and are commonly sold to the public on a T&M basis, with a D&F that firm-fixed-price or FPEPA is not suitable and a ceiling price the contractor exceeds at its own risk (12.104(b)). The trap is treating T&M as the default for services — the D&F burden runs the other way."
+     "d": "The civilian baseline is 12.104(b) — acquired competitively, a D&F that firm-fixed-price or FPEPA is not suitable, and a ceiling price the contractor exceeds at its own risk. But DoD narrows the door first: R-DFARS 212.104-70 authorizes T&M or labor-hour for commercial services only in three lanes — services in support of a commercial product, emergency repair services, or other commercial services on a contracting officer determination approved by the head of the agency. Routine installation doesn't walk in on 'commonly sold on a T&M basis' alone; it has to fit a lane. The trap is treating T&M as the default for services — the burden runs the other way, twice."
     },
     {
      "q": "The PM asks what the commercial determination actually buys anyone.",
@@ -438,6 +443,11 @@
      "src": "rfo",
      "sec": "12.104",
      "quote": "Do not use any cost-reimbursement contract type to procure commercial products or commercial services."
+    },
+    {
+     "src": "r-dfars",
+     "sec": "212.104-70",
+     "quote": "use of time-and-materials and labor-hour contracts for the acquisition of commercial services is authorized only for the following:"
     }
    ]
   },

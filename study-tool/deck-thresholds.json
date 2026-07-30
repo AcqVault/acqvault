@@ -182,7 +182,7 @@
   {
     "type": "threshold",
     "q": "Post-award protest stay window at GAO?",
-    "a": "10 days from award or 5 days from the required debrief — whichever is later",
+    "a": "DoD: the LATEST of four dates — 10 days after award; 10 days after a task/delivery order over $25 million is issued; 5 days after an offered debrief date; 5 days after the required debrief concludes",
     "id": "ed23a8e28274"
   },
   {

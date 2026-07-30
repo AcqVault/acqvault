@@ -451,12 +451,12 @@
       "topic": "Inspection & Acceptance",
       "scenario": "For a $60K buy of industrial shelving and racks, your customer wants inspection at the vendor's plant plus a battery of acceptance tests — \"we got burned on the last delivery and I'm not signing for junk again.\" The items are catalog-standard, nothing safety-critical.",
       "ask": "How much inspection does this buy actually need — and how do you handle the customer?",
-      "script": "The default answer is in the rulebook: RFO 13.103 — inspection and acceptance should generally be at destination, with source inspection specified only where 46.404 requires it. And 46.404's calculus for at-or-below-SAT work weighs criticality of application, the size of possible losses, and how likely the vendor is to replace defective items without a fight. Catalog shelving fails every trigger for the heavyweight treatment: at destination we check type and kind, quantity, damage, operability if readily determinable, and packaging — that's the prescribed scope. For the customer, I don't dismiss the scar tissue; I redirect it. Getting burned once argues for a crisp receiving process and knowing our post-acceptance remedies, not for buying plant-visit inspection the item's risk profile can't justify — inspection rigor is priced into every quote we'll get.",
+      "script": "The default answer is in the rulebook: RFO 13.103 — inspection and acceptance should generally be at destination, with source inspection specified only where 46.404 requires it. And for a DoD buy the preference hardens into a prohibition: R-DFARS 246.404 — do not require Government quality assurance at source at or below the SAT unless the criteria at 246.402 are met, which means significant technical requirements, critical characteristics, or specific features or acquisition concerns that make source QA necessary. Catalog shelving fails every trigger for the heavyweight treatment: at destination we check type and kind, quantity, damage, operability if readily determinable, and packaging — that's the prescribed scope. For the customer, I don't dismiss the scar tissue; I redirect it. Getting burned once argues for a crisp receiving process and knowing our post-acceptance remedies, not for buying plant-visit inspection the item's risk profile can't justify — inspection rigor is priced into every quote we'll get.",
       "follow_ups": [
         {
           "q": "When would source inspection be the right call at this dollar level?",
           "h": "The section names the situations that escalate.",
-          "d": "RFO 46.404(b)(2): special situations may require more detailed quality assurance, including standard or higher-level quality requirements — the flags are items with critical applications, real potential for harm to personnel or property, or losses the Government can't absorb. Dollar value alone is not the trigger; consequence is. The strong answer shows the candidate scaling QA to risk in both directions rather than owning one default they apply everywhere."
+          "d": "RFO 46.404(b)(2) names the special situations — items with critical applications, real potential for harm to personnel or property, or losses the Government can't absorb. But for DoD that judgment call runs through a gate: R-DFARS 246.404 forbids source QA at or below the SAT unless the 246.402 criteria are met — a DoD-regulation mandate, a memorandum of agreement with the contract administration agency, or a contracting officer determination on significant technical requirements, critical characteristics, or specific features or acquisition concerns. Dollar value alone is not the trigger; consequence is — and in DoD the file has to show which 246.402 door you walked through."
         },
         {
           "q": "The shelving arrives dented and acceptance is already signed. What are your options?",
@@ -479,6 +479,11 @@
           "src": "rfo",
           "sec": "46.404",
           "quote": "the Government must inspect contracts at or below the simplified acquisition threshold at destination and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking, if applicable."
+        },
+        {
+          "src": "r-dfars",
+          "sec": "246.404",
+          "quote": "Do not require Government contract quality assurance at source for contracts or delivery orders valued at or below the simplified acquisition threshold unless the criteria at 246.402 have been met."
         },
         {
           "src": "rfo",

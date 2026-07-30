@@ -292,11 +292,11 @@
    "topic": "Contract Administration",
    "q": "A final determination disapproves one of a contractor's business systems. Which systems are covered, and what happens to the contractor's payments?",
    "a": "Six systems: accounting, earned value management, estimating, material management and accounting, property management, and purchasing. On a final determination with a notice to withhold, the contracting officer withholds 5 percent from progress payments and performance-based payments and directs a 5 percent withhold on interim cost vouchers until all material weaknesses are corrected. An acceptable corrective action plan submitted within 45 days and effectively implemented drops the withhold to 2 percent. Ceilings: 5 percent for material weaknesses in any single system, 10 percent across multiple systems.",
-   "x": "There is no civilian analogue — candidates raised on the FAR alone do not know this lever exists. Hold the numbers: 5 percent on a final determination, 2 once an acceptable corrective action plan lands within 45 days, ceilings of 5 for a single system and 10 across systems. The withhold is leverage, not punishment — it makes material weaknesses expensive until they are fixed, and it releases when they are.",
+   "x": "There is no civilian analogue — candidates raised on the FAR alone do not know this lever exists. Hold the numbers: 5 percent on a final determination, 2 once an acceptable corrective action plan lands within 45 days, ceilings of 5 for a single system and 10 across systems. The current vehicle is the class-deviation clause 252.242-7998 (DEVIATION 2026-O0050), prescribed at R-DFARS 242.7001 — cite the legacy 252.242-7005 at a board and you date yourself. The withhold is leverage, not punishment — it makes material weaknesses expensive until they are fixed, and it releases when they are.",
    "cite": {
     "src": "r-dfars",
-    "sec": "252.242-7005",
-    "quote": "the Contracting Officer will withhold 5 percent of amounts due from progress payments and performance-based payments, and direct the Contractor, in writing, to withhold 5 percent from its billings on interim cost vouchers on cost-reimbursement, labor-hour, and time-and-materials contracts"
+    "sec": "252.242-7998",
+    "quote": "the Contracting Officer will withhold 5 percent of amounts due from progress payments and performance-based payments, and direct the Contractor, in writing, to withhold 5 percent from its billings on interim cost vouchers"
    }
   },
   {

@@ -120,8 +120,8 @@
     "ref": "RFO 1.405 · Vol. 2, Authority"
   },
   "ed23a8e28274": {
-    "x": "The CICA stay attaches if the protest is filed within 10 days of award or 5 days of the required debrief — whichever is LATER. 'Later' is the word that decides real cases; the debrief branch only exists when a required debrief was requested.",
-    "ref": "CICA · RFO 33.105-3"
+    "x": "The civilian stay is two dates (RFO 33.105-3(b)(1)) — 10 days from award or 5 from the required debrief, whichever is later. DoD replaces it: R-DFARS 233.105-370 runs the LATEST of four — 10 days after award; 10 days after a task or delivery order over $25 million is issued; 5 days after an offered debrief date (even if the protester rejected it); and 5 days after the required postaward debrief is concluded — which, under enhanced debriefing, means timely follow-up questions answered in writing. Running the civilian two-date math on a DoD award is how a live stay gets miscalled.",
+    "ref": "R-DFARS 233.105-370 · RFO 33.105-3"
   },
   "d0650ad9021f": {
     "x": "GAO must decide within 100 days by statute; agency protests target roughly 35. The 100-day certainty is why agencies take GAO seriously — the clock never slips.",

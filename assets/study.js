@@ -2,7 +2,7 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=39';
+  var DECK_URL = '/assets/study-deck.json?v=40';
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -18,17 +18,31 @@
   var MODE = 'study';
   function isOrg() { return MODE === '48cons'; }
 
+  /* One sanitizer for BOTH ways state arrives — localStorage on boot and a file via Import.
+     Every branch a view writes through must be object-shaped or absent: 'use strict' makes
+     an assignment through a primitive (S.streak = "x" in an imported file, then st.run = 1)
+     a TypeError, and the array branches feed .filter/.map directly. Older builds normalized
+     4 branches in load() and 4 in doImport(); every branch added since crashed on import. */
+  function normalize(s) {
+    if (!s || typeof s !== 'object') s = {};
+    ['cards', 'scen', 'sprint', 'games', 'daily', 'streak', 'intro', 'resume', 'bdNotes', 'ladderBoard'].forEach(function (k) {
+      if (s[k] != null && typeof s[k] !== 'object') delete s[k];
+    });
+    ['ladderMiss', 'ladderBoardRough'].forEach(function (k) {
+      if (s[k] != null && Object.prototype.toString.call(s[k]) !== '[object Array]') delete s[k];
+    });
+    if (!s.cards) s.cards = {};
+    if (!s.scen) s.scen = {};
+    if (!s.games) s.games = {};
+    if (!s.sprint) s.sprint = { best: 0 };
+    if (s.track !== 'basic' && s.track !== 'advanced') s.track = null;
+    if (!s.created) s.created = Date.now();
+    return s;
+  }
   function load() {
     var s = null;
     try { s = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
-    if (!s || !s.cards) s = { track: null, cards: {}, scen: {}, sprint: { best: 0 }, created: Date.now() };
-    // A state saved by an older build can be missing sub-objects that views read straight
-    // through (S.sprint.best paints on the org page's FIRST frame, so an absent sprint would
-    // take the whole page down, not just one control). Normalise once, here, not at each use.
-    if (!s.sprint || typeof s.sprint !== 'object') s.sprint = { best: 0 };
-    if (!s.scen || typeof s.scen !== 'object') s.scen = {};
-    if (!s.cards || typeof s.cards !== 'object') s.cards = {};
-    return s;
+    return normalize(s);
   }
   function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {} }
   function today() { return Math.floor(Date.now() / 86400000); }
@@ -38,11 +52,19 @@
 
   /* ---- history: back inside the tool steps back through the tool, not off the page ----
      depth 0 = track select · depth 1 = dashboard · depth 2 = an activity */
-  var navDepth = 0, popping = false;
+  var navDepth = 0, popping = false, pendingRender = null;
   function goDepth(depth, renderFn) {
     if (!popping) {
-      while (navDepth >= depth) navDepth--; // never push same depth twice in a row
-      for (var d = navDepth + 1; d <= depth; d++) history.pushState({ st: d }, '');
+      if (depth < navDepth) {
+        // Real entries exist between here and the target — pop them instead of pushing a
+        // fresh one on top. Pushing (the old behavior) grew the stack on every trip home,
+        // so leaving the page cost one Back press per activity ever opened this visit.
+        pendingRender = renderFn;
+        history.go(depth - navDepth); // popstate fires async, renders pendingRender
+        return;
+      }
+      if (depth === navDepth) history.replaceState({ st: depth }, '');
+      else for (var d = navDepth + 1; d <= depth; d++) history.pushState({ st: d }, '');
       navDepth = depth;
     }
     renderFn();
@@ -63,8 +85,10 @@
     navDepth = d; popping = true; keyHandler(null);
     // Stepping back out of a board sim ends its recording (declaration is hoisted).
     recRelease();
-    if (!deck) { popping = false; return; }
-    if (d <= 0) topFn()(); else (depth1View || homeFn())();
+    if (!deck) { popping = false; pendingRender = null; return; }
+    var r = pendingRender; pendingRender = null;
+    if (r) r(); // a goDepth() that popped its way down renders its own target view
+    else if (d <= 0) topFn()(); else (depth1View || homeFn())();
     popping = false;
   });
 
@@ -361,25 +385,36 @@
       '<div class="st-ready-head"><h2 class="st-h2">Readiness by topic</h2><span class="st-overall">' + overall + '% overall</span></div>' +
       '<p class="st-sub">Tap a topic to study it directly, due or not.</p>' +
       '<div class="st-topics">' + rows + '</div>' +
-      '<div class="st-foot-tools"><button class="st-link" id="st-export">Export progress</button> · ' +
-      '<button class="st-link" id="st-import">Import</button> · ' +
-      '<button class="st-link" id="st-reset">Reset</button><input type="file" id="st-file" accept="application/json" hidden></div>'
+      footToolsHtml()
     );
     if (due.length) el('m-daily').onclick = function () { goDepth(2, function () { startSession(due, 'Daily Review'); }); };
     el('m-deep').onclick = function () { goDepth(2, viewDeep); };
     el('m-sprint').onclick = function () { goDepth(2, viewSprint); };
     if (el('m-board')) el('m-board').onclick = function () { goDepth(2, viewBoard); };
     el('st-switch').onclick = function () { goDepth(0, viewTrack); };
-    el('st-export').onclick = doExport;
-    el('st-import').onclick = function () { el('st-file').click(); };
-    el('st-file').onchange = doImport;
-    el('st-reset').onclick = function () { if (confirm('Erase all study progress on this device?')) { S = { track: S.track, cards: {}, scen: {}, sprint: { best: 0 }, created: Date.now() }; save(); viewHome(); } };
+    wireFootTools();
     Array.prototype.forEach.call(app.querySelectorAll('.st-topic'), function (b) {
       b.onclick = function () {
         var t = b.getAttribute('data-topic');
         goDepth(2, function () { startSession(shuffle(byTopic[t].slice()), t); });
       };
     });
+  }
+
+  /* Export/Import/Reset footer — one builder for /study's dashboard and /48cons, so the org
+     page's progress (same storage key) is movable and erasable from the page that uses it. */
+  function footToolsHtml() {
+    return '<div class="st-foot-tools"><button class="st-link" id="st-export">Export progress</button> · ' +
+      '<button class="st-link" id="st-import">Import</button> · ' +
+      '<button class="st-link" id="st-reset">Reset</button><input type="file" id="st-file" accept="application/json" hidden></div>';
+  }
+  function wireFootTools() {
+    el('st-export').onclick = doExport;
+    el('st-import').onclick = function () { el('st-file').click(); };
+    el('st-file').onchange = doImport;
+    el('st-reset').onclick = function () {
+      if (confirm('Erase all study progress on this device?')) { S = normalize({ track: S.track }); save(); homeFn()(); }
+    };
   }
 
   function backHome() { keyHandler(null); if (navDepth >= 2) history.back(); else homeFn()(); }
@@ -906,11 +941,15 @@
       var have = myDeck().cards.length;
       if (have && !confirm('Replace your ' + have + ' card' + (have === 1 ? '' : 's') +
           ' with the ' + incoming.length + ' in this file? This cannot be undone.')) return;
+      var prevMY = MY;
       MY = { v: 1, cards: incoming.map(function (c) {
         return { id: c.id || myId(), q: String(c.q).slice(0, MY_Q), a: String(c.a).slice(0, MY_A),
                  subj: String(c.subj || '').slice(0, MY_SUBJ) };
       }) };
-      mySave(); myEditId = null; viewMyCards();
+      // If the save is refused (size ceiling, quota), showing the imported deck would be a
+      // lie — it was never written, and a reload silently reverts. Put the old deck back.
+      if (!mySave()) { MY = prevMY; myErr = 'Import cancelled — your cards are untouched. ' + myErr; }
+      myEditId = null; viewMyCards();
     };
     r.onerror = function () { myErr = 'Could not read that file.'; viewMyCards(); };
     r.readAsText(f);
@@ -1253,8 +1292,10 @@
       (nMy ? nMy + ' card' + (nMy === 1 ? '' : 's') : 'None yet') + '</span>' +
       '<span class="st-sim-meta">Yours · not from the rulebook</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
-      '</div>');
+      '</div>' +
+      footToolsHtml());
     wireLadderSection();
+    wireFootTools();
     el('st-intro-open').onclick = function () { depth1View = viewIntro; goDepth(1, viewIntro); };
     // Activities launched from the org page live at depth 1 (the ladder's own sessions sit at
     // depth 2 under viewLadder), matching the Introduction Builder above.
@@ -3012,11 +3053,7 @@
       try {
         var s = JSON.parse(r.result);
         if (s && s.cards && typeof s.cards === 'object') {
-          S = Object.assign({ track: null, cards: {}, scen: {}, sprint: { best: 0 }, games: {}, created: Date.now() }, s);
-          if (!S.cards || typeof S.cards !== 'object') S.cards = {};
-          if (!S.scen || typeof S.scen !== 'object') S.scen = {};
-          if (!S.sprint || typeof S.sprint !== 'object') S.sprint = { best: 0 };
-          if (!S.games || typeof S.games !== 'object') S.games = {};
+          S = normalize(s);
           save(); homeFn()();
         } else alert('Not a study-progress file.');
       }
