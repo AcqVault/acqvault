@@ -1006,9 +1006,14 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 @media(max-width:820px){.lhero .lib-seal{display:none}.lhero h1{font-size:34px}}
 /* 48 CONS hero patch — same treatment as the library seal, but it survives on phones
    (that page's audience studies on them) by shrinking to the top-right corner instead
-   of vanishing; the inner pads right so the crumbs and lede never run under it. */
-.cons-patch{position:absolute;right:26px;top:50%;transform:translateY(-50%);width:158px;height:auto;z-index:1;filter:drop-shadow(0 8px 16px rgba(0,0,0,.42))}
-@media(max-width:900px){.cons-patch{width:92px;top:30px;transform:none;right:18px}.lhero--cons .lband-inner{padding-right:118px}}
+   of vanishing; the inner pads right so the crumbs and lede never run under it.
+   The disc's navy is nearly the hero's navy, so a faint brass backlight and a layered
+   shadow (tight contact + soft ambient) lift it off the band; the fade-in is opacity-only
+   so it needs no reduced-motion carve-out. */
+.cons-patch{position:absolute;right:26px;top:50%;transform:translateY(-50%);width:158px;height:auto;z-index:1;filter:drop-shadow(0 2px 5px rgba(0,0,0,.45)) drop-shadow(0 14px 28px rgba(0,0,0,.38));opacity:1;transition:opacity .5s ease}
+@starting-style{.cons-patch{opacity:0}}
+.lhero--cons .lband-inner::before{content:"";position:absolute;right:-52px;top:50%;transform:translateY(-50%);width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(var(--brass-bright-rgb),.13),rgba(var(--brass-bright-rgb),.04) 45%,transparent 68%);pointer-events:none}
+@media(max-width:900px){.cons-patch{width:92px;top:30px;transform:none;right:18px}.lhero--cons .lband-inner{padding-right:118px}.lhero--cons .lband-inner::before{width:190px;height:190px;right:-38px;top:16px;transform:none}}
 /* margin-top/padding-top zeroed: the generic footer rule above ships margin-top:40px +
    padding-top:18px, which .lband--foot never overrode — so a 40px stripe of body white sat
    between two identical warm-paper bands, reading as an accidental fourth background. The
