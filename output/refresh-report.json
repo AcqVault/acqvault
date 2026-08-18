@@ -1,5 +1,5 @@
 {
- "run_at": "2026-07-16T19:23:55Z",
+ "run_at": "2026-08-18T13:03:59Z",
  "threshold_watch": {
   "dollar_drift": [],
   "broken_widget_cites": []
@@ -7,78 +7,55 @@
  "study_deck_watch": {
   "broken_deck_cites": {},
   "review_items": {
-   "recall_advanced:00a3e3b0f091": [
-    "RFO Part 16"
+   "recall_advanced:20083d2a3d1e": [
+    "RFO Part 12"
    ],
-   "recall_advanced:09238d21878e": [
-    "RFO Part 16"
+   "recall_advanced:49c3619626fe": [
+    "RFO Part 12"
    ],
-   "recall_advanced:16ab3e99a934": [
-    "RFO Part 16"
+   "recall_advanced:6e762e558b4b": [
+    "RFO Part 12"
    ],
-   "recall_advanced:27c7b7ae60aa": [
-    "RFO Part 16"
+   "recall_advanced:b80033fbefef": [
+    "RFO Part 12"
    ],
-   "recall_advanced:914312282d4c": [
-    "RFO 16.104"
+   "recall_basic:ce36b4899b1f": [
+    "RFO Part 12"
    ],
-   "recall_advanced:b82e452c9214": [
-    "RFO Part 16"
+   "scenario:760c637d2966": [
+    "RFO Part 12"
    ],
-   "recall_basic:ab16eded03ad": [
-    "RFO Part 16"
+   "scenario:99533bc58727": [
+    "RFO Part 12"
    ],
-   "recall_basic:dcfba529b706": [
-    "RFO Part 16"
+   "scenario:c34aeab9c4f4": [
+    "RFO Part 12"
    ],
-   "recall_basic:f16a2debc837": [
-    "RFO Part 16"
-   ],
-   "scenario:cfc77cdeb86e": [
-    "RFO 16.104",
-    "RFO Part 16"
-   ],
-   "scenario:d707f7ff05cc": [
-    "RFO 16.104",
-    "RFO Part 16"
-   ],
-   "scenario:f1c0af926c37": [
-    "RFO 16.104",
-    "RFO Part 16"
-   ],
-   "thresholds:6f92260c64f4": [
-    "RFO 16.104"
+   "scenario:f02f6a5c96ef": [
+    "RFO Part 12"
    ]
   }
  },
  "vehicle_watch": {
   "expired": [],
   "closing_soon": [
-   "GSA HCaTS / HCaTS SB (ordering ends 2026-11-09, 116d)",
-   "GSA 2GIT BPAs (ordering ends 2026-09-30, 76d)",
-   "NITAAC CIO-SP3 / CIO-SP3 SB (ordering ends 2026-10-29, 105d)",
-   "NITAAC CIO-CS (ordering ends 2026-10-29, 105d)"
+   "NASA SEWP V (ordering ends 2027-01-31, 166d)",
+   "GSA HCaTS / HCaTS SB (ordering ends 2026-11-09, 83d)",
+   "GSA 2GIT BPAs (ordering ends 2026-09-30, 43d)",
+   "NITAAC CIO-SP3 / CIO-SP3 SB (ordering ends 2026-10-29, 72d)",
+   "NITAAC CIO-CS (ordering ends 2026-10-29, 72d)"
   ],
   "verified_as_of": "2026-07-11",
   "stale": false
  },
+ "grid_watch": {},
  "rfo": {
-  "unchanged": 3070,
+  "unchanged": 3072,
   "modified": [
    {
-    "id": "12f686b1a79e7bcb",
-    "part": "16",
-    "title": "16.103 Documenting contract type"
-   },
-   {
-    "id": "cc637a938e84386d",
-    "part": "16",
-    "title": "16.104 Executive Order 14402 justification for covered contracts and orders"
-   },
-   {
-    "id": "df24de0d26fe55c7",
-    "part": "16",
-    "title": "16.301-2 Application"
+    "id": "0ca5a6b110fd88ad",
+    "part": "12",
+    "title": "12.205 Solicitation provisions and contract clauses"
    }
   ],
   "added": [],
