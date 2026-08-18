@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 92;
+const STUDY_V = 93;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1742,12 +1742,6 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-rec-audio{height:38px;max-width:100%;flex:1 1 220px;min-width:0}
 .st-rec-del{font-size:13px}
 .st-rec-err{flex:1 1 100%;font-size:13px;color:#8c2b23;line-height:1.5}
-.st-rec-diag-btn{flex:1 1 100%;text-align:left;font-size:12.5px;padding:0}
-.st-rec-diag{flex:1 1 100%;margin-top:2px}
-.st-rec-diag-verdict{font-weight:700;font-size:13px;margin:0 0 4px;color:var(--ink)}
-.st-rec-diag-fix{font-size:12.5px;line-height:1.5;margin:0 0 8px;color:var(--muted)}
-.st-rec-diag-wait{font-size:12.5px;margin:0;color:var(--muted)}
-.st-rec-diag-report{width:100%;box-sizing:border-box;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.45;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px;resize:vertical}
 .st-rec-priv{flex:1 1 100%;margin:0;font-size:11.5px;color:var(--muted)}
 .st-bd-echo-audio{display:block;margin-top:10px}
 @media (prefers-reduced-motion:no-preference){

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Smallest check that fails if the recorder's failure triage breaks.
+/* Smallest check that fails if the recorder's failure note breaks.
    Extracts recFailText() straight out of assets/study.js — the shipped code, not a
    reimplementation. Run: node scripts/test_recfail.js */
 'use strict';
@@ -8,71 +8,27 @@ const path = require('path');
 const assert = require('assert');
 const src = fs.readFileSync(path.join(__dirname, '..', 'assets', 'study.js'), 'utf8');
 
-const m = src.match(/function recFailText\(name, detail, hasMic\) \{[\s\S]*?\n  \}/);
+const m = src.match(/function recFailText\(name, detail\) \{[\s\S]*?\n  \}/);
 if (!m) { console.error('FAIL: recFailText() not found in assets/study.js'); process.exit(1); }
 const recFailText = eval('(' + m[0].replace('function recFailText', 'function ') + ')');
+const t = (name, detail) => recFailText(name, detail);
 
-const t = (name, detail, hasMic) => recFailText(name, detail, hasMic);
+// The government case — every capture failure gets the one plain note.
+for (const args of [['NotSupportedError', ''], ['NotReadableError', ''],
+  ['NotAllowedError', 'Permission denied by system'], ['NotFoundError', ''], ['', '']]) {
+  assert.ok(/not available on government-issued computers/.test(t(...args)),
+    'expected the gov note for ' + (args[0] || '(empty)'));
+}
 
-// The government case the field reported: browser permission granted, Windows says no.
-// Chromium surfaces the OS-level denial as NotAllowedError + "Permission denied by system".
-assert.ok(/operating system refused/.test(t('NotAllowedError', 'Permission denied by system', true)),
-  'system-level NotAllowedError must route to the OS advice, not the mic-icon advice');
-assert.ok(/denied by system/.test(t('NotAllowedError', 'Permission denied by system', true)));
+// The one exception: a plain browser-level block on a personal machine IS the user's to
+// fix, so it still points at the address-bar icon instead of the gov note.
+const block = t('NotAllowedError', 'Permission denied');
+assert.ok(/mic icon/.test(block) && !/government-issued/.test(block));
+assert.ok(/mic icon/.test(t('SecurityError', '')));
 
-// A plain browser-level block still gets the mic-icon advice + the policy hint.
-const browserBlock = t('NotAllowedError', 'Permission denied', null);
-assert.ok(/mic icon/.test(browserBlock));
-assert.ok(/IT browser policy/.test(browserBlock));
-
-// The OS holding the device (endpoint security, another app) names the OS layer.
-assert.ok(/operating system refused[\s\S]*NotReadableError/.test(t('NotReadableError', '', true)));
-
-// No device — by error name, or by enumerateDevices seeing zero audio inputs.
-assert.ok(/No microphone is available/.test(t('NotFoundError', '', null)));
-assert.ok(/No microphone is available/.test(t('SomethingOddError', '', false)));
-
-// No capture stack at all — the 48 CONS report ("NotSupportedError"): VDI without mic
-// redirection or policy-stripped audio capture. Must say no setting fixes it, and must
-// NOT route to headset advice even when the device list looks empty.
-assert.ok(/no audio recording capability \(NotSupportedError\)/.test(t('NotSupportedError', '', false)));
-assert.ok(/No browser setting changes this/.test(t('NotSupportedError', '', null)));
-assert.ok(!/Plug in a headset/.test(t('NotSupportedError', '', false)));
-
-// Unknown failures keep the generic line but carry the raw name for an IT ticket.
-assert.ok(/Could not start the microphone \(SomethingOddError\)/.test(t('SomethingOddError', '', true)));
-assert.ok(/Could not start the microphone\./.test(t('', '', null)));
-
-// Every branch ends by saying the sim still runs without the recorder.
-for (const args of [['NotAllowedError', 'by system', true], ['NotAllowedError', '', null],
-  ['NotReadableError', '', true], ['NotFoundError', '', null], ['', '', false], ['XError', '', true]]) {
+// Every message ends by saying the sim still runs without the recorder.
+for (const args of [['NotSupportedError', ''], ['NotAllowedError', 'Permission denied'], ['', '']]) {
   assert.ok(/answer out loud and self-grade/.test(t(...args)), 'missing fallback line for ' + args[0]);
 }
 
-// ── recDiagFormat: the in-machine diagnostic must route to the RIGHT fix ──────
-const dm = src.match(/function recDiagFormat\(info\) \{[\s\S]*?\n  \}/);
-if (!dm) { console.error('FAIL: recDiagFormat() not found in assets/study.js'); process.exit(1); }
-const recDiagFormat = eval('(' + dm[0].replace('function recDiagFormat', 'function ') + ')');
-
-// The 48 CONS case: NotSupportedError = dead capture stack. Must say IT-side only and
-// must NOT promise the allowlist fixes it (that would send them down a dead end).
-let d = recDiagFormat({ probe: 'NotSupportedError', perm: 'prompt', devices: '0 audioinput' });
-assert.ok(/no audio-capture capability/i.test(d.verdict));
-assert.ok(/redirection/.test(d.fix) && /will NOT help/.test(d.fix));
-assert.ok(!/AudioCaptureAllowedUrls/.test(d.fix), 'must not offer the allowlist for a dead stack');
-
-// Permission/policy block WITH a live stack = the fixable case: name the narrow Edge policy.
-d = recDiagFormat({ probe: 'NotAllowedError', perm: 'denied', devices: '1 audioinput' });
-assert.ok(/fixable/i.test(d.verdict));
-assert.ok(/AudioCaptureAllowedUrls/.test(d.fix));
-// perm:'denied' alone (probe not run) still routes to the fixable branch.
-assert.ok(/AudioCaptureAllowedUrls/.test(recDiagFormat({ probe: '', perm: 'denied', devices: '1 audioinput' }).fix));
-
-// Success and no-device routes.
-assert.ok(/works now/i.test(recDiagFormat({ probe: 'captured-ok', perm: 'granted' }).verdict));
-assert.ok(/No microphone device/i.test(recDiagFormat({ probe: 'NotFoundError', perm: 'prompt', devices: '0 audioinput' }).verdict));
-
-// The report text always carries the raw probe name for the IT ticket.
-assert.ok(/probe   : NotSupportedError/.test(recDiagFormat({ probe: 'NotSupportedError', perm: 'prompt', devices: 'x' }).text));
-
-console.log('recFailText + recDiagFormat: all checks passed');
+console.log('recFailText: all checks passed');

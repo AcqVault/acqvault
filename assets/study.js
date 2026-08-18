@@ -1781,130 +1781,19 @@
      in parentheses so an IT ticket has something concrete to act on, and every branch
      ends the same way: the sim never needed the recorder to be worth running.
      Pure function — scripts/test_recfail.js extracts and exercises it. */
-  function recFailText(name, detail, hasMic) {
-    var out;
-    var osDenied = name === 'NotAllowedError' && /system/i.test(detail);
-    if (osDenied || name === 'NotReadableError' || name === 'AbortError' || name === 'TrackStartError') {
-      out = 'The browser has permission, but the operating system refused the microphone (' +
-        (osDenied ? 'denied by system' : name) + '). On a government machine: ' +
-        'Windows Settings → Privacy & security → Microphone must be on, nothing else ' +
-        'can be holding the mic, and endpoint security may block capture outright.';
-    } else if (name === 'NotAllowedError' || name === 'SecurityError') {
-      out = 'Microphone blocked — allow it from the mic icon in your browser’s address ' +
-        'bar. If it fails instantly with no prompt, an IT browser policy blocks the microphone (' + name + ').';
-    } else if (name === 'NotSupportedError') {
-      /* The 48 CONS machines land here: no audio-capture stack in this session at all.
-         Seen on virtual/remote desktops (Citrix, AVD) without microphone redirection,
-         with the Windows Audio service stopped, or with WebRTC capture stripped by
-         policy. Nothing the user can click fixes it — say so instead of hinting. */
-      out = 'This computer session has no audio recording capability (NotSupportedError) — ' +
-        'usual on a virtual or remote desktop without microphone redirection, or where IT ' +
-        'policy disables audio capture in the browser. No browser setting changes this.';
-    } else if (name === 'NotFoundError' || name === 'DevicesNotFoundError' || hasMic === false) {
-      out = 'No microphone is available to this browser' + (name ? ' (' + name + ')' : '') + '. ' +
-        'Plug in a headset; if one is already connected, Windows Settings → ' +
-        'Privacy & security → Microphone is off, or an IT policy hides audio devices.';
-    } else {
-      out = 'Could not start the microphone' + (name ? ' (' + name + ')' : '') + '.';
+  /* One plain note for every failure. Recording needs an audio-capture stack the
+     government Edge/VDI image does not provide, and no browser setting or IT ticket the
+     user can act on changes that — so the honest, un-fussy message is simply that it is
+     not available there. The one exception worth its own line is a plain browser-level
+     block on a personal machine, which the user really can undo from the address bar.
+     The board sim never needed the recorder, which the second sentence keeps saying. */
+  function recFailText(name, detail) {
+    if ((name === 'NotAllowedError' && !/system/i.test(detail || '')) || name === 'SecurityError') {
+      return 'Microphone blocked — allow it from the mic icon in your browser’s address bar. ' +
+        'The sim still works — answer out loud and self-grade as usual.';
     }
-    return out + ' The sim still works — answer out loud and self-grade as usual.';
-  }
-  /* Microphone diagnostic — runs ON the failing machine and says which layer to fix.
-     "It says NotSupportedError" relayed second-hand can't tell a dead capture stack (VDI
-     without mic redirection — nothing fixes it browser-side) from a policy block (fixable
-     with ONE narrow Edge setting). This gathers the discriminating signals in situ and
-     prints a copyable report for the IT ticket. All local — nothing is uploaded, same as
-     the recorder itself. recDiagFormat is pure; scripts/test_recfail.js exercises it. */
-  function recDiagGather(done) {
-    var info = { ua: navigator.userAgent, secure: window.isSecureContext !== false,
-      hasMD: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
-      hasMR: typeof MediaRecorder !== 'undefined', perm: 'n/a', devices: 'n/a', probe: '', probeMsg: '' };
-    function probe() {
-      var md = navigator.mediaDevices;
-      if (!(md && md.getUserMedia)) { info.probe = 'no getUserMedia'; return done(info); }
-      md.getUserMedia({ audio: true }).then(function (s) {
-        try { s.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
-        info.probe = 'captured-ok'; done(info);
-      }, function (e) { info.probe = (e && e.name) || 'Error'; info.probeMsg = (e && e.message) || ''; done(info); });
-    }
-    function devices() {
-      var md = navigator.mediaDevices;
-      if (!(md && md.enumerateDevices)) { info.devices = 'no enumerateDevices'; return probe(); }
-      md.enumerateDevices().then(function (ds) {
-        info.devices = ds.filter(function (d) { return d.kind === 'audioinput'; }).length + ' audioinput';
-        probe();
-      }, function () { info.devices = 'enumerate-failed'; probe(); });
-    }
-    if (navigator.permissions && navigator.permissions.query) {
-      try {
-        navigator.permissions.query({ name: 'microphone' }).then(
-          function (p) { info.perm = p.state; devices(); },
-          function () { info.perm = 'query-failed'; devices(); });
-      } catch (e) { info.perm = 'query-unsupported'; devices(); }
-    } else { info.perm = 'no permissions API'; devices(); }
-  }
-  function recDiagFormat(info) {
-    var verdict, fix;
-    if (info.probe === 'captured-ok') {
-      verdict = 'The microphone works now.';
-      fix = 'Close this and press Record again.';
-    } else if (info.probe === 'NotSupportedError') {
-      verdict = 'This session has no audio-capture capability (not a permission issue).';
-      fix = 'IT-side only: on a virtual/remote desktop (Citrix, AVD) enable microphone ' +
-        'redirection; otherwise WebRTC/audio capture is disabled in the Edge image. A site ' +
-        'allowlist will NOT help while the capture stack is absent.';
-    } else if (info.perm === 'denied' || info.probe === 'NotAllowedError' || info.probe === 'SecurityError') {
-      verdict = 'Blocked by permission or policy — but the capture stack exists, so this is fixable.';
-      fix = 'Microsoft Edge policy: add https://www.acqvault.com to AudioCaptureAllowedUrls ' +
-        '(narrowest fix — allows only this site). Or the user allows the mic from the ' +
-        'address-bar icon if the browser lets them.';
-    } else if (info.probe === 'NotFoundError' || info.probe === 'DevicesNotFoundError' || info.devices === '0 audioinput') {
-      verdict = 'No microphone device is visible to Edge.';
-      fix = 'Connect a headset; if one is attached, Windows Privacy → Microphone is off or ' +
-        'an IT policy hides audio devices.';
-    } else if (info.probe === 'NotReadableError' || info.probe === 'AbortError' || info.probe === 'TrackStartError') {
-      verdict = 'The OS or another app is holding the microphone.';
-      fix = 'Close anything using the mic; endpoint security may block capture — an IT ticket.';
-    } else {
-      verdict = 'Unrecognized microphone failure.';
-      fix = 'Send the report below to IT.';
-    }
-    var text = [
-      'AcqVault /48cons microphone diagnostic',
-      'verdict : ' + verdict,
-      'action  : ' + fix,
-      '--- details for IT ---',
-      'probe   : ' + (info.probe || '') + (info.probeMsg ? ' — ' + info.probeMsg : ''),
-      'perm    : ' + info.perm,
-      'devices : ' + info.devices,
-      'secure  : ' + info.secure,
-      'getUserMedia present : ' + info.hasMD,
-      'MediaRecorder present : ' + info.hasMR,
-      'agent   : ' + info.ua
-    ].join('\n');
-    return { verdict: verdict, fix: fix, text: text };
-  }
-  function recRunDiag() {
-    var out = el('rec-diag-out'); if (!out) return;
-    out.hidden = false;
-    out.innerHTML = '<p class="st-rec-diag-wait">Checking the microphone stack…</p>';
-    recDiagGather(function (info) {
-      var o = el('rec-diag-out'); if (!o) return;
-      var r = recDiagFormat(info);
-      o.innerHTML = '<p class="st-rec-diag-verdict">' + esc(r.verdict) + '</p>' +
-        '<p class="st-rec-diag-fix">' + esc(r.fix) + '</p>' +
-        '<textarea class="st-rec-diag-report" readonly rows="9" aria-label="Diagnostic report for IT">' + esc(r.text) + '</textarea>' +
-        '<button class="st-link" id="rec-diag-copy" type="button">Copy report for IT</button>';
-      var c = el('rec-diag-copy');
-      if (c) c.onclick = function () {
-        var ta = o.querySelector('.st-rec-diag-report');
-        if (!ta) return;
-        try { ta.focus(); ta.select(); } catch (e) {}
-        try { document.execCommand('copy'); } catch (e2) {}
-        try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value); } catch (e3) {}
-        c.textContent = 'Copied';
-      };
-    });
+    return 'Recording is not available on government-issued computers. ' +
+      'The sim still works — answer out loud and self-grade as usual.';
   }
   function recClearTick() { if (REC.tick) { clearInterval(REC.tick); REC.tick = 0; } }
   function recClearWait() {
@@ -1973,9 +1862,7 @@
     } else {
       b += '<button class="st-btn st-btn-hint" id="rec-go">' +
         '<span class="st-rec-dot" aria-hidden="true"></span>Record your answer</button>' +
-        (REC.err ? '<span class="st-rec-err">' + esc(REC.err) + '</span>' +
-          '<button class="st-link st-rec-diag-btn" id="rec-diag" type="button">Run a mic diagnostic for IT</button>' +
-          '<div class="st-rec-diag" id="rec-diag-out" hidden></div>' : '');
+        (REC.err ? '<span class="st-rec-err">' + esc(REC.err) + '</span>' : '');
     }
     return b + '<p class="st-rec-priv">Stays in this tab &middot; never saved or uploaded</p></div>';
   }
@@ -2000,7 +1887,6 @@
        stayed lit after Stop. Nothing was ever uploaded, but "gone the moment you leave the
        sim" was not true of the orphaned stream. */
     if (el('rec-go')) el('rec-go').onclick = function () { recArm(this); };
-    if (el('rec-diag')) el('rec-diag').onclick = function () { recRunDiag(); };
     if (el('rec-again')) el('rec-again').onclick = function () { recDiscard(); recArm(this); };
     if (el('rec-del')) el('rec-del').onclick = function () { recDiscard(); recRepaint('rec-go'); };
     if (el('rec-stop')) {
@@ -2074,7 +1960,7 @@
       // "recorder:" prefix marks the constructor as the thrower — getUserMedia already
       // succeeded here, so a NotSupportedError on THIS line is a codec/recorder gap,
       // not the missing capture stack the recFailText branch describes.
-      catch (e) { REC.err = 'This browser cannot record audio' + (e && e.name ? ' (recorder: ' + e.name + ')' : '') + '. The sim still works — answer out loud and self-grade as usual.'; recStopTracks(); recRepaint('rec-go'); return; }
+      catch (e) { REC.err = recFailText('', ''); recStopTracks(); recRepaint('rec-go'); return; }
       REC.mr = mr;
       /* Bound to THIS take. stop() always flushes one final chunk asynchronously, and that
          flush can land after the recorder was torn down — where REC.chunks is null and the
@@ -2112,20 +1998,8 @@
       REC.busy = false;
       REC.state = 'idle';
       recStopTracks();
-      var name = (e && e.name) || '', detail = (e && e.message) || '';
-      var apply = function (hasMic) {
-        if (REC.gen !== gen || abandoned || REC.state !== 'idle') return; // probe landed late
-        REC.err = recFailText(name, detail, hasMic);
-        recRepaint('rec-go');
-      };
-      /* enumerateDevices settles the case the error name can't: a generic failure on a box
-         where the browser sees NO audio input at all is a missing/hidden device, not a
-         permission problem. It resolves async, so `apply` re-checks the generation. */
-      if (navigator.mediaDevices.enumerateDevices) {
-        navigator.mediaDevices.enumerateDevices().then(function (ds) {
-          apply(ds.some(function (d) { return d.kind === 'audioinput'; }));
-        }, function () { apply(null); });
-      } else apply(null);
+      REC.err = recFailText((e && e.name) || '', (e && e.message) || '');
+      recRepaint('rec-go');
     });
   }
   /* End the current take and run `after` once it has actually ended. Callers that just want the
