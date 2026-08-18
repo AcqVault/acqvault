@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 90;
+const STUDY_V = 91;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',

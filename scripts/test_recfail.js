@@ -32,6 +32,13 @@ assert.ok(/operating system refused[\s\S]*NotReadableError/.test(t('NotReadableE
 assert.ok(/No microphone is available/.test(t('NotFoundError', '', null)));
 assert.ok(/No microphone is available/.test(t('SomethingOddError', '', false)));
 
+// No capture stack at all — the 48 CONS report ("NotSupportedError"): VDI without mic
+// redirection or policy-stripped audio capture. Must say no setting fixes it, and must
+// NOT route to headset advice even when the device list looks empty.
+assert.ok(/no audio recording capability \(NotSupportedError\)/.test(t('NotSupportedError', '', false)));
+assert.ok(/No browser setting changes this/.test(t('NotSupportedError', '', null)));
+assert.ok(!/Plug in a headset/.test(t('NotSupportedError', '', false)));
+
 // Unknown failures keep the generic line but carry the raw name for an IT ticket.
 assert.ok(/Could not start the microphone \(SomethingOddError\)/.test(t('SomethingOddError', '', true)));
 assert.ok(/Could not start the microphone\./.test(t('', '', null)));

@@ -1792,6 +1792,14 @@
     } else if (name === 'NotAllowedError' || name === 'SecurityError') {
       out = 'Microphone blocked — allow it from the mic icon in your browser’s address ' +
         'bar. If it fails instantly with no prompt, an IT browser policy blocks the microphone (' + name + ').';
+    } else if (name === 'NotSupportedError') {
+      /* The 48 CONS machines land here: no audio-capture stack in this session at all.
+         Seen on virtual/remote desktops (Citrix, AVD) without microphone redirection,
+         with the Windows Audio service stopped, or with WebRTC capture stripped by
+         policy. Nothing the user can click fixes it — say so instead of hinting. */
+      out = 'This computer session has no audio recording capability (NotSupportedError) — ' +
+        'usual on a virtual or remote desktop without microphone redirection, or where IT ' +
+        'policy disables audio capture in the browser. No browser setting changes this.';
     } else if (name === 'NotFoundError' || name === 'DevicesNotFoundError' || hasMic === false) {
       out = 'No microphone is available to this browser' + (name ? ' (' + name + ')' : '') + '. ' +
         'Plug in a headset; if one is already connected, Windows Settings → ' +
@@ -1963,7 +1971,10 @@
       // No mimeType is passed on purpose: Chrome records webm and Safari mp4, and letting
       // each pick its own default is the only thing that works in both.
       try { mr = new MediaRecorder(stream); }
-      catch (e) { REC.err = 'This browser cannot record audio.'; recStopTracks(); recRepaint('rec-go'); return; }
+      // "recorder:" prefix marks the constructor as the thrower — getUserMedia already
+      // succeeded here, so a NotSupportedError on THIS line is a codec/recorder gap,
+      // not the missing capture stack the recFailText branch describes.
+      catch (e) { REC.err = 'This browser cannot record audio' + (e && e.name ? ' (recorder: ' + e.name + ')' : '') + '. The sim still works — answer out loud and self-grade as usual.'; recStopTracks(); recRepaint('rec-go'); return; }
       REC.mr = mr;
       /* Bound to THIS take. stop() always flushes one final chunk asynchronously, and that
          flush can land after the recorder was torn down — where REC.chunks is null and the
