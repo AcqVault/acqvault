@@ -41,7 +41,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
-from bs4 import BeautifulSoup
 
 BASE_DIR = Path(__file__).parent
 DOCS_PATH = BASE_DIR / "output" / "documents.json"
@@ -95,80 +94,25 @@ def discover_part_pages():
     return [(int(n), "{}/far-overhaul-part-{}".format(HUB_URL, n)) for n in slugs]
 
 
-HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
+# The RFO parser lives in scripts/parse_rfo_html.py — the same code that built the
+# corpus from this HTML on 2026-07-21, tables included. This file used to carry its
+# own p/li-only parser; the first refresh after the HTML re-ingest re-parsed 314
+# sections without their tables and corpus_health (rightly) refused the ship.
+# One parser, imported, so the two can never drift again.
+sys.path.insert(0, str(BASE_DIR / "scripts"))
+from parse_rfo_html import parse_part as _shared_parse_part  # noqa: E402
+from repair_split_citations import repair_content, section_index  # noqa: E402
 
-
-def block_lines(article):
-    """A doc's text is the run of paragraphs between its own heading and the
-    next heading of any kind. Levels come from the ListLn classes.
-
-    A CONTAINER NEVER INHERITS. The original rule skipped child headings that
-    came before any text, so a container absorbed its first child's paragraphs
-    and ended up holding a verbatim copy of it — 463 rfo docs, 731K chars:
-    "52.233 [Reserved]" carried the whole Disputes clause (duplicating
-    52.233-1), and "Subpart 2.1 Definitions" carried all 98K of 2.101. A
-    container that genuinely has prose of its own still keeps it, because that
-    prose precedes its first child heading; six containers rely on this.
-
-    Corpus-side repairs: scripts/repair_rfo_reserved_swallow.py (the 45 whose
-    title also contradicted the body) and
-    scripts/repair_rfo_container_inheritance.py (the other 418)."""
-    started = False
-    lines = []
-    els = article.find_all(list(HEADINGS) + ["p", "li"])
-    for el in els:
-        if el.name in HEADINGS:
-            if el is els[0]:
-                continue          # the article's own title
-            break                 # a child or the next section begins — stop
-            continue              # child heading before any text — skip
-        txt = " ".join(el.get_text(" ", strip=True).split())
-        if not txt:
-            continue
-        level = 0
-        for cls in el.get("class") or []:
-            m = re.match(r"ListL(\d+)$", cls)
-            if m:
-                level = int(m.group(1))
-                break
-        lines.append("L{}:{}".format(level, txt))
-        started = True
-    return lines
+RFO_HTML_CACHE = BASE_DIR / "_local_archive" / "rfo-html"
 
 
 def parse_part_page(part_num, url, html):
     """One part page → list of section docs (id-less; ids mapped later)."""
-    soup = BeautifulSoup(html, "html.parser")
-    docs = []
-    for topic in soup.find_all("article", id=re.compile(r"^FAR_")):
-        classes = " ".join(topic.get("class") or [])
-        if "topic" not in classes:
-            continue
-        anchor = topic["id"]
-        if anchor.startswith("FAR_Part_"):
-            continue  # whole-part shells (e.g. a reserved Part 38) are not corpus docs
-        heading = topic.find(list(HEADINGS))
-        if heading is None:
-            continue
-        title = " ".join(heading.get_text(" ", strip=True).split()).rstrip(".")
-        if re.match(r"Part\s+\d+\b", title):
-            continue  # part-shell articles (sometimes reusing a section's id) are not docs
-        if title.startswith("Subpart"):
-            title = title.replace(" - ", " ", 1)
-        lines = block_lines(topic)
-        # heading-only sections (e.g. "3.102 [Reserved]") are real corpus docs whose
-        # content is exactly the title; sections with text get the L-marker block
-        content = title + "\n\n" + "\n".join(lines) if lines else title
-        num_match = re.match(r"(Subpart\s+[\d.]+|[\d.]+(?:-\d+)*)", title)
-        num = num_match.group(1) if num_match else anchor
-        docs.append({
-            "title": title,
-            "content": content,
-            "part": str(part_num),
-            "anchor": anchor,
-            "url": url + "#" + anchor,
-            "filename": "RFO " + num,
-        })
+    docs = _shared_parse_part(html, part_num)
+    for d in docs:
+        num_match = re.match(r"(Subpart\s+[\d.]+|[\d.]+(?:-\d+)*)", d["title"])
+        d["filename"] = "RFO " + (num_match.group(1) if num_match else d["anchor"])
+        d["url"] = url + "#" + d["anchor"]
     return docs
 
 
@@ -179,8 +123,11 @@ def refresh_rfo(existing_rfo):
     old_by_anchor = {d["anchor"]: d for d in existing_rfo}
     old_parts = {d["part"] for d in existing_rfo}
     new_docs_raw = []
+    RFO_HTML_CACHE.mkdir(parents=True, exist_ok=True)
     for i, (part_num, url) in enumerate(pages):
         html = get(url).text
+        # keep the cache current so parser iterations never re-fetch
+        (RFO_HTML_CACHE / "part-{}.html".format(part_num)).write_text(html, encoding="utf-8")
         parsed = parse_part_page(part_num, url, html)
         if not parsed:
             # reserved/empty parts (e.g. Part 38 "[Reserved]") are fine as long as
@@ -194,6 +141,17 @@ def refresh_rfo(existing_rfo):
         if i < len(pages) - 1:
             time.sleep(0.35)
     print()
+
+    # Upstream line-wrap artifacts split citation numbers ("52.209- 4" appeared
+    # in the 2026-08 re-render); rejoin with the proven repair logic BEFORE the
+    # old-vs-new compare, or the already-repaired corpus doc would read as
+    # "modified" on every future run. Joins across a newline would shift table
+    # spans, so those are left alone (repair_split_citations.py handles them).
+    _idx = section_index(new_docs_raw)
+    for d in new_docs_raw:
+        repaired = repair_content(d["content"], _idx, "rfo")
+        if repaired != d["content"] and repaired.count("\n") == d["content"].count("\n"):
+            d["content"] = repaired
 
     # gates -------------------------------------------------------------------
     if existing_rfo:
@@ -241,6 +199,8 @@ def refresh_rfo(existing_rfo):
             "date": old.get("date", "") if old else "",
             "anchor": d["anchor"],
         }
+        if d.get("tables"):
+            doc["tables"] = d["tables"]
         final.append(doc)
         (modified if old else added).append(doc)
     found = {d["anchor"] for d in new_docs_raw}

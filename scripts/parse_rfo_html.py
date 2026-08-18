@@ -36,6 +36,8 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
+from scrub_pua_glyphs import scrub  # acquisition.gov emits PUA glyphs (e.g. U+F8FD for ×)
+
 BASE = Path(__file__).resolve().parent.parent
 CACHE = BASE / "_local_archive" / "rfo-html"
 DOCS = BASE / "output" / "documents.json"
@@ -48,8 +50,15 @@ MAX_LEVEL = 4
 
 
 def clean(text):
-    """Collapse whitespace without touching the characters themselves."""
-    return re.sub(r"\s+", " ", str(text or "")).replace(" ", " ").strip()
+    """Collapse whitespace; map upstream's private-use glyphs to real characters.
+
+    The 2026-08 re-render of acquisition.gov swapped the multiplication sign in
+    32.503-6 for U+F8FD — the same PUA family scrub_pua_glyphs.py already maps,
+    verified there by the arithmetic. Scrubbing at parse time keeps invariant #1
+    (no tofu) true for every future ingest instead of relying on a manual pass.
+    """
+    text = scrub(str(text or ""))[0]
+    return re.sub(r"\s+", " ", text).replace(" ", " ").strip()
 
 
 def level_of(tag):
