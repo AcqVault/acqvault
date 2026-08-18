@@ -1771,6 +1771,36 @@
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia &&
       typeof MediaRecorder !== 'undefined' && window.isSecureContext !== false);
   }
+  /* Map a getUserMedia failure to advice naming the layer that actually said no.
+     The 48 CONS field report was "we enabled the microphone and it still fails" — on
+     government desktops the refusal usually comes from BELOW the browser permission:
+     Windows' privacy toggle (Chromium surfaces that as NotAllowedError with a
+     "…by system" message), endpoint security holding the device (NotReadableError),
+     or a desktop with no mic at all. The old message prescribed the mic-icon fix for
+     all of them — the one layer that was already set. The raw error name rides along
+     in parentheses so an IT ticket has something concrete to act on, and every branch
+     ends the same way: the sim never needed the recorder to be worth running.
+     Pure function — scripts/test_recfail.js extracts and exercises it. */
+  function recFailText(name, detail, hasMic) {
+    var out;
+    var osDenied = name === 'NotAllowedError' && /system/i.test(detail);
+    if (osDenied || name === 'NotReadableError' || name === 'AbortError' || name === 'TrackStartError') {
+      out = 'The browser has permission, but the operating system refused the microphone (' +
+        (osDenied ? 'denied by system' : name) + '). On a government machine: ' +
+        'Windows Settings → Privacy & security → Microphone must be on, nothing else ' +
+        'can be holding the mic, and endpoint security may block capture outright.';
+    } else if (name === 'NotAllowedError' || name === 'SecurityError') {
+      out = 'Microphone blocked — allow it from the mic icon in your browser’s address ' +
+        'bar. If it fails instantly with no prompt, an IT browser policy blocks the microphone (' + name + ').';
+    } else if (name === 'NotFoundError' || name === 'DevicesNotFoundError' || hasMic === false) {
+      out = 'No microphone is available to this browser' + (name ? ' (' + name + ')' : '') + '. ' +
+        'Plug in a headset; if one is already connected, Windows Settings → ' +
+        'Privacy & security → Microphone is off, or an IT policy hides audio devices.';
+    } else {
+      out = 'Could not start the microphone' + (name ? ' (' + name + ')' : '') + '.';
+    }
+    return out + ' The sim still works — answer out loud and self-grade as usual.';
+  }
   function recClearTick() { if (REC.tick) { clearInterval(REC.tick); REC.tick = 0; } }
   function recClearWait() {
     if (REC.hintTimer) { clearTimeout(REC.hintTimer); REC.hintTimer = 0; }
@@ -1969,16 +1999,22 @@
       recClearWait();
       if (REC.gen !== gen || abandoned) return;   // the message on screen already fits
       REC.busy = false;
-      // NotAllowedError is the user, or a managed-browser policy, saying no. Say so plainly,
-      // and name the way back: the browser REMEMBERS a block, so a user who only meant to
-      // dismiss the prompt gets the same refusal on every later press with no clue why.
-      REC.err = (e && e.name === 'NotAllowedError')
-        ? 'Microphone blocked — allow it from the mic icon in your browser’s address bar. ' +
-          'You can still run the sim: answer out loud without recording.'
-        : 'Could not start the microphone.';
       REC.state = 'idle';
       recStopTracks();
-      recRepaint('rec-go');
+      var name = (e && e.name) || '', detail = (e && e.message) || '';
+      var apply = function (hasMic) {
+        if (REC.gen !== gen || abandoned || REC.state !== 'idle') return; // probe landed late
+        REC.err = recFailText(name, detail, hasMic);
+        recRepaint('rec-go');
+      };
+      /* enumerateDevices settles the case the error name can't: a generic failure on a box
+         where the browser sees NO audio input at all is a missing/hidden device, not a
+         permission problem. It resolves async, so `apply` re-checks the generation. */
+      if (navigator.mediaDevices.enumerateDevices) {
+        navigator.mediaDevices.enumerateDevices().then(function (ds) {
+          apply(ds.some(function (d) { return d.kind === 'audioinput'; }));
+        }, function () { apply(null); });
+      } else apply(null);
     });
   }
   /* End the current take and run `after` once it has actually ended. Callers that just want the
