@@ -49,4 +49,30 @@ for (const args of [['NotAllowedError', 'by system', true], ['NotAllowedError', 
   assert.ok(/answer out loud and self-grade/.test(t(...args)), 'missing fallback line for ' + args[0]);
 }
 
-console.log('recFailText: all checks passed');
+// ── recDiagFormat: the in-machine diagnostic must route to the RIGHT fix ──────
+const dm = src.match(/function recDiagFormat\(info\) \{[\s\S]*?\n  \}/);
+if (!dm) { console.error('FAIL: recDiagFormat() not found in assets/study.js'); process.exit(1); }
+const recDiagFormat = eval('(' + dm[0].replace('function recDiagFormat', 'function ') + ')');
+
+// The 48 CONS case: NotSupportedError = dead capture stack. Must say IT-side only and
+// must NOT promise the allowlist fixes it (that would send them down a dead end).
+let d = recDiagFormat({ probe: 'NotSupportedError', perm: 'prompt', devices: '0 audioinput' });
+assert.ok(/no audio-capture capability/i.test(d.verdict));
+assert.ok(/redirection/.test(d.fix) && /will NOT help/.test(d.fix));
+assert.ok(!/AudioCaptureAllowedUrls/.test(d.fix), 'must not offer the allowlist for a dead stack');
+
+// Permission/policy block WITH a live stack = the fixable case: name the narrow Edge policy.
+d = recDiagFormat({ probe: 'NotAllowedError', perm: 'denied', devices: '1 audioinput' });
+assert.ok(/fixable/i.test(d.verdict));
+assert.ok(/AudioCaptureAllowedUrls/.test(d.fix));
+// perm:'denied' alone (probe not run) still routes to the fixable branch.
+assert.ok(/AudioCaptureAllowedUrls/.test(recDiagFormat({ probe: '', perm: 'denied', devices: '1 audioinput' }).fix));
+
+// Success and no-device routes.
+assert.ok(/works now/i.test(recDiagFormat({ probe: 'captured-ok', perm: 'granted' }).verdict));
+assert.ok(/No microphone device/i.test(recDiagFormat({ probe: 'NotFoundError', perm: 'prompt', devices: '0 audioinput' }).verdict));
+
+// The report text always carries the raw probe name for the IT ticket.
+assert.ok(/probe   : NotSupportedError/.test(recDiagFormat({ probe: 'NotSupportedError', perm: 'prompt', devices: 'x' }).text));
+
+console.log('recFailText + recDiagFormat: all checks passed');
