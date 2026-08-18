@@ -927,6 +927,7 @@ table.devtable tr:hover td{background:#f7f6f2}
 table.devtable td a{color:var(--accent);text-decoration:none}table.devtable td a:hover{text-decoration:underline}
 table.devtable .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:nowrap}
 .ratetable-wrap{overflow-x:auto;margin:14px 0}
+@media (hover:hover) and (pointer:fine){table.ratetable tbody tr:hover th,table.ratetable tbody tr:hover td{background:rgba(var(--brass-rgb),0.05)}}
 table.ratetable{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.5}
 table.ratetable th,table.ratetable td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
 table.ratetable thead th{font-size:11.5px;text-transform:uppercase;letter-spacing:var(--ls-wide);color:var(--muted);border-bottom:2px solid var(--line);white-space:nowrap}

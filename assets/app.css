@@ -1050,10 +1050,16 @@ body.work-mode #spending-dashboard{display:none;}
 .br-toc-subpart{margin-top:8px;}
 .br-toc-subpart-label{font-size:var(--fs-base);font-weight:var(--fw-semibold);color:var(--muted);padding:3px 0;display:block;}
 .br-toc-link{display:flex;align-items:baseline;gap:8px;padding:4px 8px;border-radius:6px;text-decoration:none;transition:background 0.1s;cursor:pointer;}
-.br-toc-link:hover{background:rgba(0,0,0,0.04);}
+.br-toc-link:hover{background:rgba(var(--shadow-rgb),0.04);}
 .br-toc-link-num{font-size:var(--fs-base);font-weight:var(--fw-bold);color:var(--accent);min-width:52px;flex-shrink:0;}
 .br-toc-link-title{font-size:var(--fs-lg);color:var(--muted);line-height:1.35;}
 .br-section{margin-bottom:44px;scroll-margin-top:120px;min-width:0;}
+/* Landing glow after a cite / TOC / deep-link jump — tells the reader WHICH section
+   they arrived at. Color-only fade, no movement, so it stays under reduced motion. */
+.jump-lit{animation:jump-lit 1.8s var(--ease-out) .15s both;border-radius:var(--r-md);}
+/* Hold through the smooth scroll (~400ms), then dissolve — a glow that fades
+   before the section arrives in view was never seen at all. */
+@keyframes jump-lit{0%,35%{background:rgba(var(--brass-rgb),0.11);}100%{background:transparent;}}
 .br-section-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
 .br-section-title-block{flex:1;}
 .br-subpart-heading{font-size:18px;font-weight:var(--fw-bold);letter-spacing:-0.03em;color:var(--ink);margin:36px 0 8px;padding:11px 16px;background:var(--off);border-left:2px solid var(--accent);border-radius:0 var(--r-md) var(--r-md) 0;line-height:var(--lh-snug);}
@@ -1110,6 +1116,7 @@ body.work-mode #spending-dashboard{display:none;}
 .br-body table.ratetable tbody th{font-weight:var(--fw-black);color:var(--ink);white-space:nowrap;}
 .br-body table.ratetable tbody td{color:var(--ink2);}
 .br-body table.ratetable tr:last-child th,.br-body table.ratetable tr:last-child td{border-bottom:none;}
+@media (hover:hover) and (pointer:fine){.br-body table.ratetable tbody tr:hover th,.br-body table.ratetable tbody tr:hover td{background:rgba(var(--brass-rgb),0.05);}}
 /* Clause variants (Basic / Alternate N) — jump strip + anchored headings.
    252.225-7036 carries twelve near-identical variants across 160K of text. */
 .br-alt-nav{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 22px;padding:12px 14px;border:1px solid var(--line2);border-left:3px solid var(--accent);border-radius:var(--r-md);background:var(--off);}
@@ -2508,7 +2515,7 @@ button,a,[role="button"],input,select{touch-action:manipulation;}
 .hero-statstrip{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:var(--fs-base);color:var(--muted2);}
 .hero-statstrip-count{font-weight:var(--fw-semibold);color:var(--ink3);}
 .hero-statstrip-count strong{color:var(--ink);font-weight:var(--fw-heavy);}
-.hero-statstrip-div{width:1px;height:15px;background:rgba(0,0,0,0.12);}
+.hero-statstrip-div{width:1px;height:15px;background:var(--line2);}
 .hero-inner-b .hero-source-strip{border-top:none;padding:0;justify-content:flex-start;gap:6px;}
 
 /* ───────── RIGHT: navy vault panel ───────── */

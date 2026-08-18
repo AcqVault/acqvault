@@ -579,12 +579,22 @@ document.addEventListener('click', (e) => {
     case 'scroll-to': {
       e.preventDefault();
       const t = document.getElementById(el.dataset.anchor);
-      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); jumpLight(t); }
       break;
     }
     case 'print': window.print(); break;
   }
 });
+
+// Landing glow after a jump — marks WHICH section the scroll landed on. Reader
+// sections only; home-page anchors (whole <section>s) would wash far too much.
+function jumpLight(t) {
+  if (!t || !t.classList.contains('br-section')) return;
+  t.classList.remove('jump-lit');
+  void t.offsetWidth; // restart the animation on repeat jumps to the same section
+  t.classList.add('jump-lit');
+  t.addEventListener('animationend', () => t.classList.remove('jump-lit'), { once: true });
+}
 
 // Image load failures (formerly inline onerror). error events don't bubble, so
 // catch them in the capture phase at the document.
@@ -1931,7 +1941,7 @@ async function openPairedSection(source, part, anchor) {
   // per-section link, as opposed to the part-level banner.
   requestAnimationFrame(() => requestAnimationFrame(() => {
     const t = document.getElementById(anchor);
-    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); jumpLight(t); }
   }));
 }
 
@@ -3616,7 +3626,7 @@ async function loadFullPartInReader(hit) {
     // deferred in hidden tabs, so land instantly there — the tab is already positioned
     // on the section when the user switches to it.
     const target = document.getElementById(`sec-${hit.id}`);
-    if (target) setTimeout(() => target.scrollIntoView({ behavior: document.hidden ? 'instant' : 'smooth', block: 'start' }), 100);
+    if (target) setTimeout(() => { target.scrollIntoView({ behavior: document.hidden ? 'instant' : 'smooth', block: 'start' }); jumpLight(target); }, 100);
   } catch(e) {
     renderReaderAsBrowse(contentEl, [hit], hit.source, dispPart, partLabel);
     resetReaderSearch();
