@@ -187,6 +187,13 @@ module.exports = async function handler(req, res) {
     if (await enforce(req, res, { max: 20, name: 'mr' })) return;
     return contractAwardsRows(req, res, process.env.SAM_API_KEY);
   }
+  // Per-contract appropriation ("color of money") — FPDS carries none, so this reaches
+  // to USASpending's account funding (File C). GET so the CDN caches it; on-demand only
+  // (the user clicks one contract), so USASpending volume stays tiny.
+  if (req.method === 'GET' && req.query && req.query.mode === 'award-funding') {
+    if (await enforce(req, res, { max: 30, name: 'mr' })) return;
+    return contractAwardFunding(req, res);
+  }
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST, GET');
     return res.status(405).json({ error: 'Method not allowed' });
@@ -485,6 +492,76 @@ async function contractAwardsRows(req, res, apiKey) {
         : status === 404 ? 'Contract Awards API returned 404 — endpoint or parameters need adjusting.'
           : 'Contract Awards lookup is unavailable right now.'
     });
+  }
+}
+
+// ── Per-contract appropriation via USASpending account funding (File C) ───────
+async function usaPost(path, body) {
+  const r = await timedFetch('https://api.usaspending.gov' + path,
+    { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) }, 9000);
+  if (!r.ok) { const e = new Error('USASpending ' + r.status); e.status = r.status; throw e; }
+  return r.json();
+}
+// The account title names the appropriation; tag the color of money from it.
+function apprType(title) {
+  const t = String(title || '').toLowerCase();
+  if (/research.*development.*test|rdt.?&.?e|\brdte\b/.test(t)) return 'RDT&E';
+  if (/operation.*maintenance|\bo&m\b/.test(t)) return 'O&M';
+  if (/military personnel|milpers/.test(t)) return 'MILPERS';
+  if (/construction/.test(t)) return 'MILCON';
+  if (/procurement/.test(t)) return 'Procurement';
+  if (/working capital|revolving|defense working/.test(t)) return 'WCF';
+  if (/foreign military sales|\bfms\b/.test(t)) return 'FMS';
+  if (/shipbuilding/.test(t)) return 'SCN';
+  return 'Other';
+}
+async function contractAwardFunding(req, res) {
+  const piid = String((req.query || {}).piid || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 50);
+  if (piid.length < 4) return res.status(200).json({ note: 'Provide a contract PIID.' });
+  try {
+    // 1) resolve the PIID to a USASpending award id
+    const s = await usaPost('/api/v2/search/spending_by_award/', {
+      filters: { award_type_codes: ['A', 'B', 'C', 'D'], keywords: [piid] },
+      fields: ['Award ID', 'generated_internal_id'], limit: 10
+    });
+    const results = s.results || [];
+    const hit = results.find(function (r) { return String(r['Award ID'] || '').toUpperCase() === piid; }) || results[0];
+    if (!hit || !hit.generated_internal_id) {
+      res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
+      return res.status(200).json({ piid, found: false, accounts: [], note: 'No matching award on USASpending — appropriation data is not reported for this contract.' });
+    }
+    // 2) roll up its funding accounts (File C)
+    const roll = {};
+    for (let page = 1; page <= 4; page++) {
+      const f = await usaPost('/api/v2/awards/funding/', { award_id: hit.generated_internal_id, limit: 100, page, sort: 'reporting_fiscal_date', order: 'desc' });
+      const rows = f.results || [];
+      for (let i = 0; i < rows.length; i++) {
+        const x = rows[i];
+        const code = x.federal_account || '';
+        const title = x.account_title || code || '—';
+        const amt = Number(x.transaction_obligated_amount) || 0;
+        const k = code + '|' + title;
+        if (!roll[k]) roll[k] = { code: code, title: title, type: apprType(title), amount: 0 };
+        roll[k].amount += amt;
+      }
+      if (rows.length < 100) break;
+    }
+    const accounts = Object.keys(roll).map(function (k) { return roll[k]; })
+      .filter(function (a) { return Math.round(a.amount) !== 0; })
+      .sort(function (a, b) { return Math.abs(b.amount) - Math.abs(a.amount); });
+    const total = accounts.reduce(function (sum, a) { return sum + a.amount; }, 0);
+    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
+    return res.status(200).json({
+      piid, found: accounts.length > 0,
+      accounts: accounts.slice(0, 12).map(function (a) { return { code: a.code, title: a.title, type: a.type, amount: Math.round(a.amount) }; }),
+      total: Math.round(total),
+      source: 'USASpending.gov account funding (File C)',
+      note: accounts.length ? undefined : 'No appropriation/account data is reported for this contract on USASpending.'
+    });
+  } catch (error) {
+    console.error('award-funding error:', error && error.message);
+    res.setHeader('Cache-Control', 's-maxage=600');
+    return res.status(200).json({ piid, found: false, accounts: [], note: 'Appropriation lookup is unavailable right now — try again shortly.' });
   }
 }
 
