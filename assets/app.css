@@ -462,6 +462,26 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-table tbody tr:last-child td { border-bottom: none; }
 @media (hover:hover) and (pointer:fine) { .osr-table tbody tr:hover td { background: rgba(var(--brass-rgb),0.05); } }
 .osr-table td.osr-num, .osr-table th.osr-num { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 650; }
+.osr-table tr.osr-clk { cursor: pointer; }
+.osr-table tr.osr-clk:focus-visible { outline: 2px solid var(--brass); outline-offset: -2px; }
+.osr-table tr.osr-clk[aria-expanded="true"] td { background: rgba(var(--brass-rgb),0.08); }
+/* appropriation detail row */
+.osr-fund td { padding: 0; background: #fbfaf7; white-space: normal; max-width: none; border-bottom: 1px solid var(--line2); }
+.osr-fund-box { padding: 14px 16px; }
+.osr-fund-load, .osr-fund-none { color: var(--muted); font-size:var(--fs-base); }
+.osr-fund-h { font-size:var(--fs-xs); font-weight:var(--fw-bold); letter-spacing:var(--ls-wide); text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+.osr-fund-h span { font-weight:var(--fw-semibold); letter-spacing: 0; text-transform: none; color: var(--muted2); }
+.osr-fund-row { display: grid; grid-template-columns: 92px minmax(0,1fr) 120px 120px; align-items: center; gap: 12px; padding: 5px 0; }
+.osr-fund-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink2); font-size:var(--fs-base); }
+.osr-fund-title em { color: var(--muted2); font-style: normal; font-family: ui-monospace, Menlo, monospace; font-size:var(--fs-xs); }
+.osr-fund-amt { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); font-size:var(--fs-base); }
+.osr-fund-track { height: 7px; border-radius: 999px; background: rgba(var(--brass-rgb),0.10); overflow: hidden; }
+.osr-fund-fill { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#a87f28,#e4c477); }
+.osr-fund-foot { margin-top: 10px; font-size:var(--fs-sm); color: var(--muted); }
+.osr-fund-foot b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.osr-tag { display: inline-block; text-align: center; font-size:var(--fs-xs); font-weight:var(--fw-bold); letter-spacing:var(--ls-snug); padding: 3px 8px; border-radius: 6px; background: rgba(var(--brass-rgb),0.14); color: var(--brass-ink); border: 1px solid rgba(var(--brass-rgb),0.24); white-space: nowrap; }
+.osr-tag-rdte { background: rgba(var(--navy-rgb),0.12); color: var(--navy-900); border-color: rgba(var(--navy-rgb),0.28); }
+@media (max-width: 620px) { .osr-fund-row { grid-template-columns: 74px 1fr; } .osr-fund-amt, .osr-fund-track { grid-column: 2; text-align: left; } }
 .osr-tnote { margin-top: 10px; font-size:var(--fs-sm); color: rgba(255,255,255,0.5); }
 .osr-empty { padding: 22px; border: 1px solid rgba(255,255,255,0.12); border-radius: var(--r-lg); color: rgba(255,255,255,0.72); font-size:var(--fs-md); line-height: 1.5; }
 .osr-empty b { color: var(--brass-bright); font-family: ui-monospace, Menlo, monospace; }

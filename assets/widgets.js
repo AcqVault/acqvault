@@ -914,6 +914,49 @@
       + '<div class="dash-panel"><div class="dash-panel-title">Top vendors</div><div class="osr-chart" id="osr-c-ven">' + osrBarsHtml(byVen, mx(byVen)) + '</div></div>'
       + '</div>';
   }
+  // Per-contract appropriation drill-down (color of money via USASpending File C).
+  const osrFundCache = {};
+  const OSR_COLSPAN = 7; // OSR_PREVIEW length — the detail row spans the whole table
+  function osrFundHtml(d) {
+    if (!d || !d.found || !(d.accounts && d.accounts.length)) {
+      return '<div class="osr-fund-box osr-fund-none">' + esc((d && d.note) || 'No appropriation data reported for this contract.') + '</div>';
+    }
+    const max = Math.max.apply(null, d.accounts.map((a) => Math.abs(a.amount)).concat([1]));
+    return '<div class="osr-fund-box">'
+      + '<div class="osr-fund-h">Appropriation &middot; color of money <span>USASpending File C</span></div>'
+      + d.accounts.map((a) => '<div class="osr-fund-row">'
+          + '<span class="osr-tag osr-tag-' + esc(a.type.toLowerCase().replace(/[^a-z]/g, '')) + '">' + esc(a.type) + '</span>'
+          + '<span class="osr-fund-title">' + esc(a.title) + (a.code ? ' <em>' + esc(a.code) + '</em>' : '') + '</span>'
+          + '<span class="osr-fund-amt">' + fmtExact(a.amount) + '</span>'
+          + '<span class="osr-fund-track"><span class="osr-fund-fill" style="width:' + Math.max(3, (Math.abs(a.amount) / max) * 100).toFixed(1) + '%"></span></span>'
+        + '</div>').join('')
+      + '<div class="osr-fund-foot">Total obligated across accounts: <b>' + fmtExact(d.total) + '</b></div>'
+      + '</div>';
+  }
+  async function osrToggleFunding(tr) {
+    const next = tr.nextElementSibling;
+    if (next && next.classList.contains('osr-fund')) { next.remove(); tr.setAttribute('aria-expanded', 'false'); return; }
+    // collapse any other open detail first
+    const open = tr.parentNode.querySelector('tr.osr-fund');
+    if (open) { const p = open.previousElementSibling; if (p) p.setAttribute('aria-expanded', 'false'); open.remove(); }
+    const piid = tr.getAttribute('data-piid') || '';
+    tr.setAttribute('aria-expanded', 'true');
+    const det = document.createElement('tr');
+    det.className = 'osr-fund';
+    det.innerHTML = '<td colspan="' + OSR_COLSPAN + '"><div class="osr-fund-box osr-fund-load">Looking up appropriation for ' + esc(piid) + '&hellip;</div></td>';
+    tr.parentNode.insertBefore(det, tr.nextSibling);
+    try {
+      let d = osrFundCache[piid];
+      if (!d) {
+        const r = await fetch('/api/market-research?mode=award-funding&piid=' + encodeURIComponent(piid), { headers: { Accept: 'application/json' } });
+        d = r.ok ? await r.json() : { found: false, note: 'Appropriation lookup failed.' };
+        osrFundCache[piid] = d;
+      }
+      if (det.parentNode) det.querySelector('td').innerHTML = osrFundHtml(d);
+    } catch (e) {
+      if (det.parentNode) det.querySelector('td').innerHTML = '<div class="osr-fund-box osr-fund-none">Appropriation lookup is unavailable right now.</div>';
+    }
+  }
   let osrToken = 0, osrRows = [];
   async function osrBuild(office) {
     office = String(office || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
@@ -953,11 +996,12 @@
         + '<div class="osr-tablewrap"><table class="osr-table"><thead><tr>'
           + OSR_PREVIEW.map((c) => '<th' + (c[0] === 'obligated' ? ' class="osr-num"' : '') + '>' + esc(c[1]) + '</th>').join('')
         + '</tr></thead><tbody>'
-          + preview.map((r) => '<tr>' + OSR_PREVIEW.map((c) => c[0] === 'obligated'
-              ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
-              : '<td>' + esc(String(r[c[0]] == null ? '' : r[c[0]])) + '</td>').join('') + '</tr>').join('')
+          + preview.map((r) => '<tr class="osr-clk" data-piid="' + esc(String(r.piid || '')) + '" tabindex="0" aria-expanded="false" title="Show appropriation (color of money)">'
+              + OSR_PREVIEW.map((c) => c[0] === 'obligated'
+                ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
+                : '<td>' + esc(String(r[c[0]] == null ? '' : r[c[0]])) + '</td>').join('') + '</tr>').join('')
         + '</tbody></table></div>'
-        + '<div class="osr-tnote">Showing the top ' + preview.length + ' of ' + Number(rows.length).toLocaleString() + ' awards by obligation · the CSV has all ' + Number(rows.length).toLocaleString() + ' rows and ' + OSR_COLS.length + ' columns</div>';
+        + '<div class="osr-tnote">Showing the top ' + preview.length + ' of ' + Number(rows.length).toLocaleString() + ' awards by obligation · <b>click a row for its appropriation</b> (color of money) · the CSV has all ' + Number(rows.length).toLocaleString() + ' rows and ' + OSR_COLS.length + ' columns</div>';
       void box.offsetWidth; box.classList.add('is-in');
       osrPaint($('#osr-c-fy')); osrPaint($('#osr-c-cat')); osrPaint($('#osr-c-ven'));
       const fname = office + '_' + fyLabel.replace(/[^A-Za-z0-9-]/g, '') + '_contract-awards.csv';
@@ -970,6 +1014,11 @@
         const done = () => { cp.textContent = 'Copied'; setTimeout(() => { cp.textContent = 'Copy'; }, 1600); };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(done, done); else done();
       });
+      const tbody = box.querySelector('.osr-table tbody');
+      if (tbody) {
+        tbody.addEventListener('click', (e) => { const tr = e.target.closest('tr.osr-clk'); if (tr) osrToggleFunding(tr); });
+        tbody.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const tr = e.target.closest('tr.osr-clk'); if (tr) { e.preventDefault(); osrToggleFunding(tr); } } });
+      }
     } catch (e) {
       if (token !== osrToken) return;
       box.innerHTML = '<div class="dash-loading dash-skeleton">Spend lookup is briefly unavailable — try again shortly.</div>';
