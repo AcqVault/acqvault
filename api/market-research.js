@@ -365,7 +365,7 @@ async function entityCount(apiKey, params) {
 // after the first live 200 — probe with &debug=1, which echoes one raw record.
 const CA_URL = 'https://api.sam.gov/contract-awards/v1/search';
 const CA_PAGE = 100;
-const CA_MAX_PAGES = 3;   // 300 awards/query while proving the path; raised once the tier is known
+const CA_MAX_PAGES = 20;  // 2,000 awards fully covers the vast majority of office-years; bounded to protect the shared key's quota
 
 function caNum(x) { const n = Number(String(x == null ? '' : x).replace(/[^0-9.-]/g, '')); return isFinite(n) ? n : 0; }
 
@@ -380,16 +380,20 @@ async function fetchContractAwards(qs, apiKey) {
     rate: { limit: upstream.headers.get('x-ratelimit-limit'), remaining: upstream.headers.get('x-ratelimit-remaining') } };
 }
 
-// Defensive plucks — the docs describe sections, not exact keys, so try the likely
-// paths and pin them once a live record is in hand.
+// Field paths pinned from a live record (FA8501 FY2025). obligation = the per-action
+// obligation FPDS reports; the "agency" breakdown is the funding sub-tier (who the
+// office is buying for — the contracting side is one department by construction).
 function caObligation(a) {
-  return caNum((a && a.awardDetails && (a.awardDetails.dollarsObligated ?? a.awardDetails.actionObligation))
-    ?? (a && (a.dollarsObligated ?? a.totalDollarsObligated))
-    ?? (a && a.coreData && a.coreData.dollarsObligated));
+  return caNum(a && a.awardDetails && a.awardDetails.dollars && a.awardDetails.dollars.actionObligation);
 }
-function caFundingAgency(a) {
-  return (a && a.coreData && (a.coreData.fundingDepartmentName || a.coreData.contractingDepartmentName))
-    || (a && (a.fundingDepartmentName || a.contractingDepartmentName)) || 'Unknown';
+function caFundingSubtier(a) {
+  var f = a && a.coreData && a.coreData.federalOrganization && a.coreData.federalOrganization.fundingInformation;
+  return (f && ((f.fundingSubtier && f.fundingSubtier.name) || (f.fundingOffice && f.fundingOffice.name)
+    || (f.fundingDepartment && f.fundingDepartment.name))) || 'Unknown';
+}
+function caOfficeName(a) {
+  var c = a && a.coreData && a.coreData.federalOrganization && a.coreData.federalOrganization.contractingInformation;
+  return (c && c.contractingOffice && c.contractingOffice.name) || '';
 }
 
 async function contractAwardsSpend(req, res, apiKey) {
@@ -402,10 +406,12 @@ async function contractAwardsSpend(req, res, apiKey) {
   if (fy.length !== 4) return res.status(200).json({ note: 'Provide a 4-digit fiscal year, e.g. fy=2025.' });
 
   try {
-    let offset = 0, summed = 0, count = 0, pages = 0, totalRecords = null, rate = null, sample = null;
+    // The API's `offset` is a PAGE INDEX (0,1,2…), not a record offset — offset=100
+    // asks for page 100 and comes back empty. Increment by one page.
+    let summed = 0, count = 0, officeName = '', totalRecords = null, rate = null, sample = null;
     const byAgency = {};
-    while (pages < CA_MAX_PAGES) {
-      const r = await fetchContractAwards({ contractingOfficeCode: office, fiscalYear: fy, limit: CA_PAGE, offset }, apiKey);
+    for (let page = 0; page < CA_MAX_PAGES; page++) {
+      const r = await fetchContractAwards({ contractingOfficeCode: office, fiscalYear: fy, limit: CA_PAGE, offset: page }, apiKey);
       rate = r.rate;
       if (!r.ok) { const e = new Error('Contract Awards HTTP ' + r.status); e.status = r.status; e.body = r.data; throw e; }
       const rows = r.data.awardSummary || r.data.results || r.data.data || [];
@@ -413,11 +419,11 @@ async function contractAwardsSpend(req, res, apiKey) {
       if (debug && !sample && rows[0]) sample = rows[0];
       for (let i = 0; i < rows.length; i++) {
         const o = caObligation(rows[i]); summed += o; count++;
-        const ag = caFundingAgency(rows[i]); byAgency[ag] = (byAgency[ag] || 0) + o;
+        if (!officeName) officeName = caOfficeName(rows[i]);
+        const ag = caFundingSubtier(rows[i]); byAgency[ag] = (byAgency[ag] || 0) + o;
       }
-      pages++; offset += CA_PAGE;
       if (rows.length < CA_PAGE) break;
-      if (totalRecords != null && offset >= totalRecords) break;
+      if (totalRecords != null && (page + 1) * CA_PAGE >= totalRecords) break;
     }
     const truncated = totalRecords != null && count < totalRecords;
     // FY starts 1 Oct; a completed FY is immutable → cache a week, current FY → a day.
@@ -426,7 +432,7 @@ async function contractAwardsSpend(req, res, apiKey) {
       ? 's-maxage=604800, stale-while-revalidate=1209600'
       : 's-maxage=86400, stale-while-revalidate=172800');
     return res.status(200).json({
-      office, fiscalYear: fy,
+      office, officeName, fiscalYear: fy,
       totalObligated: Math.round(summed),
       awardsCounted: count, totalRecords, truncated,
       byAgency: Object.keys(byAgency).map(function (name) { return { name: name, amount: Math.round(byAgency[name]) }; })
