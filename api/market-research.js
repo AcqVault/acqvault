@@ -418,8 +418,11 @@ function caRow(a, office, fy) {
     vendor: caPath(a, ['awardDetails', 'awardeeData', 'awardeeHeader', 'awardeeName']),
     vendorUEI: caPath(a, ['awardDetails', 'awardeeData', 'awardeeUEIInformation', 'uniqueEntityId']),
     smallBusiness: caPath(a, ['awardDetails', 'awardeeData', 'socioEconomicData', 'smallBusiness']),
+    // FPDS keeps three distinct dollar figures per action: what this action obligated,
+    // the award's value (base + exercised options), and its ceiling (base + all options).
     obligated: caNum(caPath(a, ['awardDetails', 'dollars', 'actionObligation'])),
-    totalValue: caNum(caPath(a, ['awardDetails', 'totalContractDollars', 'totalActionObligation'])),
+    awardAmount: caNum(caPath(a, ['awardDetails', 'dollars', 'baseAndExercisedOptionsValue'])),
+    ceiling: caNum(caPath(a, ['awardDetails', 'dollars', 'baseAndAllOptionsValue'])),
     pricingType: caPath(a, ['coreData', 'acquisitionData', 'typeOfContractPricing', 'name']),
     setAside: caPath(a, ['coreData', 'competitionInformation', 'typeOfSetAside', 'name']),
     extentCompeted: caPath(a, ['coreData', 'competitionInformation', 'extentCompeted', 'name']),

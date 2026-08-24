@@ -823,7 +823,7 @@
     ['category', 'Category'], ['pscCode', 'PSC'], ['pscName', 'PSC Name'],
     ['naicsCode', 'NAICS'], ['naicsName', 'NAICS Name'], ['description', 'Description'],
     ['vendor', 'Vendor'], ['vendorUEI', 'Vendor UEI'], ['smallBusiness', 'Small Business'],
-    ['obligated', 'Obligated'], ['totalValue', 'Total Value'], ['pricingType', 'Pricing Type'],
+    ['obligated', 'Obligated (Action)'], ['awardAmount', 'Award Amount'], ['ceiling', 'Ceiling (All Options)'], ['pricingType', 'Pricing Type'],
     ['setAside', 'Set-Aside'], ['extentCompeted', 'Extent Competed'],
     ['fundingSubtier', 'Funding Sub-tier'], ['fundingOffice', 'Funding Office'],
     ['popState', 'PoP State'], ['dateSigned', 'Date Signed']
@@ -846,7 +846,9 @@
   }
   function osrSelectedFys() { return [...document.querySelectorAll('#osr-fy input:checked')].map((c) => c.value).sort(); }
   async function osrFetchFy(office, fy) {
-    const r = await fetch('/api/market-research?mode=award-rows&office=' + encodeURIComponent(office) + '&fy=' + fy, { headers: { Accept: 'application/json' } });
+    // `s` is a response-schema version — bump it when caRow's columns change so the
+    // CDN serves fresh rows instead of a cached shape missing the new fields.
+    const r = await fetch('/api/market-research?mode=award-rows&office=' + encodeURIComponent(office) + '&fy=' + fy + '&s=2', { headers: { Accept: 'application/json' } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
@@ -874,6 +876,43 @@
     rows.forEach((r) => { if (c[r.category] != null) c[r.category] += r.obligated; });
     const tot = c.Service + c.Product + c['R&D'] || 1;
     return ['Service', 'Product', 'R&D'].filter((k) => c[k] > 0).map((k) => k + ' ' + Math.round((c[k] / tot) * 100) + '%').join(' · ');
+  }
+  // ── on-page dashboard: obligations by FY, by work type, by vendor ───────────
+  function osrSumBy(rows, keyFn) {
+    const m = {};
+    rows.forEach((r) => { const k = keyFn(r) || '—'; m[k] = (m[k] || 0) + r.obligated; });
+    return Object.keys(m).map((k) => ({ label: k, value: m[k] })).sort((a, b) => b.value - a.value);
+  }
+  function osrBarsHtml(items, max) {
+    return items.map((it) => '<div class="dash-bar osr-bar">'
+      + '<div class="dash-bar-top"><div class="dash-bar-name">' + esc(it.label) + '</div><div class="dash-bar-val">' + fmtUSD(it.value) + '</div></div>'
+      + '<div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" data-pct="' + Math.max(3, (it.value / (max || 1)) * 100).toFixed(1) + '"></div></div></div>').join('');
+  }
+  function osrPaint(host) {
+    if (!host) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fills = host.querySelectorAll('.dash-bar-fill[data-pct]');
+    void host.offsetWidth; // commit width:0 so the fill transition plays (rAF-independent)
+    fills.forEach((f, i) => { if (!reduce) f.style.transitionDelay = (i * 45) + 'ms'; f.style.width = f.getAttribute('data-pct') + '%'; });
+  }
+  // Merge FPDS vendor-name variants for the chart only ("SEMPER TEK INC" ==
+  // "SEMPER TEK, INC."); the CSV keeps every name verbatim from the source.
+  function osrVendorClean(v) {
+    const s = String(v || '').replace(/[.,]/g, ' ')
+      .replace(/\b(INC|INCORPORATED|LLC|CORP|CORPORATION|COMPANY|LTD|PLLC|JV)\b/gi, ' ')
+      .replace(/\s+/g, ' ').trim();
+    return s || String(v || '').trim() || '—';
+  }
+  function osrDashHtml(rows, fys) {
+    const byFy = fys.map((fy) => ({ label: 'FY ' + fy, value: rows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + r.obligated, 0) }));
+    const byCat = osrSumBy(rows, (r) => r.category);
+    const byVen = osrSumBy(rows, (r) => osrVendorClean(r.vendor)).slice(0, 6);
+    const mx = (a) => Math.max.apply(null, a.map((x) => x.value).concat([1]));
+    return '<div class="osr-dash">'
+      + '<div class="dash-panel"><div class="dash-panel-title">Obligations by fiscal year</div><div class="osr-chart" id="osr-c-fy">' + osrBarsHtml(byFy, mx(byFy)) + '</div></div>'
+      + '<div class="dash-panel"><div class="dash-panel-title">Work type · Service / Commodity / R&amp;D</div><div class="osr-chart" id="osr-c-cat">' + osrBarsHtml(byCat, mx(byCat)) + '</div></div>'
+      + '<div class="dash-panel"><div class="dash-panel-title">Top vendors</div><div class="osr-chart" id="osr-c-ven">' + osrBarsHtml(byVen, mx(byVen)) + '</div></div>'
+      + '</div>';
   }
   let osrToken = 0, osrRows = [];
   async function osrBuild(office) {
@@ -910,6 +949,7 @@
           + '</div>'
         + '</div>'
         + (truncated ? '<div class="osr-warn">Some years exceeded the per-year page cap — those totals are a floor. Narrow to a single busy FY for the complete set.</div>' : '')
+        + osrDashHtml(rows, fys)
         + '<div class="osr-tablewrap"><table class="osr-table"><thead><tr>'
           + OSR_PREVIEW.map((c) => '<th' + (c[0] === 'obligated' ? ' class="osr-num"' : '') + '>' + esc(c[1]) + '</th>').join('')
         + '</tr></thead><tbody>'
@@ -919,6 +959,7 @@
         + '</tbody></table></div>'
         + '<div class="osr-tnote">Showing the top ' + preview.length + ' of ' + Number(rows.length).toLocaleString() + ' awards by obligation · the CSV has all ' + Number(rows.length).toLocaleString() + ' rows and ' + OSR_COLS.length + ' columns</div>';
       void box.offsetWidth; box.classList.add('is-in');
+      osrPaint($('#osr-c-fy')); osrPaint($('#osr-c-cat')); osrPaint($('#osr-c-ven'));
       const fname = office + '_' + fyLabel.replace(/[^A-Za-z0-9-]/g, '') + '_contract-awards.csv';
       const dl = $('#osr-dl'); if (dl) dl.addEventListener('click', () => {
         const ok = osrDownload(osrBuildCsv(osrRows), fname);
