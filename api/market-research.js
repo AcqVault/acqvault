@@ -181,11 +181,11 @@ module.exports = async function handler(req, res) {
     if (await enforce(req, res, { max: 20, name: 'mr' })) return;
     return sourcesMode({ body: { naics: req.query.naics } }, res, process.env.SAM_API_KEY);
   }
-  // Contract Awards (FPDS) spend rollup — GET so the CDN edge-cache holds it and
-  // repeated public queries don't each burn the shared SAM key's daily quota.
-  if (req.method === 'GET' && req.query && req.query.mode === 'award-spend') {
+  // Contract Awards (FPDS) rows for a DoDAAC + FY — GET so the CDN edge-cache holds it
+  // and repeated public queries don't each burn the shared SAM key's daily quota.
+  if (req.method === 'GET' && req.query && req.query.mode === 'award-rows') {
     if (await enforce(req, res, { max: 20, name: 'mr' })) return;
-    return contractAwardsSpend(req, res, process.env.SAM_API_KEY);
+    return contractAwardsRows(req, res, process.env.SAM_API_KEY);
   }
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST, GET');
@@ -380,74 +380,104 @@ async function fetchContractAwards(qs, apiKey) {
     rate: { limit: upstream.headers.get('x-ratelimit-limit'), remaining: upstream.headers.get('x-ratelimit-remaining') } };
 }
 
-// Field paths pinned from a live record (FA8501 FY2025). obligation = the per-action
-// obligation FPDS reports; the "agency" breakdown is the funding sub-tier (who the
-// office is buying for — the contracting side is one department by construction).
-function caObligation(a) {
-  return caNum(a && a.awardDetails && a.awardDetails.dollars && a.awardDetails.dollars.actionObligation);
+// Field paths pinned from a live record (FA8501 FY2025).
+function caPath(o, path) {
+  var cur = o;
+  for (var i = 0; i < path.length; i++) { if (cur == null) return ''; cur = cur[path[i]]; }
+  return cur == null ? '' : cur;
 }
-function caFundingSubtier(a) {
-  var f = a && a.coreData && a.coreData.federalOrganization && a.coreData.federalOrganization.fundingInformation;
-  return (f && ((f.fundingSubtier && f.fundingSubtier.name) || (f.fundingOffice && f.fundingOffice.name)
-    || (f.fundingDepartment && f.fundingDepartment.name))) || 'Unknown';
+// FPDS carries no appropriation "color of money" (RDT&E/O&M/Procurement) on a contract
+// record; the closest native classification is the PSC bucket — R&D ('A' codes), a
+// Service (other letter-led PSC), or a Product/commodity (digit-led PSC). This is the
+// Service / Commodity / R&D split.
+function caCategory(psc) {
+  var c = String(psc || '').trim().toUpperCase();
+  if (!c) return '';
+  if (c.charAt(0) === 'A') return 'R&D';
+  if (/^[0-9]/.test(c)) return 'Product';
+  return 'Service';
 }
-function caOfficeName(a) {
-  var c = a && a.coreData && a.coreData.federalOrganization && a.coreData.federalOrganization.contractingInformation;
-  return (c && c.contractingOffice && c.contractingOffice.name) || '';
+// One flat CSV-ready record. Order here is the column order in the export.
+function caRow(a, office, fy) {
+  var psc = caPath(a, ['coreData', 'productOrServiceInformation', 'productOrService', 'code']);
+  var naics = caPath(a, ['coreData', 'productOrServiceInformation', 'principalNaics', 0]) || {};
+  return {
+    office: caPath(a, ['coreData', 'federalOrganization', 'contractingInformation', 'contractingOffice', 'code']) || office,
+    officeName: caPath(a, ['coreData', 'federalOrganization', 'contractingInformation', 'contractingOffice', 'name']),
+    fiscalYear: caPath(a, ['awardDetails', 'dates', 'fiscalYear']) || fy,
+    piid: caPath(a, ['contractId', 'piid']),
+    mod: caPath(a, ['contractId', 'modificationNumber']),
+    awardOrIdv: caPath(a, ['coreData', 'awardOrIDV']),
+    awardType: caPath(a, ['coreData', 'awardOrIDVType', 'name']),
+    category: caCategory(psc),
+    pscCode: psc,
+    pscName: caPath(a, ['coreData', 'productOrServiceInformation', 'productOrService', 'name']),
+    naicsCode: naics.code || '',
+    naicsName: naics.name || '',
+    description: String(caPath(a, ['awardDetails', 'productOrServiceInformation', 'descriptionOfContractRequirement']) || '').slice(0, 160),
+    vendor: caPath(a, ['awardDetails', 'awardeeData', 'awardeeHeader', 'awardeeName']),
+    vendorUEI: caPath(a, ['awardDetails', 'awardeeData', 'awardeeUEIInformation', 'uniqueEntityId']),
+    smallBusiness: caPath(a, ['awardDetails', 'awardeeData', 'socioEconomicData', 'smallBusiness']),
+    obligated: caNum(caPath(a, ['awardDetails', 'dollars', 'actionObligation'])),
+    totalValue: caNum(caPath(a, ['awardDetails', 'totalContractDollars', 'totalActionObligation'])),
+    pricingType: caPath(a, ['coreData', 'acquisitionData', 'typeOfContractPricing', 'name']),
+    setAside: caPath(a, ['coreData', 'competitionInformation', 'typeOfSetAside', 'name']),
+    extentCompeted: caPath(a, ['coreData', 'competitionInformation', 'extentCompeted', 'name']),
+    fundingSubtier: caPath(a, ['coreData', 'federalOrganization', 'fundingInformation', 'fundingSubtier', 'name']),
+    fundingOffice: caPath(a, ['coreData', 'federalOrganization', 'fundingInformation', 'fundingOffice', 'name']),
+    popState: caPath(a, ['coreData', 'principalPlaceOfPerformance', 'state', 'name']),
+    dateSigned: String(caPath(a, ['awardDetails', 'dates', 'dateSigned']) || '').slice(0, 10)
+  };
 }
 
-async function contractAwardsSpend(req, res, apiKey) {
+// One contracting office (DoDAAC) + one fiscal year → the flat award rows, for CSV
+// export. Single FY per call so the CDN edge-cache is reused across any multi-year
+// combination the client asks for (the client fetches each FY and concatenates).
+async function contractAwardsRows(req, res, apiKey) {
   if (!apiKey) return res.status(200).json({ configured: false, note: 'SAM_API_KEY not configured.' });
   const q = req.query || {};
   const office = String(q.office || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
   const fy = String(q.fy || '').replace(/[^0-9]/g, '').slice(0, 4);
-  const debug = q.debug === '1';
   if (office.length < 4) return res.status(200).json({ note: 'Provide a contracting office code (DoDAAC), e.g. office=FA8501.' });
   if (fy.length !== 4) return res.status(200).json({ note: 'Provide a 4-digit fiscal year, e.g. fy=2025.' });
 
   try {
-    // The API's `offset` is a PAGE INDEX (0,1,2…), not a record offset — offset=100
-    // asks for page 100 and comes back empty. Increment by one page.
-    let summed = 0, count = 0, officeName = '', totalRecords = null, rate = null, sample = null;
-    const byAgency = {};
+    let count = 0, officeName = '', totalRecords = null, rate = null;
+    const rows = [];
     for (let page = 0; page < CA_MAX_PAGES; page++) {
       const r = await fetchContractAwards({ contractingOfficeCode: office, fiscalYear: fy, limit: CA_PAGE, offset: page }, apiKey);
       rate = r.rate;
       if (!r.ok) { const e = new Error('Contract Awards HTTP ' + r.status); e.status = r.status; e.body = r.data; throw e; }
-      const rows = r.data.awardSummary || r.data.results || r.data.data || [];
+      const recs = r.data.awardSummary || r.data.results || r.data.data || [];
       if (totalRecords == null) totalRecords = r.data.totalRecords ?? r.data.totalRecordCount ?? null;
-      if (debug && !sample && rows[0]) sample = rows[0];
-      for (let i = 0; i < rows.length; i++) {
-        const o = caObligation(rows[i]); summed += o; count++;
-        if (!officeName) officeName = caOfficeName(rows[i]);
-        const ag = caFundingSubtier(rows[i]); byAgency[ag] = (byAgency[ag] || 0) + o;
+      for (let i = 0; i < recs.length; i++) {
+        const row = caRow(recs[i], office, fy);
+        if (!officeName && row.officeName) officeName = row.officeName;
+        rows.push(row); count++;
       }
-      if (rows.length < CA_PAGE) break;
+      if (recs.length < CA_PAGE) break;
       if (totalRecords != null && (page + 1) * CA_PAGE >= totalRecords) break;
     }
     const truncated = totalRecords != null && count < totalRecords;
-    // FY starts 1 Oct; a completed FY is immutable → cache a week, current FY → a day.
+    const totalObligated = rows.reduce(function (s, r) { return s + r.obligated; }, 0);
     const now = new Date(); const curFy = now.getUTCFullYear() + (now.getUTCMonth() >= 9 ? 1 : 0);
     res.setHeader('Cache-Control', Number(fy) < curFy
       ? 's-maxage=604800, stale-while-revalidate=1209600'
       : 's-maxage=86400, stale-while-revalidate=172800');
     return res.status(200).json({
       office, officeName, fiscalYear: fy,
-      totalObligated: Math.round(summed),
-      awardsCounted: count, totalRecords, truncated,
-      byAgency: Object.keys(byAgency).map(function (name) { return { name: name, amount: Math.round(byAgency[name]) }; })
-        .sort(function (a, b) { return b.amount - a.amount; }).slice(0, 10),
+      count, totalRecords, truncated,
+      totalObligated: Math.round(totalObligated),
+      rows,
       source: 'SAM.gov Contract Awards API (FPDS)',
-      note: truncated ? ('Summed ' + count + ' of ' + totalRecords + ' awards (page cap) — total is a floor.') : undefined,
-      quota: rate,
-      sample: debug ? sample : undefined
+      note: truncated ? ('Returned ' + count + ' of ' + totalRecords + ' awards (page cap).') : undefined
     });
   } catch (error) {
     const status = error && error.status;
     console.error('contract-awards error:', error && error.message, error && error.body ? JSON.stringify(error.body).slice(0, 300) : '');
     res.setHeader('Cache-Control', 's-maxage=600');
     return res.status(200).json({
-      office, fiscalYear: fy, limited: true, status: status || null,
+      office, fiscalYear: fy, limited: true, status: status || null, rows: [],
       note: status === 429 ? 'Hit the daily SAM.gov Contract Awards quota — try again later.'
         : status === 404 ? 'Contract Awards API returned 404 — endpoint or parameters need adjusting.'
           : 'Contract Awards lookup is unavailable right now.'
