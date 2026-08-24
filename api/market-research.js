@@ -181,6 +181,12 @@ module.exports = async function handler(req, res) {
     if (await enforce(req, res, { max: 20, name: 'mr' })) return;
     return sourcesMode({ body: { naics: req.query.naics } }, res, process.env.SAM_API_KEY);
   }
+  // Contract Awards (FPDS) spend rollup — GET so the CDN edge-cache holds it and
+  // repeated public queries don't each burn the shared SAM key's daily quota.
+  if (req.method === 'GET' && req.query && req.query.mode === 'award-spend') {
+    if (await enforce(req, res, { max: 20, name: 'mr' })) return;
+    return contractAwardsSpend(req, res, process.env.SAM_API_KEY);
+  }
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST, GET');
     return res.status(405).json({ error: 'Method not allowed' });
@@ -347,6 +353,100 @@ async function entityCount(apiKey, params) {
   const data = await r.json();
   const n = Number(data.totalRecords);
   return Number.isFinite(n) ? n : null;
+}
+
+// ── Contract Awards (FPDS) spend rollup ──────────────────────────────────────
+// SAM.gov's Contract Awards API replaced the FPDS ATOM feed when FPDS.gov retired
+// (2026-02-24). It is a RECORD search, not an aggregation service, so "spend by
+// DoDAAC" means: filter to a contracting office + fiscal year, page the awards, and
+// sum their obligations here. The shared key is quota-limited, so this rides GET
+// behind a long edge cache (a completed FY's awards are immutable), caps pages per
+// request, and degrades honestly on a 429. Exact response field paths are pinned
+// after the first live 200 — probe with &debug=1, which echoes one raw record.
+const CA_URL = 'https://api.sam.gov/contract-awards/v1/search';
+const CA_PAGE = 100;
+const CA_MAX_PAGES = 3;   // 300 awards/query while proving the path; raised once the tier is known
+
+function caNum(x) { const n = Number(String(x == null ? '' : x).replace(/[^0-9.-]/g, '')); return isFinite(n) ? n : 0; }
+
+async function fetchContractAwards(qs, apiKey) {
+  const url = new URL(CA_URL);
+  url.searchParams.set('api_key', apiKey);
+  for (const k in qs) if (qs[k] != null && qs[k] !== '') url.searchParams.set(k, String(qs[k]));
+  const upstream = await timedFetch(url.toString(), { headers: { Accept: 'application/json' } }, 9000);
+  const text = await upstream.text();
+  let data; try { data = JSON.parse(text); } catch (e) { data = { _raw: text.slice(0, 300) }; }
+  return { ok: upstream.ok, status: upstream.status, data,
+    rate: { limit: upstream.headers.get('x-ratelimit-limit'), remaining: upstream.headers.get('x-ratelimit-remaining') } };
+}
+
+// Defensive plucks — the docs describe sections, not exact keys, so try the likely
+// paths and pin them once a live record is in hand.
+function caObligation(a) {
+  return caNum((a && a.awardDetails && (a.awardDetails.dollarsObligated ?? a.awardDetails.actionObligation))
+    ?? (a && (a.dollarsObligated ?? a.totalDollarsObligated))
+    ?? (a && a.coreData && a.coreData.dollarsObligated));
+}
+function caFundingAgency(a) {
+  return (a && a.coreData && (a.coreData.fundingDepartmentName || a.coreData.contractingDepartmentName))
+    || (a && (a.fundingDepartmentName || a.contractingDepartmentName)) || 'Unknown';
+}
+
+async function contractAwardsSpend(req, res, apiKey) {
+  if (!apiKey) return res.status(200).json({ configured: false, note: 'SAM_API_KEY not configured.' });
+  const q = req.query || {};
+  const office = String(q.office || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  const fy = String(q.fy || '').replace(/[^0-9]/g, '').slice(0, 4);
+  const debug = q.debug === '1';
+  if (office.length < 4) return res.status(200).json({ note: 'Provide a contracting office code (DoDAAC), e.g. office=FA8501.' });
+  if (fy.length !== 4) return res.status(200).json({ note: 'Provide a 4-digit fiscal year, e.g. fy=2025.' });
+
+  try {
+    let offset = 0, summed = 0, count = 0, pages = 0, totalRecords = null, rate = null, sample = null;
+    const byAgency = {};
+    while (pages < CA_MAX_PAGES) {
+      const r = await fetchContractAwards({ contractingOfficeCode: office, fiscalYear: fy, limit: CA_PAGE, offset }, apiKey);
+      rate = r.rate;
+      if (!r.ok) { const e = new Error('Contract Awards HTTP ' + r.status); e.status = r.status; e.body = r.data; throw e; }
+      const rows = r.data.awardSummary || r.data.results || r.data.data || [];
+      if (totalRecords == null) totalRecords = r.data.totalRecords ?? r.data.totalRecordCount ?? null;
+      if (debug && !sample && rows[0]) sample = rows[0];
+      for (let i = 0; i < rows.length; i++) {
+        const o = caObligation(rows[i]); summed += o; count++;
+        const ag = caFundingAgency(rows[i]); byAgency[ag] = (byAgency[ag] || 0) + o;
+      }
+      pages++; offset += CA_PAGE;
+      if (rows.length < CA_PAGE) break;
+      if (totalRecords != null && offset >= totalRecords) break;
+    }
+    const truncated = totalRecords != null && count < totalRecords;
+    // FY starts 1 Oct; a completed FY is immutable → cache a week, current FY → a day.
+    const now = new Date(); const curFy = now.getUTCFullYear() + (now.getUTCMonth() >= 9 ? 1 : 0);
+    res.setHeader('Cache-Control', Number(fy) < curFy
+      ? 's-maxage=604800, stale-while-revalidate=1209600'
+      : 's-maxage=86400, stale-while-revalidate=172800');
+    return res.status(200).json({
+      office, fiscalYear: fy,
+      totalObligated: Math.round(summed),
+      awardsCounted: count, totalRecords, truncated,
+      byAgency: Object.keys(byAgency).map(function (name) { return { name: name, amount: Math.round(byAgency[name]) }; })
+        .sort(function (a, b) { return b.amount - a.amount; }).slice(0, 10),
+      source: 'SAM.gov Contract Awards API (FPDS)',
+      note: truncated ? ('Summed ' + count + ' of ' + totalRecords + ' awards (page cap) — total is a floor.') : undefined,
+      quota: rate,
+      sample: debug ? sample : undefined
+    });
+  } catch (error) {
+    const status = error && error.status;
+    console.error('contract-awards error:', error && error.message, error && error.body ? JSON.stringify(error.body).slice(0, 300) : '');
+    res.setHeader('Cache-Control', 's-maxage=600');
+    return res.status(200).json({
+      office, fiscalYear: fy, limited: true, status: status || null,
+      note: status === 429 ? 'Hit the daily SAM.gov Contract Awards quota — try again later.'
+        : status === 404 ? 'Contract Awards API returned 404 — endpoint or parameters need adjusting.'
+          : 'Contract Awards lookup is unavailable right now.'
+    });
+  }
 }
 
 async function sourcesMode(req, res, apiKey) {
