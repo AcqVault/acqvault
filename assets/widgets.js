@@ -927,7 +927,7 @@
   // top awards by obligation (that's where both the money and the reported data are);
   // blank means USASpending reports no appropriation for that action. Same per-PIID
   // cache as the drill-down, so a click and the column share work.
-  const OSR_FUND_ENRICH = 200; // top-N awards by obligation to enrich
+  const OSR_FUND_EXPORT = 120; // top-N awards by obligation to enrich for an export
   function osrApprShort(d) {
     if (!d || !d.found || !(d.accounts && d.accounts.length)) return '';
     const m = {};
@@ -1044,10 +1044,11 @@
         + '<div class="osr-tnote">Showing the top ' + preview.length + ' of ' + Number(rows.length).toLocaleString() + ' awards by obligation · <b>Funding (color of money)</b> is filled for the top awards — a blank means USASpending reports no appropriation for that action; click any row for its full appropriation · the CSV / Excel has all ' + Number(rows.length).toLocaleString() + ' rows and ' + OSR_COLS.length + ' columns</div>';
       void box.offsetWidth; box.classList.add('is-in');
       osrPaint($('#osr-c-fy')); osrPaint($('#osr-c-cat')); osrPaint($('#osr-c-ven'));
-      // Fill the funding (color-of-money) column for the top awards, in the background —
-      // the visible cells update as each resolves; the export reuses the same cache.
+      // Fill the funding (color-of-money) column for the VISIBLE preview rows only —
+      // a small, bounded burst. Heavier enrichment happens on export. The visible
+      // cells update as each resolves; the export reuses the same per-PIID cache.
       const fundIdx = OSR_PREVIEW.findIndex((c) => c[0] === 'funding');
-      osrEnrichFunding(rows, OSR_FUND_ENRICH, (r) => {
+      osrEnrichFunding(preview, preview.length, (r) => {
         if (token !== osrToken || fundIdx < 0) return;
         const sel = (window.CSS && CSS.escape) ? CSS.escape(r.piid) : r.piid.replace(/"/g, '');
         const tr = box.querySelector('.osr-table tbody tr[data-piid="' + sel + '"]');
@@ -1057,7 +1058,7 @@
       // Ensure the funding column is enriched before an export, then run it.
       const withFunding = (btn, run) => {
         const orig = btn.textContent; btn.textContent = 'Adding funding…'; btn.disabled = true;
-        osrEnrichFunding(osrRows, OSR_FUND_ENRICH).then(run).catch(() => {}).then(() => { btn.textContent = orig; btn.disabled = false; });
+        osrEnrichFunding(osrRows, OSR_FUND_EXPORT).then(run).catch(() => {}).then(() => { btn.textContent = orig; btn.disabled = false; });
       };
       const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', () => {
         if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV →'; return; }

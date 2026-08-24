@@ -191,7 +191,9 @@ module.exports = async function handler(req, res) {
   // to USASpending's account funding (File C). GET so the CDN caches it; on-demand only
   // (the user clicks one contract), so USASpending volume stays tiny.
   if (req.method === 'GET' && req.query && req.query.mode === 'award-funding') {
-    if (await enforce(req, res, { max: 30, name: 'mr' })) return;
+    // OWN bucket, not 'mr' — the funding column fires many of these per build, and
+    // sharing 'mr' let them exhaust the counter and 429 the actual award-rows search.
+    if (await enforce(req, res, { max: 150, name: 'fund' })) return;
     return contractAwardFunding(req, res);
   }
   if (req.method !== 'POST') {
