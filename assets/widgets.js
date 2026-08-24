@@ -361,37 +361,30 @@
       <div class="sec-inner">
         <div class="dash-head-row">
           <div>
-            <p class="eyebrow eyebrow-light fade-up">Live spending</p>
-            <h2 class="sec-head fade-up">Where the Air Force<br>is putting its money.</h2>
-          </div>
-          <div class="dash-window fade-up" id="dash-window" role="group" aria-label="Spending time window">
-            <button type="button" data-days="90" aria-pressed="false">90d</button>
-            <button type="button" data-days="180" aria-pressed="false">180d</button>
-            <button type="button" data-days="365" class="active" aria-pressed="true">1y</button>
-            <button type="button" data-days="1095" aria-pressed="false">3y</button>
+            <p class="eyebrow eyebrow-light fade-up">Contract spend research \u00B7 FPDS</p>
+            <h2 class="sec-head fade-up">Pull an office's awards<br>to a spreadsheet.</h2>
           </div>
         </div>
-        <div class="dash-grid fade-up" id="dash-grid">
-          <div class="dash-stat"><div class="dash-stat-label">FY Obligations</div><div class="dash-stat-num accent" id="dash-fy">\u2014</div><div class="dash-stat-foot" id="dash-fy-foot">Fiscal year to date</div></div>
-          <div class="dash-stat"><div class="dash-stat-label">Actions</div><div class="dash-stat-num" id="dash-count">\u2014</div><div class="dash-stat-foot" id="dash-count-foot">in window</div></div>
-          <div class="dash-stat"><div class="dash-stat-label">Obligated</div><div class="dash-stat-num" id="dash-sum">\u2014</div><div class="dash-stat-foot" id="dash-sum-foot">window total</div></div>
-          <div class="dash-stat"><div class="dash-stat-label">Largest action</div><div class="dash-stat-num" id="dash-max">\u2014</div><div class="dash-stat-foot" id="dash-max-foot">single award</div></div>
-        </div>
-        <div class="dash-cols">
-          <div class="dash-panel fade-up">
-            <div class="dash-panel-title">Top recipients <span id="dash-recip-window">last 12 months</span></div>
-            <div id="dash-recipients" aria-live="polite"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
+        <div class="osr-search fade-up">
+          <div class="osr-fields">
+            <div class="osr-field osr-field-office">
+              <label class="osr-label" for="osr-office">Contracting office (DoDAAC)</label>
+              <input id="osr-office" class="osr-input" type="text" autocomplete="off" spellcheck="false" maxlength="6" placeholder="e.g. FA8501" aria-label="Contracting office code (DoDAAC)">
+              <div class="osr-examples" aria-label="Example offices">
+                <span class="osr-ex-lbl">Try:</span>
+                <button type="button" class="osr-chip" data-office="FA8501">FA8501</button>
+                <button type="button" class="osr-chip" data-office="FA8750">FA8750</button>
+              </div>
+            </div>
+            <div class="osr-field">
+              <span class="osr-label" id="osr-fy-label">Fiscal years</span>
+              <div class="osr-fy" role="group" aria-labelledby="osr-fy-label" id="osr-fy"></div>
+            </div>
           </div>
-          <div class="dash-panel fade-up d1">
-            <div class="dash-panel-title">Largest recent actions <span id="dash-largest-window">last 12 months</span></div>
-            <div id="dash-largest" aria-live="polite"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
-          </div>
+          <button id="osr-go" class="osr-go" type="button">Build table</button>
         </div>
-        <div class="dash-panel dash-panel-wide fade-up">
-          <div class="dash-panel-title">What the Air Force buys <span id="dash-psc-window">last 12 months</span></div>
-          <div id="dash-psc" aria-live="polite"><div class="dash-loading dash-skeleton">Loading from USASpending\u2026</div></div>
-        </div>
-        <div class="dash-foot"><span class="dash-live-dot"></span><span>Source: USASpending.gov \u00B7 Department of the Air Force \u00B7 contract actions (award types A\u2013D)</span></div>
+        <div id="osr-results" class="osr-results fade-up" aria-live="polite" hidden></div>
+        <div class="dash-foot"><span class="dash-live-dot"></span><span>Source: SAM.gov Contract Awards API (FPDS) \u00B7 the authoritative federal contract-award record since FPDS.gov retired \u00B7 <a href="https://sam.gov/fpds" target="_blank" rel="noopener">verify at SAM.gov</a></span></div>
       </div>`;
 
     // Page flow: Market Research, Quick Links, Toolkit, Spending, Coverage.
@@ -815,233 +808,146 @@
 
 
   /* ════════════════════════════════════════════════════════════
-     4) SPENDING DASHBOARD
+     4) CONTRACT SPEND RESEARCH (SAM.gov Contract Awards / FPDS)
      ════════════════════════════════════════════════════════════ */
-  let dashDays = 365;
-  let dashFYLoaded = false;
-  let dashReqToken = 0;
-  const winLabel = (d) => d >= 1095 ? 'last 3 years' : d >= 365 ? 'last 12 months' : 'last ' + d + ' days';
 
-  function animateNum(el, target, fmt) {
-    if (!el) return;
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = fmt(target); return; }
-    const start = performance.now(); const dur = 900; const from = 0;
-    function step(t) {
-      const p = Math.min(1, (t - start) / dur);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = fmt(from + (target - from) * eased);
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+
+  // ── Contract spend research (SAM.gov Contract Awards / FPDS) ────────────────
+  // A DoDAAC + one or more fiscal years → the award records, previewed and
+  // exportable to CSV (opens in Excel). One /api/market-research?mode=award-rows
+  // call per FY (each edge-cached, so multi-year combos reuse cached single years);
+  // rows are concatenated and the table/CSV are built client-side.
+  const OSR_COLS = [
+    ['office', 'Office'], ['officeName', 'Office Name'], ['fiscalYear', 'FY'],
+    ['piid', 'Contract (PIID)'], ['mod', 'Mod'], ['awardOrIdv', 'Award/IDV'], ['awardType', 'Award Type'],
+    ['category', 'Category'], ['pscCode', 'PSC'], ['pscName', 'PSC Name'],
+    ['naicsCode', 'NAICS'], ['naicsName', 'NAICS Name'], ['description', 'Description'],
+    ['vendor', 'Vendor'], ['vendorUEI', 'Vendor UEI'], ['smallBusiness', 'Small Business'],
+    ['obligated', 'Obligated'], ['totalValue', 'Total Value'], ['pricingType', 'Pricing Type'],
+    ['setAside', 'Set-Aside'], ['extentCompeted', 'Extent Competed'],
+    ['fundingSubtier', 'Funding Sub-tier'], ['fundingOffice', 'Funding Office'],
+    ['popState', 'PoP State'], ['dateSigned', 'Date Signed']
+  ];
+  const OSR_PREVIEW = [['fiscalYear', 'FY'], ['piid', 'Contract'], ['category', 'Category'], ['pscCode', 'PSC'], ['vendor', 'Vendor'], ['obligated', 'Obligated'], ['dateSigned', 'Signed']];
+  function osrCurFy() { const n = new Date(); return n.getUTCFullYear() + (n.getUTCMonth() >= 9 ? 1 : 0); } // FY starts 1 Oct
+  function osrFyChoices() {
+    const cur = osrCurFy(), out = [];
+    for (let y = cur; y >= cur - 5; y--) out.push(y); // current + 5 prior
+    return out;
   }
-
-  async function loadDashFY() {
-    if (dashFYLoaded) return;
-    const el = $('#dash-fy'); if (!el) return;
-    const now = new Date();
-    const fyStartYear = now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1;
-    const fy = fyStartYear + 1;
+  function osrRenderFyPicker() {
+    const host = $('#osr-fy'); if (!host) return;
+    const cur = osrCurFy();
+    host.innerHTML = osrFyChoices().map((y) => {
+      const on = y >= cur - 3 && y < cur; // default: the 3 most recent COMPLETE FYs
+      return '<label class="osr-fy-opt' + (on ? ' on' : '') + '"><input type="checkbox" value="' + y + '"' + (on ? ' checked' : '') + '>FY ' + y + (y === cur ? ' (partial)' : '') + '</label>';
+    }).join('');
+    host.addEventListener('change', (e) => { const l = e.target.closest('.osr-fy-opt'); if (l) l.classList.toggle('on', e.target.checked); });
+  }
+  function osrSelectedFys() { return [...document.querySelectorAll('#osr-fy input:checked')].map((c) => c.value).sort(); }
+  async function osrFetchFy(office, fy) {
+    const r = await fetch('/api/market-research?mode=award-rows&office=' + encodeURIComponent(office) + '&fy=' + fy, { headers: { Accept: 'application/json' } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }
+  function osrCsvCell(v) {
+    const s = String(v == null ? '' : v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function osrBuildCsv(rows) {
+    const head = OSR_COLS.map((c) => osrCsvCell(c[1])).join(',');
+    const body = rows.map((r) => OSR_COLS.map((c) => osrCsvCell(r[c[0]])).join(',')).join('\r\n');
+    return head + '\r\n' + body;
+  }
+  function osrDownload(text, filename) {
     try {
-      const res = await fetch('https://api.usaspending.gov/api/v2/search/spending_over_time/', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          group: 'fiscal_year', spending_level: 'transactions',
-          filters: {
-            agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
-            award_type_codes: ['A', 'B', 'C', 'D'],
-            time_period: [{ start_date: fyStartYear + '-10-01', end_date: now.toISOString().slice(0, 10) }]
-          }
-        })
-      });
-      if (!res.ok) throw new Error();
-      const d = await res.json();
-      const row = (d.results || []).find((r) => r.time_period && Number(r.time_period.fiscal_year) === fy) || (d.results || [])[0];
-      const val = row && (row.Contract_Obligations || row.aggregated_amount);
-      if (!Number.isFinite(Number(val))) throw new Error();
-      animateNum(el, Number(val), fmtUSD);
-      const foot = $('#dash-fy-foot'); if (foot) foot.textContent = 'FY' + fy + ' to date';
-      dashFYLoaded = true;
-    } catch (e) { el.textContent = 'Delayed'; el.style.fontSize = '20px'; }
+      const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+      return true;
+    } catch (e) { return false; }
   }
-
-  async function fetchTx(days) {
-    const end = new Date(); const start = new Date(end); start.setDate(start.getDate() - days);
-    const res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_transaction/', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        filters: {
-          agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
-          award_type_codes: ['A', 'B', 'C', 'D'],
-          time_period: [{ start_date: start.toISOString().slice(0, 10), end_date: end.toISOString().slice(0, 10) }]
-        },
-        fields: ['Action Date', 'Award ID', 'Recipient Name', 'Transaction Amount', 'Awarding Sub Agency', 'Transaction Description', 'Mod'],
-        sort: 'Transaction Amount', order: 'desc', limit: 100, page: 1
-      })
-    });
-    if (!res.ok) throw new Error('http ' + res.status);
-    const d = await res.json();
-    return (d.results || []).filter((r) => r['Recipient Name'] && Number(r['Transaction Amount']) > 0);
+  function osrCatMix(rows) {
+    const c = { Service: 0, Product: 0, 'R&D': 0 };
+    rows.forEach((r) => { if (c[r.category] != null) c[r.category] += r.obligated; });
+    const tot = c.Service + c.Product + c['R&D'] || 1;
+    return ['Service', 'Product', 'R&D'].filter((k) => c[k] > 0).map((k) => k + ' ' + Math.round((c[k] / tot) * 100) + '%').join(' · ');
   }
-  // "What the Air Force buys" — top product/service categories (PSC) for the window.
-  async function fetchPsc(days) {
-    const end = new Date(); const start = new Date(end); start.setDate(start.getDate() - days);
-    const res = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_category/psc/', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        filters: {
-          agencies: [{ type: 'awarding', tier: 'subtier', name: 'Department of the Air Force' }],
-          award_type_codes: ['A', 'B', 'C', 'D'],
-          time_period: [{ start_date: start.toISOString().slice(0, 10), end_date: end.toISOString().slice(0, 10) }]
-        },
-        limit: 6, page: 1
-      })
-    });
-    if (!res.ok) throw new Error('http ' + res.status);
-    const d = await res.json();
-    return (d.results || []).filter((r) => Number(r.amount) > 0);
-  }
-  function titleCasePsc(s) {
-    return String(s || '').toLowerCase().replace(/\b([a-z])/g, (m, c) => c.toUpperCase());
-  }
-
-  // FLIP: swap a ranked-bar panel's HTML and animate rows that moved/appeared.
-  function flipUpdate(container, newHTML) {
-    if (!container) return;
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const olds = {};
-    container.querySelectorAll('.dash-bar-row[data-key]').forEach((r) => { olds[r.dataset.key] = r.getBoundingClientRect().top; });
-    container.innerHTML = newHTML;
-    if (reduce) return;
-    container.querySelectorAll('.dash-bar-row[data-key]').forEach((r) => {
-      const old = olds[r.dataset.key];
-      if (old !== undefined) {                       // persisted — slide from old rank to new
-        const dy = old - r.getBoundingClientRect().top;
-        if (dy) {
-          r.style.transition = 'none'; r.style.transform = 'translateY(' + dy + 'px)';
-          requestAnimationFrame(() => requestAnimationFrame(() => { r.style.transition = 'transform .5s var(--ease-out)'; r.style.transform = ''; }));
-        }
-      } else {                                        // new entrant — fade/slide in
-        r.style.transition = 'none'; r.style.opacity = '0'; r.style.transform = 'translateY(7px)';
-        requestAnimationFrame(() => requestAnimationFrame(() => { r.style.transition = 'opacity .4s ease, transform .4s var(--ease-out)'; r.style.opacity = ''; r.style.transform = ''; }));
-      }
-    });
-  }
-
-  async function loadDashWindow(days) {
-    const token = ++dashReqToken;            // race guard for rapid clicks
-    const recipBox = $('#dash-recipients'); const largeBox = $('#dash-largest');
-    // Only skeleton on first load \u2014 on window switches keep the old bars visible so
-    // the update FLIP-animates instead of flashing a reload.
-    const skel = '<div class="dash-loading dash-skeleton">Loading\u2026</div>';
-    if (recipBox && !recipBox.querySelector('.dash-bar-row')) recipBox.innerHTML = skel;
-    if (largeBox && !largeBox.querySelector('.dash-bar-row')) largeBox.innerHTML = skel;
+  let osrToken = 0, osrRows = [];
+  async function osrBuild(office) {
+    office = String(office || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+    const box = $('#osr-results'); if (!box) return;
+    const fys = osrSelectedFys();
+    if (office.length < 4) { box.hidden = false; box.classList.add('is-in'); box.innerHTML = '<div class="osr-empty">Enter a contracting office code (DoDAAC) — six characters, e.g. <b>FA8501</b>.</div>'; return; }
+    if (!fys.length) { box.hidden = false; box.classList.add('is-in'); box.innerHTML = '<div class="osr-empty">Pick at least one fiscal year.</div>'; return; }
+    const token = ++osrToken;
+    box.hidden = false; box.classList.remove('is-in');
+    box.innerHTML = '<div class="dash-loading dash-skeleton">Pulling ' + office + ' awards for FY ' + fys.join(', FY ') + ' from SAM.gov (FPDS)…</div>';
     try {
-      // USASpending transaction data lags ~2\u20133 months; expand window until we have data.
-      const ladder = [90, 180, 365, 1095].filter((d) => d >= days);
-      if (!ladder.length) ladder.push(days);
-      let rows = [], usedDays = days, expanded = false;
-      for (let i = 0; i < ladder.length; i++) {
-        usedDays = ladder[i];
-        rows = await fetchTx(usedDays);
-        if (token !== dashReqToken) return;  // a newer request superseded this one
-        if (rows.length >= 3 || i === ladder.length - 1) { expanded = usedDays !== days; break; }
-        await new Promise((r) => setTimeout(r, 250));
-      }
-      const lbl = winLabel(usedDays) + (expanded ? ' \u00B7 latest available' : '');
-      ['#dash-recip-window', '#dash-largest-window', '#dash-psc-window', '#dash-count-foot', '#dash-sum-foot'].forEach((s) => { const el = $(s); if (el) el.textContent = lbl; });
-      if (!rows.length) throw new Error('empty');
-
-      const total = rows.reduce((s, r) => s + Number(r['Transaction Amount'] || 0), 0);
-      const max = rows.reduce((m, r) => Math.max(m, Number(r['Transaction Amount'] || 0)), 0);
-      animateNum($('#dash-count'), rows.length, (v) => String(Math.round(v)) + (rows.length >= 100 ? '+' : ''));
-      animateNum($('#dash-sum'), total, fmtUSD);
-      animateNum($('#dash-max'), max, fmtUSD);
-
-      // top recipients
-      const byRecip = {};
-      rows.forEach((r) => {
-        const k = cleanName(r['Recipient Name']);
-        byRecip[k] = (byRecip[k] || 0) + Number(r['Transaction Amount'] || 0);
+      const results = await Promise.all(fys.map((fy) => osrFetchFy(office, fy).catch(() => null)));
+      if (token !== osrToken) return;
+      const good = results.filter((d) => d && Array.isArray(d.rows));
+      const rows = good.reduce((acc, d) => acc.concat(d.rows), []);
+      osrRows = rows;
+      if (!rows.length) { box.innerHTML = '<div class="osr-empty">No contract awards found for <b>' + esc(office) + '</b> in the selected years — check the office code, or the lookup may be briefly rate-limited.</div>'; void box.offsetWidth; box.classList.add('is-in'); return; }
+      const officeName = (good.find((d) => d.officeName) || {}).officeName || '';
+      const total = rows.reduce((s, r) => s + r.obligated, 0);
+      const truncated = good.some((d) => d.truncated);
+      const fyLabel = fys.length > 1 ? ('FY' + fys[0] + '–' + fys[fys.length - 1]) : ('FY' + fys[0]);
+      const preview = rows.slice().sort((a, b) => b.obligated - a.obligated).slice(0, 25);
+      box.innerHTML =
+        '<div class="osr-summary">'
+          + '<div class="osr-sum-l">'
+            + '<div class="osr-head-code">' + esc(office) + (officeName ? ' <span>' + esc(officeName) + '</span>' : '') + '</div>'
+            + '<div class="osr-sum-stats"><b>' + Number(rows.length).toLocaleString() + '</b> awards · <b>' + fmtUSD(total) + '</b> obligated · ' + esc(fyLabel)
+              + '<span class="osr-catmix">' + esc(osrCatMix(rows)) + '</span></div>'
+          + '</div>'
+          + '<div class="osr-export">'
+            + '<button type="button" class="osr-dl" id="osr-dl">Download CSV</button>'
+            + '<button type="button" class="osr-copy" id="osr-copy">Copy</button>'
+          + '</div>'
+        + '</div>'
+        + (truncated ? '<div class="osr-warn">Some years exceeded the per-year page cap — those totals are a floor. Narrow to a single busy FY for the complete set.</div>' : '')
+        + '<div class="osr-tablewrap"><table class="osr-table"><thead><tr>'
+          + OSR_PREVIEW.map((c) => '<th' + (c[0] === 'obligated' ? ' class="osr-num"' : '') + '>' + esc(c[1]) + '</th>').join('')
+        + '</tr></thead><tbody>'
+          + preview.map((r) => '<tr>' + OSR_PREVIEW.map((c) => c[0] === 'obligated'
+              ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
+              : '<td>' + esc(String(r[c[0]] == null ? '' : r[c[0]])) + '</td>').join('') + '</tr>').join('')
+        + '</tbody></table></div>'
+        + '<div class="osr-tnote">Showing the top ' + preview.length + ' of ' + Number(rows.length).toLocaleString() + ' awards by obligation · the CSV has all ' + Number(rows.length).toLocaleString() + ' rows and ' + OSR_COLS.length + ' columns</div>';
+      void box.offsetWidth; box.classList.add('is-in');
+      const fname = office + '_' + fyLabel.replace(/[^A-Za-z0-9-]/g, '') + '_contract-awards.csv';
+      const dl = $('#osr-dl'); if (dl) dl.addEventListener('click', () => {
+        const ok = osrDownload(osrBuildCsv(osrRows), fname);
+        if (!ok) { dl.textContent = 'Use Copy →'; }
       });
-      const top = Object.entries(byRecip).sort((a, b) => b[1] - a[1]).slice(0, 6);
-      const topMax = top.length ? top[0][1] : 1;
-      flipUpdate(recipBox, top.map(([name, amt]) =>
-        `<div class="dash-bar-row" data-key="r:${esc(name)}">
-          <div class="dash-bar-top"><div class="dash-bar-name">${esc(name)}</div><div class="dash-bar-val">${fmtUSD(amt)}</div></div>
-          <div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" style="width:0"></div></div>
-        </div>`).join(''));
-      requestAnimationFrame(() => {
-        recipBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (top[i][1] / topMax) * 100) + '%'; });
+      const cp = $('#osr-copy'); if (cp) cp.addEventListener('click', () => {
+        const csv = osrBuildCsv(osrRows);
+        const done = () => { cp.textContent = 'Copied'; setTimeout(() => { cp.textContent = 'Copy'; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(done, done); else done();
       });
-
-      // largest actions
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const largest = rows.slice(0, 6);
-      const actMax = largest.length ? (Math.max(...largest.map((r) => Number(r['Transaction Amount'] || 0))) || 1) : 1;
-      flipUpdate(largeBox, largest.map((r) => {
-        const dt = (r['Action Date'] || '').slice(0, 10);
-        const dd = dt ? months[Number(dt.slice(5, 7)) - 1] + ' ' + Number(dt.slice(8, 10)) : '';
-        const key = (r['Award ID'] || cleanName(r['Recipient Name'])) + ':' + (r['Transaction Amount'] || '');
-        return `<div class="dash-bar-row" data-key="l:${esc(key)}" style="margin-bottom:11px">
-          <div class="dash-bar-top"><div class="dash-bar-name">${esc(cleanName(r['Recipient Name']))}</div><div class="dash-bar-val">${fmtUSD(r['Transaction Amount'])}</div></div>
-          <div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" style="width:0"></div></div>
-          <div class="dash-bar-sub">${esc(r['Award ID'] || '')}${dd ? ' \u00B7 ' + dd : ''}</div>
-        </div>`;
-      }).join(''));
-      requestAnimationFrame(() => {
-        largeBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (Number(largest[i]['Transaction Amount'] || 0) / actMax) * 100) + '%'; });
-      });
-
-      // "What the Air Force buys" — top PSC categories (separate call; don't block the bars above).
-      const pscBox = $('#dash-psc');
-      if (pscBox) {
-        fetchPsc(usedDays).then((psc) => {
-          if (token !== dashReqToken || !psc.length) { if (!psc || !psc.length) pscBox.innerHTML = '<div class="dash-loading dash-skeleton">No category data for this window.</div>'; return; }
-          const pscMax = psc[0].amount || 1;
-          flipUpdate(pscBox, psc.map((r) =>
-            `<div class="dash-bar-row" data-key="p:${esc(r.code || r.name)}">
-              <div class="dash-bar-top"><div class="dash-bar-name">${esc(titleCasePsc(r.name))}</div><div class="dash-bar-val">${fmtUSD(r.amount)}</div></div>
-              <div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" style="width:0"></div></div>
-            </div>`).join(''));
-          requestAnimationFrame(() => {
-            pscBox.querySelectorAll('.dash-bar-fill').forEach((f, i) => { f.style.width = Math.max(4, (psc[i].amount / pscMax) * 100) + '%'; });
-          });
-        }).catch(() => { if (pscBox.querySelector('.dash-loading')) pscBox.innerHTML = '<div class="dash-loading dash-skeleton">Category data briefly unavailable.</div>'; });
-      }
     } catch (e) {
-      if (token !== dashReqToken) return;
-      const msg = '<div class="dash-loading dash-skeleton">Live spending data is briefly unavailable \u2014 USASpending may be rate-limiting. It\u2019ll refresh shortly.</div>';
-      if (recipBox) recipBox.innerHTML = msg; if (largeBox) largeBox.innerHTML = '';
+      if (token !== osrToken) return;
+      box.innerHTML = '<div class="dash-loading dash-skeleton">Spend lookup is briefly unavailable — try again shortly.</div>';
     }
-  }
-  function cleanName(t) {
-    let s = String(t || '')
-      .replace(/,?\s*(L\.?L\.?C\.?|INC\.?|INCORPORATED|CORP\.?|CORPORATION|LTD\.?|L\.?P\.?|CO\.?|COMPANY|TECHNOLOGIES|SYSTEMS|HOLDINGS)\b/gi, '')
-      .replace(/^THE\s+/i, '')
-      .replace(/[.,\s]+$/, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-    if (!s) return 'Unnamed recipient';
-    // Title-case ALL-CAPS names for readability
-    if (s === s.toUpperCase()) s = s.toLowerCase().replace(/\b([a-z])/g, (m, c) => c.toUpperCase());
-    return s;
   }
   function initDashboard() {
-    const win = $('#dash-window'); if (!win) return;
-    if (window.initSegGlider) window.initSegGlider(win, 'button', (b) => b.classList.contains('active'));
-    win.addEventListener('click', (e) => {
-      const b = e.target.closest('button[data-days]'); if (!b) return;
-      win.querySelectorAll('button').forEach((x) => { const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-pressed', on ? 'true' : 'false'); });
-      if (win._segRest) win._segRest();
-      dashDays = Number(b.dataset.days);
-      loadDashWindow(dashDays);
-    });
-    // lazy-load on first scroll into view
+    const inp = $('#osr-office'); const go = $('#osr-go');
+    if (!inp || !go) return;
+    osrRenderFyPicker();
+    const run = () => osrBuild(inp.value);
+    go.addEventListener('click', run);
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); run(); } });
+    inp.addEventListener('input', () => { const c = inp.selectionStart; inp.value = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); try { inp.setSelectionRange(c, c); } catch (_) {} });
     const sec = $('#spending-dashboard');
-    const io = new IntersectionObserver((ents) => {
-      ents.forEach((e) => { if (e.isIntersecting) { loadDashFY(); loadDashWindow(dashDays); io.disconnect(); } });
-    }, { rootMargin: '200px' });
-    io.observe(sec);
+    if (sec) sec.addEventListener('click', (e) => { const c = e.target.closest('.osr-chip'); if (!c) return; inp.value = c.dataset.office; osrBuild(c.dataset.office); });
+    if (sec) {
+      const io = new IntersectionObserver((ents) => { ents.forEach((e) => { if (e.isIntersecting) { inp.value = 'FA8501'; osrBuild('FA8501'); io.disconnect(); } }); }, { rootMargin: '200px' });
+      io.observe(sec);
+    }
   }
 
   function initMarketResearch() {
