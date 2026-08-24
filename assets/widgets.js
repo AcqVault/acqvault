@@ -825,7 +825,7 @@
     ['vendor', 'Vendor'], ['vendorUEI', 'Vendor UEI'], ['smallBusiness', 'Small Business'],
     ['obligated', 'Obligated (Action)'], ['awardAmount', 'Award Amount'], ['ceiling', 'Ceiling (All Options)'], ['pricingType', 'Pricing Type'],
     ['setAside', 'Set-Aside'], ['extentCompeted', 'Extent Competed'],
-    ['fundingSubtier', 'Funding Sub-tier'], ['fundingOffice', 'Funding Office'],
+    ['funding', 'Funding (Color of Money)'],
     ['popState', 'PoP State'], ['dateSigned', 'Date Signed']
   ];
   // The on-page preview shows every column the CSV does, minus the two that repeat on
@@ -922,6 +922,38 @@
   // Per-contract appropriation drill-down (color of money via USASpending File C).
   const osrFundCache = {};
   const OSR_COLSPAN = OSR_PREVIEW.length; // the detail row spans the whole preview table
+  // The "Funding (Color of Money)" column can't be a cheap bulk field — FPDS has no
+  // appropriation, so each contract needs a USASpending File C lookup. We enrich the
+  // top awards by obligation (that's where both the money and the reported data are);
+  // blank means USASpending reports no appropriation for that action. Same per-PIID
+  // cache as the drill-down, so a click and the column share work.
+  const OSR_FUND_ENRICH = 200; // top-N awards by obligation to enrich
+  function osrApprShort(d) {
+    if (!d || !d.found || !(d.accounts && d.accounts.length)) return '';
+    const m = {};
+    d.accounts.forEach((a) => { m[a.type] = (m[a.type] || 0) + Math.abs(a.amount || 0); });
+    const types = Object.keys(m).sort((a, b) => m[b] - m[a]);
+    if (types.length <= 1) return types[0] || '';
+    return types.slice(0, 2).join('/') + (types.length > 2 ? ' +' + (types.length - 2) : '');
+  }
+  function osrFundType(piid) {
+    return new Promise((res) => {
+      if (!piid) return res('');
+      if (osrFundCache[piid]) return res(osrApprShort(osrFundCache[piid]));
+      fetch('/api/market-research?mode=award-funding&piid=' + encodeURIComponent(piid), { headers: { Accept: 'application/json' } })
+        .then((r) => r.ok ? r.json() : { found: false })
+        .then((d) => { osrFundCache[piid] = d; res(osrApprShort(d)); })
+        .catch(() => res(''));
+    });
+  }
+  // Enrich the top `cap` rows by obligation, 6 at a time; sets r.funding ('' = none
+  // reported). onOne(row) fires as each resolves so the visible cells can fill in.
+  async function osrEnrichFunding(rows, cap, onOne) {
+    const targets = rows.slice().sort((a, b) => (b.obligated || 0) - (a.obligated || 0)).slice(0, cap).filter((r) => r.piid && r.funding == null);
+    let i = 0;
+    async function worker() { while (i < targets.length) { const r = targets[i++]; r.funding = await osrFundType(r.piid); if (onOne) onOne(r); } }
+    await Promise.all(Array.from({ length: Math.min(6, targets.length) }, () => worker()));
+  }
   function osrFundHtml(d) {
     if (!d || !d.found || !(d.accounts && d.accounts.length)) {
       return '<div class="osr-fund-box osr-fund-none">' + esc((d && d.note) || 'No appropriation data reported for this contract.') + '</div>';
@@ -1003,28 +1035,44 @@
           + OSR_PREVIEW.map((c) => '<th' + (OSR_NUM[c[0]] ? ' class="osr-num"' : '') + '>' + esc(c[1]) + '</th>').join('')
         + '</tr></thead><tbody>'
           + preview.map((r) => '<tr class="osr-clk" data-piid="' + esc(String(r.piid || '')) + '" tabindex="0" aria-expanded="false" title="Show appropriation (color of money)">'
-              + OSR_PREVIEW.map((c) => OSR_NUM[c[0]]
-                ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
-                : '<td>' + esc(String(r[c[0]] == null ? '' : r[c[0]])) + '</td>').join('') + '</tr>').join('')
+              + OSR_PREVIEW.map((c) => c[0] === 'funding'
+                ? '<td class="osr-fund-cell">' + (r.funding == null ? '<span class="osr-fund-wait">…</span>' : (r.funding ? esc(r.funding) : '<span class="osr-fund-dash">—</span>')) + '</td>'
+                : OSR_NUM[c[0]]
+                  ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
+                  : '<td>' + esc(String(r[c[0]] == null ? '' : r[c[0]])) + '</td>').join('') + '</tr>').join('')
         + '</tbody></table></div>'
-        + '<div class="osr-tnote">Showing the top ' + preview.length + ' of ' + Number(rows.length).toLocaleString() + ' awards by obligation · <b>click a row for its appropriation</b> (color of money) · the CSV has all ' + Number(rows.length).toLocaleString() + ' rows and ' + OSR_COLS.length + ' columns</div>';
+        + '<div class="osr-tnote">Showing the top ' + preview.length + ' of ' + Number(rows.length).toLocaleString() + ' awards by obligation · <b>Funding (color of money)</b> is filled for the top awards — a blank means USASpending reports no appropriation for that action; click any row for its full appropriation · the CSV / Excel has all ' + Number(rows.length).toLocaleString() + ' rows and ' + OSR_COLS.length + ' columns</div>';
       void box.offsetWidth; box.classList.add('is-in');
       osrPaint($('#osr-c-fy')); osrPaint($('#osr-c-cat')); osrPaint($('#osr-c-ven'));
+      // Fill the funding (color-of-money) column for the top awards, in the background —
+      // the visible cells update as each resolves; the export reuses the same cache.
+      const fundIdx = OSR_PREVIEW.findIndex((c) => c[0] === 'funding');
+      osrEnrichFunding(rows, OSR_FUND_ENRICH, (r) => {
+        if (token !== osrToken || fundIdx < 0) return;
+        const sel = (window.CSS && CSS.escape) ? CSS.escape(r.piid) : r.piid.replace(/"/g, '');
+        const tr = box.querySelector('.osr-table tbody tr[data-piid="' + sel + '"]');
+        if (tr && tr.cells[fundIdx]) tr.cells[fundIdx].innerHTML = r.funding ? esc(r.funding) : '<span class="osr-fund-dash">—</span>';
+      });
       const base = office + '_' + fyLabel.replace(/[^A-Za-z0-9-]/g, '') + '_contract-awards';
+      // Ensure the funding column is enriched before an export, then run it.
+      const withFunding = (btn, run) => {
+        const orig = btn.textContent; btn.textContent = 'Adding funding…'; btn.disabled = true;
+        osrEnrichFunding(osrRows, OSR_FUND_ENRICH).then(run).catch(() => {}).then(() => { btn.textContent = orig; btn.disabled = false; });
+      };
       const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', () => {
         if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV →'; return; }
-        try {
-          const byFy = fys.map((fy) => ({ label: 'FY ' + fy, value: osrRows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + (Number(r.obligated) || 0), 0) }));
-          const byCat = osrSumBy(osrRows, (r) => r.category);
-          const byVen = osrSumBy(osrRows, (r) => osrVendorClean(r.vendor)).slice(0, 6);
-          const u8 = window.acqBuildXlsx({ office, officeName, fyLabel, columns: OSR_COLS, rows: osrRows, byFy, byCat, byVen });
-          const ok = osrDownload(u8, base + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-          if (!ok) xl.textContent = 'Use CSV →';
-        } catch (e) { xl.textContent = 'Use CSV →'; }
+        withFunding(xl, () => {
+          try {
+            const byFy = fys.map((fy) => ({ label: 'FY ' + fy, value: osrRows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + (Number(r.obligated) || 0), 0) }));
+            const byCat = osrSumBy(osrRows, (r) => r.category);
+            const byVen = osrSumBy(osrRows, (r) => osrVendorClean(r.vendor)).slice(0, 6);
+            const u8 = window.acqBuildXlsx({ office, officeName, fyLabel, columns: OSR_COLS, rows: osrRows, byFy, byCat, byVen });
+            if (!osrDownload(u8, base + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) xl.textContent = 'Use CSV →';
+          } catch (e) { xl.textContent = 'Use CSV →'; }
+        });
       });
       const dl = $('#osr-dl'); if (dl) dl.addEventListener('click', () => {
-        const ok = osrDownload(osrBuildCsv(osrRows), base + '.csv');
-        if (!ok) { dl.textContent = 'Use Copy →'; }
+        withFunding(dl, () => { if (!osrDownload(osrBuildCsv(osrRows), base + '.csv')) dl.textContent = 'Use Copy →'; });
       });
       const cp = $('#osr-copy'); if (cp) cp.addEventListener('click', () => {
         const csv = osrBuildCsv(osrRows);

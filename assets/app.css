@@ -455,13 +455,19 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-dash { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-top: 14px; }
 .osr-dash .dash-panel { padding: 16px 18px 18px; }
 @media (max-width: 860px) { .osr-dash { grid-template-columns: 1fr; } }
-.osr-tablewrap { margin-top: 14px; overflow-x: auto; background: #fff; border: 1px solid rgba(var(--brass-rgb),0.14); border-radius: var(--r-lg); box-shadow: 0 1px 12px rgba(var(--navy-rgb),0.05); }
+/* Bounded scroll region: the table scrolls BOTH ways inside this box (max-height caps
+   it), so the sticky header stays pinned no matter where you scroll — you never lose
+   which column is which, even 20 columns to the right or at the bottom of the page. */
+.osr-tablewrap { margin-top: 14px; max-height: 70vh; overflow: auto; overscroll-behavior: contain; background: #fff; border: 1px solid rgba(var(--brass-rgb),0.14); border-radius: var(--r-lg); box-shadow: 0 1px 12px rgba(var(--navy-rgb),0.05); }
 .osr-table { width: 100%; border-collapse: collapse; font-size:var(--fs-base); min-width: 640px; }
 .osr-table th { text-align: left; font-size:var(--fs-xs); font-weight:var(--fw-bold); letter-spacing:var(--ls-wide); text-transform: uppercase; color: var(--muted2); padding: 11px 14px; border-bottom: 2px solid var(--line2); white-space: nowrap; background: #fbfaf7; position: sticky; top: 0; }
 .osr-table td { padding: 10px 14px; border-bottom: 1px solid var(--line2); color: var(--ink2); white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
 .osr-table tbody tr:last-child td { border-bottom: none; }
 @media (hover:hover) and (pointer:fine) { .osr-table tbody tr:hover td { background: rgba(var(--brass-rgb),0.05); } }
 .osr-table td.osr-num, .osr-table th.osr-num { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 650; }
+.osr-table td.osr-fund-cell { font-weight: 650; color: var(--brass-ink); white-space: nowrap; }
+.osr-fund-wait { color: var(--muted2); font-weight: 400; }
+.osr-fund-dash { color: var(--line); font-weight: 400; }
 .osr-table tr.osr-clk { cursor: pointer; }
 .osr-table tr.osr-clk:focus-visible { outline: 2px solid var(--brass); outline-offset: -2px; }
 .osr-table tr.osr-clk[aria-expanded="true"] td { background: rgba(var(--brass-rgb),0.08); }
