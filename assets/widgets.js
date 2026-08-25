@@ -367,6 +367,7 @@
           <div class="osr-fields">
             <div class="osr-field osr-field-office">
               <label class="osr-label" for="osr-office">Contracting office</label>
+              <div class="osr-tokens" id="osr-tokens" role="list" aria-label="Selected contracting offices" hidden></div>
               <div class="osr-combo">
                 <input id="osr-office" class="osr-input" type="text" autocomplete="off" spellcheck="false"
                   role="combobox" aria-expanded="false" aria-controls="osr-suggest" aria-autocomplete="list"
@@ -382,6 +383,7 @@
                 <button type="button" class="osr-chip" data-office="FA8750">FA8750</button>
                 <button type="button" class="osr-chip" data-office="N00019">N00019</button>
               </div>
+              <p class="osr-tokens-hint" id="osr-tokens-hint" hidden></p>
             </div>
             <div class="osr-field">
               <span class="osr-label" id="osr-fy-label">Period</span>
@@ -876,7 +878,10 @@
     return osrDefaultCols();
   })();
   function osrSaveCols() { try { localStorage.setItem(OSR_COLS_KEY, JSON.stringify(osrOn)); } catch (e) { /* private mode */ } }
-  function osrPickedCols() { return OSR_COLS.filter((c) => osrOn[c[0]]); }
+  // With more than one office in the report, Office stops being the redundant column
+  // it is for a single-office pull. Forced on for the duration, never written to the
+  // saved preference, so dropping back to one office restores the user's own layout.
+  function osrPickedCols() { return OSR_COLS.filter((c) => osrOn[c[0]] || (osrMulti && c[0] === 'office')); }
   function osrColsPanelHtml() {
     return '<div class="osr-cols-panel" id="osr-cols-panel" role="group" aria-label="What this report includes" hidden>'
       + '<div class="osr-cols-head"><span>What this report includes</span>'
@@ -922,8 +927,12 @@
   }
   function osrMatch(q) {
     const rows = (osrOffices && osrOffices.flat) || [];
-    const s = String(q || '').trim().toLowerCase();
+    let s = String(q || '').trim().toLowerCase();
     if (!s) return rows.slice(0, OSR_SUG_MAX);
+    // "96CONS" is how people type "96 CONS". Without this it matched nothing, looked
+    // like an unknown six-character DoDAAC, and got sent to SAM as one.
+    const squash = (t) => t.replace(/[^a-z0-9]/g, '');
+    const sq = squash(s);
     // Code-prefix hits first — someone typing "FA85" wants FA8501, not a squadron
     // whose name happens to contain it.
     const pre = [], rest = [];
@@ -931,11 +940,50 @@
       const r = rows[i];
       if (r[0].toLowerCase().indexOf(s) === 0) pre.push(r);
       else if (r[1].toLowerCase().indexOf(s) >= 0 || r[0].toLowerCase().indexOf(s) >= 0) rest.push(r);
+      else if (sq.length > 3 && squash(r[1].toLowerCase()).indexOf(sq) >= 0) rest.push(r);
       if (pre.length + rest.length >= 400) break;
     }
     return pre.concat(rest).slice(0, OSR_SUG_MAX);
   }
   let osrSug = [], osrSugAt = -1, osrSugOpen = false, osrSugTimer = null;
+  // Selected offices, in pick order: [{code, name}]. One office is the common case
+  // and behaves exactly as it always did; the cap is about upstream cost, not taste.
+  // Each (office, period) is its own request against a shared 20/min bucket that the
+  // site's other searches also draw on, so 4 offices x 6 years would lock the visitor
+  // out of Market Research. OSR_MAX_SLOTS leaves headroom for that.
+  const OSR_MAX_OFFICES = 4, OSR_MAX_SLOTS = 12;
+  let osrPicked = [];
+  function osrPickedCodes() { return osrPicked.map((o) => o.code); }
+  function osrOfficeName(code) {
+    const hit = ((osrOffices && osrOffices.flat) || []).find((r) => r[0] === code);
+    return hit ? hit[1] : '';
+  }
+  function osrRenderTokens() {
+    const host = $('#osr-tokens'); if (!host) return;
+    host.innerHTML = osrPicked.map((o, i) =>
+      '<span class="osr-token"' + (o.missing ? ' data-missing="1"' : '') + '><b>' + esc(o.code) + '</b>'
+      + (o.name ? '<span>' + esc(o.name) + '</span>' : '')
+      + '<button type="button" class="osr-token-x" data-i="' + i + '" aria-label="Remove ' + esc(o.code) + (o.name ? ' ' + esc(o.name) : '') + '">&times;</button></span>').join('');
+    host.hidden = !osrPicked.length;
+    const hint = $('#osr-tokens-hint');
+    if (hint) {
+      hint.hidden = osrPicked.length < 2;
+      hint.textContent = osrPicked.length >= OSR_MAX_OFFICES
+        ? (OSR_MAX_OFFICES + ' of ' + OSR_MAX_OFFICES + ' offices \u2014 remove one to add another')
+        : (osrPicked.length + ' offices \u2014 add up to ' + OSR_MAX_OFFICES);
+    }
+  }
+  function osrAddOffice(code) {
+    code = String(code || '').toUpperCase();
+    if (!code) return false;
+    if (osrPickedCodes().indexOf(code) >= 0) return true;      // already picked, no-op
+    if (osrPicked.length >= OSR_MAX_OFFICES) return false;
+    osrPicked.push({ code: code, name: osrOfficeName(code) });
+    osrRenderTokens();
+    return true;
+  }
+  function osrRemoveOffice(i) { osrPicked.splice(i, 1); osrRenderTokens(); }
+
   function osrSugEls() { return { box: $('#osr-suggest'), inp: $('#osr-office'), btn: $('#osr-browse') }; }
   function osrSugClose() {
     // Kill any pending render first. Without this a debounce armed just before the
@@ -990,7 +1038,15 @@
   function osrSugOpenList(q) { osrLoadOffices().then(() => osrSugRender(q == null ? ($('#osr-office') || {}).value : q)); }
   function osrSugPick(code) {
     const inp = $('#osr-office'); if (!inp) return;
-    inp.value = code; osrSugClose(); osrBuild(code);
+    osrSugClose();
+    if (!osrAddOffice(code)) {
+      inp.value = '';
+      const hint = $('#osr-tokens-hint');
+      if (hint) { hint.hidden = false; hint.textContent = 'That is ' + OSR_MAX_OFFICES + ' offices \u2014 remove one to add another.'; }
+      return;
+    }
+    inp.value = '';               // the token carries it now, so the box is free again
+    osrBuild();
   }
   // Resolve whatever is in the box to a real office code: a six-character code as
   // typed, otherwise the one office that matches the text. Anything else is a
@@ -1137,13 +1193,18 @@
       .replace(/\s+/g, ' ').trim();
     return s || String(v || '').trim() || '—';
   }
-  function osrDashHtml(rows, fys) {
-    const byFy = fys.map((fy) => ({ label: 'FY ' + fy, value: rows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + r.obligated, 0) }));
+  function osrDashHtml(rows, fys, byOffice) {
+    // Three panels, always. With several offices the by-office split replaces the FY
+    // one — summing the very things the user asked to see apart is the least useful
+    // panel of the three, and the FY breakdown survives in the column and the workbook.
+    const byFy = byOffice && byOffice.length
+      ? byOffice
+      : fys.map((fy) => ({ label: 'FY ' + fy, value: rows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + r.obligated, 0) }));
     const byCat = osrSumBy(rows, (r) => r.category);
     const byVen = osrSumBy(rows, (r) => osrVendorClean(r.vendor)).slice(0, 6);
     const mx = (a) => Math.max.apply(null, a.map((x) => x.value).concat([1]));
     return '<div class="osr-dash">'
-      + '<div class="dash-panel"><div class="dash-panel-title">Obligations by fiscal year</div><div class="osr-chart" id="osr-c-fy">' + osrBarsHtml(byFy, mx(byFy)) + '</div></div>'
+      + '<div class="dash-panel"><div class="dash-panel-title">' + (byOffice && byOffice.length ? 'Obligations by contracting office' : 'Obligations by fiscal year') + '</div><div class="osr-chart" id="osr-c-fy">' + osrBarsHtml(byFy, mx(byFy)) + '</div></div>'
       + '<div class="dash-panel"><div class="dash-panel-title">Work type · Service / Commodity / R&amp;D</div><div class="osr-chart" id="osr-c-cat">' + osrBarsHtml(byCat, mx(byCat)) + '</div></div>'
       + '<div class="dash-panel"><div class="dash-panel-title">Top vendors</div><div class="osr-chart" id="osr-c-ven">' + osrBarsHtml(byVen, mx(byVen)) + '</div></div>'
       + '</div>';
@@ -1227,7 +1288,8 @@
         + '</tr>').join('')
       + '</tbody></table></div>'
       + '<div class="osr-tnote">Top <b>' + preview.length + '</b> of ' + Number(rows.length).toLocaleString()
-        + ' awards by obligation \u00b7 click any row for its appropriation (color of money) \u00b7 the CSV and workbook carry all '
+        + ' awards by obligation' + (osrMulti ? ' across every office \u2014 one office can fill this list; the per-office split is in the panel above' : '')
+        + ' \u00b7 click any row for its appropriation (color of money) \u00b7 the CSV and workbook carry all '
         + Number(rows.length).toLocaleString() + ' rows across the ' + cols.length + ' column' + (cols.length === 1 ? '' : 's') + ' you picked</div>';
   }
   function osrBindRows() {
@@ -1291,68 +1353,143 @@
       ? 'FY' + fys[0] + '\u2013FY' + fys[fys.length - 1]
       : fys.map((y) => 'FY' + y).join(', ');
   }
-  async function osrBuild(raw) {
+  // One request = one office for one period. SAM's `~` OR operator does NOT work on
+  // contractingOfficeCode (measured: FA8501~FA8750 returned FA8501 alone, FA8750~FA8501
+  // returned nothing, neither errored), and one merged call would truncate at 2,000
+  // rows ACROSS all offices instead of 2,000 each. So: fan out, and let each
+  // (office, period) URL keep its own edge-cache entry.
+  function osrSlots(offices, fys, range) {
+    const out = [];
+    offices.forEach((code) => {
+      if (range) out.push({ office: code, period: osrDay(range.from) + ' \u2013 ' + osrDay(range.to), get: () => osrFetchRange(code, range) });
+      else fys.forEach((fy) => out.push({ office: code, period: 'FY' + fy, fy: fy, get: () => osrFetchFy(code, fy) }));
+    });
+    return out;
+  }
+  // A slot FAILED when the server could not answer it. That is not the same as an
+  // answer of zero: a rate-limited year, a rejected request and the date-range cap all
+  // come back HTTP 200 with an empty rows array, and only the last two carry a note.
+  // A genuinely empty period has rows:[] and NO note, and must not be called a failure.
+  function osrSlotFailed(d) { return !d || !!d.limited || (Array.isArray(d.rows) && !d.rows.length && !!d.note); }
+  async function osrRun(slots, onDone) {
+    const out = new Array(slots.length);
+    let i = 0;
+    async function worker() {
+      while (i < slots.length) {
+        const n = i++;
+        try { out[n] = await slots[n].get(); } catch (e) { out[n] = null; }
+        if (onDone) onDone();
+      }
+    }
+    // 4 at a time: matches the old single-office worst case and stays well inside the
+    // 20/min bucket this shares with the site's other searches.
+    await Promise.all(Array.from({ length: Math.min(4, slots.length) }, () => worker()));
+    return out;
+  }
+  const osrList = (a) => a.length <= 1 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+  function osrSay(t) { const n = $('#osr-status'); if (n) n.textContent = t; }
+  function osrShow(box, html) {
+    box.hidden = false; box.innerHTML = '<div class="osr-empty">' + html + '</div>';
+    osrSay(box.textContent.trim()); void box.offsetWidth; box.classList.add('is-in');
+  }
+  let osrMulti = false;
+  async function osrBuild() {
     const box = $('#osr-results'); if (!box) return;
     // A name typed before the directory landed resolved against an empty list.
     await osrLoadOffices();
-    const office = osrResolve(raw);
+    const inp = $('#osr-office');
+    // Anything still sitting in the box counts as a pick, so Build works without
+    // having to press Enter first.
+    if (inp && inp.value.trim()) {
+      const typed = osrResolve(inp.value);
+      if (!typed) return osrShow(box, 'Pick a contracting office from the list, or type its six-character code \u2014 e.g. <b>FA8501</b>.');
+      if (osrAddOffice(typed)) inp.value = '';
+    }
+    const offices = osrPickedCodes();
     const fys = osrSelectedFys();
     const range = osrCustomRange();
-    const say = (t) => { const n = $('#osr-status'); if (n) n.textContent = t; };
-    const show = (html) => {
-      box.hidden = false; box.innerHTML = '<div class="osr-empty">' + html + '</div>';
-      say(box.textContent.trim());
-      void box.offsetWidth; box.classList.add('is-in');
-    };
-    if (!office) return show('Pick a contracting office from the list, or type its six-character code \u2014 e.g. <b>FA8501</b>.');
-    if ($('#osr-custom') && $('#osr-custom').checked && !range) return show('Set both a <b>From</b> and a <b>To</b> date for a custom window.');
-    if (!range && !fys.length) return show('Pick at least one fiscal year, or tick <b>Custom dates</b> and set a window.');
+    if (!offices.length) return osrShow(box, 'Pick a contracting office from the list, or type its six-character code \u2014 e.g. <b>FA8501</b>.');
+    if ($('#osr-custom') && $('#osr-custom').checked && !range) return osrShow(box, 'Set both a <b>From</b> and a <b>To</b> date for a custom window.');
+    if (!range && !fys.length) return osrShow(box, 'Pick at least one fiscal year, or tick <b>Custom dates</b> and set a window.');
+
+    const slots = osrSlots(offices, fys, range);
+    if (slots.length > OSR_MAX_SLOTS) {
+      return osrShow(box, 'That is <b>' + slots.length + '</b> separate lookups (' + offices.length + ' offices × ' + (slots.length / offices.length)
+        + ' periods) and the shared SAM.gov allowance only stretches to ' + OSR_MAX_SLOTS
+        + '. Drop an office or a period.');
+    }
     const token = ++osrToken;
-    const label = range
-      ? (osrDay(range.from) + ' \u2013 ' + osrDay(range.to))
-      : osrFyLabel(fys);
+    const label = range ? (osrDay(range.from) + ' \u2013 ' + osrDay(range.to)) : osrFyLabel(fys);
+    const officeLabel = offices.length === 1 ? offices[0] : offices.length + ' offices';
     box.hidden = false; box.classList.remove('is-in');
-    box.innerHTML = '<div class="dash-loading dash-skeleton">Pulling ' + esc(office) + ' awards for ' + esc(label) + ' from SAM.gov (FPDS)\u2026</div>';
-    say('Pulling ' + office + ' awards for ' + label + '.');
+    let done = 0;
+    const tick = () => {
+      const n = box.firstElementChild;
+      if (n && slots.length > 1) n.textContent = 'Pulling ' + slots.length + ' office-periods from SAM.gov (FPDS) \u2014 ' + done + ' of ' + slots.length + ' back\u2026';
+    };
+    box.innerHTML = '<div class="dash-loading dash-skeleton">Pulling ' + esc(officeLabel) + ' awards for ' + esc(label) + ' from SAM.gov (FPDS)\u2026</div>';
+    osrSay('Pulling ' + officeLabel + ' awards for ' + label + '.');
     try {
-      const results = range
-        ? [await osrFetchRange(office, range).catch(() => null)]
-        : await Promise.all(fys.map((fy) => osrFetchFy(office, fy).catch(() => null)));
+      const results = await osrRun(slots, () => { done++; tick(); });
       if (token !== osrToken) return;
-      // A quota-limited or failed year still answers 200 with an EMPTY rows array, so
-      // it passes an Array.isArray test and silently contributes nothing while the
-      // heading, the filename and the workbook all keep claiming to cover it.
-      const periods = range ? [label] : fys;
-      const failed = periods.filter((_, i) => !results[i] || results[i].limited);
-      const good = results.filter((d) => d && Array.isArray(d.rows) && !d.limited);
-      const rows = good.reduce((acc, d) => acc.concat(d.rows), []);
+
+      const failed = [], okSlots = [];
+      slots.forEach((sl, i) => { (osrSlotFailed(results[i]) ? failed : okSlots).push({ sl: sl, d: results[i] }); });
+      const rows = okSlots.reduce((acc, x) => acc.concat(x.d.rows), []);
       osrRows = rows;
-      if (!good.length) {
-        const note = (results.find((d) => d && d.note) || {}).note;
-        return show(esc(note || 'The spend lookup is unavailable right now \u2014 try again shortly.'));
+
+      // Which offices and periods actually came back — everything downstream, including
+      // the filename and the workbook heading, is built from THESE, never from what was
+      // asked for.
+      const gotOffices = offices.filter((o) => okSlots.some((x) => x.sl.office === o));
+      const lostOffices = offices.filter((o) => !slots.some((sl, i) => sl.office === o && !osrSlotFailed(results[i])));
+      const gotFys = range ? [] : fys.filter((fy) => okSlots.some((x) => x.sl.fy === fy));
+      const failLine = failed.length
+        ? ('<b>' + esc(osrList([...new Set(failed.map((x) => (offices.length > 1 ? x.sl.office + ' \u00b7 ' : '') + x.sl.period))])) + '</b> did not come back'
+            + ' \u2014 ' + esc(failed.map((x) => x.d && x.d.note).find(Boolean) || 'the lookup was rate-limited or unavailable') + ' Nothing below includes '
+            + (failed.length > 1 ? 'them' : 'it') + '.')
+        : '';
+
+      if (!okSlots.length) {
+        // With a single lookup there is nothing to disambiguate, so the server's own
+        // sentence stands on its own rather than being wrapped in "X did not come back".
+        const only = slots.length === 1 && failed[0] && failed[0].d && failed[0].d.note;
+        return osrShow(box, esc(only || '') || failLine || 'The spend lookup is unavailable right now \u2014 try again shortly.');
       }
       if (!rows.length) {
-        return show('No contract awards found for <b>' + esc(office) + '</b> in ' + esc(label)
-          + ' \u2014 check the office, or try a wider period.');
+        // A failure must never be reported as "no awards found" — that sends the user
+        // to re-check an office code that was never the problem.
+        return osrShow(box, failed.length
+          ? failLine + ' The periods that did answer held no awards.'
+          : ('No contract awards found for <b>' + esc(osrList(offices)) + '</b> in ' + esc(label) + '.'));
       }
-      // SAM prefixes the office name with its own code, so the heading read
-      // "FA8501 FA8501  OPL CONTRACTING AFSC/PZIO".
-      const officeName = String((good.find((d) => d.officeName) || {}).officeName || '')
-        .replace(new RegExp('^\\s*' + office + '\\s+', 'i'), '').replace(/\s{2,}/g, ' ').trim();
+
+      const byOffice = osrSumBy(rows, (r) => r.office);
+      const nameOf = (code) => {
+        const picked = osrPicked.find((o) => o.code === code);
+        if (picked && picked.name) return picked.name;
+        const fromRow = (rows.find((r) => r.office === code) || {}).officeName || '';
+        // SAM prefixes the office name with its own code ("FA8501  OPL CONTRACTING…").
+        return String(fromRow).replace(new RegExp('^\\s*' + code + '\\b[\\s-]*', 'i'), '').replace(/\s{2,}/g, ' ').trim();
+      };
       const total = rows.reduce((s, r) => s + r.obligated, 0);
-      const truncated = good.some((d) => d.truncated);
-      // Chart the fiscal years the awards actually landed in — a custom window can
-      // straddle two, and a picked year with no awards should still read as zero.
-      const chartFys = range
-        ? [...new Set(rows.map((r) => String(r.fiscalYear)).filter(Boolean))].sort()
-        : fys.filter((fy) => failed.indexOf(fy) < 0);   // a year we never got is not a $0 bar
+      const truncSlots = okSlots.filter((x) => x.d.truncated);
+      const atLeast = truncSlots.length ? 'at least ' : '';
+      const chartFys = range ? [...new Set(rows.map((r) => String(r.fiscalYear)).filter(Boolean))].sort() : gotFys;
       const preview = rows.slice().sort((a, b) => b.obligated - a.obligated).slice(0, 25);
       osrPreview = preview;
+      const multi = gotOffices.length > 1;
+      osrMulti = multi;
+      const head = multi
+        ? gotOffices.map((c) => esc(c)).join(' \u00b7 ')
+        : esc(gotOffices[0]) + (nameOf(gotOffices[0]) ? ' <span>' + esc(nameOf(gotOffices[0])) + '</span>' : '');
+
       box.innerHTML =
         '<div class="osr-summary">'
           + '<div class="osr-sum-l">'
-            + '<div class="osr-head-code">' + esc(office) + (officeName ? ' <span>' + esc(officeName) + '</span>' : '') + '</div>'
-            + '<div class="osr-sum-stats"><b>' + Number(rows.length).toLocaleString() + '</b> awards \u00b7 <b>' + fmtUSD(total) + '</b> obligated \u00b7 ' + esc(label)
+            + '<div class="osr-head-code">' + head + '</div>'
+            + '<div class="osr-sum-stats">' + atLeast + '<b>' + Number(rows.length).toLocaleString() + '</b> awards \u00b7 ' + atLeast + '<b>' + fmtUSD(total) + '</b> obligated \u00b7 ' + esc(label)
+              + (lostOffices.length ? ' \u00b7 ' + gotOffices.length + ' of ' + offices.length + ' offices' : '')
               + '<span class="osr-catmix">' + esc(osrCatMix(rows)) + '</span></div>'
           + '</div>'
           + '<div class="osr-export">'
@@ -1361,25 +1498,42 @@
             + '<button type="button" class="osr-copy" id="osr-copy">Copy</button>'
           + '</div>'
         + '</div>'
-        + (failed.length ? '<div class="osr-warn"><b>' + esc(failed.join(', ')) + '</b> did not come back \u2014 the lookup was rate-limited or unavailable, so nothing below includes '
-            + (failed.length > 1 ? 'those periods' : 'that period') + '. Try again shortly.</div>' : '')
-        + (truncated ? '<div class="osr-warn">This office returned more awards than one pull can carry, so the totals are a floor. Narrow the window with <b>Custom dates</b> for the complete set.</div>' : '')
-        + osrDashHtml(rows, chartFys)
+        + (failed.length ? '<div class="osr-warn">' + failLine + ' They are not zeros.</div>' : '')
+        + (truncSlots.length
+            ? '<div class="osr-warn"><b>' + esc(osrList(truncSlots.map((x) => (multi ? x.sl.office + ' \u00b7 ' : '') + x.sl.period)))
+              + '</b> returned more awards than one pull can carry, and the ones it carries are not the largest or the most recent \u2014 just the ones SAM handed back first. '
+              + 'Every figure' + (truncSlots.length < okSlots.length ? ' touching ' + (truncSlots.length > 1 ? 'those' : 'that') + ' period' : '')
+              + ' is a floor. Narrow the window with <b>Custom dates</b> for the full set.</div>'
+            : '')
+        + osrDashHtml(rows, chartFys, multi ? byOffice.map((b) => ({ label: b.label + (nameOf(b.label) ? ' ' + nameOf(b.label) : ''), value: b.value })) : null)
         + '<div id="osr-table">' + osrTableHtml(preview, rows) + '</div>';
       void box.offsetWidth; box.classList.add('is-in');
-      say(Number(rows.length).toLocaleString() + ' awards, ' + fmtUSD(total) + ' obligated, ' + label
-        + '. Table updated'
-        + (failed.length ? '. ' + failed.join(', ') + ' could not be retrieved' : '')
-        + (truncated ? '. Totals are a floor \u2014 more awards exist than one pull can carry' : '') + '.');
+      osrSay(Number(rows.length).toLocaleString() + ' awards, ' + fmtUSD(total) + ' obligated, ' + label
+        + (multi ? ', across ' + gotOffices.length + ' offices' : '') + '. Table updated'
+        + (failed.length ? '. ' + failed.length + ' lookup' + (failed.length > 1 ? 's' : '') + ' could not be retrieved' : '')
+        + (truncSlots.length ? '. Totals are a floor \u2014 more awards exist than one pull can carry' : '') + '.');
       osrPaint($('#osr-c-fy')); osrPaint($('#osr-c-cat')); osrPaint($('#osr-c-ven'));
-      const base = office + '_' + label.replace(/[^A-Za-z0-9-]/g, '') + '_contract-awards';
+      // Built from what came back, and from the periods themselves rather than the
+      // display label: stripping punctuation out of "FY2021, FY2023" and "FY2021-FY2023"
+      // produced the same filename for two different datasets.
+      const base = gotOffices.join('-') + '_'
+        + (range ? range.from + '_' + range.to
+                 : (gotFys.length > 1 && Number(gotFys[gotFys.length - 1]) - Number(gotFys[0]) === gotFys.length - 1
+                      ? 'FY' + gotFys[0] + '-FY' + gotFys[gotFys.length - 1]
+                      : gotFys.map((y) => 'FY' + y).join('_')))
+        + (failed.length ? '_partial' : '') + '_contract-awards';
 
       osrSyncCols();
 
       const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', () => {
         if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV \u2192'; return; }
         try {
-          const u8 = window.acqBuildXlsx(osrWorkbookData(office, officeName, label, chartFys, rows));
+          const u8 = window.acqBuildXlsx(osrWorkbookData({
+            offices: gotOffices, nameOf: nameOf, label: label, chartFys: chartFys, rows: rows,
+            byOffice: multi ? byOffice.map((b) => ({ label: b.label + (nameOf(b.label) ? ' ' + nameOf(b.label) : ''), value: b.value })) : [],
+            caveat: [failLine, truncSlots.length ? 'Some periods hit the pull cap, so these totals are a floor.' : '']
+              .filter(Boolean).join(' ').replace(/<[^>]+>/g, '')
+          }));
           if (!osrDownload(u8, base + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) xl.textContent = 'Use CSV \u2192';
         } catch (e) { xl.textContent = 'Use CSV \u2192'; }
       });
@@ -1406,14 +1560,19 @@
   function osrDay(iso) { return Number(iso.slice(8, 10)) + ' ' + OSR_MON[Number(iso.slice(5, 7)) - 1] + ' ' + iso.slice(0, 4); }
   // Everything the workbook needs, derived once. Kept here rather than in xlsxgen.js
   // so the generator stays a pure formatter with no knowledge of contract data.
-  function osrWorkbookData(office, officeName, label, chartFys, rows) {
+  function osrWorkbookData(o) {
+    const rows = o.rows, chartFys = o.chartFys;
     const byFy = chartFys.map((fy) => ({ label: 'FY ' + fy, value: rows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + (Number(r.obligated) || 0), 0) }));
     const byMon = {};
     rows.forEach((r) => { const d = String(r.dateSigned || ''); if (d.length >= 7) byMon[d.slice(0, 7)] = (byMon[d.slice(0, 7)] || 0) + (Number(r.obligated) || 0); });
     const byMonth = Object.keys(byMon).sort().map((k) => ({ label: OSR_MON[Number(k.slice(5, 7)) - 1] + ' ' + k.slice(2, 4), value: byMon[k] }));
     return {
-      office, officeName, fyLabel: label,
+      office: o.offices.length === 1 ? o.offices[0] : o.offices.length + ' offices',
+      officeName: o.offices.length === 1 ? o.nameOf(o.offices[0]) : o.offices.join(' \u00b7 '),
+      fyLabel: o.label,
+      caveat: o.caveat || '',
       columns: osrPickedCols(), rows,
+      byOffice: o.byOffice || [],
       byFy,
       byCat: osrSumBy(rows, (r) => r.category),
       byVen: osrSumBy(rows, (r) => osrVendorClean(r.vendor)).slice(0, 8),
@@ -1428,7 +1587,7 @@
     if (!inp || !go) return;
     osrRenderFyPicker();
     initColsPicker();
-    const run = () => { osrSugClose(); osrBuild(inp.value); };
+    const run = () => { osrSugClose(); osrBuild(); };
     go.addEventListener('click', run);
 
     // ── office combobox ──
@@ -1452,6 +1611,7 @@
         return run();
       }
       if (e.key === 'Escape' && (osrSugOpen || osrSugTimer)) osrSugClose();
+      if (e.key === 'Backspace' && !inp.value && osrPicked.length) { osrRemoveOffice(osrPicked.length - 1); osrBuild(); }
     });
     // mousedown, not click — blur would close the panel before a click landed
     const box = $('#osr-suggest');
@@ -1459,7 +1619,11 @@
       const it = e.target.closest('.ss-item'); if (!it) return;
       e.preventDefault(); osrSugPick(it.dataset.code);
     });
-    inp.addEventListener('blur', () => setTimeout(osrSugClose, 150));
+    // Only close if focus really left — a blur/refocus round trip used to fire this
+    // 150ms later and cancel the keystroke the user had just typed.
+    inp.addEventListener('blur', () => setTimeout(() => {
+      if (document.activeElement !== inp && !(document.activeElement && document.activeElement.closest && document.activeElement.closest('.osr-combo'))) osrSugClose();
+    }, 150));
     const browse = $('#osr-browse');
     const toggleBrowse = () => {
       if (osrSugOpen) { osrSugClose(); return; }
@@ -1473,13 +1637,27 @@
       });
     }
 
+    const tokens = $('#osr-tokens');
+    if (tokens) tokens.addEventListener('click', (e) => {
+      const x = e.target.closest('.osr-token-x'); if (!x) return;
+      osrRemoveOffice(Number(x.dataset.i)); inp.focus(); osrBuild();
+    });
     const sec = $('#spending-dashboard');
-    if (sec) sec.addEventListener('click', (e) => { const c = e.target.closest('.osr-chip'); if (!c) return; inp.value = c.dataset.office; osrSugClose(); osrBuild(c.dataset.office); });
+    if (sec) sec.addEventListener('click', (e) => { const c = e.target.closest('.osr-chip'); if (!c) return; osrSugClose(); osrSugPick(c.dataset.office); });
     if (sec) {
-      // Deep link wins over the demo pull: ?office=FA8750 should build that office.
-      let deep = '';
-      try { deep = (new URLSearchParams(location.search).get('office') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } catch (_) {}
-      const io = new IntersectionObserver((ents) => { ents.forEach((e) => { if (e.isIntersecting) { inp.value = deep || 'FA8501'; osrBuild(inp.value); io.disconnect(); } }); }, { rootMargin: '200px' });
+      // Deep link wins over the demo pull: ?office=FA8750 or ?office=FA8501,FA8750.
+      // Comma, not `~` — the server refuses a separator-bearing office outright.
+      let deep = [];
+      try {
+        deep = (new URLSearchParams(location.search).get('office') || '').toUpperCase()
+          .split(/[,\s]+/).map((c) => c.replace(/[^A-Z0-9]/g, ''))
+          .filter((c) => c.length >= 4 && c.length <= 6);
+        deep = deep.filter((c, i) => deep.indexOf(c) === i).slice(0, OSR_MAX_OFFICES);
+      } catch (_) {}
+      const io = new IntersectionObserver((ents) => { ents.forEach((e) => { if (e.isIntersecting) {
+        (deep.length ? deep : ['FA8501']).forEach(osrAddOffice);
+        osrBuild(); io.disconnect();
+      } }); }, { rootMargin: '200px' });
       io.observe(sec);
     }
   }

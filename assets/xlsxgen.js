@@ -208,6 +208,9 @@
     merges.push('A1:B1');
     put([cell('A' + r, o.officeName || '', 8), cell('B' + r, '', 8)]);
     put([cell('A' + r, o.fyLabel, 8), cell('B' + r, '', 8)]);
+    // Whatever could not be retrieved travels with the file — a workbook that gets
+    // forwarded is the last place a missing period should become invisible.
+    if (o.caveat) put([cell('A' + r, o.caveat, 8), cell('B' + r, '', 8)]);
     skip();
     sect('At a glance');
     put([cell('A' + r, 'Award actions', 1), cell('B' + r, o.awards || o.rows.length, 11)]);
@@ -430,13 +433,16 @@
       office: opts.office || '', officeName: opts.officeName || '', fyLabel: opts.fyLabel || '',
       columns: opts.columns || [], rows: opts.rows || [],
       byFy: opts.byFy || [], byCat: opts.byCat || [], byVen: opts.byVen || [],
-      bySet: opts.bySet || [], byMonth: opts.byMonth || [],
+      bySet: opts.bySet || [], byMonth: opts.byMonth || [], byOffice: opts.byOffice || [],
+      caveat: opts.caveat || '',
       awards: opts.awards, total: opts.total
     };
     // Which four charts earn a quadrant depends on the data: a single fiscal year is
     // one bar, a wholly-Service office is one doughnut slice. Anything below its
     // minimum is dropped and the next candidate takes the slot.
     var series = [
+      // Offices first: when several are in play, how they compare IS the report.
+      { key: 'off', title: 'Obligations by contracting office', data: o.byOffice, type: 'barh', min: 2 },
       { key: 'fy', title: 'Obligations by fiscal year', data: o.byFy, type: 'bar', min: 2 },
       { key: 'cat', title: 'Work type (PSC)', data: o.byCat, type: 'doughnut', min: 2 },
       { key: 'ven', title: 'Top vendors', data: o.byVen, type: 'barh', min: 2 },

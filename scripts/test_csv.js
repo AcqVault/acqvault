@@ -16,10 +16,11 @@ const buildSrc = grab(/function osrBuildCsv\(rows\) \{[\s\S]*?\n  \}/, 'osrBuild
 const pickSrc = grab(/function osrPickedCols\(\) \{[\s\S]*?\n  \}/, 'osrPickedCols');
 // osrOn is normally seeded from localStorage; stub it so the harness controls it.
 // eslint-disable-next-line no-eval
-const ctx = eval('(function(){' + colsSrc + '\nlet osrOn = {};OSR_COLS.forEach(function(c){osrOn[c[0]]=1;});\n'
+const ctx = eval('(function(){' + colsSrc + '\nlet osrOn = {};OSR_COLS.forEach(function(c){osrOn[c[0]]=1;});\nlet osrMulti=false;\n'
   + cellSrc + '\n' + pickSrc + '\n' + buildSrc
   + '\nreturn {OSR_COLS:OSR_COLS, osrCsvCell:osrCsvCell, osrBuildCsv:osrBuildCsv, osrPickedCols:osrPickedCols,'
-  + ' drop:function(k){delete osrOn[k];}, keepAll:function(){osrOn={};OSR_COLS.forEach(function(c){osrOn[c[0]]=1;});}};})()');
+  + ' drop:function(k){delete osrOn[k];}, setMulti:function(v){osrMulti=v;},'
+  + ' keepAll:function(){osrOn={};OSR_COLS.forEach(function(c){osrOn[c[0]]=1;});}};})()');
 const { OSR_COLS, osrCsvCell, osrBuildCsv, osrPickedCols } = ctx;
 
 // escaping rules
@@ -73,4 +74,22 @@ assert.deepStrictEqual(parseCsvLine(narrowed[0]),
   'picked columns keep OSR_COLS order');
 ctx.keepAll();
 
-console.log('CSV export: all checks passed (' + OSR_COLS.length + ' columns, picker narrows in step)');
+// Several offices in one report make Office load-bearing, so it is forced on — but
+// only for the duration, never written into the saved preference, so dropping back to
+// one office restores the user's own layout exactly.
+ctx.drop('office');
+assert.ok(osrPickedCols().every((c) => c[0] !== 'office'), 'single office: Office stays off when unticked');
+ctx.setMulti(true);
+const multiCols = osrPickedCols();
+assert.ok(multiCols.some((c) => c[0] === 'office'), 'multi office: Office is forced on');
+assert.deepStrictEqual(multiCols.map((c) => c[0]), OSR_COLS.map((c) => c[0]),
+  'forced Office keeps OSR_COLS order and adds nothing else');
+const multiCsv = osrBuildCsv(rows).split('\r\n');
+assert.strictEqual(parseCsvLine(multiCsv[0]).length, multiCols.length, 'multi header matches');
+assert.strictEqual(parseCsvLine(multiCsv[1]).length, multiCols.length, 'multi row matches');
+assert.strictEqual(parseCsvLine(multiCsv[0])[0], 'Office', 'Office leads the multi-office export');
+ctx.setMulti(false);
+assert.ok(osrPickedCols().every((c) => c[0] !== 'office'), 'back to one office: the preference is intact');
+ctx.keepAll();
+
+console.log('CSV export: all checks passed (' + OSR_COLS.length + ' columns, picker narrows in step, Office forced for multi-office)');
