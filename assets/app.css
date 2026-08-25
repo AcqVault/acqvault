@@ -385,7 +385,11 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .dash-skeleton { color: var(--muted2); }
 
 /* ── Contract spend research (SAM.gov Contract Awards / FPDS) ───────────────── */
-.osr-search { margin-top: 26px; }
+/* The office dropdown hangs out of .osr-search and has to clear the results below
+   it. .osr-results animates (opacity + transform), which makes it its own stacking
+   context, so a z-index on the panel alone cannot reach past it — the two BLOCKS
+   have to be layered instead. */
+.osr-search { margin-top: 26px; position: relative; z-index: 20; }
 .osr-fields { display: grid; grid-template-columns: minmax(0,300px) 1fr; gap: 20px 28px; align-items: start; }
 .osr-field { min-width: 0; }
 .osr-label { display:block; font-size:var(--fs-xs); font-weight:var(--fw-bold); letter-spacing:var(--ls-caps); text-transform:uppercase; color: rgba(255,255,255,0.5); margin-bottom: 9px; }
@@ -420,7 +424,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-fy-opt.on { color:#fff; border-color: var(--brass); background: rgba(var(--brass-rgb),0.22); }
 .osr-fy-opt input { accent-color: var(--brass-bright); width: 15px; height: 15px; margin: 0; }
 .osr-go {
-  margin-top: 20px; padding: 0 26px; height: 50px; font-size:var(--fs-md); font-weight: 750; color: #fff;
+  padding: 0 26px; height: 50px; font-size:var(--fs-md); font-weight: 750; color: #fff;
   background: linear-gradient(160deg,var(--navy-700),var(--navy-900)); border: 1px solid var(--brass-line);
   border-radius: var(--r-lg); cursor: pointer;
   box-shadow: 0 1px 2px rgba(20,16,10,.14), 0 6px 16px -4px rgba(var(--navy-rgb),.4);
@@ -429,7 +433,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-go:hover { border-color: rgba(var(--brass-bright-rgb),0.7); box-shadow: 0 1px 2px rgba(20,16,10,.14), 0 8px 22px -4px rgba(var(--navy-rgb),.5); }
 .osr-go:active { transform: scale(.985); }
 
-.osr-results { margin-top: 26px; opacity: 0; transform: translateY(10px); transition: opacity .4s var(--ease-out), transform .4s var(--ease-out); }
+.osr-results { margin-top: 26px; position: relative; z-index: 1; opacity: 0; transform: translateY(10px); transition: opacity .4s var(--ease-out), transform .4s var(--ease-out); }
 .osr-results.is-in { opacity: 1; transform: none; }
 .osr-summary {
   display:flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
@@ -472,7 +476,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-table tr.osr-clk[aria-expanded="true"] td { background: rgba(var(--brass-rgb),0.08); }
 /* appropriation detail row */
 .osr-fund td { padding: 0; background: #fbfaf7; white-space: normal; max-width: none; border-bottom: 1px solid var(--line2); }
-.osr-fund-box { padding: 14px 16px; }
+.osr-fund-box { padding: 14px 16px; max-width: min(78ch, 100%); }
 .osr-fund-load, .osr-fund-none { color: var(--muted); font-size:var(--fs-base); }
 .osr-fund-h { font-size:var(--fs-xs); font-weight:var(--fw-bold); letter-spacing:var(--ls-wide); text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
 .osr-fund-h span { font-weight:var(--fw-semibold); letter-spacing: 0; text-transform: none; color: var(--muted2); }
@@ -528,8 +532,23 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 }
 .osr-date:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 4px rgba(var(--brass-rgb),0.22); }
 
-/* column picker */
-.osr-cols-btn.on { background: rgba(var(--brass-rgb),0.28); border-color: var(--brass-bright); }
+.osr-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* field picker — sits beside Build table, because what the report contains is part
+   of asking for it, not an afterthought next to the download buttons */
+.osr-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 20px; }
+.osr-fieldsbtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: inherit; font-size: var(--fs-base); font-weight: var(--fw-semibold);
+  color: #fff; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(var(--brass-bright-rgb),0.4); border-radius: var(--r-md);
+  height: 50px; padding: 0 18px; cursor: pointer;
+  transition: background .16s var(--ease-out), border-color .16s var(--ease-out), transform .16s var(--ease-out);
+}
+.osr-fieldsbtn:hover { background: rgba(255,255,255,0.12); border-color: var(--brass-bright); }
+.osr-fieldsbtn:active { transform: scale(.98); }
+.osr-fieldsbtn.on { background: rgba(var(--brass-rgb),0.28); border-color: var(--brass-bright); }
+.osr-fieldsbtn-n { color: var(--brass-bright); font-variant-numeric: tabular-nums; }
 .osr-cols-panel {
   margin-top: 12px; padding: 16px 18px;
   background: rgba(255,255,255,0.05); border: 1px solid rgba(var(--brass-bright-rgb),0.26);

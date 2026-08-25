@@ -392,9 +392,17 @@
               </div>
             </div>
           </div>
-          <button id="osr-go" class="osr-go" type="button">Build table</button>
+          <div class="osr-actions">
+            <button type="button" class="osr-fieldsbtn" id="osr-cols-btn" aria-expanded="false" aria-controls="osr-cols-panel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              Choose fields<span class="osr-fieldsbtn-n" id="osr-cols-count"></span>
+            </button>
+            <button id="osr-go" class="osr-go" type="button">Build table</button>
+          </div>
+          <div id="osr-cols-host"></div>
         </div>
-        <div id="osr-results" class="osr-results fade-up" aria-live="polite" hidden></div>
+        <p class="osr-sr" id="osr-status" role="status" aria-live="polite"></p>
+        <div id="osr-results" class="osr-results fade-up" hidden></div>
         <div class="dash-foot"><span class="dash-live-dot"></span><span>Source: SAM.gov Contract Awards API (FPDS) \u00B7 the authoritative federal contract-award record since FPDS.gov retired \u00B7 <a href="https://sam.gov/fpds" target="_blank" rel="noopener">verify at SAM.gov</a></span></div>
       </div>`;
 
@@ -870,8 +878,8 @@
   function osrSaveCols() { try { localStorage.setItem(OSR_COLS_KEY, JSON.stringify(osrOn)); } catch (e) { /* private mode */ } }
   function osrPickedCols() { return OSR_COLS.filter((c) => osrOn[c[0]]); }
   function osrColsPanelHtml() {
-    return '<div class="osr-cols-panel" id="osr-cols-panel" role="group" aria-label="Columns in this report" hidden>'
-      + '<div class="osr-cols-head"><span>Columns in this report</span>'
+    return '<div class="osr-cols-panel" id="osr-cols-panel" role="group" aria-label="What this report includes" hidden>'
+      + '<div class="osr-cols-head"><span>What this report includes</span>'
         + '<span class="osr-cols-acts"><button type="button" class="osr-cols-act" data-cols="all">All</button>'
         + '<button type="button" class="osr-cols-act" data-cols="default">Reset</button>'
         + '<button type="button" class="osr-cols-act" data-cols="none">None</button></span></div>'
@@ -883,7 +891,7 @@
             }).join('')
           + '</div>').join('')
       + '</div>'
-      + '<div class="osr-cols-foot"><span id="osr-cols-count"></span> · applies to the table, the CSV and the workbook</div>'
+      + '<div class="osr-cols-foot" id="osr-cols-foot">Applies to the table on this page, the CSV and the workbook.</div>'
       + '</div>';
   }
 
@@ -927,9 +935,14 @@
     }
     return pre.concat(rest).slice(0, OSR_SUG_MAX);
   }
-  let osrSug = [], osrSugAt = -1, osrSugOpen = false;
+  let osrSug = [], osrSugAt = -1, osrSugOpen = false, osrSugTimer = null;
   function osrSugEls() { return { box: $('#osr-suggest'), inp: $('#osr-office'), btn: $('#osr-browse') }; }
   function osrSugClose() {
+    // Kill any pending render first. Without this a debounce armed just before the
+    // user pressed Enter fired ~90ms later, re-opened the panel over the results AND
+    // reset osrSugAt \u2014 so a highlighted office resolved to whatever raw text was in
+    // the box. Every commit path routes through here.
+    clearTimeout(osrSugTimer); osrSugTimer = null;
     const e = osrSugEls(); if (!e.box) return;
     osrSugOpen = false; osrSugAt = -1; e.box.hidden = true;
     if (e.inp) { e.inp.setAttribute('aria-expanded', 'false'); e.inp.removeAttribute('aria-activedescendant'); }
@@ -949,6 +962,8 @@
   }
   function osrSugRender(q) {
     const e = osrSugEls(); if (!e.box) return;
+    // the option this pointed at is about to stop existing
+    if (e.inp) e.inp.removeAttribute('aria-activedescendant');
     if (osrOfficeErr) {
       e.box.innerHTML = '<div class="ss-empty">The office directory didn\u2019t load — type the six-character code instead.</div>';
       e.box.hidden = false; osrSugOpen = true; osrSug = []; osrSugAt = -1;
@@ -982,19 +997,31 @@
   // question we refuse to answer by guessing.
   function osrResolve(raw) {
     const t = String(raw || '').trim();
+    if (!t) return '';
     const code = t.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (/^[A-Z0-9]{6}$/.test(code) && !/\s/.test(t)) return code;
     const m = osrMatch(t);
+    // An exact code always wins, then a single match, then a single exact-code match.
+    if (m.some((r) => r[0] === code)) return code;
     if (m.length === 1) return m[0][0];
     const exact = m.filter((r) => r[0].toLowerCase() === t.toLowerCase());
     if (exact.length === 1) return exact[0][0];
-    return code.length === 6 ? code : '';
+    // Only fall back to raw six characters when the directory knows nothing about the
+    // text \u2014 otherwise a NAME that happens to be six letters ('NAVAIR', 'AFLCMC') was
+    // being sent to SAM as a DoDAAC and came back as a bogus empty result.
+    if (/^[A-Z0-9]{6}$/.test(code) && !/\s/.test(t) && !m.length) return code;
+    return '';
   }
 
   function osrCurFy() { const n = new Date(); return n.getUTCFullYear() + (n.getUTCMonth() >= 9 ? 1 : 0); } // FY starts 1 Oct
   function osrFyChoices() {
     const cur = osrCurFy(), out = [];
     for (let y = cur; y >= cur - 5; y--) out.push(y); // current + 5 prior
+    return out;
+  }
+  let osrFysBeforeCustom = [];
+  function osrDefaultFys() {
+    const cur = osrCurFy(), out = [];
+    for (let y = cur - 3; y < cur; y++) out.push(String(y));
     return out;
   }
   function osrRenderFyPicker() {
@@ -1011,17 +1038,19 @@
       const custom = $('#osr-custom'), range = $('#osr-range');
       if (e.target.id === 'osr-custom') {
         if (e.target.checked) {   // the two are alternatives; picking one clears the other
+          osrFysBeforeCustom = osrSelectedFys();
           host.querySelectorAll('input[type=checkbox]:not(#osr-custom)').forEach((c) => {
             c.checked = false; const lb = c.closest('.osr-fy-opt'); if (lb) lb.classList.remove('on');
           });
           osrRangeDefaults();
         } else if (!osrSelectedFys().length) {
-          // Turning the custom window back off must not leave the period empty —
-          // put back the years that were on before it took them.
-          const cur = osrCurFy();
+          // Put back the years that were on before the custom window took them, not the
+          // defaults — backing out of a custom window must not quietly change which
+          // years you asked for.
+          const back = osrFysBeforeCustom.length ? osrFysBeforeCustom : osrDefaultFys();
           host.querySelectorAll('input[type=checkbox]:not(#osr-custom)').forEach((c) => {
-            const y = Number(c.value);
-            if (y >= cur - 3 && y < cur) { c.checked = true; const lb = c.closest('.osr-fy-opt'); if (lb) lb.classList.add('on'); }
+            const on = back.indexOf(c.value) >= 0;
+            c.checked = on; const lb = c.closest('.osr-fy-opt'); if (lb) lb.classList.toggle('on', on);
           });
         }
       } else if (e.target.checked && custom && custom.checked) {
@@ -1158,6 +1187,11 @@
     if (open) { const p = open.previousElementSibling; if (p) p.setAttribute('aria-expanded', 'false'); open.remove(); }
     const piid = tr.getAttribute('data-piid') || '';
     tr.setAttribute('aria-expanded', 'true');
+    // The detail spans every column, so its content lives at the far left of a table
+    // that may be scrolled well to the right — opening it would look like nothing
+    // happened. Bring the table back to the panel.
+    const wrap = tr.closest('.osr-tablewrap');
+    if (wrap) wrap.scrollLeft = 0;
     const det = document.createElement('tr');
     det.className = 'osr-fund';
     det.innerHTML = '<td colspan="' + Math.max(1, osrPickedCols().length) + '"><div class="osr-fund-box osr-fund-load">Looking up appropriation for ' + esc(piid) + '&hellip;</div></td>';
@@ -1167,19 +1201,22 @@
       if (!d) {
         const r = await fetch('/api/market-research?mode=award-funding&piid=' + encodeURIComponent(piid), { headers: { Accept: 'application/json' } });
         d = r.ok ? await r.json() : { found: false, note: 'Appropriation lookup failed.' };
-        osrFundCache[piid] = d;
+        // Only cache an ANSWER. The handler returns 200 even when USASpending timed
+        // out, so caching that pinned "try again shortly" to the row for the life of
+        // the page and trying again did nothing. `source` marks a real lookup.
+        if (d && (d.source || d.found === true || d.ambiguous)) osrFundCache[piid] = d;
       }
       if (det.parentNode) det.querySelector('td').innerHTML = osrFundHtml(d);
     } catch (e) {
       if (det.parentNode) det.querySelector('td').innerHTML = '<div class="osr-fund-box osr-fund-none">Appropriation lookup is unavailable right now.</div>';
     }
   }
-  let osrToken = 0, osrRows = [];
+  let osrToken = 0, osrRows = [], osrPreview = [];
   // Preview table + its note, rebuilt on its own whenever the column picker changes
   // so re-picking columns never re-fetches (or re-pages) anything.
   function osrTableHtml(preview, rows) {
     const cols = osrPickedCols();
-    if (!cols.length) return '<div class="osr-empty">No columns selected \u2014 pick at least one in <b>Columns</b>.</div>';
+    if (!cols.length) return '<div class="osr-empty">No fields selected \u2014 pick at least one in <b>Choose fields</b>.</div>';
     return '<div class="osr-tablewrap"><table class="osr-table"><thead><tr>'
       + cols.map((c) => '<th' + (OSR_NUM[c[0]] ? ' class="osr-num"' : '') + '>' + esc(c[1]) + '</th>').join('')
       + '</tr></thead><tbody>'
@@ -1193,43 +1230,124 @@
         + ' awards by obligation \u00b7 click any row for its appropriation (color of money) \u00b7 the CSV and workbook carry all '
         + Number(rows.length).toLocaleString() + ' rows across the ' + cols.length + ' column' + (cols.length === 1 ? '' : 's') + ' you picked</div>';
   }
+  function osrBindRows() {
+    const tbody = document.querySelector('#osr-table .osr-table tbody'); if (!tbody) return;
+    tbody.addEventListener('click', (e) => { const tr = e.target.closest('tr.osr-clk'); if (tr) osrToggleFunding(tr); });
+    tbody.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const tr = e.target.closest('tr.osr-clk'); if (tr) { e.preventDefault(); osrToggleFunding(tr); } } });
+  }
+  // Re-picking fields re-renders the table from rows already in hand — it must never
+  // refetch, and it must never page SAM again.
+  function osrRenderTable() {
+    const host = $('#osr-table'); if (!host) return;
+    host.innerHTML = osrTableHtml(osrPreview, osrRows);
+    osrBindRows();
+  }
+  function osrSyncCols() {
+    const n = osrPickedCols().length;
+    const badge = $('#osr-cols-count'); if (badge) badge.textContent = n === OSR_COLS.length ? '' : (' · ' + n);
+    const foot = $('#osr-cols-foot');
+    if (foot) foot.textContent = n + ' of ' + OSR_COLS.length + ' fields · applies to the table on this page, the CSV and the workbook.';
+    // an export of nothing is not a file anybody wants to open
+    ['#osr-xlsx', '#osr-dl', '#osr-copy'].forEach((sel) => { const b = $(sel); if (b) b.disabled = !n; });
+  }
+  function initColsPicker() {
+    const host = $('#osr-cols-host'), btn = $('#osr-cols-btn');
+    if (!host || !btn) return;
+    host.innerHTML = osrColsPanelHtml();
+    const panel = $('#osr-cols-panel');
+    osrSyncCols();
+    btn.addEventListener('click', () => {
+      const open = panel.hidden;
+      panel.hidden = !open;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.classList.toggle('on', open);
+    });
+    panel.addEventListener('change', (e) => {
+      const cb = e.target.closest('input[type=checkbox]'); if (!cb) return;
+      if (cb.checked) osrOn[cb.value] = 1; else delete osrOn[cb.value];
+      const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', cb.checked);
+      osrSaveCols(); osrSyncCols(); osrRenderTable();
+    });
+    panel.addEventListener('click', (e) => {
+      const act = e.target.closest('.osr-cols-act'); if (!act) return;
+      const mode = act.dataset.cols;
+      osrOn = mode === 'all' ? (function () { const a = {}; OSR_COLS.forEach((c) => { a[c[0]] = 1; }); return a; })()
+        : mode === 'default' ? osrDefaultCols() : {};
+      panel.querySelectorAll('input[type=checkbox]').forEach((cb) => {
+        const on = !!osrOn[cb.value];
+        cb.checked = on; const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', on);
+      });
+      osrSaveCols(); osrSyncCols(); osrRenderTable();
+    });
+  }
+
+  // 'FY2023-FY2025' only when the years are actually contiguous: picking 2021 and
+  // 2023 must not claim 2022. This string is also the export filename and the workbook
+  // heading, which outlive the chart that would have shown the gap.
+  function osrFyLabel(fys) {
+    if (fys.length === 1) return 'FY' + fys[0];
+    const first = Number(fys[0]), last = Number(fys[fys.length - 1]);
+    return (last - first === fys.length - 1)
+      ? 'FY' + fys[0] + '\u2013FY' + fys[fys.length - 1]
+      : fys.map((y) => 'FY' + y).join(', ');
+  }
   async function osrBuild(raw) {
     const box = $('#osr-results'); if (!box) return;
+    // A name typed before the directory landed resolved against an empty list.
+    await osrLoadOffices();
     const office = osrResolve(raw);
     const fys = osrSelectedFys();
     const range = osrCustomRange();
-    const show = (html) => { box.hidden = false; box.innerHTML = '<div class="osr-empty">' + html + '</div>'; void box.offsetWidth; box.classList.add('is-in'); };
+    const say = (t) => { const n = $('#osr-status'); if (n) n.textContent = t; };
+    const show = (html) => {
+      box.hidden = false; box.innerHTML = '<div class="osr-empty">' + html + '</div>';
+      say(box.textContent.trim());
+      void box.offsetWidth; box.classList.add('is-in');
+    };
     if (!office) return show('Pick a contracting office from the list, or type its six-character code \u2014 e.g. <b>FA8501</b>.');
-    if (!range && !fys.length) return show('Pick at least one fiscal year, or tick <b>Custom dates</b> and set a window.');
     if ($('#osr-custom') && $('#osr-custom').checked && !range) return show('Set both a <b>From</b> and a <b>To</b> date for a custom window.');
+    if (!range && !fys.length) return show('Pick at least one fiscal year, or tick <b>Custom dates</b> and set a window.');
     const token = ++osrToken;
     const label = range
       ? (osrDay(range.from) + ' \u2013 ' + osrDay(range.to))
-      : (fys.length > 1 ? ('FY' + fys[0] + '\u2013FY' + fys[fys.length - 1]) : ('FY' + fys[0]));
+      : osrFyLabel(fys);
     box.hidden = false; box.classList.remove('is-in');
     box.innerHTML = '<div class="dash-loading dash-skeleton">Pulling ' + esc(office) + ' awards for ' + esc(label) + ' from SAM.gov (FPDS)\u2026</div>';
+    say('Pulling ' + office + ' awards for ' + label + '.');
     try {
       const results = range
         ? [await osrFetchRange(office, range).catch(() => null)]
         : await Promise.all(fys.map((fy) => osrFetchFy(office, fy).catch(() => null)));
       if (token !== osrToken) return;
-      const good = results.filter((d) => d && Array.isArray(d.rows));
+      // A quota-limited or failed year still answers 200 with an EMPTY rows array, so
+      // it passes an Array.isArray test and silently contributes nothing while the
+      // heading, the filename and the workbook all keep claiming to cover it.
+      const periods = range ? [label] : fys;
+      const failed = periods.filter((_, i) => !results[i] || results[i].limited);
+      const good = results.filter((d) => d && Array.isArray(d.rows) && !d.limited);
       const rows = good.reduce((acc, d) => acc.concat(d.rows), []);
       osrRows = rows;
-      if (!rows.length) {
+      if (!good.length) {
         const note = (results.find((d) => d && d.note) || {}).note;
-        return show(note ? esc(note) : ('No contract awards found for <b>' + esc(office) + '</b> in ' + esc(label)
-          + ' \u2014 check the office code, or the lookup may be briefly rate-limited.'));
+        return show(esc(note || 'The spend lookup is unavailable right now \u2014 try again shortly.'));
       }
-      const officeName = (good.find((d) => d.officeName) || {}).officeName || '';
+      if (!rows.length) {
+        return show('No contract awards found for <b>' + esc(office) + '</b> in ' + esc(label)
+          + ' \u2014 check the office, or try a wider period.');
+      }
+      // SAM prefixes the office name with its own code, so the heading read
+      // "FA8501 FA8501  OPL CONTRACTING AFSC/PZIO".
+      const officeName = String((good.find((d) => d.officeName) || {}).officeName || '')
+        .replace(new RegExp('^\\s*' + office + '\\s+', 'i'), '').replace(/\s{2,}/g, ' ').trim();
       const total = rows.reduce((s, r) => s + r.obligated, 0);
       const truncated = good.some((d) => d.truncated);
       // Chart the fiscal years the awards actually landed in — a custom window can
       // straddle two, and a picked year with no awards should still read as zero.
       const chartFys = range
         ? [...new Set(rows.map((r) => String(r.fiscalYear)).filter(Boolean))].sort()
-        : fys;
+        : fys.filter((fy) => failed.indexOf(fy) < 0);   // a year we never got is not a $0 bar
       const preview = rows.slice().sort((a, b) => b.obligated - a.obligated).slice(0, 25);
+      osrPreview = preview;
       box.innerHTML =
         '<div class="osr-summary">'
           + '<div class="osr-sum-l">'
@@ -1238,55 +1356,25 @@
               + '<span class="osr-catmix">' + esc(osrCatMix(rows)) + '</span></div>'
           + '</div>'
           + '<div class="osr-export">'
-            + '<button type="button" class="osr-copy osr-cols-btn" id="osr-cols-btn" aria-expanded="false" aria-controls="osr-cols-panel">Columns</button>'
             + '<button type="button" class="osr-dl" id="osr-xlsx">Download Excel</button>'
             + '<button type="button" class="osr-copy" id="osr-dl">CSV</button>'
             + '<button type="button" class="osr-copy" id="osr-copy">Copy</button>'
           + '</div>'
         + '</div>'
-        + osrColsPanelHtml()
+        + (failed.length ? '<div class="osr-warn"><b>' + esc(failed.join(', ')) + '</b> did not come back \u2014 the lookup was rate-limited or unavailable, so nothing below includes '
+            + (failed.length > 1 ? 'those periods' : 'that period') + '. Try again shortly.</div>' : '')
         + (truncated ? '<div class="osr-warn">This office returned more awards than one pull can carry, so the totals are a floor. Narrow the window with <b>Custom dates</b> for the complete set.</div>' : '')
         + osrDashHtml(rows, chartFys)
         + '<div id="osr-table">' + osrTableHtml(preview, rows) + '</div>';
       void box.offsetWidth; box.classList.add('is-in');
+      say(Number(rows.length).toLocaleString() + ' awards, ' + fmtUSD(total) + ' obligated, ' + label
+        + '. Table updated'
+        + (failed.length ? '. ' + failed.join(', ') + ' could not be retrieved' : '')
+        + (truncated ? '. Totals are a floor \u2014 more awards exist than one pull can carry' : '') + '.');
       osrPaint($('#osr-c-fy')); osrPaint($('#osr-c-cat')); osrPaint($('#osr-c-ven'));
       const base = office + '_' + label.replace(/[^A-Za-z0-9-]/g, '') + '_contract-awards';
 
-      // ── column picker ──
-      const colsBtn = $('#osr-cols-btn'), colsPanel = $('#osr-cols-panel');
-      const colsCount = () => {
-        const n = osrPickedCols().length;
-        const lbl = $('#osr-cols-count'); if (lbl) lbl.textContent = n + ' of ' + OSR_COLS.length + ' columns';
-        // an export of nothing is not a file anybody wants to open
-        ['#osr-xlsx', '#osr-dl', '#osr-copy'].forEach((sel) => { const b = $(sel); if (b) b.disabled = !n; });
-      };
-      colsCount();
-      if (colsBtn && colsPanel) {
-        colsBtn.addEventListener('click', () => {
-          const open = colsPanel.hidden;
-          colsPanel.hidden = !open; colsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-          colsBtn.classList.toggle('on', open);
-        });
-        colsPanel.addEventListener('change', (e) => {
-          const cb = e.target.closest('input[type=checkbox]'); if (!cb) return;
-          if (cb.checked) osrOn[cb.value] = 1; else delete osrOn[cb.value];
-          const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', cb.checked);
-          osrSaveCols(); colsCount();
-          const host = $('#osr-table'); if (host) { host.innerHTML = osrTableHtml(preview, rows); osrBindRows(); }
-        });
-        colsPanel.addEventListener('click', (e) => {
-          const act = e.target.closest('.osr-cols-act'); if (!act) return;
-          const mode = act.dataset.cols;
-          osrOn = mode === 'all' ? (function () { const a = {}; OSR_COLS.forEach((c) => { a[c[0]] = 1; }); return a; })()
-            : mode === 'default' ? osrDefaultCols() : {};
-          colsPanel.querySelectorAll('input[type=checkbox]').forEach((cb) => {
-            const on = !!osrOn[cb.value];
-            cb.checked = on; const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', on);
-          });
-          osrSaveCols(); colsCount();
-          const host = $('#osr-table'); if (host) { host.innerHTML = osrTableHtml(preview, rows); osrBindRows(); }
-        });
-      }
+      osrSyncCols();
 
       const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', () => {
         if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV \u2192'; return; }
@@ -1300,18 +1388,18 @@
       });
       const cp = $('#osr-copy'); if (cp) cp.addEventListener('click', () => {
         const csv = osrBuildCsv(osrRows);
-        const done = () => { cp.textContent = 'Copied'; setTimeout(() => { cp.textContent = 'Copy'; }, 1600); };
-        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(done, done); else done();
+        const back = () => setTimeout(() => { cp.textContent = 'Copy'; }, 1900);
+        const ok = () => { cp.textContent = 'Copied'; back(); };
+        // This is the fallback for machines where downloads are blocked, so it must not
+        // claim success it did not have.
+        const bad = () => { cp.textContent = 'Copy failed'; back(); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(ok, bad); else bad();
       });
-      function osrBindRows() {
-        const tbody = box.querySelector('.osr-table tbody'); if (!tbody) return;
-        tbody.addEventListener('click', (e) => { const tr = e.target.closest('tr.osr-clk'); if (tr) osrToggleFunding(tr); });
-        tbody.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const tr = e.target.closest('tr.osr-clk'); if (tr) { e.preventDefault(); osrToggleFunding(tr); } } });
-      }
-      osrBindRows();
+      osrRenderTable();
     } catch (e) {
       if (token !== osrToken) return;
       box.innerHTML = '<div class="dash-loading dash-skeleton">Spend lookup is briefly unavailable \u2014 try again shortly.</div>';
+      say('Spend lookup is briefly unavailable. Try again shortly.');
     }
   }
   const OSR_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -1339,17 +1427,17 @@
     const inp = $('#osr-office'); const go = $('#osr-go');
     if (!inp || !go) return;
     osrRenderFyPicker();
+    initColsPicker();
     const run = () => { osrSugClose(); osrBuild(inp.value); };
     go.addEventListener('click', run);
 
     // ── office combobox ──
     // The field still takes a raw six-character code and Enter, exactly as before;
     // the list is an accelerator on top of that and must never become a gate.
-    let sugTimer = null;
     inp.addEventListener('focus', () => { if (!osrSugOpen) osrSugOpenList(inp.value); });
     inp.addEventListener('input', () => {
-      clearTimeout(sugTimer);
-      sugTimer = setTimeout(() => osrSugOpenList(inp.value), 90);
+      clearTimeout(osrSugTimer);
+      osrSugTimer = setTimeout(() => osrSugOpenList(inp.value), 90);
     });
     inp.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -1363,7 +1451,7 @@
         if (osrSugOpen && osrSugAt >= 0 && osrSug[osrSugAt]) return osrSugPick(osrSug[osrSugAt][0]);
         return run();
       }
-      if (e.key === 'Escape' && (osrSugOpen || sugTimer)) { clearTimeout(sugTimer); osrSugClose(); }
+      if (e.key === 'Escape' && (osrSugOpen || osrSugTimer)) osrSugClose();
     });
     // mousedown, not click — blur would close the panel before a click landed
     const box = $('#osr-suggest');
@@ -1373,11 +1461,17 @@
     });
     inp.addEventListener('blur', () => setTimeout(osrSugClose, 150));
     const browse = $('#osr-browse');
-    if (browse) browse.addEventListener('mousedown', (e) => {
-      e.preventDefault();
+    const toggleBrowse = () => {
       if (osrSugOpen) { osrSugClose(); return; }
       inp.focus(); osrSugOpenList('');   // empty query lists every office
-    });
+    };
+    if (browse) {
+      browse.addEventListener('mousedown', (e) => { e.preventDefault(); toggleBrowse(); });
+      // mousedown alone left this focusable, aria-expanded control inert to the keyboard
+      browse.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleBrowse(); }
+      });
+    }
 
     const sec = $('#spending-dashboard');
     if (sec) sec.addEventListener('click', (e) => { const c = e.target.closest('.osr-chip'); if (!c) return; inp.value = c.dataset.office; osrSugClose(); osrBuild(c.dataset.office); });
