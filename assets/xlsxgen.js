@@ -275,6 +275,13 @@
       + (columns.length ? '<autoFilter ref="A1:' + last + Math.max(1, data.length + 1) + '"/>' : '')
       + '<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/>'
       + '<pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0" paperSize="1"/>'
+      // FY, Mod, PSC, NAICS and UEI are identifiers, not quantities \u2014 they stay text so a
+      // leading zero survives. Excel flags every one of them "number stored as text",
+      // which on a few thousand rows is a green triangle in every cell. Say it is
+      // intentional instead. (CT_Worksheet order: after pageSetup, before drawing.)
+      + (columns.length && data.length
+          ? '<ignoredErrors><ignoredError sqref="A2:' + last + (data.length + 1) + '" numberStoredAsText="1"/></ignoredErrors>'
+          : '')
       + '</worksheet>';
   }
   var OSRNUM = { obligated: 1, awardAmount: 1, ceiling: 1 };

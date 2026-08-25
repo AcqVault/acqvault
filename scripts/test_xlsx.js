@@ -247,6 +247,9 @@ assert.ok(summaryXml.indexOf('<sheetData>') < summaryXml.indexOf('<mergeCells'),
 assert.ok(summaryXml.indexOf('<pageMargins') < summaryXml.indexOf('<drawing '), 'drawing must come last');
 assert.ok(data.indexOf('<sheetData>') < data.indexOf('<autoFilter'), 'autoFilter must follow sheetData');
 assert.ok(data.indexOf('<cols>') < data.indexOf('<sheetData>'), 'cols must precede sheetData');
+assert.ok(/<ignoredErrors><ignoredError sqref="A2:[A-Z]+\d+" numberStoredAsText="1"\/><\/ignoredErrors>/.test(data),
+  'Data suppresses the number-stored-as-text flag on its identifier columns');
+assert.ok(data.indexOf('<pageSetup') < data.indexOf('<ignoredErrors>'), 'ignoredErrors must follow pageSetup');
 
 // ── the chart set adapts: a one-point series is not worth a quadrant ──
 // (a single fiscal year would otherwise render as a lone bar labelled with its own total)
