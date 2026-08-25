@@ -2,7 +2,7 @@
    ACQVAULT — WIDGETS ADD-ON  (self-contained, no deps)
    1) Threshold quick-reference   2) Acronym decoder
    3) What's new since last visit 4) DAF spending dashboard
-   Injects the Toolkit + Spending sections after #quick-links and wires behaviour.
+   Injects the Spending + Toolkit sections into the page flow and wires behaviour.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -269,11 +269,9 @@
      INJECT MARKUP
      ════════════════════════════════════════════════════════════ */
   function injectSections() {
-    // Anchor the injected tool sections on #quick-links (stable). The former #features
-    // band was merged into the Coverage band; keep a null-safe ref for the fallback below.
-    const features = $('#features');
-    const anchor = $('#quick-links') || $('#market-research') || features;
-    if (!anchor) return;
+    // Both injected bands seat themselves next to a band that is already in the HTML,
+    // so page order lives in index.html and this file only says "after which one".
+    if (!$('#market-research') && !$('#study')) return;
 
     const toolkit = document.createElement('section');
     toolkit.className = 'sec sec-off';
@@ -368,17 +366,30 @@
         <div class="osr-search fade-up">
           <div class="osr-fields">
             <div class="osr-field osr-field-office">
-              <label class="osr-label" for="osr-office">Contracting office (DoDAAC)</label>
-              <input id="osr-office" class="osr-input" type="text" autocomplete="off" spellcheck="false" maxlength="6" placeholder="e.g. FA8501" aria-label="Contracting office code (DoDAAC)">
+              <label class="osr-label" for="osr-office">Contracting office</label>
+              <div class="osr-combo">
+                <input id="osr-office" class="osr-input" type="text" autocomplete="off" spellcheck="false"
+                  role="combobox" aria-expanded="false" aria-controls="osr-suggest" aria-autocomplete="list"
+                  placeholder="Code or name \u2014 FA8501, 45 CONS, NAVAIR\u2026" aria-label="Contracting office \u2014 type a DoDAAC or a name">
+                <button type="button" class="osr-combo-btn" id="osr-browse" aria-label="Browse every contracting office" aria-expanded="false" aria-controls="osr-suggest">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="search-suggest osr-suggest" id="osr-suggest" role="listbox" aria-label="Contracting offices" hidden></div>
+              </div>
               <div class="osr-examples" aria-label="Example offices">
                 <span class="osr-ex-lbl">Try:</span>
                 <button type="button" class="osr-chip" data-office="FA8501">FA8501</button>
                 <button type="button" class="osr-chip" data-office="FA8750">FA8750</button>
+                <button type="button" class="osr-chip" data-office="N00019">N00019</button>
               </div>
             </div>
             <div class="osr-field">
-              <span class="osr-label" id="osr-fy-label">Fiscal years</span>
+              <span class="osr-label" id="osr-fy-label">Period</span>
               <div class="osr-fy" role="group" aria-labelledby="osr-fy-label" id="osr-fy"></div>
+              <div class="osr-range" id="osr-range" hidden>
+                <label class="osr-range-lbl">From <input type="date" id="osr-from" class="osr-date" aria-label="Signed on or after"></label>
+                <label class="osr-range-lbl">To <input type="date" id="osr-to" class="osr-date" aria-label="Signed on or before"></label>
+              </div>
             </div>
           </div>
           <button id="osr-go" class="osr-go" type="button">Build table</button>
@@ -387,32 +398,31 @@
         <div class="dash-foot"><span class="dash-live-dot"></span><span>Source: SAM.gov Contract Awards API (FPDS) \u00B7 the authoritative federal contract-award record since FPDS.gov retired \u00B7 <a href="https://sam.gov/fpds" target="_blank" rel="noopener">verify at SAM.gov</a></span></div>
       </div>`;
 
-    // Page flow: Market Research, Quick Links, Toolkit, Spending, Coverage.
-    const quicklinks = $('#quick-links');
+    // Page flow: Market Research, Spending, Library, Study, Toolkit, Quick Links, Coverage.
     const marketResearch = $('#market-research');
-    if (marketResearch && quicklinks && (marketResearch.compareDocumentPosition(quicklinks) & Node.DOCUMENT_POSITION_PRECEDING)) {
-      quicklinks.insertAdjacentElement('beforebegin', marketResearch);
-    }
-    (quicklinks || marketResearch || features).insertAdjacentElement('afterend', toolkit);
-    toolkit.insertAdjacentElement('afterend', dash);
+    const study = $('#study');
+    (marketResearch || study).insertAdjacentElement('afterend', dash);
+    (study || dash).insertAdjacentElement('afterend', toolkit);
 
     // reveal-on-scroll for the freshly injected .fade-up nodes
     const io = new IntersectionObserver((ents) => {
       ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
     }, { threshold: 0.01, rootMargin: '0px 0px 20% 0px' });
-    [marketResearch, toolkit, dash].filter(Boolean).forEach((sec) => sec.querySelectorAll('.fade-up').forEach((el) => io.observe(el)));
+    [$('#market-research'), toolkit, dash].filter(Boolean).forEach((sec) => sec.querySelectorAll('.fade-up').forEach((el) => io.observe(el)));
 
-    // add nav links (Toolkit + Spending) in scroll order, after Quick Links
+    // Nav links for the two injected bands, anchored on the same two links the DOM
+    // moves used, so nav order can never drift from scroll order.
     const navCenter = $('nav .nav-center');
     if (navCenter) {
-      const tk = document.createElement('a');
-      tk.href = '#toolkit'; tk.textContent = 'Toolkit';
-      const quickLink = navCenter.querySelector('a[href="#quick-links"]');
-      if (quickLink) quickLink.insertAdjacentElement('afterend', tk);
-      else navCenter.insertBefore(tk, navCenter.firstChild);
-      const sp = document.createElement('a');
-      sp.href = '#spending-dashboard'; sp.textContent = 'Spending';
-      tk.insertAdjacentElement('afterend', sp);
+      const after = (sel, href, text) => {
+        const a = document.createElement('a');
+        a.href = href; a.textContent = text;
+        const ref = navCenter.querySelector(sel);
+        if (ref) ref.insertAdjacentElement('afterend', a); else navCenter.appendChild(a);
+        return a;
+      };
+      after('a[href="#market-research"]', '#spending-dashboard', 'Spending');
+      after('a[href="/study"]', '#toolkit', 'Toolkit');
     }
     initHomeNavPolish();
   }
@@ -825,15 +835,162 @@
     ['vendor', 'Vendor'], ['vendorUEI', 'Vendor UEI'], ['smallBusiness', 'Small Business'],
     ['obligated', 'Obligated (Action)'], ['awardAmount', 'Award Amount'], ['ceiling', 'Ceiling (All Options)'], ['pricingType', 'Pricing Type'],
     ['setAside', 'Set-Aside'], ['extentCompeted', 'Extent Competed'],
-    ['funding', 'Funding (Color of Money)'],
     ['popState', 'PoP State'], ['dateSigned', 'Date Signed']
   ];
-  // The on-page preview shows every column the CSV does, minus the two that repeat on
-  // every row for a single-office query (Office, Office Name — already in the header)
-  // and the long free-text Description; the table scrolls horizontally.
   const OSR_NUM = { obligated: 1, awardAmount: 1, ceiling: 1 };
-  const OSR_SKIP_PREVIEW = { office: 1, officeName: 1, description: 1 };
-  const OSR_PREVIEW = OSR_COLS.filter((c) => !OSR_SKIP_PREVIEW[c[0]]);
+  // Column groups drive the picker's layout only — OSR_COLS stays the single source
+  // of column order for the table, the CSV and the workbook.
+  const OSR_GROUPS = [
+    ['Identity', ['office', 'officeName', 'fiscalYear', 'piid', 'mod', 'dateSigned']],
+    ['Money', ['obligated', 'awardAmount', 'ceiling', 'pricingType']],
+    ['What was bought', ['category', 'pscCode', 'pscName', 'naicsCode', 'naicsName', 'description']],
+    ['Who got it', ['vendor', 'vendorUEI', 'smallBusiness', 'popState']],
+    ['How it was bought', ['awardOrIdv', 'awardType', 'setAside', 'extentCompeted']]
+  ];
+  const OSR_COLS_KEY = 'acqvault-osr-cols';
+  // Every report is one office, so Office and Office Name hold the same value on every
+  // row — they are in the heading and the filename already. Off by default, one click
+  // to add back for anyone stacking several offices into one sheet.
+  const OSR_COLS_OFF = { office: 1, officeName: 1 };
+  function osrDefaultCols() {
+    const d = {}; OSR_COLS.forEach((c) => { if (!OSR_COLS_OFF[c[0]]) d[c[0]] = 1; });
+    return d;
+  }
+  let osrOn = (function () {
+    try {
+      const saved = JSON.parse(localStorage.getItem(OSR_COLS_KEY) || 'null');
+      if (saved && typeof saved === 'object') {
+        const out = {};
+        OSR_COLS.forEach((c) => { if (saved[c[0]]) out[c[0]] = 1; });
+        if (Object.keys(out).length) return out;   // never restore an empty report
+      }
+    } catch (e) { /* private mode */ }
+    return osrDefaultCols();
+  })();
+  function osrSaveCols() { try { localStorage.setItem(OSR_COLS_KEY, JSON.stringify(osrOn)); } catch (e) { /* private mode */ } }
+  function osrPickedCols() { return OSR_COLS.filter((c) => osrOn[c[0]]); }
+  function osrColsPanelHtml() {
+    return '<div class="osr-cols-panel" id="osr-cols-panel" role="group" aria-label="Columns in this report" hidden>'
+      + '<div class="osr-cols-head"><span>Columns in this report</span>'
+        + '<span class="osr-cols-acts"><button type="button" class="osr-cols-act" data-cols="all">All</button>'
+        + '<button type="button" class="osr-cols-act" data-cols="default">Reset</button>'
+        + '<button type="button" class="osr-cols-act" data-cols="none">None</button></span></div>'
+      + '<div class="osr-cols-grid">'
+      + OSR_GROUPS.map((g) => '<div class="osr-cols-group"><div class="osr-cols-gname">' + esc(g[0]) + '</div>'
+          + g[1].map((k) => {
+              const c = OSR_COLS.find((x) => x[0] === k); if (!c) return '';
+              return '<label class="osr-cols-opt' + (osrOn[k] ? ' on' : '') + '"><input type="checkbox" value="' + k + '"' + (osrOn[k] ? ' checked' : '') + '>' + esc(c[1]) + '</label>';
+            }).join('')
+          + '</div>').join('')
+      + '</div>'
+      + '<div class="osr-cols-foot"><span id="osr-cols-count"></span> · applies to the table, the CSV and the workbook</div>'
+      + '</div>';
+  }
+
+  // ── contracting-office picker ───────────────────────────────────────────
+  // A DoDAAC is six characters nobody remembers, so the field takes a name too and
+  // opening it with an empty box lists every office. The list is a shipped static
+  // asset, not a lookup call: it changes about twice a year, it has to work on a
+  // network that blocks everything external, and filtering 1,485 rows locally is
+  // instant. Regenerate with scripts/fetch_offices.py.
+  // ponytail: static file + substring match. If it ever needs to be live, USASpending's
+  // /api/v2/autocomplete/awarding_agency_office/ is the endpoint (proxied, never direct).
+  const OSR_SUG_MAX = 50;
+  let osrOffices = null, osrOfficeReq = null, osrOfficeErr = false;
+  function osrLoadOffices() {
+    if (osrOffices) return Promise.resolve(osrOffices);
+    if (!osrOfficeReq) {
+      osrOfficeReq = fetch('/assets/offices.json?v=1', { headers: { Accept: 'application/json' } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (!d || !d.groups) { osrOfficeErr = true; return null; }
+          const flat = [];
+          d.groups.forEach((g) => g.o.forEach((o) => flat.push([o[0], o[1], g.a])));
+          d.flat = flat; osrOffices = d; return d;
+        })
+        .catch(() => { osrOfficeErr = true; return null; });
+    }
+    return osrOfficeReq;
+  }
+  function osrMatch(q) {
+    const rows = (osrOffices && osrOffices.flat) || [];
+    const s = String(q || '').trim().toLowerCase();
+    if (!s) return rows.slice(0, OSR_SUG_MAX);
+    // Code-prefix hits first — someone typing "FA85" wants FA8501, not a squadron
+    // whose name happens to contain it.
+    const pre = [], rest = [];
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      if (r[0].toLowerCase().indexOf(s) === 0) pre.push(r);
+      else if (r[1].toLowerCase().indexOf(s) >= 0 || r[0].toLowerCase().indexOf(s) >= 0) rest.push(r);
+      if (pre.length + rest.length >= 400) break;
+    }
+    return pre.concat(rest).slice(0, OSR_SUG_MAX);
+  }
+  let osrSug = [], osrSugAt = -1, osrSugOpen = false;
+  function osrSugEls() { return { box: $('#osr-suggest'), inp: $('#osr-office'), btn: $('#osr-browse') }; }
+  function osrSugClose() {
+    const e = osrSugEls(); if (!e.box) return;
+    osrSugOpen = false; osrSugAt = -1; e.box.hidden = true;
+    if (e.inp) { e.inp.setAttribute('aria-expanded', 'false'); e.inp.removeAttribute('aria-activedescendant'); }
+    if (e.btn) e.btn.setAttribute('aria-expanded', 'false');
+  }
+  function osrSugActive(i) {
+    const e = osrSugEls(); if (!e.box) return;
+    const items = e.box.querySelectorAll('.ss-item');
+    if (!items.length) return;
+    osrSugAt = Math.max(0, Math.min(i, items.length - 1));
+    items.forEach((el, n) => {
+      const on = n === osrSugAt;
+      el.classList.toggle('active', on);
+      el.setAttribute('aria-selected', on ? 'true' : 'false');
+      if (on) { e.inp.setAttribute('aria-activedescendant', el.id); el.scrollIntoView({ block: 'nearest' }); }
+    });
+  }
+  function osrSugRender(q) {
+    const e = osrSugEls(); if (!e.box) return;
+    if (osrOfficeErr) {
+      e.box.innerHTML = '<div class="ss-empty">The office directory didn\u2019t load — type the six-character code instead.</div>';
+      e.box.hidden = false; osrSugOpen = true; osrSug = []; osrSugAt = -1;
+      if (e.inp) e.inp.setAttribute('aria-expanded', 'true');
+      return;
+    }
+    osrSug = osrMatch(q); osrSugAt = -1;
+    const total = (osrOffices && osrOffices.count) || 0;
+    if (!osrSug.length) {
+      e.box.innerHTML = '<div class="ss-empty">No office matches “' + esc(q) + '”. Any six-character code still works — type it and build.</div>';
+    } else {
+      e.box.innerHTML = osrSug.map((r, i) =>
+        '<div class="ss-item" id="osr-opt-' + i + '" role="option" aria-selected="false" data-code="' + esc(r[0]) + '">'
+        + '<span class="osr-opt-code">' + esc(r[0]) + '</span>'
+        + '<span class="ss-main"><span class="ss-title">' + esc(r[1]) + '</span>'
+        + '<span class="ss-sub">' + esc(r[2]) + '</span></span></div>').join('')
+        + '<div class="ss-foot" aria-hidden="true"><span>' + (q ? osrSug.length + ' of ' + total : total + ' contracting offices') + '</span>'
+        + '<span><kbd>\u2191</kbd><kbd>\u2193</kbd> move <kbd>\u21b5</kbd> pick <kbd>esc</kbd> close</span></div>';
+    }
+    e.box.hidden = false; osrSugOpen = true;
+    if (e.inp) e.inp.setAttribute('aria-expanded', 'true');
+    if (e.btn) e.btn.setAttribute('aria-expanded', 'true');
+  }
+  function osrSugOpenList(q) { osrLoadOffices().then(() => osrSugRender(q == null ? ($('#osr-office') || {}).value : q)); }
+  function osrSugPick(code) {
+    const inp = $('#osr-office'); if (!inp) return;
+    inp.value = code; osrSugClose(); osrBuild(code);
+  }
+  // Resolve whatever is in the box to a real office code: a six-character code as
+  // typed, otherwise the one office that matches the text. Anything else is a
+  // question we refuse to answer by guessing.
+  function osrResolve(raw) {
+    const t = String(raw || '').trim();
+    const code = t.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (/^[A-Z0-9]{6}$/.test(code) && !/\s/.test(t)) return code;
+    const m = osrMatch(t);
+    if (m.length === 1) return m[0][0];
+    const exact = m.filter((r) => r[0].toLowerCase() === t.toLowerCase());
+    if (exact.length === 1) return exact[0][0];
+    return code.length === 6 ? code : '';
+  }
+
   function osrCurFy() { const n = new Date(); return n.getUTCFullYear() + (n.getUTCMonth() >= 9 ? 1 : 0); } // FY starts 1 Oct
   function osrFyChoices() {
     const cur = osrCurFy(), out = [];
@@ -846,24 +1003,67 @@
     host.innerHTML = osrFyChoices().map((y) => {
       const on = y >= cur - 3 && y < cur; // default: the 3 most recent COMPLETE FYs
       return '<label class="osr-fy-opt' + (on ? ' on' : '') + '"><input type="checkbox" value="' + y + '"' + (on ? ' checked' : '') + '>FY ' + y + (y === cur ? ' (partial)' : '') + '</label>';
-    }).join('');
-    host.addEventListener('change', (e) => { const l = e.target.closest('.osr-fy-opt'); if (l) l.classList.toggle('on', e.target.checked); });
+    }).join('')
+    // A custom window is one more period choice, not a second mode with a toggle.
+    + '<label class="osr-fy-opt osr-fy-custom"><input type="checkbox" id="osr-custom">Custom dates</label>';
+    host.addEventListener('change', (e) => {
+      const l = e.target.closest('.osr-fy-opt'); if (l) l.classList.toggle('on', e.target.checked);
+      const custom = $('#osr-custom'), range = $('#osr-range');
+      if (e.target.id === 'osr-custom') {
+        if (e.target.checked) {   // the two are alternatives; picking one clears the other
+          host.querySelectorAll('input[type=checkbox]:not(#osr-custom)').forEach((c) => {
+            c.checked = false; const lb = c.closest('.osr-fy-opt'); if (lb) lb.classList.remove('on');
+          });
+          osrRangeDefaults();
+        } else if (!osrSelectedFys().length) {
+          // Turning the custom window back off must not leave the period empty —
+          // put back the years that were on before it took them.
+          const cur = osrCurFy();
+          host.querySelectorAll('input[type=checkbox]:not(#osr-custom)').forEach((c) => {
+            const y = Number(c.value);
+            if (y >= cur - 3 && y < cur) { c.checked = true; const lb = c.closest('.osr-fy-opt'); if (lb) lb.classList.add('on'); }
+          });
+        }
+      } else if (e.target.checked && custom && custom.checked) {
+        custom.checked = false; const lb = custom.closest('.osr-fy-opt'); if (lb) lb.classList.remove('on');
+      }
+      if (range) range.hidden = !(custom && custom.checked);
+    });
   }
-  function osrSelectedFys() { return [...document.querySelectorAll('#osr-fy input:checked')].map((c) => c.value).sort(); }
-  async function osrFetchFy(office, fy) {
-    // `s` is a response-schema version — bump it when caRow's columns change so the
-    // CDN serves fresh rows instead of a cached shape missing the new fields.
-    const r = await fetch('/api/market-research?mode=award-rows&office=' + encodeURIComponent(office) + '&fy=' + fy + '&s=2', { headers: { Accept: 'application/json' } });
+  // Seed the empty date fields with the last complete fiscal year so the first
+  // build after ticking "Custom dates" returns something rather than an error.
+  function osrRangeDefaults() {
+    const f = $('#osr-from'), t = $('#osr-to'); if (!f || !t) return;
+    const cur = osrCurFy();
+    if (!f.value) f.value = (cur - 2) + '-10-01';
+    if (!t.value) t.value = (cur - 1) + '-09-30';
+  }
+  function osrCustomRange() {
+    const c = $('#osr-custom'), f = $('#osr-from'), t = $('#osr-to');
+    if (!c || !c.checked || !f || !t || !f.value || !t.value) return null;
+    return f.value <= t.value ? { from: f.value, to: t.value } : { from: t.value, to: f.value };
+  }
+  function osrSelectedFys() { return [...document.querySelectorAll('#osr-fy input[type=checkbox]:checked')].filter((c) => c.id !== 'osr-custom').map((c) => c.value).sort(); }
+  // `s` is a response-schema version — bump it when caRow's columns change so the
+  // CDN serves fresh rows instead of a cached shape missing the new fields.
+  async function osrFetch(qs) {
+    const r = await fetch('/api/market-research?mode=award-rows&s=2&' + qs, { headers: { Accept: 'application/json' } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
+  function osrFetchFy(office, fy) { return osrFetch('office=' + encodeURIComponent(office) + '&fy=' + fy); }
+  // A date window is filtered by SAM, not here: an office like N00019 truncates at the
+  // page cap and the rows it returns are in no order, so slicing a truncated year on
+  // this side would hand back a fraction of the window that looks like all of it.
+  function osrFetchRange(office, r) { return osrFetch('office=' + encodeURIComponent(office) + '&from=' + r.from + '&to=' + r.to); }
   function osrCsvCell(v) {
     const s = String(v == null ? '' : v);
     return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
   }
   function osrBuildCsv(rows) {
-    const head = OSR_COLS.map((c) => osrCsvCell(c[1])).join(',');
-    const body = rows.map((r) => OSR_COLS.map((c) => osrCsvCell(r[c[0]])).join(',')).join('\r\n');
+    const cols = osrPickedCols();
+    const head = cols.map((c) => osrCsvCell(c[1])).join(',');
+    const body = rows.map((r) => cols.map((c) => osrCsvCell(r[c[0]])).join(',')).join('\r\n');
     return head + '\r\n' + body;
   }
   function osrDownload(data, filename, mime) {
@@ -920,54 +1120,34 @@
       + '</div>';
   }
   // Per-contract appropriation drill-down (color of money via USASpending File C).
+  // This is click-to-open per contract, deliberately: FPDS carries no appropriation,
+  // and the File C linkage that does is missing for most DoD actions (3% of FA8501's
+  // FY24 rows, 30% of N00019's — including all three of its billion-dollar awards).
+  // A column of that would be blank far more often than not, and where it did fill it
+  // would state a whole contract's lifetime funding beside a single action's dollars.
   const osrFundCache = {};
-  const OSR_COLSPAN = OSR_PREVIEW.length; // the detail row spans the whole preview table
-  // The "Funding (Color of Money)" column can't be a cheap bulk field — FPDS has no
-  // appropriation, so each contract needs a USASpending File C lookup. We enrich the
-  // top awards by obligation (that's where both the money and the reported data are);
-  // blank means USASpending reports no appropriation for that action. Same per-PIID
-  // cache as the drill-down, so a click and the column share work.
-  const OSR_FUND_EXPORT = 120; // top-N awards by obligation to enrich for an export
-  function osrApprShort(d) {
-    if (!d || !d.found || !(d.accounts && d.accounts.length)) return '';
-    const m = {};
-    d.accounts.forEach((a) => { m[a.type] = (m[a.type] || 0) + Math.abs(a.amount || 0); });
-    const types = Object.keys(m).sort((a, b) => m[b] - m[a]);
-    if (types.length <= 1) return types[0] || '';
-    return types.slice(0, 2).join('/') + (types.length > 2 ? ' +' + (types.length - 2) : '');
-  }
-  function osrFundType(piid) {
-    return new Promise((res) => {
-      if (!piid) return res('');
-      if (osrFundCache[piid]) return res(osrApprShort(osrFundCache[piid]));
-      fetch('/api/market-research?mode=award-funding&piid=' + encodeURIComponent(piid), { headers: { Accept: 'application/json' } })
-        .then((r) => r.ok ? r.json() : { found: false })
-        .then((d) => { osrFundCache[piid] = d; res(osrApprShort(d)); })
-        .catch(() => res(''));
-    });
-  }
-  // Enrich the top `cap` rows by obligation, 6 at a time; sets r.funding ('' = none
-  // reported). onOne(row) fires as each resolves so the visible cells can fill in.
-  async function osrEnrichFunding(rows, cap, onOne) {
-    const targets = rows.slice().sort((a, b) => (b.obligated || 0) - (a.obligated || 0)).slice(0, cap).filter((r) => r.piid && r.funding == null);
-    let i = 0;
-    async function worker() { while (i < targets.length) { const r = targets[i++]; r.funding = await osrFundType(r.piid); if (onOne) onOne(r); } }
-    await Promise.all(Array.from({ length: Math.min(6, targets.length) }, () => worker()));
-  }
   function osrFundHtml(d) {
     if (!d || !d.found || !(d.accounts && d.accounts.length)) {
-      return '<div class="osr-fund-box osr-fund-none">' + esc((d && d.note) || 'No appropriation data reported for this contract.') + '</div>';
+      return '<div class="osr-fund-box osr-fund-none">' + esc((d && d.note) || 'No appropriation reported for this contract.') + '</div>';
     }
     const max = Math.max.apply(null, d.accounts.map((a) => Math.abs(a.amount)).concat([1]));
+    const period = d.fyFrom ? (d.fyFrom === d.fyTo ? 'FY' + d.fyFrom : 'FY' + d.fyFrom + '\u2013FY' + d.fyTo) : '';
     return '<div class="osr-fund-box">'
-      + '<div class="osr-fund-h">Appropriation &middot; color of money <span>USASpending File C</span></div>'
+      + '<div class="osr-fund-h">Appropriation &middot; color of money'
+        + (period ? '<b class="osr-fund-per">reported ' + esc(period) + '</b>' : '')
+        + '<span>USASpending File C</span></div>'
       + d.accounts.map((a) => '<div class="osr-fund-row">'
           + '<span class="osr-tag osr-tag-' + esc(a.type.toLowerCase().replace(/[^a-z]/g, '')) + '">' + esc(a.type) + '</span>'
           + '<span class="osr-fund-title">' + esc(a.title) + (a.code ? ' <em>' + esc(a.code) + '</em>' : '') + '</span>'
-          + '<span class="osr-fund-amt">' + fmtExact(a.amount) + '</span>'
+          + '<span class="osr-fund-amt' + (a.amount < 0 ? ' osr-fund-neg' : '') + '">' + fmtExact(a.amount) + '</span>'
           + '<span class="osr-fund-track"><span class="osr-fund-fill" style="width:' + Math.max(3, (Math.abs(a.amount) / max) * 100).toFixed(1) + '%"></span></span>'
         + '</div>').join('')
-      + '<div class="osr-fund-foot">Total obligated across accounts: <b>' + fmtExact(d.total) + '</b></div>'
+      + '<div class="osr-fund-foot">Total across accounts: <b>' + fmtExact(d.total) + '</b></div>'
+      // Said plainly because it will not tie, and a KO who spots that unprompted is
+      // right to stop trusting the number: File C covers the contract's whole life in
+      // the submitting agency's fiscal periods, while the row above is one action.
+      + '<div class="osr-fund-cav">Covers the whole contract' + (period ? ' across ' + esc(period) : '')
+        + ', not the single action in the row above, so these figures will not match that obligation. De-obligations report as negatives.</div>'
       + '</div>';
   }
   async function osrToggleFunding(tr) {
@@ -980,7 +1160,7 @@
     tr.setAttribute('aria-expanded', 'true');
     const det = document.createElement('tr');
     det.className = 'osr-fund';
-    det.innerHTML = '<td colspan="' + OSR_COLSPAN + '"><div class="osr-fund-box osr-fund-load">Looking up appropriation for ' + esc(piid) + '&hellip;</div></td>';
+    det.innerHTML = '<td colspan="' + Math.max(1, osrPickedCols().length) + '"><div class="osr-fund-box osr-fund-load">Looking up appropriation for ' + esc(piid) + '&hellip;</div></td>';
     tr.parentNode.insertBefore(det, tr.nextSibling);
     try {
       let d = osrFundCache[piid];
@@ -995,113 +1175,217 @@
     }
   }
   let osrToken = 0, osrRows = [];
-  async function osrBuild(office) {
-    office = String(office || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  // Preview table + its note, rebuilt on its own whenever the column picker changes
+  // so re-picking columns never re-fetches (or re-pages) anything.
+  function osrTableHtml(preview, rows) {
+    const cols = osrPickedCols();
+    if (!cols.length) return '<div class="osr-empty">No columns selected \u2014 pick at least one in <b>Columns</b>.</div>';
+    return '<div class="osr-tablewrap"><table class="osr-table"><thead><tr>'
+      + cols.map((c) => '<th' + (OSR_NUM[c[0]] ? ' class="osr-num"' : '') + '>' + esc(c[1]) + '</th>').join('')
+      + '</tr></thead><tbody>'
+      + preview.map((r) => '<tr class="osr-clk" data-piid="' + esc(String(r.piid || '')) + '" tabindex="0" aria-expanded="false" title="Show appropriation (color of money)">'
+          + cols.map((c) => OSR_NUM[c[0]]
+              ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
+              : '<td' + (c[0] === 'description' ? ' class="osr-desc"' : '') + '>' + esc(String(r[c[0]] == null ? '' : r[c[0]])) + '</td>').join('')
+        + '</tr>').join('')
+      + '</tbody></table></div>'
+      + '<div class="osr-tnote">Top <b>' + preview.length + '</b> of ' + Number(rows.length).toLocaleString()
+        + ' awards by obligation \u00b7 click any row for its appropriation (color of money) \u00b7 the CSV and workbook carry all '
+        + Number(rows.length).toLocaleString() + ' rows across the ' + cols.length + ' column' + (cols.length === 1 ? '' : 's') + ' you picked</div>';
+  }
+  async function osrBuild(raw) {
     const box = $('#osr-results'); if (!box) return;
+    const office = osrResolve(raw);
     const fys = osrSelectedFys();
-    if (office.length < 4) { box.hidden = false; box.classList.add('is-in'); box.innerHTML = '<div class="osr-empty">Enter a contracting office code (DoDAAC) — six characters, e.g. <b>FA8501</b>.</div>'; return; }
-    if (!fys.length) { box.hidden = false; box.classList.add('is-in'); box.innerHTML = '<div class="osr-empty">Pick at least one fiscal year.</div>'; return; }
+    const range = osrCustomRange();
+    const show = (html) => { box.hidden = false; box.innerHTML = '<div class="osr-empty">' + html + '</div>'; void box.offsetWidth; box.classList.add('is-in'); };
+    if (!office) return show('Pick a contracting office from the list, or type its six-character code \u2014 e.g. <b>FA8501</b>.');
+    if (!range && !fys.length) return show('Pick at least one fiscal year, or tick <b>Custom dates</b> and set a window.');
+    if ($('#osr-custom') && $('#osr-custom').checked && !range) return show('Set both a <b>From</b> and a <b>To</b> date for a custom window.');
     const token = ++osrToken;
+    const label = range
+      ? (osrDay(range.from) + ' \u2013 ' + osrDay(range.to))
+      : (fys.length > 1 ? ('FY' + fys[0] + '\u2013FY' + fys[fys.length - 1]) : ('FY' + fys[0]));
     box.hidden = false; box.classList.remove('is-in');
-    box.innerHTML = '<div class="dash-loading dash-skeleton">Pulling ' + office + ' awards for FY ' + fys.join(', FY ') + ' from SAM.gov (FPDS)…</div>';
+    box.innerHTML = '<div class="dash-loading dash-skeleton">Pulling ' + esc(office) + ' awards for ' + esc(label) + ' from SAM.gov (FPDS)\u2026</div>';
     try {
-      const results = await Promise.all(fys.map((fy) => osrFetchFy(office, fy).catch(() => null)));
+      const results = range
+        ? [await osrFetchRange(office, range).catch(() => null)]
+        : await Promise.all(fys.map((fy) => osrFetchFy(office, fy).catch(() => null)));
       if (token !== osrToken) return;
       const good = results.filter((d) => d && Array.isArray(d.rows));
       const rows = good.reduce((acc, d) => acc.concat(d.rows), []);
       osrRows = rows;
-      if (!rows.length) { box.innerHTML = '<div class="osr-empty">No contract awards found for <b>' + esc(office) + '</b> in the selected years — check the office code, or the lookup may be briefly rate-limited.</div>'; void box.offsetWidth; box.classList.add('is-in'); return; }
+      if (!rows.length) {
+        const note = (results.find((d) => d && d.note) || {}).note;
+        return show(note ? esc(note) : ('No contract awards found for <b>' + esc(office) + '</b> in ' + esc(label)
+          + ' \u2014 check the office code, or the lookup may be briefly rate-limited.'));
+      }
       const officeName = (good.find((d) => d.officeName) || {}).officeName || '';
       const total = rows.reduce((s, r) => s + r.obligated, 0);
       const truncated = good.some((d) => d.truncated);
-      const fyLabel = fys.length > 1 ? ('FY' + fys[0] + '–' + fys[fys.length - 1]) : ('FY' + fys[0]);
+      // Chart the fiscal years the awards actually landed in — a custom window can
+      // straddle two, and a picked year with no awards should still read as zero.
+      const chartFys = range
+        ? [...new Set(rows.map((r) => String(r.fiscalYear)).filter(Boolean))].sort()
+        : fys;
       const preview = rows.slice().sort((a, b) => b.obligated - a.obligated).slice(0, 25);
       box.innerHTML =
         '<div class="osr-summary">'
           + '<div class="osr-sum-l">'
             + '<div class="osr-head-code">' + esc(office) + (officeName ? ' <span>' + esc(officeName) + '</span>' : '') + '</div>'
-            + '<div class="osr-sum-stats"><b>' + Number(rows.length).toLocaleString() + '</b> awards · <b>' + fmtUSD(total) + '</b> obligated · ' + esc(fyLabel)
+            + '<div class="osr-sum-stats"><b>' + Number(rows.length).toLocaleString() + '</b> awards \u00b7 <b>' + fmtUSD(total) + '</b> obligated \u00b7 ' + esc(label)
               + '<span class="osr-catmix">' + esc(osrCatMix(rows)) + '</span></div>'
           + '</div>'
           + '<div class="osr-export">'
+            + '<button type="button" class="osr-copy osr-cols-btn" id="osr-cols-btn" aria-expanded="false" aria-controls="osr-cols-panel">Columns</button>'
             + '<button type="button" class="osr-dl" id="osr-xlsx">Download Excel</button>'
             + '<button type="button" class="osr-copy" id="osr-dl">CSV</button>'
             + '<button type="button" class="osr-copy" id="osr-copy">Copy</button>'
           + '</div>'
         + '</div>'
-        + (truncated ? '<div class="osr-warn">Some years exceeded the per-year page cap — those totals are a floor. Narrow to a single busy FY for the complete set.</div>' : '')
-        + osrDashHtml(rows, fys)
-        + '<div class="osr-tablewrap"><table class="osr-table"><thead><tr>'
-          + OSR_PREVIEW.map((c) => '<th' + (OSR_NUM[c[0]] ? ' class="osr-num"' : '') + '>' + esc(c[1]) + '</th>').join('')
-        + '</tr></thead><tbody>'
-          + preview.map((r) => '<tr class="osr-clk" data-piid="' + esc(String(r.piid || '')) + '" tabindex="0" aria-expanded="false" title="Show appropriation (color of money)">'
-              + OSR_PREVIEW.map((c) => c[0] === 'funding'
-                ? '<td class="osr-fund-cell">' + (r.funding == null ? '<span class="osr-fund-wait">…</span>' : (r.funding ? esc(r.funding) : '<span class="osr-fund-dash">—</span>')) + '</td>'
-                : OSR_NUM[c[0]]
-                  ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
-                  : '<td>' + esc(String(r[c[0]] == null ? '' : r[c[0]])) + '</td>').join('') + '</tr>').join('')
-        + '</tbody></table></div>'
-        + '<div class="osr-tnote">Showing the top ' + preview.length + ' of ' + Number(rows.length).toLocaleString() + ' awards by obligation · <b>Funding (color of money)</b> is filled for the top awards — a blank means USASpending reports no appropriation for that action; click any row for its full appropriation · the CSV / Excel has all ' + Number(rows.length).toLocaleString() + ' rows and ' + OSR_COLS.length + ' columns</div>';
+        + osrColsPanelHtml()
+        + (truncated ? '<div class="osr-warn">This office returned more awards than one pull can carry, so the totals are a floor. Narrow the window with <b>Custom dates</b> for the complete set.</div>' : '')
+        + osrDashHtml(rows, chartFys)
+        + '<div id="osr-table">' + osrTableHtml(preview, rows) + '</div>';
       void box.offsetWidth; box.classList.add('is-in');
       osrPaint($('#osr-c-fy')); osrPaint($('#osr-c-cat')); osrPaint($('#osr-c-ven'));
-      // Fill the funding (color-of-money) column for the VISIBLE preview rows only —
-      // a small, bounded burst. Heavier enrichment happens on export. The visible
-      // cells update as each resolves; the export reuses the same per-PIID cache.
-      const fundIdx = OSR_PREVIEW.findIndex((c) => c[0] === 'funding');
-      osrEnrichFunding(preview, preview.length, (r) => {
-        if (token !== osrToken || fundIdx < 0) return;
-        const sel = (window.CSS && CSS.escape) ? CSS.escape(r.piid) : r.piid.replace(/"/g, '');
-        const tr = box.querySelector('.osr-table tbody tr[data-piid="' + sel + '"]');
-        if (tr && tr.cells[fundIdx]) tr.cells[fundIdx].innerHTML = r.funding ? esc(r.funding) : '<span class="osr-fund-dash">—</span>';
-      });
-      const base = office + '_' + fyLabel.replace(/[^A-Za-z0-9-]/g, '') + '_contract-awards';
-      // Ensure the funding column is enriched before an export, then run it.
-      const withFunding = (btn, run) => {
-        const orig = btn.textContent; btn.textContent = 'Adding funding…'; btn.disabled = true;
-        osrEnrichFunding(osrRows, OSR_FUND_EXPORT).then(run).catch(() => {}).then(() => { btn.textContent = orig; btn.disabled = false; });
+      const base = office + '_' + label.replace(/[^A-Za-z0-9-]/g, '') + '_contract-awards';
+
+      // ── column picker ──
+      const colsBtn = $('#osr-cols-btn'), colsPanel = $('#osr-cols-panel');
+      const colsCount = () => {
+        const n = osrPickedCols().length;
+        const lbl = $('#osr-cols-count'); if (lbl) lbl.textContent = n + ' of ' + OSR_COLS.length + ' columns';
+        // an export of nothing is not a file anybody wants to open
+        ['#osr-xlsx', '#osr-dl', '#osr-copy'].forEach((sel) => { const b = $(sel); if (b) b.disabled = !n; });
       };
-      const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', () => {
-        if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV →'; return; }
-        withFunding(xl, () => {
-          try {
-            const byFy = fys.map((fy) => ({ label: 'FY ' + fy, value: osrRows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + (Number(r.obligated) || 0), 0) }));
-            const byCat = osrSumBy(osrRows, (r) => r.category);
-            const byVen = osrSumBy(osrRows, (r) => osrVendorClean(r.vendor)).slice(0, 6);
-            const u8 = window.acqBuildXlsx({ office, officeName, fyLabel, columns: OSR_COLS, rows: osrRows, byFy, byCat, byVen });
-            if (!osrDownload(u8, base + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) xl.textContent = 'Use CSV →';
-          } catch (e) { xl.textContent = 'Use CSV →'; }
+      colsCount();
+      if (colsBtn && colsPanel) {
+        colsBtn.addEventListener('click', () => {
+          const open = colsPanel.hidden;
+          colsPanel.hidden = !open; colsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          colsBtn.classList.toggle('on', open);
         });
+        colsPanel.addEventListener('change', (e) => {
+          const cb = e.target.closest('input[type=checkbox]'); if (!cb) return;
+          if (cb.checked) osrOn[cb.value] = 1; else delete osrOn[cb.value];
+          const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', cb.checked);
+          osrSaveCols(); colsCount();
+          const host = $('#osr-table'); if (host) { host.innerHTML = osrTableHtml(preview, rows); osrBindRows(); }
+        });
+        colsPanel.addEventListener('click', (e) => {
+          const act = e.target.closest('.osr-cols-act'); if (!act) return;
+          const mode = act.dataset.cols;
+          osrOn = mode === 'all' ? (function () { const a = {}; OSR_COLS.forEach((c) => { a[c[0]] = 1; }); return a; })()
+            : mode === 'default' ? osrDefaultCols() : {};
+          colsPanel.querySelectorAll('input[type=checkbox]').forEach((cb) => {
+            const on = !!osrOn[cb.value];
+            cb.checked = on; const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', on);
+          });
+          osrSaveCols(); colsCount();
+          const host = $('#osr-table'); if (host) { host.innerHTML = osrTableHtml(preview, rows); osrBindRows(); }
+        });
+      }
+
+      const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', () => {
+        if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV \u2192'; return; }
+        try {
+          const u8 = window.acqBuildXlsx(osrWorkbookData(office, officeName, label, chartFys, rows));
+          if (!osrDownload(u8, base + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) xl.textContent = 'Use CSV \u2192';
+        } catch (e) { xl.textContent = 'Use CSV \u2192'; }
       });
       const dl = $('#osr-dl'); if (dl) dl.addEventListener('click', () => {
-        withFunding(dl, () => { if (!osrDownload(osrBuildCsv(osrRows), base + '.csv')) dl.textContent = 'Use Copy →'; });
+        if (!osrDownload(osrBuildCsv(osrRows), base + '.csv')) dl.textContent = 'Use Copy \u2192';
       });
       const cp = $('#osr-copy'); if (cp) cp.addEventListener('click', () => {
         const csv = osrBuildCsv(osrRows);
         const done = () => { cp.textContent = 'Copied'; setTimeout(() => { cp.textContent = 'Copy'; }, 1600); };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(done, done); else done();
       });
-      const tbody = box.querySelector('.osr-table tbody');
-      if (tbody) {
+      function osrBindRows() {
+        const tbody = box.querySelector('.osr-table tbody'); if (!tbody) return;
         tbody.addEventListener('click', (e) => { const tr = e.target.closest('tr.osr-clk'); if (tr) osrToggleFunding(tr); });
         tbody.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const tr = e.target.closest('tr.osr-clk'); if (tr) { e.preventDefault(); osrToggleFunding(tr); } } });
       }
+      osrBindRows();
     } catch (e) {
       if (token !== osrToken) return;
-      box.innerHTML = '<div class="dash-loading dash-skeleton">Spend lookup is briefly unavailable — try again shortly.</div>';
+      box.innerHTML = '<div class="dash-loading dash-skeleton">Spend lookup is briefly unavailable \u2014 try again shortly.</div>';
     }
+  }
+  const OSR_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function osrDay(iso) { return Number(iso.slice(8, 10)) + ' ' + OSR_MON[Number(iso.slice(5, 7)) - 1] + ' ' + iso.slice(0, 4); }
+  // Everything the workbook needs, derived once. Kept here rather than in xlsxgen.js
+  // so the generator stays a pure formatter with no knowledge of contract data.
+  function osrWorkbookData(office, officeName, label, chartFys, rows) {
+    const byFy = chartFys.map((fy) => ({ label: 'FY ' + fy, value: rows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + (Number(r.obligated) || 0), 0) }));
+    const byMon = {};
+    rows.forEach((r) => { const d = String(r.dateSigned || ''); if (d.length >= 7) byMon[d.slice(0, 7)] = (byMon[d.slice(0, 7)] || 0) + (Number(r.obligated) || 0); });
+    const byMonth = Object.keys(byMon).sort().map((k) => ({ label: OSR_MON[Number(k.slice(5, 7)) - 1] + ' ' + k.slice(2, 4), value: byMon[k] }));
+    return {
+      office, officeName, fyLabel: label,
+      columns: osrPickedCols(), rows,
+      byFy,
+      byCat: osrSumBy(rows, (r) => r.category),
+      byVen: osrSumBy(rows, (r) => osrVendorClean(r.vendor)).slice(0, 8),
+      bySet: osrSumBy(rows, (r) => (r.setAside && !/^no set.?aside/i.test(r.setAside)) ? r.setAside : 'No set-aside').slice(0, 6),
+      byMonth: byMonth.length > 1 ? byMonth : [],
+      awards: rows.length,
+      total: rows.reduce((s, r) => s + (Number(r.obligated) || 0), 0)
+    };
   }
   function initDashboard() {
     const inp = $('#osr-office'); const go = $('#osr-go');
     if (!inp || !go) return;
     osrRenderFyPicker();
-    const run = () => osrBuild(inp.value);
+    const run = () => { osrSugClose(); osrBuild(inp.value); };
     go.addEventListener('click', run);
-    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); run(); } });
-    inp.addEventListener('input', () => { const c = inp.selectionStart; inp.value = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); try { inp.setSelectionRange(c, c); } catch (_) {} });
+
+    // ── office combobox ──
+    // The field still takes a raw six-character code and Enter, exactly as before;
+    // the list is an accelerator on top of that and must never become a gate.
+    let sugTimer = null;
+    inp.addEventListener('focus', () => { if (!osrSugOpen) osrSugOpenList(inp.value); });
+    inp.addEventListener('input', () => {
+      clearTimeout(sugTimer);
+      sugTimer = setTimeout(() => osrSugOpenList(inp.value), 90);
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!osrSugOpen) return osrSugOpenList(inp.value);
+        osrSugActive(osrSugAt + (e.key === 'ArrowDown' ? 1 : -1));
+        return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (osrSugOpen && osrSugAt >= 0 && osrSug[osrSugAt]) return osrSugPick(osrSug[osrSugAt][0]);
+        return run();
+      }
+      if (e.key === 'Escape' && (osrSugOpen || sugTimer)) { clearTimeout(sugTimer); osrSugClose(); }
+    });
+    // mousedown, not click — blur would close the panel before a click landed
+    const box = $('#osr-suggest');
+    if (box) box.addEventListener('mousedown', (e) => {
+      const it = e.target.closest('.ss-item'); if (!it) return;
+      e.preventDefault(); osrSugPick(it.dataset.code);
+    });
+    inp.addEventListener('blur', () => setTimeout(osrSugClose, 150));
+    const browse = $('#osr-browse');
+    if (browse) browse.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      if (osrSugOpen) { osrSugClose(); return; }
+      inp.focus(); osrSugOpenList('');   // empty query lists every office
+    });
+
     const sec = $('#spending-dashboard');
-    if (sec) sec.addEventListener('click', (e) => { const c = e.target.closest('.osr-chip'); if (!c) return; inp.value = c.dataset.office; osrBuild(c.dataset.office); });
+    if (sec) sec.addEventListener('click', (e) => { const c = e.target.closest('.osr-chip'); if (!c) return; inp.value = c.dataset.office; osrSugClose(); osrBuild(c.dataset.office); });
     if (sec) {
-      const io = new IntersectionObserver((ents) => { ents.forEach((e) => { if (e.isIntersecting) { inp.value = 'FA8501'; osrBuild('FA8501'); io.disconnect(); } }); }, { rootMargin: '200px' });
+      // Deep link wins over the demo pull: ?office=FA8750 should build that office.
+      let deep = '';
+      try { deep = (new URLSearchParams(location.search).get('office') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } catch (_) {}
+      const io = new IntersectionObserver((ents) => { ents.forEach((e) => { if (e.isIntersecting) { inp.value = deep || 'FA8501'; osrBuild(inp.value); io.disconnect(); } }); }, { rootMargin: '200px' });
       io.observe(sec);
     }
   }

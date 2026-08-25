@@ -451,6 +451,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-copy { color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(var(--brass-bright-rgb),0.4); }
 .osr-copy:hover { background: rgba(255,255,255,0.12); }
 .osr-dl:active, .osr-copy:active { transform: scale(.97); }
+.osr-dl:disabled, .osr-copy:disabled { opacity: .42; cursor: not-allowed; transform: none; }
 .osr-warn { margin-top: 12px; font-size:var(--fs-sm); color: #f0d28a; background: rgba(var(--brass-rgb),0.14); border: 1px solid rgba(var(--brass-bright-rgb),0.3); border-radius: var(--r-md); padding: 9px 13px; }
 .osr-dash { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-top: 14px; }
 .osr-dash .dash-panel { padding: 16px 18px 18px; }
@@ -465,9 +466,7 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-table tbody tr:last-child td { border-bottom: none; }
 @media (hover:hover) and (pointer:fine) { .osr-table tbody tr:hover td { background: rgba(var(--brass-rgb),0.05); } }
 .osr-table td.osr-num, .osr-table th.osr-num { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 650; }
-.osr-table td.osr-fund-cell { font-weight: 650; color: var(--brass-ink); white-space: nowrap; }
-.osr-fund-wait { color: var(--muted2); font-weight: 400; }
-.osr-fund-dash { color: var(--line); font-weight: 400; }
+.osr-table td.osr-desc { max-width: 340px; }
 .osr-table tr.osr-clk { cursor: pointer; }
 .osr-table tr.osr-clk:focus-visible { outline: 2px solid var(--brass); outline-offset: -2px; }
 .osr-table tr.osr-clk[aria-expanded="true"] td { background: rgba(var(--brass-rgb),0.08); }
@@ -493,6 +492,83 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-empty b { color: var(--brass-bright); font-family: ui-monospace, Menlo, monospace; }
 .dash-foot a { color: var(--brass-bright); text-decoration: none; border-bottom: 1px solid rgba(var(--brass-bright-rgb),0.4); }
 .dash-foot a:hover { border-bottom-color: var(--brass-bright); }
+/* office combobox — reuses .search-suggest / .ss-* from the hero typeahead */
+.osr-field-office { position: relative; }
+.osr-combo { position: relative; display: flex; }
+.osr-combo .osr-input { padding-right: 40px; }
+.osr-combo-btn {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
+  border: 1px solid rgba(var(--brass-bright-rgb),0.34); border-radius: 8px;
+  background: rgba(255,255,255,0.06); color: var(--brass-bright); cursor: pointer;
+  transition: background .16s var(--ease-out), border-color .16s var(--ease-out);
+}
+.osr-combo-btn:hover { background: rgba(var(--brass-rgb),0.24); border-color: var(--brass-bright); }
+.osr-combo-btn:active { transform: translateY(-50%) scale(.94); }
+.osr-combo-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.osr-combo-btn svg { transition: transform .18s var(--ease-out); }
+/* the panel lives inside .osr-combo so it hangs off the INPUT, not below the
+   label + input + example-chip stack that .osr-field-office measures */
+.osr-opt-code {
+  flex-shrink: 0; width: 62px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--fs-sm); font-weight: 700; letter-spacing: .04em; color: var(--brass-ink);
+}
+.ss-empty { padding: 14px 12px; font-size: var(--fs-base); color: var(--muted); line-height: 1.5; }
+
+/* custom date window — one more period choice, not a second mode */
+.osr-fy-custom { font-style: italic; }
+.osr-range { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 11px; }
+.osr-range[hidden] { display: none; }
+.osr-range-lbl { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: rgba(255,255,255,0.62); }
+.osr-date {
+  color-scheme: dark;
+  font: inherit; font-size: var(--fs-base); color: #fff;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(var(--brass-bright-rgb),0.34);
+  border-radius: 10px; padding: 8px 10px;
+}
+.osr-date:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 4px rgba(var(--brass-rgb),0.22); }
+
+/* column picker */
+.osr-cols-btn.on { background: rgba(var(--brass-rgb),0.28); border-color: var(--brass-bright); }
+.osr-cols-panel {
+  margin-top: 12px; padding: 16px 18px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(var(--brass-bright-rgb),0.26);
+  border-radius: var(--r-lg);
+}
+.osr-cols-panel[hidden] { display: none; }
+.osr-cols-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: var(--fs-xs); font-weight: var(--fw-bold); letter-spacing: var(--ls-caps); text-transform: uppercase; color: rgba(255,255,255,0.55); }
+.osr-cols-acts { display: flex; gap: 6px; }
+.osr-cols-act {
+  font: inherit; font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0; text-transform: none;
+  color: var(--brass-bright); background: none; border: 1px solid rgba(var(--brass-bright-rgb),0.34);
+  border-radius: 7px; padding: 2px 9px; cursor: pointer;
+  transition: background .16s var(--ease-out), transform .16s var(--ease-out);
+}
+.osr-cols-act:hover { background: rgba(var(--brass-rgb),0.22); }
+.osr-cols-act:active { transform: scale(.96); }
+.osr-cols-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px 20px; margin-top: 14px; }
+.osr-cols-gname { font-size: var(--fs-xs); font-weight: var(--fw-bold); letter-spacing: var(--ls-caps); text-transform: uppercase; color: var(--brass-bright); margin-bottom: 7px; }
+.osr-cols-opt { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: var(--fs-base); color: rgba(255,255,255,0.62); cursor: pointer; }
+.osr-cols-opt.on { color: #fff; }
+.osr-cols-opt input { accent-color: var(--brass-bright); width: 15px; height: 15px; margin: 0; flex-shrink: 0; }
+.osr-cols-foot { margin-top: 14px; font-size: var(--fs-sm); color: rgba(255,255,255,0.45); }
+
+@media (prefers-reduced-motion:no-preference) {
+  .osr-cols-panel:not([hidden]),
+  .osr-range:not([hidden]) { animation: ss-drop .18s cubic-bezier(0.16,1,0.3,1) both; }
+}
+
+/* The global focus ring is --accent (dark brass), which all but disappears on this
+   band's navy. Use --brass-bright here, the same swap .study-open-btn already makes. */
+#spending-dashboard button:focus-visible,
+#spending-dashboard input:focus-visible,
+#spending-dashboard a:focus-visible { outline: 2px solid var(--brass-bright); outline-offset: 2px; }
+
+/* appropriation panel — period + the reason the totals will not tie */
+.osr-fund-per { margin-left: 8px; font-weight: var(--fw-bold); letter-spacing: 0; text-transform: none; color: var(--brass-ink); }
+.osr-fund-amt.osr-fund-neg { color: #9a3412; }
+.osr-fund-cav { margin-top: 8px; padding-top: 9px; border-top: 1px solid var(--line2); font-size: var(--fs-sm); line-height: 1.5; color: var(--muted); max-width: 74ch; }
+
 @media (max-width: 620px) { .osr-fields { grid-template-columns: 1fr; } .osr-summary { flex-direction: column; align-items: flex-start; } .osr-go { width: 100%; } }
 @media (prefers-reduced-motion: reduce) { .osr-results { transition: opacity .2s ease; transform: none; } }
 
@@ -943,6 +1019,7 @@ body.work-mode #market-research,
 body.work-mode #library,
 body.work-mode #sources,
 body.work-mode #toolkit,
+body.work-mode #study,
 body.work-mode #spending-dashboard{display:none;}
 #results-section{display:none;background:var(--white);}
 #results-section.visible{display:block;}
@@ -1492,7 +1569,7 @@ body.reader-mode{background:var(--white);overflow:auto;}
 body.reader-mode .about-bar,body.reader-mode nav,body.reader-mode .hero,
 body.reader-mode .source-tiles-section,body.reader-mode #results-section,
 body.reader-mode #browse-section,body.reader-mode #fulltext-section,
-body.reader-mode #features,body.reader-mode #sources,body.reader-mode #quick-links,body.reader-mode #market-research,body.reader-mode #library,
+body.reader-mode #sources,body.reader-mode #quick-links,body.reader-mode #market-research,body.reader-mode #library,
 body.reader-mode #daily-strip,body.reader-mode #study,
 body.reader-mode footer,
 body.reader-mode #drawer,body.reader-mode #drawer-backdrop{display:none !important;}
@@ -1537,7 +1614,7 @@ body.reader-mode #reader-page{display:block;}
 
 /* ── HOMEPAGE SECTIONS ── */
 .sec{padding:var(--sec-pad-y) var(--sec-pad-x);scroll-margin-top:calc(var(--top-chrome) + 26px);}
-#toolkit,#market-research,#features,#sources,#quick-links,#spending-dashboard,#library{scroll-margin-top:calc(var(--top-chrome) + 26px);}
+#toolkit,#market-research,#sources,#quick-links,#spending-dashboard,#library,#study,#daily-strip{scroll-margin-top:calc(var(--top-chrome) + 26px);}
 .sec-white{background:var(--white);}
 .sec-off{background:var(--off);}
 .sec-dark{background:var(--ink);color:#fff;}
@@ -1644,10 +1721,6 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 /* (cta-strip removed — the page ends on content, not a pitch) */
 
 .sec-light{background:var(--off);}
-#features.sec-white{position:relative;overflow:hidden;background:linear-gradient(160deg,#eef2f7 0%,#e8edf5 48%,#f6f8fa 100%);border-top:1px solid rgba(var(--brass-rgb),0.08);border-bottom:1px solid rgba(var(--brass-rgb),0.08);padding-top:48px;}
-#features.sec-white::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(var(--navy-rgb),0.055) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--navy-rgb),0.055) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(180deg,transparent 0%,black 16%,black 86%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 16%,black 86%,transparent 100%);}
-#features.sec-white::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 58% 42% at 50% 0%,rgba(var(--brass-rgb),0.1),transparent 70%);}
-#features .sec-inner{position:relative;z-index:1;}
 .quick-links-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:var(--sec-head-gap);}
 .ql-card{display:flex;flex-direction:column;gap:10px;background:var(--white);border:1px solid var(--line2);border-radius:var(--r-lg);padding:22px 20px;text-decoration:none;transition:transform 0.2s cubic-bezier(0.16,1,0.3,1),box-shadow 0.2s,border-color 0.2s;position:relative;overflow:hidden;min-height:214px;}
 .ql-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass) 50%,var(--brass-deep));}
@@ -1983,7 +2056,7 @@ footer::before{content:"";position:absolute;right:-150px;bottom:-190px;width:560
 
 /* Consistent homepage section rhythm */
 .source-tiles-section{padding-top:var(--sec-pad-y-tight);padding-bottom:var(--sec-pad-y-tight);}
-#quick-links,#market-research,#toolkit,#spending-dashboard,#features,#sources,#library{border-top:1px solid rgba(var(--brass-rgb),0.08);}
+#quick-links,#market-research,#toolkit,#spending-dashboard,#sources,#library{border-top:1px solid rgba(var(--brass-rgb),0.08);}
 #market-research + #quick-links,#quick-links + #toolkit,#toolkit + #spending-dashboard,#spending-dashboard + #library,#library + #sources{margin-top:0;}
 /* ── LIBRARY section (homepage entry to the /library repository) ──
    "federal report covers": matte federal-ink + brass seal accent + engraved
@@ -2157,7 +2230,6 @@ body.work-mode #quick-links{margin-top:0;}
   .drawer-body{padding:14px 14px 96px;}
   .drawer-footer{position:fixed;left:0;right:0;bottom:0;background:var(--white);padding:10px 14px calc(10px + env(safe-area-inset-bottom));}
   .sec{padding:var(--sec-pad-y-sm) 20px;}
-  #features.sec-white{padding-top:40px;}
   h2.sec-head{font-size:28px;}
   .feats{grid-template-columns:1fr;gap:10px;margin-top:32px;}
   .srcs{grid-template-columns:1fr;gap:10px;}

@@ -13,9 +13,14 @@ function grab(re, label) { const m = src.match(re); if (!m) { console.error('FAI
 const colsSrc = grab(/const OSR_COLS = \[[\s\S]*?\];/, 'OSR_COLS');
 const cellSrc = grab(/function osrCsvCell\(v\) \{[\s\S]*?\n  \}/, 'osrCsvCell');
 const buildSrc = grab(/function osrBuildCsv\(rows\) \{[\s\S]*?\n  \}/, 'osrBuildCsv');
+const pickSrc = grab(/function osrPickedCols\(\) \{[\s\S]*?\n  \}/, 'osrPickedCols');
+// osrOn is normally seeded from localStorage; stub it so the harness controls it.
 // eslint-disable-next-line no-eval
-const ctx = eval('(function(){' + colsSrc + '\n' + cellSrc + '\n' + buildSrc + '\nreturn {OSR_COLS:OSR_COLS, osrCsvCell:osrCsvCell, osrBuildCsv:osrBuildCsv};})()');
-const { OSR_COLS, osrCsvCell, osrBuildCsv } = ctx;
+const ctx = eval('(function(){' + colsSrc + '\nlet osrOn = {};OSR_COLS.forEach(function(c){osrOn[c[0]]=1;});\n'
+  + cellSrc + '\n' + pickSrc + '\n' + buildSrc
+  + '\nreturn {OSR_COLS:OSR_COLS, osrCsvCell:osrCsvCell, osrBuildCsv:osrBuildCsv, osrPickedCols:osrPickedCols,'
+  + ' drop:function(k){delete osrOn[k];}, keepAll:function(){osrOn={};OSR_COLS.forEach(function(c){osrOn[c[0]]=1;});}};})()');
+const { OSR_COLS, osrCsvCell, osrBuildCsv, osrPickedCols } = ctx;
 
 // escaping rules
 assert.strictEqual(osrCsvCell('plain'), 'plain');
@@ -52,4 +57,20 @@ function parseCsvLine(line) {
 }
 assert.strictEqual(parseCsvLine(lines[1]).length, OSR_COLS.length, 'data row parses to OSR_COLS fields');
 
-console.log('CSV export: all checks passed (' + OSR_COLS.length + ' columns)');
+// the column picker must narrow BOTH the header and every data row, in step —
+// a header that drops a column while the rows keep it shifts every field after it
+ctx.drop('vendor'); ctx.drop('description');
+const narrowed = osrBuildCsv(rows).split('\r\n');
+assert.strictEqual(osrPickedCols().length, OSR_COLS.length - 2, 'picker drops two columns');
+assert.strictEqual(parseCsvLine(narrowed[0]).length, OSR_COLS.length - 2, 'narrowed header');
+assert.strictEqual(parseCsvLine(narrowed[1]).length, OSR_COLS.length - 2, 'narrowed data row');
+assert.ok(parseCsvLine(narrowed[0]).indexOf('Vendor') < 0, 'dropped column is gone from the header');
+assert.ok(parseCsvLine(narrowed[0]).indexOf('Vendor UEI') >= 0, 'a column that merely SHARES a prefix stays');
+assert.ok(!narrowed[1].includes('RCA CONTRACTING'), 'dropped column is gone from the row');
+// and column ORDER must stay OSR_COLS order, not selection order
+assert.deepStrictEqual(parseCsvLine(narrowed[0]),
+  OSR_COLS.filter((c) => c[0] !== 'vendor' && c[0] !== 'description').map((c) => c[1]),
+  'picked columns keep OSR_COLS order');
+ctx.keepAll();
+
+console.log('CSV export: all checks passed (' + OSR_COLS.length + ' columns, picker narrows in step)');
