@@ -442,6 +442,13 @@ function caRow(a, office, fy) {
   };
 }
 
+// SAM's Contract Awards API takes date filters as MM/DD/YYYY (single) or
+// [MM/DD/YYYY,MM/DD/YYYY] (range), documented on open.gsa.gov/api/contract-awards.
+// Everything else here speaks ISO (caRow already slices dateSigned to YYYY-MM-DD),
+// so convert only at the boundary.
+function isoDay(v) { const t = String(v == null ? '' : v).slice(0, 10); return /^\d{4}-\d{2}-\d{2}$/.test(t) ? t : ''; }
+function mdy(iso) { return iso.slice(5, 7) + '/' + iso.slice(8, 10) + '/' + iso.slice(0, 4); }
+
 // One contracting office (DoDAAC) + one fiscal year → the flat award rows, for CSV
 // export. Single FY per call so the CDN edge-cache is reused across any multi-year
 // combination the client asks for (the client fetches each FY and concatenates).
@@ -450,14 +457,20 @@ async function contractAwardsRows(req, res, apiKey) {
   const q = req.query || {};
   const office = String(q.office || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
   const fy = String(q.fy || '').replace(/[^0-9]/g, '').slice(0, 4);
+  const from = isoDay(q.from), to = isoDay(q.to);
+  const ranged = !!(from && to && from <= to);
   if (office.length < 4) return res.status(200).json({ note: 'Provide a contracting office code (DoDAAC), e.g. office=FA8501.' });
-  if (fy.length !== 4) return res.status(200).json({ note: 'Provide a 4-digit fiscal year, e.g. fy=2025.' });
+  if (!ranged && fy.length !== 4) return res.status(200).json({ note: 'Provide a 4-digit fiscal year (fy=2025) or a date range (from=2024-10-01&to=2025-03-31).' });
+  // A whole-career window would page 20x per request against a 1,000/day shared key.
+  if (ranged && (new Date(to) - new Date(from)) > 1200 * 864e5) return res.status(200).json({ office, rows: [], note: 'Date ranges are capped at about three years — narrow the window, or pick fiscal years.' });
 
   try {
     let count = 0, officeName = '', totalRecords = null, rate = null;
     const rows = [];
     for (let page = 0; page < CA_MAX_PAGES; page++) {
-      const r = await fetchContractAwards({ contractingOfficeCode: office, fiscalYear: fy, limit: CA_PAGE, offset: page }, apiKey);
+      const r = await fetchContractAwards(ranged
+        ? { contractingOfficeCode: office, dateSigned: '[' + mdy(from) + ',' + mdy(to) + ']', limit: CA_PAGE, offset: page }
+        : { contractingOfficeCode: office, fiscalYear: fy, limit: CA_PAGE, offset: page }, apiKey);
       rate = r.rate;
       if (!r.ok) { const e = new Error('Contract Awards HTTP ' + r.status); e.status = r.status; e.body = r.data; throw e; }
       const recs = r.data.awardSummary || r.data.results || r.data.data || [];
@@ -473,11 +486,13 @@ async function contractAwardsRows(req, res, apiKey) {
     const truncated = totalRecords != null && count < totalRecords;
     const totalObligated = rows.reduce(function (s, r) { return s + r.obligated; }, 0);
     const now = new Date(); const curFy = now.getUTCFullYear() + (now.getUTCMonth() >= 9 ? 1 : 0);
-    res.setHeader('Cache-Control', Number(fy) < curFy
+    // A closed period is immutable; anything touching the open FY still moves.
+    const closed = ranged ? (to < (curFy - 1) + '-10-01') : Number(fy) < curFy;
+    res.setHeader('Cache-Control', closed
       ? 's-maxage=604800, stale-while-revalidate=1209600'
       : 's-maxage=86400, stale-while-revalidate=172800');
     return res.status(200).json({
-      office, officeName, fiscalYear: fy,
+      office, officeName, fiscalYear: ranged ? '' : fy, from: ranged ? from : undefined, to: ranged ? to : undefined,
       count, totalRecords, truncated,
       totalObligated: Math.round(totalObligated),
       rows,
@@ -521,19 +536,34 @@ async function contractAwardFunding(req, res) {
   const piid = String((req.query || {}).piid || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 50);
   if (piid.length < 4) return res.status(200).json({ note: 'Provide a contract PIID.' });
   try {
-    // 1) resolve the PIID to a USASpending award id
+    // 1) resolve the PIID to a USASpending award id. `award_ids` matches the contract
+    // number EXACTLY. `keywords` (used here until 2026-08-25) matched SUBSTRINGS, so a
+    // short PIID — N00019 alone has 29 four-character delivery-order numbers — resolved
+    // to a different agency's contract entirely (live: '0018' returned a CDW Government
+    // Army IT order). A PIID is only unique WITH its parent, which FPDS doesn't give us,
+    // so more than one exact hit means we genuinely cannot tell which contract is yours:
+    // say so rather than print another agency's appropriation under this one.
     const s = await usaPost('/api/v2/search/spending_by_award/', {
-      filters: { award_type_codes: ['A', 'B', 'C', 'D'], keywords: [piid] },
-      fields: ['Award ID', 'generated_internal_id'], limit: 10
+      filters: { award_type_codes: ['A', 'B', 'C', 'D'], award_ids: [piid] },
+      fields: ['Award ID', 'generated_internal_id'], limit: 100
     });
-    const results = s.results || [];
-    const hit = results.find(function (r) { return String(r['Award ID'] || '').toUpperCase() === piid; }) || results[0];
-    if (!hit || !hit.generated_internal_id) {
+    const exact = (s.results || []).filter(function (r) { return String(r['Award ID'] || '').toUpperCase() === piid; });
+    if (exact.length !== 1 || !exact[0].generated_internal_id) {
       res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
-      return res.status(200).json({ piid, found: false, accounts: [], note: 'No matching award on USASpending — appropriation data is not reported for this contract.' });
+      return res.status(200).json({
+        piid, found: false, accounts: [], ambiguous: exact.length > 1,
+        note: exact.length > 1
+          ? ('This contract number isn’t unique on USASpending — ' + exact.length + ' awards under different parents share it, so no appropriation can be tied to this one.')
+          : 'No appropriation reported. Color of money comes from the funding agency’s Treasury submission (File C), not from FPDS — and DoD leaves most contract actions unlinked. Blank means not reported, not zero.'
+      });
     }
+    const hit = exact[0];
     // 2) roll up its funding accounts (File C)
     const roll = {};
+    // File C is reported per the SUBMITTING agency's fiscal periods over the whole
+    // contract's life, not per FPDS action, so track which fiscal years the money was
+    // reported in — without that label a FY2019-21 total reads as this year's money.
+    let fyMin = null, fyMax = null;
     for (let page = 1; page <= 4; page++) {
       const f = await usaPost('/api/v2/awards/funding/', { award_id: hit.generated_internal_id, limit: 100, page, sort: 'reporting_fiscal_date', order: 'desc' });
       const rows = f.results || [];
@@ -542,6 +572,8 @@ async function contractAwardFunding(req, res) {
         const code = x.federal_account || '';
         const title = x.account_title || code || '—';
         const amt = Number(x.transaction_obligated_amount) || 0;
+        const fy = Number(x.reporting_fiscal_year) || 0;
+        if (fy) { if (fyMin == null || fy < fyMin) fyMin = fy; if (fyMax == null || fy > fyMax) fyMax = fy; }
         const k = code + '|' + title;
         if (!roll[k]) roll[k] = { code: code, title: title, type: apprType(title), amount: 0 };
         roll[k].amount += amt;
@@ -557,8 +589,9 @@ async function contractAwardFunding(req, res) {
       piid, found: accounts.length > 0,
       accounts: accounts.slice(0, 12).map(function (a) { return { code: a.code, title: a.title, type: a.type, amount: Math.round(a.amount) }; }),
       total: Math.round(total),
+      fyFrom: fyMin, fyTo: fyMax,
       source: 'USASpending.gov account funding (File C)',
-      note: accounts.length ? undefined : 'No appropriation/account data is reported for this contract on USASpending.'
+      note: accounts.length ? undefined : 'No appropriation reported. Color of money comes from the funding agency’s Treasury submission (File C), not from FPDS — and DoD leaves most contract actions unlinked. Blank means not reported, not zero.'
     });
   } catch (error) {
     console.error('award-funding error:', error && error.message);
