@@ -455,16 +455,20 @@ function mdy(iso) { return iso.slice(5, 7) + '/' + iso.slice(8, 10) + '/' + iso.
 async function contractAwardsRows(req, res, apiKey) {
   if (!apiKey) return res.status(200).json({ configured: false, note: 'SAM_API_KEY not configured.' });
   const q = req.query || {};
-  // `~` is SAM's OR operator. It is documented as a general operator and explicitly
-  // supported on naicsCode/PSC/UEI/CAGE, but NOT documented on contractingOfficeCode
-  // — passing it through is how we find out whether it works there too.
-  const offices = String(q.office || '').toUpperCase().replace(/[^A-Z0-9~]/g, '')
-    .split('~').filter((c) => c.length >= 4 && c.length <= 6).slice(0, 8);
-  const office = offices.join('~');
+  // SAM's `~` OR operator does NOT work on contractingOfficeCode, and it fails
+  // SILENTLY: measured 2026-08-25, `FA8501~FA8750` returned FA8501's 708 rows with
+  // FA8750 dropped, while `FA8750~FA8501` returned 0 — no error either way. The old
+  // sanitiser was no safer: it stripped the `~` and truncated to six characters, so a
+  // two-office request also came back as one office's data looking complete.
+  // One office per request. The client asks for several by asking several times, which
+  // also keeps each (office, period) separately edge-cached.
+  const asked = String(q.office || '').toUpperCase().replace(/[^A-Z0-9~,;| ]/g, '').split(/[~,;| ]+/).filter(Boolean);
+  if (asked.length > 1) return res.status(200).json({ limited: true, rows: [], note: 'This lookup takes one contracting office at a time.' });
+  const office = asked[0] || '';
   const fy = String(q.fy || '').replace(/[^0-9]/g, '').slice(0, 4);
   const from = isoDay(q.from), to = isoDay(q.to);
   const ranged = !!(from && to && from <= to);
-  if (!offices.length) return res.status(200).json({ note: 'Provide a contracting office code (DoDAAC), e.g. office=FA8501.' });
+  if (office.length < 4 || office.length > 6) return res.status(200).json({ note: 'Provide a contracting office code (DoDAAC), e.g. office=FA8501.' });
   if (!ranged && fy.length !== 4) return res.status(200).json({ note: 'Provide a 4-digit fiscal year (fy=2025) or a date range (from=2024-10-01&to=2025-03-31).' });
   // A whole-career window would page 20x per request against a 1,000/day shared key.
   if (ranged && (new Date(to) - new Date(from)) > 1200 * 864e5) return res.status(200).json({ office, rows: [], note: 'Date ranges are capped at about three years — narrow the window, or pick fiscal years.' });
@@ -481,7 +485,7 @@ async function contractAwardsRows(req, res, apiKey) {
       const recs = r.data.awardSummary || r.data.results || r.data.data || [];
       if (totalRecords == null) totalRecords = r.data.totalRecords ?? r.data.totalRecordCount ?? null;
       for (let i = 0; i < recs.length; i++) {
-        const row = caRow(recs[i], offices.length === 1 ? office : '', fy);
+        const row = caRow(recs[i], office, fy);
         if (!officeName && row.officeName) officeName = row.officeName;
         rows.push(row); count++;
       }
