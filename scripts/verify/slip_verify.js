@@ -129,15 +129,16 @@ const PIDS = {
   r = await call('POST', 'join', { code, pid: PIDS.cami, name: 'Cami' });
   eq(r.status, 200, 'Cami joins');
 
-  /* non-host cannot deal */
+  /* anyone seated can deal - the host's phone dying must not strand the room */
   r = await call('POST', 'deal', { code, pid: PIDS.beto });
-  eq(r.body.err, 'NOT_HOST', 'non-host cannot deal');
+  eq(r.status, 200, 'a non-host can deal');
+  eq(r.body.round, 1, 'their deal counts');
 
-  /* deal */
+  /* deal again from the host, so the rest of the run is unchanged */
   r = await call('POST', 'deal', { code, pid: PIDS.ana });
   eq(r.status, 200, 'host deals');
   eq(r.body.phase, 'play', 'phase is play');
-  eq(r.body.round, 1, 'round incremented');
+  eq(r.body.round, 2, 'round incremented');
 
   /* ---- THE INVARIANTS ---- */
   const views = {};
@@ -254,7 +255,7 @@ const PIDS = {
   /* ---- deal again: same room, fresh numbers, Eve included ---- */
   r = await call('POST', 'deal', { code, pid: PIDS.ana });
   eq(r.status, 200, 'host deals again');
-  eq(r.body.round, 2, 'round 2');
+  eq(r.body.round, 3, 'round 3');
   eq(r.body.ask, null, 'a new deal clears the question on the table');
   eq(r.body.phase, 'play', 'back to play');
   eq(r.body.you.num, null, 'Ana cannot see her new number');

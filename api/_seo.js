@@ -17,7 +17,7 @@ const ANALYTICS_V = 1;
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 6;
+const SLIP_V = 7;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2579,6 +2579,29 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
 .tally .n{color:var(--pink)}
 .tally .w{color:var(--label-3)}
 
+/* Three questions to pick from, rather than one handed down. */
+.q-options{display:flex;flex-direction:column;gap:var(--s2)}
+.q-opt{
+  font:inherit;text-align:left;cursor:pointer;
+  border:none;border-radius:var(--r-ctl);
+  padding:14px var(--s4);
+  background:var(--fill);color:var(--label);
+  font-size:17px;font-weight:600;letter-spacing:-.015em;line-height:1.28;
+  display:flex;flex-direction:column;gap:3px;
+  transition:transform var(--t-press) var(--ease-out),background var(--t-press) ease;
+}
+.q-opt:active{transform:scale(.98)}
+.q-opt .tag{
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--label-3);
+}
+.q-opt.best .tag{color:var(--tint)}
+.q-opt.fun .tag{color:var(--orange)}
+@media (hover:hover) and (pointer:fine){ .q-opt:hover{background:var(--fill-hi)} }
+.q-own{display:flex;flex-direction:column;gap:var(--s3)}
+.q-tools{display:flex;gap:var(--s2)}
+.q-tools .btn{flex:1}
+
 /* ============================================================
    MISC
    ============================================================ */
@@ -2705,14 +2728,22 @@ footer .note{max-width:50ch}
     <p class="order" id="playOrder"></p>
 
     <div class="q-card" id="qCard">
-      <span class="label" id="qKind">Ask the room</span>
-      <p class="q-text" id="qText">Tap below for something to ask the room.</p>
+      <span class="label" id="qKind">Your turn to ask</span>
+      <p class="q-text" id="qText" hidden></p>
+      <div class="q-options" id="qOptions"></div>
       <div class="q-answers" id="qAnswers" hidden>
         <button class="btn btn-sm" id="ansYes" type="button">Yes</button>
         <button class="btn btn-sm" id="ansNo" type="button">No</button>
       </div>
-      <button class="btn btn-primary btn-block" id="doPut" type="button" hidden>Put it to the room</button>
-      <button class="btn btn-block" id="doAsk" type="button">Give me a question</button>
+      <div class="q-own" id="qOwn" hidden>
+        <input class="field" id="ownQ" type="text" maxlength="120" autocomplete="off"
+               placeholder="Anything they can answer yes or no">
+        <button class="btn btn-primary btn-block" id="doPutOwn" type="button">Put it to the room</button>
+      </div>
+      <div class="q-tools" id="qTools">
+        <button class="btn btn-sm" id="doAsk" type="button">Other questions</button>
+        <button class="btn btn-sm btn-quiet" id="doOwn" type="button">Ask my own</button>
+      </div>
       <p class="narrow" id="qRange" hidden></p>
     </div>
 

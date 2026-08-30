@@ -290,7 +290,9 @@ async function doDeal(req, res, body) {
     const room = got.room;
 
     if (!room.players.some(p => p.id === pid)) return bail(res, 'NOT_SEATED');
-    if (room.host !== pid) return bail(res, 'NOT_HOST');
+    // Anyone seated can deal. On a call, whoever says "again?" should be able
+    // to just do it - requiring the host strands the room the moment their
+    // phone dies, and there is no heartbeat that would notice.
 
     const seated = room.players.filter(p => p.id !== null);
     if (seated.length < MIN_PLAYERS) return bail(res, 'TOO_FEW');

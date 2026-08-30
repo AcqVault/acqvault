@@ -273,12 +273,12 @@
     });
 
     var enough = all.length >= 2;
-    $('doDeal').hidden = !view.isHost;
+    $('doDeal').hidden = false;
     $('doDeal').disabled = !enough;
     $('doDeal').textContent = enough ? 'Deal the slips' : 'Waiting for one more';
-    $('waitNote').textContent = view.isHost
-      ? (enough ? "Everyone in? Deal." : 'You need at least one other player - somebody has to hold a number you can see.')
-      : 'The host deals when everyone is in.';
+    $('waitNote').textContent = enough
+      ? 'Everyone in? Anyone can deal.'
+      : 'You need at least one other player - somebody has to hold a number you can see.';
 
     show('lobby');
   }
@@ -355,8 +355,9 @@
 
     var canReveal = !view.you.pending && !view.you.revealed;
     $('doReveal').hidden = !canReveal;
-    // The restart only appears once you have flipped your own slip - otherwise
-    // the button that reshuffles EVERYONE sits right under the one you want.
+    // Anyone can start the next round, not just the host - but only once they
+    // have flipped their own slip, so the button that reshuffles EVERYONE is
+    // never sitting under the one you actually want.
     $('doAgain').hidden = $('againNote').hidden = canReveal || view.you.pending;
     renderAsk(view);
     var t = view.you.pending
@@ -395,29 +396,66 @@
 
   /* ============================================================
      QUESTIONS
-     A question is put to the ROOM. It appears on everyone else's phone,
-     they answer yes or no, and the tally comes back. The app never states
-     your number - it only tracks what the room told you, so it can hand
-     you a question worth asking next.
+     You are offered three to pick from, not handed one: the sharpest split
+     the app can compute, a different angle on the same range, and something
+     that is just fun to ask. Or type your own.
+
+     A question is put to the ROOM - it lands on everyone else's phone, they
+     answer yes or no, and the tally comes back. The app never states your
+     number; it only tracks which candidates the room's answers have ruled
+     out, so it can offer a question worth asking next.
      ============================================================ */
-  var Q = { lo: 1, hi: 100, parity: null, suggested: null, resolvedFor: null, answered: 0, movedPast: null };
+  var TOP = 100;
+
+  // Fixed questions that narrow without needing a computed threshold.
+  // f(n) is true when n is consistent with a YES. It must be total over 1..100.
+  var PROBE = [
+    { t: 'Is my number even?',                  f: function (n) { return n % 2 === 0; } },
+    { t: 'Does my number have a 7 in it?',      f: function (n) { return String(n).indexOf('7') >= 0; } },
+    { t: 'Does my number end in a 0 or a 5?',   f: function (n) { return n % 5 === 0; } },
+    { t: 'Does my number have two digits?',     f: function (n) { return n >= 10 && n <= 99; } },
+    { t: 'Are both my digits the same?',        f: function (n) { return n >= 11 && n <= 99 && n % 11 === 0; } },
+    { t: 'Is my number a multiple of 10?',      f: function (n) { return n % 10 === 0; } },
+    { t: 'Is my number in the top half?',       f: function (n) { return n > 50; } },
+    { t: 'Does my number start with a 1?',      f: function (n) { return String(n).charAt(0) === '1'; } }
+  ];
+
+  // Fun to ask, narrows nothing. None of these imply the room CHOSE your
+  // number, because the deal is random.
+  var SPARK = [
+    'Would you trade numbers with me?',
+    'Is my number the one you would least want?',
+    'Would you be happy with my number?',
+    'Is my number funnier than yours?',
+    'If you had to bet on me right now, would you bet high?',
+    'Is anyone here about to lie to me?',
+    'Would my number be a good age to be?',
+    'Would you pay my number for lunch?',
+    'Is my number a passing grade?',
+    'Would you drive my number down a motorway?'
+  ];
+
+  var Q = { filters: [], options: null, movedPast: null, resolvedFor: null, answered: 0, own: false };
 
   function resetQuestions() {
-    Q = { lo: 1, hi: 100, parity: null, suggested: null, resolvedFor: null, answered: 0, movedPast: null };
+    Q = { filters: [], options: null, movedPast: null, resolvedFor: null, answered: 0, own: false };
     $('qRange').hidden = true;
+    $('qOwn').hidden = true;
     $('qCard').className = 'q-card';
   }
 
-  // Numbers you can SEE are provably not yours, so they come out of the count.
+  // Numbers you can SEE are provably not yours, so they never enter the pool.
   function candidates() {
     var taken = {};
     if (S.view) S.view.players.forEach(function (p) { if (p.num != null) taken[p.num] = 1; });
     var out = [];
-    for (var n = Q.lo; n <= Q.hi; n++) {
+    for (var n = 1; n <= TOP; n++) {
       if (taken[n]) continue;
-      if (Q.parity === 'even' && n % 2) continue;
-      if (Q.parity === 'odd' && n % 2 === 0) continue;
-      out.push(n);
+      var ok = true;
+      for (var i = 0; i < Q.filters.length; i++) {
+        if (Q.filters[i].test(n) !== Q.filters[i].yes) { ok = false; break; }
+      }
+      if (ok) out.push(n);
     }
     return out;
   }
@@ -430,7 +468,7 @@
     el.textContent = '';
     if (!c.length) { el.textContent = 'That rules everything out - somebody answered wrong.'; return; }
     if (c.length === 1) {
-      // Deliberately does NOT print the number. Working it out is the game.
+      // Deliberately does NOT print it. Working it out is the game.
       el.textContent = 'One number left. You know what it is - say it out loud.';
       return;
     }
@@ -441,47 +479,56 @@
     el.appendChild(document.createTextNode(' - ' + c.length + ' still possible'));
   }
 
-  // None of these presume the room CHOSE your number - the deal is random.
-  var WILD = [
-    'Would you trade numbers with me?',
-    'Am I the number you would want?',
-    'Is my number funnier than yours?',
-    'Would you be happy with my number?',
-    'Am I closer to the top or the bottom?',
-    'If you had to bet on me right now, would you bet high?',
-    'Is anyone here about to lie to me?'
-  ];
-
-  function suggest() {
-    var view = S.view;
-    if (!view) return null;
-    var c = candidates();
-    if (c.length <= 1) return { text: 'I think I have it - here goes.', effect: null };
-
-    if (c.length > 6 && Q.answered > 0 && Math.random() < 0.2) {
-      return { text: pick(WILD), effect: null };
-    }
-
-    // Always a number, never a person. "Am I higher than Capri?" is ambiguous
-    // - higher what? - and pointless when Capri's number is on screen anyway.
-    // A plain threshold is unmistakable, and the median of what is left is the
-    // most informative question available.
-    if (Q.parity === null && c.length <= 16 && c.length > 2) {
-      return { text: 'Am I an even number?', effect: { type: 'even' } };
-    }
-
-    var mid = c[Math.floor((c.length - 1) / 2)];
-    return { text: 'Is my number higher than ' + mid + '?', effect: { type: 'gt', v: mid } };
+  // How evenly a predicate splits what is left. 0 is a perfect halving.
+  function imbalance(c, f) {
+    var yes = 0;
+    for (var i = 0; i < c.length; i++) if (f(c[i])) yes++;
+    if (yes === 0 || yes === c.length) return 1e9;   // tells you nothing
+    return Math.abs(yes - (c.length - yes));
   }
 
-  function applyAnswer(effect, yes) {
-    if (!effect) return;
-    if (effect.type === 'gt') {
-      if (yes) Q.lo = Math.max(Q.lo, effect.v + 1);
-      else Q.hi = Math.min(Q.hi, effect.v);
-    } else if (effect.type === 'even') {
-      Q.parity = yes ? 'even' : 'odd';
+  // Three options: the sharpest split, a different angle, and something fun.
+  function buildOptions() {
+    var c = candidates();
+    var opts = [];
+
+    if (c.length > 1) {
+      var mid = c[Math.floor((c.length - 1) / 2)];
+      opts.push({
+        tag: 'Sharpest', cls: 'best',
+        text: 'Is my number higher than ' + mid + '?',
+        test: function (n) { return n > mid; }
+      });
+
+      // best-splitting probe that is not already answered and actually informs
+      var pool = PROBE.filter(function (p) { return imbalance(c, p.f) < 1e9; });
+      pool.sort(function (a, b) { return imbalance(c, a.f) - imbalance(c, b.f); });
+      var fresh = pool.filter(function (p) { return Q.filters.every(function (f) { return f.label !== p.t; }); });
+      var probe = fresh.length ? fresh[Math.min(1, fresh.length - 1) === 0 ? 0 : Math.floor(Math.random() * Math.min(3, fresh.length))] : null;
+      if (probe) opts.push({ tag: 'Another angle', cls: '', text: probe.t, test: probe.f, label: probe.t });
     }
+
+    opts.push({ tag: 'Just for fun', cls: 'fun', text: pick(SPARK), test: null });
+    return opts;
+  }
+
+  function renderOptions() {
+    var box = $('qOptions');
+    box.textContent = '';
+    (Q.options || []).forEach(function (o, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'q-opt ' + (o.cls || '');
+      var tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = o.tag;
+      var txt = document.createElement('span'); txt.textContent = o.text;
+      b.appendChild(tag); b.appendChild(txt);
+      b.addEventListener('click', function () { putQuestion(o); });
+      box.appendChild(b);
+    });
+  }
+
+  function applyAnswer(opt, yes) {
+    if (opt && opt.test) Q.filters.push({ test: opt.test, yes: yes, label: opt.label || opt.text });
     Q.answered++;
   }
 
@@ -497,51 +544,54 @@
     return wrap;
   }
 
+  function setMenu(on) {
+    $('qOptions').hidden = !on;
+    $('qTools').hidden = !on;
+    $('qText').hidden = on;
+    if (!on) $('qOwn').hidden = true;
+  }
+
   /* ---------- the q-card, driven by the room's open question ---------- */
   function renderAsk(view) {
     var card = $('qCard'), ask = view.ask;
-    // A finished question stays on the server until someone puts up a new one.
-    // Once you have moved on from it - yours resolved, or theirs answered -
-    // stop showing it back to you and offer your own turn instead.
-    if (ask && Q.movedPast === ask.text &&
-        (ask.mine ? ask.waiting === 0 : ask.answered)) ask = null;
     card.hidden = !!view.you.pending;
     if (view.you.pending) return;
+
+    // A finished question sits on the server until someone replaces it. Once
+    // you have moved on, stop showing it back to you.
+    if (ask && Q.movedPast === ask.text &&
+        (ask.mine ? ask.waiting === 0 : ask.answered)) ask = null;
 
     if (!ask) {
       card.className = 'q-card';
       $('qKind').textContent = 'Your turn to ask';
       $('qAnswers').hidden = true;
-      if (!Q.suggested) Q.suggested = suggest();
-      $('qText').textContent = Q.suggested ? Q.suggested.text : 'Tap below for something to ask.';
-      $('doPut').hidden = !Q.suggested;
-      $('doAsk').hidden = false;
-      $('doAsk').textContent = Q.suggested ? 'Different question' : 'Give me a question';
+      if (!Q.options) Q.options = buildOptions();
+      renderOptions();
+      setMenu(true);
+      if (Q.own) { $('qOwn').hidden = false; }
       showNarrow();
       return;
     }
+
+    setMenu(false);
 
     if (ask.mine) {
       card.className = 'q-card waiting';
       $('qText').textContent = ask.text;
       $('qAnswers').hidden = true;
-      $('doPut').hidden = true;
       if (ask.waiting > 0) {
         $('qKind').textContent = 'Waiting on the room';
-        $('doAsk').hidden = true;
+        $('qTools').hidden = true;
       } else {
         $('qKind').textContent = 'The room answered';
-        // Resolve once per question.
         if (Q.resolvedFor !== ask.text) {
           Q.resolvedFor = ask.text;
-          if (Q.suggested && Q.suggested.effect && ask.yes !== ask.no) {
-            applyAnswer(Q.suggested.effect, ask.yes > ask.no);
-          } else if (ask.yes !== ask.no) {
-            Q.answered++;
-          }
-          Q.suggested = null;
+          if (ask.yes !== ask.no) applyAnswer(Q.asked, ask.yes > ask.no);
+          Q.asked = null;
+          Q.options = null;
         }
-        $('doAsk').hidden = false;
+        $('qTools').hidden = false;
         $('doAsk').textContent = 'Next question';
       }
       var line = $('qRange');
@@ -550,18 +600,17 @@
       line.textContent = '';
       line.appendChild(tallyLine(ask));
       if (ask.waiting === 0 && ask.yes === ask.no) {
-        line.appendChild(document.createTextNode(' - the room is split, that tells you nothing.'));
+        line.appendChild(document.createTextNode(' - the room is split, so that tells you nothing.'));
       }
       return;
     }
 
-    // Somebody else is asking. This is the moment their phone is waiting on.
+    // Somebody else is asking. This is the moment their phone waits on.
     card.className = 'q-card' + (ask.answered ? '' : ' incoming');
     $('qKind').textContent = ask.byName + ' is asking';
     $('qText').textContent = ask.text;
     $('qAnswers').hidden = !!ask.answered;
-    $('doPut').hidden = true;
-    $('doAsk').hidden = !ask.answered;
+    $('qTools').hidden = !ask.answered;
     $('doAsk').textContent = 'Ask something of my own';
     if (ask.answered) {
       var l = $('qRange');
@@ -573,24 +622,40 @@
     }
   }
 
+  function putQuestion(opt) {
+    if (!S.view || !opt || !opt.text) return;
+    Q.asked = opt;
+    api('ask', { code: S.code, text: opt.text }).then(function (v) {
+      Q.own = false;
+      $('qOwn').hidden = true;
+      apply(v);
+      resetPolling();
+    }).catch(function (e) { fail('boardErr', e); });
+  }
+
   $('doAsk').addEventListener('click', function () {
     if (!S.view) return;
     var ask = S.view.ask;
-    if (ask && ask.mine && ask.waiting === 0) Q.movedPast = ask.text;
-    if (ask && !ask.mine && ask.answered) Q.movedPast = ask.text;
-    Q.suggested = suggest();
+    if (ask && ((ask.mine && ask.waiting === 0) || (!ask.mine && ask.answered))) Q.movedPast = ask.text;
+    Q.options = buildOptions();
+    Q.own = false;
+    $('qOwn').hidden = true;
     renderAsk(S.view);
   });
 
-  $('doPut').addEventListener('click', function () {
-    if (!S.view || !Q.suggested) return;
-    var btn = this;
-    busy(btn, true, 'Asking...');
-    api('ask', { code: S.code, text: Q.suggested.text }).then(function (v) {
-      apply(v);
-      resetPolling();
-    }).catch(function (e) { fail('boardErr', e); })
-      .then(function () { busy(btn, false); });
+  $('doOwn').addEventListener('click', function () {
+    Q.own = !Q.own;
+    $('qOwn').hidden = !Q.own;
+    if (Q.own) $('ownQ').focus();
+  });
+
+  $('doPutOwn').addEventListener('click', function () {
+    var t = ($('ownQ').value || '').trim();
+    if (!t) { $('ownQ').focus(); return; }
+    // A question you wrote narrows nothing automatically - the app has no idea
+    // what it means, and guessing would be worse than not trying.
+    putQuestion({ text: t, test: null });
+    $('ownQ').value = '';
   });
 
   function sendAnswer(yes) {
