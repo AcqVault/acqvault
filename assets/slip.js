@@ -64,8 +64,6 @@
     'how good you would be at hiding a body in a board game sense',
     'how likely you are to buy something you saw in an ad',
     'how well you would do as a wedding DJ',
-    'how likely you are to hold a grudge for a decade',
-    'how good you are at telling a story at a party',
     'how likely you are to survive a group project',
     'how well you would do on a jury',
     'how likely you are to break a world record for something stupid',
@@ -305,6 +303,7 @@
     chip.hidden = false;
     chip.querySelector('b').textContent = view.code;
 
+    $('playOrder').hidden = over;
     var box = $('slips');
     // The deal animation should fire on a NEW ROUND, not on every poll tick -
     // otherwise the whole board re-animates each time anyone joins or reveals.
@@ -331,10 +330,9 @@
     }
     box.appendChild(mine);
 
-    view.players.slice().sort(function (a, b) {
-      var an = a.num == null ? -1 : a.num, bn = b.num == null ? -1 : b.num;
-      return bn - an || a.slot - b.slot;
-    }).forEach(function (p) {
+    // Seat order, not number order. Sorting by number turns the board into a
+    // standing, and contradicts the play-order line printed right beneath it.
+    view.players.slice().sort(function (a, b) { return a.slot - b.slot; }).forEach(function (p) {
       var el = document.createElement('div');
       el.className = 'slip hue-' + (p.slot % 8) + (p.num == null ? ' waiting' : '');
       var n = document.createElement('div');
@@ -372,7 +370,23 @@
     $('guessRow').hidden = !canGuess;
     // Anyone can start the next round - but only once you have committed, so
     // the button that reshuffles EVERYONE never sits under the one you want.
-    $('doAgain').hidden = $('againNote').hidden = canGuess || view.you.pending;
+    var mayDeal = canGuess || view.you.pending;
+    if (over) {
+      if (!S.doneSince) S.doneSince = Date.now();
+      var stale = Date.now() - S.doneSince > 30000;
+      mayDeal = !(S.worstIsMe || stale);
+      $('doAgain').textContent = S.worstIsMe
+        ? 'Deal - you were furthest off, so it is on you'
+        : 'Deal anyway';
+      $('againNote').textContent = S.worstIsMe || stale || !S.worstName
+        ? 'Everyone gets a new number and a new topic.'
+        : S.worstName + ' deals.';
+    } else {
+      S.doneSince = 0;
+      $('doAgain').textContent = 'New round, new topic';
+      $('againNote').textContent = "Everyone's slip goes blank and the numbers are reshuffled.";
+    }
+    $('doAgain').hidden = $('againNote').hidden = mayDeal;
     renderAsk(view);
 
     var waitingOn = view.players.filter(function (p) {
@@ -405,13 +419,26 @@
         all.push({ name: view.you.name, off: Math.abs(view.you.guess - view.you.num), you: true });
       }
       all.sort(function (a, b) { return a.off - b.off; });
-      var best = all[0];
-      $('resultLine').textContent = !best ? 'Nobody committed.'
-        : best.off === 0 ? (best.you ? 'You nailed it exactly.' : best.name + ' nailed it exactly.')
-        : best.off <= 10 ? (best.you ? 'You were closest - ' + best.off + ' off.'
-                                     : best.name + ' was closest, ' + best.off + ' off.')
-        : (best.you ? 'Closest was you, and you were ' + best.off + ' off.'
-                    : best.name + ' was closest, and was still ' + best.off + ' off.');
+      var best = all[0], worst = all[all.length - 1];
+      rc.className = 'result' + (best && best.off === 0 ? ' exact' : '');
+      if (!best) {
+        $('resultLine').textContent = 'Nobody committed.';
+        $('resultSub').textContent = '';
+      } else if (best.off === 0) {
+        // A 1-in-100 has earned the headline back.
+        $('resultLine').textContent = best.you ? 'You nailed it exactly.' : best.name + ' nailed it exactly.';
+        $('resultSub').textContent = '';
+      } else if (worst === best) {
+        $('resultLine').textContent = best.you ? 'You were ' + best.off + ' off.' : best.name + ' was ' + best.off + ' off.';
+        $('resultSub').textContent = '';
+      } else {
+        // The miss is the funny part. Lead with it.
+        $('resultLine').textContent = worst.you ? 'You missed by ' + worst.off + '.'
+                                                : worst.name + ' missed by ' + worst.off + '.';
+        $('resultSub').textContent = (best.you ? 'You got closest' : best.name + ' got closest') + ' - ' + best.off + ' off.';
+      }
+      S.worstName = worst && !best ? null : (worst ? worst.name : null);
+      S.worstIsMe = !!(worst && worst.you);
     }
 
     show('board');
@@ -504,8 +531,7 @@
     'If my number were the unread texts sitting on my phone, would that stress you out?',
     'If my number were an age, is it a good age to be?',
     'Would you call my number a lucky number?',
-    'Does my number look like a jersey number a good player would wear?',
-    'Of all the numbers you can see right now, is mine the one you would least want on your own forehead?'
+    'Does my number look like a jersey number a good player would wear?'
   ];
 
   var Q = { filters: [], options: null, movedPast: null, resolvedFor: null, answered: 0, own: false };
@@ -563,7 +589,7 @@
     if (c.length > 1) {
       var mid = c[Math.floor((c.length - 1) / 2)];
       opts.push({
-        tag: 'Sharpest', cls: 'best',
+        sharp: true,
         text: pick(SHARP).replace('{n}', mid),
         test: function (n) { return n > mid; }
       });
@@ -578,24 +604,28 @@
       fresh.sort(function (a, b) { return imbalance(c, a.f, seen) - imbalance(c, b.f, seen); });
       if (fresh.length) {
         var probe = fresh[Math.floor(Math.random() * Math.min(3, fresh.length))];
-        opts.push({ tag: 'Another angle', cls: '', text: probe.t, test: probe.f, label: probe.t });
+        opts.push({ text: probe.t, test: probe.f, label: probe.t });
       }
     }
 
-    opts.push({ tag: 'Just for fun', cls: 'fun', text: pick(SPARK), test: null });
+    opts.push({ text: pick(SPARK), test: null });
+    // Shuffle, or position becomes the label we just deleted.
+    for (var i = opts.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = opts[i]; opts[i] = opts[j]; opts[j] = t;
+    }
     return opts;
   }
 
   function renderOptions() {
     var box = $('qOptions');
     box.textContent = '';
-    (Q.options || []).forEach(function (o, i) {
+    // No eyebrow labels: "Sharpest" / "Just for fun" told the room which card
+    // was the real move and which was the forfeit, before anyone chose.
+    (Q.options || []).forEach(function (o) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'q-opt ' + (o.cls || '');
-      var tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = o.tag;
-      var txt = document.createElement('span'); txt.textContent = o.text;
-      b.appendChild(tag); b.appendChild(txt);
+      b.className = 'q-opt';
+      b.textContent = o.text;
       b.addEventListener('click', function () { putQuestion(o); });
       box.appendChild(b);
     });
@@ -619,11 +649,16 @@
       part('w', ask.waiting + ' still deciding');
       return wrap;
     }
-    if (ask.no === 0 && ask.yes > 0) part('y', ask.yes > 1 ? 'Nobody disagreed - yes.' : 'Yes.');
-    else if (ask.yes === 0 && ask.no > 0) part('n', ask.no > 1 ? 'Nobody disagreed - no.' : 'No.');
-    else if (ask.no === 1) { part('y', ask.yes + ' said yes'); part('n', 'one said no'); }
-    else if (ask.yes === 1) { part('n', ask.no + ' said no'); part('y', 'one said yes'); }
+    if (ask.no === 0 && ask.yes > 0) part('y', ask.yes > 1 ? 'Everyone said yes.' : 'Yes.');
+    else if (ask.yes === 0 && ask.no > 0) part('n', ask.no > 1 ? 'Everyone said no.' : 'No.');
+    else if (ask.oddName) {
+      // Naming the one holdout is the whole point - it starts the argument.
+      var many = ask.oddSaid === 'no' ? ask.yes : ask.no;
+      part(ask.oddSaid === 'no' ? 'y' : 'n', many + (ask.oddSaid === 'no' ? ' yes.' : ' no.'));
+      part(ask.oddSaid === 'no' ? 'n' : 'y', ask.oddName + ' said ' + ask.oddSaid + '.');
+    }
     else { part('y', ask.yes + ' yes'); part('n', ask.no + ' no'); }
+    if (ask.sharp) part('w', 'Somebody did some maths.');
     return wrap;
   }
 
@@ -637,8 +672,8 @@
   /* ---------- the q-card, driven by the room's open question ---------- */
   function renderAsk(view) {
     var card = $('qCard'), ask = view.ask;
-    card.hidden = !!view.you.pending;
-    if (view.you.pending) return;
+    card.hidden = !!view.you.pending || view.phase === 'done';
+    if (card.hidden) return;
 
     // A finished question sits on the server until someone replaces it. Once
     // you have moved on, stop showing it back to you.
@@ -654,11 +689,11 @@
       ae.className = 'asks' + (left === 0 ? ' out' : '');
       ae.textContent = '';
       if (left === 0) {
-        ae.appendChild(document.createTextNode('No questions left. Time to commit.'));
+        ae.appendChild(document.createTextNode('The room is out of questions. Everybody guess.'));
       } else {
         var bn = document.createElement('b'); bn.textContent = left;
         ae.appendChild(bn);
-        ae.appendChild(document.createTextNode(left === 1 ? ' question left this round' : ' questions left this round'));
+        ae.appendChild(document.createTextNode(left === 1 ? ' question left in the room' : ' questions left in the room'));
       }
       $('qOptions').hidden = left === 0;
       $('qTools').hidden = left === 0;
@@ -729,7 +764,7 @@
   function putQuestion(opt) {
     if (!S.view || !opt || !opt.text) return;
     Q.asked = opt;
-    api('ask', { code: S.code, text: opt.text }).then(function (v) {
+    api('ask', { code: S.code, text: opt.text, sharp: opt.sharp === true }).then(function (v) {
       Q.own = false;
       $('qOwn').hidden = true;
       apply(v);
@@ -748,6 +783,11 @@
     Q.own = false;
     $('qOwn').hidden = true;
     renderAsk(S.view);
+  });
+
+  $('doSay').addEventListener('click', function () {
+    // The call is right there. Sometimes the question does not need typing.
+    putQuestion({ text: 'Look up.', test: null });
   });
 
   $('doOwn').addEventListener('click', function () {

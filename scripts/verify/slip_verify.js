@@ -319,19 +319,29 @@ const PIDS = {
     await call('POST', 'deal', { code: ec, pid: PIDS.ana });
 
     let v = (await call('GET', 'state', { code: ec, pid: PIDS.ana, v: -1 })).body;
-    eq(v.asksLeft, 4, 'four questions per player per round');
-    for (let i = 0; i < 4; i++) {
+    eq(v.asksLeft, 9, 'the pile is three per player, pooled: 3 players -> 9');
+
+    /* the pile is SHARED - one player can draw it down for everyone */
+    for (let i = 0; i < 5; i++) {
       const a = await call('POST', 'ask', { code: ec, pid: PIDS.ana, text: 'Is my number higher than ' + (i + 1) + '0?' });
       eq(a.status, 200, 'ask ' + (i + 1) + ' allowed');
-      eq(a.body.asksLeft, 3 - i, 'budget counts down to ' + (3 - i));
+      eq(a.body.asksLeft, 8 - i, 'the pile counts down to ' + (8 - i));
     }
-    r = await call('POST', 'ask', { code: ec, pid: PIDS.ana, text: 'One more?' });
-    eq(r.body.err, 'NO_ASKS', 'the fifth question is refused');
-    r = await call('POST', 'ask', { code: ec, pid: PIDS.beto, text: 'Mine though?' });
-    eq(r.status, 200, 'the budget is per player, not per room');
+    r = await call('POST', 'ask', { code: ec, pid: PIDS.beto, text: 'My turn?' });
+    eq(r.status, 200, 'anyone may draw from the pile');
+    eq(r.body.asksLeft, 3, "Ana's spending came out of Beto's pile too");
 
-    /* an answer carrying a stale question id is refused */
-    const openId = r.body.ask.id;
+    for (let i = 0; i < 3; i++) {
+      r = await call('POST', 'ask', { code: ec, pid: PIDS.beto, text: 'Another ' + i + '?' });
+      eq(r.status, 200, 'draining the last of the pile');
+    }
+    eq(r.body.asksLeft, 0, 'the pile is empty');
+    r = await call('POST', 'ask', { code: ec, pid: PIDS.cami, text: 'Anything left?' });
+    eq(r.body.err, 'NO_ASKS', 'an empty pile refuses everyone, not just the spender');
+
+    /* an answer carrying a stale question id is refused. The NO_ASKS reply
+       above carries no state, so read the open question from a poll. */
+    const openId = (await call('GET', 'state', { code: ec, pid: PIDS.cami, v: -1 })).body.ask.id;
     r = await call('POST', 'answer', { code: ec, pid: PIDS.cami, yes: true, id: openId - 1 });
     eq(r.body.err, 'NO_QUESTION', 'an answer to a replaced question is refused');
     r = await call('POST', 'answer', { code: ec, pid: PIDS.cami, yes: true, id: openId });

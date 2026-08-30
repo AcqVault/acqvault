@@ -17,7 +17,7 @@ const ANALYTICS_V = 1;
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 9;
+const SLIP_V = 10;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2584,19 +2584,12 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
 .q-opt{
   font:inherit;text-align:left;cursor:pointer;
   border:none;border-radius:var(--r-ctl);
-  padding:14px var(--s4);
+  padding:15px var(--s4);min-height:56px;
   background:var(--fill);color:var(--label);
-  font-size:17px;font-weight:600;letter-spacing:-.015em;line-height:1.28;
-  display:flex;flex-direction:column;gap:3px;
+  font-size:17px;font-weight:600;letter-spacing:-.015em;line-height:1.3;
   transition:transform var(--t-press) var(--ease-out),background var(--t-press) ease;
 }
 .q-opt:active{transform:scale(.98)}
-.q-opt .tag{
-  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--label-3);
-}
-.q-opt.best .tag{color:var(--tint)}
-.q-opt.fun .tag{color:var(--orange)}
 @media (hover:hover) and (pointer:fine){ .q-opt:hover{background:var(--fill-hi)} }
 .q-own{display:flex;flex-direction:column;gap:var(--s3)}
 .q-tools{display:flex;gap:var(--s2)}
@@ -2622,7 +2615,9 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
   background:rgba(48,209,88,.14);box-shadow:inset 0 0 0 1px rgba(48,209,88,.4);
 }
 .result .label{color:var(--green)}
-.result strong{font-size:19px;font-weight:700;letter-spacing:-.022em;color:var(--green)}
+.result strong{font-size:21px;font-weight:700;letter-spacing:-.024em;color:var(--label)}
+.result .note{color:var(--green);font-weight:600}
+.result.exact strong{color:var(--green)}
 
 /* ============================================================
    MISC
@@ -2732,11 +2727,6 @@ footer .note{max-width:50ch}
 
   <!-- ============ BOARD ============ -->
   <section data-screen="board" hidden>
-    <div class="result" id="resultCard" hidden>
-      <span class="label">Round over</span>
-      <strong id="resultLine"></strong>
-    </div>
-
     <div class="banner hot" id="pendingBanner" hidden>
       <span class="label">Sit tight</span>
       <strong>You're in from the next round. The host deals you in.</strong>
@@ -2754,6 +2744,12 @@ footer .note{max-width:50ch}
     </div>
     <p class="order" id="playOrder"></p>
 
+    <div class="result" id="resultCard" hidden>
+      <span class="label">Round over</span>
+      <strong id="resultLine"></strong>
+      <p class="note" id="resultSub"></p>
+    </div>
+
     <div class="q-card" id="qCard">
       <span class="label" id="qKind">Your turn to ask</span>
       <p class="q-text" id="qText" hidden></p>
@@ -2770,6 +2766,7 @@ footer .note{max-width:50ch}
       <p class="asks" id="asksLeft" hidden></p>
       <div class="q-tools" id="qTools">
         <button class="btn btn-sm" id="doAsk" type="button">Other questions</button>
+        <button class="btn btn-sm" id="doSay" type="button">I'll just say it</button>
         <button class="btn btn-sm btn-quiet" id="doOwn" type="button">Ask my own</button>
       </div>
       <p class="narrow" id="qRange" hidden></p>

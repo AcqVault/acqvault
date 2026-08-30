@@ -29,7 +29,10 @@ const ASK_MAX = 120;
 // Questions are deliberately SCARCE. Unlimited true answers make bisection the
 // only sane play and the round becomes long division on a video call. Four
 // leaves the field wide enough that the final guess is always a leap.
-const ASKS_PER_ROUND = 4;
+// One shared pile for the room, not an allowance each. A pile is spent
+// together and creates pressure; an allowance is a private budget nobody
+// else can feel.
+const ASKS_PER_PLAYER = 3;
 
 // Letters only, and none that get MISHEARD over a bad connection: no I/O/S/Z
 // (1/0/5/2), no digits at all, so nobody has to ask "letter or number?".
@@ -132,7 +135,11 @@ function redact(room, pid) {
     round: room.round,
     theme: room.theme,
     isHost: room.host === pid,
-    asksLeft: Math.max(0, ASKS_PER_ROUND - ((room.asked && room.asked[me.slot]) || 0)),
+    asksLeft: (function () {
+      const dealt = room.players.filter(p => p.id !== null && p.num !== null).length;
+      const spent = Object.keys(room.asked || {}).reduce((t, k) => t + room.asked[k], 0);
+      return Math.max(0, dealt * ASKS_PER_PLAYER - spent);
+    })(),
     you: {
       slot: me.slot,
       name: me.name,
@@ -167,13 +174,23 @@ function askView(room, me) {
   const responders = room.players.filter(
     p => p.id !== null && p.slot !== q.by && p.num !== null
   );
-  let yes = 0, no = 0;
+  let yes = 0, no = 0, oddSlot = null;
   responders.forEach(p => {
     const a = q.a[p.slot];
     if (a === 1) yes++; else if (a === 0) no++;
   });
+  // A lone holdout named as a lone holdout is an invitation the call cannot
+  // resist. Only ever ONE person, and only once everybody has answered.
+  if (yes + no === responders.length && responders.length > 1) {
+    if (no === 1) oddSlot = responders.find(p => q.a[p.slot] === 0).slot;
+    else if (yes === 1) oddSlot = responders.find(p => q.a[p.slot] === 1).slot;
+  }
+  const odd = oddSlot === null ? null : room.players.find(p => p.slot === oddSlot);
   return {
     id: q.id || 0,
+    sharp: q.sharp === true,
+    oddName: odd ? (odd.slot === me.slot ? 'You' : odd.name) : null,
+    oddSaid: oddSlot === null ? null : (q.a[oddSlot] === 1 ? 'yes' : 'no'),
     by: q.by,
     byName: asker ? asker.name : 'Someone',
     text: q.t,
@@ -395,13 +412,15 @@ async function doAsk(req, res, body) {
     if (!me) return bail(res, 'NOT_SEATED');
     if (room.phase === 'lobby' || me.num === null) return bail(res, 'PENDING');
     if (!room.asked) room.asked = {};
-    if ((room.asked[me.slot] || 0) >= ASKS_PER_ROUND) return bail(res, 'NO_ASKS');
+    const dealt = room.players.filter(p => p.id !== null && p.num !== null).length;
+    const spent = Object.keys(room.asked).reduce((t, k) => t + room.asked[k], 0);
+    if (spent >= dealt * ASKS_PER_PLAYER) return bail(res, 'NO_ASKS');
 
     room.asked[me.slot] = (room.asked[me.slot] || 0) + 1;
     room.askNo = (room.askNo || 0) + 1;
     // The id matters: without it a slow answerer's tap lands on whatever
     // question replaced the one they were actually reading.
-    room.ask = { id: room.askNo, by: me.slot, t: text, a: {} };
+    room.ask = { id: room.askNo, by: me.slot, t: text, a: {}, sharp: body.sharp === true };
 
     const saved = await saveRoom(code, got.raw, room);
     if (saved.ok) return res.status(200).json(redact(room, pid));
