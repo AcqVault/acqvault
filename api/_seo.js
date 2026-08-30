@@ -17,7 +17,7 @@ const ANALYTICS_V = 1;
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 8;
+const SLIP_V = 9;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2440,7 +2440,7 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
 /* ============================================================
    THE SLIPS
    ============================================================ */
-.slips{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:var(--s3)}
+.slips{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:var(--s3)}
 .slip{
   position:relative;
   background:var(--surface);
@@ -2572,7 +2572,7 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
 .narrow.solved{color:var(--green)}
 .narrow.solved b{color:var(--green)}
 /* the room is being asked something right now */
-.q-card.incoming{box-shadow:inset 0 0 0 2px var(--tint)}
+.q-card.incoming{box-shadow:inset 0 0 0 2px var(--tint);order:-1}
 .q-card.waiting .q-text{opacity:.9}
 .tally{display:flex;gap:var(--s3);font-size:15px;font-weight:600;letter-spacing:-.01em}
 .tally .y{color:var(--green)}
@@ -2601,6 +2601,28 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
 .q-own{display:flex;flex-direction:column;gap:var(--s3)}
 .q-tools{display:flex;gap:var(--s2)}
 .q-tools .btn{flex:1}
+.asks{font-size:13px;font-weight:600;letter-spacing:.01em;color:var(--label-3)}
+.asks b{color:var(--tint);font-variant-numeric:tabular-nums}
+.asks.out b{color:var(--orange)}
+.guess-row{display:flex;gap:var(--s3)}
+.guess-field{
+  font-size:32px;font-weight:800;letter-spacing:-.03em;text-align:center;
+  font-variant-numeric:tabular-nums;padding:var(--s3);
+}
+.guess-field::-webkit-outer-spin-button,.guess-field::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.guess-field{-moz-appearance:textfield}
+.slip-guess{
+  font-size:12px;font-weight:600;letter-spacing:.01em;
+  color:var(--label-3);position:relative;z-index:1;text-align:center;
+}
+.slip-guess.close{color:var(--green)}
+.result{
+  display:flex;flex-direction:column;gap:2px;
+  padding:var(--s4);border-radius:var(--r-card);
+  background:rgba(48,209,88,.14);box-shadow:inset 0 0 0 1px rgba(48,209,88,.4);
+}
+.result .label{color:var(--green)}
+.result strong{font-size:19px;font-weight:700;letter-spacing:-.022em;color:var(--green)}
 
 /* ============================================================
    MISC
@@ -2710,6 +2732,11 @@ footer .note{max-width:50ch}
 
   <!-- ============ BOARD ============ -->
   <section data-screen="board" hidden>
+    <div class="result" id="resultCard" hidden>
+      <span class="label">Round over</span>
+      <strong id="resultLine"></strong>
+    </div>
+
     <div class="banner hot" id="pendingBanner" hidden>
       <span class="label">Sit tight</span>
       <strong>You're in from the next round. The host deals you in.</strong>
@@ -2740,6 +2767,7 @@ footer .note{max-width:50ch}
                placeholder="Anything they can answer yes or no">
         <button class="btn btn-primary btn-block" id="doPutOwn" type="button">Put it to the room</button>
       </div>
+      <p class="asks" id="asksLeft" hidden></p>
       <div class="q-tools" id="qTools">
         <button class="btn btn-sm" id="doAsk" type="button">Other questions</button>
         <button class="btn btn-sm btn-quiet" id="doOwn" type="button">Ask my own</button>
@@ -2749,9 +2777,13 @@ footer .note{max-width:50ch}
 
     <div class="panel">
       <h3 id="revealHead">Ready to call it?</h3>
-      <p class="note" id="revealNote">Say your guess out loud first. Then turn your slip over.</p>
+      <p class="note" id="revealNote">Everyone locks a guess, then every slip turns over at once.</p>
+      <div class="guess-row" id="guessRow">
+        <input class="field guess-field" id="guessN" type="number" min="1" max="100"
+               inputmode="numeric" autocomplete="off" placeholder="1-100">
+      </div>
       <div class="err" id="boardErr" role="alert"></div>
-      <button class="btn btn-primary btn-block" id="doReveal" type="button">Turn my slip over</button>
+      <button class="btn btn-primary btn-block" id="doReveal" type="button">Lock it in</button>
       <button class="btn btn-block" id="doAgain" type="button" hidden>New round, new topic</button>
       <p class="note" id="againNote" hidden>Everyone's slip goes blank and the numbers are reshuffled.</p>
     </div>

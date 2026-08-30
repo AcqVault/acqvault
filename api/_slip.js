@@ -26,6 +26,10 @@ const MIN_PLAYERS = 2;   // with two, you see one number - still deducible
 const NAME_MAX = 16;
 const THEME_MAX = 120;
 const ASK_MAX = 120;
+// Questions are deliberately SCARCE. Unlimited true answers make bisection the
+// only sane play and the round becomes long division on a video call. Four
+// leaves the field wide enough that the final guess is always a leap.
+const ASKS_PER_ROUND = 4;
 
 // Letters only, and none that get MISHEARD over a bad connection: no I/O/S/Z
 // (1/0/5/2), no digits at all, so nobody has to ask "letter or number?".
@@ -117,6 +121,9 @@ function redact(room, pid) {
   const me = room.players.find(p => p.id === pid);
   if (!me) return null;
   const pending = room.phase !== 'lobby' && me.num === null;
+  // When the round is over there is nothing left to protect, and the whole
+  // point of the ending is that everyone sees everything at the same moment.
+  const over = room.phase === 'done';
   return {
     ok: true,
     v: room.v,
@@ -125,12 +132,14 @@ function redact(room, pid) {
     round: room.round,
     theme: room.theme,
     isHost: room.host === pid,
+    asksLeft: Math.max(0, ASKS_PER_ROUND - ((room.asked && room.asked[me.slot]) || 0)),
     you: {
       slot: me.slot,
       name: me.name,
       revealed: me.revealed,
       pending,
-      num: me.revealed ? me.num : null
+      guess: me.guess == null ? null : me.guess,
+      num: (me.revealed || over) ? me.num : null
     },
     players: room.players
       .filter(p => p.slot !== me.slot)
@@ -139,6 +148,7 @@ function redact(room, pid) {
         name: p.name,
         revealed: p.revealed,
         seated: p.id !== null,
+        guess: over ? (p.guess == null ? null : p.guess) : null,
         num: pending ? null : p.num
       })),
     ask: askView(room, me)
@@ -163,6 +173,7 @@ function askView(room, me) {
     if (a === 1) yes++; else if (a === 0) no++;
   });
   return {
+    id: q.id || 0,
     by: q.by,
     byName: asker ? asker.name : 'Someone',
     text: q.t,
@@ -183,6 +194,8 @@ const MSG = {
   TOO_FEW: 'You need one more player - you need a number you can see.',
   PENDING: "You're in from the next round - the host deals you in.",
   NO_QUESTION: 'That question is gone - someone asked a new one.',
+  NO_ASKS: 'You are out of questions this round - time to commit.',
+  BAD_GUESS: 'Pick a number between 1 and 100.',
   CONFLICT: 'Everyone tapped at once. Try that again.',
   CODE_BUSY: 'Could not find a free room code. Try once more.',
   STORE_DOWN: "The game store didn't answer. Try again in a moment.",
@@ -192,7 +205,7 @@ const HTTP = {
   BAD_REQUEST: 400, NOT_HOST: 403, ROOM_GONE: 404, NAME_TAKEN: 409,
   ROOM_FULL: 409, NOT_SEATED: 409, TOO_FEW: 409, PENDING: 409,
   CONFLICT: 409, CODE_BUSY: 503, STORE_DOWN: 502, NOT_CONFIGURED: 503,
-  NO_QUESTION: 409
+  NO_QUESTION: 409, NO_ASKS: 409, BAD_GUESS: 400
 };
 function bail(res, err) {
   return res.status(HTTP[err] || 400).json({ ok: false, err, msg: MSG[err] || MSG.BAD_REQUEST });
@@ -303,6 +316,8 @@ async function doDeal(req, res, body) {
     room.phase = 'play';
     room.round++;
     room.ask = null;
+    room.asked = {};
+    seated.forEach(p => { p.guess = null; });
     if (newTheme) room.theme = newTheme;
 
     const saved = await saveRoom(code, got.raw, room);
@@ -331,10 +346,14 @@ async function doState(req, res, q) {
   return res.status(200).json(view);
 }
 
+// Everyone locks a guess, then every number is revealed at once. A round with
+// no ending has no climax, and a per-player reveal is a private anticlimax.
 async function doReveal(req, res, body) {
   const code = String(body.code || '').toUpperCase();
   const pid = String(body.pid || '');
   if (!CODE_RE.test(code) || !PID_RE.test(pid)) return bail(res, 'BAD_REQUEST');
+  const guess = Math.round(Number(body.guess));
+  if (!Number.isFinite(guess) || guess < 1 || guess > RANGE) return bail(res, 'BAD_GUESS');
 
   for (let attempt = 0; attempt < 3; attempt++) {
     const got = await loadRoom(code);
@@ -349,6 +368,7 @@ async function doReveal(req, res, body) {
     if (me.revealed) return res.status(200).json(redact(room, pid));
 
     me.revealed = true;
+    me.guess = guess;
     const seated = room.players.filter(p => p.id !== null && p.num !== null);
     if (seated.every(p => p.revealed)) room.phase = 'done';
 
@@ -374,8 +394,14 @@ async function doAsk(req, res, body) {
     const me = room.players.find(p => p.id === pid);
     if (!me) return bail(res, 'NOT_SEATED');
     if (room.phase === 'lobby' || me.num === null) return bail(res, 'PENDING');
+    if (!room.asked) room.asked = {};
+    if ((room.asked[me.slot] || 0) >= ASKS_PER_ROUND) return bail(res, 'NO_ASKS');
 
-    room.ask = { by: me.slot, t: text, a: {} };
+    room.asked[me.slot] = (room.asked[me.slot] || 0) + 1;
+    room.askNo = (room.askNo || 0) + 1;
+    // The id matters: without it a slow answerer's tap lands on whatever
+    // question replaced the one they were actually reading.
+    room.ask = { id: room.askNo, by: me.slot, t: text, a: {} };
 
     const saved = await saveRoom(code, got.raw, room);
     if (saved.ok) return res.status(200).json(redact(room, pid));
@@ -398,6 +424,8 @@ async function doAnswer(req, res, body) {
     const me = room.players.find(p => p.id === pid);
     if (!me) return bail(res, 'NOT_SEATED');
     if (!room.ask) return bail(res, 'NO_QUESTION');
+    // Answering the question you were READING, not whatever replaced it.
+    if (body.id != null && Number(body.id) !== (room.ask.id || 0)) return bail(res, 'NO_QUESTION');
     if (room.ask.by === me.slot) return bail(res, 'BAD_REQUEST');
     if (me.num === null) return bail(res, 'PENDING');
 
@@ -432,6 +460,9 @@ async function doLeave(req, res, body) {
     }
 
     room.players = room.players.filter(p => p.slot !== dropSlot);
+    // Otherwise their question sits there as "Someone is asking", and anyone
+    // who had not answered it is stuck behind a question belonging to nobody.
+    if (room.ask && room.ask.by === dropSlot) room.ask = null;
 
     if (room.players.length === 0) {
       const out = await redis([['DEL', key(code)]]);

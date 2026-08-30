@@ -283,6 +283,14 @@
     show('lobby');
   }
 
+  function guessLine(guess, num) {
+    var off = Math.abs(guess - num);
+    var d = document.createElement('div');
+    d.className = 'slip-guess' + (off <= 10 ? ' close' : '');
+    d.textContent = off === 0 ? 'said ' + guess + ' - exact' : 'said ' + guess + ' - ' + off + ' off';
+    return d;
+  }
+
   // 100 is three digits wide and would overflow a card at the base size.
   function wide(num) { return (num != null && String(num).length >= 3) ? ' d3' : ''; }
 
@@ -318,6 +326,9 @@
     nm.className = 'slip-name';
     nm.textContent = view.you.name + ' - you';
     mine.appendChild(head); mine.appendChild(nm);
+    if (view.phase === 'done' && view.you.guess != null && view.you.num != null) {
+      mine.appendChild(guessLine(view.you.guess, view.you.num));
+    }
     box.appendChild(mine);
 
     view.players.slice().sort(function (a, b) {
@@ -333,10 +344,12 @@
       who.className = 'slip-name';
       who.textContent = p.name;
       el.appendChild(n); el.appendChild(who);
-      if (p.revealed) {
+      if (view.phase === 'done' && p.guess != null && p.num != null) {
+        el.appendChild(guessLine(p.guess, p.num));
+      } else if (p.revealed) {
         var tag = document.createElement('div');
         tag.className = 'slip-tag';
-        tag.textContent = 'called it';
+        tag.textContent = 'locked in';
         el.appendChild(tag);
       }
       box.appendChild(el);
@@ -353,20 +366,53 @@
       $('playOrder').appendChild(b);
     });
 
-    var canReveal = !view.you.pending && !view.you.revealed;
-    $('doReveal').hidden = !canReveal;
-    // Anyone can start the next round, not just the host - but only once they
-    // have flipped their own slip, so the button that reshuffles EVERYONE is
-    // never sitting under the one you actually want.
-    $('doAgain').hidden = $('againNote').hidden = canReveal || view.you.pending;
+    var over = view.phase === 'done';
+    var canGuess = !view.you.pending && !view.you.revealed;
+    $('doReveal').hidden = !canGuess;
+    $('guessRow').hidden = !canGuess;
+    // Anyone can start the next round - but only once you have committed, so
+    // the button that reshuffles EVERYONE never sits under the one you want.
+    $('doAgain').hidden = $('againNote').hidden = canGuess || view.you.pending;
     renderAsk(view);
-    var t = view.you.pending
-      ? ['You are out this round', 'You get a number on the next deal.']
-      : view.you.revealed
-        ? ['You called it', 'Deal again when everyone has turned their slip.']
-        : ['Ready to call it?', 'Say your guess out loud first. Then turn your slip over.'];
+
+    var waitingOn = view.players.filter(function (p) {
+      return p.seated && p.num != null && !p.revealed;
+    }).length;
+
+    var t;
+    if (view.you.pending) {
+      t = ['You are out this round', 'You get a number on the next deal.'];
+    } else if (over) {
+      t = ['Round over', 'Every slip is face up. Deal again when you are ready.'];
+    } else if (view.you.revealed) {
+      t = ['You said ' + view.you.guess,
+           waitingOn === 1 ? 'Waiting on one more to commit.'
+                           : 'Waiting on ' + waitingOn + ' more to commit.'];
+    } else {
+      t = ['Ready to call it?', 'Everyone locks a guess, then every slip turns over at once.'];
+    }
     $('revealHead').textContent = t[0];
     $('revealNote').textContent = t[1];
+
+    // The result headline: who got closest. Proximity, never exact - an exact
+    // win would make a 1-in-100 shot the only way to feel good.
+    var rc = $('resultCard');
+    rc.hidden = !over;
+    if (over) {
+      var all = view.players.filter(function (p) { return p.num != null && p.guess != null; })
+        .map(function (p) { return { name: p.name, off: Math.abs(p.guess - p.num) }; });
+      if (view.you.num != null && view.you.guess != null) {
+        all.push({ name: view.you.name, off: Math.abs(view.you.guess - view.you.num), you: true });
+      }
+      all.sort(function (a, b) { return a.off - b.off; });
+      var best = all[0];
+      $('resultLine').textContent = !best ? 'Nobody committed.'
+        : best.off === 0 ? (best.you ? 'You nailed it exactly.' : best.name + ' nailed it exactly.')
+        : best.off <= 10 ? (best.you ? 'You were closest - ' + best.off + ' off.'
+                                     : best.name + ' was closest, ' + best.off + ' off.')
+        : (best.you ? 'Closest was you, and you were ' + best.off + ' off.'
+                    : best.name + ' was closest, and was still ' + best.off + ' off.');
+    }
 
     show('board');
   }
@@ -495,24 +541,11 @@
     return out;
   }
 
-  function showNarrow() {
-    var c = candidates(), el = $('qRange');
-    if (!Q.answered) { el.hidden = true; return; }
-    el.hidden = false;
-    el.className = 'narrow' + (c.length === 1 ? ' solved' : '');
-    el.textContent = '';
-    if (!c.length) { el.textContent = 'That rules everything out - somebody answered wrong.'; return; }
-    if (c.length === 1) {
-      // Deliberately does NOT print it. Working it out is the game.
-      el.textContent = 'One number left. You know what it is - say it out loud.';
-      return;
-    }
-    el.appendChild(document.createTextNode('Narrowed to '));
-    var b = document.createElement('b');
-    b.textContent = c[0] + '-' + c[c.length - 1];
-    el.appendChild(b);
-    el.appendChild(document.createTextNode(' - ' + c.length + ' still possible'));
-  }
+  // There is deliberately NO running "narrowed to 51-100" readout. It would be
+  // a binary-search aid: it makes a solved problem pleasant to execute, which
+  // is the opposite of what this game needs. The app still uses the candidate
+  // set to OFFER good questions - the player does the remembering.
+  function showNarrow() { $('qRange').hidden = true; }
 
   // How evenly a predicate splits what is left. 0 is a perfect halving.
   function imbalance(c, f, seen) {
@@ -573,15 +606,24 @@
     Q.answered++;
   }
 
+  // A lone holdout phrased as a lone holdout is an invitation the call cannot
+  // resist. A bare "5 yes 1 no" is a scoreboard nobody argues with.
   function tallyLine(ask) {
     var wrap = document.createElement('span');
     wrap.className = 'tally';
     function part(cls, text) {
       var e = document.createElement('span'); e.className = cls; e.textContent = text; wrap.appendChild(e);
     }
-    part('y', ask.yes + ' yes');
-    part('n', ask.no + ' no');
-    if (ask.waiting) part('w', ask.waiting + ' still deciding');
+    if (ask.waiting) {
+      if (ask.yes + ask.no) part('y', ask.yes + ' yes, ' + ask.no + ' no');
+      part('w', ask.waiting + ' still deciding');
+      return wrap;
+    }
+    if (ask.no === 0 && ask.yes > 0) part('y', ask.yes > 1 ? 'Nobody disagreed - yes.' : 'Yes.');
+    else if (ask.yes === 0 && ask.no > 0) part('n', ask.no > 1 ? 'Nobody disagreed - no.' : 'No.');
+    else if (ask.no === 1) { part('y', ask.yes + ' said yes'); part('n', 'one said no'); }
+    else if (ask.yes === 1) { part('n', ask.no + ' said no'); part('y', 'one said yes'); }
+    else { part('y', ask.yes + ' yes'); part('n', ask.no + ' no'); }
     return wrap;
   }
 
@@ -600,12 +642,27 @@
 
     // A finished question sits on the server until someone replaces it. Once
     // you have moved on, stop showing it back to you.
-    if (ask && Q.movedPast === ask.text &&
-        (ask.mine ? ask.waiting === 0 : ask.answered)) ask = null;
+    // Keyed on id, not text: the same question can legitimately come round
+    // twice, and text-keying would silently skip the second one.
+    if (ask && Q.movedPast === ask.id && (ask.mine || ask.answered)) ask = null;
 
     if (!ask) {
       card.className = 'q-card';
-      $('qKind').textContent = 'Your turn to ask';
+      var left = view.asksLeft == null ? 4 : view.asksLeft;
+      var ae = $('asksLeft');
+      ae.hidden = false;
+      ae.className = 'asks' + (left === 0 ? ' out' : '');
+      ae.textContent = '';
+      if (left === 0) {
+        ae.appendChild(document.createTextNode('No questions left. Time to commit.'));
+      } else {
+        var bn = document.createElement('b'); bn.textContent = left;
+        ae.appendChild(bn);
+        ae.appendChild(document.createTextNode(left === 1 ? ' question left this round' : ' questions left this round'));
+      }
+      $('qOptions').hidden = left === 0;
+      $('qTools').hidden = left === 0;
+      $('qKind').textContent = left === 0 ? 'Out of questions' : 'Your turn to ask';
       $('qAnswers').hidden = true;
       if (!Q.options) Q.options = buildOptions();
       renderOptions();
@@ -621,13 +678,19 @@
       card.className = 'q-card waiting';
       $('qText').textContent = ask.text;
       $('qAnswers').hidden = true;
-      if (ask.waiting > 0) {
+      // Resolve as soon as the outcome is mathematically locked - one straggler
+      // who has put their phone down can no longer flip a 3-0.
+      var decided = ask.waiting === 0 || Math.abs(ask.yes - ask.no) > ask.waiting;
+      if (!decided) {
         $('qKind').textContent = 'Waiting on the room';
-        $('qTools').hidden = true;
+        // Always leave a way out. A phone that locked mid-question would
+        // otherwise strand the asker with no control at all.
+        $('qTools').hidden = false;
+        $('doAsk').textContent = 'Ask something else';
       } else {
         $('qKind').textContent = 'The room answered';
-        if (Q.resolvedFor !== ask.text) {
-          Q.resolvedFor = ask.text;
+        if (Q.resolvedFor !== ask.id) {
+          Q.resolvedFor = ask.id;
           if (ask.yes !== ask.no) applyAnswer(Q.asked, ask.yes > ask.no);
           Q.asked = null;
           Q.options = null;
@@ -640,7 +703,7 @@
       line.className = 'narrow';
       line.textContent = '';
       line.appendChild(tallyLine(ask));
-      if (ask.waiting === 0 && ask.yes === ask.no) {
+      if (decided && ask.yes === ask.no) {
         line.appendChild(document.createTextNode(' - the room is split, so that tells you nothing.'));
       }
       return;
@@ -677,7 +740,10 @@
   $('doAsk').addEventListener('click', function () {
     if (!S.view) return;
     var ask = S.view.ask;
-    if (ask && ((ask.mine && ask.waiting === 0) || (!ask.mine && ask.answered))) Q.movedPast = ask.text;
+    if (ask && (ask.mine || ask.answered)) Q.movedPast = ask.id;
+    // One wrong answer can rule out every number. Without this the menu offers
+    // nothing but a joke card for the rest of the round, with no way back.
+    if (!candidates().length) { Q.filters = []; Q.answered = 0; }
     Q.options = buildOptions();
     Q.own = false;
     $('qOwn').hidden = true;
@@ -702,7 +768,8 @@
   function sendAnswer(yes) {
     var y = $('ansYes'), n = $('ansNo');
     y.disabled = n.disabled = true;
-    api('answer', { code: S.code, yes: yes }).then(function (v) {
+    var id = S.view && S.view.ask ? S.view.ask.id : null;
+    api('answer', { code: S.code, yes: yes, id: id }).then(function (v) {
       apply(v);
       resetPolling();
     }).catch(function (e) { fail('boardErr', e); })
@@ -713,9 +780,16 @@
 
   $('doReveal').addEventListener('click', function () {
     clearErr('boardErr');
+    var raw = ($('guessN').value || '').trim();
+    var g = Math.round(Number(raw));
+    if (!raw || !isFinite(g) || g < 1 || g > 100) {
+      fail('boardErr', new Error('Pick a number between 1 and 100.'));
+      $('guessN').focus();
+      return;
+    }
     var btn = this;
-    busy(btn, true, 'Turning...');
-    api('reveal', { code: S.code }).then(function (v) {
+    busy(btn, true, 'Locking in...');
+    api('reveal', { code: S.code, guess: g }).then(function (v) {
       S.view = v;
       var slip = $('yourSlip');
       if (slip && v.you.num != null) {

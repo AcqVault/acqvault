@@ -178,7 +178,7 @@ const PIDS = {
   eq(r.body.you.num, null, 'pending player has no number of their own');
 
   /* pending player cannot reveal */
-  r = await call('POST', 'reveal', { code, pid: PIDS.eve });
+  r = await call('POST', 'reveal', { code, pid: PIDS.eve, guess: 50 });
   eq(r.body.err, 'PENDING', 'pending player cannot reveal');
 
   /* the others are unaffected by Eve being there */
@@ -194,7 +194,7 @@ const PIDS = {
   ok(r.body.you === undefined, 'short-circuit payload carries no state');
 
   /* ---- reveal ---- */
-  r = await call('POST', 'reveal', { code, pid: PIDS.ana });
+  r = await call('POST', 'reveal', { code, pid: PIDS.ana, guess: 50 });
   eq(r.status, 200, 'Ana reveals');
   ok(typeof r.body.you.num === 'number', 'Ana now sees her own number');
   eq(r.body.you.revealed, true, 'Ana marked revealed');
@@ -203,15 +203,21 @@ const PIDS = {
   /* what others saw of Ana is what Ana got */
   eq(anaViaBeto.num, anaNum, "the number Ana reveals is the one others were seeing all along");
 
-  /* reveal is idempotent */
-  r = await call('POST', 'reveal', { code, pid: PIDS.ana });
-  eq(r.status, 200, 'second reveal is idempotent, not an error');
-  eq(r.body.you.num, anaNum, 'same number on repeat reveal');
+  /* committing twice is idempotent */
+  r = await call('POST', 'reveal', { code, pid: PIDS.ana, guess: 50 });
+  eq(r.status, 200, 'a second commit is idempotent, not an error');
+  eq(r.body.you.num, anaNum, 'same number on repeat commit');
+
+  /* a guess outside 1-100 is refused */
+  r = await call('POST', 'reveal', { code, pid: PIDS.beto, guess: 0 });
+  eq(r.body.err, 'BAD_GUESS', 'a guess of 0 is refused');
+  r = await call('POST', 'reveal', { code, pid: PIDS.beto, guess: 101 });
+  eq(r.body.err, 'BAD_GUESS', 'a guess of 101 is refused');
 
   /* phase flips to done only when every dealt player has revealed */
-  r = await call('POST', 'reveal', { code, pid: PIDS.beto });
+  r = await call('POST', 'reveal', { code, pid: PIDS.beto, guess: 50 });
   eq(r.body.phase, 'play', 'still play with one dealt player left');
-  r = await call('POST', 'reveal', { code, pid: PIDS.cami });
+  r = await call('POST', 'reveal', { code, pid: PIDS.cami, guess: 50 });
   eq(r.body.phase, 'done', 'done once all dealt players revealed (pending Eve does not block)');
 
   /* ---- a question put to the ROOM ---- */
@@ -227,7 +233,8 @@ const PIDS = {
   eq(betoOnAsk.ask.byName, 'Ana', 'Beto is told who is asking');
   eq(betoOnAsk.ask.answered, false, 'Beto has not answered yet');
   ok(!('a' in betoOnAsk.ask), 'the raw per-player answer map is never exposed');
-  ok(!('id' in betoOnAsk.ask), 'the ask carries no player id');
+  ok(typeof betoOnAsk.ask.id === 'number', 'the ask carries a question id');
+  ok(!/p_[a-f0-9]{16}/.test(JSON.stringify(betoOnAsk)), 'no player pid appears anywhere in a payload');
 
   /* the asker cannot answer their own question */
   r = await call('POST', 'answer', { code, pid: PIDS.ana, yes: true });
@@ -302,6 +309,62 @@ const PIDS = {
   for (let i = 0; i < 2000; i++) ok(!UGLY_RE.test(newCode()), 'generated codes pass the profanity gate');
   eq(cleanName('  Ana   Maria  '), 'Ana Maria', 'names collapse whitespace');
   eq(cleanName('x'.repeat(50)).length, 16, 'names are capped at 16');
+
+  /* ---- the round ENDS: every number and guess becomes public at once ---- */
+  {
+    const e = await call('POST', 'create', { pid: PIDS.ana, name: 'Ana', theme: 'how likely you are to name the group chat' });
+    const ec = e.body.code;
+    await call('POST', 'join', { code: ec, pid: PIDS.beto, name: 'Beto' });
+    await call('POST', 'join', { code: ec, pid: PIDS.cami, name: 'Cami' });
+    await call('POST', 'deal', { code: ec, pid: PIDS.ana });
+
+    let v = (await call('GET', 'state', { code: ec, pid: PIDS.ana, v: -1 })).body;
+    eq(v.asksLeft, 4, 'four questions per player per round');
+    for (let i = 0; i < 4; i++) {
+      const a = await call('POST', 'ask', { code: ec, pid: PIDS.ana, text: 'Is my number higher than ' + (i + 1) + '0?' });
+      eq(a.status, 200, 'ask ' + (i + 1) + ' allowed');
+      eq(a.body.asksLeft, 3 - i, 'budget counts down to ' + (3 - i));
+    }
+    r = await call('POST', 'ask', { code: ec, pid: PIDS.ana, text: 'One more?' });
+    eq(r.body.err, 'NO_ASKS', 'the fifth question is refused');
+    r = await call('POST', 'ask', { code: ec, pid: PIDS.beto, text: 'Mine though?' });
+    eq(r.status, 200, 'the budget is per player, not per room');
+
+    /* an answer carrying a stale question id is refused */
+    const openId = r.body.ask.id;
+    r = await call('POST', 'answer', { code: ec, pid: PIDS.cami, yes: true, id: openId - 1 });
+    eq(r.body.err, 'NO_QUESTION', 'an answer to a replaced question is refused');
+    r = await call('POST', 'answer', { code: ec, pid: PIDS.cami, yes: true, id: openId });
+    eq(r.status, 200, 'an answer carrying the right id counts');
+
+    /* nobody sees anything extra until everyone has committed */
+    await call('POST', 'reveal', { code: ec, pid: PIDS.ana, guess: 40 });
+    v = (await call('GET', 'state', { code: ec, pid: PIDS.beto, v: -1 })).body;
+    eq(v.you.num, null, 'Beto still cannot see his own number mid-commit');
+    eq(v.phase, 'play', 'still playing while someone has not committed');
+    ok(v.players.every(p => p.guess === null), 'no guesses are visible yet');
+
+    await call('POST', 'reveal', { code: ec, pid: PIDS.beto, guess: 60 });
+    r = await call('POST', 'reveal', { code: ec, pid: PIDS.cami, guess: 80 });
+    eq(r.body.phase, 'done', 'the round ends when the last player commits');
+
+    for (const who of ['ana', 'beto', 'cami']) {
+      const view = (await call('GET', 'state', { code: ec, pid: PIDS[who], v: -1 })).body;
+      ok(typeof view.you.num === 'number', who + ' sees their own number once the round is over');
+      ok(typeof view.you.guess === 'number', who + ' sees their own guess');
+      ok(view.players.every(p => typeof p.num === 'number' && typeof p.guess === 'number'),
+         who + ' sees every number and every guess');
+    }
+
+    /* a departed asker must not leave a question belonging to nobody */
+    await call('POST', 'deal', { code: ec, pid: PIDS.ana });
+    await call('POST', 'ask', { code: ec, pid: PIDS.beto, text: 'Am I even?' });
+    v = (await call('GET', 'state', { code: ec, pid: PIDS.ana, v: -1 })).body;
+    ok(v.ask && v.ask.byName === 'Beto', 'Beto has a question on the table');
+    await call('POST', 'leave', { code: ec, pid: PIDS.beto });
+    v = (await call('GET', 'state', { code: ec, pid: PIDS.ana, v: -1 })).body;
+    eq(v.ask, null, 'the departed asker takes their question with them');
+  }
 
   /* ---- a two-player game is legal and still hides your own number ---- */
   const two = await call('POST', 'create', { pid: PIDS.ana, name: 'Ana', theme: 'how likely you are to name the group chat' });
