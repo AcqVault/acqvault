@@ -17,7 +17,7 @@ const ANALYTICS_V = 1;
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 2;
+const SLIP_V = 3;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2226,7 +2226,7 @@ function renderSlipPage() {
   /* --- labels: Apple's four levels --- */
   --label:#FFFFFF;
   --label-2:rgba(235,235,245,.62);
-  --label-3:rgba(235,235,245,.34);
+  --label-3:rgba(235,235,245,.52);   /* 2.81:1 -> 4.83:1 on --surface */
   --label-4:rgba(235,235,245,.20);
 
   /* --- system colors, dark variants --- */
@@ -2308,6 +2308,10 @@ p{margin:0}
 .tabular{font-variant-numeric:tabular-nums}
 
 .masthead{display:flex;flex-direction:column;gap:var(--s2)}
+/* Once you are in a room the wordmark is dead weight above a live board. */
+.masthead.compact{gap:0}
+.masthead.compact .label,.masthead.compact .lede{display:none}
+.masthead.compact h1{font-size:22px;letter-spacing:-.026em}
 .masthead h1 .hot{
   background:linear-gradient(96deg,var(--blue),var(--purple) 62%,var(--pink));
   -webkit-background-clip:text;background-clip:text;
@@ -2436,7 +2440,7 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
 /* ============================================================
    THE SLIPS
    ============================================================ */
-.slips{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:var(--s3)}
+.slips{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:var(--s3)}
 .slip{
   position:relative;
   background:var(--surface);
@@ -2613,7 +2617,7 @@ footer .note{max-width:50ch}
         <input class="field" id="customTheme" type="text" maxlength="120" placeholder="how likely you are to survive a bar fight">
       </label>
 
-      <div class="err" id="createErr"></div>
+      <div class="err" id="createErr" role="alert"></div>
       <button class="btn btn-primary btn-block" id="doCreate" type="button">Start the room</button>
       <p class="note">You'll get a 4-letter code to read out on the call.</p>
     </div>
@@ -2629,7 +2633,7 @@ footer .note{max-width:50ch}
       <label>Your name
         <input class="field" id="joinName" type="text" maxlength="16" autocomplete="off" placeholder="Ana">
       </label>
-      <div class="err" id="joinErr"></div>
+      <div class="err" id="joinErr" role="alert"></div>
       <button class="btn btn-block" id="doJoin" type="button">Join</button>
     </div>
   </section>
@@ -2650,7 +2654,7 @@ footer .note{max-width:50ch}
     <div class="panel">
       <h3 id="lobbyCount">Waiting for players</h3>
       <ul class="roster" id="lobbyRoster"></ul>
-      <div class="err" id="lobbyErr"></div>
+      <div class="err" id="lobbyErr" role="alert"></div>
       <button class="btn btn-primary btn-block" id="doDeal" type="button" hidden>Deal the slips</button>
       <p class="note" id="waitNote">The host deals when everyone's in.</p>
     </div>
@@ -2680,18 +2684,18 @@ footer .note{max-width:50ch}
     </div>
     <p class="order" id="playOrder"></p>
 
-    <div class="q-card">
+    <div class="q-card" id="qCard">
       <span class="label" id="qKind">Ask the room</span>
       <p class="q-text" id="qText">Tap below and I'll hand you something to ask.</p>
       <button class="btn" id="doAsk" type="button">Give me a question</button>
     </div>
 
     <div class="panel">
-      <h3>Ready to call it?</h3>
-      <p class="note">Say your guess out loud first. Then turn your slip over.</p>
-      <div class="err" id="boardErr"></div>
-      <button class="btn btn-block" id="doReveal" type="button">Turn my slip over</button>
-      <button class="btn btn-primary btn-block" id="doAgain" type="button" hidden>Deal again</button>
+      <h3 id="revealHead">Ready to call it?</h3>
+      <p class="note" id="revealNote">Say your guess out loud first. Then turn your slip over.</p>
+      <div class="err" id="boardErr" role="alert"></div>
+      <button class="btn btn-primary btn-block" id="doReveal" type="button">Turn my slip over</button>
+      <button class="btn btn-block" id="doAgain" type="button" hidden>New round, new topic</button>
       <p class="note" id="againNote" hidden>Everyone's slip goes blank and the numbers are reshuffled.</p>
     </div>
 

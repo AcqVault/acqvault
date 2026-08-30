@@ -81,8 +81,14 @@
     screens[el.getAttribute('data-screen')] = el;
   });
   function show(name) {
+    // Only scroll when the screen actually CHANGES. Re-rendering the screen
+    // you are already on must never move the page under your thumb - a poll
+    // lands every few seconds and someone else revealing would yank you away.
+    var changing = screens[name] && screens[name].hidden;
     Object.keys(screens).forEach(function (k) { screens[k].hidden = k !== name; });
-    window.scrollTo(0, 0);
+    var mast = document.querySelector('.masthead');
+    if (mast) mast.classList.toggle('compact', name !== 'home');
+    if (changing) window.scrollTo(0, 0);
   }
 
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -100,7 +106,7 @@
     lsSet('slip.pid', PID);
   }
 
-  var S = { code: null, view: null, timer: null, sames: 0, interval: 0, quietSince: 0, boardSig: null };
+  var S = { code: null, view: null, timer: null, quietSince: 0, boardSig: null };
 
   /* ---------- api ---------- */
   function api(action, payload, method) {
@@ -141,8 +147,9 @@
 
   /* ---------- blur-bridged text swap (two strings never visibly overlap) ---------- */
   function swapText(el, text) {
+    clearTimeout(el._swap);
     el.classList.add('swapping');
-    setTimeout(function () { el.textContent = text; el.classList.remove('swapping'); }, 160);
+    el._swap = setTimeout(function () { el.textContent = text; el.classList.remove('swapping'); }, 160);
   }
 
   /* ============================================================
@@ -308,12 +315,15 @@
     mine.appendChild(head); mine.appendChild(nm);
     box.appendChild(mine);
 
-    view.players.slice().sort(function (a, b) { return a.slot - b.slot; }).forEach(function (p) {
+    view.players.slice().sort(function (a, b) {
+      var an = a.num == null ? -1 : a.num, bn = b.num == null ? -1 : b.num;
+      return bn - an || a.slot - b.slot;
+    }).forEach(function (p) {
       var el = document.createElement('div');
       el.className = 'slip hue-' + (p.slot % 8) + (p.num == null ? ' waiting' : '');
       var n = document.createElement('div');
       n.className = 'slip-num';
-      n.textContent = (p.num == null ? '·' : p.num);
+      n.textContent = (p.num == null ? '—' : p.num);
       var who = document.createElement('div');
       who.className = 'slip-name';
       who.textContent = p.name;
@@ -340,8 +350,17 @@
 
     var canReveal = !view.you.pending && !view.you.revealed;
     $('doReveal').hidden = !canReveal;
-    $('doAgain').hidden = !view.isHost;
-    $('againNote').hidden = !view.isHost;
+    // The restart only appears once you have flipped your own slip - otherwise
+    // the button that reshuffles EVERYONE sits right under the one you want.
+    $('doAgain').hidden = $('againNote').hidden = canReveal || view.you.pending;
+    $('qCard').hidden = !!view.you.pending;
+    var t = view.you.pending
+      ? ['You are out this round', 'You get a number on the next deal.']
+      : view.you.revealed
+        ? ['You called it', 'Deal again when everyone has turned their slip.']
+        : ['Ready to call it?', 'Say your guess out loud first. Then turn your slip over.'];
+    $('revealHead').textContent = t[0];
+    $('revealNote').textContent = t[1];
 
     show('board');
   }
@@ -419,7 +438,15 @@
             slip.replaceChild(d, blank);
           }
         }, 210);
-        setTimeout(function () { slip.classList.remove('flipping'); }, 480);
+        // Re-render once the flip has finished, so the panel picks up its
+        // "You called it" state now rather than waiting for the next poll.
+        // boardSig is unchanged, so the cards do not re-animate.
+        setTimeout(function () {
+          slip.classList.remove('flipping');
+          apply(S.view);
+        }, 500);
+      } else {
+        apply(S.view);
       }
       btn.hidden = true;
       resetPolling();
@@ -431,7 +458,9 @@
     clearErr('boardErr');
     var btn = this;
     busy(btn, true, 'Dealing...');
-    api('deal', { code: S.code }).then(function (v) {
+    var cur = S.view && S.view.theme, next = pick(TOPICS);
+    while (next === cur && TOPICS.length > 1) next = pick(TOPICS);
+    api('deal', { code: S.code, theme: next }).then(function (v) {
       apply(v);
       $('qKind').textContent = 'Ask the room';
       $('qText').textContent = "Tap below and I'll hand you something to ask.";
@@ -458,7 +487,6 @@
      nothing has changed, so an idle room is nearly free.
      ============================================================ */
   var BASE = { lobby: 3000, play: 10000, done: 15000 };
-  var CAP = 30000;
   var HARD_STOP = 30 * 60 * 1000;
 
   function baseInterval() {
@@ -466,28 +494,25 @@
   }
   function jitter(ms) { return Math.round(ms * (0.85 + Math.random() * 0.3)); }
 
-  function resetPolling() { S.sames = 0; S.interval = baseInterval(); S.quietSince = Date.now(); }
+  // Re-arms the timer. It previously only mutated state, so an already-armed
+  // tick kept the stale delay and deals landed late on other phones.
+  function resetPolling() { S.quietSince = Date.now(); schedule(); }
 
   function schedule() {
     if (S.timer) clearTimeout(S.timer);
-    S.timer = setTimeout(tick, jitter(S.interval || baseInterval()));
+    // A long-abandoned but still-visible tab drops to a slow beat rather than
+    // dying outright, so there is always a way back without a reload.
+    var quiet = Date.now() - S.quietSince > HARD_STOP;
+    S.timer = setTimeout(tick, jitter(quiet ? 60000 : baseInterval()));
   }
 
   function tick() {
     if (!S.code) return;
     if (document.visibilityState !== 'visible') { schedule(); return; }
-    if (Date.now() - S.quietSince > HARD_STOP) { stopPolling(); return; }
 
     var v = S.view ? S.view.v : -1;
     api('state', { code: S.code, pid: PID, v: v }, 'GET').then(function (res) {
-      if (res.same) {
-        S.sames++;
-        // Nothing is happening; back off rather than hammer a shared key.
-        if (S.sames > 10) S.interval = Math.min(CAP, Math.round(S.interval * 1.5));
-      } else {
-        resetPolling();
-        apply(res);
-      }
+      if (!res.same) { resetPolling(); apply(res); }
       schedule();
     }).catch(function (e) {
       if (e.code === 'ROOM_GONE' || e.code === 'NOT_SEATED') {
@@ -525,11 +550,18 @@
       S.code = code;
       apply(v);
       startPolling();
-    }).catch(function () {
-      // Not seated (or the room is gone): fall back to the join form, prefilled.
-      lsDel('slip.room');
+    }).catch(function (e) {
+      if (e.code === 'ROOM_GONE' || e.code === 'NOT_SEATED') lsDel('slip.room');
+      else fail('joinErr', e);
       show('home');
       $('joinCode').value = code;
+      if (fromHash) {
+        // They tapped someone's link. Joining is the whole reason they are here.
+        $('doJoin').textContent = 'Join room ' + code;
+        $('doJoin').classList.add('btn-primary');
+        $('doCreate').classList.remove('btn-primary');
+        $('joinCode').scrollIntoView({ block: 'center' });
+      }
       $('joinName').focus();
     });
   })();
