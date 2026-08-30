@@ -17,7 +17,7 @@ const ANALYTICS_V = 1;
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 5;
+const SLIP_V = 6;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2571,6 +2571,13 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
 .narrow b{color:var(--tint);font-variant-numeric:tabular-nums}
 .narrow.solved{color:var(--green)}
 .narrow.solved b{color:var(--green)}
+/* the room is being asked something right now */
+.q-card.incoming{box-shadow:inset 0 0 0 2px var(--tint)}
+.q-card.waiting .q-text{opacity:.9}
+.tally{display:flex;gap:var(--s3);font-size:15px;font-weight:600;letter-spacing:-.01em}
+.tally .y{color:var(--green)}
+.tally .n{color:var(--pink)}
+.tally .w{color:var(--label-3)}
 
 /* ============================================================
    MISC
@@ -2701,10 +2708,11 @@ footer .note{max-width:50ch}
       <span class="label" id="qKind">Ask the room</span>
       <p class="q-text" id="qText">Tap below for something to ask the room.</p>
       <div class="q-answers" id="qAnswers" hidden>
-        <button class="btn btn-sm" id="ansYes" type="button">They said yes</button>
-        <button class="btn btn-sm" id="ansNo" type="button">They said no</button>
+        <button class="btn btn-sm" id="ansYes" type="button">Yes</button>
+        <button class="btn btn-sm" id="ansNo" type="button">No</button>
       </div>
-      <button class="btn" id="doAsk" type="button">Give me a question</button>
+      <button class="btn btn-primary btn-block" id="doPut" type="button" hidden>Put it to the room</button>
+      <button class="btn btn-block" id="doAsk" type="button">Give me a question</button>
       <p class="narrow" id="qRange" hidden></p>
     </div>
 

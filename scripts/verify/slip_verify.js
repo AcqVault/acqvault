@@ -213,10 +213,49 @@ const PIDS = {
   r = await call('POST', 'reveal', { code, pid: PIDS.cami });
   eq(r.body.phase, 'done', 'done once all dealt players revealed (pending Eve does not block)');
 
+  /* ---- a question put to the ROOM ---- */
+  r = await call('POST', 'ask', { code, pid: PIDS.ana, text: 'Is my number higher than 50?' });
+  eq(r.status, 200, 'Ana puts a question to the room');
+  eq(r.body.ask.mine, true, 'Ana owns the question');
+  eq(r.body.ask.text, 'Is my number higher than 50?', 'question text round-trips');
+  eq(r.body.ask.waiting, 2, 'two others still to answer');
+  eq(r.body.ask.yes + r.body.ask.no, 0, 'no answers yet');
+
+  const betoOnAsk = (await call('GET', 'state', { code, pid: PIDS.beto, v: -1 })).body;
+  eq(betoOnAsk.ask.mine, false, "Beto is not the asker");
+  eq(betoOnAsk.ask.byName, 'Ana', 'Beto is told who is asking');
+  eq(betoOnAsk.ask.answered, false, 'Beto has not answered yet');
+  ok(!('a' in betoOnAsk.ask), 'the raw per-player answer map is never exposed');
+  ok(!('id' in betoOnAsk.ask), 'the ask carries no player id');
+
+  /* the asker cannot answer their own question */
+  r = await call('POST', 'answer', { code, pid: PIDS.ana, yes: true });
+  eq(r.body.err, 'BAD_REQUEST', 'asker cannot answer their own question');
+
+  r = await call('POST', 'answer', { code, pid: PIDS.beto, yes: true });
+  eq(r.status, 200, 'Beto answers yes');
+  eq(r.body.ask.answered, true, 'Beto is marked as answered');
+  eq(r.body.ask.yes, 1, 'one yes');
+  eq(r.body.ask.waiting, 1, 'one still deciding');
+
+  r = await call('POST', 'answer', { code, pid: PIDS.cami, yes: false });
+  eq(r.body.ask.no, 1, 'one no');
+  eq(r.body.ask.waiting, 0, 'the room has answered');
+
+  /* answering twice just overwrites, it does not double-count */
+  r = await call('POST', 'answer', { code, pid: PIDS.cami, yes: true });
+  eq(r.body.ask.yes + r.body.ask.no, 2, 'a changed answer does not double-count');
+  eq(r.body.ask.yes, 2, 'Cami switched to yes');
+
+  /* a pending player cannot ask */
+  r = await call('POST', 'ask', { code, pid: PIDS.eve, text: 'Am I even?' });
+  eq(r.body.err, 'PENDING', 'a pending player cannot put a question up');
+
   /* ---- deal again: same room, fresh numbers, Eve included ---- */
   r = await call('POST', 'deal', { code, pid: PIDS.ana });
   eq(r.status, 200, 'host deals again');
   eq(r.body.round, 2, 'round 2');
+  eq(r.body.ask, null, 'a new deal clears the question on the table');
   eq(r.body.phase, 'play', 'back to play');
   eq(r.body.you.num, null, 'Ana cannot see her new number');
   eq(r.body.you.revealed, false, 'reveal state cleared');

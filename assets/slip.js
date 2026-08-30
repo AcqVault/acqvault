@@ -358,7 +358,7 @@
     // The restart only appears once you have flipped your own slip - otherwise
     // the button that reshuffles EVERYONE sits right under the one you want.
     $('doAgain').hidden = $('againNote').hidden = canReveal || view.you.pending;
-    $('qCard').hidden = !!view.you.pending;
+    renderAsk(view);
     var t = view.you.pending
       ? ['You are out this round', 'You get a number on the next deal.']
       : view.you.revealed
@@ -395,19 +395,17 @@
 
   /* ============================================================
      QUESTIONS
-     The app never learns your number. It only remembers what you tell it
-     the room said, and uses that to hand you a question that is actually
-     worth asking next - rather than "am I above 50?" for the third time.
+     A question is put to the ROOM. It appears on everyone else's phone,
+     they answer yes or no, and the tally comes back. The app never states
+     your number - it only tracks what the room told you, so it can hand
+     you a question worth asking next.
      ============================================================ */
-  var Q = { lo: 1, hi: 100, parity: null, pending: null, asked: 0, answered: 0 };
+  var Q = { lo: 1, hi: 100, parity: null, suggested: null, resolvedFor: null, answered: 0, movedPast: null };
 
   function resetQuestions() {
-    Q = { lo: 1, hi: 100, parity: null, pending: null, asked: 0, answered: 0 };
-    $('qAnswers').hidden = true;
+    Q = { lo: 1, hi: 100, parity: null, suggested: null, resolvedFor: null, answered: 0, movedPast: null };
     $('qRange').hidden = true;
-    $('qKind').textContent = 'Ask the room';
-    $('qText').textContent = 'Tap below for something to ask the room.';
-    $('doAsk').textContent = 'Give me a question';
+    $('qCard').className = 'q-card';
   }
 
   // Numbers you can SEE are provably not yours, so they come out of the count.
@@ -426,116 +424,186 @@
 
   function showNarrow() {
     var c = candidates(), el = $('qRange');
+    if (!Q.answered) { el.hidden = true; return; }
     el.hidden = false;
     el.className = 'narrow' + (c.length === 1 ? ' solved' : '');
     el.textContent = '';
-    if (!c.length) { el.textContent = 'That rules everything out - someone answered wrong.'; return; }
+    if (!c.length) { el.textContent = 'That rules everything out - somebody answered wrong.'; return; }
     if (c.length === 1) {
-      el.appendChild(document.createTextNode('Then you are '));
-      var b1 = document.createElement('b'); b1.textContent = c[0]; el.appendChild(b1);
-      el.appendChild(document.createTextNode('. Say it out loud.'));
+      // Deliberately does NOT print the number. Working it out is the game.
+      el.textContent = 'One number left. You know what it is - say it out loud.';
       return;
     }
-    el.appendChild(document.createTextNode('You are somewhere in '));
+    el.appendChild(document.createTextNode('Narrowed to '));
     var b = document.createElement('b');
     b.textContent = c[0] + '-' + c[c.length - 1];
     el.appendChild(b);
-    el.appendChild(document.createTextNode(' - ' + c.length + ' left'));
+    el.appendChild(document.createTextNode(' - ' + c.length + ' still possible'));
   }
 
-  // Playful ones. None of them presume the room CHOSE your number, because
-  // it did not - the deal is random, and a question that implies otherwise
-  // is just a lie the app is telling.
+  // None of these presume the room CHOSE your number - the deal is random.
   var WILD = [
     'Would you trade numbers with me?',
     'Am I the number you would want?',
     'Is my number funnier than yours?',
     'Would you be happy with my number?',
     'Am I closer to the top or the bottom?',
-    'If you had to bet on my number right now, would you bet high?',
-    'Is anyone here lying to me?',
-    'Whose number would I rather have?'
+    'If you had to bet on me right now, would you bet high?',
+    'Is anyone here about to lie to me?'
   ];
 
-  function nextQuestion() {
+  function suggest() {
     var view = S.view;
     if (!view) return null;
     var c = candidates();
-    if (c.length <= 1) return { kind: 'You have it', text: 'Call it out loud, then turn your slip over.', effect: null };
+    if (c.length <= 1) return { text: 'I think I have it - here goes.', effect: null };
 
-    // Every so often, something that is just fun to ask. Never as the opener,
-    // and never once the range is tight enough to actually close out.
-    if (c.length > 6 && Q.answered > 0 && Math.random() < 0.22) {
-      return { kind: 'Just for fun', text: pick(WILD), effect: null };
+    if (c.length > 6 && Q.answered > 0 && Math.random() < 0.2) {
+      return { text: pick(WILD), effect: null };
     }
 
-    // Best question: a player whose number splits what is left. It uses the
-    // board, and it is far more fun to ask a person than a number.
-    var inRange = view.players.filter(function (p) {
-      return p.num != null && p.num > c[0] && p.num < c[c.length - 1];
-    });
-    if (inRange.length) {
-      // the one that splits the remaining candidates most evenly
-      var best = null, bestScore = 1e9;
-      inRange.forEach(function (p) {
-        var below = c.filter(function (n) { return n < p.num; }).length;
-        var score = Math.abs(below - (c.length - below));
-        if (score < bestScore) { bestScore = score; best = p; }
-      });
-      return {
-        kind: 'Compare to a person',
-        text: 'Am I higher than ' + best.name + '?',
-        effect: { type: 'gt', v: best.num }
-      };
-    }
-
-    // Parity is worth one question, but only once it actually halves something.
+    // Always a number, never a person. "Am I higher than Capri?" is ambiguous
+    // - higher what? - and pointless when Capri's number is on screen anyway.
+    // A plain threshold is unmistakable, and the median of what is left is the
+    // most informative question available.
     if (Q.parity === null && c.length <= 16 && c.length > 2) {
-      return { kind: 'Closing in', text: 'Am I an even number?', effect: { type: 'even' } };
+      return { text: 'Am I an even number?', effect: { type: 'even' } };
     }
 
     var mid = c[Math.floor((c.length - 1) / 2)];
-    return {
-      kind: c.length > 20 ? 'Split the range' : 'Closing in',
-      text: 'Am I higher than ' + mid + '?',
-      effect: { type: 'gt', v: mid }
-    };
+    return { text: 'Is my number higher than ' + mid + '?', effect: { type: 'gt', v: mid } };
   }
 
-  function askNext() {
-    var q = nextQuestion();
-    if (!q) return;
-    Q.pending = q.effect;
-    $('qKind').textContent = q.kind;
-    swapText($('qText'), q.text);
-    $('qAnswers').hidden = !q.effect;
-    $('doAsk').textContent = q.effect ? 'Different question' : 'Another question';
-    if (Q.answered) showNarrow();
+  function applyAnswer(effect, yes) {
+    if (!effect) return;
+    if (effect.type === 'gt') {
+      if (yes) Q.lo = Math.max(Q.lo, effect.v + 1);
+      else Q.hi = Math.min(Q.hi, effect.v);
+    } else if (effect.type === 'even') {
+      Q.parity = yes ? 'even' : 'odd';
+    }
+    Q.answered++;
+  }
+
+  function tallyLine(ask) {
+    var wrap = document.createElement('span');
+    wrap.className = 'tally';
+    function part(cls, text) {
+      var e = document.createElement('span'); e.className = cls; e.textContent = text; wrap.appendChild(e);
+    }
+    part('y', ask.yes + ' yes');
+    part('n', ask.no + ' no');
+    if (ask.waiting) part('w', ask.waiting + ' still deciding');
+    return wrap;
+  }
+
+  /* ---------- the q-card, driven by the room's open question ---------- */
+  function renderAsk(view) {
+    var card = $('qCard'), ask = view.ask;
+    // A finished question stays on the server until someone puts up a new one.
+    // Once you have moved on from it - yours resolved, or theirs answered -
+    // stop showing it back to you and offer your own turn instead.
+    if (ask && Q.movedPast === ask.text &&
+        (ask.mine ? ask.waiting === 0 : ask.answered)) ask = null;
+    card.hidden = !!view.you.pending;
+    if (view.you.pending) return;
+
+    if (!ask) {
+      card.className = 'q-card';
+      $('qKind').textContent = 'Your turn to ask';
+      $('qAnswers').hidden = true;
+      if (!Q.suggested) Q.suggested = suggest();
+      $('qText').textContent = Q.suggested ? Q.suggested.text : 'Tap below for something to ask.';
+      $('doPut').hidden = !Q.suggested;
+      $('doAsk').hidden = false;
+      $('doAsk').textContent = Q.suggested ? 'Different question' : 'Give me a question';
+      showNarrow();
+      return;
+    }
+
+    if (ask.mine) {
+      card.className = 'q-card waiting';
+      $('qText').textContent = ask.text;
+      $('qAnswers').hidden = true;
+      $('doPut').hidden = true;
+      if (ask.waiting > 0) {
+        $('qKind').textContent = 'Waiting on the room';
+        $('doAsk').hidden = true;
+      } else {
+        $('qKind').textContent = 'The room answered';
+        // Resolve once per question.
+        if (Q.resolvedFor !== ask.text) {
+          Q.resolvedFor = ask.text;
+          if (Q.suggested && Q.suggested.effect && ask.yes !== ask.no) {
+            applyAnswer(Q.suggested.effect, ask.yes > ask.no);
+          } else if (ask.yes !== ask.no) {
+            Q.answered++;
+          }
+          Q.suggested = null;
+        }
+        $('doAsk').hidden = false;
+        $('doAsk').textContent = 'Next question';
+      }
+      var line = $('qRange');
+      line.hidden = false;
+      line.className = 'narrow';
+      line.textContent = '';
+      line.appendChild(tallyLine(ask));
+      if (ask.waiting === 0 && ask.yes === ask.no) {
+        line.appendChild(document.createTextNode(' - the room is split, that tells you nothing.'));
+      }
+      return;
+    }
+
+    // Somebody else is asking. This is the moment their phone is waiting on.
+    card.className = 'q-card' + (ask.answered ? '' : ' incoming');
+    $('qKind').textContent = ask.byName + ' is asking';
+    $('qText').textContent = ask.text;
+    $('qAnswers').hidden = !!ask.answered;
+    $('doPut').hidden = true;
+    $('doAsk').hidden = !ask.answered;
+    $('doAsk').textContent = 'Ask something of my own';
+    if (ask.answered) {
+      var l = $('qRange');
+      l.hidden = false; l.className = 'narrow'; l.textContent = '';
+      l.appendChild(document.createTextNode('You answered. '));
+      l.appendChild(tallyLine(ask));
+    } else {
+      showNarrow();
+    }
   }
 
   $('doAsk').addEventListener('click', function () {
     if (!S.view) return;
-    Q.asked++;
-    askNext();
+    var ask = S.view.ask;
+    if (ask && ask.mine && ask.waiting === 0) Q.movedPast = ask.text;
+    if (ask && !ask.mine && ask.answered) Q.movedPast = ask.text;
+    Q.suggested = suggest();
+    renderAsk(S.view);
   });
 
-  function answer(yes) {
-    var e = Q.pending;
-    if (!e) return;
-    if (e.type === 'gt') {
-      if (yes) Q.lo = Math.max(Q.lo, e.v + 1);
-      else Q.hi = Math.min(Q.hi, e.v);
-    } else if (e.type === 'even') {
-      Q.parity = yes ? 'even' : 'odd';
-    }
-    Q.pending = null;
-    Q.asked++;
-    Q.answered++;
-    showNarrow();
-    askNext();
+  $('doPut').addEventListener('click', function () {
+    if (!S.view || !Q.suggested) return;
+    var btn = this;
+    busy(btn, true, 'Asking...');
+    api('ask', { code: S.code, text: Q.suggested.text }).then(function (v) {
+      apply(v);
+      resetPolling();
+    }).catch(function (e) { fail('boardErr', e); })
+      .then(function () { busy(btn, false); });
+  });
+
+  function sendAnswer(yes) {
+    var y = $('ansYes'), n = $('ansNo');
+    y.disabled = n.disabled = true;
+    api('answer', { code: S.code, yes: yes }).then(function (v) {
+      apply(v);
+      resetPolling();
+    }).catch(function (e) { fail('boardErr', e); })
+      .then(function () { y.disabled = n.disabled = false; });
   }
-  $('ansYes').addEventListener('click', function () { answer(true); });
-  $('ansNo').addEventListener('click', function () { answer(false); });
+  $('ansYes').addEventListener('click', function () { sendAnswer(true); });
+  $('ansNo').addEventListener('click', function () { sendAnswer(false); });
 
   $('doReveal').addEventListener('click', function () {
     clearErr('boardErr');
@@ -602,10 +670,14 @@
      One GET per tick. The server answers {same:true} in ~30 bytes when
      nothing has changed, so an idle room is nearly free.
      ============================================================ */
-  var BASE = { lobby: 3000, play: 10000, done: 15000 };
+  var BASE = { lobby: 3000, play: 6000, done: 10000 };
   var HARD_STOP = 30 * 60 * 1000;
 
   function baseInterval() {
+    // A question on the table is the one thing everyone is actively waiting
+    // on, so poll hard while one is open and relax again once it resolves.
+    var a = S.view && S.view.ask;
+    if (a && (a.waiting > 0 || !a.mine)) return 2000;
     return BASE[(S.view && S.view.phase) || 'lobby'] || 10000;
   }
   function jitter(ms) { return Math.round(ms * (0.85 + Math.random() * 0.3)); }

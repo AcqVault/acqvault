@@ -25,6 +25,7 @@ const MAX_PLAYERS = 8;
 const MIN_PLAYERS = 2;   // with two, you see one number - still deducible
 const NAME_MAX = 16;
 const THEME_MAX = 120;
+const ASK_MAX = 120;
 
 // Letters only, and none that get MISHEARD over a bad connection: no I/O/S/Z
 // (1/0/5/2), no digits at all, so nobody has to ask "letter or number?".
@@ -139,7 +140,36 @@ function redact(room, pid) {
         revealed: p.revealed,
         seated: p.id !== null,
         num: pending ? null : p.num
-      }))
+      })),
+    ask: askView(room, me)
+  };
+}
+
+// The open question, as this player should see it. Carries only the text and
+// a yes/no tally - never anything derived from a number.
+function askView(room, me) {
+  const q = room.ask;
+  if (!q) return null;
+  const asker = room.players.find(p => p.slot === q.by);
+  // Only players who were dealt into THIS round can answer - a latecomer is
+  // pending and has no number, so counting them would leave the asker waiting
+  // on someone who is not allowed to reply.
+  const responders = room.players.filter(
+    p => p.id !== null && p.slot !== q.by && p.num !== null
+  );
+  let yes = 0, no = 0;
+  responders.forEach(p => {
+    const a = q.a[p.slot];
+    if (a === 1) yes++; else if (a === 0) no++;
+  });
+  return {
+    by: q.by,
+    byName: asker ? asker.name : 'Someone',
+    text: q.t,
+    mine: me.slot === q.by,
+    answered: q.a[me.slot] !== undefined,
+    yes, no,
+    waiting: responders.length - (yes + no)
   };
 }
 
@@ -152,6 +182,7 @@ const MSG = {
   NOT_SEATED: "You're not in this room any more.",
   TOO_FEW: 'You need one more player - you need a number you can see.',
   PENDING: "You're in from the next round - the host deals you in.",
+  NO_QUESTION: 'That question is gone - someone asked a new one.',
   CONFLICT: 'Everyone tapped at once. Try that again.',
   CODE_BUSY: 'Could not find a free room code. Try once more.',
   STORE_DOWN: "The game store didn't answer. Try again in a moment.",
@@ -160,7 +191,8 @@ const MSG = {
 const HTTP = {
   BAD_REQUEST: 400, NOT_HOST: 403, ROOM_GONE: 404, NAME_TAKEN: 409,
   ROOM_FULL: 409, NOT_SEATED: 409, TOO_FEW: 409, PENDING: 409,
-  CONFLICT: 409, CODE_BUSY: 503, STORE_DOWN: 502, NOT_CONFIGURED: 503
+  CONFLICT: 409, CODE_BUSY: 503, STORE_DOWN: 502, NOT_CONFIGURED: 503,
+  NO_QUESTION: 409
 };
 function bail(res, err) {
   return res.status(HTTP[err] || 400).json({ ok: false, err, msg: MSG[err] || MSG.BAD_REQUEST });
@@ -268,6 +300,7 @@ async function doDeal(req, res, body) {
     seated.forEach((p, i) => { p.num = nums[i]; p.revealed = false; });
     room.phase = 'play';
     room.round++;
+    room.ask = null;
     if (newTheme) room.theme = newTheme;
 
     const saved = await saveRoom(code, got.raw, room);
@@ -316,6 +349,57 @@ async function doReveal(req, res, body) {
     me.revealed = true;
     const seated = room.players.filter(p => p.id !== null && p.num !== null);
     if (seated.every(p => p.revealed)) room.phase = 'done';
+
+    const saved = await saveRoom(code, got.raw, room);
+    if (saved.ok) return res.status(200).json(redact(room, pid));
+    if (saved.err === 'STORE_DOWN') return bail(res, 'STORE_DOWN');
+  }
+  return bail(res, 'CONFLICT');
+}
+
+// Put a question to the room. Replaces any previous one - there is only ever
+// one question on the table, the same as at a kitchen table.
+async function doAsk(req, res, body) {
+  const code = String(body.code || '').toUpperCase();
+  const pid = String(body.pid || '');
+  const text = cleanTheme(body.text).slice(0, ASK_MAX);
+  if (!CODE_RE.test(code) || !PID_RE.test(pid) || !text) return bail(res, 'BAD_REQUEST');
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const got = await loadRoom(code);
+    if (got.err) return bail(res, got.err);
+    const room = got.room;
+    const me = room.players.find(p => p.id === pid);
+    if (!me) return bail(res, 'NOT_SEATED');
+    if (room.phase === 'lobby' || me.num === null) return bail(res, 'PENDING');
+
+    room.ask = { by: me.slot, t: text, a: {} };
+
+    const saved = await saveRoom(code, got.raw, room);
+    if (saved.ok) return res.status(200).json(redact(room, pid));
+    if (saved.err === 'STORE_DOWN') return bail(res, 'STORE_DOWN');
+  }
+  return bail(res, 'CONFLICT');
+}
+
+// Answer the question on the table. The asker cannot answer their own.
+async function doAnswer(req, res, body) {
+  const code = String(body.code || '').toUpperCase();
+  const pid = String(body.pid || '');
+  if (!CODE_RE.test(code) || !PID_RE.test(pid)) return bail(res, 'BAD_REQUEST');
+  const yes = body.yes === true || body.yes === 'true' ? 1 : 0;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const got = await loadRoom(code);
+    if (got.err) return bail(res, got.err);
+    const room = got.room;
+    const me = room.players.find(p => p.id === pid);
+    if (!me) return bail(res, 'NOT_SEATED');
+    if (!room.ask) return bail(res, 'NO_QUESTION');
+    if (room.ask.by === me.slot) return bail(res, 'BAD_REQUEST');
+    if (me.num === null) return bail(res, 'PENDING');
+
+    room.ask.a[me.slot] = yes;
 
     const saved = await saveRoom(code, got.raw, room);
     if (saved.ok) return res.status(200).json(redact(room, pid));
@@ -393,6 +477,8 @@ module.exports = async function slip(req, res) {
 
   if (action === 'join') return doJoin(req, res, body);
   if (action === 'deal') return doDeal(req, res, body);
+  if (action === 'ask') return doAsk(req, res, body);
+  if (action === 'answer') return doAnswer(req, res, body);
   if (action === 'reveal') return doReveal(req, res, body);
   if (action === 'leave') return doLeave(req, res, body);
 
