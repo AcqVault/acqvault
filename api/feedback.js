@@ -179,6 +179,9 @@ async function statsGet(req, res) {
 }
 
 module.exports = async function handler(req, res) {
+  // The unlisted /slip game rides this function too (Hobby 12-function cap).
+  // _slip.js is underscore-prefixed, so it is not itself a deployed function.
+  if (req.query && req.query.slip != null) return require('./_slip')(req, res);
   if (req.method === 'GET' && req.query && req.query.stats != null) {
     return statsGet(req, res);
   }

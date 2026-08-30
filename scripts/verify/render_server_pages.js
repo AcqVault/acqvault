@@ -15,6 +15,7 @@ const pages = [
   ['study.html',   () => seo.renderStudyPage()],
   ['48cons.html',  () => seo.render48ConsPage()],
   ['srcsel.html',  () => seo.renderSourceSelectionPage()],
+  ['slip.html',    () => seo.renderSlipPage()],
 ];
 
 // /library and a part page go through their own handlers (they read the corpus)

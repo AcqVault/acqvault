@@ -1,4 +1,4 @@
-const { renderStudyPage, renderSourceSelectionPage, render48ConsPage } = require('./_seo.js');
+const { renderStudyPage, renderSourceSelectionPage, render48ConsPage, renderSlipPage } = require('./_seo.js');
 
 module.exports = function handler(req, res) {
   // /source-selection and the unlisted /48cons both ride this function (Hobby 12-function
@@ -6,6 +6,7 @@ module.exports = function handler(req, res) {
   const view = req.query && req.query.view;
   const html = view === 'srcsel' ? renderSourceSelectionPage()
     : view === '48cons' ? render48ConsPage()
+    : view === 'slip' ? renderSlipPage()
     : renderStudyPage();
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   if (!html) {

@@ -16,6 +16,8 @@ const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
+// assets/slip.js - same immutable-asset rule: bump on every edit.
+const SLIP_V = 1;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2179,6 +2181,425 @@ function render48ConsPage() {
   return shell({ title, description, canonical, jsonld, body, bleed: true, noindex: true, ogImage: 'og-study-v2.png' });
 }
 
+/* Blank Slip - an unlisted party game at /slip. Kept hidden exactly the way
+   /48cons is: noindex meta + an X-Robots-Tag header in vercel.json, absent from
+   renderSitemap(), absent from robots.txt (listing it there would advertise it),
+   and no inbound link anywhere on the site. It rides the /api/study function
+   because the project sits exactly at the Vercel Hobby 12-function cap.
+
+   It deliberately shares NOTHING with the rest of AcqVault's visual system: it
+   declares every token it uses and inherits nothing from app.css (which never
+   loads on a server-rendered page). Do not "fix" it to match the site.
+
+   Game state lives in Upstash Redis via api/_slip.js. A player's own number is
+   never sent to their device until they reveal. */
+function renderSlipPage() {
+  const canonical = `${SITE}/slip`;
+  const title = 'Blank Slip';
+  const description = esc('A forehead number game for 3 to 8 people on a call. Everyone can see your number except you.');
+
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'WebApplication',
+    name: 'Blank Slip', applicationCategory: 'GameApplication',
+    operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description, url: canonical
+  };
+
+  const body = `<style>/* ============================================================
+   BLANK SLIP - white paper slips on a dark table.
+   Self-contained world: declares every token it uses, inherits
+   nothing from app.css (which never loads on server-rendered pages).
+   ============================================================ */
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+2122,U+2191,U+2193,U+2212}
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/ibm-plex-mono-latin.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url(/assets/fonts/ibm-plex-mono-sb-latin.woff2) format('woff2')}
+
+:root{
+  --table:#17140F; --table-raised:#211C16; --table-edge:#322A21;
+  --paper:#F6F1E6; --ink:#1A1712; --ink-soft:#6B6152;
+  --on-table:#F2EDE3; --on-table-soft:#A79C8A; --on-table-faint:#6F6759;
+  --you:#FF5A36; --you-deep:#C93F22; --you-wash:rgba(255,90,54,.14);
+  --tape:rgba(26,23,18,.10); --tape-edge:rgba(26,23,18,.17);
+  --ok:#6FBF73; --warn:#E0A33E;
+  --font-display:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono','SF Mono',Menlo,ui-monospace,monospace;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+  --lift-1:0 1px 2px rgba(0,0,0,.34),0 4px 10px -4px rgba(0,0,0,.5);
+  --lift-2:0 2px 4px rgba(0,0,0,.38),0 12px 26px -10px rgba(0,0,0,.62);
+  --lift-3:0 3px 6px rgba(0,0,0,.42),0 22px 48px -16px rgba(0,0,0,.7);
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --t-press:140ms; --t-tip:160ms; --t-panel:220ms; --t-stage:280ms;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+
+body{
+  margin:0;
+  background:var(--table);
+  color:var(--on-table);
+  font-family:var(--font-body);
+  font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(ellipse 80% 55% at 50% -10%,rgba(255,90,54,.07),transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 110%,rgba(246,241,230,.035),transparent 70%);
+  background-attachment:fixed;
+  min-height:100svh;
+}
+
+.wrap{
+  max-width:560px; margin:0 auto;
+  padding:var(--sp-6) var(--sp-5) calc(var(--sp-7) + env(safe-area-inset-bottom));
+  display:flex; flex-direction:column; gap:var(--sp-6);
+}
+
+/* ---------- type ---------- */
+h1,h2,h3{margin:0;font-family:var(--font-display);font-weight:900;letter-spacing:-.025em;text-wrap:balance}
+h1{font-size:clamp(2.5rem,13vw,3.5rem);line-height:.92}
+h2{font-size:1.5rem;line-height:1.1}
+h3{font-size:1.125rem;line-height:1.2}
+p{margin:0}
+.eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--on-table-faint)}
+.lede{color:var(--on-table-soft);font-size:1rem;max-width:34ch}
+.note{color:var(--on-table-faint);font-size:.8125rem;margin:0}
+.tabular{font-variant-numeric:tabular-nums}
+
+.masthead{display:flex;flex-direction:column;gap:var(--sp-2)}
+.masthead h1 .hot{color:var(--you)}
+
+/* ---------- panels ---------- */
+.panel{
+  background:var(--table-raised);
+  border:1px solid var(--table-edge);
+  border-radius:8px;
+  padding:var(--sp-5);
+  display:flex; flex-direction:column; gap:var(--sp-4);
+}
+
+/* ---------- controls ---------- */
+.btn{
+  font:inherit;font-weight:600;cursor:pointer;
+  border-radius:5px;padding:13px var(--sp-4);
+  border:1px solid var(--table-edge);
+  background:var(--table-raised);
+  color:var(--on-table);
+  transition:transform var(--t-press) var(--ease-out),background var(--t-press) ease,border-color var(--t-press) ease,color var(--t-press) ease;
+}
+.btn:active{transform:scale(.97)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn[disabled]:active{transform:none}
+.btn-primary{background:var(--you);border-color:var(--you);color:#1A0D08;font-weight:700;padding:15px var(--sp-5);font-size:1.0625rem}
+.btn-quiet{background:transparent;border-color:transparent;color:var(--on-table-soft)}
+.btn-sm{padding:8px var(--sp-3);font-size:.8125rem}
+.btn-block{width:100%}
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{border-color:var(--on-table-faint)}
+  .btn-primary:hover{background:#FF6B4A;border-color:#FF6B4A}
+  .btn-quiet:hover{color:var(--on-table)}
+}
+:where(a,button,input,select,[tabindex]):focus-visible{outline:2px solid var(--you);outline-offset:3px;border-radius:4px}
+
+label{display:flex;flex-direction:column;gap:var(--sp-2);font-size:.8125rem;font-weight:600;color:var(--on-table-soft)}
+.field{
+  font:inherit;font-size:16px; /* never below 16px: iOS zooms the page */
+  color:var(--on-table);background:var(--table);
+  border:1px solid var(--table-edge);border-radius:5px;
+  padding:12px var(--sp-3);width:100%;
+  transition:border-color var(--t-tip) ease;
+}
+.field::placeholder{color:var(--on-table-faint)}
+.field:focus{border-color:var(--you);outline:none}
+
+.row{display:flex;gap:var(--sp-3);flex-wrap:wrap}
+.row>*{flex:1 1 0;min-width:0}
+
+/* ---------- the topic card ---------- */
+.topic{
+  display:flex;flex-direction:column;gap:var(--sp-3);
+  padding:var(--sp-4) var(--sp-4) var(--sp-3);
+  border:1px solid var(--table-edge);border-radius:8px;
+  background:rgba(0,0,0,.22);
+}
+.topic-text{
+  font-family:var(--font-display);font-weight:900;
+  font-size:1.3125rem;line-height:1.2;letter-spacing:-.02em;
+  text-wrap:balance;color:var(--on-table);min-height:2.4em;
+  display:flex;align-items:center;
+  transition:opacity var(--t-tip) ease,filter var(--t-tip) ease;
+}
+.topic-text.swapping{opacity:.2;filter:blur(3px)}
+.topic-actions{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+
+/* ---------- the room code ---------- */
+.code-field{
+  font-family:var(--font-mono);font-weight:600;
+  font-size:2rem;letter-spacing:.3em;text-indent:.3em;
+  text-align:center;text-transform:uppercase;
+  padding:var(--sp-4) var(--sp-2);
+}
+.code-plate{
+  display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);
+  padding:var(--sp-5);
+  border:1px dashed var(--table-edge);border-radius:8px;
+  background:rgba(0,0,0,.22);
+}
+.code-plate .code{
+  font-family:var(--font-mono);font-weight:600;
+  font-size:2.75rem;line-height:1;letter-spacing:.24em;text-indent:.24em;
+  color:var(--on-table);
+}
+
+/* ---------- the slip ---------- */
+.slips{display:flex;flex-wrap:wrap;gap:var(--sp-4) var(--sp-3);padding-top:var(--sp-2)}
+.slip{
+  position:relative;flex:1 1 132px;
+  background:var(--paper);color:var(--ink);
+  border-radius:2px;box-shadow:var(--lift-2);
+  padding:var(--sp-5) var(--sp-3) var(--sp-3);
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.slip::before{
+  content:"";position:absolute;top:7px;left:50%;
+  width:64px;height:14px;
+  transform:translateX(-50%) rotate(-2deg);
+  background:var(--tape);
+  border-left:1px solid var(--tape-edge);
+  border-right:1px solid var(--tape-edge);
+}
+.slip:nth-child(3n+1){rotate:-.9deg}
+.slip:nth-child(3n+2){rotate:.7deg}
+.slip:nth-child(3n+3){rotate:-.3deg}
+
+.slip-num{
+  font-family:var(--font-display);font-weight:900;
+  font-size:3.25rem;line-height:1;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;color:var(--ink);
+}
+.slip-name{font-size:.8125rem;font-weight:600;color:var(--ink-soft);text-align:center;overflow-wrap:anywhere}
+.slip-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);opacity:.7}
+
+.slip.is-you{flex-basis:100%;box-shadow:var(--lift-3),0 0 0 2px var(--you);rotate:0deg;padding:var(--sp-5) var(--sp-3) var(--sp-4)}
+.slip.is-you .slip-num{font-size:4.5rem}
+.slip.is-you::before{background:rgba(255,90,54,.16);border-color:rgba(255,90,54,.32)}
+.slip.is-you .slip-num{color:var(--you)}
+.slip.is-you .slip-name{color:var(--you-deep);font-weight:700}
+.slip-blank{font-family:var(--font-display);font-weight:900;font-size:4.5rem;line-height:1;color:var(--you);opacity:.62}
+
+.slip.waiting{opacity:.62}
+.slip.waiting .slip-num{color:var(--ink-soft)}
+
+@media (prefers-reduced-motion:no-preference){
+  .slip{animation:slip-land var(--t-stage) var(--ease-out) both}
+  .slip:nth-child(1){animation-delay:0ms}
+  .slip:nth-child(2){animation-delay:45ms}
+  .slip:nth-child(3){animation-delay:90ms}
+  .slip:nth-child(4){animation-delay:135ms}
+  .slip:nth-child(5){animation-delay:180ms}
+  .slip:nth-child(6){animation-delay:225ms}
+  .slip:nth-child(7){animation-delay:270ms}
+  .slip:nth-child(8){animation-delay:315ms}
+}
+@keyframes slip-land{
+  from{opacity:0;transform:translateY(-10px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* The one big moment of the game: turning your own slip over. */
+.slip.is-you.flipping{animation:slip-flip 460ms var(--ease-in-out) both}
+@keyframes slip-flip{
+  0%{transform:rotateY(0deg);filter:blur(0)}
+  45%{transform:rotateY(90deg);filter:blur(2px)}
+  55%{transform:rotateY(90deg);filter:blur(2px)}
+  100%{transform:rotateY(0deg);filter:blur(0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .slip{rotate:0deg!important}
+  .slip.is-you.flipping{animation:slip-fade 200ms ease both}
+  @keyframes slip-fade{from{opacity:.4}to{opacity:1}}
+}
+
+/* ---------- roster ---------- */
+.roster{display:flex;flex-direction:column;gap:var(--sp-2);margin:0;padding:0;list-style:none}
+.roster li{
+  display:flex;align-items:center;gap:var(--sp-3);
+  padding:11px var(--sp-3);
+  background:var(--table);border:1px solid var(--table-edge);border-radius:5px;
+  font-weight:600;
+}
+.roster li .who{flex:1;overflow-wrap:anywhere}
+.roster li .tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-table-faint)}
+.roster li.self{border-color:var(--you);color:var(--you)}
+.roster li.self .tag{color:var(--you-deep)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none}
+
+/* ---------- question ---------- */
+.q-card{
+  background:rgba(0,0,0,.24);
+  border:1px solid var(--table-edge);
+  border-radius:8px;padding:var(--sp-5);
+  display:flex;flex-direction:column;gap:var(--sp-3);
+}
+/* The accent lives in the label, not in a rail down the side. */
+.q-card .eyebrow{color:var(--you)}
+.q-text{
+  font-family:var(--font-display);font-weight:900;
+  font-size:1.4375rem;line-height:1.22;letter-spacing:-.02em;
+  text-wrap:balance;color:var(--on-table);min-height:2.4em;
+  display:flex;align-items:center;
+  transition:opacity var(--t-tip) ease,filter var(--t-tip) ease;
+}
+.q-text.swapping{opacity:.2;filter:blur(3px)}
+
+/* ---------- misc ---------- */
+.divider{display:flex;align-items:center;gap:var(--sp-3);color:var(--on-table-faint);margin:var(--sp-2) 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--table-edge)}
+.divider span{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+
+.banner{
+  display:flex;flex-direction:column;gap:2px;
+  padding:var(--sp-3) var(--sp-4);
+  border:1px dashed var(--table-edge);border-radius:8px;
+}
+.banner strong{font-family:var(--font-display);font-weight:900;font-size:1.0625rem;letter-spacing:-.01em;text-wrap:balance}
+.banner.hot{border-color:var(--you);border-style:solid;background:var(--you-wash)}
+.banner.hot strong{color:var(--you)}
+
+.err{color:var(--warn);font-size:.875rem;font-weight:600}
+.err:empty{display:none}
+
+.order{font-size:.8125rem;color:var(--on-table-soft)}
+.order b{color:var(--on-table);font-weight:600}
+
+footer{border-top:1px solid var(--table-edge);padding-top:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-3);align-items:flex-start}
+footer .note{max-width:52ch}
+
+/* Each screen lays out its own children; without this they collide, because
+   the .wrap gap only applies between the screens themselves. */
+[data-screen]{display:flex;flex-direction:column;gap:var(--sp-5)}
+
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style>
+<div class="wrap" id="slip-app">
+<header class="masthead">
+    <span class="eyebrow">A forehead game for 3 to 8</span>
+    <h1>Blank <span class="hot">Slip</span></h1>
+    <p class="lede">Everyone can see your number. You can't. Ask your way to it.</p>
+  </header>
+
+  <!-- ============ HOME ============ -->
+  <section data-screen="home" hidden>
+    <div class="panel">
+      <h2>Start a room</h2>
+      <label>Your name
+        <input class="field" id="hostName" type="text" maxlength="16" autocomplete="off" placeholder="Ismael">
+      </label>
+
+      <div class="topic">
+        <span class="eyebrow">The number will mean</span>
+        <p class="topic-text" id="topicText"></p>
+        <div class="topic-actions">
+          <button class="btn btn-sm" id="shuffleTopic" type="button">Shuffle</button>
+          <button class="btn btn-sm btn-quiet" id="ownTopic" type="button">Write my own</button>
+        </div>
+      </div>
+      <label id="customWrap" hidden>Your own topic
+        <input class="field" id="customTheme" type="text" maxlength="120" placeholder="how likely you are to survive a bar fight">
+      </label>
+
+      <div class="err" id="createErr"></div>
+      <button class="btn btn-primary btn-block" id="doCreate" type="button">Start the room</button>
+      <p class="note">You'll get a 4-letter code to read out on the call.</p>
+    </div>
+
+    <div class="divider"><span>or</span></div>
+
+    <div class="panel">
+      <h2>Join a room</h2>
+      <label>Room code
+        <input class="field code-field" id="joinCode" type="text" maxlength="4"
+               autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="····">
+      </label>
+      <label>Your name
+        <input class="field" id="joinName" type="text" maxlength="16" autocomplete="off" placeholder="Ana">
+      </label>
+      <div class="err" id="joinErr"></div>
+      <button class="btn btn-block" id="doJoin" type="button">Join</button>
+    </div>
+  </section>
+
+  <!-- ============ LOBBY ============ -->
+  <section data-screen="lobby" hidden>
+    <div class="code-plate">
+      <span class="eyebrow">Room code</span>
+      <span class="code tabular" id="lobbyCode">····</span>
+      <button class="btn btn-quiet btn-sm" id="copyCode" type="button">Copy the link</button>
+    </div>
+
+    <div class="banner">
+      <span class="eyebrow">The number means</span>
+      <strong id="lobbyTheme"></strong>
+    </div>
+
+    <div class="panel">
+      <h3 id="lobbyCount">Waiting for players</h3>
+      <ul class="roster" id="lobbyRoster"></ul>
+      <div class="err" id="lobbyErr"></div>
+      <button class="btn btn-primary btn-block" id="doDeal" type="button" hidden>Deal the slips</button>
+      <p class="note" id="waitNote">The host deals when everyone's in.</p>
+    </div>
+
+    <footer>
+      <p class="note">Numbers are dealt on the server. Nobody's phone ever receives their own.</p>
+      <button class="btn btn-quiet btn-sm" id="doLeaveLobby" type="button">Leave the room</button>
+    </footer>
+  </section>
+
+  <!-- ============ BOARD ============ -->
+  <section data-screen="board" hidden>
+    <div class="banner hot" id="pendingBanner" hidden>
+      <span class="eyebrow">Sit tight</span>
+      <strong>You're in from the next round. The host deals you in.</strong>
+    </div>
+
+    <div class="banner">
+      <span class="eyebrow" id="roundLabel">Round 1 · the number means</span>
+      <strong id="boardTheme"></strong>
+    </div>
+
+    <div class="slips" id="slips"></div>
+    <p class="order" id="playOrder"></p>
+
+    <div class="q-card">
+      <span class="eyebrow" id="qKind">Ask the room</span>
+      <p class="q-text" id="qText">Tap below and I'll hand you something to ask.</p>
+      <button class="btn" id="doAsk" type="button">Give me a question</button>
+    </div>
+
+    <div class="panel">
+      <h3>Ready to call it?</h3>
+      <p class="note">Say your guess out loud first. Then turn your slip over.</p>
+      <div class="err" id="boardErr"></div>
+      <button class="btn btn-block" id="doReveal" type="button">Turn my slip over</button>
+      <button class="btn btn-primary btn-block" id="doAgain" type="button" hidden>Deal again</button>
+      <p class="note" id="againNote" hidden>Everyone's slip goes blank and the numbers are reshuffled.</p>
+    </div>
+
+    <footer>
+      <p class="note" id="roomFoot"></p>
+      <p class="note">Your own number isn't in this page. It stays on the server until you turn your slip over, so there's nothing to peek at.</p>
+      <button class="btn btn-quiet btn-sm" id="doLeave" type="button">Leave the room</button>
+    </footer>
+  </section>
+</div>
+<script defer src="/assets/slip.js?v=${SLIP_V}"></script>`;
+
+  return shell({ title, description, canonical, jsonld, body, bleed: true, noindex: true });
+}
+
 function renderSourceSelectionPage() {
   const canonical = `${SITE}/source-selection`;
   const title = 'Source Selection Simulator — run a DoD source selection | AcqVault';
@@ -2418,4 +2839,4 @@ function renderNotFoundPage() {
   return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Page not found — AcqVault</title>\n<meta name=\"robots\" content=\"noindex\">\n<link rel=\"icon\" href=\"/assets/favicon-vault.svg\" type=\"image/svg+xml\">\n<style>\n@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}\n*{box-sizing:border-box;margin:0;padding:0;}\nbody{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;\n  background:radial-gradient(120% 140% at 12% 8%,#1b436b 0%,#123253 42%,#0a1c33 100%);\n  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color:#eaf1fb;}\n.card{max-width:520px;width:100%;text-align:center;padding:48px 32px;}\n.dial{width:88px;height:88px;margin:0 auto 28px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.4));}\n.eyebrow{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#e4c477;margin-bottom:14px;}\nh1{font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:clamp(30px,6vw,42px);line-height:1.05;letter-spacing:-.015em;color:#fff;margin-bottom:14px;}\np{font-size:16px;line-height:1.55;color:rgba(230,238,248,.82);margin-bottom:28px;}\n.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}\n.btn{display:inline-block;font-size:14.5px;font-weight:700;text-decoration:none;padding:11px 22px;border-radius:999px;transition:transform .15s,background .15s;}\n.btn:hover{transform:translateY(-1px);}\n.btn-brass{background:#e4c477;color:#0a1c33;}\n.btn-brass:hover{background:#f0d79a;}\n.btn-ghost{color:#eaf1fb;border:1px solid rgba(255,255,255,.22);}\n.btn-ghost:hover{background:rgba(255,255,255,.07);}\n.links{margin-top:26px;font-size:14px;color:rgba(230,238,248,.6);}\n.links a{color:#e4c477;text-decoration:none;margin:0 8px;}\n.links a:hover{text-decoration:underline;}\na:focus-visible,.btn:focus-visible{outline:2px solid #e4c477;outline-offset:3px;}\n</style>\n</head>\n<body>\n<main class=\"card\">\n  <svg class=\"dial\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"94\" height=\"94\" rx=\"20\" fill=\"#0f2540\" stroke=\"#6f521a\" stroke-width=\"1\"/><rect x=\"11\" y=\"11\" width=\"78\" height=\"78\" rx=\"14\" fill=\"none\" stroke=\"#87651c\" stroke-width=\"2\"/><circle cx=\"50\" cy=\"50\" r=\"24\" fill=\"none\" stroke=\"#e4c477\" stroke-width=\"3.5\"/><g stroke=\"#e4c477\" stroke-width=\"4\" stroke-linecap=\"round\"><line x1=\"50\" y1=\"29\" x2=\"50\" y2=\"39\"/><line x1=\"50\" y1=\"71\" x2=\"50\" y2=\"61\"/><line x1=\"29\" y1=\"50\" x2=\"39\" y2=\"50\"/><line x1=\"71\" y1=\"50\" x2=\"61\" y2=\"50\"/></g><circle cx=\"50\" cy=\"50\" r=\"6\" fill=\"#e4c477\"/></svg>\n  <div class=\"eyebrow\">404 · Not found</div>\n  <h1>This one isn&rsquo;t in the vault.</h1>\n  <p>The page you&rsquo;re after doesn&rsquo;t exist — it may have moved when the rulebook did. Search the full text instead, or start from the front door.</p>\n  <div class=\"actions\">\n    <a class=\"btn btn-brass\" href=\"/?q=\">Search the rulebook</a>\n    <a class=\"btn btn-ghost\" href=\"/?home=1\">Go home</a>\n  </div>\n  <div class=\"links\">\n    <a href=\"/rfo\">RFO</a>·<a href=\"/r-dfars\">R-DFARS</a>·<a href=\"/library\">Library</a>·<a href=\"/study\">Study</a>\n  </div>\n</main>\n</body>\n</html>\n";
 }
 
-module.exports = { SOURCES, SOURCE_KEYS, partLabel, displayPartForSource, partWord, regOrderKey, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSourceSelectionPage, render48ConsPage, renderSitemap, renderNotFoundPage, SITE };
+module.exports = { SOURCES, SOURCE_KEYS, partLabel, displayPartForSource, partWord, regOrderKey, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSourceSelectionPage, render48ConsPage, renderSlipPage, renderSitemap, renderNotFoundPage, SITE };
