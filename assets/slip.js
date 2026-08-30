@@ -100,7 +100,7 @@
     lsSet('slip.pid', PID);
   }
 
-  var S = { code: null, view: null, timer: null, sames: 0, interval: 0, quietSince: 0 };
+  var S = { code: null, view: null, timer: null, sames: 0, interval: 0, quietSince: 0, boardSig: null };
 
   /* ---------- api ---------- */
   function api(action, payload, method) {
@@ -253,7 +253,7 @@
     ul.textContent = '';
     all.forEach(function (p) {
       var li = document.createElement('li');
-      if (p.you) li.className = 'self';
+      li.className = 'hue-' + (p.slot % 8) + (p.you ? ' self' : '');
       var dot = document.createElement('span'); dot.className = 'dot';
       var who = document.createElement('span'); who.className = 'who';
       who.textContent = p.name + (p.you ? ' (you)' : '');
@@ -282,11 +282,22 @@
     $('roomFoot').textContent = 'Room ' + view.code;
     $('pendingBanner').hidden = !view.you.pending;
 
+    // Jackbox keeps the code up all game so a latecomer can still join.
+    var chip = $('boardCode');
+    chip.hidden = false;
+    chip.querySelector('b').textContent = view.code;
+
     var box = $('slips');
+    // The deal animation should fire on a NEW ROUND, not on every poll tick -
+    // otherwise the whole board re-animates each time anyone joins or reveals.
+    var signature = view.round + ':' + view.players.length;
+    var isNewDeal = signature !== S.boardSig;
+    S.boardSig = signature;
+    box.className = 'slips' + (isNewDeal ? ' fresh' : '');
     box.textContent = '';
 
     var mine = document.createElement('div');
-    mine.className = 'slip is-you';
+    mine.className = 'slip is-you hue-' + (view.you.slot % 8);
     mine.id = 'yourSlip';
     var head = document.createElement('div');
     if (view.you.num != null) { head.className = 'slip-num'; head.textContent = view.you.num; }
@@ -299,7 +310,7 @@
 
     view.players.slice().sort(function (a, b) { return a.slot - b.slot; }).forEach(function (p) {
       var el = document.createElement('div');
-      el.className = 'slip' + (p.num == null ? ' waiting' : '');
+      el.className = 'slip hue-' + (p.slot % 8) + (p.num == null ? ' waiting' : '');
       var n = document.createElement('div');
       n.className = 'slip-num';
       n.textContent = (p.num == null ? '·' : p.num);
@@ -497,7 +508,9 @@
   function stopPolling() { if (S.timer) { clearTimeout(S.timer); S.timer = null; } }
 
   document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'visible' && S.code) { resetPolling(); schedule(); }
+    // Phones lock constantly during a call. When someone looks back at their
+    // screen the board must be current immediately, not after the next tick.
+    if (document.visibilityState === 'visible' && S.code) { resetPolling(); tick(); }
   });
 
   /* ============================================================

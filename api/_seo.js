@@ -17,7 +17,7 @@ const ANALYTICS_V = 1;
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 1;
+const SLIP_V = 2;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2206,32 +2206,56 @@ function renderSlipPage() {
   };
 
   const body = `<style>/* ============================================================
-   BLANK SLIP - white paper slips on a dark table.
-   Self-contained world: declares every token it uses, inherits
-   nothing from app.css (which never loads on server-rendered pages).
+   BLANK SLIP
+   Apple's typographic discipline, Apple's dark-mode system
+   palette, one hue per player. Self-contained: declares every
+   token it uses and inherits nothing from app.css, which never
+   loads on a server-rendered page.
    ============================================================ */
 @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+2122,U+2191,U+2193,U+2212}
-@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2')}
-@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/ibm-plex-mono-latin.woff2) format('woff2')}
-@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url(/assets/fonts/ibm-plex-mono-sb-latin.woff2) format('woff2')}
 
 :root{
-  --table:#17140F; --table-raised:#211C16; --table-edge:#322A21;
-  --paper:#F6F1E6; --ink:#1A1712; --ink-soft:#6B6152;
-  --on-table:#F2EDE3; --on-table-soft:#A79C8A; --on-table-faint:#6F6759;
-  --you:#FF5A36; --you-deep:#C93F22; --you-wash:rgba(255,90,54,.14);
-  --tape:rgba(26,23,18,.10); --tape-edge:rgba(26,23,18,.17);
-  --ok:#6FBF73; --warn:#E0A33E;
-  --font-display:'Source Serif 4',Georgia,'Times New Roman',serif;
-  --font-body:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  --font-mono:'IBM Plex Mono','SF Mono',Menlo,ui-monospace,monospace;
-  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
-  --lift-1:0 1px 2px rgba(0,0,0,.34),0 4px 10px -4px rgba(0,0,0,.5);
-  --lift-2:0 2px 4px rgba(0,0,0,.38),0 12px 26px -10px rgba(0,0,0,.62);
-  --lift-3:0 3px 6px rgba(0,0,0,.42),0 22px 48px -16px rgba(0,0,0,.7);
+  /* --- ground and elevated surfaces (Apple dark mode) --- */
+  --bg:#000000;
+  --surface:#1C1C1E;
+  --surface-2:#2C2C2E;
+  --fill:rgba(118,118,128,.20);
+  --fill-hi:rgba(118,118,128,.32);
+  --separator:rgba(84,84,88,.55);
+
+  /* --- labels: Apple's four levels --- */
+  --label:#FFFFFF;
+  --label-2:rgba(235,235,245,.62);
+  --label-3:rgba(235,235,245,.34);
+  --label-4:rgba(235,235,245,.20);
+
+  /* --- system colors, dark variants --- */
+  --blue:#0A84FF;
+  --green:#30D158;
+  --indigo:#8B88FF;   /* lightened from Apple's #5E5CE6: 3.36:1 -> 5.72:1 as name text */
+  --orange:#FF9F0A;
+  --pink:#FF375F;
+  --purple:#BF5AF2;
+  --teal:#40CBE0;
+  --yellow:#FFD60A;
+  --red:#FF453A;
+
+  --tint:var(--blue);          /* text + links: 4.66:1 on a card */
+  --tint-solid:#0A6FD8;        /* filled buttons: white on this is 4.91:1 */
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;
+
+  /* --- 8pt spacing --- */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:44px; --s8:64px;
+
+  /* --- radii: Apple's cards are generously round --- */
+  --r-card:16px; --r-ctl:12px; --r-chip:980px;
+
+  /* --- motion: critically damped, no overshoot, except on release --- */
+  --ease:cubic-bezier(.32,.72,0,1);         /* Apple's sheet curve */
   --ease-out:cubic-bezier(.23,1,.32,1);
-  --ease-in-out:cubic-bezier(.77,0,.175,1);
-  --t-press:140ms; --t-tip:160ms; --t-panel:220ms; --t-stage:280ms;
+  --t-press:100ms;                           /* response must be instant */
+  --t-ui:240ms;
+  --t-enter:340ms;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -2239,253 +2263,332 @@ html{-webkit-text-size-adjust:100%}
 
 body{
   margin:0;
-  background:var(--table);
-  color:var(--on-table);
-  font-family:var(--font-body);
-  font-size:16px; line-height:1.5;
+  background:var(--bg);
+  color:var(--label);
+  font-family:var(--font);
+  font-size:17px;                 /* Apple body */
+  line-height:1.47;
+  letter-spacing:0;               /* body sits near zero */
   -webkit-font-smoothing:antialiased;
-  background-image:
-    radial-gradient(ellipse 80% 55% at 50% -10%,rgba(255,90,54,.07),transparent 70%),
-    radial-gradient(ellipse 60% 40% at 50% 110%,rgba(246,241,230,.035),transparent 70%);
-  background-attachment:fixed;
   min-height:100svh;
+  /* a barely-there wash so pure black doesn't read as a void */
+  background-image:
+    radial-gradient(120% 60% at 50% -10%,rgba(10,132,255,.10),transparent 62%),
+    radial-gradient(90% 45% at 50% 108%,rgba(191,90,242,.07),transparent 66%);
+  background-attachment:fixed;
 }
 
 .wrap{
-  max-width:560px; margin:0 auto;
-  padding:var(--sp-6) var(--sp-5) calc(var(--sp-7) + env(safe-area-inset-bottom));
-  display:flex; flex-direction:column; gap:var(--sp-6);
+  max-width:540px;margin:0 auto;
+  padding:var(--s6) var(--s5) calc(var(--s8) + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:var(--s6);
 }
 
-/* ---------- type ---------- */
-h1,h2,h3{margin:0;font-family:var(--font-display);font-weight:900;letter-spacing:-.025em;text-wrap:balance}
-h1{font-size:clamp(2.5rem,13vw,3.5rem);line-height:.92}
-h2{font-size:1.5rem;line-height:1.1}
-h3{font-size:1.125rem;line-height:1.2}
+/* ============================================================
+   TYPE - tracking is size-specific, never one value for all
+   ============================================================ */
+h1,h2,h3{margin:0;font-weight:800;font-family:var(--font);color:var(--label)}
+h1{                                   /* large display */
+  font-size:clamp(40px,12.5vw,54px);
+  line-height:1.02;
+  letter-spacing:-.045em;             /* large text needs negative tracking */
+  text-wrap:balance;
+}
+h2{font-size:24px;line-height:1.14;letter-spacing:-.026em;font-weight:700}
+h3{font-size:19px;line-height:1.22;letter-spacing:-.02em;font-weight:650}
 p{margin:0}
-.eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--on-table-faint)}
-.lede{color:var(--on-table-soft);font-size:1rem;max-width:34ch}
-.note{color:var(--on-table-faint);font-size:.8125rem;margin:0}
+
+.label{                                /* uppercase eyebrow: small text wants POSITIVE tracking */
+  font-size:12px;font-weight:600;
+  letter-spacing:.055em;text-transform:uppercase;
+  color:var(--label-3);
+}
+.lede{color:var(--label-2);font-size:17px;letter-spacing:-.01em;max-width:32ch}
+.note{color:var(--label-3);font-size:13px;letter-spacing:0;margin:0}
 .tabular{font-variant-numeric:tabular-nums}
 
-.masthead{display:flex;flex-direction:column;gap:var(--sp-2)}
-.masthead h1 .hot{color:var(--you)}
-
-/* ---------- panels ---------- */
-.panel{
-  background:var(--table-raised);
-  border:1px solid var(--table-edge);
-  border-radius:8px;
-  padding:var(--sp-5);
-  display:flex; flex-direction:column; gap:var(--sp-4);
+.masthead{display:flex;flex-direction:column;gap:var(--s2)}
+.masthead h1 .hot{
+  background:linear-gradient(96deg,var(--blue),var(--purple) 62%,var(--pink));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--blue);
 }
 
-/* ---------- controls ---------- */
+/* ============================================================
+   SURFACES
+   ============================================================ */
+.panel{
+  background:var(--surface);
+  border-radius:var(--r-card);
+  padding:var(--s5);
+  display:flex;flex-direction:column;gap:var(--s4);
+}
+
+/* ============================================================
+   CONTROLS - feedback on press, instantly
+   ============================================================ */
 .btn{
-  font:inherit;font-weight:600;cursor:pointer;
-  border-radius:5px;padding:13px var(--sp-4);
-  border:1px solid var(--table-edge);
-  background:var(--table-raised);
-  color:var(--on-table);
-  transition:transform var(--t-press) var(--ease-out),background var(--t-press) ease,border-color var(--t-press) ease,color var(--t-press) ease;
+  font:inherit;font-size:17px;font-weight:600;letter-spacing:-.01em;
+  cursor:pointer;
+  border-radius:var(--r-ctl);
+  padding:14px var(--s5);
+  min-height:50px;                    /* comfortably over the 44pt target */
+  border:none;
+  background:var(--fill);
+  color:var(--label);
+  transition:transform var(--t-press) var(--ease-out),
+             background var(--t-press) ease,
+             opacity var(--t-press) ease;
 }
 .btn:active{transform:scale(.97)}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn[disabled]{opacity:.38;cursor:not-allowed}
 .btn[disabled]:active{transform:none}
-.btn-primary{background:var(--you);border-color:var(--you);color:#1A0D08;font-weight:700;padding:15px var(--sp-5);font-size:1.0625rem}
-.btn-quiet{background:transparent;border-color:transparent;color:var(--on-table-soft)}
-.btn-sm{padding:8px var(--sp-3);font-size:.8125rem}
+.btn-primary{background:var(--tint-solid);color:#fff;font-weight:650}
+.btn-quiet{background:transparent;color:var(--tint);font-weight:600;min-height:44px;padding:10px var(--s3)}
+.btn-sm{font-size:15px;padding:9px var(--s4);min-height:40px}
 .btn-block{width:100%}
 @media (hover:hover) and (pointer:fine){
-  .btn:hover{border-color:var(--on-table-faint)}
-  .btn-primary:hover{background:#FF6B4A;border-color:#FF6B4A}
-  .btn-quiet:hover{color:var(--on-table)}
+  .btn:hover{background:var(--fill-hi)}
+  .btn-primary:hover{background:#0A7BEF}
+  .btn-quiet:hover{background:rgba(10,132,255,.12)}
 }
-:where(a,button,input,select,[tabindex]):focus-visible{outline:2px solid var(--you);outline-offset:3px;border-radius:4px}
+:where(a,button,input,select,[tabindex]):focus-visible{
+  outline:3px solid var(--blue);outline-offset:3px;border-radius:var(--r-ctl);
+}
 
-label{display:flex;flex-direction:column;gap:var(--sp-2);font-size:.8125rem;font-weight:600;color:var(--on-table-soft)}
+label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weight:600;letter-spacing:.01em;color:var(--label-2)}
 .field{
-  font:inherit;font-size:16px; /* never below 16px: iOS zooms the page */
-  color:var(--on-table);background:var(--table);
-  border:1px solid var(--table-edge);border-radius:5px;
-  padding:12px var(--sp-3);width:100%;
-  transition:border-color var(--t-tip) ease;
+  font:inherit;font-size:17px;                /* >=16px or iOS zooms the page */
+  color:var(--label);background:var(--fill);
+  border:1px solid transparent;border-radius:var(--r-ctl);
+  padding:14px var(--s4);width:100%;
+  transition:border-color var(--t-press) ease,background var(--t-press) ease;
 }
-.field::placeholder{color:var(--on-table-faint)}
-.field:focus{border-color:var(--you);outline:none}
+.field::placeholder{color:var(--label-4)}
+.field:focus{border-color:var(--blue);background:var(--surface-2);outline:none}
 
-.row{display:flex;gap:var(--sp-3);flex-wrap:wrap}
-.row>*{flex:1 1 0;min-width:0}
-
-/* ---------- the topic card ---------- */
+/* ============================================================
+   TOPIC CARD
+   ============================================================ */
 .topic{
-  display:flex;flex-direction:column;gap:var(--sp-3);
-  padding:var(--sp-4) var(--sp-4) var(--sp-3);
-  border:1px solid var(--table-edge);border-radius:8px;
-  background:rgba(0,0,0,.22);
+  display:flex;flex-direction:column;gap:var(--s3);
+  padding:var(--s4);
+  border-radius:var(--r-card);
+  background:var(--surface-2);
 }
 .topic-text{
-  font-family:var(--font-display);font-weight:900;
-  font-size:1.3125rem;line-height:1.2;letter-spacing:-.02em;
-  text-wrap:balance;color:var(--on-table);min-height:2.4em;
+  font-size:22px;font-weight:700;line-height:1.2;letter-spacing:-.024em;
+  text-wrap:balance;color:var(--label);min-height:2.4em;
   display:flex;align-items:center;
-  transition:opacity var(--t-tip) ease,filter var(--t-tip) ease;
+  transition:opacity 160ms ease,filter 160ms ease;
 }
-.topic-text.swapping{opacity:.2;filter:blur(3px)}
-.topic-actions{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+.topic-text.swapping{opacity:.15;filter:blur(4px)}
+.topic-actions{display:flex;gap:var(--s2);flex-wrap:wrap}
 
-/* ---------- the room code ---------- */
+/* ============================================================
+   ROOM CODE
+   ============================================================ */
 .code-field{
-  font-family:var(--font-mono);font-weight:600;
-  font-size:2rem;letter-spacing:.3em;text-indent:.3em;
+  font-size:34px;font-weight:700;
+  letter-spacing:.26em;text-indent:.26em;
   text-align:center;text-transform:uppercase;
-  padding:var(--sp-4) var(--sp-2);
+  padding:var(--s4) var(--s2);
+  font-variant-numeric:tabular-nums;
 }
 .code-plate{
-  display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);
-  padding:var(--sp-5);
-  border:1px dashed var(--table-edge);border-radius:8px;
-  background:rgba(0,0,0,.22);
+  display:flex;flex-direction:column;align-items:center;gap:var(--s2);
+  padding:var(--s5);border-radius:var(--r-card);
+  background:var(--surface);
 }
 .code-plate .code{
-  font-family:var(--font-mono);font-weight:600;
-  font-size:2.75rem;line-height:1;letter-spacing:.24em;text-indent:.24em;
-  color:var(--on-table);
+  font-size:52px;font-weight:800;line-height:1;
+  letter-spacing:.2em;text-indent:.2em;
+  font-variant-numeric:tabular-nums;
+  background:linear-gradient(96deg,var(--blue),var(--teal));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--blue);
+}
+/* Jackbox keeps the code on screen the whole game so latecomers can join. */
+.code-chip{
+  display:inline-flex;align-items:center;gap:var(--s2);
+  align-self:flex-start;
+  padding:7px var(--s3);border-radius:var(--r-chip);
+  background:var(--fill);
+  font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--label-2);
+}
+.code-chip b{
+  color:var(--label);font-weight:700;
+  letter-spacing:.16em;font-variant-numeric:tabular-nums;
 }
 
-/* ---------- the slip ---------- */
-.slips{display:flex;flex-wrap:wrap;gap:var(--sp-4) var(--sp-3);padding-top:var(--sp-2)}
+/* ============================================================
+   PLAYER HUES - one per seat, assigned by slot
+   ============================================================ */
+.hue-0{--pc:var(--blue)}
+.hue-1{--pc:var(--orange)}
+.hue-2{--pc:var(--green)}
+.hue-3{--pc:var(--pink)}
+.hue-4{--pc:var(--purple)}
+.hue-5{--pc:var(--teal)}
+.hue-6{--pc:var(--yellow)}
+.hue-7{--pc:var(--indigo)}
+
+/* ============================================================
+   THE SLIPS
+   ============================================================ */
+.slips{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:var(--s3)}
 .slip{
-  position:relative;flex:1 1 132px;
-  background:var(--paper);color:var(--ink);
-  border-radius:2px;box-shadow:var(--lift-2);
-  padding:var(--sp-5) var(--sp-3) var(--sp-3);
-  display:flex;flex-direction:column;align-items:center;gap:2px;
+  position:relative;
+  background:var(--surface);
+  border-radius:var(--r-card);
+  padding:var(--s4) var(--s3) var(--s3);
+  display:flex;flex-direction:column;align-items:center;gap:var(--s1);
+  overflow:hidden;
 }
-.slip::before{
-  content:"";position:absolute;top:7px;left:50%;
-  width:64px;height:14px;
-  transform:translateX(-50%) rotate(-2deg);
-  background:var(--tape);
-  border-left:1px solid var(--tape-edge);
-  border-right:1px solid var(--tape-edge);
+/* a thin wash of the player's colour, so the card is theirs without shouting */
+.slip::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--pc,var(--blue)) 16%,transparent),transparent 58%);
 }
-.slip:nth-child(3n+1){rotate:-.9deg}
-.slip:nth-child(3n+2){rotate:.7deg}
-.slip:nth-child(3n+3){rotate:-.3deg}
-
 .slip-num{
-  font-family:var(--font-display);font-weight:900;
-  font-size:3.25rem;line-height:1;letter-spacing:-.04em;
-  font-variant-numeric:tabular-nums;color:var(--ink);
+  font-size:56px;font-weight:800;line-height:1.04;
+  letter-spacing:-.045em;                 /* big numerals need tight tracking */
+  font-variant-numeric:tabular-nums;
+  color:var(--label);
+  position:relative;z-index:1;
 }
-.slip-name{font-size:.8125rem;font-weight:600;color:var(--ink-soft);text-align:center;overflow-wrap:anywhere}
-.slip-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);opacity:.7}
+.slip-name{
+  font-size:14px;font-weight:600;letter-spacing:-.005em;
+  color:var(--pc,var(--label-2));
+  text-align:center;overflow-wrap:anywhere;
+  position:relative;z-index:1;
+}
+.slip-tag{
+  font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--label-3);position:relative;z-index:1;
+}
 
-.slip.is-you{flex-basis:100%;box-shadow:var(--lift-3),0 0 0 2px var(--you);rotate:0deg;padding:var(--sp-5) var(--sp-3) var(--sp-4)}
-.slip.is-you .slip-num{font-size:4.5rem}
-.slip.is-you::before{background:rgba(255,90,54,.16);border-color:rgba(255,90,54,.32)}
-.slip.is-you .slip-num{color:var(--you)}
-.slip.is-you .slip-name{color:var(--you-deep);font-weight:700}
-.slip-blank{font-family:var(--font-display);font-weight:900;font-size:4.5rem;line-height:1;color:var(--you);opacity:.62}
+/* your own slip: the hero, and the only blank one */
+.slip.is-you{
+  grid-column:1/-1;
+  padding:var(--s6) var(--s4) var(--s5);
+  background:var(--surface-2);
+  box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--pc,var(--blue)) 70%,transparent);
+}
+.slip.is-you::after{
+  background:radial-gradient(90% 130% at 50% 0%,color-mix(in srgb,var(--pc,var(--blue)) 26%,transparent),transparent 66%);
+}
+.slip.is-you .slip-num{font-size:76px;letter-spacing:-.05em}
+.slip.is-you .slip-name{font-size:15px;font-weight:650}
+.slip-blank{
+  font-size:76px;font-weight:800;line-height:1.04;letter-spacing:-.05em;
+  color:var(--pc,var(--blue));
+  position:relative;z-index:1;
+}
+.slip.waiting{opacity:.55}
+.slip.waiting .slip-num{color:var(--label-3)}
 
-.slip.waiting{opacity:.62}
-.slip.waiting .slip-num{color:var(--ink-soft)}
-
+/* Cards arrive together, quickly, and only on a real change. */
 @media (prefers-reduced-motion:no-preference){
-  .slip{animation:slip-land var(--t-stage) var(--ease-out) both}
-  .slip:nth-child(1){animation-delay:0ms}
-  .slip:nth-child(2){animation-delay:45ms}
-  .slip:nth-child(3){animation-delay:90ms}
-  .slip:nth-child(4){animation-delay:135ms}
-  .slip:nth-child(5){animation-delay:180ms}
-  .slip:nth-child(6){animation-delay:225ms}
-  .slip:nth-child(7){animation-delay:270ms}
-  .slip:nth-child(8){animation-delay:315ms}
+  .slips.fresh .slip{animation:card-in var(--t-enter) var(--ease) both}
+  .slips.fresh .slip:nth-child(1){animation-delay:0ms}
+  .slips.fresh .slip:nth-child(2){animation-delay:36ms}
+  .slips.fresh .slip:nth-child(3){animation-delay:72ms}
+  .slips.fresh .slip:nth-child(4){animation-delay:108ms}
+  .slips.fresh .slip:nth-child(5){animation-delay:144ms}
+  .slips.fresh .slip:nth-child(6){animation-delay:180ms}
+  .slips.fresh .slip:nth-child(7){animation-delay:216ms}
+  .slips.fresh .slip:nth-child(8){animation-delay:252ms}
 }
-@keyframes slip-land{
-  from{opacity:0;transform:translateY(-10px) scale(.97)}
-  to{opacity:1;transform:translateY(0) scale(1)}
+@keyframes card-in{
+  from{opacity:0;transform:translateY(10px) scale(.97)}
+  to{opacity:1;transform:none}
 }
 
-/* The one big moment of the game: turning your own slip over. */
-.slip.is-you.flipping{animation:slip-flip 460ms var(--ease-in-out) both}
+/* The one big moment: turning your own slip over. Real perspective, or it
+   reads as a flat squash rather than a card rotating in space. */
+.slip-flip3d{perspective:900px}
+.slip.is-you.flipping{animation:slip-flip 520ms var(--ease) both;transform-style:preserve-3d}
 @keyframes slip-flip{
-  0%{transform:rotateY(0deg);filter:blur(0)}
-  45%{transform:rotateY(90deg);filter:blur(2px)}
-  55%{transform:rotateY(90deg);filter:blur(2px)}
-  100%{transform:rotateY(0deg);filter:blur(0)}
+  0%{transform:rotateY(0deg)}
+  48%{transform:rotateY(88deg) scale(1.03)}
+  100%{transform:rotateY(0deg)}
 }
 @media (prefers-reduced-motion:reduce){
-  .slip{rotate:0deg!important}
   .slip.is-you.flipping{animation:slip-fade 200ms ease both}
-  @keyframes slip-fade{from{opacity:.4}to{opacity:1}}
+  @keyframes slip-fade{from{opacity:.35}to{opacity:1}}
 }
 
-/* ---------- roster ---------- */
-.roster{display:flex;flex-direction:column;gap:var(--sp-2);margin:0;padding:0;list-style:none}
+/* ============================================================
+   ROSTER
+   ============================================================ */
+.roster{display:flex;flex-direction:column;gap:1px;margin:0;padding:0;list-style:none;
+  background:var(--separator);border-radius:var(--r-ctl);overflow:hidden}
 .roster li{
-  display:flex;align-items:center;gap:var(--sp-3);
-  padding:11px var(--sp-3);
-  background:var(--table);border:1px solid var(--table-edge);border-radius:5px;
-  font-weight:600;
+  display:flex;align-items:center;gap:var(--s3);
+  padding:13px var(--s4);
+  background:var(--surface-2);
+  font-size:17px;font-weight:500;letter-spacing:-.01em;
 }
 .roster li .who{flex:1;overflow-wrap:anywhere}
-.roster li .tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-table-faint)}
-.roster li.self{border-color:var(--you);color:var(--you)}
-.roster li.self .tag{color:var(--you-deep)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none}
+.roster li .tag{
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--label-3);
+}
+.roster li.self .who{font-weight:650}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--pc,var(--green));flex:none}
 
-/* ---------- question ---------- */
+/* ============================================================
+   QUESTION
+   ============================================================ */
 .q-card{
-  background:rgba(0,0,0,.24);
-  border:1px solid var(--table-edge);
-  border-radius:8px;padding:var(--sp-5);
-  display:flex;flex-direction:column;gap:var(--sp-3);
+  background:var(--surface);
+  border-radius:var(--r-card);padding:var(--s5);
+  display:flex;flex-direction:column;gap:var(--s3);
 }
-/* The accent lives in the label, not in a rail down the side. */
-.q-card .eyebrow{color:var(--you)}
+.q-card .label{color:var(--tint)}
 .q-text{
-  font-family:var(--font-display);font-weight:900;
-  font-size:1.4375rem;line-height:1.22;letter-spacing:-.02em;
-  text-wrap:balance;color:var(--on-table);min-height:2.4em;
+  font-size:26px;font-weight:700;line-height:1.2;letter-spacing:-.03em;
+  text-wrap:balance;color:var(--label);min-height:2.4em;
   display:flex;align-items:center;
-  transition:opacity var(--t-tip) ease,filter var(--t-tip) ease;
+  transition:opacity 160ms ease,filter 160ms ease;
 }
-.q-text.swapping{opacity:.2;filter:blur(3px)}
+.q-text.swapping{opacity:.15;filter:blur(4px)}
 
-/* ---------- misc ---------- */
-.divider{display:flex;align-items:center;gap:var(--sp-3);color:var(--on-table-faint);margin:var(--sp-2) 0}
-.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--table-edge)}
-.divider span{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+/* ============================================================
+   MISC
+   ============================================================ */
+.divider{display:flex;align-items:center;gap:var(--s3);color:var(--label-3);margin:var(--s1) 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--separator)}
+.divider span{font-size:12px;font-weight:600;letter-spacing:.055em;text-transform:uppercase}
 
 .banner{
-  display:flex;flex-direction:column;gap:2px;
-  padding:var(--sp-3) var(--sp-4);
-  border:1px dashed var(--table-edge);border-radius:8px;
+  display:flex;flex-direction:column;gap:var(--s1);
+  padding:var(--s4);border-radius:var(--r-card);
+  background:var(--surface);
 }
-.banner strong{font-family:var(--font-display);font-weight:900;font-size:1.0625rem;letter-spacing:-.01em;text-wrap:balance}
-.banner.hot{border-color:var(--you);border-style:solid;background:var(--you-wash)}
-.banner.hot strong{color:var(--you)}
+.banner strong{font-size:19px;font-weight:700;letter-spacing:-.022em;line-height:1.24;text-wrap:balance}
+.banner.hot{background:rgba(255,159,10,.14);box-shadow:inset 0 0 0 1px rgba(255,159,10,.4)}
+.banner.hot .label{color:var(--orange)}
+.banner.hot strong{color:var(--orange)}
 
-.err{color:var(--warn);font-size:.875rem;font-weight:600}
+.err{color:var(--orange);font-size:15px;font-weight:600;letter-spacing:-.01em}
 .err:empty{display:none}
 
-.order{font-size:.8125rem;color:var(--on-table-soft)}
-.order b{color:var(--on-table);font-weight:600}
+.order{font-size:15px;color:var(--label-2);letter-spacing:-.01em}
+.order b{color:var(--label);font-weight:650}
 
-footer{border-top:1px solid var(--table-edge);padding-top:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-3);align-items:flex-start}
-footer .note{max-width:52ch}
+footer{display:flex;flex-direction:column;gap:var(--s3);align-items:flex-start;
+  border-top:1px solid var(--separator);padding-top:var(--s4);
+  margin-top:0;font-size:15px;color:var(--label-2)}
+footer .note{max-width:50ch}
 
-/* Each screen lays out its own children; without this they collide, because
-   the .wrap gap only applies between the screens themselves. */
-[data-screen]{display:flex;flex-direction:column;gap:var(--sp-5)}
-
+[data-screen]{display:flex;flex-direction:column;gap:var(--s5)}
 [hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style>
 <div class="wrap" id="slip-app">
 <header class="masthead">
-    <span class="eyebrow">A forehead game for 3 to 8</span>
+    <span class="label">A forehead game for 3 to 8</span>
     <h1>Blank <span class="hot">Slip</span></h1>
     <p class="lede">Everyone can see your number. You can't. Ask your way to it.</p>
   </header>
@@ -2499,7 +2602,7 @@ footer .note{max-width:52ch}
       </label>
 
       <div class="topic">
-        <span class="eyebrow">The number will mean</span>
+        <span class="label">The number will mean</span>
         <p class="topic-text" id="topicText"></p>
         <div class="topic-actions">
           <button class="btn btn-sm" id="shuffleTopic" type="button">Shuffle</button>
@@ -2521,7 +2624,7 @@ footer .note{max-width:52ch}
       <h2>Join a room</h2>
       <label>Room code
         <input class="field code-field" id="joinCode" type="text" maxlength="4"
-               autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="····">
+               autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="----">
       </label>
       <label>Your name
         <input class="field" id="joinName" type="text" maxlength="16" autocomplete="off" placeholder="Ana">
@@ -2534,13 +2637,13 @@ footer .note{max-width:52ch}
   <!-- ============ LOBBY ============ -->
   <section data-screen="lobby" hidden>
     <div class="code-plate">
-      <span class="eyebrow">Room code</span>
-      <span class="code tabular" id="lobbyCode">····</span>
+      <span class="label">Room code</span>
+      <span class="code" id="lobbyCode">----</span>
       <button class="btn btn-quiet btn-sm" id="copyCode" type="button">Copy the link</button>
     </div>
 
     <div class="banner">
-      <span class="eyebrow">The number means</span>
+      <span class="label">The number means</span>
       <strong id="lobbyTheme"></strong>
     </div>
 
@@ -2561,20 +2664,24 @@ footer .note{max-width:52ch}
   <!-- ============ BOARD ============ -->
   <section data-screen="board" hidden>
     <div class="banner hot" id="pendingBanner" hidden>
-      <span class="eyebrow">Sit tight</span>
+      <span class="label">Sit tight</span>
       <strong>You're in from the next round. The host deals you in.</strong>
     </div>
 
+    <span class="code-chip" id="boardCode" hidden>Room <b></b></span>
+
     <div class="banner">
-      <span class="eyebrow" id="roundLabel">Round 1 · the number means</span>
+      <span class="label" id="roundLabel">Round 1 &middot; the number means</span>
       <strong id="boardTheme"></strong>
     </div>
 
-    <div class="slips" id="slips"></div>
+    <div class="slip-flip3d">
+      <div class="slips" id="slips"></div>
+    </div>
     <p class="order" id="playOrder"></p>
 
     <div class="q-card">
-      <span class="eyebrow" id="qKind">Ask the room</span>
+      <span class="label" id="qKind">Ask the room</span>
       <p class="q-text" id="qText">Tap below and I'll hand you something to ask.</p>
       <button class="btn" id="doAsk" type="button">Give me a question</button>
     </div>
