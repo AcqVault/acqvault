@@ -302,7 +302,9 @@
     // otherwise the whole board re-animates each time anyone joins or reveals.
     var signature = view.round + ':' + view.players.length;
     var isNewDeal = signature !== S.boardSig;
+    var roundChanged = S.boardSig && signature.split(':')[0] !== S.boardSig.split(':')[0];
     S.boardSig = signature;
+    if (roundChanged) resetQuestions();
     box.className = 'slips' + (isNewDeal ? ' fresh' : '');
     box.textContent = '';
 
@@ -391,41 +393,149 @@
       .then(function () { busy(btn, false); resetPolling(); });
   });
 
+  /* ============================================================
+     QUESTIONS
+     The app never learns your number. It only remembers what you tell it
+     the room said, and uses that to hand you a question that is actually
+     worth asking next - rather than "am I above 50?" for the third time.
+     ============================================================ */
+  var Q = { lo: 1, hi: 100, parity: null, pending: null, asked: 0, answered: 0 };
+
+  function resetQuestions() {
+    Q = { lo: 1, hi: 100, parity: null, pending: null, asked: 0, answered: 0 };
+    $('qAnswers').hidden = true;
+    $('qRange').hidden = true;
+    $('qKind').textContent = 'Ask the room';
+    $('qText').textContent = 'Tap below for something to ask the room.';
+    $('doAsk').textContent = 'Give me a question';
+  }
+
+  // Numbers you can SEE are provably not yours, so they come out of the count.
+  function candidates() {
+    var taken = {};
+    if (S.view) S.view.players.forEach(function (p) { if (p.num != null) taken[p.num] = 1; });
+    var out = [];
+    for (var n = Q.lo; n <= Q.hi; n++) {
+      if (taken[n]) continue;
+      if (Q.parity === 'even' && n % 2) continue;
+      if (Q.parity === 'odd' && n % 2 === 0) continue;
+      out.push(n);
+    }
+    return out;
+  }
+
+  function showNarrow() {
+    var c = candidates(), el = $('qRange');
+    el.hidden = false;
+    el.className = 'narrow' + (c.length === 1 ? ' solved' : '');
+    el.textContent = '';
+    if (!c.length) { el.textContent = 'That rules everything out - someone answered wrong.'; return; }
+    if (c.length === 1) {
+      el.appendChild(document.createTextNode('Then you are '));
+      var b1 = document.createElement('b'); b1.textContent = c[0]; el.appendChild(b1);
+      el.appendChild(document.createTextNode('. Say it out loud.'));
+      return;
+    }
+    el.appendChild(document.createTextNode('You are somewhere in '));
+    var b = document.createElement('b');
+    b.textContent = c[0] + '-' + c[c.length - 1];
+    el.appendChild(b);
+    el.appendChild(document.createTextNode(' - ' + c.length + ' left'));
+  }
+
+  // Playful ones. None of them presume the room CHOSE your number, because
+  // it did not - the deal is random, and a question that implies otherwise
+  // is just a lie the app is telling.
+  var WILD = [
+    'Would you trade numbers with me?',
+    'Am I the number you would want?',
+    'Is my number funnier than yours?',
+    'Would you be happy with my number?',
+    'Am I closer to the top or the bottom?',
+    'If you had to bet on my number right now, would you bet high?',
+    'Is anyone here lying to me?',
+    'Whose number would I rather have?'
+  ];
+
+  function nextQuestion() {
+    var view = S.view;
+    if (!view) return null;
+    var c = candidates();
+    if (c.length <= 1) return { kind: 'You have it', text: 'Call it out loud, then turn your slip over.', effect: null };
+
+    // Every so often, something that is just fun to ask. Never as the opener,
+    // and never once the range is tight enough to actually close out.
+    if (c.length > 6 && Q.answered > 0 && Math.random() < 0.22) {
+      return { kind: 'Just for fun', text: pick(WILD), effect: null };
+    }
+
+    // Best question: a player whose number splits what is left. It uses the
+    // board, and it is far more fun to ask a person than a number.
+    var inRange = view.players.filter(function (p) {
+      return p.num != null && p.num > c[0] && p.num < c[c.length - 1];
+    });
+    if (inRange.length) {
+      // the one that splits the remaining candidates most evenly
+      var best = null, bestScore = 1e9;
+      inRange.forEach(function (p) {
+        var below = c.filter(function (n) { return n < p.num; }).length;
+        var score = Math.abs(below - (c.length - below));
+        if (score < bestScore) { bestScore = score; best = p; }
+      });
+      return {
+        kind: 'Compare to a person',
+        text: 'Am I higher than ' + best.name + '?',
+        effect: { type: 'gt', v: best.num }
+      };
+    }
+
+    // Parity is worth one question, but only once it actually halves something.
+    if (Q.parity === null && c.length <= 16 && c.length > 2) {
+      return { kind: 'Closing in', text: 'Am I an even number?', effect: { type: 'even' } };
+    }
+
+    var mid = c[Math.floor((c.length - 1) / 2)];
+    return {
+      kind: c.length > 20 ? 'Split the range' : 'Closing in',
+      text: 'Am I higher than ' + mid + '?',
+      effect: { type: 'gt', v: mid }
+    };
+  }
+
+  function askNext() {
+    var q = nextQuestion();
+    if (!q) return;
+    Q.pending = q.effect;
+    $('qKind').textContent = q.kind;
+    swapText($('qText'), q.text);
+    $('qAnswers').hidden = !q.effect;
+    $('doAsk').textContent = q.effect ? 'Different question' : 'Another question';
+    if (Q.answered) showNarrow();
+  }
+
   $('doAsk').addEventListener('click', function () {
     if (!S.view) return;
-    var others = S.view.players.map(function (p) { return p.name; });
-    if (!others.length) others = ['someone else'];
-    var o = function () { return pick(others); };
-    var pools = [
-      { k: 'Split the range', q: [
-        'Am I above 50?', 'Am I below 50?', 'Am I in the top quarter?',
-        'Am I above 75?', 'Am I 25 or lower?', 'Am I somewhere in the middle, 40 to 60?',
-        'Am I a round number?', 'Am I in the 30s?'
-      ] },
-      { k: 'Compare to a person', q: [
-        'Am I higher than ' + o() + '?', 'Am I lower than ' + o() + '?',
-        'Am I the highest number in the room?', 'Am I the lowest number in the room?',
-        'Is ' + o() + ' the closest number to mine?'
-      ] },
-      { k: 'Closing in', q: [
-        'Am I even?', 'Am I odd?',
-        'Am I within 10 of ' + o() + '?',
-        'Do I have two digits?'
-      ] },
-      { k: 'Just for the drama', q: [
-        'Would you swap your number for mine?',
-        'Did anyone argue about my number?',
-        'Am I higher than ' + o() + ' - and should I be?',
-        'Would a stranger guess my number higher than you did?',
-        'If we did this again in a year, would my number go up?',
-        'Am I the number you would have given yourself?'
-      ] }
-    ];
-    var chosen = pick(pools);
-    $('qKind').textContent = chosen.k;
-    swapText($('qText'), pick(chosen.q));
-    this.textContent = 'Another question';
+    Q.asked++;
+    askNext();
   });
+
+  function answer(yes) {
+    var e = Q.pending;
+    if (!e) return;
+    if (e.type === 'gt') {
+      if (yes) Q.lo = Math.max(Q.lo, e.v + 1);
+      else Q.hi = Math.min(Q.hi, e.v);
+    } else if (e.type === 'even') {
+      Q.parity = yes ? 'even' : 'odd';
+    }
+    Q.pending = null;
+    Q.asked++;
+    Q.answered++;
+    showNarrow();
+    askNext();
+  }
+  $('ansYes').addEventListener('click', function () { answer(true); });
+  $('ansNo').addEventListener('click', function () { answer(false); });
 
   $('doReveal').addEventListener('click', function () {
     clearErr('boardErr');
@@ -470,9 +580,7 @@
     while (next === cur && TOPICS.length > 1) next = pick(TOPICS);
     api('deal', { code: S.code, theme: next }).then(function (v) {
       apply(v);
-      $('qKind').textContent = 'Ask the room';
-      $('qText').textContent = "Tap below and I'll hand you something to ask.";
-      $('doAsk').textContent = 'Give me a question';
+      resetQuestions();
     }).catch(function (e) { fail('boardErr', e); })
       .then(function () { busy(btn, false); resetPolling(); });
   });

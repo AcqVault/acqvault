@@ -17,7 +17,7 @@ const ANALYTICS_V = 1;
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 4;
+const SLIP_V = 5;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2560,6 +2560,17 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
   transition:opacity 160ms ease,filter 160ms ease;
 }
 .q-text.swapping{opacity:.15;filter:blur(4px)}
+.q-answers{display:flex;gap:var(--s2)}
+.q-answers .btn{flex:1}
+/* What you have narrowed it to. The app never learns your number - it only
+   remembers what you tell it the room said. */
+.narrow{
+  font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--label-2);
+  margin:0;padding-top:var(--s1);
+}
+.narrow b{color:var(--tint);font-variant-numeric:tabular-nums}
+.narrow.solved{color:var(--green)}
+.narrow.solved b{color:var(--green)}
 
 /* ============================================================
    MISC
@@ -2688,8 +2699,13 @@ footer .note{max-width:50ch}
 
     <div class="q-card" id="qCard">
       <span class="label" id="qKind">Ask the room</span>
-      <p class="q-text" id="qText">Tap below and I'll hand you something to ask.</p>
+      <p class="q-text" id="qText">Tap below for something to ask the room.</p>
+      <div class="q-answers" id="qAnswers" hidden>
+        <button class="btn btn-sm" id="ansYes" type="button">They said yes</button>
+        <button class="btn btn-sm" id="ansNo" type="button">They said no</button>
+      </div>
       <button class="btn" id="doAsk" type="button">Give me a question</button>
+      <p class="narrow" id="qRange" hidden></p>
     </div>
 
     <div class="panel">
