@@ -316,5 +316,73 @@ const PIDS = {
   eq(betoView.you.num, null, 'Beto cannot see his own either');
   ok(betoView.players[0].num !== r.body.players[0].num, 'the two numbers are distinct');
 
+  /* ---- the client question deck ----------------------------------------
+     A wrong predicate silently tells a player to rule out their own number,
+     which is unrecoverable and invisible. Each f is checked against an
+     INDEPENDENT reimplementation across all of 1..100. ---------------------*/
+  const clientSrc = require('fs').readFileSync(
+    require('path').join(__dirname, '../../assets/slip.js'), 'utf8');
+
+  const probeSrc = clientSrc.slice(clientSrc.indexOf('var PROBE = ['),
+                                   clientSrc.indexOf('// SPARK -'));
+  const sharpSrc = clientSrc.slice(clientSrc.indexOf('var SHARP = ['),
+                                   clientSrc.indexOf('// PROBE -'));
+  const sparkSrc = clientSrc.slice(clientSrc.indexOf('var SPARK = ['),
+                                   clientSrc.indexOf('var Q = {'));
+  // Evaluate inside an IIFE so the deck's own `var` declarations land there
+  // rather than colliding with these bindings.
+  const PROBE = (function () { return eval(probeSrc + '; PROBE'); })();
+  const SHARP = (function () { return eval(sharpSrc + '; SHARP'); })();
+  const SPARK = (function () { return eval(sparkSrc + '; SPARK'); })();
+
+  const EXPECT = {
+    'Is my number an even number?': n => n % 2 === 0,
+    'Is my number a multiple of 5?': n => n % 5 === 0,
+    'Is my number a multiple of 10?': n => n % 10 === 0,
+    'Can you cut my number in half twice and still land on a whole number?': n => n % 4 === 0,
+    'Does my number have a 7 in it anywhere?': n => ('' + n).includes('7'),
+    'Does my number have a 3 in it anywhere?': n => ('' + n).includes('3'),
+    'Is my number one of the doubles - 11, 22, 33, all the way up to 99?': n => [11,22,33,44,55,66,77,88,99].includes(n),
+    'Is my number a perfect square - 1, 4, 9, 16, 25 and so on?': n => [1,4,9,16,25,36,49,64,81,100].includes(n),
+    'Is my number a single digit?': n => n >= 1 && n <= 9,
+    'Is my number small enough to fit on a clock face - 12 or lower?': n => n <= 12,
+    'Is my number closer to 100 than to 1?': n => Math.abs(100 - n) < Math.abs(n - 1),
+    'If my number were an age, would I be old enough to drink - 21 or over?': n => n >= 21,
+    'If my number were a test score out of 100, did I pass - 70 or higher?': n => n >= 70,
+  };
+
+  const SEEN = [12, 45, 88];
+  PROBE.forEach(pq => {
+    if (pq.t === 'Am I the highest number at this table?') {
+      for (let n = 1; n <= 100; n++) eq(pq.f(n, SEEN), n > 88, 'highest-at-table is exact at ' + n);
+      eq(pq.f(50, []), false, 'highest-at-table is false with nobody else seated');
+      return;
+    }
+    if (pq.t === 'Am I the lowest number at this table?') {
+      for (let n = 1; n <= 100; n++) eq(pq.f(n, SEEN), n < 12, 'lowest-at-table is exact at ' + n);
+      eq(pq.f(50, []), false, 'lowest-at-table is false with nobody else seated');
+      return;
+    }
+    const want = EXPECT[pq.t];
+    ok(!!want, 'deck question has an independent expectation: ' + pq.t);
+    if (!want) return;
+    for (let n = 1; n <= 100; n++) {
+      eq(!!pq.f(n, SEEN), !!want(n), 'predicate exact for ' + JSON.stringify(pq.t) + ' at n=' + n);
+    }
+    // a question that splits nothing is a wasted turn
+    let yes = 0;
+    for (let n = 1; n <= 100; n++) if (pq.f(n, SEEN)) yes++;
+    ok(yes > 0 && yes < 100, 'question actually splits 1-100: ' + pq.t);
+  });
+
+  SHARP.forEach(t => ok(t.indexOf('{n}') !== -1, 'every SHARP template carries {n}: ' + t));
+  ok(new Set(SHARP).size === SHARP.length, 'no duplicate SHARP templates');
+  ok(new Set(SPARK).size === SPARK.length, 'no duplicate SPARK questions');
+  ok(new Set(PROBE.map(p => p.t)).size === PROBE.length, 'no duplicate PROBE questions');
+  SPARK.concat(SHARP).concat(PROBE.map(p => p.t)).forEach(t => {
+    ok(/\?$/.test(t), 'every question ends in a question mark: ' + t);
+    ok(!/[^\x00-\x7F]/.test(t), 'no non-ascii in: ' + t);
+  });
+
   console.log('slip_verify: ' + checks + ' checks passed');
 })().catch(e => { console.error(e); process.exit(1); });

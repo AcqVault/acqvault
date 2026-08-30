@@ -407,32 +407,59 @@
      ============================================================ */
   var TOP = 100;
 
-  // Fixed questions that narrow without needing a computed threshold.
-  // f(n) is true when n is consistent with a YES. It must be total over 1..100.
-  var PROBE = [
-    { t: 'Is my number even?',                  f: function (n) { return n % 2 === 0; } },
-    { t: 'Does my number have a 7 in it?',      f: function (n) { return String(n).indexOf('7') >= 0; } },
-    { t: 'Does my number end in a 0 or a 5?',   f: function (n) { return n % 5 === 0; } },
-    { t: 'Does my number have two digits?',     f: function (n) { return n >= 10 && n <= 99; } },
-    { t: 'Are both my digits the same?',        f: function (n) { return n >= 11 && n <= 99 && n % 11 === 0; } },
-    { t: 'Is my number a multiple of 10?',      f: function (n) { return n % 10 === 0; } },
-    { t: 'Is my number in the top half?',       f: function (n) { return n > 50; } },
-    { t: 'Does my number start with a 1?',      f: function (n) { return String(n).charAt(0) === '1'; } }
+  // SHARP - threshold templates. {n} is the median of the remaining
+  // candidates. Every one means exactly "greater than n" (n itself is a NO),
+  // so they are interchangeable and one is picked at random for flavour.
+  var SHARP = [
+    'Is my number bigger than {n}?',
+    'Is my number higher than {n}?',
+    'Is my number greater than {n}?',
+    'Is my number over {n}?',
+    'Is my number above {n}?',
+    'Is my number more than {n}?',
+    'Does my number land above {n}?',
+    'Is my number north of {n}?',
+    'On a number line, is my number to the right of {n}?'
   ];
 
-  // Fun to ask, narrows nothing. None of these imply the room CHOSE your
-  // number, because the deal is random.
+  // PROBE - fixed narrowing questions needing no computed number.
+  // f(n, seen) is true when candidate n is consistent with a YES; `seen` is
+  // the numbers on the other players' foreheads. Pure, total over 1..100.
+  var PROBE = [
+    { t: 'Is my number an even number?', f: function (n) { return n % 2 === 0; } },
+    { t: 'Is my number a multiple of 5?', f: function (n) { return n % 5 === 0; } },
+    { t: 'Is my number a multiple of 10?', f: function (n) { return n % 10 === 0; } },
+    { t: 'Can you cut my number in half twice and still land on a whole number?', f: function (n) { return n % 4 === 0; } },
+    { t: 'Does my number have a 7 in it anywhere?', f: function (n) { return String(n).indexOf('7') !== -1; } },
+    { t: 'Does my number have a 3 in it anywhere?', f: function (n) { return String(n).indexOf('3') !== -1; } },
+    { t: 'Is my number one of the doubles - 11, 22, 33, all the way up to 99?', f: function (n) { return n % 11 === 0; } },
+    { t: 'Is my number a perfect square - 1, 4, 9, 16, 25 and so on?', f: function (n) { var r = Math.round(Math.sqrt(n)); return r * r === n; } },
+    { t: 'Is my number a single digit?', f: function (n) { return n < 10; } },
+    { t: 'Is my number small enough to fit on a clock face - 12 or lower?', f: function (n) { return n <= 12; } },
+    { t: 'Is my number closer to 100 than to 1?', f: function (n) { return n >= 51; } },
+    { t: 'If my number were an age, would I be old enough to drink - 21 or over?', f: function (n) { return n >= 21; } },
+    { t: 'If my number were a test score out of 100, did I pass - 70 or higher?', f: function (n) { return n >= 70; } },
+    { t: 'Am I the highest number at this table?', f: function (n, seen) { return seen.length ? n > Math.max.apply(null, seen) : false; } },
+    { t: 'Am I the lowest number at this table?', f: function (n, seen) { return seen.length ? n < Math.min.apply(null, seen) : false; } }
+  ];
+
+  // SPARK - narrows nothing the app can use. These exist to make the room
+  // laugh or argue, and are still strictly answerable about the number alone.
   var SPARK = [
-    'Would you trade numbers with me?',
-    'Is my number the one you would least want?',
-    'Would you be happy with my number?',
-    'Is my number funnier than yours?',
-    'If you had to bet on me right now, would you bet high?',
-    'Is anyone here about to lie to me?',
-    'Would my number be a good age to be?',
-    'Would you pay my number for lunch?',
-    'Is my number a passing grade?',
-    'Would you drive my number down a motorway?'
+    'If my number were the temperature outside in Fahrenheit, would you wear shorts?',
+    'If my number were the percent tip I left, would you say I overtipped?',
+    'If my number were the price of a sandwich in dollars, would you buy it?',
+    'If my number were my phone battery percentage, would you leave the house without a charger?',
+    'If my number were how many push-ups I did in a row, would you be impressed?',
+    'If my number were the speed I was driving in miles per hour, would you tell me to slow down?',
+    'If my number were how many minutes late I was, would you have left already?',
+    'If my number were the volume on the car stereo, would you turn it down?',
+    'If my number were how many people came to my party, would you call that a good turnout?',
+    'If my number were the unread texts sitting on my phone, would that stress you out?',
+    'If my number were an age, is it a good age to be?',
+    'Would you call my number a lucky number?',
+    'Does my number look like a jersey number a good player would wear?',
+    'Of all the numbers you can see right now, is mine the one you would least want on your own forehead?'
   ];
 
   var Q = { filters: [], options: null, movedPast: null, resolvedFor: null, answered: 0, own: false };
@@ -445,15 +472,23 @@
   }
 
   // Numbers you can SEE are provably not yours, so they never enter the pool.
+  // The numbers on the other foreheads. Provably not yours, and some questions
+  // are about them ("am I the highest here?").
+  function seenNumbers() {
+    var out = [];
+    if (S.view) S.view.players.forEach(function (p) { if (p.num != null) out.push(p.num); });
+    return out;
+  }
+
   function candidates() {
-    var taken = {};
-    if (S.view) S.view.players.forEach(function (p) { if (p.num != null) taken[p.num] = 1; });
+    var seen = seenNumbers(), taken = {};
+    seen.forEach(function (n) { taken[n] = 1; });
     var out = [];
     for (var n = 1; n <= TOP; n++) {
       if (taken[n]) continue;
       var ok = true;
       for (var i = 0; i < Q.filters.length; i++) {
-        if (Q.filters[i].test(n) !== Q.filters[i].yes) { ok = false; break; }
+        if (Q.filters[i].test(n, seen) !== Q.filters[i].yes) { ok = false; break; }
       }
       if (ok) out.push(n);
     }
@@ -480,32 +515,38 @@
   }
 
   // How evenly a predicate splits what is left. 0 is a perfect halving.
-  function imbalance(c, f) {
+  function imbalance(c, f, seen) {
     var yes = 0;
-    for (var i = 0; i < c.length; i++) if (f(c[i])) yes++;
+    for (var i = 0; i < c.length; i++) if (f(c[i], seen)) yes++;
     if (yes === 0 || yes === c.length) return 1e9;   // tells you nothing
     return Math.abs(yes - (c.length - yes));
   }
 
   // Three options: the sharpest split, a different angle, and something fun.
   function buildOptions() {
-    var c = candidates();
+    var c = candidates(), seen = seenNumbers();
     var opts = [];
 
     if (c.length > 1) {
       var mid = c[Math.floor((c.length - 1) / 2)];
       opts.push({
         tag: 'Sharpest', cls: 'best',
-        text: 'Is my number higher than ' + mid + '?',
+        text: pick(SHARP).replace('{n}', mid),
         test: function (n) { return n > mid; }
       });
 
-      // best-splitting probe that is not already answered and actually informs
-      var pool = PROBE.filter(function (p) { return imbalance(c, p.f) < 1e9; });
-      pool.sort(function (a, b) { return imbalance(c, a.f) - imbalance(c, b.f); });
-      var fresh = pool.filter(function (p) { return Q.filters.every(function (f) { return f.label !== p.t; }); });
-      var probe = fresh.length ? fresh[Math.min(1, fresh.length - 1) === 0 ? 0 : Math.floor(Math.random() * Math.min(3, fresh.length))] : null;
-      if (probe) opts.push({ tag: 'Another angle', cls: '', text: probe.t, test: probe.f, label: probe.t });
+      // The probe that splits what is left most evenly, among those not asked
+      // yet and that still tell you something. A little randomness across the
+      // top few so the same card does not come up every round.
+      var fresh = PROBE.filter(function (p) {
+        return imbalance(c, p.f, seen) < 1e9 &&
+               Q.filters.every(function (f) { return f.label !== p.t; });
+      });
+      fresh.sort(function (a, b) { return imbalance(c, a.f, seen) - imbalance(c, b.f, seen); });
+      if (fresh.length) {
+        var probe = fresh[Math.floor(Math.random() * Math.min(3, fresh.length))];
+        opts.push({ tag: 'Another angle', cls: '', text: probe.t, test: probe.f, label: probe.t });
+      }
     }
 
     opts.push({ tag: 'Just for fun', cls: 'fun', text: pick(SPARK), test: null });
