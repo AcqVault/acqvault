@@ -22,7 +22,7 @@ const configured = !!(U_URL && U_TOKEN);
 
 const TTL = 43200;              // 12h: survives dinner, a movie, and a rematch
 const MAX_PLAYERS = 8;
-const MIN_PLAYERS = 3;
+const MIN_PLAYERS = 2;   // with two, you see one number - still deducible
 const NAME_MAX = 16;
 const THEME_MAX = 120;
 
@@ -150,7 +150,7 @@ const MSG = {
   NAME_TAKEN: 'Someone in the room already has that name - add an initial.',
   ROOM_FULL: 'That room is full at 8 players.',
   NOT_SEATED: "You're not in this room any more.",
-  TOO_FEW: 'You need at least 3 players - the game needs numbers you can see.',
+  TOO_FEW: 'You need one more player - you need a number you can see.',
   PENDING: "You're in from the next round - the host deals you in.",
   CONFLICT: 'Everyone tapped at once. Try that again.',
   CODE_BUSY: 'Could not find a free room code. Try once more.',
@@ -175,11 +175,13 @@ function newCode() {
 }
 
 // Distinct numbers, so "am I higher than Ana?" and "am I the highest?" always
-// have an answer. Fisher-Yates over 1..10, take n.
+// have an answer. Partial Fisher-Yates over 1..RANGE - we only need the first n.
+const RANGE = 100;
 function dealNumbers(n) {
-  const pool = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = crypto.randomInt(0, i + 1);
+  const pool = [];
+  for (let i = 1; i <= RANGE; i++) pool.push(i);
+  for (let i = 0; i < n; i++) {
+    const j = i + crypto.randomInt(0, pool.length - i);
     const t = pool[i]; pool[i] = pool[j]; pool[j] = t;
   }
   return pool.slice(0, n);

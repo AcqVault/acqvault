@@ -17,7 +17,7 @@ const ANALYTICS_V = 1;
 // bump can never reach one page and not the other.
 const STUDY_V = 93;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 3;
+const SLIP_V = 4;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -2196,7 +2196,7 @@ function render48ConsPage() {
 function renderSlipPage() {
   const canonical = `${SITE}/slip`;
   const title = 'Blank Slip';
-  const description = esc('A forehead number game for 3 to 8 people on a call. Everyone can see your number except you.');
+  const description = esc('A forehead number game for 2 to 8 people on a call. Everyone can see your number except you.');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'WebApplication',
@@ -2461,6 +2461,8 @@ label{display:flex;flex-direction:column;gap:var(--s2);font-size:13px;font-weigh
   color:var(--label);
   position:relative;z-index:1;
 }
+.slip-num.d3{font-size:40px;letter-spacing:-.05em}   /* 100 has three digits */
+.slip.is-you .slip-num.d3{font-size:58px}
 .slip-name{
   font-size:14px;font-weight:600;letter-spacing:-.005em;
   color:var(--pc,var(--label-2));
@@ -2592,7 +2594,7 @@ footer .note{max-width:50ch}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style>
 <div class="wrap" id="slip-app">
 <header class="masthead">
-    <span class="label">A forehead game for 3 to 8</span>
+    <span class="label">A forehead game for 2 to 8</span>
     <h1>Blank <span class="hot">Slip</span></h1>
     <p class="lede">Everyone can see your number. You can't. Ask your way to it.</p>
   </header>
@@ -2602,7 +2604,7 @@ footer .note{max-width:50ch}
     <div class="panel">
       <h2>Start a room</h2>
       <label>Your name
-        <input class="field" id="hostName" type="text" maxlength="16" autocomplete="off" placeholder="Ismael">
+        <input class="field" id="hostName" type="text" maxlength="16" autocomplete="off" placeholder="Sam">
       </label>
 
       <div class="topic">
@@ -2631,7 +2633,7 @@ footer .note{max-width:50ch}
                autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="----">
       </label>
       <label>Your name
-        <input class="field" id="joinName" type="text" maxlength="16" autocomplete="off" placeholder="Ana">
+        <input class="field" id="joinName" type="text" maxlength="16" autocomplete="off" placeholder="Alex">
       </label>
       <div class="err" id="joinErr" role="alert"></div>
       <button class="btn btn-block" id="doJoin" type="button">Join</button>

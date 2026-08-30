@@ -100,6 +100,10 @@ const PIDS = {
   eq(r.body.phase, 'lobby', 'starts in lobby');
   eq(r.body.players.length, 0, 'creator sees no other players yet');
 
+  /* the floor is 2 now: a lone host cannot deal */
+  r = await call('POST', 'deal', { code, pid: PIDS.ana });
+  eq(r.body.err, 'TOO_FEW', 'cannot deal alone');
+
   /* bad code shape */
   r = await call('POST', 'join', { code: 'AB', pid: PIDS.beto, name: 'Beto' });
   eq(r.body.err, 'BAD_REQUEST', 'short code rejected');
@@ -121,10 +125,6 @@ const PIDS = {
   r = await call('POST', 'join', { code, pid: PIDS.beto, name: 'Beto' });
   eq(r.status, 200, 'rejoin succeeds');
   eq(r.body.players.length, 1, 'rejoin did not add a second seat');
-
-  /* deal with too few */
-  r = await call('POST', 'deal', { code, pid: PIDS.ana });
-  eq(r.body.err, 'TOO_FEW', 'cannot deal with 2 players');
 
   r = await call('POST', 'join', { code, pid: PIDS.cami, name: 'Cami' });
   eq(r.status, 200, 'Cami joins');
@@ -161,7 +161,7 @@ const PIDS = {
   ok(new Set(anaSees).size === anaSees.length, 'numbers Ana sees are distinct');
   const all = new Set([].concat(anaSees, betoSees));
   eq(all.size, 3, 'exactly three distinct numbers in play');
-  ok([...all].every(n => n >= 1 && n <= 10), 'all numbers within 1-10');
+  ok([...all].every(n => n >= 1 && n <= 100), 'all numbers within 1-100');
 
   /* cross-check: what Beto and Cami see of Ana agrees */
   const anaViaBeto = views.beto.players.find(p => p.slot === views.ana.you.slot);
@@ -257,11 +257,24 @@ const PIDS = {
   for (let i = 0; i < 200; i++) {
     const n = dealNumbers(8);
     eq(new Set(n).size, 8, 'dealNumbers always returns distinct values');
-    ok(n.every(x => x >= 1 && x <= 10), 'dealNumbers stays in 1-10');
+    ok(n.every(x => x >= 1 && x <= 100), 'dealNumbers stays in 1-100');
   }
   for (let i = 0; i < 2000; i++) ok(!UGLY_RE.test(newCode()), 'generated codes pass the profanity gate');
   eq(cleanName('  Ana   Maria  '), 'Ana Maria', 'names collapse whitespace');
   eq(cleanName('x'.repeat(50)).length, 16, 'names are capped at 16');
+
+  /* ---- a two-player game is legal and still hides your own number ---- */
+  const two = await call('POST', 'create', { pid: PIDS.ana, name: 'Ana', theme: 'how likely you are to name the group chat' });
+  const c2 = two.body.code;
+  await call('POST', 'join', { code: c2, pid: PIDS.beto, name: 'Beto' });
+  r = await call('POST', 'deal', { code: c2, pid: PIDS.ana });
+  eq(r.status, 200, 'two players can deal');
+  eq(r.body.you.num, null, 'in a 2-player game Ana still cannot see her own number');
+  eq(r.body.players.length, 1, 'Ana sees exactly one other slip');
+  ok(typeof r.body.players[0].num === 'number', 'and it carries a real number');
+  const betoView = (await call('GET', 'state', { code: c2, pid: PIDS.beto, v: -1 })).body;
+  eq(betoView.you.num, null, 'Beto cannot see his own either');
+  ok(betoView.players[0].num !== r.body.players[0].num, 'the two numbers are distinct');
 
   console.log('slip_verify: ' + checks + ' checks passed');
 })().catch(e => { console.error(e); process.exit(1); });

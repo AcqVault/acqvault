@@ -159,7 +159,7 @@
 
   var currentTopic = pick(TOPICS);
   var customMode = false;
-  $('topicText').textContent = '1-10, ' + currentTopic;
+  $('topicText').textContent = '1-100, ' + currentTopic;
 
   $('shuffleTopic').addEventListener('click', function () {
     var next = currentTopic;
@@ -167,7 +167,7 @@
     currentTopic = next;
     customMode = false;
     $('customWrap').hidden = true;
-    swapText($('topicText'), '1-10, ' + currentTopic);
+    swapText($('topicText'), '1-100, ' + currentTopic);
   });
 
   $('ownTopic').addEventListener('click', function () {
@@ -178,7 +178,7 @@
 
   $('customTheme').addEventListener('input', function () {
     var v = this.value.trim();
-    $('topicText').textContent = '1-10, ' + (v || '...');
+    $('topicText').textContent = '1-100, ' + (v || '...');
   });
 
   function chosenTheme() {
@@ -249,7 +249,7 @@
 
   function renderLobby(view) {
     $('lobbyCode').textContent = view.code;
-    $('lobbyTheme').textContent = '1-10, ' + view.theme;
+    $('lobbyTheme').textContent = '1-100, ' + view.theme;
 
     var all = everyone(view);
     $('lobbyCount').textContent = all.length === 1
@@ -272,20 +272,23 @@
       ul.appendChild(li);
     });
 
-    var enough = all.length >= 3;
+    var enough = all.length >= 2;
     $('doDeal').hidden = !view.isHost;
     $('doDeal').disabled = !enough;
-    $('doDeal').textContent = enough ? 'Deal the slips' : 'Need 3 players';
+    $('doDeal').textContent = enough ? 'Deal the slips' : 'Waiting for one more';
     $('waitNote').textContent = view.isHost
-      ? (enough ? "Everyone in? Deal." : 'The game needs 3 people minimum - you need numbers you can see.')
+      ? (enough ? "Everyone in? Deal." : 'You need at least one other player - somebody has to hold a number you can see.')
       : 'The host deals when everyone is in.';
 
     show('lobby');
   }
 
+  // 100 is three digits wide and would overflow a card at the base size.
+  function wide(num) { return (num != null && String(num).length >= 3) ? ' d3' : ''; }
+
   function renderBoard(view) {
     $('roundLabel').textContent = 'Round ' + view.round + ' · the number means';
-    $('boardTheme').textContent = '1-10, ' + view.theme;
+    $('boardTheme').textContent = '1-100, ' + view.theme;
     $('roomFoot').textContent = 'Room ' + view.code;
     $('pendingBanner').hidden = !view.you.pending;
 
@@ -307,7 +310,7 @@
     mine.className = 'slip is-you hue-' + (view.you.slot % 8);
     mine.id = 'yourSlip';
     var head = document.createElement('div');
-    if (view.you.num != null) { head.className = 'slip-num'; head.textContent = view.you.num; }
+    if (view.you.num != null) { head.className = 'slip-num' + wide(view.you.num); head.textContent = view.you.num; }
     else { head.className = 'slip-blank'; head.textContent = '?'; }
     var nm = document.createElement('div');
     nm.className = 'slip-name';
@@ -322,7 +325,7 @@
       var el = document.createElement('div');
       el.className = 'slip hue-' + (p.slot % 8) + (p.num == null ? ' waiting' : '');
       var n = document.createElement('div');
-      n.className = 'slip-num';
+      n.className = 'slip-num' + wide(p.num);
       n.textContent = (p.num == null ? '—' : p.num);
       var who = document.createElement('div');
       who.className = 'slip-name';
@@ -395,15 +398,20 @@
     var o = function () { return pick(others); };
     var pools = [
       { k: 'Split the range', q: [
-        'Am I above a 5?', 'Am I below a 4?', 'Am I in the top half?',
-        'Am I above a 7?', 'Am I a 3 or lower?', 'Am I somewhere in the middle, 4 to 7?'
+        'Am I above 50?', 'Am I below 50?', 'Am I in the top quarter?',
+        'Am I above 75?', 'Am I 25 or lower?', 'Am I somewhere in the middle, 40 to 60?',
+        'Am I a round number?', 'Am I in the 30s?'
       ] },
       { k: 'Compare to a person', q: [
         'Am I higher than ' + o() + '?', 'Am I lower than ' + o() + '?',
         'Am I the highest number in the room?', 'Am I the lowest number in the room?',
         'Is ' + o() + ' the closest number to mine?'
       ] },
-      { k: 'Closing in', q: ['Am I even?', 'Am I odd?', 'Am I exactly one away from ' + o() + '?'] },
+      { k: 'Closing in', q: [
+        'Am I even?', 'Am I odd?',
+        'Am I within 10 of ' + o() + '?',
+        'Do I have two digits?'
+      ] },
       { k: 'Just for the drama', q: [
         'Would you swap your number for mine?',
         'Did anyone argue about my number?',
