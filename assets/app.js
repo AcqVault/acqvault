@@ -3339,12 +3339,19 @@ function copyResultCite(hit, btn) {
         const fb = document.querySelector('.fcard-sections .fcard-bignum'); if (fb) fb.textContent = n.toLocaleString();
       }
     }
-    const gen = meta.generated_at ? new Date(meta.generated_at) : null;
+    // Clock the bar off the last time we CHECKED upstream, not the last time the text
+    // happened to move. A sweep that re-fetches every part page and finds the copy
+    // identical PROVES it is current — but generated_at only advances when something
+    // changed, so a clean sweep left this bar saying "last re-indexed 23 days ago" the
+    // morning after it ran. checked_at is written by refresh.py on every completed run;
+    // fall back to generated_at for metadata written before it existed.
+    const stamp = meta.checked_at || meta.generated_at;
+    const gen = stamp ? new Date(stamp) : null;
     if (!gen || isNaN(gen)) return;
     const days = Math.floor((Date.now() - gen.getTime()) / 86400000);
     const bar = document.getElementById('stale-bar');
     if (bar && days > 21) {
-      bar.innerHTML = `<b>Heads up —</b> AcqVault last re-indexed its copy ${days} days ago (${fmtAsOf(meta.generated_at)}). The RFO changes often; confirm any citation against the official source before relying on it.`;
+      bar.innerHTML = `<b>Heads up —</b> AcqVault last checked its copy against the official source ${days} days ago (${fmtAsOf(stamp)}). The RFO changes often; confirm any citation against the official source before relying on it.`;
       bar.hidden = false;
     }
   }).catch(() => {});

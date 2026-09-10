@@ -619,6 +619,25 @@ def update_hero_count(total):
         idx.write_text(new_text)
 
 
+def stamp_checked(run_at):
+    """Record that we checked upstream, even on a run where nothing moved.
+
+    corpus-meta.json's generated_at is written by gen_doc_hashes.py inside ship(),
+    which the zero-change path never reaches. So a sweep that re-fetched all 51 part
+    pages and PROVED the copy current still left the homepage staleness bar counting
+    days since the last time the text happened to move — it read "last re-indexed 23
+    days ago" the morning after a clean sweep. generated_at stays the last content
+    change; checked_at is the freshness clock the bar should actually run on.
+    """
+    meta_path = BASE_DIR / "output" / "corpus-meta.json"
+    if not meta_path.exists():
+        print("  \u26a0 corpus-meta.json missing — freshness clock not stamped")
+        return
+    meta = json.loads(meta_path.read_text())
+    meta["checked_at"] = run_at
+    meta_path.write_text(json.dumps(meta, separators=(",", ":"), ensure_ascii=False))
+
+
 def append_changes_log(entry):
     log = json.loads(CHANGES_LOG.read_text()) if CHANGES_LOG.exists() else []
     log.append(entry)
@@ -664,10 +683,34 @@ def run_health_gates(abort_msg="✗ SHIP ABORTED — fix the failing check(s) ab
     return True
 
 
+def ship_ledger(run_at):
+    """Commit the freshness stamp on a run where the corpus text did not move.
+
+    ship() is the wrong tool here — gen_doc_hashes.py would rewrite generated_at and
+    claim the text moved. But the stamp still has to reach users: sw.js serves
+    /output/ CACHE-FIRST with no ?v key, so a new checked_at stays invisible to every
+    returning PWA client until CACHE is bumped — and returning clients are exactly the
+    audience the staleness bar is written for.
+    """
+    new_cache = bump_service_worker()
+    if new_cache:
+        print("  service worker cache -> " + new_cache)
+    files = ["output/corpus-meta.json", "output/changes-log.json",
+             "output/refresh-report.json", "sw.js"]
+    subprocess.run(["git", "add"] + files, cwd=str(BASE_DIR), check=True)
+    subprocess.run(["git", "commit",
+                    "--author=AcqVault <287015657+AcqVault@users.noreply.github.com>",
+                    "-m", "Corpus sweep {}: all sources verified current".format(run_at[:10])],
+                   cwd=str(BASE_DIR), check=True)
+    subprocess.run(["git", "push"], cwd=str(BASE_DIR), check=True)
+    print("  pushed. Vercel will deploy in ~1 minute.")
+
+
 def ship(summary_line):
     print("\nShipping…")
     subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "gen_doc_hashes.py")],
                    cwd=str(BASE_DIR), check=True)
+    stamp_checked(now_iso())
     # Corpus health gate — every check here exists because the problem shipped
     # to production once (tofu glyphs, literal "L1:" markers, page furniture
     # wedged mid-section, swallowed PGI attachments, PDF lines broken
@@ -830,6 +873,13 @@ def main():
             if not run_health_gates("✗ CORPUS IS UNHEALTHY — the RFO did not move, "
                                     "but the checks above failed on what is on disk."):
                 sys.exit(1)
+            # A verified-current sweep is a real result and has to reach the site,
+            # or the homepage keeps counting days since the last text change.
+            stamp_checked(report["run_at"])
+            if args.yes or input("\nCommit + push the freshness stamp? [y/N] ").strip().lower() == "y":
+                ship_ledger(report["run_at"])
+            else:
+                print("Not shipped — freshness stamp written but uncommitted.")
         return
 
     if args.dry_run:
