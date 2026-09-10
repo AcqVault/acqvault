@@ -1219,5 +1219,38 @@
   "r_dfars": "current (46 memos, all sizes match)",
   "far_companion": "FAR Companion: current",
   "category_management": "Category Mgmt: current"
+ },
+ {
+  "run_at": "2026-09-10T20:54:07Z",
+  "threshold_watch": {
+   "dollar_drift": [],
+   "broken_widget_cites": []
+  },
+  "study_deck_watch": {
+   "broken_deck_cites": {},
+   "review_items": {}
+  },
+  "vehicle_watch": {
+   "expired": [],
+   "closing_soon": [
+    "NASA SEWP V (ordering ends 2027-01-31, 143d)",
+    "GSA HCaTS / HCaTS SB (ordering ends 2026-11-09, 60d)",
+    "GSA 2GIT BPAs (ordering ends 2026-09-30, 20d)",
+    "NITAAC CIO-SP3 / CIO-SP3 SB (ordering ends 2026-10-29, 49d)",
+    "NITAAC CIO-CS (ordering ends 2026-10-29, 49d)"
+   ],
+   "verified_as_of": "2026-07-11",
+   "stale": false
+  },
+  "grid_watch": {},
+  "rfo": {
+   "unchanged": 3073,
+   "modified": [],
+   "added": [],
+   "removed": []
+  },
+  "r_dfars": "current (46 memos, all sizes match)",
+  "far_companion": "FAR Companion: current",
+  "category_management": "Category Mgmt: current"
  }
 ]
