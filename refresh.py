@@ -515,6 +515,71 @@ def grid_watch(all_docs):
     return problems
 
 
+VEHICLES_PATH = BASE_DIR / "assets" / "vehicles.json"
+
+
+def prune_expired_vehicles():
+    """Owner rule: a vehicle whose ordering window has closed is never listed.
+
+    vehicle_watch only WARNED and left the removal to whoever read the warning, so
+    the rule depended on a human being in the loop on the right day. It enforces
+    itself now.
+
+    Deleting the entry is not the whole job. widgets.js fetches
+    assets/vehicles.json?v=N and /assets/* is served immutable for 30 days, so a
+    prune that does not bump that key leaves every returning client pinned to the
+    old list — the same cache trap the freshness stamp hit. deck_health enforces
+    that a ?v= EXISTS; nothing enforced that it moves.
+
+    ordering_end null (GSA MAS, the ESI agreements) means no published window, not
+    a closed one — those are left alone. An unparseable date is a data bug, not a
+    closure, so it is reported rather than acted on. Removed entries stay in git.
+    """
+    import datetime
+    if not VEHICLES_PATH.exists():
+        return []
+    data = json.loads(VEHICLES_PATH.read_text())
+    today = datetime.date.today()
+    keep, dropped, unparseable = [], [], []
+    for v in data.get("vehicles", []):
+        end = v.get("ordering_end")
+        if not end:
+            keep.append(v)
+            continue
+        try:
+            expired = datetime.date.fromisoformat(end) < today
+        except (ValueError, TypeError):
+            unparseable.append("{} ({!r})".format(v.get("id"), end))
+            keep.append(v)
+            continue
+        (dropped if expired else keep).append(v)
+    if unparseable:
+        print("\n\u26a0 vehicles.json: unreadable ordering_end, left in place: "
+              + ", ".join(unparseable))
+    if not dropped:
+        return []
+    data["vehicles"] = keep
+    VEHICLES_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+    print("\n\u2702 VEHICLE PRUNE (owner rule: closed vehicles are never listed)")
+    for v in dropped:
+        print("  removed {} [{}] — ordering ended {}".format(
+            v.get("name"), v.get("id"), v.get("ordering_end")))
+    wid = BASE_DIR / "assets" / "widgets.js"
+    txt = wid.read_text()
+    m = re.search(r"vehicles\.json\?v=(\d+)", txt)
+    if m:
+        nxt = int(m.group(1)) + 1
+        wid.write_text(txt.replace(m.group(0), "vehicles.json?v={}".format(nxt), 1))
+        print("  assets/vehicles.json ?v={} -> ?v={} (immutable cache)".format(m.group(1), nxt))
+    else:
+        print("  \u26a0 no vehicles.json ?v= key in widgets.js — bump it by hand or "
+              "clients keep the old list for 30 days")
+    print("  → check whether a successor vehicle should be added; that is still a "
+          "supervised job.")
+    return [{"id": v.get("id"), "name": v.get("name"),
+             "ordering_end": v.get("ordering_end")} for v in dropped]
+
+
 def vehicle_watch():
     """Flag curated contract-vehicle entries (assets/vehicles.json) whose ordering
     windows have closed or close soon, and remind the operator to spot-check the
@@ -696,7 +761,8 @@ def ship_ledger(run_at):
     if new_cache:
         print("  service worker cache -> " + new_cache)
     files = ["output/corpus-meta.json", "output/changes-log.json",
-             "output/refresh-report.json", "sw.js"]
+             "output/refresh-report.json", "sw.js",
+             "assets/vehicles.json", "assets/widgets.js"]
     subprocess.run(["git", "add"] + files, cwd=str(BASE_DIR), check=True)
     subprocess.run(["git", "commit",
                     "--author=AcqVault <287015657+AcqVault@users.noreply.github.com>",
@@ -760,7 +826,8 @@ def ship(summary_line):
     # cross-references and hub part-names would drift out of sync with the corpus beside them.
     files = ["output/documents.json", "output/doc-hashes.json", "output/corpus-meta.json",
              "output/changes-log.json", "output/refresh-report.json",
-             "output/xref-index.json", "output/part-labels.json", "sw.js", "index.html"]
+             "output/xref-index.json", "output/part-labels.json", "sw.js", "index.html",
+             "assets/vehicles.json", "assets/widgets.js"]
     subprocess.run(["git", "add"] + files, cwd=str(BASE_DIR), check=True)
     subprocess.run(["git", "commit",
                     "--author=AcqVault <287015657+AcqVault@users.noreply.github.com>",
@@ -839,6 +906,8 @@ def main():
 
     watch = threshold_watch(existing_rfo, final_rfo, modified)
     deck_watch = study_deck_watch(final_rfo, all_docs, modified)
+    # Prune first so the watch reports on the list the site will actually serve.
+    veh_pruned = [] if args.dry_run else prune_expired_vehicles()
     veh_watch = vehicle_watch()
     tile_watch = grid_watch(all_docs)
 
@@ -847,6 +916,7 @@ def main():
         "threshold_watch": watch,
         "study_deck_watch": deck_watch,
         "vehicle_watch": veh_watch,
+        "vehicles_removed": veh_pruned,
         "grid_watch": tile_watch,
         "rfo": {
             "unchanged": unchanged,
