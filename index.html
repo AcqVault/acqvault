@@ -34,7 +34,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
-<link rel="stylesheet" href="/assets/app.css?v=164">
+<link rel="stylesheet" href="/assets/app.css?v=165">
 </head>
 <body>
 
@@ -122,15 +122,7 @@
           <button type="button" class="search-go" id="search-go" data-action="search-go" aria-label="Search"><span class="search-go-label">Search</span><span class="search-go-arrow" aria-hidden="true">→</span></button>
         </div>
         <div class="search-suggest" id="search-suggest" role="listbox" aria-label="Section suggestions" hidden></div>
-        <div class="answer-mode" id="answer-mode" role="group" aria-label="Answer with">
-          <span class="answer-mode-k">Answer with</span>
-          <button type="button" class="answer-mode-btn active" data-action="set-answer-mode" data-arg="auth" aria-pressed="true">Authoritative text</button>
-          <button type="button" class="answer-mode-btn" data-action="set-answer-mode" data-arg="ai" aria-pressed="false">AI · cites the vault<span class="answer-mode-beta">beta</span></button>
-        </div>
-        <div class="answer-mode-note" id="answer-mode-note" hidden>Opt-in: your question and matching site excerpts go to Groq (a US model host) — don't include sensitive acquisition details. The answer draws only on this site's text and cites it; verify before relying on it. When nothing matches, the keywords alone are logged — not your question, not anything that identifies you — so the site can learn that phrasing.</div>
       </div>
-
-      <div class="ai-answer" id="ai-answer" role="region" aria-live="polite" aria-label="AI answer" hidden></div>
 
       <div class="hero-trychips" aria-label="Example searches">
         <button type="button" class="trychip" data-action="example-query" data-query="commercial item determination threshold"><span class="trychip-k">Try</span>commercial item determination threshold</button>
@@ -645,8 +637,8 @@
 </div>
 
 
-<script defer src="/assets/analytics.js?v=1"></script>
-<script defer src="/assets/app.js?v=104"></script>
+<script defer src="/assets/analytics.js?v=2"></script>
+<script defer src="/assets/app.js?v=105"></script>
 <script defer src="/assets/saved.js?v=10"></script>
 <script defer src="/assets/xlsxgen.js?v=4"></script>
 <script defer src="/assets/widgets.js?v=81"></script>

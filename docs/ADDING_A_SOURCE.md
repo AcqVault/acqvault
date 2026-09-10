@@ -33,9 +33,7 @@ Work the list, then run the gate until it is green. **If a site is listed here a
 gate does not check it, that is a bug in the gate — fix the gate rather than trusting the
 prose.** See `docs/CORPUS_INVARIANTS.md` § "Render invariants" for what each check means.
 
-Two sites this document used to omit entirely, both of which bit PGI:
-- **`api/search.js` `SRC_LABEL`** — a missing key prints the raw lowercase source id
-  into a user-facing citation (`pgi — PGI 204.201 …`) in the Ask the Vault answers.
+One site this document used to omit entirely, which bit PGI:
 - **`assets/og-src-<source>-v2.png` must exist.** `api/_seo.js` emits that filename
   unconditionally, so a missing card is a 404 social preview on every page of the source.
   Add a variant to `scripts/og/gen_og.py` and run `python3 scripts/og/gen_og.py src-<source>`.
@@ -118,3 +116,9 @@ them doesn't hold, the wiring above is incomplete:
 - Search filter pill, coverage row, library card, SEO page all show the source.
 - Follow the deploy ritual (asset `?v` bumps + `sw.js` CACHE bump — installed
   clients never see a fix without the SW bump).
+
+
+> **Removed 2026-09-10.** `api/search.js` `SRC_LABEL` was a registry site here
+> until the Ask the Vault (AI beta) lane was removed — it existed only to label
+> citations in AI answers. Nothing reads it now, so it is no longer a site to
+> update when adding a source, and `render_health.py` no longer checks it.

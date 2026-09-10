@@ -89,7 +89,6 @@ def registry_sites(probe):
     idx = (BASE / 'index.html').read_text(encoding='utf-8')
     css = (BASE / 'assets/app.css').read_text(encoding='utf-8')
     appjs = (BASE / 'assets/app.js').read_text(encoding='utf-8')
-    searchjs = (BASE / 'api/search.js').read_text(encoding='utf-8')
     vercel = (BASE / 'vercel.json').read_text(encoding='utf-8')
     library = json.loads((BASE / 'output/library.json').read_text(encoding='utf-8'))
 
@@ -126,7 +125,6 @@ def registry_sites(probe):
         'app.js PARTS_BY_SOURCE':    set(probe['registries']['PARTS_BY_SOURCE']),
         'app.js reader tagVar':      set(tagvar),
         '_seo.js SOURCES':           set(probe['registries']['SEO_SOURCES']),
-        'search.js SRC_LABEL':       find_all(r"'([a-z0-9-]+)'\s*:", (re.search(r"const SRC_LABEL = \{([^}]*)\}", searchjs) or re.match('', '')).group(1) if re.search(r"const SRC_LABEL = \{([^}]*)\}", searchjs) else ''),
         # app.css names its colour tokens by ABBREVIATION (--dfars-*, --fc-*, --cm-*),
         # and the reader's tagVar map is what translates a source key to one. So the
         # real invariant is: every source has a tagVar entry AND that token exists in

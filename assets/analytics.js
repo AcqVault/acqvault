@@ -80,11 +80,6 @@
     send({ a: 'search', q: d.q || '', n: Number(d.n) || 0 });
   });
 
-  document.addEventListener('acqvault:asked', function (e) {
-    var d = (e && e.detail) || {};
-    send({ a: 'ask', q: d.q || '', n: Number(d.n) || 0 });
-  });
-
   // A search that ends in an opened document is a search that worked. The ratio of
   // this to 'search' is the closest thing to a success metric the site has.
   document.addEventListener('acqvault:draweropen', function () {
