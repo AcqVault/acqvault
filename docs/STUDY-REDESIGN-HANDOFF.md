@@ -1,7 +1,7 @@
 # Study redesign — handoff
 
-State as of 2026-09-11 (second session). Working tree clean, all six gates green,
-everything pushed to `main`.
+State as of 2026-09-11 (fourth round). Working tree clean, all six gates green,
+everything pushed to `main`. Last commit `ada0acd`.
 
 **The direction changed this session.** /study is no longer a spaced-repetition
 dashboard you land on and pick a mode from. It is a course, in the shape Articulate
@@ -30,8 +30,67 @@ knowledge check at the end. Lessons are the spine; spaced repetition sits behind
 >   Vercel's bot challenge, and then nothing can be verified.
 > - Light theme only. Use the site's own tokens; do not invent a palette.
 >
-> Next up: the Rise treatment has only reached /study. /48cons and /source-selection
-> still have their old shapes, and the "connections" between the three are unchanged.
+> - **The Browser pane needs a viewport toggle before each screenshot** (resize to
+>   `desktop`, then back to a width) or it renders the page at a fraction of its size and
+>   returns a blank or tiny image. Chrome (claude-in-chrome) gives full-resolution shots
+>   but its screenshot injection started timing out mid-session.
+> - The owner's Chrome viewport measured **1084px**. The lesson's third column only
+>   appears at 1320+, so at his normal width he sees the two-column layout.
+>
+> Next up: `docs/BOARD-SIM-CONTENT-FINDINGS.md` — 14 remaining P0s (wrong law) across the
+> 96 board scenarios, and the systemic coach-per-topic defect behind most of them. Ask
+> which slice he wants before mass-editing his regulatory content.
+
+---
+
+## Round 4 — the Board Simulator, and a content audit
+
+**Layout**, the same moves as the course: pinned chrome (Exit / Board Sim / topics /
+N of 96), hero collapsed, a stage stepper (Scenario → Debrief → Follow-up 1..n →
+Self-grade — the sequence was previously invisible), and a right rail that keeps the
+scenario and the panel's question in view from the debrief on. They used to vanish after
+stage 0, so you answered follow-ups about a scenario you could no longer read.
+
+**Pedagogy.** The self-grade is the most board-predictive signal the tool collects and was
+made under the worst conditions: straight after a perfect seven-step model answer AND a
+verbatim script, asking "How did the whole exchange go?" The walkthrough steps now render
+twice from one source — model answer, and a tickable checklist beside the grade. The
+script is behind `<details>`. Three or more hints caps the grade at Getting there, the way
+`/48cons` always did. `logScenario` gives grading an end-of-thing moment.
+
+**Owner's decisions, do not relitigate:** model answer stays BEFORE the follow-ups; no
+answer-capture notes at the end; no audio recording. (The `/48cons` BLUF-before-reveal
+field is the one thing arguably distinct from those — captured *before*, not after — but
+he has pushed back on capture twice. Ask, don't add.)
+
+**The audit.** Four agents: three on scenario content (0–31 / 32–63 / 64–95), one on the
+information model. Results in `docs/BOARD-SIM-CONTENT-FINDINGS.md`.
+
+- 89 of 96 board-realistic; **54 would not ship as-is**; **15 P0s** (14 open).
+- ~100 cited sections verified verbatim against the corpus — every one matched. The
+  defects are internal contradictions, not bad citation.
+- **Systemic root cause, reached independently by all four:** `coach` is authored per
+  canonical topic and inherited from the scenario's FIRST topic. 29 distinct blocks across
+  96 scenarios; `qtype`/`smes`/`rule`/`cite` co-vary exactly; **0 of 96 has a unique
+  triple**; those three fields are **52% of the model answer's characters**. 13+ cards
+  carry a rule that does not govern the card, several contradicted by their own script's
+  opening line, and a wrong rule is wrong on 3–5 cards at once.
+- **It is baked from `study-tool/mcq/coach-topics.json` at build time — fixing
+  `assets/study-deck.json` alone is overwritten by the next rebuild.**
+
+**Fixed this round:** all 8 `vol2-bank` scenarios backfilled with `key_moves` + `baits`
+(lifted from their own `script` and bait-titled `frameworks` — no new law); `deck_health.py`
+now fails the build if any scenario carries neither `key_moves` nor `board_answer`; the
+Type I/II call on `95e08834394b` (silence is 52.236-2(a)(2), not Type I — I had authored
+that error myself); topic crumbs normalised for display only; the hint ladder no longer
+halves on scenarios without facts/baits; follow-ups can carry their own `cite`/`links`
+(**48 of 230 currently show a citation discussing a part the debrief never mentions** —
+renderer ready, rows unauthored).
+
+**Also:** the home hero promised an AI feature that no longer exists in any code path.
+Now "No summaries and no paraphrase — the text itself". Two internal leftovers untouched:
+`api/_analytics.js:301` reports an "AI asks" stat that can only be zero, and
+`assets/saved.js:258` has a stale "AI answer mode" comment.
 
 ---
 
