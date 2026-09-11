@@ -60,7 +60,33 @@ volume is a colliding lesson key. Both are silent at runtime.
 
 ---
 
-## The polish pass
+## Round 3 — correctness found by auditing, not by looking
+
+Three parallel audits (offline/first-paint, unhandled states, course-vs-incumbent
+consistency) found things no amount of screenshotting would have:
+
+- **A stale asset shipped.** `study-elements.json` was bumped to `?v=3` in one commit and
+  rewritten in the next without a bump. `/assets/*` is `immutable` for 30 days and `sw.js`
+  is cache-first on it with eviction only on a `CACHE` rename — so those fixes reached
+  nobody who had already loaded `?v=3`, permanently for SW clients. `verify_deploy.py`
+  cannot catch this: the origin serves the right bytes; the staleness is client-side.
+  **The deck and elements tokens are content hashes now**, emitted once as
+  `data-deck`/`data-elements` on `#study-app`. The class is gone.
+- **The course inflated readiness.** A correct multiple-choice pick graded `3` in a
+  knowledge check and `2` in Review — the same card. `mastery()` is `box/5`, so walking
+  44 lessons inflated the "% overall" a candidate reads to decide if they are board-ready.
+  Capped, and the cap is now stated where it happens.
+- **No end-of-course state, and no resume.** 44 lessons ended with the same panel as
+  lesson 3; a reload mid-check dropped you on the track picker having lost all five
+  questions, in a view full of citation links. Both fixed.
+- **Forward navigation repainted the outline at depth 2** (history entries carried only
+  `{st}`); the check asked **the same fixed six questions forever** (`slice(0,6)` on deck
+  order, so 54 Advanced cards could be read but never asked).
+
+Measured, not assumed: a `crossorigin` deck preload downloads 1.3 MB **twice**. The local
+harness now mirrors `vercel.json`'s immutable caching so that test tells the truth.
+
+## Round 2 — the polish pass
 
 Reference model is a course platform's object graph, not a deck's. A lesson holds typed
 items — a **Reading** (own minutes, ticks when done) and a **Knowledge check** (question
@@ -162,6 +188,17 @@ behind a forgotten bump was invisible to the check. It now covers five more asse
 ---
 
 ## Open work
+
+**Known and deliberately left**
+- `S.lessons` keeps orphan keys after a topic rename (inert — `courseProgress` iterates the
+  live outline, so it can never over-count; a rename silently un-ticks a lesson instead).
+- A knowledge check has no self-explanation prompt and no element checklist; Review has
+  both. That is a real difference between a lesson check and a recall drill, not drift.
+- The teaching block shows the answer directly above the question that checks it. That is
+  what a course platform does, but it makes the check recognition rather than retrieval —
+  Review is where retrieval happens, and that split should stay deliberate.
+- `viewTrack` claims "Every lesson ends in a knowledge check". True for this deck (0 of 44
+  lessons have zero checks) but unguarded if a topic's cards ever lose their distractors.
 
 **The Rise treatment has only reached /study.** `/48cons` and `/source-selection` still have
 their old shapes, and the navigation between the three is unchanged. This is the largest
