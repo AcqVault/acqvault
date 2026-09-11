@@ -2393,8 +2393,8 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 /* The course home is one column of prose and one column of list rows: at 1160px every
    row trailed 500px of nothing. Only the lesson, which carries a sidebar beside its
    body, earns the wide shell. */
-.st-rise .st-wrap{max-width:880px !important}
-.st-lesson .st-wrap{max-width:1160px !important}
+.st-rise .st-wrap{max-width:1280px !important}
+.st-lesson .st-wrap{max-width:1440px !important}
 /* Inside the course you are reading, not arriving: the marketing hero and its stat
    pills stack a second hero on top of the course cover, and put a second <h1> on the
    page. A card session already collapses it for the same reason. */
@@ -2449,6 +2449,19 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-cover .rz-btn-ghost:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(var(--brass-bright-rgb),.8)}
 
 /* ── outline ──────────────────────────────────────────────────────────────── */
+.rz-home{display:flex;flex-direction:column;gap:26px}
+.rz-aside{order:-1}
+.rz-home-main{min-width:0}
+.rz-aside{min-width:0;display:flex;flex-direction:column;gap:12px}
+.rz-card{background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:20px}
+.rz-card .rz-meter{margin:0 0 16px;max-width:none}
+.rz-btn-wide{width:100%;justify-content:center}
+.rz-btn-wide+.rz-btn-wide{margin-top:8px}
+.rz-card-h{margin:20px 0 9px;padding-top:16px;border-top:1px solid var(--line2);font-size:var(--fs-xs);
+  font-weight:800;letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
+.rz-incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;
+  font-size:var(--fs-md);line-height:1.45;color:var(--ink3,#474c55)}
+.rz-incl b{color:var(--ink);font-weight:700}
 .rz-outline-head{font-family:var(--serif);font-weight:700;font-size:24px;letter-spacing:var(--ls-snug);margin:46px 0 0}
 .rz-vol{display:flex;align-items:center;gap:14px;margin:34px 0 4px;font-size:var(--fs-xs);font-weight:800;
   letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
@@ -2510,6 +2523,25 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-side-now .rz-side-mark{background:#fff;border-color:var(--brass);color:var(--brass-ink)}
 
 .rz-main{min-width:0}
+.rz-rail{display:none;min-width:0}
+.rz-rail-h{margin:0 0 10px;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);
+  text-transform:uppercase;color:var(--brass-ink)}
+.rz-rail-pos{padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid var(--line2);
+  font-size:var(--fs-sm);line-height:1.5;color:var(--muted2,#6f6c74)}
+.rz-rail-pos b{color:var(--ink);font-weight:700}
+.rz-jump{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:2px;
+  counter-reset:rzj}
+.rz-jump li{counter-increment:rzj}
+.rz-jump a{display:flex;gap:9px;padding:6px 8px 6px 0;font-size:var(--fs-sm);line-height:1.45;
+  color:var(--ink3,#474c55);text-decoration:none;border-radius:var(--r-sm)}
+.rz-jump a::before{content:counter(rzj);flex:none;width:17px;text-align:right;
+  font-variant-numeric:tabular-nums;color:var(--muted2,#6f6c74);font-weight:700}
+.rz-jump a:hover{color:var(--brass-ink)}
+.rz-jump a:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.rz-rail-kc{display:block;padding:11px 13px;background:var(--off,#f7f6f2);border:1px solid var(--line2);
+  border-radius:var(--r-sm);font-size:var(--fs-sm);font-weight:700;color:var(--brass-ink);text-decoration:none}
+.rz-rail-kc:hover{border-color:var(--brass-line)}
+.rz-rail-kc:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
 .rz-lhead{padding-bottom:24px;border-bottom:1px solid var(--line2);margin-bottom:4px}
 .rz-lhead h1{font-family:var(--serif);font-weight:700;font-size:38px;line-height:1.08;letter-spacing:var(--ls-snug);margin:12px 0 11px;max-width:24ch}
 .rz-lhead-meta{margin:0;font-size:var(--fs-base);color:var(--muted2,#6f6c74)}
@@ -2662,12 +2694,27 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 
 @media (min-width:1000px){
   /* the sidebar is permanent at desktop and the button that opens it is not needed */
-  .rz-lesson-shell{display:grid;grid-template-columns:282px minmax(0,1fr);gap:44px;align-items:start}
+  .rz-lesson-shell{display:grid;grid-template-columns:262px minmax(0,1fr);gap:44px;align-items:start}
+  /* the course home splits: outline reads down the left, the rail acts on the right */
+  .rz-home{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:44px;align-items:start}
+  .rz-aside{order:0;position:sticky;top:20px}
   .rz-side{display:block;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow:auto;margin:0}
   .rz-side-open{display:none}
   .rz-cover{padding:48px 46px}
   .rz-cover-h{font-size:54px}
+  .rz-cover-p,.rz-facts{max-width:70ch}
   .rz-lhead h1{font-size:42px}
+}
+@media (min-width:1320px){
+  /* three columns: course nav, the reading, and what the reading contains. Below this
+     the third column would squeeze the measure, so it folds away rather than shrink. */
+  .rz-lesson-shell{grid-template-columns:262px minmax(0,1fr) 244px;gap:48px}
+  .rz-rail{display:block;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow:auto}
+  .rz-main{max-width:none}
+}
+@media (min-width:1480px){
+  .rz-lesson-shell{grid-template-columns:280px minmax(0,1fr) 268px;gap:56px}
+  .rz-home{grid-template-columns:minmax(0,1fr) 344px;gap:56px}
 }
 @media (max-width:560px){
   .rz-cover{padding:28px 22px;border-radius:var(--r-lg)}
@@ -2684,6 +2731,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .rz-btn{width:100%}
   .rz-cover-actions,.rz-done-actions{flex-direction:column}
   .rz-nav{grid-template-columns:1fr}
+  .rz-card{padding:18px}
   .rz-nav-next{text-align:left;align-items:flex-start}
   .rz-meter{max-width:none}
 }

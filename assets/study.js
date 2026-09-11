@@ -671,6 +671,23 @@
             '<span class="rz-lesson-go" aria-hidden="true">→</span></button></li>';
         }).join('') + '</ol></section>';
     });
+    var nSections = (function () {
+      var seen = {}; lessons.forEach(function (l) { seen[l.level + '|' + l.section] = 1; });
+      return Object.keys(seen).length;   // sections that actually render, not all declared
+    })();
+    var nChecks = lessons.filter(function (l) { return checkCount(l.cards); }).length;
+    var nHours = Math.round(lessons.reduce(function (t, l) {
+      return t + lessonMins(l.cards, checkCount(l.cards)); }, 0) / 60);
+    var reviewLine = due ? (function () {
+      var seen = recallPool().filter(function (c) { return isDue(c.id) && cardState(c.id).box > 0; }).length;
+      return seen ? seen + ' due for review · ' + (due - seen) + ' not met yet'
+        : due + ' card' + (due !== 1 ? 's' : '') + ' waiting, none met yet';
+    })() : 'Spaced repetition across everything you have studied';
+    /* The cover describes the course; the rail acts on it. Splitting them is what every
+       course platform does at this width, and it stops the page being one 830px column
+       down the middle of a 1600px screen with the CTA buried in the hero. The rail is
+       order:-1 under the breakpoint so the action never falls below the outline on a
+       phone. */
     render(
       '<div class="rz-cover">' +
       '<div class="rz-cover-body">' +
@@ -679,30 +696,28 @@
       '<p class="rz-cover-p">' + esc(meta.blurb) + '</p>' +
       '<ul class="rz-facts" role="list">' +
       '<li><b>' + lessons.length + '</b> lessons</li>' +
-      '<li><b>' + (function () {
-        var seen = {}; lessons.forEach(function (l) { seen[l.level + '|' + l.section] = 1; });
-        return Object.keys(seen).length;   // sections that actually render, not all declared
-      })() + '</b> sections</li>' +
-      '<li><b>\u2248 ' + Math.round(lessons.reduce(function (t, l) {
-        return t + lessonMins(l.cards, checkCount(l.cards)); }, 0) / 60) + ' hr</b> of material</li>' +
-      '</ul>' +
-      '<div class="rz-cover-actions">' +
-      '<button class="rz-btn rz-btn-go" id="rz-start">' +
+      '<li><b>' + nSections + '</b> sections</li>' +
+      '<li><b>\u2248 ' + nHours + ' hr</b> of material</li>' +
+      '</ul></div></div>' +
+      '<div class="rz-home">' +
+      '<div class="rz-home-main">' +
+      '<h2 class="rz-outline-head">Course outline</h2>' + secHtml + '</div>' +
+      '<aside class="rz-aside" aria-label="Course actions">' +
+      '<div class="rz-card">' +
+      barHtml(prog) +
+      '<button class="rz-btn rz-btn-go rz-btn-wide" id="rz-start">' +
       (full ? 'Revisit — Lesson 1' : prog.done ? 'Continue — Lesson ' + next.n : 'Start course') + '</button>' +
-      '<button class="rz-btn rz-btn-ghost" id="rz-switch">Switch course</button>' +
-      '</div>' + barHtml(prog, 'rz-meter-dark') + '</div>' +
-      '</div>' +
-      '<h2 class="rz-outline-head">Course outline</h2>' +
-      secHtml +
-      '<div class="rz-extra">' +
-      '<button class="rz-extra-card" id="rz-review"><b>Review</b><span>' +
-      (due ? (function () {
-        var seen = recallPool().filter(function (c) { return isDue(c.id) && cardState(c.id).box > 0; }).length;
-        return seen ? seen + ' due for review · ' + (due - seen) + ' not met yet'
-          : due + ' card' + (due !== 1 ? 's' : '') + ' waiting, none met yet';
-      })() : 'Spaced repetition across everything you have studied') + '</span></button>' +
+      '<button class="rz-btn rz-btn-ghost rz-btn-wide" id="rz-switch">Switch course</button>' +
+      '<div class="rz-card-h">What\u2019s included</div>' +
+      '<ul class="rz-incl" role="list">' +
+      '<li><b>' + lessons.length + '</b> readings, one per lesson</li>' +
+      '<li><b>' + nChecks + '</b> knowledge checks</li>' +
+      '<li><b>' + nSections + '</b> sections \u00b7 \u2248 ' + nHours + ' hr</li>' +
+      '<li>Every answer cited to the governing text</li>' +
+      '</ul></div>' +
+      '<button class="rz-extra-card" id="rz-review"><b>Review</b><span>' + reviewLine + '</span></button>' +
       '<button class="rz-extra-card" id="rz-practice"><b>Practice Range</b><span>Both simulators and the daily rounds</span></button>' +
-      '</div>' + footToolsHtml());
+      '</aside></div>' + footToolsHtml());
     if (next) el('rz-start').onclick = function () { openLesson(next.key); };
     else el('rz-start').disabled = true;
     el('rz-switch').onclick = function () { goDepth(0, viewTrack); };
@@ -799,7 +814,7 @@
 
     var isTable = L.cards.length > 1 && L.cards.every(function (c) { return c.kind === 'threshold'; });
     var blocks = isTable ? tableHtml(L.cards) : L.cards.map(function (c, i) {
-      return '<article class="rz-block">' +
+      return '<article class="rz-block" id="rz-b' + i + '">' +
         '<h3 class="rz-block-h">' + esc(c.q) + '</h3>' +
         '<p class="rz-lead">' + esc(c.a) + '</p>' +
         (c.x ? '<p class="rz-block-p">' + esc(c.x) + '</p>' : '') +
@@ -855,7 +870,7 @@
           '<button class="rz-btn rz-btn-go" id="rz-continue">Mark lesson complete</button></div>' +
           '<section class="rz-kc" id="rz-kc" hidden></section>') +
       navBar() +
-      '</div></div>');
+      '</div>' + railHtml() + '</div>');
 
     function navBar() {
       var prev = lessons[idx - 1];
@@ -876,6 +891,25 @@
     }
     wireNav();
     keyHandler(null);   // a fresh lesson owns no shortcuts until its check opens
+    /* The right rail. A lesson with a left nav and nothing on the right leaves a third of
+       a wide screen empty and gives the reader no sense of the shape of what they are in.
+       An on-this-page list is what the reading actually covers, jumpable, and doubles as a
+       scan of the lesson before committing to it. Suppressed for a reference table —
+       forty jump links is not a summary, it is the table again. */
+    function railHtml() {
+      var jump = (!isTable && L.cards.length <= 12)
+        ? '<div class="rz-rail-h">On this page</div><ol class="rz-jump">' +
+          L.cards.map(function (c, i) {
+            return '<li><a href="#rz-b' + i + '">' + esc(c.a) + '</a></li>';
+          }).join('') + '</ol>'
+        : '';
+      return '<aside class="rz-rail" aria-label="In this lesson">' +
+        '<div class="rz-rail-pos">Lesson <b>' + L.n + '</b> of ' + lessons.length +
+        ' \u00b7 ' + esc(L.section) + '</div>' + jump +
+        (checks.length ? '<a class="rz-rail-kc" href="#rz-kc">Knowledge check \u00b7 ' +
+          checks.length + ' question' + (checks.length !== 1 ? 's' : '') + '</a>' : '') +
+        '</aside>';
+    }
     el('rz-back').onclick = function () { goDepth(1, viewCourse); };
     el('rz-side-open').onclick = function () {
       var open = el('rz-side').classList.toggle('rz-side-shown');
