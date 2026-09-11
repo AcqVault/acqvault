@@ -31,7 +31,9 @@ SITE = "https://www.acqvault.com"
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 # Pages whose HTML carries the versioned references we care about.
 PAGES = ["/", "/study", "/48cons", "/source-selection"]
-ASSET_RE = re.compile(r'/assets/([A-Za-z0-9._-]+\.(?:js|css|json))\?v=(\d+)')
+# Tokens are content hashes now (hex) for the server-rendered pages, still integers
+# in the SPA's static index.html. Accept both.
+ASSET_RE = re.compile(r'/assets/([A-Za-z0-9._-]+\.(?:js|css|json))\?v=([0-9a-f]+)')
 
 
 def fetch(url, timeout=30):

@@ -6,18 +6,33 @@ const path = require('path');
 
 const SITE = 'https://www.acqvault.com';
 
-// /assets/* is served immutable for 30 days, so a changed part-nav.js MUST come
-// with a bumped ?v or every client that already holds it keeps the old file.
-const PART_NAV_V = 4;
-// The analytics beacon rides EVERY server-rendered page, so the part pages, the
-// hubs, /study and /48cons are all counted — not just the SPA home. Same
-// immutable-asset rule applies: bump on any change to assets/analytics.js.
-const ANALYTICS_V = 2;
-// study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
-// bump can never reach one page and not the other.
-const STUDY_V = 102;
-// assets/slip.js - same immutable-asset rule: bump on every edit.
-const SLIP_V = 10;
+/* /assets/* is served `immutable` for 30 days, so a changed asset MUST arrive on a new
+   ?v or every client that already holds it keeps the old file forever. These used to be
+   hand-maintained integers, and the failure mode duly happened: assets/analytics.js
+   changed and ANALYTICS_V did not, so every server-rendered page served a five-day-old
+   beacon. Derive the token from the file's own bytes instead — it cannot be forgotten,
+   and an unchanged file keeps its URL (and therefore its cache) across deploys.
+
+   The integer fallbacks stay meaningful: if the read ever fails on the serverless box,
+   the page still renders with a stable token rather than throwing. scripts/verify_deploy.py
+   is the backstop that proves the served bytes match the repo either way. */
+function assetV(name, fallback) {
+  try {
+    return require('crypto').createHash('sha256')
+      .update(fs.readFileSync(path.join(process.cwd(), 'assets', name)))
+      .digest('hex').slice(0, 8);
+  } catch (e) {
+    return String(fallback);
+  }
+}
+const PART_NAV_V = assetV('part-nav.js', 4);
+// The analytics beacon rides EVERY server-rendered page — the part pages, the hubs,
+// /study and /48cons — not just the SPA home.
+const ANALYTICS_V = assetV('analytics.js', 2);
+// study.js is loaded by TWO pages (/study and the unlisted /48cons); one token so a
+// change can never reach one page and not the other.
+const STUDY_V = assetV('study.js', 102);
+const SLIP_V = assetV('slip.js', 10);
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -3020,7 +3035,7 @@ ${SEAL}
 <p class="lfoot-note"><strong>How it works:</strong> read the record for each phase, make the call the Source Selection Authority would make, then check it against the governing rule. Wrong calls add to a running protest-risk score that decides whether your award survives a GAO protest. The scenario is fictional; the procedures and citations are real. Adapted from a colleague's warrant-prep exercise and rebuilt on the current DoD Source Selection Procedures.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the <a href="/ssp">DoD Source Selection Procedures</a> and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/source-selection.js?v=5"></script>`;
+<script defer src="/assets/source-selection.js?v=${assetV('source-selection.js', 5)}"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-src-ssp-v2.png' });
 }
