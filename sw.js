@@ -1,6 +1,6 @@
 /* AcqVault service worker — offline shell + corpus, leaves live data network-only.
    Bump CACHE on any change here, or when the cached corpus must refresh. */
-const CACHE = 'acqvault-v208';
+const CACHE = 'acqvault-v209';
 const SHELL = [
   '/',
   '/assets/fonts/inter-latin.woff2',
@@ -24,7 +24,9 @@ async function trimNavCache(c) {
     const nav = keys.filter((r) => {
       if (shell.has(r.url)) return false;
       const pth = new URL(r.url).pathname;
-      return pth !== '/' && !/^\/(assets|output|pdfs)\//.test(pth);
+      // '/study' is precached at install like '/', so it is not a navigated page to
+      // evict: FIFO-dropping it left an offline user falling through to the SPA home.
+      return pth !== '/' && pth !== '/study' && !/^\/(assets|output|pdfs)\//.test(pth);
     });
     for (let i = 0; i < nav.length - NAV_MAX; i++) await c.delete(nav[i]);
   } catch (e) { /* best effort */ }
@@ -41,16 +43,27 @@ self.addEventListener('install', (event) => {
     const c = await caches.open(CACHE);
     await c.addAll(SHELL).catch(() => {});
     try {
-      const res = await fetch('/', { cache: 'reload' });
-      if (res && res.ok) {
+      const urls = new Set(['/output/doc-hashes.json', '/output/corpus-meta.json']);
+      /* '/study' as well as '/': the study tool is the thing on this site that most needs
+         to work on a phone with no signal, and the hero says "Works offline" without
+         qualification — but a freshly-installed PWA that had never opened /study online
+         could not, because install only ever parsed the home page. /study also carries
+         the deck and the element checklists as data-deck/data-elements on #study-app, so
+         the same parse that finds the JS finds them. .json is accepted only for those two
+         (the corpus JSON under /output is added by hand above). */
+      for (const page of ['/', '/study']) {
+        const res = await fetch(page, { cache: 'reload' });
+        if (!res || !res.ok) continue;
         const html = await res.clone().text();
-        await c.put('/', res);
-        const urls = new Set(['/output/doc-hashes.json', '/output/corpus-meta.json']);
+        await c.put(page, res);
         const re = /\/assets\/[^"'\s)]+/g;
         let m;
-        while ((m = re.exec(html))) { if (/\.(?:js|css|woff2)(?:\?|$)/.test(m[0])) urls.add(m[0]); }
-        await Promise.all([...urls].map((u) => c.add(u).catch(() => {})));
+        while ((m = re.exec(html))) {
+          if (/\.(?:js|css|woff2)(?:\?|$)/.test(m[0])) urls.add(m[0]);
+          else if (/\/study-(?:deck|elements)\.json\?/.test(m[0])) urls.add(m[0]);
+        }
       }
+      await Promise.all([...urls].map((u) => c.add(u).catch(() => {})));
     } catch (e) { /* offline or asset error at install — on-demand caching still applies */ }
   })());
 });

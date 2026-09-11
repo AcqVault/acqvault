@@ -33,6 +33,20 @@ const ANALYTICS_V = assetV('analytics.js', 2);
 // change can never reach one page and not the other.
 const STUDY_V = assetV('study.js', 102);
 const SLIP_V = assetV('slip.js', 10);
+/* The deck and the element checklists were the last two hand-maintained version tokens
+   in the project — they lived as literals inside assets/study.js, where nothing could
+   see them. The failure they exist to prevent duly happened: study-elements.json was
+   rewritten in one commit after the token was bumped in the previous one, so six fixed
+   checklists were pinned behind ?v=3 in every browser cache and, because sw.js is
+   cache-first on /assets/ and only evicts on a CACHE rename, permanently in every
+   service-worker client. Content hashes now, like every other asset, handed to the
+   client on the container so there is exactly one place the token is written. */
+const DECK_V = assetV('study-deck.json', 43);
+const ELEMENTS_V = assetV('study-elements.json', 3);
+const DECK_ATTRS = ` data-deck="/assets/study-deck.json?v=${DECK_V}" data-elements="/assets/study-elements.json?v=${ELEMENTS_V}"`;
+const DECK_PRELOAD = `<link rel="preload" as="fetch" href="/assets/study-deck.json?v=${DECK_V}">
+<link rel="preload" as="fetch" href="/assets/study-elements.json?v=${ELEMENTS_V}">
+`;
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
@@ -1152,7 +1166,7 @@ mark.pn-mark.active{background:var(--brass-bright);box-shadow:0 0 0 2px rgba(var
 :where(button,a,[role="button"],input,select,textarea,[tabindex]):focus-visible{outline-width:3px;outline-offset:2px}
 }`;
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1173,7 +1187,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<link rel=
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${SITE}/assets/${og}">
 <link rel="icon" href="/assets/favicon-vault.svg" type="image/svg+xml">
-<style>${STYLE}</style>
+${preload || ''}<style>${STYLE}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>
@@ -2515,6 +2529,34 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-nav-next span::after{content:" →"}
 .rz-kc-lab{font-size:var(--fs-lg);font-weight:700;letter-spacing:var(--ls-snug)}
 
+/* Reference table. Forty figures presented as forty reading blocks was a 14,483px page;
+   as rows it is something you scan, and the note and citation open in place. */
+.rz-table{margin-top:22px;border:1px solid var(--line2);border-radius:var(--r-sm);background:#fff;overflow:hidden}
+.rz-row{border-top:1px solid var(--line2)}
+.rz-table>.rz-row:first-child{border-top:none}
+.rz-row summary,.rz-row:not(.rz-row-x){display:grid;grid-template-columns:minmax(0,1fr) auto 10px;
+  align-items:baseline;gap:4px 16px;padding:12px 16px;min-height:44px;list-style:none}
+.rz-row-tall summary,.rz-row-tall:not(.rz-row-x){grid-template-columns:minmax(0,1fr) 10px}
+.rz-row-tall .rz-row-v{grid-column:1;grid-row:2;text-align:left}
+.rz-row summary{cursor:pointer}
+.rz-row summary::-webkit-details-marker{display:none}
+.rz-row-x:hover summary{background:rgba(var(--brass-rgb),.045)}
+.rz-row-x[open] summary{background:rgba(var(--brass-rgb),.06)}
+.rz-row summary:focus-visible{outline:3px solid var(--brass);outline-offset:-3px}
+.rz-row-k{flex:1;min-width:0;font-size:var(--fs-lg);line-height:1.45;color:var(--ink)}
+.rz-row-v{min-width:0;font-size:var(--fs-lg);font-weight:700;line-height:1.45;color:var(--brass-ink);font-variant-numeric:tabular-nums;text-align:right}
+.rz-row-go{align-self:center;width:9px;height:9px;border-right:1.6px solid var(--brass);border-bottom:1.6px solid var(--brass);
+  transform:rotate(45deg) translateY(-2px);transition:transform .16s}
+.rz-row-x[open] .rz-row-go{transform:rotate(-135deg) translateY(-2px)}
+.rz-row-body{padding:2px 16px 16px}
+.rz-row-body p{margin:0;font-size:var(--fs-lg);line-height:1.7;color:var(--ink3,#474c55);max-width:68ch}
+.rz-row-body .rz-src{margin-top:12px}
+@media (max-width:560px){
+  .rz-row summary,.rz-row:not(.rz-row-x){grid-template-columns:minmax(0,1fr) 10px;gap:3px 12px}
+  .rz-row-v{grid-column:1;grid-row:2;text-align:left}
+}
+@media (prefers-reduced-motion:reduce){ .rz-row-go{transition:none} }
+
 .rz-block{padding:32px 0;border-bottom:1px solid var(--line2)}
 .rz-block-h{margin:0 0 15px;font-size:21px;font-weight:700;line-height:1.34;letter-spacing:var(--ls-snug);max-width:32ch}
 /* The answer used to sit in a brass-bordered slab under a "KEY POINT" eyebrow, eight
@@ -2661,7 +2703,7 @@ ${SEAL_SVG}
 <div class="stats"><span class="stat"><b>400+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
-<div id="study-app"><noscript><p>AcqVault Study is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
+<div id="study-app"${DECK_ATTRS}><noscript><p>AcqVault Study is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
 </div></section>
 </main>
 <footer class="lband lband--foot"><div class="lband-inner">
@@ -2670,7 +2712,7 @@ ${SEAL_SVG}
 </div></footer>
 <script defer src="/assets/study.js?v=${STUDY_V}"></script>`;
 
-  return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-study-v2.png' });
+  return shell({ title, description, canonical, jsonld, body, preload: DECK_PRELOAD, bleed: true, ogImage: 'og-study-v2.png' });
 }
 
 /* Unlisted page for 48 CONS. Not in renderSitemap(), not in robots.txt (listing it there
@@ -2705,7 +2747,7 @@ function render48ConsPage() {
 <div class="stats"><span class="stat"><b>206</b> cards &middot; <b>47</b> board sims</span><span class="stat">Rebuilt when the rulebook moves</span><span class="stat">Progress stays on your device</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
-<div id="study-app" data-mode="48cons"><noscript><p>This page is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck&hellip;</p></div>
+<div id="study-app" data-mode="48cons"${DECK_ATTRS}><noscript><p>This page is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck&hellip;</p></div>
 </div></section>
 </main>
 <footer class="lband lband--foot lband--rail"><div class="lband-inner">
@@ -2715,7 +2757,7 @@ function render48ConsPage() {
 </div></footer>
 <script defer src="/assets/study.js?v=${STUDY_V}"></script>`;
 
-  return shell({ title, description, canonical, jsonld, body, bleed: true, noindex: true, ogImage: 'og-study-v2.png' });
+  return shell({ title, description, canonical, jsonld, body, preload: DECK_PRELOAD, bleed: true, noindex: true, ogImage: 'og-study-v2.png' });
 }
 
 /* Blank Slip - an unlisted party game at /slip. Kept hidden exactly the way

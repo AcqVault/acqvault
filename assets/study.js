@@ -2,8 +2,13 @@
    Progress lives in localStorage ('acq-study-v1'); Export/Import moves it between browsers. */
 (function () {
   'use strict';
-  var DECK_URL = '/assets/study-deck.json?v=43';
-  var ELEMENTS_URL = '/assets/study-elements.json?v=3';
+  /* The shell writes these, content-hashed by assetV() — see DECK_ATTRS in api/_seo.js.
+     The literals below are a fallback for a cached shell that predates the attributes;
+     they are deliberately stale-proof, because a shell old enough to lack them is old
+     enough that its deck is the one it shipped with. */
+  var _app0 = document.getElementById('study-app');
+  var DECK_URL = (_app0 && _app0.getAttribute('data-deck')) || '/assets/study-deck.json?v=43';
+  var ELEMENTS_URL = (_app0 && _app0.getAttribute('data-elements')) || '/assets/study-elements.json?v=3';
   var ELEMENTS = null;
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
@@ -99,8 +104,14 @@
   function recallPool() {
     if (S.track === 'basic') return deck.recall_basic;
     return deck.recall_basic.concat(deck.recall_advanced, deck.thresholds.map(function (t) {
-      // keep d/x/ref so threshold cards stay MCQ with their debriefs outside the Sprint
-      return { id: t.id, type: 'recall', topic: 'Thresholds & Numbers', q: t.q, a: t.a, d: t.d, x: t.x, ref: t.ref };
+      /* keep d/x/ref so threshold cards stay MCQ with their debriefs outside the Sprint,
+         and keep LINKS: dropping them meant 40 cards showed "where it lives" as dead text
+         while every other card in the tool carried a link to the governing section. The
+         whole claim this site makes is that the cite is one click away.
+         `kind` survives the remap so a renderer can tell a figure from a narrative —
+         `type` has to stay 'recall' because the scheduler and the session code key on it. */
+      return { id: t.id, type: 'recall', kind: 'threshold', topic: 'Thresholds & Numbers',
+        q: t.q, a: t.a, d: t.d, x: t.x, ref: t.ref, links: t.links };
     }));
   }
   function cardState(id) { return S.cards[id] || { box: 0, due: 0, lapses: 0 }; }
@@ -623,7 +634,9 @@
      44 rows of the same sentence. Minutes differ per lesson and are the thing somebody
      picking a lesson on a lunch break actually needs. Deliberately approximate. */
   function lessonMins(cards, checks) {
-    return Math.max(2, Math.round((cards * 45 + checks * 30) / 60));
+    var n = cards.length == null ? cards : cards.length;
+    var per = (cards.length && cards[0] && cards[0].kind === 'threshold') ? 12 : 45;
+    return Math.max(2, Math.round((n * per + checks * 30) / 60));
   }
   function checkCount(cards) {
     return cards.filter(function (c) { return mcqOptions(c); }).slice(0, KC_MAX).length;
@@ -644,7 +657,7 @@
       var sn = (seen[sec[0]] = (seen[sec[0]] || 0) + 1);
       var sdone = rows.filter(function (l) { return lessonDone(l.key); }).length;
       var smins = rows.reduce(function (t, l) {
-        return t + lessonMins(l.cards.length, checkCount(l.cards)); }, 0);
+        return t + lessonMins(l.cards, checkCount(l.cards)); }, 0);
       var schecks = rows.filter(function (l) { return checkCount(l.cards); }).length;
       if (sec[0] !== lastVol) {
         lastVol = sec[0];
@@ -675,7 +688,7 @@
       '<li><b>' + lessons.length + '</b> lessons</li>' +
       '<li><b>' + courseSections().length + '</b> sections</li>' +
       '<li><b>\u2248 ' + Math.round(lessons.reduce(function (t, l) {
-        return t + lessonMins(l.cards.length, checkCount(l.cards)); }, 0) / 60) + ' hr</b> of material</li>' +
+        return t + lessonMins(l.cards, checkCount(l.cards)); }, 0) / 60) + ' hr</b> of material</li>' +
       '</ul>' +
       '<div class="rz-cover-actions">' +
       '<button class="rz-btn rz-btn-go" id="rz-start">' +
@@ -706,6 +719,7 @@
   var KC_MAX = 6;   // a lesson checks at most this many points; "Thresholds" has 40 cards
   var ICON_READ = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h7l3 3v9H3z"/><path d="M9.5 2v4h4"/><path d="M5.5 8.5h5M5.5 11h3.5"/></svg>';
   var ICON_CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 2.5h11v11h-11z"/><path d="M5 8.2l2.1 2.1L11.2 6"/></svg>';
+  var ICON_TABLE = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12v10H2z"/><path d="M2 6.5h12M9.5 6.5v6.5"/></svg>';
   function itemHead(icon, name, meta, done) {
     return '<div class="rz-item' + (done ? ' rz-item-done' : '') + '">' +
       '<span class="rz-item-ic" aria-hidden="true">' + icon + '</span>' +
@@ -717,6 +731,27 @@
      the card — never to a button, which would swallow the keyboard shortcuts. */
   function focusKc(host) {
     try { host.focus({ preventScroll: true }); } catch (e) { try { host.focus(); } catch (e2) {} }
+  }
+  /* The reference table. Each row is a figure you can scan for, with the note and the
+     citation folded into a <details> so forty rows stay forty rows — open one and you get
+     the same debrief the card would have given you. Native <details>: no state to keep,
+     works with find-in-page expanded or not, and keyboard-operable for free. */
+  function tableHtml(cards) {
+    return '<div class="rz-table">' + cards.map(function (c) {
+      var body = (c.x ? '<p>' + esc(c.x) + '</p>' : '') + srcLine(c);
+      var label = esc(c.q).replace(/\s*\?\s*$/, '');
+      /* Half of these "thresholds" are not figures — the answers run to 238 characters.
+         A short one earns the scannable label/figure row; a long one stacks under its
+         label rather than squeezing the label to one word per line. Never truncated:
+         a clipped number in a study tool is worse than a taller row. */
+      var cls = 'rz-row rz-row-x' + (c.a.length > 40 ? ' rz-row-tall' : '');
+      var head = '<span class="rz-row-k">' + label + '</span>' +
+        '<b class="rz-row-v">' + esc(c.a) + '</b>' +
+        '<span class="rz-row-go" aria-hidden="true"></span>';
+      if (!body) return '<div class="' + cls.replace(' rz-row-x', '') + '">' + head + '</div>';
+      return '<details class="' + cls + '"><summary>' + head + '</summary>' +
+        '<div class="rz-row-body">' + body + '</div></details>';
+    }).join('') + '</div>';
   }
   function srcLine(c) {
     var links = (c.links || []).map(function (l) {
@@ -736,7 +771,8 @@
     var prog = courseProgress(lessons);
     var checks = L.cards.filter(function (c) { return mcqOptions(c); }).slice(0, KC_MAX);
 
-    var blocks = L.cards.map(function (c, i) {
+    var isTable = L.cards.length > 1 && L.cards.every(function (c) { return c.kind === 'threshold'; });
+    var blocks = isTable ? tableHtml(L.cards) : L.cards.map(function (c, i) {
       return '<article class="rz-block">' +
         '<h3 class="rz-block-h">' + esc(c.q) + '</h3>' +
         '<p class="rz-lead">' + esc(c.a) + '</p>' +
@@ -773,15 +809,20 @@
       '<span class="rz-eyebrow">' + (L.level === 'basic' ? 'Vol. 1' : 'Vol. 2') + ' · ' + esc(L.section) + '</span>' +
       '<h1>' + esc(L.topic) + '</h1>' +
       '<p class="rz-lhead-meta">Lesson ' + L.n + ' of ' + lessons.length + ' · \u2248 ' +
-      lessonMins(L.cards.length, checks.length) + ' min' +
+      lessonMins(L.cards, checks.length) + ' min' +
       (checks.length ? ' · ' + checks.length + '-question check' : '') + '</p>' +
       '</header>' +
-      itemHead(ICON_READ, 'Reading', '\u2248 ' + Math.max(1, Math.round(L.cards.length * 45 / 60)) + ' min',
+      itemHead(isTable ? ICON_TABLE : ICON_READ,
+        isTable ? 'Reference' : 'Reading',
+        isTable ? L.cards.length + ' figures'
+          : '\u2248 ' + Math.max(1, Math.round(L.cards.length * 45 / 60)) + ' min',
         lessonDone(L.key)) +
       blocks +
       (checks.length
-        ? '<div class="rz-gate" id="rz-gate"><p>That is the reading. Answer ' + checks.length +
-          ' question' + (checks.length !== 1 ? 's' : '') + ' on it and the lesson is done.</p>' +
+        ? '<div class="rz-gate" id="rz-gate"><p>' + (isTable
+            ? 'Answer ' + checks.length + ' of these from memory and the lesson is done.'
+            : 'That is the reading. Answer ' + checks.length +
+              ' question' + (checks.length !== 1 ? 's' : '') + ' on it and the lesson is done.') + '</p>' +
           '<button class="rz-btn rz-btn-go" id="rz-continue">Start the knowledge check</button></div>' +
           '<section class="rz-kc" id="rz-kc" hidden></section>'
         : '<div class="rz-gate" id="rz-gate"><p>Reference material \u2014 there is no check on this one.</p>' +
