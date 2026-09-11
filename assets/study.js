@@ -182,6 +182,18 @@
     function selfGrade() {
       dropHint();
       el('st-a').hidden = false;
+      // Self-explanation is the best-evidenced thing that can be added here for the
+      // price of one line of copy: a meta-analysis of 64 reports puts prompting a
+      // learner to explain at g = 0.55, ahead of the entire case for answering aloud,
+      // and it needs no microphone and no permission. Open-ended on purpose — reading
+      // our explanation is not a substitute for producing your own first.
+      var card0 = app.querySelector('.st-card');
+      if (card0 && !el('st-why')) {
+        var why = document.createElement('div');
+        why.className = 'st-why'; why.id = 'st-why';
+        why.innerHTML = 'Before you grade &mdash; say <b>why</b>. Not the answer, the reason it is the answer.';
+        el('st-a').insertAdjacentElement('afterend', why);
+      }
       el('st-act').innerHTML =
         '<button class="st-btn st-g1" id="g1">Missed <kbd>1</kbd></button>' +
         (o.showShaky ? '<button class="st-btn st-g2" id="g2">Shaky <kbd>2</kbd></button>' : '') +

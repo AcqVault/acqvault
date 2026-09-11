@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 97;
+const STUDY_V = 98;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
 const SLIP_V = 10;
 
@@ -1654,6 +1654,11 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-btn-opts{background:#fff;color:var(--muted);border:1px solid var(--line2);font-weight:650}
 .st-btn-opts:hover{border-color:rgba(var(--brass-rgb),.5);color:var(--brass-ink)}
 .st-produce-hint{margin-top:14px;font-size:13px;font-style:italic;color:var(--muted2,#6f6c74)}
+.st-why{margin-top:13px;padding:9px 13px;border-left:2px solid rgba(var(--brass-rgb),.45);
+  background:var(--off,#f7f6f2);border-radius:0 var(--r-sm) var(--r-sm) 0;
+  font-size:13px;line-height:1.5;color:var(--ink3,#474c55)}
+.st-why b{color:var(--ink);font-weight:700}
+@media (max-width:640px){.st-why{font-size:12.5px;padding:8px 11px}}
 .st-capped{margin-top:12px;font-size:13px;line-height:1.5;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(var(--brass-rgb),.28);border-radius:8px;padding:9px 12px}
 .st-g1{background:#fdf0ef;color:#8c2b23;border:1px solid rgba(179,38,30,.3)}
 .st-g2{background:#f6efdd;color:#5e4715;border:1px solid rgba(var(--brass-rgb),.3)}
