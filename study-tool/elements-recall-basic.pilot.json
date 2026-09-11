@@ -1,0 +1,433 @@
+{
+ "version": 1,
+ "pool": "recall_basic",
+ "generated": "2026-09-10",
+ "elements": {
+  "5f9a44f71c12": [
+   "Named the contracting officer as the only one",
+   "Tied the authority to a written warrant (SF 1402)",
+   "Said PMs, commanders, and FM cannot obligate"
+  ],
+  "11c6cb9600c6": [
+   "Named business judgment as the real product",
+   "Said the decision must be sound and defensible",
+   "Called the package the artifact, not the product"
+  ],
+  "3989cd17e48b": [
+   "Answered no — the COR cannot change the deal",
+   "Named the CO as the only one who can",
+   "Said COR-directed new work is a UAC",
+   "Limited the COR to technical, not contractual, talk"
+  ],
+  "6a635bacb345": [
+   "Named FM/Comptroller as the certifier",
+   "Said the CO cannot self-certify money",
+   "Said no certified funds, no award"
+  ],
+  "51c42fca30c6": [
+   "Named the written warrant — SF 1402",
+   "Said position, grade, and title create no authority",
+   "Said the warrant carries stated limits"
+  ],
+  "1c11fa6bdc35": [
+   "Named it an unauthorized commitment (UAC)",
+   "Said the Government is not bound",
+   "Named ratification as the after-the-fact fix",
+   "Said it is not a constructive change — no contract exists"
+  ],
+  "992359e18bd1": [
+   "Named the RFO as the governing rulebook",
+   "Named the R-DFARS as DoD's supplement",
+   "Said legacy FAR/DFARS/DAFFARS is being retired",
+   "Tied the change to E.O. 14275"
+  ],
+  "5442f5a6dd95": [
+   "Named acquisition.gov/far-overhaul as the source",
+   "Said never quote a threshold from memory",
+   "Said printed guides and posters go stale"
+  ],
+  "186e8688381d": [
+   "Named all three — time, purpose, amount",
+   "Tied Time to the bona fide need rule",
+   "Said Purpose is what Congress appropriated it for",
+   "Tied Amount to the Anti-Deficiency Act"
+  ],
+  "f6c110876fa6": [
+   "Answered generally no",
+   "Named the rule — bona fide need",
+   "Placed it as Time in the T-P-A test",
+   "Said rushing it before 30 September doesn't cure it"
+  ],
+  "fcd45c41647b": [
+   "Named the contract file and documentation",
+   "Named oversight running alongside it",
+   "Said the file must survive auditor, IG, and protest"
+  ],
+  "c0b969faf7f4": [
+   "Said it didn't happen",
+   "Said the file tells the story of every decision",
+   "Said memory and scattered email are not the record"
+  ],
+  "efa6a198427f": [
+   "Said who can perform",
+   "Said whether it's commercial",
+   "Said whether small business can compete",
+   "Said what a realistic price is"
+  ],
+  "95d9034caf74": [
+   "Named the IGCE",
+   "Expanded it — Independent Government Cost Estimate",
+   "Called it the yardstick for price reasonableness"
+  ],
+  "f257cb727f30": [
+   "Said full and open competition is the default",
+   "Named CICA as the statutory source",
+   "Said set-asides and sole source must be earned",
+   "Said the default needs no justifying — departures do"
+  ],
+  "184550fef4f3": [
+   "Named the justification and approval (J&A)",
+   "Said it must cite a recognized exception",
+   "Said it is approved at the right dollar tier",
+   "Distinguished it from a D&F or a plain memo"
+  ],
+  "7bc2a694296a": [
+   "Said $15,000",
+   "Dated it to the 1 October 2025 adjustment",
+   "Flagged $10K as the stale legacy figure",
+   "Tied below-MPT buys to the GPC"
+  ],
+  "8dbac49e05eb": [
+   "Said $350,000",
+   "Dated it to 1 October 2025, not the old $250K",
+   "Said above it — full and open under CICA",
+   "Said below it — simplified acquisition procedures"
+  ],
+  "dcfba529b706": [
+   "Named the contractor as the cost-risk bearer",
+   "Said one price whatever it actually costs",
+   "Said it fits well-defined, priceable work",
+   "Kept share ratios with incentive types, not FFP"
+  ],
+  "ab16eded03ad": [
+   "Said when work is too uncertain to price firmly",
+   "Gave R&D or novel development as the case",
+   "Said the Government carries the cost risk",
+   "Said it is not a cost-control tool"
+  ],
+  "92f5734bf4ef": [
+   "Named the goal — a fair and reasonable price",
+   "Said yes, always — every value, every method",
+   "Said the conclusion must be documented",
+   "Said even a $50 GPC buy rides on that judgment"
+  ],
+  "cba512084552": [
+   "Said $2M, not zero",
+   "Said additions and deletions count at absolute value",
+   "Rejected netting the change out"
+  ],
+  "cef907ea9e52": [
+   "Said L is how to submit",
+   "Said M is how you'll be evaluated",
+   "Said the two must trace to each other",
+   "Named the mismatch as a protest ground"
+  ],
+  "bd3b5d6789c7": [
+   "Said the best mix of price and non-price factors",
+   "Named the continuum — LPTA to tradeoff",
+   "Said it is not 'cheapest, period'",
+   "Said it is not best technical regardless of price"
+  ],
+  "2476fe0226cc": [
+   "Named source-selection information",
+   "Named contractor bid and proposal data",
+   "Named the Procurement Integrity Act",
+   "Kept CUI and PII under other regimes"
+  ],
+  "307ef5afd221": [
+   "Said stop first",
+   "Said call the CO and JA immediately",
+   "Said a quiet fix destroys evidence"
+  ],
+  "7d14006ec3d6": [
+   "Said two or more small businesses",
+   "Said expected to offer at fair market prices",
+   "Said it's a reasonable expectation at strategy time",
+   "Said it isn't judged by who ultimately shows up"
+  ],
+  "2b1c0d2dfdfa": [
+   "Named the NAICS code you assign",
+   "Said it sets the size standard for this buy",
+   "Said a wrong code breaks the set-aside analysis",
+   "Said dollar value and SAM categories don't decide it"
+  ],
+  "ab579f7dcccb": [
+   "Named the COR for day-to-day surveillance",
+   "Said only the CO changes the deal",
+   "Said DCMA administers only assigned contracts",
+   "Named blurred lanes as the source of UACs"
+  ],
+  "0aaa0c1ee73a": [
+   "Named it a cardinal change",
+   "Said the Changes clause can't authorize it",
+   "Said the fix is competition or a J&A",
+   "Said even a bilateral mod can't cure it"
+  ],
+  "b2679a553dba": [
+   "Named stewardship of public money",
+   "Named mission",
+   "Named integrity",
+   "Named documentation"
+  ],
+  "42c6fefda71b": [
+   "Named the auditor",
+   "Named the Inspector General",
+   "Named a protest",
+   "Said they read the file later, without you there"
+  ],
+  "dcbf73215b53": [
+   "Said never — it is not a complete answer",
+   "Said the file needs the business judgment behind it",
+   "Named market facts, price analysis, competition rationale"
+  ],
+  "938c70c7d16f": [
+   "Said the PCO awards and manages the contract",
+   "Said the ACO handles post-award administration",
+   "Placed the ACO usually at DCMA",
+   "Named payments, mods, and monitoring as ACO work"
+  ],
+  "a07f18bad8a7": [
+   "Said DCMA administers and verifies systems",
+   "Said DCAA audits cost/pricing data and rates",
+   "Framed the split — administration vs. audit"
+  ],
+  "bcfbd1e7ba62": [
+   "Said stop and check authority",
+   "Said all contractual direction flows through the CO",
+   "Said CORs surveil, they don't direct new work",
+   "Said written COR direction doesn't cure the gap"
+  ],
+  "0f00eab559b4": [
+   "Said express is written — the warrant",
+   "Said implied reasonably flows from the warrant",
+   "Said both are valid and bind",
+   "Named apparent authority as the invalid lookalike"
+  ],
+  "918bbd0772db": [
+   "Said it removes the dollar ceiling — nothing else",
+   "Said legal review and clearance gates still apply",
+   "Said the written SF 1402 still governs"
+  ],
+  "571d9aa0e2f2": [
+   "Named the kickoff meeting",
+   "Named the letter saying who can give direction",
+   "Said prevention is training, not punishment"
+  ],
+  "d0da22cf3677": [
+   "Put statute on top",
+   "Placed the RFO, then R-DFARS and deviations",
+   "Put DAF policy above local guidance at the bottom",
+   "Said each layer adds to, never contradicts, the one above"
+  ],
+  "82656d619844": [
+   "Named E.O. 14275",
+   "Dated it April 2025",
+   "Gave its thrust — restoring common sense to procurement",
+   "Kept E.O. 14402 separate — contract-type justifications"
+  ],
+  "3dcb1db6ae9f": [
+   "Named the DAF Contracting Compass",
+   "Said it is CAC-restricted",
+   "Named the public DAFIs as the open substitute"
+  ],
+  "db5a7ce90a47": [
+   "Named O&M and the 3400 appropriation",
+   "Said one year for new obligations",
+   "Contrasted RDT&E two years, procurement three",
+   "Tied color-matching to the Purpose test"
+  ],
+  "8bc3665e1921": [
+   "Said severable benefits as it is performed",
+   "Said fund severable with annual money, 12 months max",
+   "Said non-severable delivers one end product",
+   "Said fully fund non-severable up front"
+  ],
+  "76861e6b7c82": [
+   "Said obligating more than, or before, funds are there",
+   "Named the Anti-Deficiency Act",
+   "Said violations are serious and reportable",
+   "Said go to FM and JA when near the line"
+  ],
+  "2f2622f8b907": [
+   "Started with requirement, then planning",
+   "Gave solicit, evaluate, award in order",
+   "Ended with administer and close-out",
+   "Said the arc is the same at $9K or $90M"
+  ],
+  "f0d98c5192b5": [
+   "Said understand the need first",
+   "Gave what, how much, by when, for whom",
+   "Said push for an IGCE",
+   "Said money, market, and method come after"
+  ],
+  "f38fc4a2d691": [
+   "Named the trap — typing it up instead of testing it",
+   "Said run the steps, don't ratify the answer",
+   "Said the seven-step loop is the fast way"
+  ],
+  "dad866611884": [
+   "Said the SOW prescribes tasks",
+   "Said the PWS defines measurable outcomes",
+   "Said the SOO states objectives for offerors to build on",
+   "Said the further right, the more competition on HOW"
+  ],
+  "2c5ab5f9f1e9": [
+   "Said a brand name needs justification",
+   "Called it a competition restriction",
+   "Named sources-sought as the cheap counter"
+  ],
+  "3d561c45c236": [
+   "Named the dollar value",
+   "Named the complexity of the buy",
+   "Contrasted a catalog check with sources-sought",
+   "Said reviewers look for depth matched to stakes"
+  ],
+  "994ed565d1ab": [
+   "Named full and open",
+   "Named full and open after exclusion of sources",
+   "Named other than full and open",
+   "Said the justification burden escalates across them"
+  ],
+  "bc074544124c": [
+   "Named protest exposure",
+   "Said the J&A must stand on documented market research",
+   "Said approval signatures don't cure a thin record",
+   "Said GAO reads the record, not the signer's rank"
+  ],
+  "d501bbb9e2fe": [
+   "Named better prices",
+   "Named better quality",
+   "Named a broader industrial base",
+   "Named process integrity"
+  ],
+  "22c9745dca21": [
+   "Said breaking one known requirement into smaller buys",
+   "Said the point is ducking a threshold",
+   "Called it a violation at any tier",
+   "Named it the most common GPC finding"
+  ],
+  "5b5965bf4aa2": [
+   "Said a discrete thing being bought",
+   "Named its description, quantity, price, and funding",
+   "Said pricing, invoicing, and mods hang off the CLIN"
+  ],
+  "ce36b4899b1f": [
+   "Named RFO Part 12 commercial procedures",
+   "Said they ride along at most dollar levels",
+   "Named simpler clauses, FFP preference, market pricing",
+   "Said determining commerciality early is high-leverage"
+  ],
+  "f16a2debc837": [
+   "Named fixed-price",
+   "Named cost-reimbursement",
+   "Said everything else varies where the risk sits"
+  ],
+  "c7957f46f47b": [
+   "Named the D&F that no other type works",
+   "Named the not-to-exceed ceiling",
+   "Named active surveillance",
+   "Said T&M pays hourly rates plus materials"
+  ],
+  "e34f265479e3": [
+   "Said long performance periods",
+   "Said the price adjusts against a named economic index",
+   "Said it avoids paying for inflation padding"
+  ],
+  "1030fce86910": [
+   "Said price analysis judges the bottom line",
+   "Said cost analysis opens each element",
+   "Named labor, materials, overhead, and fee",
+   "Said sole source usually buys you into cost analysis"
+  ],
+  "5f3894ec7852": [
+   "Said reasonableness asks whether it's too high",
+   "Said realism asks whether it's unrealistically low",
+   "Placed realism on competitive cost-type work",
+   "Said a lowball becomes the Government's overrun"
+  ],
+  "e7668abb3d6d": [
+   "Named the competing offers themselves",
+   "Called adequate price competition the best evidence",
+   "Kept the IGCE a yardstick, not a trump card",
+   "Said certified data is for when competition can't price"
+  ],
+  "fa25d63b6123": [
+   "Said LPTA when risk is low and 'acceptable' is definable",
+   "Said LPTA awards to the cheapest acceptable offer",
+   "Said tradeoff when a better solution is worth more",
+   "Called the continuum a risk dial, not a preference"
+  ],
+  "cda50aa713bd": [
+   "Named Sections L and M",
+   "Said what you ask for must match what you evaluate",
+   "Said the mismatch is a protest ground you authored"
+  ],
+  "7f5c0a9bfa99": [
+   "Said it prevents protests",
+   "Said it shows the process was fair",
+   "Said treat it as risk management",
+   "Said timely and complete are the conditions"
+  ],
+  "0c2a4851aaeb": [
+   "Said the default is don't accept",
+   "Said the exceptions are narrow",
+   "Said decline first, then ask the ethics counselor"
+  ],
+  "b7c11b478d2c": [
+   "Called it a serious conflict",
+   "Said disclose, then recuse",
+   "Said the conflict starts at the conversation"
+  ],
+  "51f315fa4981": [
+   "Said stop and preserve the evidence",
+   "Said forward nothing",
+   "Said call the JA and CO today",
+   "Named it a potential PIA disclosure"
+  ],
+  "dcf8e95da9b0": [
+   "Said reserved for small business",
+   "Named the Rule of Two as the trigger",
+   "Said the set-aside is mandatory above the MPT",
+   "Said choosing SAP is not what triggers it"
+  ],
+  "0e260741d35f": [
+   "Said the size standard breaks",
+   "Said the whole set-aside analysis breaks with it",
+   "Named the consequence — a size protest later"
+  ],
+  "a73d301e005a": [
+   "Named the Small Business Professional",
+   "Said they coordinate with the SBA",
+   "Named set-aside analysis and DD 2579 coordination",
+   "Kept the Competition Advocate as a different job"
+  ],
+  "b7be1e8677e0": [
+   "Asked if original competitors would have anticipated it",
+   "Anchored the test at award",
+   "Said anticipated means modify",
+   "Said not anticipated means compete it or justify it"
+  ],
+  "9a0709b6e761": [
+   "Said price still fair, with a fresh look",
+   "Said funds available and the need still real",
+   "Said contractor not excluded, performance satisfactory",
+   "Said give timely written notice"
+  ],
+  "32f7d33b17b4": [
+   "Named the DoD REA certification above the SAT",
+   "Named the CDA claim certification above $100K",
+   "Said they are two different certifications",
+   "Placed the REA certification in the R-DFARS"
+  ]
+ }
+}

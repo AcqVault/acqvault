@@ -203,7 +203,9 @@
       el('g3').onclick = function () { o.onGrade(3); };
       // Revealing replaces the action row in place, which blurs the button that was
       // focused and drops focus to <body>. Hand it to the first grade control instead.
-      el('g1').focus();
+      var c0 = app.querySelector('.st-card');
+      if (c0) { c0.setAttribute('tabindex', '-1');
+                try { c0.focus({ preventScroll: true }); } catch (e) { c0.focus(); } }
       keyHandler(function (k) {
         if (k === '1') { o.onGrade(1); return true; }
         if (k === '2' && o.showShaky) { o.onGrade(2); return true; }
@@ -300,7 +302,7 @@
     // Collapse it the moment the app is in a working state, restore it on the menus.
     try {
       document.documentElement.classList.toggle('st-working',
-        /st-session-head|st-card\b/.test(html));
+        /class="st-q"|class="st-gv-q"/.test(html) && !/st-summary/.test(html));
     } catch (e) { /* styling only; never break a render */ }
     // Anchor each new view just below the top of the drill container so every card
     // lands in the same readable spot. NB: app.offsetTop is relative to the
@@ -504,7 +506,7 @@
           shaky.map(function (m) {
             var l = m.links && m.links[0];
             return '<div class="st-sum-miss-item">' + esc(m.q) +
-              (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+              (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>' : '') + '</div>';
           }).join('') +
 
           '</div>';
@@ -1528,7 +1530,7 @@
         sink.map(function (c) {
           var l = c.cite && c.cite.link;
           return '<div class="st-lad-sink-item">' + esc(c.q) +
-            (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+            (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>' : '') + '</div>';
         }).join('') + '</div>'
       : '';
     // A select rather than a chip row: SAT alone carries 18 subjects, which would wrap into a
@@ -1734,7 +1736,7 @@
           shaky.map(function (m) {
             var l = m.cite && m.cite.link;
             return '<div class="st-sum-miss-item">' + esc(m.q) +
-              (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
+              (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>' : '') + '</div>';
           }).join('') +
 
           '</div>';
@@ -1783,7 +1785,7 @@
     if (!cites || !cites.length) return '';
     return '<div class="st-bd-sources"><div class="st-bd-sources-head">Read the rules behind this</div>' +
       cites.map(function (c) {
-        return '<div class="st-bd-source"><a class="st-lad-quote-link" href="' + esc(c.u) + '">' + esc(c.t) + '</a>' +
+        return '<div class="st-bd-source"><a class="st-lad-quote-link" href="' + esc(c.u) + '" target="_blank" rel="noopener">' + esc(c.t) + '</a>' +
           (c.quote ? '<div class="st-bd-source-q">“' + esc(c.quote) + '”</div>' : '') + '</div>';
       }).join('') + '</div>';
   }
@@ -2795,11 +2797,16 @@
         }
         if (rem <= 0) { clearInterval(tick); finish(); }
       }, 100);
-      next();
+      next(true);   // first case: the intro is still on screen, so skip the stale-view guard
     }
-    function next() {
+    function next(first) {
       if (ended) return;   // a pending reveal-delay must not paint a question over the end screen
-      if (!el('gv-card')) return;   // navigated away (Back) before the delay fired — don't paint over the new view
+      // The guard below protects a DEFERRED next() (setTimeout after an answer) from
+      // painting over a view the user has since navigated to. It must not run on the
+      // first call, when #gv-card cannot exist yet because the intro is still up —
+      // that made begin() return immediately and the round play out empty: the clock
+      // ran 90 -> 0 on the intro screen and not one case was ever presented.
+      if (!first && !el('gv-card')) return;
       if (i >= pool.length) { shuffle(pool); i = 0; }
       var q = pool[i]; answered = false; caseNo++;
       var opts = shuffle([q.p].concat(q.d));
