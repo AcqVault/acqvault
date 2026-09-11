@@ -1,0 +1,124 @@
+# Board Sim — content audit findings
+
+Four parallel audits, 2026-09-11. Three covered the 96 scenarios' content (0–31, 32–63,
+64–95), one the information model. Every regulatory claim was checked against
+`output/documents.json`, the live corpus this site serves.
+
+## The headline numbers
+
+| | |
+|---|---|
+| Board-realistic as written | **89 of 96** (30 / 30 / 29) |
+| Would not ship as-is | **54 of 96** (16 / 22 / 16) |
+| P0 — wrong law, backwards verdict, or a cite that does not support its claim | **15** |
+| P1 — a real defect a candidate would notice | ~45 |
+
+Regulatory accuracy is high where it was checked directly: the auditors verified roughly
+100 cited sections verbatim against the corpus and **every one matched**. Almost all defects
+are internal contradictions, coach blocks that describe a different question than the card
+asks, hints that state the opposite of their own debrief, and a handful of legacy-FAR
+constructs the RFO rewrite dropped.
+
+## The systemic defect — one fix pattern, not thirteen
+
+All four audits landed on the same root cause independently.
+
+**`coach` is authored per canonical topic, not per scenario, and inherited from the
+scenario's FIRST topic.** There are only **29 distinct coach blocks across 96 scenarios**;
+`qtype`, `smes`, `rule` and `cite` co-vary exactly, and **0 of 96 scenarios has a coach
+triple unique to it**. Those three fields are **52% of the model answer's characters**.
+
+Consequences, measured:
+- **13+ scenarios carry a `qtype`/`rule`/`cite` that does not contain the rule the scenario
+  turns on**, and several are contradicted by their own `script`'s opening sentence —
+  e.g. `c23dfef26d5e` (Part 13 coach on a bona fide needs card whose script opens "This is a
+  fiscal-law question"), `457016c02cef`, `f40d9fc54cb7`, `99533bc58727`, `62e1e0c2b3b7`,
+  `d84503ac71ff`, `6b6384cdbb14`, `e9abca37a7c6`, `bf80a26beb90`, `9ebdcf249c43`.
+- A wrong `coach.rule` is wrong on **3–5 cards at once**.
+- It is authored in `study-tool/mcq/coach-topics.json` (30 keys) and baked in at build time,
+  so **fixing `assets/study-deck.json` alone is overwritten by the next deck rebuild.**
+
+Recommended shape (from the model review): hoist to `deck.coach_subjects` — 29 shared
+objects — with each scenario carrying `coach: "<subject-key>"` plus an optional
+per-scenario `coach.applies` naming how the rule bites *here*. That makes the subject a
+first-class object the UI can group and filter by, and shrinks a 1.3 MB file that blocks
+first render.
+
+## P0 — wrong law (15)
+
+Each is quoted with the section that contradicts it. Fixing these is the priority.
+
+1. `760c637d2966` `coach.rule` — minor-modification test given as "form, fit, and function".
+   The card's own facts and follow-up say it is not. RFO 2.101(3)(ii): modifications that do
+   not significantly alter the function or essential physical characteristics.
+2. `df05a1cf3a0d` `coach.rule` — "purchase orders to the $350K SAT — reserved for small
+   business". Its own `board_answer` says RFO 12.201-1 runs to $9M.
+3. `df05a1cf3a0d` follow-up + facts — "the MPT-to-SAT band is reserved for small business".
+   Legacy FAR 19.203(c)/13.003(b)(1); the RFO has no reservation band (19.104-1(a)).
+4. `4cb5ceacd90a` facts/script/board_answer — ratification tiered by dollars ("$95K ≤ SAT →
+   COCO"). RFO 1.405(b)(2) sets no dollar tier; its own follow-up says so.
+5. `b034ddbb2029` script vs follow-up — who approves the OCI mitigation. Script says the PCO;
+   the follow-up says the approval sits one level up, and contradicts itself in three lines.
+6. `4907e4079ef8` follow-up 3 — the debrief never reaches the post-employment rules its own
+   question asks about (RFO 3.104-3(d) / 41 U.S.C. 2104 one-year compensation ban).
+7. `643ccd35960e` coach + follow-up — "The PIA reaches attempts and appearances". It reaches
+   knowing disclosure. Appearance is RFO 3.101-1 / 18 U.S.C. 208 / 5 CFR 2635.502, none named.
+8. `95e08834394b` script + follow-up — "textbook Type I" on facts of documentary silence.
+   RFO 52.236-2(a)(1) needs an affirmative indication; silence is (a)(2). **FIXED.**
+9. `385df91a2aa9` `coach.rule` — schedules listed as a mandatory rung. RFO 8.103(a) has four;
+   8.104 is "should", HCA exception available. Its own follow-up says "four rungs, not seven".
+10. `bfcb0cd1824f` follow-up — "a BAA could have covered this". RFO 35.102(a) excludes
+    development tied to a specific system; this SOW has deliverable prototypes.
+11. `7120cb3d8b78` key_moves/script — limited-rights legends on Government-funded work called
+    "nonconforming markings". R-DFARS 227.7103-12(b)(1) calls them **unjustified**; the two
+    have different remedies, and the label routes to the wrong procedure.
+12. `4f318705f708` key_moves — a novation lane that does not exist on the facts. The buyer took
+    the *supplier's* assets; RFO 42.903(a) creates no successor interest in the prime.
+13. `f40d9fc54cb7` coach — cited to the Contract Disputes Act / Part 33 on a partial-T4C
+    settlement card whose own script opens "This is an RFO Part 49 question".
+14. `f9eb9f7bedb1` key_moves/script — a magnitude-disclosure rule with no RFO section behind
+    it. The Part 36 rewrite dropped it; only 36.101-6(b) survives. Overstates authority.
+15. `c4521547f681` follow-ups — SBIR rights inverted: "Government purposes" used during the
+    20-year window (it is limited/restricted rights, R-DFARS 227.7104-2(a)(2)(i)) and left
+    vague after it (GPR, which do not expire, (a)(2)(ii)).
+
+## P1 themes (~45 findings, full detail in the audit transcripts)
+
+- **Hints that state the opposite of their own debrief** — `994ae910af13` ("There's a dollar
+  band where you can" → "There is no dollar band"), `0f4c23c21c0d` ("A shelf life and a
+  report" → "RFO 10.001 sets no currency period").
+- **`ask` states facts the scenario contradicts** — `3ce08a3a44ae` ("unbilled" vs. billing),
+  `c34aeab9c4f4` ("award by Friday" vs. "POs today, setup Monday"), `d958c1fe7efa`
+  ("$10M sole source" on a scenario with no dollar value).
+- **Uncitable claims** on a site whose first principle is cite-or-say-nothing —
+  `35844b460455` ("As of January 2026, SBA moved the program…"), `182bb3002d18` and
+  `bcd3199183a2` (six numeric DAF clearance rungs, `coach.links` empty).
+- **Thresholds stated without their date fence** — `f02f6a5c96ef`, `f1c0af926c37`
+  (E.O. 14402 justification asserted with no $100M DoD threshold).
+- **Acronym-expander artifacts, reader-visible** — "a the Competition in Contracting Act
+  (CICA)", "a the Contract Disputes Act (CDA)", "a the Procurement Integrity Act (PIA)",
+  and "MA-indefinite-delivery/indefinite-quantity (IDIQ)" where the expander ate a compound.
+  Worth a guard in the expander against a preceding article and hyphenated compounds.
+- **"SAMO"** used as a mnemonic in two scenarios and expanded nowhere.
+
+## Already fixed in this pass
+
+- All 8 `vol2-bank` scenarios backfilled with `key_moves` + `baits`; no scenario now renders
+  a model answer without a decision step, and `deck_health.py` fails the build if one does.
+- `95e08834394b` Type I → Type II (P0 #8 above).
+- Follow-up debriefs can now carry their own `cite`/`links`; **48 of 230 currently show the
+  subject template's citation discussing a part the debrief never mentions.** The renderer
+  is ready, the 48 rows are not authored.
+- Topic crumbs normalised for display.
+- Hint ladder no longer halves on scenarios without facts/baits.
+
+## Not done, ranked
+
+1. The 15 P0s above (14 remaining).
+2. The 48 follow-up citations.
+3. Hoist `coach` to subject objects + add `coach.applies` — fixes the 13 mismatches at the root.
+4. Migrate `baits` → `facts` on 57 scenarios so all 96 get the bait/governs card stack
+   (~114 authored `why` lines).
+5. `level` is `"advanced"` on all 96 and unused; either populate or delete.
+6. A scenario picker / "replay the ones I marked rough" — the data for it already exists
+   (`S.scen[id] === 1`).
