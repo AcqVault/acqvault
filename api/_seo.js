@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 100;
+const STUDY_V = 101;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
 const SLIP_V = 10;
 
@@ -1670,6 +1670,17 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-btn-opts{background:#fff;color:var(--muted);border:1px solid var(--line2);font-weight:650}
 .st-btn-opts:hover{border-color:rgba(var(--brass-rgb),.5);color:var(--brass-ink)}
 .st-produce-hint{margin-top:14px;font-size:13px;font-style:italic;color:var(--muted2,#6f6c74)}
+.st-check{margin-top:14px;border:1px solid var(--line2);border-radius:var(--r-sm);overflow:hidden;background:#fff}
+.st-check-h{background:var(--off,#f7f6f2);padding:7px 12px;border-bottom:1px solid var(--line2);font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.st-check-list{margin:0;padding:3px 0;list-style:none}
+.st-check-item{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:left;background:none;border:none;font:inherit;font-size:13.5px;line-height:1.45;color:var(--ink3,#474c55);padding:7px 12px;cursor:pointer;min-height:44px;transition:background-color .16s ease}
+.st-check-item:hover{background:var(--off,#f7f6f2)}
+.st-check-item:focus-visible{outline:3px solid var(--brass);outline-offset:-3px}
+.st-check-box{flex:none;width:15px;height:15px;margin-top:1px;border:1.5px solid var(--line2);border-radius:3px;background:#fff}
+.st-check-item.is-on{color:var(--ink)}
+.st-check-item.is-on .st-check-box{background:#33654a;border-color:#33654a;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3 4.7-4.9' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-size:11px;background-position:center;background-repeat:no-repeat}
+.st-check-tag{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-ink);border:1px solid rgba(var(--brass-rgb),.35);border-radius:2px;padding:0 4px;margin-left:5px;vertical-align:1px}
+@media (max-width:640px){.st-check-item{font-size:13px}}
 .st-why{margin-top:13px;padding:9px 13px;border-left:2px solid rgba(var(--brass-rgb),.45);
   background:var(--off,#f7f6f2);border-radius:0 var(--r-sm) var(--r-sm) 0;
   font-size:13px;line-height:1.5;color:var(--ink3,#474c55)}

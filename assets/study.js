@@ -3,6 +3,8 @@
 (function () {
   'use strict';
   var DECK_URL = '/assets/study-deck.json?v=42';
+  var ELEMENTS_URL = '/assets/study-elements.json?v=1';
+  var ELEMENTS = null;
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)
   var SESSION_CAP = 25;
@@ -101,6 +103,37 @@
     }));
   }
   function cardState(id) { return S.cards[id] || { box: 0, due: 0, lapses: 0 }; }
+  /* The element checklist. A self-grade is a judgment made one second after the answer
+     appears, at peak fluency, and learners' own predictions of later performance are
+     essentially uncorrelated with it. Giving them an explicit standard to grade against
+     measurably improves calibration, and helps the weakest performers most. Element 1 is
+     the core one; the rest are supporting. Ticking is never scored - on a bare threshold
+     card a complete answer ticks a single box, and that must not read as a failure. */
+  function elementsFor(id) {
+    var e = ELEMENTS && ELEMENTS.elements && ELEMENTS.elements[id];
+    return (e && e.length) ? e : null;
+  }
+  function checklistHtml(id) {
+    var els = elementsFor(id);
+    if (!els) return '';
+    return '<div class="st-check"><div class="st-check-h">Did you say these? Grade against this, ' +
+      'not against how familiar it felt</div><ul class="st-check-list">' +
+      els.map(function (t, i) {
+        return '<li><button type="button" class="st-check-item' + (i === 0 ? ' st-check-core' : '') +
+          '" aria-pressed="false"><span class="st-check-box" aria-hidden="true"></span>' +
+          '<span>' + esc(t) + (i === 0 ? ' <i class="st-check-tag">core</i>' : '') + '</span></button></li>';
+      }).join('') + '</ul></div>';
+  }
+  function wireChecklist() {
+    Array.prototype.forEach.call(app.querySelectorAll('.st-check-item'), function (b) {
+      b.onclick = function () {
+        var on = b.getAttribute('aria-pressed') === 'true';
+        b.setAttribute('aria-pressed', on ? 'false' : 'true');
+        b.classList.toggle('is-on', !on);
+      };
+    });
+  }
+
   function isDue(id) { var c = cardState(id); return c.box === 0 || c.due <= today(); }
   /* Per-day Daily Review record, so finishing a session is an end state the tool acknowledges
      instead of a number that barely moved. Resets itself on the first read of a new day. */
@@ -203,6 +236,8 @@
       el('g3').onclick = function () { o.onGrade(3); };
       // Revealing replaces the action row in place, which blurs the button that was
       // focused and drops focus to <body>. Hand it to the first grade control instead.
+      var chk = checklistHtml(c.id);
+      if (chk && !el('st-why')) { el('st-a').insertAdjacentHTML('afterend', chk); wireChecklist(); }
       var c0 = app.querySelector('.st-card');
       if (c0) { c0.setAttribute('tabindex', '-1');
                 try { c0.focus({ preventScroll: true }); } catch (e) { c0.focus(); } }
@@ -477,13 +512,14 @@
   function backToTools() { keyHandler(null); if (navDepth >= 1) history.back(); else viewTrack(); }
 
   /* ---- recall session (mixed reveal + multiple-choice) ---- */
-  function startSession(cards, label, startAt, startGot) {
+  function startSession(cards, label, startAt, startGot, startShaky) {
     if (!cards.length) { homeFn()(); return; }
     var q = startAt == null ? interleave(shuffle(cards.slice()).slice(0, SESSION_CAP)) : cards;
-    var i = startAt || 0, got = startGot || 0, shaky = [];
+    var i = startAt || 0, got = startGot || 0, shaky = (startShaky || []).slice();
     function step() {
       if (i >= q.length) return summary();
-      saveResume('recall', S.track, q, i, got, label);
+      saveResume('recall', S.track, q, i, got, label,
+        { shaky: shaky.map(function (m) { return m.id; }) });
       var c = q[i];
       var head = '<div class="st-session-head"><span>' + esc(label) + '</span><span>' + (i + 1) + ' / ' + q.length + '</span></div>' +
         '<div class="st-prog" aria-hidden="true"><span style="width:' + Math.round(100 * i / q.length) + '%"></span></div>';
@@ -618,6 +654,9 @@
         app.querySelector('.st-card').appendChild(act);
         el('st-next').onclick = function () { i++; step(); };
         keyHandler(function (key) { if (key === ' ' || key === 'Enter') { i++; step(); return true; } });
+        var sc = app.querySelector('.st-card');
+        if (sc) { sc.setAttribute('tabindex', '-1');
+                  try { sc.focus({ preventScroll: true }); } catch (e) { sc.focus(); } }
       }
       Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
         b.onclick = function () { pick(+b.getAttribute('data-k')); };
@@ -2364,7 +2403,9 @@
     var q = r.ids ? cardsByIdFromPool(recallPool(), r.ids) : null;
     if (!q || r.i >= q.length) { clearResume(); return false; }
     depth1View = homeFn();
-    goDepth(2, function () { startSession(q, r.label, r.i, r.got); });
+    var dropped = (Object.prototype.toString.call(r.shaky) === '[object Array]')
+      ? cardsByIdFromPool(recallPool(), r.shaky) : [];
+    goDepth(2, function () { startSession(q, r.label, r.i, r.got, dropped); });
     return true;
   }
   function resumeDeep() {
@@ -3189,6 +3230,8 @@
     // new card; outline suppressed because it's a -1 target, not a keyboard-tabbable control.
     app.setAttribute('tabindex', '-1');
     app.style.outline = 'none';
+    fetch(ELEMENTS_URL).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { ELEMENTS = j; }).catch(function () { ELEMENTS = null; });
     fetch(DECK_URL).then(function (r) { return r.json(); }).then(function (d) {
       deck = d;
       canonTopics();

@@ -1,6 +1,5 @@
 {
  "version": 1,
- "pool": "recall_basic",
  "generated": "2026-09-10",
  "elements": {
   "5f9a44f71c12": [
@@ -429,5 +428,6 @@
    "Said they are two different certifications",
    "Placed the REA certification in the R-DFARS"
   ]
- }
+ },
+ "note": "Element 1 of each list is the CORE element - the thing that makes the answer correct at all. The rest are supporting. Count never drives a grade: on a bare threshold card a complete answer ticks one box, and that is not a failure."
 }
