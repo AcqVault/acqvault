@@ -3640,6 +3640,15 @@
       if (sc.baits && sc.baits.length > 1) h.push('There\'s a second bait too: ' + sc.baits[1]);
       if (sc.key_moves && sc.key_moves.length) h.push('Opening move: ' + sc.key_moves[0]);
     }
+    /* Scenarios with neither facts nor baits got a three-rung ladder where everyone else
+       gets six. Their frameworks carry the same material — several are titled "… — bait" —
+       so the back half of the ladder is built from those instead of being absent. */
+    if (h.length < 4 && sc.frameworks && sc.frameworks.length) {
+      sc.frameworks.forEach(function (f) {
+        if (h.length >= 6 || typeof f === 'string') return;
+        h.push('Framework in play: ' + f.framework + (f.why ? ' — ' + String(f.why).split(/(?<=[.!?])\s+/)[0] : ''));
+      });
+    }
     return h;
   }
   // The model answer, assembled methodically: name it → frameworks → help → default rule →
@@ -3691,6 +3700,14 @@
         body: '<ul>' + sc.key_moves.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' });
     } else if (sc.board_answer) {
       steps.push({ k: 'Landed a decision', b: 'Land the decision.', body: esc(sc.board_answer) });
+    } else {
+      /* Guard, not a feature. scripts/deck_health.py fails the build if a scenario has
+         neither key_moves nor board_answer, so this should never fire — but a model answer
+         that never lands a decision is the one failure a board punishes hardest, and it
+         shipped on eight scenarios. Fall back to the closing sentences of the script, where
+         the decision is already authored. */
+      var tail = String(sc.script || '').split(/(?<=[.!?])\s+/).slice(-3).join(' ');
+      if (tail) steps.push({ k: 'Landed a decision', b: 'Land the decision.', body: esc(tail) });
     }
     steps.push({ k: opener ? 'Closed with one concrete thing you would change' : 'Said where you would verify before acting',
       b: 'Close the loop.', body: opener
@@ -3712,8 +3729,10 @@
     return '<div class="st-check" id="st-check"><div class="st-check-h">Tick what you actually said — ' +
       'grade against this, not against how obvious it looks now</div><ul class="st-check-list">' +
       steps.map(function (x) {
-        return '<li><button type="button" class="st-check-item" aria-pressed="false">' +
-          '<span class="st-check-box" aria-hidden="true"></span><span>' + esc(x.k) + '</span></button></li>';
+        var core = /^Landed a decision/.test(x.k);
+        return '<li><button type="button" class="st-check-item' + (core ? ' st-check-core' : '') +
+          '" aria-pressed="false"><span class="st-check-box" aria-hidden="true"></span><span>' +
+          esc(x.k) + (core ? ' <i class="st-check-tag">the answer</i>' : '') + '</span></button></li>';
       }).join('') + '</ul></div>';
   }
   function topicLabel(topics) {
@@ -3773,7 +3792,7 @@
         }
         body += d +
           boardWalkthrough(sc) +
-          (sc.script ? '<div class="st-script"><div class="st-script-head">One way to say it out loud</div><p>' + esc(sc.script) + '</p></div>' : '') +
+          (sc.script ? '<details class="st-script"><summary class="st-script-head">One way to say it out loud</summary><p>' + esc(sc.script) + '</p></details>' : '') +
           '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (fus.length ? 'The panel follows up… <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
       } else if (stage - 2 < fus.length) {
         var k = stage - 2;
@@ -3782,8 +3801,12 @@
         body += '<div class="st-followup"><span>Panel follow-up ' + (k + 1) + ' of ' + fus.length + '</span><div class="st-q">' + esc(fq) + '</div></div>';
         if (fu.d && fuRevealed) {
           body += '<div class="st-fu-debrief"><div class="st-fu-debrief-head">Debrief</div><p>' + esc(fu.d) + '</p>' +
-            (sc.coach && sc.coach.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(sc.coach.cite) + '</b></div>' : '') +
-            citesHtml(sc.coach && sc.coach.links) + '</div>' +
+            (function () {
+              var cite = fu.cite || (sc.coach && sc.coach.cite);
+              var links = fu.links || (sc.coach && sc.coach.links);
+              return (cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(cite) + '</b></div>' : '') +
+                citesHtml(links);
+            })() + '</div>' +
             '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (k + 1 < fus.length ? 'Next follow-up <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
         } else {
           body += '<p class="st-outloud">Answer <b>out loud</b>' + (fu.d ? ', then reveal the debrief.' : ', then continue.') + '</p>' +
@@ -3903,6 +3926,11 @@
     /* Logging a grade used to drop you straight into a new scenario mid-thought. Name what
        was recorded, show where it puts you across the 96, and let leaving be a choice. */
     function logScenario(g) {
+      /* A hint you needed is a hint the panel would have heard you need — the ladder board
+         has capped a hinted grade all along, while this one offered six hints and merely
+         printed a note. Three or more walks you through the whole coaching spine. */
+      var capped = hintsShown >= 3 && g > 2;
+      if (capped) g = 2;
       S.scen[sc.id] = g; bumpStreak(); save(); keyHandler(null); clearResume();
       var faced = Object.keys(S.scen).length, tot = deck.scenarios.length;
       var ready = deck.scenarios.filter(function (x) { return S.scen[x.id] === 3; }).length;
@@ -3915,6 +3943,8 @@
         '<div class="st-card"><div class="rz-done">' +
         '<div class="rz-done-tick" aria-hidden="true">\u2713</div>' +
         '<h3>Logged \u2014 ' + word + '</h3>' +
+        (capped ? '<p class="rz-sim-hintnote">Held at <b>Getting there</b>: you took ' + hintsShown +
+          ' hints. A board gives none.</p>' : '') +
         '<p class="rz-done-score">' + (g === 3
           ? 'Board-ready scenarios stop coming back first. The ones you marked rough are the pile worth returning to.'
           : 'Marked for another pass. A scenario you graded honestly is worth more than one you graded kindly.') + '</p>' +

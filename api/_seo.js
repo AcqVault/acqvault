@@ -2587,6 +2587,16 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-sim-exits{margin-top:14px}
 .rz-sim-hintnote{margin:14px 0 0;font-size:var(--fs-sm);line-height:1.55;color:var(--muted2,#6f6c74)}
 .rz-sim-hintnote b{color:var(--ink);font-weight:800}
+/* The spoken script opens on request: shown inline straight after a model answer that said
+   the same thing structurally, it was the strongest inducement to grading recognition as
+   recall. */
+details.st-script>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;min-height:44px}
+details.st-script>summary::-webkit-details-marker{display:none}
+details.st-script>summary::after{content:"";width:8px;height:8px;border-right:1.6px solid var(--brass);
+  border-bottom:1.6px solid var(--brass);transform:rotate(45deg) translateY(-2px);transition:transform .16s}
+details.st-script[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){details.st-script>summary::after{transition:none}}
 /* the model answer reads as a model, not a verdict on what you just did */
 .st-walk-head{font-size:var(--fs-xs);letter-spacing:var(--ls-widest)}
 

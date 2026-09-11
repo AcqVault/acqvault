@@ -184,6 +184,21 @@ def main():
     else:
         print(f'  PASS  all {len(ids)} deck ids unique')
 
+    # ── 3b. every board scenario must be able to land a decision ─────────────
+    # The model answer builds its steps conditionally from optional fields, so a scenario
+    # carrying neither key_moves nor board_answer rendered a "model answer" that never
+    # answered the question it asked. That shipped on eight scenarios — the whole
+    # vol2-bank batch — each of whose `ask` is a direct decision question. viewBoard now
+    # falls back to the tail of `script`, but the fallback is a guard, not a licence.
+    no_land = [sc.get('id') for sc in (deck.get('scenarios') or [])
+               if not sc.get('key_moves') and not sc.get('board_answer')]
+    if no_land:
+        fail('%d board scenario(s) carry neither key_moves nor board_answer, so the model '
+             'answer lands no decision: %s' % (len(no_land), ', '.join(no_land[:8])))
+    else:
+        print('  PASS  all %d board scenarios land a decision'
+              % len(deck.get('scenarios') or []))
+
     # ── 4. dollar figures asserted in shipped JS must be in the section cited ──
     # Same contract as the deck: if we print a number next to a citation, that
     # citation has to contain the number. Nothing checked these, on a site whose
