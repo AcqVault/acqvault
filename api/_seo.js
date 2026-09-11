@@ -1685,6 +1685,72 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-btn-opts{background:#fff;color:var(--muted);border:1px solid var(--line2);font-weight:650}
 .st-btn-opts:hover{border-color:rgba(var(--brass-rgb),.5);color:var(--brass-ink)}
 .st-produce-hint{margin-top:14px;font-size:13px;font-style:italic;color:var(--muted2,#6f6c74)}
+/* ═══════════════════════════════════════════════════════════════════════════
+   SURFACE PASS — the instrument-panel look, applied to the existing markup.
+   Flat sheets instead of gradient slabs, one 4px radius instead of five, 1px
+   hairlines instead of drop shadows, tabular figures, and a tighter type scale.
+   Same DOM, same flow: nothing here changes display, grid or order, so the
+   engine cannot break on it. Colours are the site's own tokens throughout.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* the session panel: was a navy gradient slab with a 52px serif numeral */
+.st-daily{background:#fff !important;border:1px solid var(--line2) !important;
+  border-left:3px solid var(--brass) !important;border-radius:var(--r-sm) !important;
+  box-shadow:none !important;padding:18px 20px !important}
+.st-daily:hover{border-color:var(--brass-line) !important}
+.st-daily-eyebrow{color:var(--muted) !important;font-size:10px !important;letter-spacing:.13em !important;margin-bottom:7px !important}
+.st-daily-num{font-family:var(--ui,inherit) !important;font-size:30px !important;font-weight:700 !important;
+  color:var(--ink) !important;letter-spacing:-.02em !important;line-height:1.05 !important}
+.st-daily-what{color:var(--ink) !important;font-size:16px !important;font-weight:650 !important}
+.st-daily-sub{color:var(--muted) !important;font-size:12.5px !important;line-height:1.5 !important}
+.st-daily-go{color:var(--brass) !important}
+.st-daily .st-daily-row{align-items:baseline !important;gap:9px !important}
+
+/* the card: 16px radius and a 48px shadow become a sheet with a hairline */
+.st-card{border-radius:var(--r-sm) !important;box-shadow:none !important;
+  border:1px solid var(--line2) !important;padding:20px 22px !important}
+.st-card::before{display:none !important}
+.st-chip{background:transparent !important;color:var(--brass) !important;padding:0 !important;
+  font-size:10px !important;letter-spacing:.12em !important;margin-bottom:9px !important}
+.st-q{font-size:20px !important;line-height:1.4 !important;letter-spacing:-.006em !important}
+.st-a{border-top:1px solid var(--line2) !important;font-size:15px !important}
+.st-explain{background:var(--off,#f7f6f2) !important;border-left:2px solid var(--brass-line) !important;
+  border-radius:0 var(--r-sm) var(--r-sm) 0 !important}
+
+/* tiles and rows: one radius, hairlines, no lift */
+.st-topic,.st-mode,.st-trackcard,.st-plate,.st-mini-tile,.st-sim-feature,.st-rung{
+  border-radius:var(--r-sm) !important;box-shadow:none !important;border:1px solid var(--line2) !important}
+.st-topic:hover,.st-mode:hover,.st-trackcard:hover,.st-plate:hover,.st-rung:hover{
+  border-color:var(--brass-line) !important;transform:none !important;box-shadow:none !important}
+.st-topic-name{font-size:13.5px !important;font-weight:500 !important}
+.st-topic-meta{font-size:11.5px !important;font-variant-numeric:tabular-nums !important}
+.st-bar{height:4px !important;border-radius:2px !important;background:#e8e5de !important}
+.st-bar-fill{border-radius:2px !important}
+
+/* buttons: one geometry, square-ish, no gradient lift */
+.st-btn{border-radius:var(--r-sm) !important;box-shadow:none !important;font-size:14px !important;
+  font-weight:650 !important;letter-spacing:-.004em !important}
+.st-btn:hover{transform:none !important;box-shadow:none !important}
+.st-btn-reveal{background:var(--ink-mid) !important;color:#fff !important;border:1px solid var(--ink-mid) !important}
+.st-btn-reveal:hover{filter:brightness(1.18) !important}
+.st-btn-opts,.st-btn-hint{background:#fff !important;color:var(--ink) !important;border:1px solid var(--line2) !important}
+
+/* section heads read as form rules, not headings */
+.st-session-head{color:var(--muted) !important;font-size:10.5px !important;letter-spacing:.13em !important}
+.st-prog{height:3px !important;border-radius:2px !important;background:#e8e5de !important}
+.st-prog span{background:var(--brass) !important;border-radius:2px !important}
+.st-ready-head,.st-games-head{border-bottom:1px solid var(--line2) !important;padding-bottom:7px !important}
+.st-overall{font-size:12px !important;font-weight:700 !important;color:var(--muted) !important;
+  font-variant-numeric:tabular-nums !important}
+.st-streak{background:#fff !important;border:1px solid var(--line2) !important;color:var(--brass-ink) !important;
+  border-radius:var(--r-sm) !important}
+.st-track-chip{background:#fff !important;border:1px solid var(--line2) !important;border-radius:var(--r-sm) !important}
+
+/* summaries and the grade row keep their semantics, lose the chrome */
+.st-summary{box-shadow:none !important}
+.st-sum-num{font-family:var(--ui,inherit) !important;font-size:34px !important;letter-spacing:-.02em !important}
+.st-g1,.st-g2,.st-g3{border-radius:var(--r-sm) !important;box-shadow:none !important}
+
 .st-check{margin-top:14px;border:1px solid var(--line2);border-radius:var(--r-sm);overflow:hidden;background:#fff}
 .st-check-h{background:var(--off,#f7f6f2);padding:7px 12px;border-bottom:1px solid var(--line2);font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .st-check-list{margin:0;padding:3px 0;list-style:none}
