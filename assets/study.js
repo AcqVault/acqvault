@@ -3716,6 +3716,12 @@
           '<span class="st-check-box" aria-hidden="true"></span><span>' + esc(x.k) + '</span></button></li>';
       }).join('') + '</ul></div>';
   }
+  function topicLabel(topics) {
+    return (topics || []).map(function (t) {
+      t = String(t).replace(/\s*\.\s*$/, '').trim();
+      return t ? t.charAt(0).toUpperCase() + t.slice(1) : '';
+    }).filter(Boolean).join(' \u00b7 ');
+  }
   function boardSteps(stage, nFus) {
     var labels = ['Scenario', 'Debrief'];
     for (var i = 0; i < nFus; i++) labels.push('Follow-up ' + (i + 1));
@@ -3820,7 +3826,7 @@
       render(
         chromeHtml({ course: 'Board Sim', back: true, backLabel: 'Exit',
           backAria: 'Leave the board simulator',
-          now: sc.topics && sc.topics.length ? sc.topics.join(' \u00b7 ') : '',
+          now: topicLabel(sc.topics),
           prog: { done: faced, total: tot, pct: tot ? Math.round(100 * faced / tot) : 0 } }) +
         '<div class="rz-sim">' +
         '<div class="rz-sim-main">' + boardSteps(stage, fus.length) +
