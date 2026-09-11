@@ -1726,12 +1726,23 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 
 /* the card: 16px radius and a 48px shadow become a sheet with a hairline */
 .st-card{border-radius:var(--r-sm) !important;box-shadow:none !important;
-  border:1px solid var(--line2) !important;padding:20px 22px !important}
+  border:1px solid var(--line2) !important;padding:30px 34px !important}
 .st-card::before{display:none !important}
-.st-chip{background:transparent !important;color:var(--brass) !important;padding:0 !important;
-  font-size:10px !important;letter-spacing:.12em !important;margin-bottom:9px !important}
-.st-q{font-size:20px !important;line-height:1.4 !important;letter-spacing:-.006em !important}
-.st-a{border-top:1px solid var(--line2) !important;font-size:15px !important}
+.st-chip{background:var(--off,#f7f6f2) !important;color:var(--brass-ink) !important;
+  padding:3px 9px !important;font-size:10.5px !important;letter-spacing:.11em !important;
+  margin-bottom:14px !important;border-radius:2px !important}
+.st-q{font-size:26px !important;line-height:1.34 !important;letter-spacing:-.012em !important}
+.st-a{border-top:1px solid var(--line2) !important;font-size:16px !important;
+  line-height:1.62 !important;margin-top:20px !important;padding-top:18px !important}
+.st-produce-hint{margin-top:18px !important;font-size:13.5px !important}
+.st-actions{margin-top:22px !important;gap:10px !important}
+/* the working view ran 189px of empty band between the quit link and the footer */
+.st-working .lband--room .lband-inner,.st-working .st-wrap{padding-bottom:28px !important}
+.st-quit{margin-top:18px !important}
+@media (max-width:640px){
+  .st-card{padding:20px 18px !important}
+  .st-q{font-size:21px !important}
+}
 .st-explain{background:var(--off,#f7f6f2) !important;border-left:2px solid var(--brass-line) !important;
   border-radius:0 var(--r-sm) var(--r-sm) 0 !important}
 
