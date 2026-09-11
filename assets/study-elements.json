@@ -1,5 +1,5 @@
 {
- "version": 2,
+ "version": 3,
  "generated": "2026-09-10",
  "elements": {
   "5f9a44f71c12": [
@@ -332,10 +332,10 @@
    "Said everything else varies where the risk sits"
   ],
   "c7957f46f47b": [
-   "Named the D&F that no other type works",
-   "Named the not-to-exceed ceiling",
-   "Named active surveillance",
-   "Said T&M pays hourly rates plus materials"
+   "Named the D&F that no other contract type is suitable",
+   "Named the ceiling price the contractor exceeds at its own risk",
+   "Added that surveillance is separately required by 16.601-2(a)",
+   "Said T&M pays hourly rates plus materials, with no cost-control incentive"
   ],
   "e34f265479e3": [
    "Said long performance periods",
@@ -925,6 +925,7 @@
   ],
   "dfb052112b10": [
    "Said 15% R&D, 10% most others, 6% A-E",
+   "Measured the A-E 6% against estimated construction cost, not the design fee",
    "Said R-DFARS 236.202-371 raises A-E to 10% for Army, Navy, Air Force"
   ],
   "4882451c81b3": [
@@ -945,10 +946,10 @@
    "Said no award without a fair and reasonable determination"
   ],
   "23a76094f31e": [
-   "Said field pricing support scales with dollars and contract type",
-   "Put DCMA rate support at about $2.5M fixed-price / $10M cost-type",
-   "Put DCAA audit at $10M fixed-price / $100M cost-type",
-   "Said below those, my pricing office and I work it"
+   "Split field pricing assistance from DCAA audit assistance",
+   "Keyed field pricing to the certified cost or pricing data threshold, $10M for new awards",
+   "Put DCAA audit at over $10M fixed-price and over $100M cost-type",
+   "Said below those, the pricing office and the CO work it"
   ],
   "16ab3e99a934": [
    "Named five factors, not one",
@@ -1744,7 +1745,8 @@
    "Said $150,000"
   ],
   "429b12a0f587": [
-   "Said 15% R&D, 10% most others, 6% A-E — 10% A-E for Army, Navy, Air Force"
+   "Said 15% R&D, 10% most others, 6% A-E",
+   "Measured A-E against estimated construction cost, and said 10% for Army, Navy, Air Force"
   ],
   "6f92260c64f4": [
    "Said $100M DoD, $10M most agencies"
