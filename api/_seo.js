@@ -1131,7 +1131,24 @@ mark.pn-mark.active{background:var(--brass-bright);box-shadow:0 0 0 2px rgba(var
    STUDY_CSS reads it as var(--ink3,#474c55) — without it the fallback wins and
    the study intro copy would stay the one grey that did not lift. */
 @media (prefers-contrast:more){
-:root{--muted:#33323a;--muted2:#33323a;--ink3:#262a31;--line:#4a4335;--line2:#8c8577}
+:root{--muted:#33323a;--muted2:#33323a;--ink3:#262a31;--line:#4a4335;--line2:#8c8577}}
+/* ═══ SITE SURFACE PASS ═══════════════════════════════════════════════════════
+   The same treatment the study surface got, applied to the reading and tool pages:
+   one container radius instead of eight, hairlines instead of drop shadows, and no
+   hover lift. Pills (999px), circles (50%) and genuinely floating layers keep what
+   they have — a popup that hovers should cast a shadow; a card that sits on the page
+   should not. Colours are untouched; every value here is already a token.
+   ══════════════════════════════════════════════════════════════════════════════ */
+@media all{
+  .libsrc,.libfeat,.partpair,.ptoc,.alt-nav,.cm-native-visual,
+  .ss-card,.ss-log,.ss-fb,.ss-resume,.ss-startnote,.ss-verdict,.ss-fail,
+  .ss-modal-card,.ss-modal-head{border-radius:var(--r-sm)}
+  .ss-btn,.ss-doc-chip,.pn-step,.pn-clear,.pn-search,.ss-modal-close{border-radius:var(--r-sm)}
+  /* a card on the page separates with a line, not a cast shadow */
+  .libsrc:hover{box-shadow:none;transform:none;border-color:var(--brass-line)}
+  .cm-native-visual{box-shadow:none;border:1px solid var(--line2)}
+  .ss-card,.ss-log,.ss-fb{box-shadow:none}
+
 :where(button,a,[role="button"],input,select,textarea,[tabindex]):focus-visible{outline-width:3px;outline-offset:2px}
 }`;
 
