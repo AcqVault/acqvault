@@ -27,13 +27,14 @@
      4 branches in load() and 4 in doImport(); every branch added since crashed on import. */
   function normalize(s) {
     if (!s || typeof s !== 'object') s = {};
-    ['cards', 'scen', 'sprint', 'games', 'daily', 'streak', 'intro', 'resume', 'bdNotes', 'ladderBoard'].forEach(function (k) {
+    ['cards', 'scen', 'sprint', 'games', 'daily', 'streak', 'intro', 'resume', 'bdNotes', 'ladderBoard', 'lessons'].forEach(function (k) {
       if (s[k] != null && typeof s[k] !== 'object') delete s[k];
     });
     ['ladderMiss', 'ladderBoardRough'].forEach(function (k) {
       if (s[k] != null && Object.prototype.toString.call(s[k]) !== '[object Array]') delete s[k];
     });
     if (!s.cards) s.cards = {};
+    if (!s.lessons) s.lessons = {};
     if (!s.scen) s.scen = {};
     if (!s.games) s.games = {};
     if (!s.sprint) s.sprint = { best: 0 };
@@ -341,6 +342,7 @@
         || /id="gv-card"/.test(html);
       document.documentElement.classList.toggle('st-working',
         working && !/st-summary/.test(html));
+      document.documentElement.classList.toggle('st-rise', /rz-cover|rz-lesson-shell/.test(html));
     } catch (e) { /* styling only; never break a render */ }
     // Anchor each new view just below the top of the drill container so every card
     // lands in the same readable spot. NB: app.offsetTop is relative to the
@@ -370,18 +372,18 @@
         '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
     render(
-      '<p class="st-intro"><b>Learn</b> the whole domain, then <b>practice by deciding</b> — with interactive tools to sharpen any time.</p>' +
-      '<h2 class="st-h2" style="margin-top:2px">Pick your depth</h2>' +
-      '<p class="st-sub">Start shallow or go deep — progress saves per card, and you can switch any time without losing it.</p>' +
+      '<p class="st-intro"><b>Learn</b> the whole domain as a course, then <b>practice by deciding</b> in the simulators.</p>' +
+      '<h2 class="st-h2" style="margin-top:2px">Study modules</h2>' +
+      '<p class="st-sub">Two courses, walked lesson by lesson. Progress saves per lesson and per card, and you can switch between them any time without losing it.</p>' +
       '<div class="st-tracks">' +
-      cardHtml('t-basic', 'Start here if contracting is new', 'Foundations',
-        'Field Guide Vol. 1 — the players, the money, the methods. Build the base before the board.', last === 'basic', 'VOL I') +
-      cardHtml('t-adv', 'The full board-prep deck', 'The Board',
-        'Everything in Foundations plus Vol. 2 — board-probe questions, threshold sprints, and full scenario simulations with follow-ups.', last === 'advanced', 'VOL I·II') +
+      cardHtml('t-basic', 'Module 1 · start here if contracting is new', 'Foundations',
+        'Field Guide Vol. 1 as a 15-lesson course — the players, the money, the methods. Every lesson ends in a knowledge check.', last === 'basic', 'VOL I') +
+      cardHtml('t-adv', 'Module 2 · the full board-prep course', 'The Board',
+        'All 15 Foundations lessons plus 29 more from Vol. 2 — 44 lessons of board-probe depth, each with its own knowledge check.', last === 'advanced', 'VOL I·II') +
       '</div>' +
       gamesSectionHtml());
-    el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewHome; save(); goDepth(1, viewHome); };
-    el('t-adv').onclick = function () { S.track = 'advanced'; depth1View = viewHome; save(); goDepth(1, viewHome); };
+    el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewCourse; save(); goDepth(1, viewCourse); };
+    el('t-adv').onclick = function () { S.track = 'advanced'; depth1View = viewCourse; save(); goDepth(1, viewCourse); };
     wireGamesSection();
   }
 
@@ -404,6 +406,7 @@
 
   function viewHome() {
     if (!S.track) return viewTrack();
+    depth1View = viewHome;
     var pool = recallPool();
     var dueAll = pool.filter(function (c) { return isDue(c.id); });
     var seenDue = dueAll.filter(function (c) { return cardState(c.id).box > 0; });
@@ -479,6 +482,7 @@
     var run = comeback ? 0 : streakRun();   // never greet a return with a reset counter
     render(
       '<div class="st-head">' +
+      '<button class="st-link st-to-course" id="st-to-course">\u2190 Course outline</button>' +
       (run >= 2 ? '<div class="st-streak" title="Days in a row with at least one card answered">' +
         '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' +
         run + '-day streak</div>' : '') +
@@ -501,6 +505,7 @@
     el('m-sprint').onclick = function () { goDepth(2, viewSprint); };
     if (el('m-board')) el('m-board').onclick = function () { goDepth(2, viewBoard); };
     el('st-switch').onclick = function () { goDepth(0, viewTrack); };
+    el('st-to-course').onclick = function () { goDepth(1, viewCourse); };
     wireFootTools();
     Array.prototype.forEach.call(app.querySelectorAll('.st-topic'), function (b) {
       b.onclick = function () {
@@ -524,6 +529,293 @@
     el('st-reset').onclick = function () {
       if (confirm('Erase all study progress on this device?')) { S = normalize({ track: S.track }); save(); homeFn()(); }
     };
+  }
+
+
+  /* ══ COURSE LAYER (Rise-style) ═══════════════════════════════════════════════
+     The spine is a course now: sections → lessons → blocks, walked front to back,
+     with a knowledge check at the end of each lesson. The spaced-repetition engine
+     did not go anywhere — it sits behind "Review" and every knowledge check still
+     grades into it, so walking the course schedules the cards you answered.
+
+     A lesson is a (level, topic) pair, never a bare topic: Vol. 1 and Vol. 2 both
+     carry "Competition (CICA)" and "Small Business Programs", and The Board course
+     contains both volumes. Keying on topic alone collapsed them into one lesson and
+     lost the Vol. 2 cards.
+     ──────────────────────────────────────────────────────────────────────────── */
+  var VOL1 = [
+    ['Ground Rules', ['What Air Force Contracting Is', 'The Players: Roles & Who Does What',
+      'Authority, Unauthorized Commitments & Ratification', 'The Rulebook: The RFO, R-DFARS & DAF Policy']],
+    ['Money and Time', ['Colors of Money & Fiscal Law Basics', 'The Acquisition Lifecycle']],
+    ['Before the Buy', ['Requirements & Market Research', 'Competition (CICA)', 'Buying Methods by Dollar Value']],
+    ['Shaping the Deal', ['Contract Types & Risk', 'Pricing: Getting to Fair & Reasonable', 'Source Selection Basics']],
+    ['Guardrails and After Award', ['Ethics & Procurement Integrity', 'Small Business Programs',
+      'Contract Administration: Mods, Options, Claims & Terminations']]
+  ];
+  var VOL2 = [
+    ['Planning the Buy', ['Acquisition Planning & Strategy', 'Market Research',
+      'Required Sources of Supplies & Services', 'Commercial Products & Services']],
+    ['Integrity and Authority', ['Authority, Unauthorized Commitments & Ratification', 'Procurement Integrity',
+      'Organizational Conflict of Interest', 'Contractor Qualifications — Responsibility']],
+    ['Choosing the Method', ['Simplified Acquisition Procedures', 'Small Business Programs',
+      'Competition (CICA)', 'Contracting by Negotiation — Source Selection']],
+    ['Pricing and Contract Type', ['Certified Cost or Pricing Data & Proposal Analysis', 'Contract Types',
+      'IDIQ Ordering & Fair Opportunity', 'Options']],
+    ['Money, Property and Rights', ['Interagency Acquisitions & the Economy Act', 'Contract Finance & Fiscal Law',
+      'Data Rights', 'Government Property']],
+    ['Changes and Disputes', ['Contract Modifications & Scope', 'Undefinitized Contract Actions',
+      'Clearance — Independent Review & Approval', 'Protests', 'REAs & Claims', 'Terminations']],
+    ['Specialized Buys', ['R&D Contracting — BAAs, SBIR & OTs', 'Construction & Service Contracting']],
+    ['Numbers You Must Know', ['Thresholds & Numbers']]
+  ];
+  var COURSE_META = {
+    basic: { name: 'Foundations', vol: 'Field Guide Vol. 1',
+      blurb: 'The players, the money, the methods. Fifteen lessons that build the base everything else stands on — who can bind the Government, whose money you are spending, and how a requirement becomes a contract.' },
+    advanced: { name: 'The Board', vol: 'Field Guide Vol. 1 & 2',
+      blurb: 'Everything in Foundations, then the depth a board actually probes: planning, integrity, pricing, contract type, changes, disputes and the numbers you are expected to know cold.' }
+  };
+  // Every card in the course, grouped by lesson. Built once per track from the live pool,
+  // so a deck refresh flows straight through instead of needing the outline re-authored.
+  function courseSections() {
+    return S.track === 'basic' ? VOL1.map(function (s) { return ['basic', s[0], s[1]]; })
+      : VOL1.map(function (s) { return ['basic', s[0], s[1]]; })
+        .concat(VOL2.map(function (s) { return ['advanced', s[0], s[1]]; }));
+  }
+  function lessonKey(level, topic) { return level + '|' + topic; }
+  function lessonCards(level, topic) {
+    return recallPool().filter(function (c) {
+      return (c.level || 'advanced') === level && (c.topic || '') === topic;
+    });
+  }
+  /* A flat, numbered walk of the whole course — what the outline renders, what "next
+     lesson" steps through, and what the progress ring counts. Lessons whose topic has no
+     cards in this deck are dropped here rather than rendered as dead rows. */
+  function courseLessons() {
+    var out = [], n = 0;
+    courseSections().forEach(function (sec) {
+      sec[2].forEach(function (topic) {
+        var cards = lessonCards(sec[0], topic);
+        if (!cards.length) return;
+        out.push({ level: sec[0], section: sec[1], topic: topic, cards: cards,
+          key: lessonKey(sec[0], topic), n: ++n });
+      });
+    });
+    return out;
+  }
+  function lessonDone(key) { return !!(S.lessons && S.lessons[key]); }
+  function markLesson(key) { if (!S.lessons) S.lessons = {}; S.lessons[key] = today(); save(); }
+  function courseProgress(lessons) {
+    var done = lessons.filter(function (l) { return lessonDone(l.key); }).length;
+    return { done: done, total: lessons.length, pct: lessons.length ? Math.round(100 * done / lessons.length) : 0 };
+  }
+  function ringHtml(pct) {
+    var r = 26, c = 2 * Math.PI * r;
+    return '<svg class="rz-ring" viewBox="0 0 60 60" aria-hidden="true">' +
+      '<circle cx="30" cy="30" r="' + r + '" class="rz-ring-bg"/>' +
+      '<circle cx="30" cy="30" r="' + r + '" class="rz-ring-fg" stroke-dasharray="' + c.toFixed(1) +
+      '" stroke-dashoffset="' + (c * (1 - pct / 100)).toFixed(1) + '"/></svg>' +
+      '<span class="rz-ring-n">' + pct + '<i>%</i></span>';
+  }
+
+  /* ---- course home: cover, then the outline ---- */
+  function viewCourse() {
+    depth1View = viewCourse;
+    var meta = COURSE_META[S.track === 'basic' ? 'basic' : 'advanced'];
+    var lessons = courseLessons();
+    var prog = courseProgress(lessons);
+    var next = lessons.filter(function (l) { return !lessonDone(l.key); })[0] || lessons[0];
+    var due = recallPool().filter(function (c) { return isDue(c.id); }).length;
+    var secHtml = '', seen = {};
+    courseSections().forEach(function (sec) {
+      var rows = lessons.filter(function (l) { return l.level === sec[0] && l.section === sec[1]; });
+      if (!rows.length) return;
+      var sn = (seen[sec[0]] = (seen[sec[0]] || 0) + 1);
+      var sdone = rows.filter(function (l) { return lessonDone(l.key); }).length;
+      secHtml += '<section class="rz-sec"><div class="rz-sec-head">' +
+        '<span class="rz-sec-vol">' + (sec[0] === 'basic' ? 'Vol. 1' : 'Vol. 2') + ' · Section ' + sn + '</span>' +
+        '<h3>' + esc(sec[1]) + '</h3>' +
+        '<span class="rz-sec-count">' + sdone + ' of ' + rows.length + ' complete</span></div>' +
+        '<ol class="rz-lessons">' + rows.map(function (l) {
+          var d = lessonDone(l.key);
+          return '<li><button class="rz-lesson' + (d ? ' rz-lesson-done' : '') + '" data-key="' + esc(l.key) + '">' +
+            '<span class="rz-lesson-mark" aria-hidden="true">' + (d ? '✓' : l.n) + '</span>' +
+            '<span class="rz-lesson-body"><b>' + esc(l.topic) + '</b>' +
+            '<span>' + l.cards.length + ' key point' + (l.cards.length !== 1 ? 's' : '') +
+            ' · knowledge check</span></span>' +
+            '<span class="rz-lesson-go" aria-hidden="true">→</span></button></li>';
+        }).join('') + '</ol></section>';
+    });
+    render(
+      '<div class="rz-cover">' +
+      '<div class="rz-cover-body">' +
+      '<span class="rz-eyebrow">' + esc(meta.vol) + '</span>' +
+      '<h1 class="rz-cover-h">' + esc(meta.name) + '</h1>' +
+      '<p class="rz-cover-p">' + esc(meta.blurb) + '</p>' +
+      '<div class="rz-cover-actions">' +
+      '<button class="rz-btn rz-btn-go" id="rz-start">' +
+      (prog.done ? (prog.done === prog.total ? 'Revisit the course' : 'Continue — Lesson ' + next.n) : 'Start course') + '</button>' +
+      '<button class="rz-btn rz-btn-ghost" id="rz-switch">Switch course</button>' +
+      '</div></div>' +
+      '<div class="rz-cover-prog"><div class="rz-ring-wrap">' + ringHtml(prog.pct) + '</div>' +
+      '<b>' + prog.done + ' of ' + prog.total + '</b><span>lessons complete</span></div>' +
+      '</div>' +
+      '<div class="rz-outline-head"><h2>Course outline</h2>' +
+      '<span>' + lessons.length + ' lessons · ' + courseSections().length + ' sections</span></div>' +
+      secHtml +
+      '<div class="rz-extra">' +
+      '<button class="rz-extra-card" id="rz-review"><b>Review</b><span>' +
+      (due ? due + ' card' + (due !== 1 ? 's' : '') + ' the scheduler says you are about to forget' :
+        'Spaced repetition across everything you have studied') + '</span></button>' +
+      '<button class="rz-extra-card" id="rz-practice"><b>Practice range</b><span>Both simulators, threshold sprints and the daily games</span></button>' +
+      '</div>' + footToolsHtml());
+    el('rz-start').onclick = function () { openLesson(next.key); };
+    el('rz-switch').onclick = function () { goDepth(0, viewTrack); };
+    el('rz-review').onclick = function () { goDepth(1, viewHome); };
+    el('rz-practice').onclick = function () { goDepth(0, viewTrack); };
+    wireFootTools();
+    Array.prototype.forEach.call(app.querySelectorAll('.rz-lesson'), function (b) {
+      b.onclick = function () { openLesson(b.getAttribute('data-key')); };
+    });
+  }
+  function openLesson(key) { goDepth(2, function () { viewLesson(key); }); }
+
+  /* ---- a lesson: teaching blocks, a continue gate, then the knowledge check ---- */
+  var KC_MAX = 6;   // a lesson checks at most this many points; "Thresholds" has 40 cards
+  function viewLesson(key) {
+    var lessons = courseLessons();
+    var idx = -1;
+    lessons.forEach(function (l, i) { if (l.key === key) idx = i; });
+    if (idx < 0) return viewCourse();
+    var L = lessons[idx], next = lessons[idx + 1] || null;
+    var prog = courseProgress(lessons);
+    var checks = L.cards.filter(function (c) { return mcqOptions(c); }).slice(0, KC_MAX);
+
+    var blocks = L.cards.map(function (c, i) {
+      return '<article class="rz-block">' +
+        '<span class="rz-block-n">' + (i + 1) + '</span>' +
+        '<h3 class="rz-block-h">' + esc(c.q) + '</h3>' +
+        '<div class="rz-key"><span class="rz-key-lab">Key point</span>' + esc(c.a) + '</div>' +
+        (c.x ? '<p class="rz-block-p">' + esc(c.x) + '</p>' : '') +
+        (c.ref ? '<div class="rz-src">Where it lives: <b>' + esc(c.ref) + '</b></div>' : '') +
+        citesHtml(c.links) + '</article>';
+    }).join('');
+
+    render(
+      '<div class="rz-lesson-shell">' +
+      '<aside class="rz-side" id="rz-side">' +
+      '<button class="rz-side-back" id="rz-back">← Course outline</button>' +
+      '<div class="rz-side-prog"><div class="rz-ring-wrap rz-ring-sm">' + ringHtml(prog.pct) + '</div>' +
+      '<span>' + prog.done + ' of ' + prog.total + ' lessons</span></div>' +
+      '<nav class="rz-side-nav">' + lessons.map(function (l) {
+        return '<button class="rz-side-lesson' + (l.key === key ? ' rz-side-now' : '') +
+          (lessonDone(l.key) ? ' rz-side-done' : '') + '" data-key="' + esc(l.key) + '">' +
+          '<span class="rz-side-mark" aria-hidden="true">' + (lessonDone(l.key) ? '✓' : l.n) + '</span>' +
+          esc(l.topic) + '</button>';
+      }).join('') + '</nav></aside>' +
+      '<div class="rz-main">' +
+      '<button class="rz-side-open" id="rz-side-open">☰ Lessons</button>' +
+      '<header class="rz-lhead">' +
+      '<span class="rz-eyebrow">' + (L.level === 'basic' ? 'Vol. 1' : 'Vol. 2') + ' · ' + esc(L.section) + '</span>' +
+      '<h1>' + esc(L.topic) + '</h1>' +
+      '<p class="rz-lhead-meta">Lesson ' + L.n + ' of ' + lessons.length + ' · ' + L.cards.length +
+      ' key point' + (L.cards.length !== 1 ? 's' : '') + (checks.length ? ' · ' + checks.length + '-question knowledge check' : '') + '</p>' +
+      '</header>' + blocks +
+      (checks.length
+        ? '<div class="rz-gate" id="rz-gate"><p>Read the points above, then check yourself.</p>' +
+          '<button class="rz-btn rz-btn-go" id="rz-continue">Continue</button></div>' +
+          '<section class="rz-kc" id="rz-kc" hidden></section>'
+        : '<div class="rz-gate" id="rz-gate"><p>Nothing to check on this one — it is reference material.</p>' +
+          '<button class="rz-btn rz-btn-go" id="rz-continue">Mark complete</button></div>' +
+          '<section class="rz-kc" id="rz-kc" hidden></section>') +
+      '</div></div>');
+
+    el('rz-back').onclick = function () { goDepth(1, viewCourse); };
+    el('rz-side-open').onclick = function () { el('rz-side').classList.toggle('rz-side-shown'); };
+    Array.prototype.forEach.call(app.querySelectorAll('.rz-side-lesson'), function (b) {
+      b.onclick = function () { viewLesson(b.getAttribute('data-key')); };
+    });
+
+    el('rz-continue').onclick = function () {
+      var gate = el('rz-gate'); if (gate && gate.parentNode) gate.parentNode.removeChild(gate);
+      var kc = el('rz-kc'); kc.hidden = false;
+      if (!checks.length) { finish(kc, 0, 0); return; }
+      runChecks(kc);
+      kc.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    };
+
+    /* The knowledge check. One question at a time, Rise-style: pick, submit, get the
+       verdict and the explanation, move on. Every answer grades into the spaced-repetition
+       engine — walking the course IS scheduling the cards, so Review is never empty for
+       someone who has only ever taken lessons. */
+    function runChecks(host) {
+      var i = 0, right = 0;
+      function step() {
+        if (i >= checks.length) return finish(host, right, checks.length);
+        var c = checks[i], opts = mcqOptions(c), picked = -1;
+        host.innerHTML = '<div class="rz-kc-head"><span class="rz-eyebrow">Knowledge check</span>' +
+          '<span class="rz-kc-count">' + (i + 1) + ' of ' + checks.length + '</span></div>' +
+          '<div class="rz-prog" aria-hidden="true"><span style="width:' + Math.round(100 * i / checks.length) + '%"></span></div>' +
+          '<h3 class="rz-kc-q">' + esc(c.q) + '</h3>' +
+          '<div class="rz-opts" role="radiogroup">' + opts.map(function (o, k) {
+            return '<button class="rz-opt" role="radio" aria-checked="false" data-k="' + k + '">' +
+              '<span class="rz-opt-dot" aria-hidden="true"></span><span>' + esc(o) + '</span></button>';
+          }).join('') + '</div>' +
+          '<div class="rz-kc-act"><button class="rz-btn rz-btn-go" id="rz-submit" disabled>Submit</button></div>';
+        Array.prototype.forEach.call(host.querySelectorAll('.rz-opt'), function (b) {
+          b.onclick = function () {
+            picked = +b.getAttribute('data-k');
+            Array.prototype.forEach.call(host.querySelectorAll('.rz-opt'), function (o) {
+              var on = o === b;
+              o.classList.toggle('rz-opt-on', on); o.setAttribute('aria-checked', on ? 'true' : 'false');
+            });
+            el('rz-submit').disabled = false;
+          };
+        });
+        el('rz-submit').onclick = function () {
+          if (picked < 0) return;
+          var ok = opts[picked] === c.a;
+          if (ok) right++;
+          grade(c.id, ok ? 3 : 1);   // the course feeds the scheduler
+          bumpStreak();
+          Array.prototype.forEach.call(host.querySelectorAll('.rz-opt'), function (o) {
+            var k = +o.getAttribute('data-k');
+            if (opts[k] === c.a) o.classList.add('rz-opt-right');
+            else if (k === picked) o.classList.add('rz-opt-wrong');
+            o.disabled = true;
+          });
+          el('rz-submit').outerHTML =
+            '<div class="rz-fb ' + (ok ? 'rz-fb-ok' : 'rz-fb-no') + '">' +
+            '<b>' + (ok ? '✓ Correct' : '✗ Not quite') + '</b>' +
+            (ok ? '' : '<span class="rz-fb-ans">The answer is: ' + esc(c.a) + '</span>') +
+            (c.x ? '<p>' + esc(c.x) + '</p>' : '') +
+            (c.ref ? '<div class="rz-src">Where it lives: <b>' + esc(c.ref) + '</b></div>' : '') +
+            citesHtml(c.links) + '</div>' +
+            '<button class="rz-btn rz-btn-go" id="rz-kc-next">' +
+            (i + 1 >= checks.length ? 'Finish lesson' : 'Next question') + '</button>';
+          el('rz-kc-next').onclick = function () { i++; step(); };
+          el('rz-kc-next').focus();
+        };
+      }
+      step();
+    }
+
+    function finish(host, right, total) {
+      markLesson(L.key);
+      var p2 = courseProgress(courseLessons());
+      host.innerHTML = '<div class="rz-done">' +
+        '<div class="rz-done-tick" aria-hidden="true">✓</div>' +
+        '<h3>Lesson complete</h3>' +
+        (total ? '<p class="rz-done-score">' + right + ' of ' + total + ' correct — the ones you missed are already queued in Review.</p>'
+          : '<p class="rz-done-score">Marked complete.</p>') +
+        '<div class="rz-prog rz-prog-lg" aria-hidden="true"><span style="width:' + p2.pct + '%"></span></div>' +
+        '<p class="rz-done-prog">' + p2.done + ' of ' + p2.total + ' lessons complete</p>' +
+        '<div class="rz-done-actions">' +
+        (next ? '<button class="rz-btn rz-btn-go" id="rz-next">Next lesson: ' + esc(next.topic) + ' →</button>' : '') +
+        '<button class="rz-btn rz-btn-ghost" id="rz-outline">Course outline</button>' +
+        '</div></div>';
+      if (next) el('rz-next').onclick = function () { viewLesson(next.key); };
+      el('rz-outline').onclick = function () { goDepth(1, viewCourse); };
+    }
   }
 
   function backHome() { keyHandler(null); if (navDepth >= 2) history.back(); else homeFn()(); }
@@ -901,17 +1193,28 @@
     var govMeta = govToday
       ? 'Today\u2019s best ' + govToday.best.toLocaleString() + (gvBest > govToday.best ? ' \u00b7 record ' + gvBest.toLocaleString() : ' \u00b7 that\u2019s your record') + ' \u00b7 run it again \u2192'
       : (gvBest ? 'Personal best ' + gvBest.toLocaleString() + ' \u00b7 play \u2192' : 'No score on the board yet \u00b7 play \u2192');
+    var scen = deck.scenarios, scenDone = scen.filter(function (x) { return S.scen[x.id]; }).length;
+    var scenReady = scen.filter(function (x) { return S.scen[x.id] === 3; }).length;
     return '<div class="st-tools-label">Interactive practice · jump in any time</div>' +
       '<div class="st-games-head"><h2 class="st-h2" style="margin:2px 0 0">Practice Range</h2>' +
       (run >= 2 ? '<span class="st-streak" title="Days in a row with at least one round played \u2014 weekends don\u2019t break it"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' + run + '-day streak</span>' : '') +
       '</div>' +
       '<p class="st-sub">Practice by deciding, not reviewing \u2014 from the daily word to a 90-second reflex round to a full source selection you sit down with.</p>' +
+      '<div class="st-sims">' +
       '<a class="st-sim-feature" href="/source-selection">' +
       '<span class="st-sim-kick">Flagship \u00b7 Simulator</span>' +
       '<b class="st-sim-title">Source Selection Simulator</b>' +
       '<span class="st-sim-desc">Take the Source Selection Authority\u2019s chair on a $250M best-value tradeoff \u2014 nine decisions, a live protest-risk score, and every call cited to the DoD Source Selection Procedures.</span>' +
       '<span class="st-sim-chips"><span class="st-sim-chip">\u2248 18 min</span><span class="st-sim-meta">$250M best-value \u00b7 9 decisions \u00b7 untimed</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">\u2192</span></a>' +
+      '<button class="st-sim-feature" id="g-board">' +
+      '<span class="st-sim-kick">Flagship \u00b7 Simulator</span>' +
+      '<b class="st-sim-title">Board Simulator</b>' +
+      '<span class="st-sim-desc">Sit the board. A panel puts a situation to you, you answer out loud, then the debrief and its follow-ups press on the parts you left thin \u2014 every call cited.</span>' +
+      '<span class="st-sim-chips"><span class="st-sim-chip">' + scen.length + ' scenarios</span><span class="st-sim-meta">' +
+      (scenDone ? scenDone + ' faced \u00b7 ' + scenReady + ' board-ready' : 'answer aloud \u00b7 untimed \u00b7 follow-ups') + '</span></span>' +
+      '<span class="st-sim-go" aria-hidden="true">\u2192</span></button>' +
+      '</div>' +
       donePanel +
       '<div class="st-plates">' + comboCard +
       '<button class="st-plate' + (govToday ? ' st-plate-played' : '') + '" id="g-governs">' +
@@ -925,6 +1228,9 @@
   function wireGamesSection() {
     if (el('g-combo')) el('g-combo').onclick = function () { depth1View = viewCombo; goDepth(1, viewCombo); };
     if (el('g-governs')) el('g-governs').onclick = function () { depth1View = viewGoverns; goDepth(1, viewGoverns); };
+    // Board Sim is track-independent (it reads deck.scenarios), so it runs straight from
+    // the landing page without a module chosen first.
+    if (el('g-board')) el('g-board').onclick = function () { goDepth(1, viewBoard); };
   }
 
   /* ---- The Warrant Ladder — rung-scoped recall, every answer backed by the regulation's

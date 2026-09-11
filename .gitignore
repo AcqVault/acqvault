@@ -226,3 +226,4 @@ _local_archive/
 
 # Impeccable design-tool local state
 .impeccable/
+.local/
