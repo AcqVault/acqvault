@@ -1702,7 +1702,8 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-daily-num{font-family:var(--ui,inherit) !important;font-size:30px !important;font-weight:700 !important;
   color:var(--ink) !important;letter-spacing:-.02em !important;line-height:1.05 !important}
 .st-daily-what{color:var(--ink) !important;font-size:16px !important;font-weight:650 !important}
-.st-daily-sub{color:var(--muted) !important;font-size:12.5px !important;line-height:1.5 !important}
+.st-daily-sub{color:var(--muted) !important;font-size:12.5px !important;line-height:1.5 !important;
+  max-width:66ch !important;margin-top:5px !important}
 .st-daily-go{color:var(--brass) !important}
 .st-daily .st-daily-row{align-items:baseline !important;gap:9px !important}
 
