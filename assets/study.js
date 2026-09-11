@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var DECK_URL = '/assets/study-deck.json?v=42';
-  var ELEMENTS_URL = '/assets/study-elements.json?v=1';
+  var ELEMENTS_URL = '/assets/study-elements.json?v=2';
   var ELEMENTS = null;
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)

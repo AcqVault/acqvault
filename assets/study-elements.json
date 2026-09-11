@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "generated": "2026-09-10",
  "elements": {
   "5f9a44f71c12": [
@@ -427,6 +427,1360 @@
    "Named the CDA claim certification above $100K",
    "Said they are two different certifications",
    "Placed the REA certification in the R-DFARS"
+  ],
+  "935ffc933d7a": [
+   "Named all five — data rights, switching, base, urgency, economics",
+   "Asked whether anyone else can get the data",
+   "Said the urgency has to be honestly assessed",
+   "Called these evidence, not downstream execution details"
+  ],
+  "d0361b53188e": [
+   "Named the inventory — data rights, deliverables, GFP, licenses, funding",
+   "Specified deliverables — source, build, interfaces",
+   "Counted GFP and tooling the Government holds",
+   "Said the inventory, not CPARS, shows who else could perform"
+  ],
+  "33042bd006cf": [
+   "Said lack of advance planning — never",
+   "Allowed protests and directed strategy changes as real causes",
+   "Said rewarding late starts would make poor planning a strategy"
+  ],
+  "053cbeea5e42": [
+   "Named all five — data rights, switching, base, urgency, lifecycle economics",
+   "Put technical data sufficiency first",
+   "Counted qualification and switching cost AND time",
+   "Said facts on each go in the file"
+  ],
+  "079022ee3f6d": [
+   "Named fresh sources-sought and RFIs",
+   "Named industry days",
+   "Analyzed capability against the tech data package",
+   "Said asking the incumbent is passive and finds nothing"
+  ],
+  "abce5003908c": [
+   "Cited RFO 6.103-1 — one responsible source",
+   "Put the J&A at the right approval tier",
+   "Said the research must survive a competitor's lawyer",
+   "Kept urgency (6.103-2) a different exception"
+  ],
+  "27b9ce4d2c0e": [
+   "Named all three — express, implied, apparent",
+   "Said apparent binds nothing",
+   "Called express the warrant, implied what it necessarily includes",
+   "Said contractor good faith doesn't fix it"
+  ],
+  "88dd62fee9f3": [
+   "Named all six — proper-if-CO, benefit, authority, price, funds, Legal",
+   "Said it had to be proper if a CO had done it",
+   "Required funds available then and now",
+   "Said good faith and urgency are not on the list"
+  ],
+  "e982f0457dbb": [
+   "Said the HCA ratifies both — same answer",
+   "Said the dollar figures don't change it",
+   "Said delegable, never below the chief of the contracting office",
+   "Said the SAT-based split isn't in the RFO"
+  ],
+  "2949d2327e73": [
+   "Named offer/acceptance, consideration, competency, legality, certainty",
+   "Called them common-law and service-agnostic",
+   "Kept funding, signatures and warrants out of the five"
+  ],
+  "355276c46d67": [
+   "Said it can't be ratified without acceptance or benefit",
+   "Moved the contractor's remedy to a claim",
+   "Named quantum meruit through Legal",
+   "Said the documented record is my job either way"
+  ],
+  "5b24c7798b4a": [
+   "Said document the refusal and proceed",
+   "Reconstructed the facts from correspondence and witnesses",
+   "Put the refusal itself in the record",
+   "Said the package still needs the story"
+  ],
+  "70fbb68e0e19": [
+   "Answered yes — implied authority is legally valid",
+   "Derived it from what the position's duties reasonably imply",
+   "Named apparent authority as the trap",
+   "Said looking authorized isn't being authorized"
+  ],
+  "0998b7e6e642": [
+   "Named both — source selection information and bid/proposal data",
+   "Kept CUI and PII under other regimes",
+   "Kept CPARS out of RFO 3.104"
+  ],
+  "322937e75d22": [
+   "Called Legal immediately",
+   "Identified and contained the disclosure",
+   "Had the recipient delete with signed confirmation",
+   "Said cancelling the solicitation comes later, if at all"
+  ],
+  "25228f00090d": [
+   "Said the HCA decides",
+   "Said disqualification and cancellation are HCA-level calls",
+   "Put Legal on the analysis",
+   "Kept the SSA on the selection, not the integrity call"
+  ],
+  "c28f28ca63f2": [
+   "Named three concrete practices, not general vigilance",
+   "Named two-person review before release",
+   "Named encryption with separate passwords",
+   "Named SSI cover sheets or disabling auto-complete"
+  ],
+  "f78b31102ae4": [
+   "Answered no — her word doesn't close it",
+   "Required a signed affidavit covering all copies",
+   "Said the CO's written determination still has to be made",
+   "Said if it went to an offeror, it's HCA territory"
+  ],
+  "99d0a01bede1": [
+   "Called it presumptive taint of the competition",
+   "Said the HCA decides",
+   "Put disqualification and cancellation on the table",
+   "Said it's a decision, not an automatic outcome"
+  ],
+  "f46f3249feba": [
+   "Said attempting to obtain SSI is itself a PIA problem",
+   "Said the statute reaches the ask, not just the leak",
+   "Documented it, reported it, briefed the team",
+   "Rejected 'no harm until something was shared'"
+  ],
+  "9602ba9c7412": [
+   "Named all three and picked biased ground rules as hardest",
+   "Named unequal access",
+   "Named impaired objectivity",
+   "Said no firewall un-shapes a requirement — exclusion follows"
+  ],
+  "b25c39993384": [
+   "Said avoid, neutralize, mitigate — in that order",
+   "Said avoidance kills the conflict",
+   "Said mitigation only manages what remains",
+   "Called disclose/firewall/exclude tools inside the framework"
+  ],
+  "491f47d224e6": [
+   "Said the agency head or a designee",
+   "Answered yes — it is delegable",
+   "Made the HCA the floor, not the holder",
+   "Cited RFO 9.503"
+  ],
+  "57ce0f1a8517": [
+   "Answered false",
+   "Said the access imbalance itself is the conflict",
+   "Said you never have to show the information was used",
+   "Said a use requirement would gut the protection"
+  ],
+  "74433b82312d": [
+   "Said biased ground rules",
+   "Said a firewall can't un-shape a requirement already written",
+   "Said exclusion is the usual outcome",
+   "Said screen for it before solicitation, not after proposals"
+  ],
+  "735bd0bd5fe4": [
+   "Answered no — type drives remedy",
+   "Said a firewall addresses unequal access going forward",
+   "Said ground rules were written in the past — no wall reaches back",
+   "Refused the certification before typing the conflict"
+  ],
+  "ec763e1449e6": [
+   "Said the PCO decides",
+   "Said panels, Legal and reviewers only advise",
+   "Kept the decision and the accountability with the CO",
+   "Said the HCA's instrument is the waiver, not this"
+  ],
+  "d146eee4b073": [
+   "Recited all seven standards",
+   "Named finances, schedule, performance record, integrity",
+   "Named organization/experience/controls, equipment/facilities, eligibility",
+   "Said responsibility is about the firm, decided at award"
+  ],
+  "00c9dd64b727": [
+   "Named SAM exclusions and FAPIIS",
+   "Said SAM exclusions on every action, no floor",
+   "Put FAPIIS over the SAT — $350K"
+  ],
+  "97fe9fa8f578": [
+   "Said refer to the SBA",
+   "Said a Certificate of Competency conclusively establishes responsibility",
+   "Said the CO's finding doesn't stand against a CoC",
+   "Called skipping the referral a protest waiting to happen"
+  ],
+  "389e9eb3be11": [
+   "Said the Government's — doubt means no",
+   "Said SAM registration creates no presumption of responsibility",
+   "Put the burden on the offeror",
+   "Said a pre-award survey informs but doesn't reverse the default"
+  ],
+  "f5625f2376c1": [
+   "Said a CoC is conclusive — I award",
+   "Protected the Government through administration",
+   "Named a solid QASP and milestone surveillance",
+   "Engaged early at the first sign of trouble"
+  ],
+  "9a68017198a8": [
+   "Said only on the standards, only on facts",
+   "Said distrust without documentation is no basis",
+   "Said GAO reads the record, not your instinct"
+  ],
+  "1e37736760b9": [
+   "Distinguished the two — excluded vs. fails the standards",
+   "Said ineligible means no award at any dollar value",
+   "Tied ineligible to SAM exclusion or debarment",
+   "Said non-responsible is this award, on today's facts"
+  ],
+  "5fec57ac3832": [
+   "Named all four questions",
+   "Asked who is capable and whether it's commercial",
+   "Asked about small-business capability and industry practices",
+   "Said research builds the map — competition makes the pick"
+  ],
+  "602833ee075f": [
+   "Said there is no set currency period",
+   "Cited RFO 10.001(b) — tied to the event it supports",
+   "Said the 18-month rule doesn't exist in the RFO",
+   "Asked whether it covers the requirement, not how old it is"
+  ],
+  "e5a6fa168f8b": [
+   "Named five methods, not one",
+   "Named sources sought and RFIs",
+   "Named industry days and SME/vendor engagement",
+   "Named prior-buy history and catalogs"
+  ],
+  "f4ad30db7f45": [
+   "Named the market research report",
+   "Said the J&A, set-aside and CID all lean on it",
+   "Said undocumented research can't hold that weight",
+   "Called a post-hoc memo reconstruction, not research"
+  ],
+  "fec7186d421c": [
+   "Said one response isn't market absence — it's a data point",
+   "Widened the net before concluding",
+   "Named direct outreach, industry channels, adjacent NAICS",
+   "Said the J&A will be judged on the effort"
+  ],
+  "d98f94d84eac": [
+   "Said research is the evidence, competition is the decision",
+   "Said research tells me whether the Rule of Two is met",
+   "Said it shows whether full-and-open is realistic",
+   "Said research replaces none of them"
+  ],
+  "9364dd1a8da7": [
+   "Called it backwards — research shapes, it doesn't justify",
+   "Pushed for a performance-based restatement",
+   "Used the research to show what the market can deliver"
+  ],
+  "094a9da4d668": [
+   "Named four mandatory sources, in order",
+   "Started with agency inventory, then excess from other agencies",
+   "Named Federal Prison Industries, then AbilityOne",
+   "Put RFO 8.104 existing contracts next — not a seven-rung ladder"
+  ],
+  "3b8d75841b8f": [
+   "Said AbilityOne",
+   "Said the statutory program outranks convenience",
+   "Kept UNICOR's mandatory position to supplies"
+  ],
+  "f923c906e0d0": [
+   "Said the ordering contracting officer",
+   "Said GSA's schedule pricing doesn't substitute",
+   "Said GSA negotiated ceilings government-wide, not my buy",
+   "Called comparing quotes and seeking discounts the CO's job"
+  ],
+  "94b92b91c879": [
+   "Said mandatory means mandatory",
+   "Said price alone doesn't unlock the open market",
+   "Conditioned it on the item meeting the need",
+   "Worked fit and availability through the program, on the record"
+  ],
+  "f355210cde61": [
+   "Said GSA negotiated a ceiling, not my price",
+   "Said it isn't my quantity, configuration or competitive moment",
+   "Called comparing holder quotes the ordering CO's job",
+   "Said ask for discounts"
+  ],
+  "fa14b528a799": [
+   "Said sold, leased or licensed to the general public",
+   "Included items evolved and available in time",
+   "Allowed minor mods that don't alter form, fit or function",
+   "Kept Government sales history as evidence, not the definition"
+  ],
+  "fe82a9fce34d": [
+   "Said over the SAT, in writing",
+   "Cited R-DFARS 212.001-70(c) — a DoD rule, not Part 12",
+   "Said one level above the CO only for definition (1)(ii), (3) or (4)",
+   "Said the approval isn't automatic above the SAT"
+  ],
+  "5a3c40a9312a": [
+   "Said RFO 12.201-1 and $9M",
+   "Said the cite and the ceiling travel together"
+  ],
+  "49c3619626fe": [
+   "Named two gets and two takes",
+   "Got freedom from certified data and streamlined FFP terms",
+   "Gave up broader rights — only customary market data rights",
+   "Gave up Part 49's termination machinery"
+  ],
+  "dae423615094": [
+   "Put competition first",
+   "Named catalog and published prices",
+   "Named sales history to other customers and parametric comparison",
+   "Said I can require data other than certified when evidence is thin"
+  ],
+  "6e762e558b4b": [
+   "Tested it against form, fit and function of the base item",
+   "Said a change to what the item fundamentally does isn't minor",
+   "Called it a facts-and-engineering call",
+   "Documented it in the CID"
+  ],
+  "b80033fbefef": [
+   "Said commercial uses the clause's cause/convenience framework",
+   "Said Part 49's default machinery doesn't apply as such",
+   "Named cure notices and excess reprocurement as Part 49 items"
+  ],
+  "34673e1efe8e": [
+   "Named all three lanes with their boundaries",
+   "Put the GPC at or below $15K",
+   "Put purchase orders from $15K to the $350K SAT",
+   "Called BPAs an account for repetitive needs, not a contract"
+  ],
+  "8b949db1e574": [
+   "Said small business",
+   "Excepted it when capable small sources can't be found",
+   "Named the Rule of Two as the actual trigger, above the MPT",
+   "Required documented absence, not vendor preference"
+  ],
+  "03458c10c23f": [
+   "Named a documented single-source rationale",
+   "Added price reasonableness",
+   "Said no formal J&A below the SAT",
+   "Said 'no formal J&A' never means no documentation"
+  ],
+  "3ad36f49ee18": [
+   "Said $9M",
+   "Cited RFO 12.201-1"
+  ],
+  "2c3a46f79aaf": [
+   "Called it splitting a known requirement to evade the MPT",
+   "Called it a bright-line violation",
+   "Said cardholder limits and cost centers don't change it",
+   "Said one $210K requirement is one PO, small business first"
+  ],
+  "9a7d7ce960be": [
+   "Said a BPA is an account, not a contract",
+   "Said no obligation exists until a call is placed",
+   "Moved big, defined, multi-year needs into a real vehicle",
+   "Said treating a BPA like a contract erodes fiscal discipline"
+  ],
+  "754298487c89": [
+   "Said yes, if I can call the price fair and reasonable",
+   "Compared to history, catalogs and the IGCE",
+   "Documented the conclusion",
+   "Said there is no three-quote rule"
+  ],
+  "f67eaf0a98e1": [
+   "Said a reasonable expectation of two or more capable small businesses",
+   "Added at fair market prices",
+   "Anchored it at strategy time, from research",
+   "Said it isn't a post-receipt count or a two-quote rule"
+  ],
+  "b23a98ab7ac6": [
+   "Said $5.5M HUBZone other, $5M SDVOSB other, $100M 8(a) DoD with no J&A"
+  ],
+  "91821da14882": [
+   "Said DD Form 2579",
+   "Said it records the set-aside analysis and who concurred",
+   "Kept SF 1449 and DD 1547 as different forms"
+  ],
+  "7217434521d2": [
+   "Said $900K, $2M construction"
+  ],
+  "fdfcedccde23": [
+   "Said award if the offer is fair-market priced",
+   "Said the Rule of Two tests the expectation, not the final count",
+   "Documented what changed between research and offers",
+   "Called withdrawing the set-aside over turnout protest bait"
+  ],
+  "1658ed2fe51a": [
+   "Answered no — not unilaterally",
+   "Said once in 8(a), it stays unless SBA releases it",
+   "Said incumbent graduation doesn't undo the hold",
+   "Named it the 8(a) follow-on trap"
+  ],
+  "f10497ad0ee0": [
+   "Said not below $100M for DoD",
+   "Said the program's statutory basis is the exception",
+   "Named the authorized-by-statute lane",
+   "Kept $30M as the civilian line"
+  ],
+  "a78f420d29c1": [
+   "Named all four — SAP, statute, in-scope mods, orders under vehicles",
+   "Said CICA's full-and-open machinery never attaches there",
+   "Kept them distinct from the seven exceptions",
+   "Said the exceptions excuse competition where it does attach"
+  ],
+  "8575184a4e67": [
+   "Named all seven exceptions",
+   "Named one source, urgency, industrial mobilization/R&D",
+   "Named international agreement, statute, national security, public interest",
+   "Kept logical follow-on and best value out of Part 6"
+  ],
+  "2406b1119b1b": [
+   "Put $18M with the Competition Advocate",
+   "Put $95M DoD with the HPA/PEO — the DoD tier runs to $150M",
+   "Put $160M DoD with the SPE"
+  ],
+  "c06634e050d7": [
+   "Said 14 days, and 30 days for urgency"
+  ],
+  "6ca8add7db5e": [
+   "Checked whether offerors had under 30 days to respond",
+   "Consulted the requiring activity and resolicited for at least 30",
+   "Found out why only one firm bid, and documented it",
+   "Said award can still be made if the price is fair and reasonable"
+  ],
+  "fba64c8b4c70": [
+   "Said exclusion still competes, in a narrowed field",
+   "Gave a set-aside as the everyday example",
+   "Said 'other than' means one or few under a 6.103 exception",
+   "Said exclusion needs no J&A; 'other than' does"
+  ],
+  "e1ade89aced2": [
+   "Put $40M with the HPA/PEO",
+   "Put $15M with the Competition Advocate",
+   "Named the bands — $900K, $20M, $90M/$150M DoD, above"
+  ],
+  "6e1d02b83f70": [
+   "Allowed it only for a genuinely unforeseen cause",
+   "Named a protest, a directed strategy change, a regulatory change",
+   "Said 'we didn't plan' is never a valid basis",
+   "Said repeat bridges escalate to higher approval each time"
+  ],
+  "3d44b1b923cc": [
+   "Named all three — clarifications, communications, discussions",
+   "Kept clarifications and communications free of revisions",
+   "Put discussions post-range, meaningful, everyone in the range",
+   "Named the revision line as what separates the lanes"
+  ],
+  "ef642dc89894": [
+   "Named all three — SSEB, SSA, PCO",
+   "Said the SSEB evaluates",
+   "Said the SSA decides",
+   "Said the PCO runs the business side"
+  ],
+  "56466fa2b9dc": [
+   "Required both halves — the solicitation said so and the proposals support it",
+   "Said 'everyone was acceptable' isn't the test",
+   "Said no dollar threshold or SSA urgency finding substitutes"
+  ],
+  "69f57fa773b3": [
+   "Included the evaluated result, significant weaknesses, ranking and rationale",
+   "Excluded other offerors' proposal contents",
+   "Said a defensive debrief provokes the protest it feared"
+  ],
+  "8bba3e5c70c4": [
+   "Required the solicitation to have preserved it",
+   "Required initial proposals that support a clean award",
+   "Said discussions usually earn their keep on large, complex actions",
+   "Said weigh it rather than autopilot it"
+  ],
+  "5be0fb484cba": [
+   "Called it a communication, not discussions",
+   "Routed it through me, documented",
+   "Allowed no proposal revisions",
+   "Said inviting a revision makes it discussions"
+  ],
+  "a2ba32887821": [
+   "Answered no — price is never adjectivally rated",
+   "Said price is evaluated — analyzed, realism-checked where applicable",
+   "Said it enters the tradeoff as a number with analysis behind it",
+   "Called rating price a protest-sustainable process error"
+  ],
+  "31ebec1f7357": [
+   "Said each offeror hears its own significant weaknesses and deficiencies",
+   "Required enough substance to respond",
+   "Said tailored, not generic, and even-handed across the range",
+   "Called identical question lists the opposite of meaningful"
+  ],
+  "257067de1eaf": [
+   "Said $10M for actions entered after 30 Jun 2026",
+   "Cited FY26 NDAA §1804",
+   "Kept $2.5M for earlier contracts and their mods"
+  ],
+  "d097b13b7eac": [
+   "Recited CLAWM — commercial, law, adequate competition, waiver, commercial mods",
+   "Put the waiver at the HCA",
+   "Cited RFO 15.403-2",
+   "Said run the exceptions before demanding certified data"
+  ],
+  "37a864f423df": [
+   "Said price analysis, always — 15.404-1",
+   "Put cost realism on competitive cost-type source selections — 15.404-3",
+   "Said an unrealistically low estimate becomes the Government's overrun",
+   "Didn't flip 'always' onto cost analysis"
+  ],
+  "9135a54de3d6": [
+   "Named all five elements",
+   "Said the data existed before agreement and wasn't disclosed",
+   "Said the Government relied and the price increased",
+   "Said intent is not an element"
+  ],
+  "dfb052112b10": [
+   "Said 15% R&D, 10% most others, 6% A-E",
+   "Said R-DFARS 236.202-371 raises A-E to 10% for Army, Navy, Air Force"
+  ],
+  "4882451c81b3": [
+   "Said the certificate is the difference — the data can be identical",
+   "Said other-than-certified supports reasonableness when an exception applies",
+   "Said no certificate, no defective-pricing remedy"
+  ],
+  "e9eebb79ec77": [
+   "Said sweeps are recommended, not required",
+   "Before award, incorporated it — adjusting down if the price is lower",
+   "Said a higher corrected price generally falls on the contractor",
+   "Said after award it's defective pricing — reduction plus interest, with Legal"
+  ],
+  "bb5d54c6428b": [
+   "Documented exactly what was requested and refused",
+   "Used DCMA/DCAA to press the field organization",
+   "Elevated through the contractor's management",
+   "Said no award without a fair and reasonable determination"
+  ],
+  "23a76094f31e": [
+   "Said field pricing support scales with dollars and contract type",
+   "Put DCMA rate support at about $2.5M fixed-price / $10M cost-type",
+   "Put DCAA audit at $10M fixed-price / $100M cost-type",
+   "Said below those, my pricing office and I work it"
+  ],
+  "16ab3e99a934": [
+   "Named five factors, not one",
+   "Named requirement definition and estimate confidence",
+   "Named technical risk and competition",
+   "Named the accounting system and acquisition history"
+  ],
+  "14098e56ac12": [
+   "Wrote PTA = (Ceiling − Target Price) ÷ Gov share + Target Cost",
+   "Said past it, every cost dollar comes out of profit",
+   "Said the contractor is effectively on FFP to the ceiling"
+  ],
+  "27c7b7ae60aa": [
+   "Named both — an adequate accounting system and a D&F",
+   "Tied the accounting system to paying incurred costs",
+   "Said the D&F justifies the type",
+   "Said audits and EVMS aren't the entry gates"
+  ],
+  "914312282d4c": [
+   "Said $100M DoD, $10M most agencies"
+  ],
+  "4a53dd3a86a4": [
+   "Called it the point where the ceiling takes over",
+   "Gave (ceiling − target price) ÷ Government share + target cost",
+   "Said past it each cost dollar comes out of profit",
+   "Said the contractor is effectively on FFP to the ceiling"
+  ],
+  "00a3e3b0f091": [
+   "Called FFP on high-uncertainty work risk denial, not transfer",
+   "Said the contractor pads the price",
+   "Said or fails trying — schedule and litigation",
+   "Called matching type to requirement definition the risk management"
+  ],
+  "09238d21878e": [
+   "Said CPFF fee is fixed at award regardless of cost outcome",
+   "Said CPIF fee slides with cost performance inside a min/max",
+   "Said CPFF buys effort under uncertainty",
+   "Said CPIF buys cost discipline when a credible target exists"
+  ],
+  "cbfaf59067d1": [
+   "Named all six exceptions",
+   "Named urgency, only-one-capable, logical follow-on",
+   "Named minimum guarantee, statute, and the DoD/NASA/Coast Guard 6.103 lane",
+   "Said an order-level set-aside is a separate authority, not an exception"
+  ],
+  "371dd965aeaf": [
+   "Said $7.5M, then $35M DoD / $10M civilian",
+   "Added scope, period or ceiling growth at any value"
+  ],
+  "e55b451c54d0": [
+   "Named it a Justification for an Exception to Fair Opportunity",
+   "Put $12M with the Competition Advocate",
+   "Said it's a justification, not a 'determination and approval'",
+   "Said the Competition Advocate tier is not delegable"
+  ],
+  "7f8ae2a073cc": [
+   "Required genuine continuity economics",
+   "Required the original order to have been competed or properly excepted",
+   "Said switching mid-stream costs duplication the Government can't recover",
+   "Said it weakens every time you stack it"
+  ],
+  "411383984316": [
+   "Sent them to the task-order ombudsman",
+   "Said consideration has to be real",
+   "Said rotating 'considered but lost' paperwork isn't fair opportunity",
+   "Kept it below GAO's protest thresholds"
+  ],
+  "a84f89841e2d": [
+   "Answered yes — order-level set-asides are a recognized lane",
+   "Documented the Rule-of-Two logic among the holders",
+   "Said the analysis just moves down to the order",
+   "Said no SBA waiver and no HCA approval are needed"
+  ],
+  "d3ad752c3a10": [
+   "Named every gate at RFO 17.204-1(b)",
+   "Named written notice in time and funds available",
+   "Named an existing requirement, synopsized or exempt, no active SAM exclusion",
+   "Named acceptable performance, a fair and reasonable price, Part 6 compliance",
+   "Rejected 'most advantageous' as deleted legacy language"
+  ],
+  "6c5a58ff220f": [
+   "Said the unilateral right lapses",
+   "Said continuation becomes bilateral",
+   "Said the contractor holds the leverage",
+   "Said there's no grace period and no self-execution"
+  ],
+  "601bc4a3f51d": [
+   "Said about 5 years for SCLS-covered services, 6 months under 52.217-8",
+   "Cited RFO 22.1002-2(a)(2) and 41 U.S.C. 6707(d)",
+   "Said subpart 17.2 itself sets no 5-year limit",
+   "Kept RFO 17.101 as multiyear authority, not the basis"
+  ],
+  "b44fe61a6e11": [
+   "Named all three situations",
+   "Said no realistic exercise chance — they still get evaluated and priced",
+   "Said pricing too volatile to hold",
+   "Said the full requirement already known and funded — just buy it"
+  ],
+  "475b34081f6a": [
+   "Tested the option price against current market conditions",
+   "Required it to still be in the Government's best interest",
+   "Cited RFO 17.204-1(b)(3)(v)",
+   "Said a new competition may be the honest answer"
+  ],
+  "ba30d92e9d08": [
+   "Said the unilateral right is gone",
+   "Made continuation a bilateral, negotiated agreement",
+   "Said the contractor holds the leverage",
+   "Fixed the suspense system that let it slip"
+  ],
+  "f97057872250": [
+   "Said the performance gate exists for exactly this",
+   "Said renewing past flags teaches the contractor the flags don't matter",
+   "Called options leverage",
+   "Decided from the documented record, not inertia"
+  ],
+  "1a7280063aa0": [
+   "Said direct is our CO ordering on their vehicle",
+   "Said assisted is their shop buying for us",
+   "Required a signed interagency agreement before money moves",
+   "Said the MIPR moves funds; the agreement moves accountability"
+  ],
+  "03912734ae0e": [
+   "Said it applies only absent a more specific authority",
+   "Named the MIPR",
+   "Named the D&F",
+   "Said the D&F finds Government interest and no cheaper private source"
+  ],
+  "81c22ad0ff0e": [
+   "Answered no",
+   "Said purpose, time and amount travel with the money",
+   "Called parking expiring funds a bona fide need violation"
+  ],
+  "1c73eb1e13f9": [
+   "Said accountability doesn't transfer with the money",
+   "Kept the requirement, the fiscal rules and the outcome ours",
+   "Said the D&F proves the lane was chosen deliberately"
+  ],
+  "d47826054011": [
+   "Said direct — our CO places the order under their contract's terms",
+   "Said assisted — their CO acts for us",
+   "Said the interagency agreement must define roles before a dollar moves"
+  ],
+  "31fa4c1d65e4": [
+   "Said whenever a more specific authority exists",
+   "Said schedules and GWACs carry their own authority",
+   "Said citing it for a schedule order shows a memorized name"
+  ],
+  "865c5b59889b": [
+   "Said what each letter tests, not just the acronym",
+   "Tied Time to availability plus bona fide need",
+   "Tied Purpose to appropriated use",
+   "Tied Amount to the Anti-Deficiency lines"
+  ],
+  "f811078a5729": [
+   "Said 1 year, 2 years, 3 years"
+  ],
+  "92137dc41e3b": [
+   "Said severable up to 12 months on current funds",
+   "Said severable may cross fiscal years",
+   "Said non-severable is fully funded up front",
+   "Named incremental funding of non-severable work as the violation"
+  ],
+  "206519197f54": [
+   "Put LoC on fully funded cost contracts, LoF on incremental",
+   "Said both demand notice around 75%",
+   "Said the notice duty is the contractor's"
+  ],
+  "bf3e0d2d35a5": [
+   "Named all five, in order — five, not four",
+   "Started with private financing without Government guarantee",
+   "Kept loan guarantees their own rung between customary and unusual",
+   "Ended with unusual financing, then advance payments"
+  ],
+  "0940c9e30eca": [
+   "Said no timely notice, no entitlement to overrun funding",
+   "Said the limitation clause allocates that risk",
+   "Said the Government may fund, but doesn't have to",
+   "Got the facts first — when they knew, when they told"
+  ],
+  "4786456e7df2": [
+   "Said PBPs pay for demonstrated events, not incurred cost",
+   "Named better incentive alignment",
+   "Said they're recoverable in default",
+   "Said less administration on costs"
+  ],
+  "5287299658a9": [
+   "Answered yes — within the 5-year expired window",
+   "Limited it to adjustments to obligations properly made when current",
+   "Said after cancellation, no"
+  ],
+  "10d9176e0623": [
+   "Matched all three funding sources to their rights",
+   "Said all Government money yields unlimited rights",
+   "Said mixed yields GPR, converting to unlimited after the period",
+   "Said all private yields limited (data) / restricted (software)"
+  ],
+  "dc9d63e216de": [
+   "Said the contractor bears it",
+   "Required proof of development at private expense",
+   "Said at the claimed component level",
+   "Said the Government challenges markings, it doesn't disprove them"
+  ],
+  "1897287818e5": [
+   "Said any Government purpose",
+   "Included competitive reprocurement under nondisclosure protections",
+   "Said no commercial use"
+  ],
+  "1e541a005b1d": [
+   "Gave the sequence — challenge, response, CO final decision, appeal",
+   "Put the contractor's response at 60 days",
+   "Said honor the markings until it's resolved",
+   "Said using challenged data turns my challenge into their claim"
+  ],
+  "032b56dd9559": [
+   "Said unmarked data under the clause is effectively unrestricted",
+   "Confirmed it through Legal before acting",
+   "Said the honest move is verifying, not pouncing"
+  ],
+  "aec2a5f0d5a4": [
+   "Answered yes — reprocurement is a Government purpose",
+   "Put recipients under nondisclosure protections",
+   "Said no consent needed and no conversion triggered"
+  ],
+  "d9728d22f03d": [
+   "Said integration doesn't launder rights",
+   "Mapped rights component by component, following each one's funding",
+   "Said majority funding owns nothing",
+   "Demanded the assertion list at that granularity"
+  ],
+  "6a11574a91ff": [
+   "Named all four corners",
+   "Led with what the competition anticipated",
+   "Named contract type, period and cumulative cost",
+   "Said price/schedule/quality is administration, not scope"
+  ],
+  "9a4b9a27a8a7": [
+   "Put admin changes, in-scope change orders and options unilateral",
+   "Put substantive negotiated changes bilateral",
+   "Said the nature of the change picks the instrument, not dollar value"
+  ],
+  "586079a92783": [
+   "Said constructive is Government conduct changing work without direction",
+   "Said cardinal exceeds what was competed — potential breach",
+   "Said a constructive change may owe an equitable adjustment",
+   "Said no Changes clause authorizes a cardinal change"
+  ],
+  "9bc383dbae8c": [
+   "Said the original contract, all mods cumulative",
+   "Said never against mod 99",
+   "Called increment-to-increment judging how scope creep launders itself"
+  ],
+  "8aa5f01751f6": [
+   "Said the PCO, with Legal, documented",
+   "Said Legal advises, it doesn't decide",
+   "Kept the requiring activity out of the call",
+   "Said GAO reviews the record you built"
+  ],
+  "31c163317cef": [
+   "Walked them through the scope analysis, because it's in the file",
+   "Said an analysis never done is itself the finding",
+   "Said publicity follows scope",
+   "Said in-scope mods aren't competed or synopsized; new work is"
+  ],
+  "6504b5459390": [
+   "Called it a constructive change candidate",
+   "Said Government conduct changed the work",
+   "Said the contractor asserts its costs and I sort entitlement",
+   "Fixed the direction channel — all direction through the PCO"
+  ],
+  "0dfb17f96311": [
+   "Said contractors furnish their own property by default",
+   "Required all four parts, not any one",
+   "Named best interest and benefit exceeding burden",
+   "Named no substantial risk increase and no other way to meet the need"
+  ],
+  "b28157767da0": [
+   "Said the requiring activity — the PM",
+   "Said it goes to the PCO",
+   "Said they own the need, so they owe the case",
+   "Kept the property administrator to post-decision management"
+  ],
+  "3158001b7994": [
+   "Named three functions, not one",
+   "Named marking and IUID",
+   "Named loss reporting and property-system administration",
+   "Named disposal"
+  ],
+  "341dd8c15189": [
+   "Called it Government-caused delay",
+   "Named schedule and equitable-adjustment exposure",
+   "Said furnishing property puts the Government on the critical path"
+  ],
+  "d65fd276392a": [
+   "Ran the loss-reporting clause machinery",
+   "Reported and investigated",
+   "Determined liability under the risk allocation",
+   "Adjusted the property record, with the property administrator carrying it"
+  ],
+  "6ca80abcd3f9": [
+   "Said price isn't the only ledger",
+   "Named administration burden and risk shifted to the Government",
+   "Named the Government's own performance obligations",
+   "Called the four-part test that ledger"
+  ],
+  "73f5d430e209": [
+   "Said repair, modification and overhaul work",
+   "Said the property is the requirement there",
+   "Said the four-part test applies everywhere else, at every dollar value"
+  ],
+  "a3f545156ece": [
+   "Said 50% of NTE before, 75% after the qualifying proposal"
+  ],
+  "2681c1606b97": [
+   "Said the earlier of 180 days after the qualifying proposal or 50% of NTE",
+   "Anchored the clock at the proposal, not award",
+   "Said that anchoring makes slow-rolling a leverage play"
+  ],
+  "9da327c97058": [
+   "Named both — lack of planning and administrative convenience",
+   "Allowed real urgency",
+   "Said an 'emergency' everyone saw coming writes its own finding"
+  ],
+  "1ea9123b0f07": [
+   "Said a UCO is an unpriced unilateral change inside an existing scope",
+   "Said a UCA is a new undefinitized contract action",
+   "Said the same discipline applies to both"
+  ],
+  "1a7f42afd631": [
+   "Said every undefinitized month is comfort at negotiation leverage",
+   "Enforced the obligation caps",
+   "Tightened the progress-payment posture",
+   "Called the definitization schedule a contract term to enforce"
+  ],
+  "8cb02d32afa8": [
+   "Said weighted guidelines price risk",
+   "Said actuals on the books evaporate part of the cost risk",
+   "Said fee follows the remaining risk, not the original unknowns"
+  ],
+  "5ec5181c0dc4": [
+   "Said clearance at definitization",
+   "Said award-stage clearance isn't the gate",
+   "Said the UCA's circumstances usually drive a Part 6 exception too",
+   "Named urgency or one-source, with the J&A riding in parallel"
+  ],
+  "228ce47e2920": [
+   "Said business clearance approves the solicitation or opening negotiations",
+   "Said contract clearance approves the negotiated result",
+   "Called one the strategy gate and the other the deal gate"
+  ],
+  "75e3e1529066": [
+   "Said the selector can't approve the selection",
+   "Said a reviewer inside the deal inherits its blind spots",
+   "Put the senior independent look before commitment"
+  ],
+  "9bc237c6018b": [
+   "Said at definitization",
+   "Said that's when there's finally a negotiated result to review",
+   "Said at award there was no price to bless"
+  ],
+  "6094599fbe8c": [
+   "Said the two gates catch two different failures",
+   "Said a sound strategy can still land a bad deal",
+   "Said a good deal can execute an unapproved strategy"
+  ],
+  "dab112eccc73": [
+   "Said the action implements the approved strategy",
+   "Said the price or result is fair and reasonable and supported",
+   "Said the file complies — statute, regulation, policy",
+   "Put all of it before the Government commits"
+  ],
+  "0f9e4ecf763b": [
+   "Said fix what they flagged and come back",
+   "Named position, support or strategy as what gets fixed",
+   "Said there's no appeal to the SSA and no HCA override",
+   "Said clearance friction is cheaper than the failure it prevents"
+  ],
+  "8b9c7e3d137c": [
+   "Said DoD runs the latest of four branches, not the civilian two",
+   "Gave the civilian rule — 10 days from award or 5 from the required debrief",
+   "Cited R-DFARS 233.105-370 in lieu of FAR 33.105-3(b)(1)",
+   "Named the four — award+10, >$25M order+10, debrief offered+5, concluded+5"
+  ],
+  "1780c6714f52": [
+   "Named all three venues with a distinguishing feature each",
+   "Called the agency protest fastest and self-correcting",
+   "Gave GAO the 100-day clock and the automatic stay",
+   "Gave COFC a binding judgment and an injunction instead of a stay"
+  ],
+  "947a8f844e14": [
+   "Said the HCA, in writing",
+   "Named urgent and compelling circumstances",
+   "Named the best interests of the United States",
+   "Said the stay is CICA's teeth — overriding invites COFC review"
+  ],
+  "4fdb9f60ae5d": [
+   "Said $35M DoD / $10M civilian",
+   "Added any value for scope, period or ceiling growth"
+  ],
+  "6e8893851cd4": [
+   "Said the stay applies — day 9 is inside the 10-day award window",
+   "Said the 5-day branch only substitutes when a debrief was requested and given",
+   "Said skipping the debrief doesn't forfeit the award-window branch"
+  ],
+  "18e23264741c": [
+   "Said legally advisory, practically followed",
+   "Said non-compliance is reported to Congress",
+   "Said it torches agency credibility",
+   "Treated a sustain as a to-do list with a deadline"
+  ],
+  "0a27e0de658c": [
+   "Said you don't protest-proof it — you record-proof it",
+   "Stated the criteria and followed them",
+   "Kept evaluations contemporaneous and even-handed, discussions meaningful",
+   "Named an SSDD with real comparative reasoning and a debrief that answers"
+  ],
+  "44ae24d63ca8": [
+   "Named all four differences",
+   "Put interest on the claim only",
+   "Put decision deadlines on the claim only",
+   "Made prep costs allowable on an REA, unallowable on a claim",
+   "Named formality and certification as the fourth seam"
+  ],
+  "150d636afcc2": [
+   "Said $100K, and 6 years from accrual"
+  ],
+  "48a719c5e4a9": [
+   "Said CO silence past the decision deadline operates as a denial",
+   "Said it starts the appeal clock",
+   "Said silence isn't neutral under the CDA"
+  ],
+  "75398b17ddc6": [
+   "Said 90 days to the Board, 12 months to COFC"
+  ],
+  "b98328fb0570": [
+   "Said substance over label — it's functionally a claim",
+   "Named sum certain, certification and a decision demanded",
+   "Said CDA interest and deadlines may already be running",
+   "Classified it with Legal, fast"
+  ],
+  "581360f06c10": [
+   "Named relationship preservation",
+   "Named allowable prep costs",
+   "Named speed and settlement flexibility",
+   "Said the claim lane is leverage that burns goodwill and time"
+  ],
+  "6f4312b0e4da": [
+   "Said notice first",
+   "Required prompt written notice before the condition is disturbed",
+   "Said it lets the Government investigate",
+   "Said no notice, weakened recovery"
+  ],
+  "c8626d42c415": [
+   "Named costs incurred, profit on work performed, settlement expenses",
+   "Limited profit to work actually performed",
+   "Said no anticipatory profit"
+  ],
+  "05859e980773": [
+   "Gave the order — cure notice, show cause, excusability, T4D notice",
+   "Called the T4D notice a final decision",
+   "Said the order is the defense — it builds the record",
+   "Said skipping a step puts the conversion risk on me"
+  ],
+  "83222d5bfd4d": [
+   "Named all three classic causes",
+   "Named acts of God and sovereign/Government acts",
+   "Named fires, epidemics and similar events beyond control without fault",
+   "Kept supplier trouble and labor shortages as ordinary business risk"
+  ],
+  "448ba74b0aca": [
+   "Said it converts to a T4C",
+   "Said the Government owes a settlement instead of recovering costs",
+   "Called the flip from creditor to debtor the reason for the record"
+  ],
+  "47b904708b93": [
+   "Named costs incurred, profit on work done, settlement expenses",
+   "Excluded profit on work never performed",
+   "Said made whole for work performed"
+  ],
+  "dc324798e91b": [
+   "Said the T4D converts to a T4C",
+   "Said the Government pays a settlement instead of collecting costs",
+   "Said the board is enforcing the clause, not being generous",
+   "Put the excusability analysis before the notice"
+  ],
+  "2112ab63ad7b": [
+   "Said a pure failure to deliver on time",
+   "Said the delivery schedule was the cure period",
+   "Said send it anyway when the facts are mixed",
+   "Said a needless cure notice costs ten days, a missing one the termination"
+  ],
+  "b1cc73cb77fe": [
+   "Named all three pieces",
+   "Named broad public announcement and stated criteria",
+   "Named independent scientific merit review",
+   "Said selection is against the standard, not between offerors"
+  ],
+  "5088aa5be62d": [
+   "Named the three phases — feasibility, prototype, production",
+   "Said Phase III has no dollar cap",
+   "Said Phase III is sole-source eligible off competed early phases",
+   "Said SBIR data rights persist"
+  ],
+  "c7271e26f78b": [
+   "Named two honest reasons and the dishonest one",
+   "Named nontraditional participation",
+   "Named terms flexibility a prototype genuinely needs",
+   "Named 'skipping the rules' as the dishonest one"
+  ],
+  "b500c514c03b": [
+   "Called the BAA a recognized competitive procedure",
+   "Named broad public announcement, stated criteria, independent merit review",
+   "Said the market competed by proposing",
+   "Said selection is merit against the standard, not against each other"
+  ],
+  "7c66b5157704": [
+   "Said the statutory program carries it — authorized by statute",
+   "Required the work to derive from competed Phase I/II",
+   "Said the derivation documentation is mandatory"
+  ],
+  "b3c52e3b00a7": [
+   "Named traditional performers and well-understood requirements",
+   "Said when the flexibilities aren't actually needed",
+   "Said OTs trade a mature protections framework for agility",
+   "Said spend that trade only when it buys something"
+  ],
+  "aabfa1cb40d8": [
+   "Matched both — performance to the work, payment to subs and suppliers",
+   "Said subs and suppliers can't lien Government property",
+   "Said the payment bond replaces the lien they'd have commercially"
+  ],
+  "2af78ede4e1a": [
+   "Said written notice before disturbing the condition",
+   "Said it lets the Government investigate the site as found",
+   "Said disturb first and the evidence is gone"
+  ],
+  "5f664e95e8b3": [
+   "Named continuous Government supervision of contractor employees",
+   "Said it creates an employer-employee relationship",
+   "Said it's unlawful absent specific authority",
+   "Called location, duration and expertise red herrings"
+  ],
+  "f5668d4fac43": [
+   "Named all four elements",
+   "Named a PWS or SOO",
+   "Named measurable standards and a QASP",
+   "Named incentives where appropriate"
+  ],
+  "060e325f1be2": [
+   "Said qualifications-based selection, by statute",
+   "Said then negotiate a fair price with the most qualified",
+   "Said design quality drives lifecycle cost more than design fee"
+  ],
+  "0f741a1992a4": [
+   "Said the PWS has the Government define outcomes and standards",
+   "Said the SOO states objectives and offerors propose the PWS",
+   "Said the SOO competes approach",
+   "Said the winning PWS becomes the yardstick"
+  ],
+  "65de9d8587af": [
+   "Called it personal-services drift",
+   "Sent direction to the contractor's manager, against PWS outcomes",
+   "Fixed the practice and retrained the COR",
+   "Checked whether the PWS invites it"
+  ],
+  "690ed08b7265": [
+   "Said each repeat escalates approval higher",
+   "Called repeat bridges a planning failure in an urgency costume",
+   "Said extensions don't inherit the first approval"
+  ],
+  "852a24dec708": [
+   "Said looking authorized isn't being authorized",
+   "Said the contractor can't rely on it, and neither can I",
+   "Said it feels binding on the ground but binds nothing",
+   "Said only ratification by actual authority fixes it"
+  ],
+  "e75919fe79be": [
+   "Named proposed rankings and the source selection plan",
+   "Named evaluation results and competitive-range lists",
+   "Named the Government estimate",
+   "Said anything that could hand an offeror an edge is SSI"
+  ],
+  "7ab4cbd87254": [
+   "Said early — before solicitation",
+   "Said avoid, neutralize and mitigate all work best pre-release",
+   "Said after proposals arrive, exclusion may be all that's left"
+  ],
+  "cc078226b642": [
+   "Said at award, on the record before the CO",
+   "Said today's facts, documented",
+   "Ruled out proposal-time snapshots and continuous re-adjudication"
+  ],
+  "e99b2206434e": [
+   "Said whether consolidating the requirement is necessary and justified",
+   "Said the market research has to support it",
+   "Called it a research finding, not a convenience call"
+  ],
+  "134d9b43068f": [
+   "Said being on the procurement list",
+   "Said price alone doesn't unlock the open market",
+   "Sent fit and availability problems through program channels, documented"
+  ],
+  "20083d2a3d1e": [
+   "Named the commercial clause's cause/convenience framework",
+   "Said Part 49's machinery doesn't apply as such",
+   "Named cure notices and reprocurement remedies as Part 49"
+  ],
+  "b4fe727b94bf": [
+   "Named both — speed on routine buys and small-business opportunity",
+   "Said the paperwork is proportionate",
+   "Said it isn't competition avoidance — it's competition right-sized"
+  ],
+  "2c4c82f6c9b0": [
+   "Said a price evaluation preference",
+   "Said competing offers are evaluated as if they cost more",
+   "Said it works inside unrestricted competition, not through a set-aside"
+  ],
+  "1e12e2f0d303": [
+   "Said it's not a reason — habit isn't an exception",
+   "Said the default is competition",
+   "Said incumbency appears nowhere in RFO 6.103",
+   "Said prove sole capability with research if it's true"
+  ],
+  "e3c26b29334d": [
+   "Said quality AND past performance — three factors, not two",
+   "Cited RFO 15.104(b)",
+   "Said past performance is evaluated unless the CO documents why not",
+   "Named the DoD carve-out omitting price on some multiple-award RFPs"
+  ],
+  "1d92cac599ea": [
+   "Said the contractor signs",
+   "Said at agreement on price",
+   "Said it certifies the data current, accurate and complete",
+   "Said the certificate is what makes defective pricing enforceable"
+  ],
+  "b82e452c9214": [
+   "Said the incentive only disciplines cost if the target means something",
+   "Said a fantasy target pays fee for noise",
+   "Said no believable target, no incentive contract"
+  ],
+  "c5d611fee3f2": [
+   "Said a real chance to be considered for each order",
+   "Said genuine consideration, not rotation paperwork",
+   "Tested it against what the ombudsman would believe"
+  ],
+  "6499b0f84c2f": [
+   "Said both at award",
+   "Said that's what makes later exercise unilateral",
+   "Said an unevaluated, unpriced option is a new negotiation"
+  ],
+  "f3854ded85fd": [
+   "Said roles and responsibilities",
+   "Named who solicits, who awards, who administers, whose rules govern",
+   "Put it before a dollar moves"
+  ],
+  "93c62fbdded1": [
+   "Answered yes — it's a fiscal violation",
+   "Said non-severable work must be fully funded up front",
+   "Said it violates Time and Amount at once",
+   "Called severability a funding-law classification, not a style choice"
+  ],
+  "62ea19ee1e3b": [
+   "Matched limited to technical data, restricted to computer software",
+   "Said both are born of private-expense development"
+  ],
+  "9a40b3d016da": [
+   "Said in-scope mods aren't competed or synopsized",
+   "Said out-of-scope work is new work — compete it or justify it",
+   "Said in-scope mods ride the original competition",
+   "Said the scope analysis answers the synopsis question"
+  ],
+  "646546604bb5": [
+   "Said the Government takes on performance obligations",
+   "Said late or faulty GFP is Government-caused delay",
+   "Named equitable-adjustment exposure"
+  ],
+  "c08c8896f860": [
+   "Said the contractor performs while the price is open",
+   "Called it cost-reimbursement comfort at negotiation leverage",
+   "Said leverage decays monthly as actuals accumulate",
+   "Named the caps and the 180-day clock as the counterweights"
+  ],
+  "ad8b148283ec": [
+   "Said committing the Government before an independent check",
+   "Named strategy, price support and compliance as what gets checked",
+   "Said self-review is no review"
+  ],
+  "d9bb973831bf": [
+   "Said speed and self-correction",
+   "Said the agency fixes its own error without GAO's 100-day process",
+   "Said it has no automatic-stay teeth and no binding judgment"
+  ],
+  "517dc43065ac": [
+   "Said from the CO's receipt of the certified claim",
+   "Said not from costs incurred or from the final decision",
+   "Said that's why misclassifying a claim as an REA is expensive"
+  ],
+  "ad75ce3a417b": [
+   "Said the right to end a contract in the Government's best interest",
+   "Said the contractor is made whole for work done",
+   "Called it the escape valve that makes long-term contracting possible"
+  ],
+  "41d9e74e7f14": [
+   "Said the mature protections framework of regulation-based contracting",
+   "Named competition rules, cost principles, disputes machinery",
+   "Said spend that trade only when it buys something",
+   "Said never as rule avoidance"
+  ],
+  "9ab2becd4f0c": [
+   "Said qualifications-based selection",
+   "Said then negotiate a fair price with the most qualified firm",
+   "Said design quality drives lifecycle cost more than design fee"
+  ],
+  "668e8c2a3f2f": [
+   "Said $15,000"
+  ],
+  "ae0debb7c9f8": [
+   "Said $350,000"
+  ],
+  "40843b428d74": [
+   "Said $10M for DoD actions entered after 30 Jun 2026"
+  ],
+  "d27e176014b3": [
+   "Said $2.5M for contracts entered on/before 30 Jun 2026"
+  ],
+  "14ba343b8025": [
+   "Said at or below the SAT — $350,000"
+  ],
+  "7a979edf562a": [
+   "Said $9,000,000"
+  ],
+  "8d842486424e": [
+   "Named the three triggers — new requirements doc, solicitation over the SAT, order over the SAT"
+  ],
+  "8cb1c429ea52": [
+   "Said the contracting officer — certification is the approval"
+  ],
+  "3cc4afd547e2": [
+   "Said the Competition Advocate — the band runs >$900K to $20M"
+  ],
+  "00794581889d": [
+   "Said the HPA/PEO — the DoD tier runs to $150M"
+  ],
+  "adcba9449eb9": [
+   "Said the Senior Procurement Executive"
+  ],
+  "5edb3a487fb9": [
+   "Said 14 days after award, 30 days for urgency"
+  ],
+  "0df8e100e849": [
+   "Said $100M DoD, $30M civilian"
+  ],
+  "ba6d444cbe87": [
+   "Said $8.5M manufacturing, $5.5M other"
+  ],
+  "0f1980679faa": [
+   "Said $8.5M manufacturing, $5.5M other"
+  ],
+  "d0ca25b8dc94": [
+   "Said $8.5M manufacturing, $5M other"
+  ],
+  "da815bd4830a": [
+   "Said $900K, $2M construction, non-small primes"
+  ],
+  "892446f9ab1c": [
+   "Said $35M DoD / $10M civilian — any value if scope, period or ceiling grew"
+  ],
+  "16cac2656f7e": [
+   "Said $7.5M"
+  ],
+  "0d274e32d3e5": [
+   "Said the same ladder as J&As — CO to $900K, CA to $20M, HPA/PEO to $90M/$150M DoD, SPE above"
+  ],
+  "cdf19e4ec307": [
+   "Said $100,000"
+  ],
+  "523202d92bea": [
+   "Said 6 years from accrual"
+  ],
+  "3fa7dbdd6f41": [
+   "Said 90 days to the Board, 12 months to COFC"
+  ],
+  "a8937df338c9": [
+   "Said above the SAT — $350,000"
+  ],
+  "b76ac785923e": [
+   "Said 50% of NTE before, 75% after"
+  ],
+  "65924aa98b6f": [
+   "Said the earlier of 180 days after the qualifying proposal or 50% of NTE obligated"
+  ],
+  "e3866ad99322": [
+   "Said $150,000"
+  ],
+  "429b12a0f587": [
+   "Said 15% R&D, 10% most others, 6% A-E — 10% A-E for Army, Navy, Air Force"
+  ],
+  "6f92260c64f4": [
+   "Said $100M DoD, $10M most agencies"
+  ],
+  "70337063204b": [
+   "Said the HCA — delegable, never below the chief of the contracting office"
+  ],
+  "ed23a8e28274": [
+   "Said the LATEST of four — award+10, >$25M order+10, offered debrief+5, debrief concluded+5"
+  ],
+  "d0650ad9021f": [
+   "Said 100 days at GAO, about 35 for an agency protest"
+  ],
+  "ddb0b0391d2b": [
+   "Said 6 months"
+  ],
+  "f20605790f3c": [
+   "Said about 5 years, for SCLS-covered services"
+  ],
+  "de3be767f6f4": [
+   "Said up to 12 months, and it may cross fiscal years"
+  ],
+  "8e87862c50b3": [
+   "Said 1 year, 2 years, 3 years"
+  ],
+  "364be33ffc3b": [
+   "Said about 75% — of the estimate or the allotted amount"
+  ],
+  "62b9fa59741f": [
+   "Said 5 years, then cancelled"
+  ],
+  "9c7428726fef": [
+   "Said between the MPT ($15K) and the SAT ($350K)"
+  ],
+  "38fc939f9b1e": [
+   "Said 10 days to cure — not required for pure late delivery"
   ]
  },
  "note": "Element 1 of each list is the CORE element - the thing that makes the answer correct at all. The rest are supporting. Count never drives a grade: on a bare threshold card a complete answer ticks one box, and that is not a failure."
