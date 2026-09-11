@@ -336,8 +336,10 @@
     // y=954 — the entire first screen of a study session contained no study content.
     // Collapse it the moment the app is in a working state, restore it on the menus.
     try {
+      var working = (/class="st-session-head"/.test(html) && /class="st-q"/.test(html))
+        || /id="gv-card"/.test(html);
       document.documentElement.classList.toggle('st-working',
-        /class="st-q"|class="st-gv-q"/.test(html) && !/st-summary/.test(html));
+        working && !/st-summary/.test(html));
     } catch (e) { /* styling only; never break a render */ }
     // Anchor each new view just below the top of the drill container so every card
     // lands in the same readable spot. NB: app.offsetTop is relative to the

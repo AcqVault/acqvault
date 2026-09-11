@@ -12,10 +12,10 @@ const PART_NAV_V = 4;
 // The analytics beacon rides EVERY server-rendered page, so the part pages, the
 // hubs, /study and /48cons are all counted — not just the SPA home. Same
 // immutable-asset rule applies: bump on any change to assets/analytics.js.
-const ANALYTICS_V = 1;
+const ANALYTICS_V = 2;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 101;
+const STUDY_V = 102;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
 const SLIP_V = 10;
 
@@ -1679,6 +1679,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-check-box{flex:none;width:15px;height:15px;margin-top:1px;border:1.5px solid var(--line2);border-radius:3px;background:#fff}
 .st-check-item.is-on{color:var(--ink)}
 .st-check-item.is-on .st-check-box{background:#33654a;border-color:#33654a;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3 4.7-4.9' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-size:11px;background-position:center;background-repeat:no-repeat}
+.st-check-core{color:var(--ink);font-weight:650}
 .st-check-tag{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-ink);border:1px solid rgba(var(--brass-rgb),.35);border-radius:2px;padding:0 4px;margin-left:5px;vertical-align:1px}
 @media (max-width:640px){.st-check-item{font-size:13px}}
 .st-why{margin-top:13px;padding:9px 13px;border-left:2px solid rgba(var(--brass-rgb),.45);
