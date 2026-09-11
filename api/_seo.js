@@ -1719,6 +1719,13 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-daily-num{font-family:var(--ui,inherit) !important;font-size:30px !important;font-weight:700 !important;
   color:var(--ink) !important;letter-spacing:-.02em !important;line-height:1.05 !important}
 .st-daily-what{color:var(--ink) !important;font-size:16px !important;font-weight:650 !important}
+.st-daily-stats{display:flex;gap:0;margin-top:12px;font-variant-numeric:tabular-nums}
+.st-daily-stats > div{padding:0 16px;border-right:1px solid var(--line2);text-align:left}
+.st-daily-stats > div:first-child{padding-left:0}
+.st-daily-stats > div:last-child{border-right:none;padding-right:0}
+.st-daily-stats b{display:block;font-size:17px;font-weight:700;color:var(--ink);line-height:1.15}
+.st-daily-stats span{display:block;font-size:10px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);margin-top:2px}
 .st-daily-sub{color:var(--muted) !important;font-size:12.5px !important;line-height:1.5 !important;
   max-width:66ch !important;margin-top:5px !important}
 .st-daily-go{color:var(--brass) !important}
@@ -1755,8 +1762,11 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .st-daily-eyebrow{grid-column:1 !important;grid-row:1 !important}
   .st-daily-row{grid-column:1 !important;grid-row:2 !important}
   .st-daily-sub{grid-column:1 !important;grid-row:3 !important;max-width:78ch !important}
-  .st-daily-go{grid-column:2 !important;grid-row:1/4 !important;align-self:center !important;
+  .st-daily-stats{grid-column:2 !important;grid-row:1/4 !important;align-self:center !important;
+    display:flex !important;gap:0 !important;margin:0 !important}
+  .st-daily-go{grid-column:3 !important;grid-row:1/4 !important;align-self:center !important;
     font-size:22px !important}
+  .st-daily{grid-template-columns:minmax(0,1fr) auto auto !important;gap:0 34px !important}
   /* rows that were a narrow stack now run across the shell */
   .st-modes{grid-template-columns:repeat(auto-fit,minmax(260px,1fr)) !important}
   .st-topics{grid-template-columns:repeat(3,1fr) !important;gap:10px !important}

@@ -439,6 +439,22 @@
        finishing one is an end state rather than a slightly smaller pile. */
     var dstate = dailyState();
     var sessionSize = Math.min(due.length, SESSION_CAP);
+    /* The panel spans the shell but its copy holds a reading measure, so the right
+       half sat empty. Fill it with the split the session is actually made of —
+       first-time cards, scheduled reviews, and how far past due the oldest one is.
+       All three are already in hand; nothing new is computed for the display. */
+    var newDue = due.filter(function (c) { return cardState(c.id).box === 0; }).length;
+    var revDue = due.length - newDue;
+    var oldest = 0;
+    due.forEach(function (c) { var st = cardState(c.id);
+      if (st.box > 0) { var d = today() - st.due; if (d > oldest) oldest = d; } });
+    function statBlock() {
+      return '<div class="st-daily-stats">' +
+        '<div><b>' + newDue + '</b><span>new</span></div>' +
+        '<div><b>' + revDue + '</b><span>review</span></div>' +
+        '<div><b>' + (oldest > 0 ? oldest + 'd' : '0') + '</b><span>' +
+          (oldest > 0 ? 'oldest wait' : 'overdue') + '</span></div></div>';
+    }
     var dailyInner;
     if (!due.length) {
       dailyInner = '<div class="st-daily-row"><span class="st-daily-what" style="font-size:19px">All caught up — nothing due today.</span></div>' +
@@ -453,12 +469,12 @@
         '<span class="st-daily-sub">Welcome back — it’s been ' + gap + ' days. These are cards you have already met, not new ground: ' +
         'coming back after a gap is the hard part, and you just did it. New material waits until the pile is down.' +
         (seenDue.length > sessionSize ? ' ' + seenDue.length + ' are due in total; you will see ' + sessionSize + ' now.' : '') +
-        '</span>';
+        '</span>' + statBlock();
     } else {
       dailyInner = '<div class="st-daily-row"><span class="st-daily-num">' + sessionSize + '</span><span class="st-daily-what">card' + (sessionSize !== 1 ? 's' : '') + ' in today’s session</span></div>' +
         '<span class="st-daily-sub">Spaced repetition picked these — the ones you’re about to forget, right before you forget them.' +
         (due.length > sessionSize ? ' Drawn from ' + due.length + ' due; a session caps at ' + SESSION_CAP + ' on purpose, because short and often beats long and rare.' : '') +
-        '</span>';
+        '</span>' + statBlock();
     }
     var run = comeback ? 0 : streakRun();   // never greet a return with a reset counter
     render(
