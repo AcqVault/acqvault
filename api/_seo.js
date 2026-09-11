@@ -1769,14 +1769,50 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .st-daily{grid-template-columns:minmax(0,1fr) auto auto !important;gap:0 34px !important}
   /* rows that were a narrow stack now run across the shell */
   .st-modes{grid-template-columns:repeat(auto-fit,minmax(260px,1fr)) !important}
-  .st-topics{grid-template-columns:repeat(3,1fr) !important;gap:10px !important}
+  .st-topics{grid-template-columns:1fr !important;gap:0 !important}
   .st-plates{grid-template-columns:repeat(3,1fr) !important}
   .st-foot-tools{display:flex !important;gap:18px !important;align-items:baseline !important}
   /* a card session keeps a reading measure, centred in the wider shell */
   .st-working .st-wrap{max-width:900px !important}
 }
 @media (min-width:1000px) and (max-width:1180px){ .st-wrap{max-width:100% !important} }
-@media (min-width:1400px){ .st-topics{grid-template-columns:repeat(4,1fr) !important} }
+
+/* ── HIERARCHY ────────────────────────────────────────────────────────────────
+   Two corrections to the first surface pass, both from the teardown of how the
+   expensive exam-prep products actually lay this out.
+
+   1. Mastery across many topics is a TABLE, never a grid of cards. Fifteen cards
+      four-across is fifteen objects competing; the same fifteen as rows is one
+      object you read down. UWorld: name, a thin bar, the fraction. That is all.
+
+   2. Flattening everything to the same white card removed the only hierarchy the
+      page had. The session panel used to be a navy slab — unmistakably the thing to
+      do first — and I made it a peer of every tile beside it. It gets its weight
+      back, without the gradient.
+   ─────────────────────────────────────────────────────────────────────────────── */
+.st-topics{border:1px solid var(--line2);border-radius:var(--r-sm);overflow:hidden;background:#fff}
+.st-topic{border:none !important;border-bottom:1px solid var(--line2) !important;
+  border-radius:0 !important;background:#fff !important;
+  grid-template-columns:1fr 120px 96px !important;grid-template-areas:"name bar meta" !important;
+  align-items:center !important;gap:0 18px !important;padding:9px 16px !important}
+.st-topic:last-child{border-bottom:none !important}
+.st-topic:hover:not(:active){background:var(--off,#f7f6f2) !important;border-color:transparent !important}
+.st-topic .st-topic-name{grid-area:name}
+.st-topic .st-bar{grid-area:bar;margin:0 !important}
+.st-topic .st-topic-meta{grid-area:meta;text-align:right}
+@media (max-width:700px){
+  .st-topic{grid-template-columns:1fr auto !important;
+    grid-template-areas:"name meta" !important;gap:0 12px !important}
+  .st-topic .st-bar{display:none}
+}
+/* the one thing to do first reads like it */
+.st-daily{background:var(--off,#f7f6f2) !important;border:1px solid var(--brass-line) !important;
+  border-left:3px solid var(--brass) !important;padding:22px 24px !important}
+.st-daily-num{font-size:34px !important}
+.st-daily:hover:not(:active){border-color:var(--brass) !important}
+/* and the alternatives read as alternatives */
+.st-mode{background:#fff !important;padding:12px 15px !important}
+.st-mode .st-mode-ic{opacity:.55 !important}
 /* Pressable tiles answer a press the way the buttons do. The site already uses
    cubic-bezier(.23,1,.32,1) — a strong ease-out — so this borrows it rather than
    introducing a second curve. Gated on a real pointer, and off under reduced motion. */
