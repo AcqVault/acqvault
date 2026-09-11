@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 94;
+const STUDY_V = 95;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
 const SLIP_V = 10;
 
@@ -786,7 +786,7 @@ function metaDescription(docs) {
 const STYLE = `@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
 @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
 @font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}
-:root{--ink:#13151b;--muted:#5e5d66;--line:#948b7c;--line2:#e8e5de;--accent:#87651c;--bg:#fff;--r-sm:4px;--r-md:10px;--r-lg:14px;--r-xl:20px;--r-2xl:28px;--ls-tight:-0.02em;--ls-tighter:-0.025em;--ls-snug:-0.01em;--ls-wide:0.04em;--ls-caps:0.06em;--ls-wider:0.07em;--ls-widest:0.08em;--shadow-rgb:28,22,14;--brass-rgb:135,101,28;--brass-bright-rgb:228,196,119;--navy-rgb:15,37,64;--brass:#87651c;--brass-ink:#5e4715;--brass-bright:#e4c477;--brass-deep:#6f521a;--brass-line:rgba(154,115,32,0.40);--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif;--ink2:#262a31;--cm-bg:#e6e8ea;--cm-txt:#333f49;--fs-xs:11px;--fs-sm:12px;--fs-base:13px;--fs-md:14px;--fs-lg:15px;--fw-heavy:800;--fw-black:850}
+:root{--ink:#13151b;--muted:#5e5d66;--line:#948b7c;--line2:#e8e5de;--accent:#87651c;--bg:#fff;--r-sm:4px;--r-md:10px;--r-lg:14px;--r-xl:20px;--r-2xl:28px;--ls-tight:-0.02em;--ls-tighter:-0.025em;--ls-snug:-0.01em;--ls-wide:0.04em;--ls-caps:0.06em;--ls-wider:0.07em;--ls-widest:0.08em;--shadow-rgb:28,22,14;--brass-rgb:135,101,28;--brass-bright-rgb:228,196,119;--navy-rgb:15,37,64;--brass:#87651c;--brass-ink:#5e4715;--brass-bright:#e4c477;--brass-deep:#6f521a;--brass-line:rgba(154,115,32,0.40);--ink-from:#173a60;--ink-mid:#0f2540;--ink-to:#0a1c33;--serif:'Source Serif 4',Georgia,'Times New Roman',serif;--ink2:#262a31;--ink3:#474c55;--muted2:#6f6c74;--cm-bg:#e6e8ea;--cm-txt:#333f49;--fs-xs:11px;--fs-sm:12px;--fs-base:13px;--fs-md:14px;--fs-lg:15px;--fw-heavy:800;--fw-black:850}
 *{box-sizing:border-box}body{margin:0;font-family:'Inter',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
 ::selection{background:rgba(var(--brass-rgb),0.16);color:var(--ink)}
 mark{background:rgba(var(--brass-rgb),0.20);color:var(--ink);border-radius:2px;padding:0 1px}
@@ -1630,7 +1630,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 @media (hover:hover) and (pointer:fine){.st-btn-reveal:hover{filter:brightness(1.08);box-shadow:0 14px 26px -14px rgba(var(--navy-rgb),.78)}.st-btn-hint:hover:not(:disabled){border-color:var(--accent)}}
 .st-btn-opts{background:#fff;color:var(--muted);border:1px solid var(--line2);font-weight:650}
 .st-btn-opts:hover{border-color:rgba(var(--brass-rgb),.5);color:var(--brass-ink)}
-.st-produce-hint{margin-top:14px;font-size:13px;font-style:italic;color:var(--muted2)}
+.st-produce-hint{margin-top:14px;font-size:13px;font-style:italic;color:var(--muted2,#6f6c74)}
 .st-capped{margin-top:12px;font-size:13px;line-height:1.5;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(var(--brass-rgb),.28);border-radius:8px;padding:9px 12px}
 .st-g1{background:#fdf0ef;color:#8c2b23;border:1px solid rgba(179,38,30,.3)}
 .st-g2{background:#f6efdd;color:#5e4715;border:1px solid rgba(var(--brass-rgb),.3)}
