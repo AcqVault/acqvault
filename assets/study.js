@@ -343,6 +343,7 @@
       document.documentElement.classList.toggle('st-working',
         working && !/st-summary/.test(html));
       document.documentElement.classList.toggle('st-rise', /rz-cover|rz-lesson-shell/.test(html));
+      document.documentElement.classList.toggle('st-lesson', /rz-lesson-shell/.test(html));
     } catch (e) { /* styling only; never break a render */ }
     // Anchor each new view just below the top of the drill container so every card
     // lands in the same readable spot. NB: app.offsetTop is relative to the
@@ -376,10 +377,10 @@
       '<h2 class="st-h2" style="margin-top:2px">Study modules</h2>' +
       '<p class="st-sub">Two courses, walked lesson by lesson. Progress saves per lesson and per card, and you can switch between them any time without losing it.</p>' +
       '<div class="st-tracks">' +
-      cardHtml('t-basic', 'Module 1 · start here if contracting is new', 'Foundations',
+      cardHtml('t-basic', 'Module 1 · start here if contracting is new', 'Basic',
         'Field Guide Vol. 1 as a 15-lesson course — the players, the money, the methods. Every lesson ends in a knowledge check.', last === 'basic', 'VOL I') +
-      cardHtml('t-adv', 'Module 2 · the full board-prep course', 'The Board',
-        'All 15 Foundations lessons plus 29 more from Vol. 2 — 44 lessons of board-probe depth, each with its own knowledge check.', last === 'advanced', 'VOL I·II') +
+      cardHtml('t-adv', 'Module 2 · the full board-prep course', 'Advanced',
+        'All 15 Basic lessons plus 29 more from Vol. 2 — 44 lessons of board-probe depth, each with its own knowledge check.', last === 'advanced', 'VOL I·II') +
       '</div>' +
       gamesSectionHtml());
     el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewCourse; save(); goDepth(1, viewCourse); };
@@ -489,7 +490,7 @@
       (run >= 2 ? '<div class="st-streak" title="Days in a row with at least one card answered">' +
         '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' +
         run + '-day streak</div>' : '') +
-      '<div class="st-track-chip">' + (S.track === 'basic' ? 'Foundations' : 'The Board') +
+      '<div class="st-track-chip">' + (S.track === 'basic' ? 'Basic' : 'Advanced') +
       ' <button class="st-link" id="st-switch">switch</button></div></div>' +
       '<button class="st-daily' + (due.length ? '' : ' st-daily-dead') + '" id="m-daily"' + (due.length ? '' : ' disabled') + '><div class="st-daily-eyebrow">Today’s session · Daily Review</div>' + dailyInner + (due.length ? '<span class="st-daily-go" aria-hidden="true">→</span>' : '') + '</button>' +
       '<div class="st-modes">' +
@@ -572,10 +573,10 @@
     ['Numbers You Must Know', ['Thresholds & Numbers']]
   ];
   var COURSE_META = {
-    basic: { name: 'Foundations', vol: 'Field Guide Vol. 1',
+    basic: { name: 'Basic', vol: 'Field Guide Vol. 1',
       blurb: 'The players, the money, the methods. Fifteen lessons that build the base everything else stands on — who can bind the Government, whose money you are spending, and how a requirement becomes a contract.' },
-    advanced: { name: 'The Board', vol: 'Field Guide Vol. 1 & 2',
-      blurb: 'Everything in Foundations, then the depth a board actually probes: planning, integrity, pricing, contract type, changes, disputes and the numbers you are expected to know cold.' }
+    advanced: { name: 'Advanced', vol: 'Field Guide Vol. 1 & 2',
+      blurb: 'Everything in Basic, then the depth a board actually probes: planning, integrity, pricing, contract type, changes, disputes and the numbers you are expected to know cold.' }
   };
   // Every card in the course, grouped by lesson. Built once per track from the live pool,
   // so a deck refresh flows straight through instead of needing the outline re-authored.
@@ -611,13 +612,21 @@
     var done = lessons.filter(function (l) { return lessonDone(l.key); }).length;
     return { done: done, total: lessons.length, pct: lessons.length ? Math.round(100 * done / lessons.length) : 0 };
   }
-  function ringHtml(pct) {
-    var r = 26, c = 2 * Math.PI * r;
-    return '<svg class="rz-ring" viewBox="0 0 60 60" aria-hidden="true">' +
-      '<circle cx="30" cy="30" r="' + r + '" class="rz-ring-bg"/>' +
-      '<circle cx="30" cy="30" r="' + r + '" class="rz-ring-fg" stroke-dasharray="' + c.toFixed(1) +
-      '" stroke-dashoffset="' + (c * (1 - pct / 100)).toFixed(1) + '"/></svg>' +
-      '<span class="rz-ring-n">' + pct + '<i>%</i></span>';
+  function barHtml(prog, cls) {
+    return '<div class="rz-meter' + (cls ? ' ' + cls : '') + '">' +
+      '<div class="rz-meter-bar" aria-hidden="true"><span style="width:' + prog.pct + '%"></span></div>' +
+      '<span class="rz-meter-n">' + (prog.done
+        ? prog.done + ' of ' + prog.total + ' lessons complete'
+        : 'Not started \u00b7 ' + prog.total + ' lessons') + '</span></div>';
+  }
+  /* An e-learning outline that says "5 key points \u00b7 knowledge check" on all 44 rows is
+     44 rows of the same sentence. Minutes differ per lesson and are the thing somebody
+     picking a lesson on a lunch break actually needs. Deliberately approximate. */
+  function lessonMins(cards, checks) {
+    return Math.max(2, Math.round((cards * 45 + checks * 30) / 60));
+  }
+  function checkCount(cards) {
+    return cards.filter(function (c) { return mcqOptions(c); }).slice(0, KC_MAX).length;
   }
 
   /* ---- course home: cover, then the outline ---- */
@@ -628,23 +637,31 @@
     var prog = courseProgress(lessons);
     var next = lessons.filter(function (l) { return !lessonDone(l.key); })[0] || lessons[0];
     var due = recallPool().filter(function (c) { return isDue(c.id); }).length;
-    var secHtml = '', seen = {};
+    var secHtml = '', seen = {}, lastVol = null;
     courseSections().forEach(function (sec) {
       var rows = lessons.filter(function (l) { return l.level === sec[0] && l.section === sec[1]; });
       if (!rows.length) return;
       var sn = (seen[sec[0]] = (seen[sec[0]] || 0) + 1);
       var sdone = rows.filter(function (l) { return lessonDone(l.key); }).length;
+      var smins = rows.reduce(function (t, l) {
+        return t + lessonMins(l.cards.length, checkCount(l.cards)); }, 0);
+      var schecks = rows.filter(function (l) { return checkCount(l.cards); }).length;
+      if (sec[0] !== lastVol) {
+        lastVol = sec[0];
+        secHtml += '<div class="rz-vol"><span>' + (sec[0] === 'basic' ? 'Field Guide Vol. 1' : 'Field Guide Vol. 2') + '</span></div>';
+      }
       secHtml += '<section class="rz-sec"><div class="rz-sec-head">' +
-        '<span class="rz-sec-vol">' + (sec[0] === 'basic' ? 'Vol. 1' : 'Vol. 2') + ' · Section ' + sn + '</span>' +
         '<h3>' + esc(sec[1]) + '</h3>' +
-        '<span class="rz-sec-count">' + sdone + ' of ' + rows.length + ' complete</span></div>' +
+        '<span class="rz-sec-count">' + (sdone ? sdone + ' of ' + rows.length + ' complete'
+          : rows.length + ' reading' + (rows.length !== 1 ? 's' : '') +
+            (schecks ? ' · ' + schecks + ' knowledge check' + (schecks !== 1 ? 's' : '') : '')) +
+        ' · \u2248 ' + smins + ' min</span></div>' +
         '<ol class="rz-lessons">' + rows.map(function (l) {
           var d = lessonDone(l.key);
           return '<li><button class="rz-lesson' + (d ? ' rz-lesson-done' : '') + '" data-key="' + esc(l.key) + '">' +
             '<span class="rz-lesson-mark" aria-hidden="true">' + (d ? '✓' : l.n) + '</span>' +
             '<span class="rz-lesson-body"><b>' + esc(l.topic) + '</b>' +
-            '<span>' + l.cards.length + ' key point' + (l.cards.length !== 1 ? 's' : '') +
-            ' · knowledge check</span></span>' +
+            (d ? '<span>Complete \u00b7 revisit</span>' : '') + '</span>' +
             '<span class="rz-lesson-go" aria-hidden="true">→</span></button></li>';
         }).join('') + '</ol></section>';
     });
@@ -654,16 +671,19 @@
       '<span class="rz-eyebrow">' + esc(meta.vol) + '</span>' +
       '<h1 class="rz-cover-h">' + esc(meta.name) + '</h1>' +
       '<p class="rz-cover-p">' + esc(meta.blurb) + '</p>' +
+      '<ul class="rz-facts" role="list">' +
+      '<li><b>' + lessons.length + '</b> lessons</li>' +
+      '<li><b>' + courseSections().length + '</b> sections</li>' +
+      '<li><b>\u2248 ' + Math.round(lessons.reduce(function (t, l) {
+        return t + lessonMins(l.cards.length, checkCount(l.cards)); }, 0) / 60) + ' hr</b> of material</li>' +
+      '</ul>' +
       '<div class="rz-cover-actions">' +
       '<button class="rz-btn rz-btn-go" id="rz-start">' +
       (prog.done ? (prog.done === prog.total ? 'Revisit the course' : 'Continue — Lesson ' + next.n) : 'Start course') + '</button>' +
       '<button class="rz-btn rz-btn-ghost" id="rz-switch">Switch course</button>' +
-      '</div></div>' +
-      '<div class="rz-cover-prog"><div class="rz-ring-wrap">' + ringHtml(prog.pct) + '</div>' +
-      '<b>' + prog.done + ' of ' + prog.total + '</b><span>lessons complete</span></div>' +
+      '</div>' + barHtml(prog, 'rz-meter-dark') + '</div>' +
       '</div>' +
-      '<div class="rz-outline-head"><h2>Course outline</h2>' +
-      '<span>' + lessons.length + ' lessons · ' + courseSections().length + ' sections</span></div>' +
+      '<h2 class="rz-outline-head">Course outline</h2>' +
       secHtml +
       '<div class="rz-extra">' +
       '<button class="rz-extra-card" id="rz-review"><b>Review</b><span>' +
@@ -684,6 +704,29 @@
 
   /* ---- a lesson: teaching blocks, a continue gate, then the knowledge check ---- */
   var KC_MAX = 6;   // a lesson checks at most this many points; "Thresholds" has 40 cards
+  var ICON_READ = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h7l3 3v9H3z"/><path d="M9.5 2v4h4"/><path d="M5.5 8.5h5M5.5 11h3.5"/></svg>';
+  var ICON_CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 2.5h11v11h-11z"/><path d="M5 8.2l2.1 2.1L11.2 6"/></svg>';
+  function itemHead(icon, name, meta, done) {
+    return '<div class="rz-item' + (done ? ' rz-item-done' : '') + '">' +
+      '<span class="rz-item-ic" aria-hidden="true">' + icon + '</span>' +
+      '<h2 class="rz-item-n">' + name + '</h2>' +
+      '<span class="rz-item-meta">' + meta + '</span></div>';
+  }
+  /* Removing the gate, advancing a question and finishing the check each destroy the
+     node that held focus. Hand it to the panel, the way produceFirstCard() hands it to
+     the card — never to a button, which would swallow the keyboard shortcuts. */
+  function focusKc(host) {
+    try { host.focus({ preventScroll: true }); } catch (e) { try { host.focus(); } catch (e2) {} }
+  }
+  function srcLine(c) {
+    var links = (c.links || []).map(function (l) {
+      return '<a class="rz-cite" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>';
+    }).join('');
+    if (!c.ref && !links) return '';
+    // no separator between the ref and the pills: when the pills wrap to their own line
+    // the separator is left dangling at the end of the one above it.
+    return '<p class="rz-src">' + (c.ref ? '<span class="rz-src-t">' + esc(c.ref) + '</span>' : '') + links + '</p>';
+  }
   function viewLesson(key) {
     var lessons = courseLessons();
     var idx = -1;
@@ -695,55 +738,99 @@
 
     var blocks = L.cards.map(function (c, i) {
       return '<article class="rz-block">' +
-        '<span class="rz-block-n">' + (i + 1) + '</span>' +
         '<h3 class="rz-block-h">' + esc(c.q) + '</h3>' +
-        '<div class="rz-key"><span class="rz-key-lab">Key point</span>' + esc(c.a) + '</div>' +
+        '<p class="rz-lead">' + esc(c.a) + '</p>' +
         (c.x ? '<p class="rz-block-p">' + esc(c.x) + '</p>' : '') +
-        (c.ref ? '<div class="rz-src">Where it lives: <b>' + esc(c.ref) + '</b></div>' : '') +
-        citesHtml(c.links) + '</article>';
+        srcLine(c) + '</article>';
     }).join('');
 
     render(
       '<div class="rz-lesson-shell">' +
       '<aside class="rz-side" id="rz-side">' +
       '<button class="rz-side-back" id="rz-back">← Course outline</button>' +
-      '<div class="rz-side-prog"><div class="rz-ring-wrap rz-ring-sm">' + ringHtml(prog.pct) + '</div>' +
-      '<span>' + prog.done + ' of ' + prog.total + ' lessons</span></div>' +
-      '<nav class="rz-side-nav">' + lessons.map(function (l) {
-        return '<button class="rz-side-lesson' + (l.key === key ? ' rz-side-now' : '') +
-          (lessonDone(l.key) ? ' rz-side-done' : '') + '" data-key="' + esc(l.key) + '">' +
-          '<span class="rz-side-mark" aria-hidden="true">' + (lessonDone(l.key) ? '✓' : l.n) + '</span>' +
-          esc(l.topic) + '</button>';
-      }).join('') + '</nav></aside>' +
+      barHtml(prog, 'rz-meter-side') +
+      '<nav class="rz-side-nav" aria-label="Lessons in this course">' + (function () {
+        var out = '', lastSec = null;
+        lessons.forEach(function (l) {
+          var sec = l.level + '|' + l.section;
+          if (sec !== lastSec) {
+            lastSec = sec;
+            out += '<div class="rz-side-sec">' + esc(l.section) + '</div>';
+          }
+          out += '<button class="rz-side-lesson' + (l.key === key ? ' rz-side-now' : '') +
+            (lessonDone(l.key) ? ' rz-side-done' : '') + '" data-key="' + esc(l.key) + '"' +
+            (l.key === key ? ' aria-current="true"' : '') + '>' +
+            '<span class="rz-side-mark" aria-hidden="true">' + (lessonDone(l.key) ? '\u2713' : l.n) + '</span>' +
+            (lessonDone(l.key) ? '<span class="sr">Completed. </span>' : '') +
+            esc(l.topic) + '</button>';
+        });
+        return out;
+      })() + '</nav></aside>' +
       '<div class="rz-main">' +
-      '<button class="rz-side-open" id="rz-side-open">☰ Lessons</button>' +
+      '<button class="rz-side-open" id="rz-side-open" aria-expanded="false" aria-controls="rz-side">' +
+      '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3h14M1 8h14M1 13h9"/></svg>Lessons</button>' +
       '<header class="rz-lhead">' +
       '<span class="rz-eyebrow">' + (L.level === 'basic' ? 'Vol. 1' : 'Vol. 2') + ' · ' + esc(L.section) + '</span>' +
       '<h1>' + esc(L.topic) + '</h1>' +
-      '<p class="rz-lhead-meta">Lesson ' + L.n + ' of ' + lessons.length + ' · ' + L.cards.length +
-      ' key point' + (L.cards.length !== 1 ? 's' : '') + (checks.length ? ' · ' + checks.length + '-question knowledge check' : '') + '</p>' +
-      '</header>' + blocks +
+      '<p class="rz-lhead-meta">Lesson ' + L.n + ' of ' + lessons.length + ' · \u2248 ' +
+      lessonMins(L.cards.length, checks.length) + ' min' +
+      (checks.length ? ' · ' + checks.length + '-question check' : '') + '</p>' +
+      '</header>' +
+      itemHead(ICON_READ, 'Reading', '\u2248 ' + Math.max(1, Math.round(L.cards.length * 45 / 60)) + ' min',
+        lessonDone(L.key)) +
+      blocks +
       (checks.length
-        ? '<div class="rz-gate" id="rz-gate"><p>Read the points above, then check yourself.</p>' +
-          '<button class="rz-btn rz-btn-go" id="rz-continue">Continue</button></div>' +
+        ? '<div class="rz-gate" id="rz-gate"><p>That is the reading. Answer ' + checks.length +
+          ' question' + (checks.length !== 1 ? 's' : '') + ' on it and the lesson is done.</p>' +
+          '<button class="rz-btn rz-btn-go" id="rz-continue">Start the knowledge check</button></div>' +
           '<section class="rz-kc" id="rz-kc" hidden></section>'
-        : '<div class="rz-gate" id="rz-gate"><p>Nothing to check on this one — it is reference material.</p>' +
-          '<button class="rz-btn rz-btn-go" id="rz-continue">Mark complete</button></div>' +
+        : '<div class="rz-gate" id="rz-gate"><p>Reference material \u2014 there is no check on this one.</p>' +
+          '<button class="rz-btn rz-btn-go" id="rz-continue">Mark lesson complete</button></div>' +
           '<section class="rz-kc" id="rz-kc" hidden></section>') +
+      navBar() +
       '</div></div>');
 
+    function navBar() {
+      var prev = lessons[idx - 1];
+      return '<nav class="rz-nav" aria-label="Lesson navigation">' +
+        (prev ? '<button class="rz-nav-b rz-nav-prev" id="rz-prev">' +
+          '<span>Previous</span><b>' + esc(prev.topic) + '</b></button>' : '<span></span>') +
+        (next ? '<button class="rz-nav-b rz-nav-next" id="rz-next-lesson">' +
+          '<span>Next lesson</span><b>' + esc(next.topic) + '</b></button>'
+          : '<button class="rz-nav-b rz-nav-next" id="rz-next-lesson"><span>Last lesson</span><b>Back to the outline</b></button>') +
+        '</nav>';
+    }
+    function wireNav() {
+      var prev = lessons[idx - 1];
+      if (el('rz-prev')) el('rz-prev').onclick = function () { openLesson(prev.key); };
+      if (el('rz-next-lesson')) el('rz-next-lesson').onclick = function () {
+        if (next) openLesson(next.key); else goDepth(1, viewCourse);
+      };
+    }
+    wireNav();
     el('rz-back').onclick = function () { goDepth(1, viewCourse); };
-    el('rz-side-open').onclick = function () { el('rz-side').classList.toggle('rz-side-shown'); };
+    el('rz-side-open').onclick = function () {
+      var open = el('rz-side').classList.toggle('rz-side-shown');
+      this.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) { var f = el('rz-side').querySelector('.rz-side-back'); if (f) f.focus(); }
+    };
+    el('rz-side').onkeydown = function (e) {
+      if (e.key !== 'Escape' || !this.classList.contains('rz-side-shown')) return;
+      this.classList.remove('rz-side-shown');
+      el('rz-side-open').setAttribute('aria-expanded', 'false');
+      el('rz-side-open').focus();
+    };
     Array.prototype.forEach.call(app.querySelectorAll('.rz-side-lesson'), function (b) {
-      b.onclick = function () { viewLesson(b.getAttribute('data-key')); };
+      b.onclick = function () { openLesson(b.getAttribute('data-key')); };
     });
 
     el('rz-continue').onclick = function () {
       var gate = el('rz-gate'); if (gate && gate.parentNode) gate.parentNode.removeChild(gate);
-      var kc = el('rz-kc'); kc.hidden = false;
-      if (!checks.length) { finish(kc, 0, 0); return; }
+      var kc = el('rz-kc'); kc.hidden = false; kc.setAttribute('tabindex', '-1');
+      if (!checks.length) { finish(kc, 0, 0); focusKc(kc); return; }
       runChecks(kc);
       kc.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      focusKc(kc);
     };
 
     /* The knowledge check. One question at a time, Rise-style: pick, submit, get the
@@ -755,23 +842,37 @@
       function step() {
         if (i >= checks.length) return finish(host, right, checks.length);
         var c = checks[i], opts = mcqOptions(c), picked = -1;
-        host.innerHTML = '<div class="rz-kc-head"><span class="rz-eyebrow">Knowledge check</span>' +
-          '<span class="rz-kc-count">' + (i + 1) + ' of ' + checks.length + '</span></div>' +
+        host.innerHTML = '<div class="rz-kc-head"><span class="rz-kc-lab">Knowledge check</span>' +
+          '<span class="rz-kc-count">Question ' + (i + 1) + ' of ' + checks.length + '</span></div>' +
           '<div class="rz-prog" aria-hidden="true"><span style="width:' + Math.round(100 * i / checks.length) + '%"></span></div>' +
-          '<h3 class="rz-kc-q">' + esc(c.q) + '</h3>' +
-          '<div class="rz-opts" role="radiogroup">' + opts.map(function (o, k) {
-            return '<button class="rz-opt" role="radio" aria-checked="false" data-k="' + k + '">' +
+          '<h2 class="rz-kc-q" id="rz-kc-q">' + esc(c.q) + '</h2>' +
+          '<div class="rz-opts" role="radiogroup" aria-labelledby="rz-kc-q">' + opts.map(function (o, k) {
+            return '<button class="rz-opt" role="radio" aria-checked="false" data-k="' + k +
+              '" tabindex="' + (k ? '-1' : '0') + '">' +
               '<span class="rz-opt-dot" aria-hidden="true"></span><span>' + esc(o) + '</span></button>';
           }).join('') + '</div>' +
           '<div class="rz-kc-act"><button class="rz-btn rz-btn-go" id="rz-submit" disabled>Submit</button></div>';
-        Array.prototype.forEach.call(host.querySelectorAll('.rz-opt'), function (b) {
-          b.onclick = function () {
-            picked = +b.getAttribute('data-k');
-            Array.prototype.forEach.call(host.querySelectorAll('.rz-opt'), function (o) {
-              var on = o === b;
-              o.classList.toggle('rz-opt-on', on); o.setAttribute('aria-checked', on ? 'true' : 'false');
-            });
-            el('rz-submit').disabled = false;
+        var optEls = Array.prototype.slice.call(host.querySelectorAll('.rz-opt'));
+        function select(b, focus) {
+          picked = +b.getAttribute('data-k');
+          optEls.forEach(function (o) {
+            var on = o === b;
+            o.classList.toggle('rz-opt-on', on);
+            o.setAttribute('aria-checked', on ? 'true' : 'false');
+            // roving tabindex: the group is one tab stop, arrows move within it
+            o.setAttribute('tabindex', on ? '0' : '-1');
+          });
+          if (focus) b.focus();
+          el('rz-submit').disabled = false;
+        }
+        optEls.forEach(function (b, k) {
+          b.onclick = function () { select(b, false); };
+          b.onkeydown = function (e) {
+            var d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1
+              : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+            if (!d) return;
+            e.preventDefault();
+            select(optEls[(k + d + optEls.length) % optEls.length], true);
           };
         });
         el('rz-submit').onclick = function () {
@@ -787,12 +888,11 @@
             o.disabled = true;
           });
           el('rz-submit').outerHTML =
-            '<div class="rz-fb ' + (ok ? 'rz-fb-ok' : 'rz-fb-no') + '">' +
+            '<div class="rz-fb ' + (ok ? 'rz-fb-ok' : 'rz-fb-no') + '" role="status">' +
             '<b>' + (ok ? '✓ Correct' : '✗ Not quite') + '</b>' +
             (ok ? '' : '<span class="rz-fb-ans">The answer is: ' + esc(c.a) + '</span>') +
             (c.x ? '<p>' + esc(c.x) + '</p>' : '') +
-            (c.ref ? '<div class="rz-src">Where it lives: <b>' + esc(c.ref) + '</b></div>' : '') +
-            citesHtml(c.links) + '</div>' +
+            srcLine(c) + '</div>' +
             '<button class="rz-btn rz-btn-go" id="rz-kc-next">' +
             (i + 1 >= checks.length ? 'Finish lesson' : 'Next question') + '</button>';
           el('rz-kc-next').onclick = function () { i++; step(); };
@@ -802,8 +902,28 @@
       step();
     }
 
+    /* Finishing a lesson used to change nothing outside this panel: the rail still showed
+       the lesson numbered and unfinished, and the reading item still looked undone. The
+       whole view is not worth re-rendering to tick three things, so tick them. */
+    function markDoneInPlace() {
+      var b = app.querySelector('.rz-side-lesson[data-key="' + L.key.replace(/"/g, '\\"') + '"]');
+      if (b && !b.classList.contains('rz-side-done')) {
+        b.classList.add('rz-side-done');
+        var m = b.querySelector('.rz-side-mark');
+        if (m) m.textContent = '\u2713';
+        m.insertAdjacentHTML('afterend', '<span class="sr">Completed. </span>');
+      }
+      var item = app.querySelector('.rz-item');
+      if (item) item.classList.add('rz-item-done');
+      var p3 = courseProgress(courseLessons());
+      var bar = app.querySelector('.rz-meter-side .rz-meter-bar > span');
+      if (bar) bar.style.width = p3.pct + '%';
+      var lab = app.querySelector('.rz-meter-side .rz-meter-n');
+      if (lab) lab.textContent = p3.done + ' of ' + p3.total + ' lessons complete';
+    }
     function finish(host, right, total) {
       markLesson(L.key);
+      markDoneInPlace();
       var p2 = courseProgress(courseLessons());
       host.innerHTML = '<div class="rz-done">' +
         '<div class="rz-done-tick" aria-hidden="true">✓</div>' +
@@ -813,10 +933,11 @@
         '<div class="rz-prog rz-prog-lg" aria-hidden="true"><span style="width:' + p2.pct + '%"></span></div>' +
         '<p class="rz-done-prog">' + p2.done + ' of ' + p2.total + ' lessons complete</p>' +
         '<div class="rz-done-actions">' +
-        (next ? '<button class="rz-btn rz-btn-go" id="rz-next">Next lesson: ' + esc(next.topic) + ' →</button>' : '') +
+        // the bar below already names what is next; this one only has to be the way on
+        (next ? '<button class="rz-btn rz-btn-go" id="rz-next">Next lesson →</button>' : '') +
         '<button class="rz-btn rz-btn-ghost" id="rz-outline">Course outline</button>' +
         '</div></div>';
-      if (next) el('rz-next').onclick = function () { viewLesson(next.key); };
+      if (next) el('rz-next').onclick = function () { openLesson(next.key); };
       el('rz-outline').onclick = function () { goDepth(1, viewCourse); };
     }
   }
@@ -1205,13 +1326,13 @@
       '<p class="st-sub">Practice by deciding, not reviewing \u2014 from the daily word to a 90-second reflex round to a full source selection you sit down with.</p>' +
       '<div class="st-sims">' +
       '<a class="st-sim-feature" href="/source-selection">' +
-      '<span class="st-sim-kick">Flagship \u00b7 Simulator</span>' +
+      '<span class="st-sim-kick">Simulator</span>' +
       '<b class="st-sim-title">Source Selection Simulator</b>' +
       '<span class="st-sim-desc">Take the Source Selection Authority\u2019s chair on a $250M best-value tradeoff \u2014 nine decisions, a live protest-risk score, and every call cited to the DoD Source Selection Procedures.</span>' +
       '<span class="st-sim-chips"><span class="st-sim-chip">\u2248 18 min</span><span class="st-sim-meta">$250M best-value \u00b7 9 decisions \u00b7 untimed</span></span>' +
       '<span class="st-sim-go" aria-hidden="true">\u2192</span></a>' +
       '<button class="st-sim-feature" id="g-board">' +
-      '<span class="st-sim-kick">Flagship \u00b7 Simulator</span>' +
+      '<span class="st-sim-kick">Simulator</span>' +
       '<b class="st-sim-title">Board Simulator</b>' +
       '<span class="st-sim-desc">Sit the board. A panel puts a situation to you, you answer out loud, then the debrief and its follow-ups press on the parts you left thin \u2014 every call cited.</span>' +
       '<span class="st-sim-chips"><span class="st-sim-chip">' + scen.length + ' scenarios</span><span class="st-sim-meta">' +
