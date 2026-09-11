@@ -2464,7 +2464,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 62%,var(--ink-to));border:1px solid rgba(var(--brass-bright-rgb),.4);
   border-radius:var(--r-lg);padding:30px 26px;box-shadow:0 26px 54px -30px rgba(10,28,51,.62)}
 .rz-cover::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
-.rz-cover-body{position:relative}
+.rz-cover-body{position:relative;min-width:0}
 .rz-cover .rz-eyebrow{color:var(--brass-bright);margin-bottom:14px}
 .rz-cover-h{font-family:var(--serif);font-weight:700;font-size:38px;line-height:1.06;letter-spacing:var(--ls-snug);margin:0 0 11px;color:#f4f8fc}
 .rz-cover-p{margin:0;color:rgba(221,233,246,.88);font-size:var(--fs-lg);line-height:1.65;max-width:60ch}
@@ -2472,17 +2472,23 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   border-top:1px solid rgba(var(--brass-bright-rgb),.22);font-size:var(--fs-md);color:rgba(221,233,246,.7)}
 .rz-facts b{color:#f4f8fc;font-weight:700;margin-right:5px}
 .rz-cover-actions{display:flex;gap:10px;flex-wrap:wrap}
-.rz-cover .rz-btn-go{background:linear-gradient(160deg,var(--brass-bright),#cda857);color:#16263f;border-color:rgba(255,255,255,.28)}
-.rz-cover .rz-btn-go:hover:not(:disabled){border-color:#fff}
-.rz-cover .rz-btn-ghost{background:transparent;color:#eaf1f8;border-color:rgba(var(--brass-bright-rgb),.45)}
-.rz-cover .rz-btn-ghost:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(var(--brass-bright-rgb),.8)}
+/* These overrides existed for buttons sitting ON the navy cover. The actions live in a
+   white card inside it now, so the ghost button was white-on-white and invisible: the
+   card's buttons are the ordinary ones. Scoped rather than deleted, in case anything is
+   ever placed on the navy again. */
+.rz-cover>.rz-btn-go{background:linear-gradient(160deg,var(--brass-bright),#cda857);color:#16263f;border-color:rgba(255,255,255,.28)}
+.rz-cover>.rz-btn-go:hover:not(:disabled){border-color:#fff}
+.rz-cover>.rz-btn-ghost{background:transparent;color:#eaf1f8;border-color:rgba(var(--brass-bright-rgb),.45)}
+.rz-cover>.rz-btn-ghost:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(var(--brass-bright-rgb),.8)}
 
 /* ── outline ──────────────────────────────────────────────────────────────── */
-.rz-home{display:flex;flex-direction:column;gap:26px}
+.rz-home{display:flex;flex-direction:column;gap:26px;margin-top:26px}
 .rz-aside{order:-1}
 .rz-home-main{min-width:0}
 .rz-aside{min-width:0;display:flex;flex-direction:column;gap:12px}
 .rz-card{background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:20px}
+.rz-card-hero{position:relative;border-color:rgba(var(--brass-bright-rgb),.5);
+  box-shadow:0 22px 44px -20px rgba(3,12,24,.7)}
 .rz-card .rz-meter{margin:0 0 16px;max-width:none}
 .rz-btn-wide{width:100%;justify-content:center}
 .rz-btn-wide+.rz-btn-wide{margin-top:8px}
@@ -2491,8 +2497,21 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;
   font-size:var(--fs-md);line-height:1.45;color:var(--ink3,#474c55)}
 .rz-incl b{color:var(--ink);font-weight:700}
-.rz-outline-head{font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:var(--ls-snug);margin:0 0 4px}
-.rz-vol{display:flex;align-items:center;gap:14px;margin:24px 0 2px;font-size:var(--fs-xs);font-weight:800;
+/* Section index: what a 44-row outline needs beside it, and what was filling the rail
+   with nothing before. */
+.rz-secnav{background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:6px 6px 8px}
+.rz-secnav-h{margin:10px 10px 6px;padding-top:0;border-top:none}
+.rz-secnav-i{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:var(--r-sm);
+  font-size:var(--fs-sm);line-height:1.4;color:var(--ink3,#474c55);text-decoration:none}
+.rz-secnav-i span{flex:1;min-width:0}
+.rz-secnav-i b{flex:none;font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted2,#6f6c74)}
+.rz-secnav-i:hover{background:var(--off,#f7f6f2);color:var(--ink)}
+.rz-secnav-i:focus-visible{outline:3px solid var(--brass);outline-offset:-2px}
+.rz-secnav-done b{color:var(--brass-ink)}
+.rz-sec{scroll-margin-top:74px}
+.rz-outline-head{font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);text-transform:uppercase;
+  color:var(--muted2,#6f6c74);margin:0 0 2px;font-family:inherit}
+.rz-vol{display:flex;align-items:center;gap:14px;margin:18px 0 2px;font-size:var(--fs-xs);font-weight:800;
   letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
 .rz-vol::after{content:"";flex:1;height:1px;background:rgba(var(--brass-rgb),.28)}
 .rz-sec{margin-top:18px}
@@ -2537,7 +2556,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-side-back{display:inline-flex;align-items:center;font:inherit;font-size:var(--fs-base);font-weight:700;color:var(--brass-ink);
   background:none;border:none;padding:6px 8px;cursor:pointer;border-radius:var(--r-sm);min-height:44px}
 .rz-side-back:hover{background:rgba(var(--brass-rgb),.07)}
-.rz-side-nav{display:flex;flex-direction:column;gap:1px;padding-top:6px;border-top:1px solid var(--line2)}
+.rz-side-nav{display:flex;flex-direction:column;gap:1px}
 .rz-side-sec{margin:16px 0 5px;padding:0 8px;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);
   text-transform:uppercase;color:var(--muted2,#6f6c74)}
 .rz-side-nav .rz-side-sec:first-child{margin-top:8px}
@@ -2559,6 +2578,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-rail-pos{padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid var(--line2);
   font-size:var(--fs-sm);line-height:1.5;color:var(--muted2,#6f6c74)}
 .rz-rail-pos b{color:var(--ink);font-weight:700}
+.rz-rail-pos span{display:block;color:var(--brass-ink);font-weight:700}
 .rz-jump{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:2px;
   counter-reset:rzj}
 .rz-jump li{counter-increment:rzj}
@@ -2730,8 +2750,10 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .rz-aside{order:0;position:sticky;top:74px}
   .rz-side{display:block;position:sticky;top:74px;max-height:calc(100vh - 94px);overflow:auto;margin:0}
   .rz-side-open{display:none}
-  .rz-cover{padding:36px 38px}
-  .rz-cover-h{font-size:44px}
+  /* copy left, action card right — one object, instead of a navy slab with an empty
+     right 60% and the same progress and CTA repeated a scroll below it */
+  .rz-cover{display:grid;grid-template-columns:minmax(0,1fr) 328px;gap:48px;align-items:center;padding:36px 38px}
+  .rz-cover-h{font-size:42px}
   .rz-cover-p,.rz-facts{max-width:70ch}
   .rz-lhead h1{font-size:34px}
 }
@@ -2745,6 +2767,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 @media (min-width:1480px){
   .rz-lesson-shell{grid-template-columns:280px minmax(0,1fr) 268px;gap:56px}
   .rz-home{grid-template-columns:minmax(0,1fr) 344px;gap:56px}
+  .rz-cover{grid-template-columns:minmax(0,1fr) 344px;gap:56px}
 }
 @media (max-width:560px){
   .rz-cover{padding:28px 22px;border-radius:var(--r-lg)}

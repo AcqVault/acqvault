@@ -662,7 +662,7 @@
     var next = lessons.filter(function (l) { return !lessonDone(l.key); })[0] || lessons[0];
     var full = prog.total && prog.done === prog.total;
     var due = recallPool().filter(function (c) { return isDue(c.id); }).length;
-    var secHtml = '', seen = {}, lastVol = null;
+    var secHtml = '', seen = {}, lastVol = null, secList = [];
     courseSections().forEach(function (sec) {
       var rows = lessons.filter(function (l) { return l.level === sec[0] && l.section === sec[1]; });
       if (!rows.length) return;
@@ -670,11 +670,12 @@
       var smins = rows.reduce(function (t, l) {
         return t + lessonMins(l.cards, checkCount(l.cards)); }, 0);
       var schecks = rows.filter(function (l) { return checkCount(l.cards); }).length;
+      secList.push({ name: sec[1], vol: sec[0], done: sdone, total: rows.length });
       if (sec[0] !== lastVol) {
         lastVol = sec[0];
         secHtml += '<div class="rz-vol"><span>' + (sec[0] === 'basic' ? 'Field Guide Vol. 1' : 'Field Guide Vol. 2') + '</span></div>';
       }
-      secHtml += '<section class="rz-sec"><div class="rz-sec-head">' +
+      secHtml += '<section class="rz-sec" id="rz-s' + secList.length + '"><div class="rz-sec-head">' +
         '<h3>' + esc(sec[1]) + '</h3>' +
         '<span class="rz-sec-count">' + (sdone ? sdone + ' of ' + rows.length + ' complete'
           : rows.length + ' lesson' + (rows.length !== 1 ? 's' : '') +
@@ -707,8 +708,9 @@
        order:-1 under the breakpoint so the action never falls below the outline on a
        phone. */
     render(
-      chromeHtml({ course: meta.name, prog: prog,
-        nextLabel: full ? 'Revisit' : prog.done ? 'Continue' : 'Start' }) +
+      // no next button in the bar here: the hero card carries the action, and both were
+      // on screen at once saying the same thing
+      chromeHtml({ course: meta.name, prog: prog }) +
       '<div class="rz-cover">' +
       '<div class="rz-cover-body">' +
       '<span class="rz-eyebrow">' + esc(meta.vol) + '</span>' +
@@ -718,12 +720,12 @@
       '<li><b>' + lessons.length + '</b> lessons</li>' +
       '<li><b>' + nSections + '</b> sections</li>' +
       '<li><b>\u2248 ' + nHours + ' hr</b> of material</li>' +
-      '</ul></div></div>' +
-      '<div class="rz-home">' +
-      '<div class="rz-home-main">' +
-      '<h2 class="rz-outline-head">Course outline</h2>' + secHtml + '</div>' +
-      '<aside class="rz-aside" aria-label="Course actions">' +
-      '<div class="rz-card">' +
+      '</ul></div>' +
+      /* The action card sits IN the hero, not under it. The cover was a 1230px navy slab
+         with copy in its left 40% and a void on the right, and the card repeated the
+         progress and the CTA a scroll below. One object now: describe on the left, act on
+         the right. */
+      '<div class="rz-card rz-card-hero">' +
       barHtml(prog) +
       '<button class="rz-btn rz-btn-go rz-btn-wide" id="rz-start">' +
       (full ? 'Revisit — Lesson 1' : prog.done ? 'Continue — Lesson ' + next.n : 'Start course') + '</button>' +
@@ -732,16 +734,25 @@
       '<ul class="rz-incl" role="list">' +
       '<li><b>' + lessons.length + '</b> readings, one per lesson</li>' +
       '<li><b>' + nChecks + '</b> knowledge checks</li>' +
-      '<li><b>' + nSections + '</b> sections \u00b7 \u2248 ' + nHours + ' hr</li>' +
       '<li>Every answer cited to the governing text</li>' +
-      '</ul></div>' +
+      '</ul></div></div>' +
+      '<div class="rz-home">' +
+      '<div class="rz-home-main">' +
+      '<h2 class="rz-outline-head">Course outline</h2>' + secHtml + '</div>' +
+      '<aside class="rz-aside" aria-label="More in this course">' +
       '<button class="rz-extra-card" id="rz-review"><b>Review</b><span>' + reviewLine + '</span></button>' +
       '<button class="rz-extra-card" id="rz-practice"><b>Practice Range</b><span>Both simulators and the daily rounds</span></button>' +
+      '<nav class="rz-secnav" aria-label="Jump to a section">' +
+      '<div class="rz-card-h rz-secnav-h">Sections</div>' +
+      secList.map(function (x, i) {
+        return '<a class="rz-secnav-i' + (x.done === x.total ? ' rz-secnav-done' : '') +
+          '" href="#rz-s' + i + '"><span>' + esc(x.name) + '</span>' +
+          '<b>' + x.done + '/' + x.total + '</b></a>';
+      }).join('') + '</nav>' +
       '</aside></div>' + footToolsHtml());
     if (next) {
       el('rz-start').onclick = function () { openLesson(next.key); };
-      el('rz-bar-next').onclick = function () { openLesson(next.key); };
-    } else { el('rz-start').disabled = true; el('rz-bar-next').disabled = true; }
+    } else { el('rz-start').disabled = true; }
     el('rz-switch').onclick = function () { goDepth(0, viewTrack); };
     el('rz-review').onclick = function () { goDepth(1, viewHome); };
     el('rz-practice').onclick = function () {
@@ -848,8 +859,6 @@
         now: L.topic, prog: prog, back: true, nextLabel: next ? 'Next lesson' : null }) +
       '<div class="rz-lesson-shell">' +
       '<aside class="rz-side" id="rz-side">' +
-      '<button class="rz-side-back" id="rz-back">← Course outline</button>' +
-      barHtml(prog, 'rz-meter-side') +
       '<nav class="rz-side-nav" aria-label="Lessons in this course">' + (function () {
         var out = '', lastSec = null;
         lessons.forEach(function (l) {
@@ -934,13 +943,12 @@
           checks.length + ' question' + (checks.length !== 1 ? 's' : '') + '</a>' : '') +
         '</aside>';
     }
-    el('rz-back').onclick = function () { goDepth(1, viewCourse); };
     el('rz-bar-back').onclick = function () { goDepth(1, viewCourse); };
     if (el('rz-bar-next')) el('rz-bar-next').onclick = function () { openLesson(next.key); };
     el('rz-side-open').onclick = function () {
       var open = el('rz-side').classList.toggle('rz-side-shown');
       this.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if (open) { var f = el('rz-side').querySelector('.rz-side-back'); if (f) f.focus(); }
+      if (open) { var f = el('rz-side').querySelector('.rz-side-lesson'); if (f) f.focus(); }
     };
     el('rz-side').onkeydown = function (e) {
       if (e.key !== 'Escape' || !this.classList.contains('rz-side-shown')) return;
@@ -1066,10 +1074,10 @@
       var item = app.querySelector('.rz-item');
       if (item) item.classList.add('rz-item-done');
       var p3 = courseProgress(courseLessons());
-      var bar = app.querySelector('.rz-meter-side .rz-meter-bar > span');
+      var bar = app.querySelector('.rz-bar-track > i');
       if (bar) bar.style.width = p3.pct + '%';
-      var lab = app.querySelector('.rz-meter-side .rz-meter-n');
-      if (lab) lab.textContent = p3.done + ' of ' + p3.total + ' lessons complete';
+      var lab = app.querySelector('.rz-bar-n');
+      if (lab) lab.innerHTML = p3.done + '<span> / ' + p3.total + '</span>';
     }
     function finish(host, right, total) {
       keyHandler(null);
