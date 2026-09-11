@@ -679,7 +679,10 @@
       '<p class="rz-cover-p">' + esc(meta.blurb) + '</p>' +
       '<ul class="rz-facts" role="list">' +
       '<li><b>' + lessons.length + '</b> lessons</li>' +
-      '<li><b>' + courseSections().length + '</b> sections</li>' +
+      '<li><b>' + (function () {
+        var seen = {}; lessons.forEach(function (l) { seen[l.level + '|' + l.section] = 1; });
+        return Object.keys(seen).length;   // sections that actually render, not all declared
+      })() + '</b> sections</li>' +
       '<li><b>\u2248 ' + Math.round(lessons.reduce(function (t, l) {
         return t + lessonMins(l.cards, checkCount(l.cards)); }, 0) / 60) + ' hr</b> of material</li>' +
       '</ul>' +
@@ -872,6 +875,7 @@
       };
     }
     wireNav();
+    keyHandler(null);   // a fresh lesson owns no shortcuts until its check opens
     el('rz-back').onclick = function () { goDepth(1, viewCourse); };
     el('rz-side-open').onclick = function () {
       var open = el('rz-side').classList.toggle('rz-side-shown');
@@ -918,7 +922,9 @@
           '<div class="rz-opts" role="radiogroup" aria-labelledby="rz-kc-q">' + opts.map(function (o, k) {
             return '<button class="rz-opt" role="radio" aria-checked="false" data-k="' + k +
               '" tabindex="' + (k ? '-1' : '0') + '">' +
-              '<span class="rz-opt-dot" aria-hidden="true"></span><span>' + esc(o) + '</span></button>';
+              '<span class="rz-opt-dot" aria-hidden="true"></span>' +
+              '<kbd class="rz-opt-k" aria-hidden="true">' + (k + 1) + '</kbd>' +
+              '<span>' + esc(o) + '</span></button>';
           }).join('') + '</div>' +
           '<div class="rz-kc-act"><button class="rz-btn rz-btn-go" id="rz-submit" disabled>Submit</button></div>';
         var optEls = Array.prototype.slice.call(host.querySelectorAll('.rz-opt'));
@@ -944,7 +950,13 @@
             select(optEls[(k + d + optEls.length) % optEls.length], true);
           };
         });
-        el('rz-submit').onclick = function () {
+        keyHandler(function (key) {
+          var n = parseInt(key, 10);
+          if (n >= 1 && n <= optEls.length) { select(optEls[n - 1], false); return true; }
+          if ((key === ' ' || key === 'Enter') && picked >= 0) { submit(); return true; }
+        });
+        el('rz-submit').onclick = submit;
+        function submit() {
           if (picked < 0) return;
           var ok = opts[picked] === c.a;
           if (ok) right++;
@@ -967,9 +979,13 @@
               'which is not what a board asks of you. It comes back sooner.</p>' : '') + '</div>' +
             '<button class="rz-btn rz-btn-go" id="rz-kc-next">' +
             (i + 1 >= checks.length ? 'Finish lesson' : 'Next question') + '</button>';
-          el('rz-kc-next').onclick = function () { i++; step(); };
+          el('rz-kc-next').onclick = advance;
           el('rz-kc-next').focus();
-        };
+          keyHandler(function (key) {
+            if (key === ' ' || key === 'Enter') { advance(); return true; }
+          });
+          function advance() { keyHandler(null); i++; step(); }
+        }
       }
       step();
     }
@@ -982,8 +998,10 @@
       if (b && !b.classList.contains('rz-side-done')) {
         b.classList.add('rz-side-done');
         var m = b.querySelector('.rz-side-mark');
-        if (m) m.textContent = '\u2713';
-        m.insertAdjacentHTML('afterend', '<span class="sr">Completed. </span>');
+        if (m) {
+          m.textContent = '\u2713';
+          m.insertAdjacentHTML('afterend', '<span class="sr">Completed. </span>');
+        }
       }
       var item = app.querySelector('.rz-item');
       if (item) item.classList.add('rz-item-done');
@@ -994,6 +1012,7 @@
       if (lab) lab.textContent = p3.done + ' of ' + p3.total + ' lessons complete';
     }
     function finish(host, right, total) {
+      keyHandler(null);
       clearResume();
       markLesson(L.key);
       markDoneInPlace();

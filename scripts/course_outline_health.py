@@ -63,6 +63,24 @@ for vol, deck_key, level in (("VOL1", "recall_basic", "basic"), ("VOL2", "recall
                    % (vol, len(extra), "\n    ".join(extra)))
     print("%s  %2d lessons listed, %2d topics in %s" % (vol, len(listed), len(want), deck_key))
 
+# api/_seo.js derives the lesson counts it publishes as Course structured data straight
+# from the deck's distinct topics. That only equals what the outline renders while the
+# checks above hold, so assert the number here rather than leaving SEO to drift silently.
+n_basic = len(outline("VOL1"))
+n_adv = n_basic + len(outline("VOL2"))
+seo = (ROOT / "api" / "_seo.js").read_text()
+if "courseCounts" not in seo:
+    bad.append("api/_seo.js no longer defines courseCounts(); the published lesson counts "
+               "are unverified.")
+else:
+    derived_basic = len(deck_topics("recall_basic"))
+    derived_adv = derived_basic + len(deck_topics("recall_advanced")) + (1 if DECK["thresholds"] else 0)
+    if (derived_basic, derived_adv) != (n_basic, n_adv):
+        bad.append("courseCounts() would publish %d/%d lessons; the outline renders %d/%d."
+                   % (derived_basic, derived_adv, n_basic, n_adv))
+    else:
+        print("Published counts  %d Basic, %d Advanced \u2014 matches the outline" % (n_basic, n_adv))
+
 if bad:
     print("\n".join("\nFAIL: " + b for b in bad))
     sys.exit(1)

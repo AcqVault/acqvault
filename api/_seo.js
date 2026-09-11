@@ -44,6 +44,18 @@ const SLIP_V = assetV('slip.js', 10);
 const DECK_V = assetV('study-deck.json', 43);
 const ELEMENTS_V = assetV('study-elements.json', 3);
 const DECK_ATTRS = ` data-deck="/assets/study-deck.json?v=${DECK_V}" data-elements="/assets/study-elements.json?v=${ELEMENTS_V}"`;
+/* Lesson counts for structured data, derived from the deck rather than restated: a
+   lesson is one (level, topic) pair, thresholds contribute the one synthetic topic
+   recallPool() builds, and scripts/course_outline_health.py is the gate that keeps the
+   hand-authored outline covering exactly these topics. */
+function courseCounts() {
+  try {
+    const d = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'assets', 'study-deck.json'), 'utf8'));
+    const uniq = (rows) => new Set(rows.map((c) => c.topic)).size;
+    const basic = uniq(d.recall_basic || []);
+    return { basic, advanced: basic + uniq(d.recall_advanced || []) + ((d.thresholds || []).length ? 1 : 0) };
+  } catch (e) { return null; }
+}
 const DECK_PRELOAD = `<link rel="preload" as="fetch" href="/assets/study-deck.json?v=${DECK_V}">
 <link rel="preload" as="fetch" href="/assets/study-elements.json?v=${ELEMENTS_V}">
 `;
@@ -2587,7 +2599,15 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   transition:border-color .14s,background .14s;min-height:44px}
 .rz-opt:hover:not(:disabled){border-color:var(--brass-line);background:rgba(var(--brass-rgb),.035)}
 .rz-opt:active:not(:disabled){background:rgba(var(--brass-rgb),.08)}
-.rz-opt-dot{flex:none;width:19px;height:19px;margin-top:2px;border-radius:50%;border:2px solid var(--line);background:#fff;transition:border-color .14s,box-shadow .14s}
+.rz-opt-dot{flex:none;width:19px;height:19px;margin-top:1px;border-radius:50%;border:2px solid var(--line);background:#fff;transition:border-color .14s,box-shadow .14s}
+/* same badge as .st-opt: the card session trains these numbers, so the check prints them too */
+.rz-opt-k{flex:none;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--muted);border:1px solid var(--line2);
+  border-radius:var(--r-sm);padding:1px 6px;min-width:20px;text-align:center;margin-top:1px;transition:background .12s,color .12s}
+.rz-opt-on .rz-opt-k{border-color:var(--brass-line);color:var(--brass-ink);background:rgba(var(--brass-rgb),.08)}
+.rz-opt-right .rz-opt-k{border-color:var(--ok);color:var(--ok-ink)}
+.rz-opt-wrong .rz-opt-k{border-color:var(--bad);color:var(--bad-ink)}
+@media (pointer:coarse){.rz-opt-k{display:none}}
+
 .rz-opt-on{border-color:var(--brass);background:rgba(var(--brass-rgb),.06)}
 .rz-opt-on .rz-opt-dot{border-color:var(--brass);box-shadow:inset 0 0 0 3.5px #fff,inset 0 0 0 9px var(--brass)}
 .rz-opt:disabled{cursor:default}
@@ -2685,13 +2705,34 @@ function renderStudyPage() {
   const title = 'AcqVault Study — practice & spaced review for the acquisition community | AcqVault';
   const description = esc('Free, no-login contracting course: 44 lessons drawn from the AcqVault Field Guides, each ending in a knowledge check that feeds a spaced-repetition review queue — plus threshold sprints, board-style scenario simulations and the Source Selection Simulator. Works offline. No account needed.');
 
-  const jsonld = {
-    '@context': 'https://schema.org', '@type': 'WebApplication',
-    name: 'AcqVault Study', applicationCategory: 'EducationalApplication',
-    operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    description, url: canonical,
-    isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
-  };
+  /* A WebApplication node alone described a tool, not the two courses that are now the
+     spine of this page. Course is the type a 44-lesson syllabus actually is, and the one
+     search engines render course results from. Both nodes, one graph. */
+  const counts = courseCounts();
+  const provider = { '@type': 'Organization', name: 'AcqVault', url: SITE };
+  const course = (name, blurb, lessons) => ({
+    '@context': 'https://schema.org', '@type': 'Course',
+    name: `AcqVault Study — ${name}`, description: blurb, url: canonical,
+    provider, isAccessibleForFree: true, inLanguage: 'en',
+    educationalLevel: name, teaches: 'US federal and Department of the Air Force contracting',
+    ...(lessons ? { syllabusSections: lessons } : {}),
+    hasCourseInstance: {
+      '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'PT30M',
+      instructor: provider
+    },
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', category: 'Free' }
+  });
+  const jsonld = [
+    {
+      '@context': 'https://schema.org', '@type': 'WebApplication',
+      name: 'AcqVault Study', applicationCategory: 'EducationalApplication',
+      operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      description, url: canonical,
+      isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
+    },
+    course('Basic', 'Field Guide Vol. 1 as a course: the players, the money, the methods, each lesson ending in a knowledge check.', counts && counts.basic),
+    course('Advanced', 'Every Basic lesson plus Vol. 2 — planning, integrity, pricing, contract type, changes, disputes and the thresholds a board expects cold.', counts && counts.advanced)
+  ];
 
   const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
 
