@@ -2402,6 +2402,35 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-rise .lband--room{border-top:none}
 @media print{ .st-rise .lhero{display:block} }
 
+/* Pinned while you work. Spans the shell by cancelling .st-wrap's padding, and every
+   sticky thing below it and every jump target offsets by its height. */
+.rz-bar{position:sticky;top:0;z-index:8;display:flex;align-items:center;gap:14px;
+  margin:-38px -24px 22px;padding:0 24px;height:54px;background:rgba(255,255,255,.94);
+  backdrop-filter:saturate(140%) blur(8px);-webkit-backdrop-filter:saturate(140%) blur(8px);
+  border-bottom:1px solid var(--line2)}
+.rz-bar-back{display:inline-flex;align-items:center;gap:6px;flex:none;font:inherit;font-size:var(--fs-sm);
+  font-weight:700;color:var(--brass-ink);background:none;border:none;padding:6px 10px 6px 0;cursor:pointer;
+  border-radius:var(--r-sm);min-height:44px}
+.rz-bar-back:hover{color:var(--ink)}
+.rz-bar-back:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.rz-bar-crumb{flex:1;min-width:0;display:flex;align-items:baseline;gap:9px;font-size:var(--fs-sm);
+  white-space:nowrap;overflow:hidden}
+.rz-bar-crumb b{flex:none;font-weight:800;letter-spacing:var(--ls-snug);color:var(--ink)}
+.rz-bar-sep{flex:none;color:var(--line);font-weight:400}
+.rz-bar-now{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--muted2,#6f6c74)}
+.rz-bar-prog{flex:none;display:flex;align-items:center;gap:9px}
+.rz-bar-track{width:96px;height:4px;border-radius:2px;background:var(--line2);overflow:hidden}
+.rz-bar-track>i{display:block;height:100%;border-radius:2px;background:var(--brass);
+  transition:width .35s cubic-bezier(.23,1,.32,1)}
+.rz-bar-n{font-size:var(--fs-sm);font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.rz-bar-n span{font-weight:600;color:var(--muted2,#6f6c74)}
+.rz-bar-next{flex:none;min-height:36px;padding:8px 14px;font-size:var(--fs-sm)}
+@media (max-width:860px){
+  /* .st-wrap keeps 24px side padding at every width, so the cancel stays 24px */
+  .rz-bar{gap:10px;margin:-38px -24px 18px;padding:0 24px}
+  .rz-bar-sep,.rz-bar-now,.rz-bar-next{display:none}
+  .rz-bar-track{width:64px}
+}
 .rz-eyebrow{display:block;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
 .rz-btn{font:inherit;font-size:var(--fs-md);font-weight:650;letter-spacing:-.004em;border-radius:var(--r-sm);padding:12px 20px;cursor:pointer;border:1px solid transparent;transition:transform .12s,box-shadow .18s,border-color .15s,background .15s;min-height:44px}
 .rz-btn-go{background:var(--ink-mid);color:#fff;border-color:var(--ink-mid);box-shadow:none}
@@ -2433,13 +2462,13 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 /* ── course cover ─────────────────────────────────────────────────────────── */
 .rz-cover{position:relative;overflow:hidden;overflow:clip;
   background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 62%,var(--ink-to));border:1px solid rgba(var(--brass-bright-rgb),.4);
-  border-radius:var(--r-lg);padding:40px 38px;box-shadow:0 26px 54px -30px rgba(10,28,51,.62)}
+  border-radius:var(--r-lg);padding:30px 26px;box-shadow:0 26px 54px -30px rgba(10,28,51,.62)}
 .rz-cover::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
 .rz-cover-body{position:relative}
 .rz-cover .rz-eyebrow{color:var(--brass-bright);margin-bottom:14px}
-.rz-cover-h{font-family:var(--serif);font-weight:700;font-size:46px;line-height:1.04;letter-spacing:var(--ls-snug);margin:0 0 14px;color:#f4f8fc}
+.rz-cover-h{font-family:var(--serif);font-weight:700;font-size:38px;line-height:1.06;letter-spacing:var(--ls-snug);margin:0 0 11px;color:#f4f8fc}
 .rz-cover-p{margin:0;color:rgba(221,233,246,.88);font-size:var(--fs-lg);line-height:1.65;max-width:60ch}
-.rz-facts{list-style:none;display:flex;flex-wrap:wrap;gap:10px 30px;margin:24px 0 26px;padding:22px 0 0;
+.rz-facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px 26px;margin:18px 0 0;padding:16px 0 0;
   border-top:1px solid rgba(var(--brass-bright-rgb),.22);font-size:var(--fs-md);color:rgba(221,233,246,.7)}
 .rz-facts b{color:#f4f8fc;font-weight:700;margin-right:5px}
 .rz-cover-actions{display:flex;gap:10px;flex-wrap:wrap}
@@ -2462,17 +2491,17 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;
   font-size:var(--fs-md);line-height:1.45;color:var(--ink3,#474c55)}
 .rz-incl b{color:var(--ink);font-weight:700}
-.rz-outline-head{font-family:var(--serif);font-weight:700;font-size:24px;letter-spacing:var(--ls-snug);margin:46px 0 0}
-.rz-vol{display:flex;align-items:center;gap:14px;margin:34px 0 4px;font-size:var(--fs-xs);font-weight:800;
+.rz-outline-head{font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:var(--ls-snug);margin:0 0 4px}
+.rz-vol{display:flex;align-items:center;gap:14px;margin:24px 0 2px;font-size:var(--fs-xs);font-weight:800;
   letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
 .rz-vol::after{content:"";flex:1;height:1px;background:rgba(var(--brass-rgb),.28)}
-.rz-sec{margin-top:26px}
+.rz-sec{margin-top:18px}
 .rz-sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:0 2px 9px}
 .rz-sec-head h3{margin:0;font-size:18px;font-weight:700;letter-spacing:var(--ls-snug)}
 .rz-sec-count{font-size:var(--fs-sm);color:var(--muted2,#6f6c74);white-space:nowrap}
 .rz-lessons{list-style:none;margin:0;padding:0;border:1px solid var(--line2);border-radius:var(--r-sm);background:#fff;overflow:hidden}
-.rz-lesson{display:flex;width:100%;align-items:center;gap:14px;text-align:left;background:#fff;border:none;border-top:1px solid var(--line2);
-  padding:14px 18px;cursor:pointer;font:inherit;color:var(--ink);transition:background .14s}
+.rz-lesson{display:flex;width:100%;align-items:center;gap:13px;text-align:left;background:#fff;border:none;border-top:1px solid var(--line2);
+  padding:10px 14px;cursor:pointer;font:inherit;color:var(--ink);transition:background .14s}
 .rz-lessons li:first-child .rz-lesson{border-top:none}
 .rz-lesson:hover{background:var(--off,#f7f6f2)}
 .rz-lesson:active{background:rgba(var(--brass-rgb),.1)}
@@ -2487,7 +2516,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-lesson-done .rz-lesson-body b{color:var(--ink3,#474c55)}
 
 /* the two things that are not lessons */
-.rz-extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:38px 0 4px}
+.rz-extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:0}
 .rz-extra-card{display:flex;flex-direction:column;gap:4px;text-align:left;background:#fff;border:1px solid var(--line2);
   border-radius:var(--r-md);padding:16px 18px;cursor:pointer;font:inherit;color:var(--ink);
   transition:border-color .15s,transform .12s,box-shadow .18s}
@@ -2522,7 +2551,8 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-side-now{background:rgba(var(--brass-rgb),.1);color:var(--ink);font-weight:700;box-shadow:inset 3px 0 0 var(--brass)}
 .rz-side-now .rz-side-mark{background:#fff;border-color:var(--brass);color:var(--brass-ink)}
 
-.rz-main{min-width:0}
+.rz-main{min-width:0;background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:26px 30px}
+.rz-main>.rz-block:last-of-type{border-bottom:none}
 .rz-rail{display:none;min-width:0}
 .rz-rail-h{margin:0 0 10px;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);
   text-transform:uppercase;color:var(--brass-ink)}
@@ -2542,14 +2572,14 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   border-radius:var(--r-sm);font-size:var(--fs-sm);font-weight:700;color:var(--brass-ink);text-decoration:none}
 .rz-rail-kc:hover{border-color:var(--brass-line)}
 .rz-rail-kc:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
-.rz-lhead{padding-bottom:24px;border-bottom:1px solid var(--line2);margin-bottom:4px}
-.rz-lhead h1{font-family:var(--serif);font-weight:700;font-size:38px;line-height:1.08;letter-spacing:var(--ls-snug);margin:12px 0 11px;max-width:24ch}
+.rz-lhead{padding-bottom:18px;border-bottom:1px solid var(--line2);margin-bottom:2px}
+.rz-lhead h1{font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.1;letter-spacing:var(--ls-snug);margin:9px 0 8px;max-width:26ch}
 .rz-lhead-meta{margin:0;font-size:var(--fs-base);color:var(--muted2,#6f6c74)}
 
 /* A lesson holds typed items — a reading and a knowledge check — and names each one
    with what it costs you, the way a course platform does. Without this the lesson is
    an undifferentiated scroll and nothing tells you how much of it is left. */
-.rz-item{display:flex;align-items:center;gap:11px;margin:30px 0 4px;padding-bottom:13px;border-bottom:1px solid var(--line2)}
+.rz-item{display:flex;align-items:center;gap:11px;margin:4px 0 2px;padding-bottom:12px;border-bottom:1px solid var(--line2)}
 .rz-item-ic{flex:none;width:26px;height:26px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;
   background:rgba(var(--brass-rgb),.1)}
 .rz-item-ic svg{width:15px;height:15px;fill:none;stroke:var(--brass-ink);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
@@ -2559,7 +2589,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-item-done .rz-item-ic svg{stroke:#fff}
 
 /* prev / next: you can always see what comes after this, and leave without finishing */
-.rz-nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:38px;padding-top:24px;border-top:1px solid var(--line2)}
+.rz-nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line2)}
 .rz-nav-b{display:flex;flex-direction:column;gap:3px;font:inherit;text-align:left;background:#fff;cursor:pointer;
   border:1px solid var(--line2);border-radius:var(--r-md);padding:13px 16px;color:var(--ink);min-height:56px;
   transition:border-color .15s,box-shadow .18s,transform .12s}
@@ -2600,7 +2630,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 }
 @media (prefers-reduced-motion:reduce){ .rz-row-go{transition:none} }
 
-.rz-block{padding:32px 0;border-bottom:1px solid var(--line2)}
+.rz-block{padding:26px 0;border-bottom:1px solid var(--line2);scroll-margin-top:74px}
 .rz-block-h{margin:0 0 15px;font-size:21px;font-weight:700;line-height:1.34;letter-spacing:var(--ls-snug);max-width:32ch}
 /* The answer used to sit in a brass-bordered slab under a "KEY POINT" eyebrow, eight
    times a lesson. It carries itself in the serif this site already uses for its
@@ -2616,12 +2646,12 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-cite:hover{border-bottom-color:var(--brass-ink)}
 
 /* the gate: nothing below it exists until you say you have read the above */
-.rz-gate{padding:34px 0 6px}
-.rz-gate p{margin:0 0 18px;font-size:var(--fs-lg);color:var(--muted2,#6f6c74)}
+.rz-gate{padding:24px 0 4px}
+.rz-gate p{margin:0 0 14px;font-size:var(--fs-lg);color:var(--muted2,#6f6c74)}
 
 /* ── knowledge check ──────────────────────────────────────────────────────── */
-.rz-kc{margin-top:10px;background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:30px 34px;
-  box-shadow:none;scroll-margin-top:20px}
+.rz-kc{margin-top:6px;background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:30px 34px;
+  box-shadow:none;scroll-margin-top:74px}
 .rz-kc-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
 .rz-kc-count{font-size:var(--fs-sm);font-weight:700;color:var(--muted2,#6f6c74);font-variant-numeric:tabular-nums}
 .rz-kc-q{margin:0 0 20px;font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.34;letter-spacing:-.012em;max-width:40ch}
@@ -2697,19 +2727,19 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .rz-lesson-shell{display:grid;grid-template-columns:262px minmax(0,1fr);gap:44px;align-items:start}
   /* the course home splits: outline reads down the left, the rail acts on the right */
   .rz-home{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:44px;align-items:start}
-  .rz-aside{order:0;position:sticky;top:20px}
-  .rz-side{display:block;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow:auto;margin:0}
+  .rz-aside{order:0;position:sticky;top:74px}
+  .rz-side{display:block;position:sticky;top:74px;max-height:calc(100vh - 94px);overflow:auto;margin:0}
   .rz-side-open{display:none}
-  .rz-cover{padding:48px 46px}
-  .rz-cover-h{font-size:54px}
+  .rz-cover{padding:36px 38px}
+  .rz-cover-h{font-size:44px}
   .rz-cover-p,.rz-facts{max-width:70ch}
-  .rz-lhead h1{font-size:42px}
+  .rz-lhead h1{font-size:34px}
 }
 @media (min-width:1320px){
   /* three columns: course nav, the reading, and what the reading contains. Below this
      the third column would squeeze the measure, so it folds away rather than shrink. */
   .rz-lesson-shell{grid-template-columns:262px minmax(0,1fr) 244px;gap:48px}
-  .rz-rail{display:block;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow:auto}
+  .rz-rail{display:block;position:sticky;top:74px;max-height:calc(100vh - 94px);overflow:auto}
   .rz-main{max-width:none}
 }
 @media (min-width:1480px){
@@ -2728,6 +2758,9 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .rz-lead{font-size:19px}
   .rz-kc{padding:20px 18px}
   .rz-kc-q{font-size:21px}
+  /* The sheet's side padding inside the wrap's own left 265px of prose — about 32
+     characters a line. On a phone it runs edge to edge instead, as a white band. */
+  .rz-main{margin:0 -24px;padding:22px 24px;border-left:0;border-right:0;border-radius:0}
   .rz-btn{width:100%}
   .rz-cover-actions,.rz-done-actions{flex-direction:column}
   .rz-nav{grid-template-columns:1fr}

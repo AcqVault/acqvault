@@ -616,6 +616,24 @@
     var done = lessons.filter(function (l) { return lessonDone(l.key); }).length;
     return { done: done, total: lessons.length, pct: lessons.length ? Math.round(100 * done / lessons.length) : 0 };
   }
+  /* Persistent course chrome. Every commercial course player keeps a bar pinned while you
+     work — where you are, how far in, what is next. Without one the page reads as a
+     document you happen to be scrolling rather than an application you are inside. */
+  function chromeHtml(o) {
+    var p = o.prog;
+    return '<div class="rz-bar">' +
+      (o.back ? '<button class="rz-bar-back" id="rz-bar-back" aria-label="Back to the course outline">' +
+        '<span aria-hidden="true">\u2190</span> Outline</button>' : '') +
+      '<span class="rz-bar-crumb"><b>' + esc(o.course) + '</b>' +
+      (o.now ? '<span class="rz-bar-sep" aria-hidden="true">/</span><span class="rz-bar-now">' +
+        esc(o.now) + '</span>' : '') + '</span>' +
+      '<span class="rz-bar-prog">' +
+      '<span class="rz-bar-track" aria-hidden="true"><i style="width:' + p.pct + '%"></i></span>' +
+      '<span class="rz-bar-n">' + p.done + '<span> / ' + p.total + '</span></span></span>' +
+      (o.nextLabel ? '<button class="rz-btn rz-btn-go rz-bar-next" id="rz-bar-next">' +
+        esc(o.nextLabel) + ' <span aria-hidden="true">\u2192</span></button>' : '') +
+      '</div>';
+  }
   function barHtml(prog, cls) {
     return '<div class="rz-meter' + (cls ? ' ' + cls : '') + '">' +
       '<div class="rz-meter-bar" aria-hidden="true"><span style="width:' + prog.pct + '%"></span></div>' +
@@ -689,6 +707,8 @@
        order:-1 under the breakpoint so the action never falls below the outline on a
        phone. */
     render(
+      chromeHtml({ course: meta.name, prog: prog,
+        nextLabel: full ? 'Revisit' : prog.done ? 'Continue' : 'Start' }) +
       '<div class="rz-cover">' +
       '<div class="rz-cover-body">' +
       '<span class="rz-eyebrow">' + esc(meta.vol) + '</span>' +
@@ -718,8 +738,10 @@
       '<button class="rz-extra-card" id="rz-review"><b>Review</b><span>' + reviewLine + '</span></button>' +
       '<button class="rz-extra-card" id="rz-practice"><b>Practice Range</b><span>Both simulators and the daily rounds</span></button>' +
       '</aside></div>' + footToolsHtml());
-    if (next) el('rz-start').onclick = function () { openLesson(next.key); };
-    else el('rz-start').disabled = true;
+    if (next) {
+      el('rz-start').onclick = function () { openLesson(next.key); };
+      el('rz-bar-next').onclick = function () { openLesson(next.key); };
+    } else { el('rz-start').disabled = true; el('rz-bar-next').disabled = true; }
     el('rz-switch').onclick = function () { goDepth(0, viewTrack); };
     el('rz-review').onclick = function () { goDepth(1, viewHome); };
     el('rz-practice').onclick = function () {
@@ -822,6 +844,8 @@
     }).join('');
 
     render(
+      chromeHtml({ course: COURSE_META[S.track === 'basic' ? 'basic' : 'advanced'].name,
+        now: L.topic, prog: prog, back: true, nextLabel: next ? 'Next lesson' : null }) +
       '<div class="rz-lesson-shell">' +
       '<aside class="rz-side" id="rz-side">' +
       '<button class="rz-side-back" id="rz-back">← Course outline</button>' +
@@ -905,12 +929,14 @@
         : '';
       return '<aside class="rz-rail" aria-label="In this lesson">' +
         '<div class="rz-rail-pos">Lesson <b>' + L.n + '</b> of ' + lessons.length +
-        ' \u00b7 ' + esc(L.section) + '</div>' + jump +
+        '<span>' + esc(L.section) + '</span></div>' + jump +
         (checks.length ? '<a class="rz-rail-kc" href="#rz-kc">Knowledge check \u00b7 ' +
           checks.length + ' question' + (checks.length !== 1 ? 's' : '') + '</a>' : '') +
         '</aside>';
     }
     el('rz-back').onclick = function () { goDepth(1, viewCourse); };
+    el('rz-bar-back').onclick = function () { goDepth(1, viewCourse); };
+    if (el('rz-bar-next')) el('rz-bar-next').onclick = function () { openLesson(next.key); };
     el('rz-side-open').onclick = function () {
       var open = el('rz-side').classList.toggle('rz-side-shown');
       this.setAttribute('aria-expanded', open ? 'true' : 'false');
