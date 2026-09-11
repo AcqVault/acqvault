@@ -345,10 +345,33 @@
     wireGamesSection();
   }
 
+  /* Coming back after a gap is where warrant prep actually dies, and it is the moment
+     this tool handled worst: a fortnight away produced a bigger pile and a streak reset
+     to zero. The largest field experiment on habitual return (61,293 people, 54
+     programmes) found the single best-performing intervention rewarded the COMEBACK
+     after a missed session — the empirical inverse of a streak. And Anki's own manual
+     calls an unbounded backlog a hazard and says to stop introducing new cards until it
+     is cleared. So: a lapse is named and welcomed, not scored, and while there is a real
+     backlog of cards you have SEEN, unseen cards wait their turn. */
+  var COMEBACK_GAP = 5;      // days away before the return is worth naming
+  var COMEBACK_BACKLOG = 10; // and enough waiting for suppression to matter
+  function lapseDays() {
+    var st = S.streak;
+    if (!st || !st.last) return 0;
+    var d = today() - st.last;
+    return d > 0 ? d : 0;
+  }
+
   function viewHome() {
     if (!S.track) return viewTrack();
     var pool = recallPool();
-    var due = pool.filter(function (c) { return isDue(c.id); });
+    var dueAll = pool.filter(function (c) { return isDue(c.id); });
+    var seenDue = dueAll.filter(function (c) { return cardState(c.id).box > 0; });
+    var gap = lapseDays();
+    var comeback = gap >= COMEBACK_GAP && seenDue.length >= COMEBACK_BACKLOG;
+    // Under a comeback, the session is drawn from cards already met. Meeting new material
+    // on the day you return is how a backlog becomes a wall.
+    var due = comeback ? seenDue : dueAll;
     var byTopic = topicsFor(pool);
     var names = Object.keys(byTopic).sort();
     var rows = names.map(function (t) {
@@ -385,13 +408,19 @@
         dstate.done + ' card' + (dstate.done !== 1 ? 's' : '') + ' answered.</span></div>' +
         '<span class="st-daily-sub">Cards you missed stay in the pile until they stick, so the count doesn’t drop to zero — that’s the schedule working, not a backlog. Another round of ' +
         sessionSize + ' whenever you want it.</span>';
+    } else if (comeback) {
+      dailyInner = '<div class="st-daily-row"><span class="st-daily-num">' + sessionSize + '</span><span class="st-daily-what">waiting for you</span></div>' +
+        '<span class="st-daily-sub">Welcome back — it’s been ' + gap + ' days. These are cards you have already met, not new ground: ' +
+        'coming back after a gap is the hard part, and you just did it. New material waits until the pile is down.' +
+        (seenDue.length > sessionSize ? ' ' + seenDue.length + ' are due in total; you will see ' + sessionSize + ' now.' : '') +
+        '</span>';
     } else {
       dailyInner = '<div class="st-daily-row"><span class="st-daily-num">' + sessionSize + '</span><span class="st-daily-what">card' + (sessionSize !== 1 ? 's' : '') + ' in today’s session</span></div>' +
         '<span class="st-daily-sub">Spaced repetition picked these — the ones you’re about to forget, right before you forget them.' +
         (due.length > sessionSize ? ' Drawn from ' + due.length + ' due; a session caps at ' + SESSION_CAP + ' on purpose, because short and often beats long and rare.' : '') +
         '</span>';
     }
-    var run = streakRun();
+    var run = comeback ? 0 : streakRun();   // never greet a return with a reset counter
     render(
       '<div class="st-head">' +
       (run >= 2 ? '<div class="st-streak" title="Days in a row with at least one card answered">' +
