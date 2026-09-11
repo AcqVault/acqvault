@@ -1031,7 +1031,7 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .lband--white+.lband--white{border-top:1px solid var(--line2)}
 .lband .libcat{padding:0;border:none}
 .lband .libcat+.libcat{padding:0;border:none}
-.lhero{position:relative;overflow:hidden;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8}
+.lhero{position:relative;overflow:hidden;overflow:clip;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8}
 .lhero::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep));z-index:2}
 .lhero::after{content:"";position:absolute;right:-40px;bottom:-130px;width:440px;height:440px;opacity:.12;background:repeating-radial-gradient(circle at 50% 50%,rgba(var(--brass-bright-rgb),.6) 0 1px,transparent 1px 12px);pointer-events:none}
 .lhero .lband-inner{position:relative;padding:54px 24px 52px}
@@ -1549,7 +1549,7 @@ ${runHtml}`;
 // ── /study — the client-side drill room (Basic/Advanced tracks; assets/study.js does the work) ──
 // Shared by /study and the unlisted /48cons page — module scope so the two cannot drift.
 const STUDY_CSS = `<style>
-.lband--room{position:relative;overflow:hidden;background:var(--off);border-top:1px solid rgba(var(--brass-rgb),.16)}
+.lband--room{position:relative;overflow:hidden;overflow:clip;background:var(--off);border-top:1px solid rgba(var(--brass-rgb),.16)}
 .st-guilloche{position:absolute;right:-150px;top:-120px;width:520px;height:520px;opacity:.06;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%)}
 .st-guilloche svg{width:100%;height:100%}
 .st-wrap{position:relative;max-width:880px;margin:0 auto;padding:38px 24px 74px}
@@ -3073,7 +3073,7 @@ function renderSourceSelectionPage() {
   };
 
   const SRCSEL_CSS = `<style>
-.lband--room{position:relative;overflow:hidden;background:var(--off);border-top:1px solid rgba(var(--brass-rgb),.16)}
+.lband--room{position:relative;overflow:hidden;overflow:clip;background:var(--off);border-top:1px solid rgba(var(--brass-rgb),.16)}
 .st-guilloche{position:absolute;right:-150px;top:-120px;width:520px;height:520px;opacity:.06;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%)}
 .st-guilloche svg{width:100%;height:100%}
 .ss-wrap{position:relative;max-width:860px;margin:0 auto;padding:34px 22px 72px}
