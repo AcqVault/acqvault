@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 96;
+const STUDY_V = 97;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
 const SLIP_V = 10;
 
@@ -986,6 +986,13 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
 .lnav .brand svg{display:block;width:27px;height:27px;flex-shrink:0}
 .lnav .cta{font-weight:650;font-size:14px;color:#fff;background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));border:1px solid var(--brass-line);padding:8px 15px;border-radius:999px;text-decoration:none;transition:border-color .15s}
 .lnav .cta:hover{border-color:rgba(var(--brass-bright-rgb),.55)}
+@media (max-width:420px){
+  .lnav-inner{padding:10px 14px;gap:10px;flex-wrap:nowrap}
+  .lnav .brand{font-size:16px;gap:7px}
+  .lnav .brand svg{width:23px;height:23px}
+  .lnav .cta{padding:8px 12px;font-size:13px;white-space:nowrap}
+  .lnav .hlink{font-size:13px}
+}
 .lband{width:100%}
 .lband-inner{max-width:1060px;margin:0 auto;padding:54px 24px}
 .lband--white{background:#fff}
