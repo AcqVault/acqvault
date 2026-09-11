@@ -63,7 +63,20 @@ def check():
         return False, []
 
     findings = []
-    for (name, ver), pages in sorted(referenced.items()):
+    # A worklist, not a flat loop: the HTML is not the only place a versioned asset is
+    # referenced from. assets/study.js fetches /assets/study-deck.json?v=N and
+    # study-elements.json?v=N from its own source, and those carry the SAME immutable
+    # caching and the same stale-pin risk while being invisible to a scan of the pages.
+    # A deck edit shipped behind a forgotten bump is silent: the HTML and the bundle both
+    # look current. So every .js we verify gets scanned for further references, and those
+    # get verified too, until nothing new turns up.
+    seen = set()
+    queue = sorted(referenced)
+    while queue:
+        name, ver = queue.pop(0)
+        if (name, ver) in seen:
+            continue
+        seen.add((name, ver))
         local_path = ROOT / "assets" / name
         if not local_path.exists():
             findings.append((name + "?v=" + ver, "MISSING LOCALLY", "-", {}))
@@ -79,6 +92,11 @@ def check():
         print("  {}  /assets/{}?v={}  local {}  served {}".format(mark, name, ver, local, served))
         if served != local:
             findings.append((name + "?v=" + ver, local, served, headers))
+            continue  # a stale bundle's references are the stale bundle's, not this repo's
+        if name.endswith(".js"):
+            for ref in ASSET_RE.findall(body.decode("utf-8", "replace")):
+                if tuple(ref) not in seen:
+                    queue.append(tuple(ref))
     return not findings, findings
 
 

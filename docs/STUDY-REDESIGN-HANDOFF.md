@@ -1,7 +1,14 @@
 # Study redesign — handoff
 
-State as of 2026-09-11. 28 commits shipped this session, working tree clean, all five
-gates green, everything pushed to `main`. Last commit `319088c`.
+State as of 2026-09-11 (second session). Working tree clean, all six gates green,
+everything pushed to `main`.
+
+**The direction changed this session.** /study is no longer a spaced-repetition
+dashboard you land on and pick a mode from. It is a course, in the shape Articulate
+Rise turns out: a cover, an outline of numbered lessons grouped into sections, and
+lesson pages that are a column of teaching blocks behind a continue gate with a
+knowledge check at the end. Lessons are the spine; spaced repetition sits behind
+"Review" and is fed by the knowledge checks.
 
 ---
 
@@ -11,50 +18,103 @@ gates green, everything pushed to `main`. Last commit `319088c`.
 > it has the state, the file map, and the traps. Work in
 > `/Users/iz/Documents/Projects/acqvault`.
 >
-> Ground rules learned the hard way this session:
+> Ground rules learned the hard way:
 > - **`assets/app.css` does not load on study pages.** Study CSS is the `STUDY_CSS`
 >   template literal in `api/_seo.js`. Shared tokens are `STYLE` in the same file.
-> - **Look at every change in a browser before telling me it works.** Three things
->   shipped this session that passed every gate and did not work: a checklist whose
->   guard could never be true, a grid that put a caption in the wrong column, and a
->   `!important` hover rule that killed button press feedback.
-> - **Run `python3 scripts/verify_deploy.py` after every deploy.** A stale edge cache
->   served the old bundle to users while the HTML claimed the new version.
+> - **Look at every change in a browser before saying it works.** `node .local/serve.js`
+>   serves /study, /48cons and /source-selection from the repo on :4321, re-requiring
+>   `api/_seo.js` per request, so an edit is one reload away. Use it instead of the live
+>   site while iterating.
+> - **Run `python3 scripts/verify_deploy.py` after every deploy.**
 > - **Space out automated requests.** Polling loops get this machine blocked by
 >   Vercel's bot challenge, and then nothing can be verified.
 > - Light theme only. Use the site's own tokens; do not invent a palette.
 >
-> Next up, in order: (1) verify The Board dashboard and a live card at desktop width —
-> both are unverified; (2) the four deck content bugs listed in the handoff; (3) trim
-> the padded element checklists.
+> Next up: the Rise treatment has only reached /study. /48cons and /source-selection
+> still have their old shapes, and the "connections" between the three are unchanged.
 
 ---
 
-## What shipped
+## What the course layer is
 
-**Correctness**
-- Users were served a stale `study.js` that silently hid three shipped features.
-  Fixed, plus `scripts/verify_deploy.py` and content-hash asset versions so a version
-  can never be forgotten.
-- "Which Part Governs?" had never once presented a case — `begin()` called `next()`
-  while the intro was on screen and the stale-view guard returned forever.
-- Keyboard: reveal/answer dropped focus to `<body>`; then the fix for that killed the
-  `1`/`2`/`3` shortcuts by focusing a button. Focus now goes to the card.
-- Citations opened in the same tab, so Back restarted the session on a different card.
-  All four link types now `target="_blank" rel="noopener"`.
-- End-of-session miss list was capped at 5 and rebuilt empty on resume.
-- `#ss-begin` rendered a 190×190px arrow. `--ink3`/`--muted2` were undefined on every
-  SSR page. Touch targets under 44px. Nav stacked to 120px on phones.
+| Concept | Where it comes from |
+|---|---|
+| Course | `S.track` — `basic` = Foundations (Vol. 1, 15 lessons), `advanced` = The Board (both volumes, 44 lessons) |
+| Section | Hand-authored: `VOL1` / `VOL2` in `assets/study.js` |
+| Lesson | A **(level, topic)** pair, cards pulled live from `recallPool()` |
+| Teaching block | One card: `q` → heading, `a` → key point, `x` → body, `ref`/`links` → source line |
+| Knowledge check | The same cards' `q`/`a`/`d` as MCQs, capped at `KC_MAX` (6) per lesson |
+| Completion | `S.lessons[level + '|' + topic]` = the day it was finished |
 
-**Study surface**
-- Hero collapses once a card is up: question moved from y=884 to y=285 on a 375×812
-  screen. 654px of phone chrome recovered in total.
-- Element checklists on all 337 recall cards (1,106 elements), ticking never scored.
-- "Say why" prompt on reveal; comeback state after a 5+ day gap with new cards
-  suppressed behind a backlog.
-- Dashboard: shell 880→1180px, topics as one table, session panel carries the
-  new/review/overdue split, hierarchy restored so the primary action outweighs its
-  alternatives.
+**A lesson is keyed on (level, topic), never topic alone.** Vol. 1 and Vol. 2 both carry
+"Competition (CICA)", "Small Business Programs" and "Authority, Unauthorized Commitments
+& Ratification", and The Board contains both volumes. Keying on topic collapsed them into
+one lesson and silently dropped the Vol. 2 cards.
+
+Every knowledge-check answer calls `grade()`, so walking the course schedules the cards.
+Review is never empty for somebody who has only ever taken lessons.
+
+`scripts/course_outline_health.py` fails if the hand-authored outline and the deck drift —
+a topic missing from the outline is content no lesson shows; a topic listed twice in one
+volume is a colliding lesson key. Both are silent at runtime.
+
+---
+
+## What shipped this session
+
+**The desktop bug the owner flagged.** The dashboard hung 150px left of the hero and off
+the viewport edge. `.st-guilloche` is absolutely positioned at `right:-150px` inside
+`.lband--room`, which was `overflow:hidden` — hidden clips but still makes a scroll
+container, so the decorative overflow was 150px of scrollable width and a click was enough
+to scroll it, permanently. `overflow:clip` clips without a scroll container. Applied to
+`.lhero` too, which has the same shape.
+
+**The course layer**, as above, plus the landing page carrying two study modules and, beside
+them, the two simulators as peers — Source Selection (its own page) and Board Sim, which was
+three taps down inside the advanced dashboard and is track-independent anyway.
+
+**`.st-sim-go`** set position/top/transform but no inset, so on /study the simulator card's
+arrow rendered over the description text instead of in the 54px gutter the padding reserves.
+Only the /48cons variant ever set `right`. Pre-existing; narrowing the cards made it obvious.
+
+**Four deck content bugs**, each checked against the corpus this site serves:
+- A&E fee ceiling (`dfb052112b10`, `429b12a0f587`) — the 6% is measured against estimated
+  **construction** cost (RFO 15.404-9(c)(4)(ii)), not the design fee. Same base as the DoD
+  10% in R-DFARS 236.202-371; different ceiling, not a different basis.
+- UCA clock (`2681c1606b97`) — one obligation trigger, at 50% of the NTE, per
+  R-DFARS 217.7404-3(a). Not "when obligations hit the caps".
+- T&M (`c7957f46f47b`) — RFO 16.601-3 sets exactly two limitations. Surveillance is real but
+  lives in 16.601-2(a): a condition of running the contract, not a limitation on choosing it.
+- DCAA vs DCMA (`23a76094f31e`) — now cites PGI 215.406 and dates the threshold: TINA moved
+  to $10M for new contracts and orders awarded on or after 30 Jun 2026.
+
+**Six element checklists** where element 1 said "Named all four elements" without naming
+them — an unusable standard under a CORE tag that reads "grade against this".
+
+**`verify_deploy.py` now follows references out of the JS bundles it verifies.** It only ever
+scanned page HTML, and `assets/study.js` fetches `study-deck.json?v=N` and
+`study-elements.json?v=N` from its own source under the same immutable caching. A deck edit
+behind a forgotten bump was invisible to the check. It now covers five more assets.
+
+---
+
+## Traps
+
+- **`assets/app.css` does not load on study pages.** `STUDY_CSS` in `api/_seo.js`.
+- **Card ids are `sha1(type|topic|q)`.** Editing a question mints a new card and orphans
+  every learner's progress and that card's checklist. Fix answers and explanations instead.
+- **`assets/study-deck.json` is the canonical store**, not a build artifact.
+  `study-tool/build_deck_v2.py` reads it as its base and merges distractors into it. The
+  `study-tool/deck-recall-*.json` files are older sources.
+- **`DECK_URL` and `ELEMENTS_URL` carry hardcoded `?v=` tokens** inside `assets/study.js`.
+  Bump them when that content changes. `verify_deploy.py` catches this now — it did not before.
+- **`/48cons` shares the engine, progress key and stylesheet with `/study`.** Every change
+  reaches it; it must not break. `/slip` is a separate unlisted game with a deliberately
+  separate visual system — out of scope.
+- **The Browser pane's click coordinates do not always match its screenshot scale.** A stale
+  tab delivered clicks at 2.38× a screenshot coordinate while claiming 1.8×, so buttons
+  looked dead when they were fine. Arm a capture-phase click listener, click a known point,
+  read back `clientX/clientY`, and derive the factor before trusting a coordinate click.
 
 ---
 
@@ -62,47 +122,43 @@ gates green, everything pushed to `main`. Last commit `319088c`.
 
 | What | Where |
 |---|---|
-| Study CSS | `api/_seo.js` — `STUDY_CSS` literal, ~line 1500+ |
-| Shared tokens | `api/_seo.js` — `STYLE`, `:root` ~line 789 |
-| Client runtime | `assets/study.js` (~3,200 lines) |
-| Element checklists | `assets/study-elements.json` (337 cards) |
+| Course outline, lessons, knowledge checks | `assets/study.js` — `VOL1`/`VOL2`, `viewCourse`, `viewLesson` |
+| Course CSS | `api/_seo.js` — the `COURSE LAYER` block in `STUDY_CSS` |
+| Study CSS | `api/_seo.js` — `STUDY_CSS` literal |
+| Shared tokens | `api/_seo.js` — `STYLE`, `:root` |
+| Client runtime | `assets/study.js` |
+| Element checklists | `assets/study-elements.json` |
 | Deck | `assets/study-deck.json` |
-| Source selection | `SRCSEL_CSS` in `_seo.js`, `assets/source-selection.js` |
+| Local preview | `.local/serve.js` — `node .local/serve.js`, then :4321 (gitignored) |
 | Deploy check | `scripts/verify_deploy.py` |
-| Gates | `scripts/{corpus,render,deck}_health.py`, `check_sim_citations.py`, `test_vehicle_prune.py` |
-
-`/slip` is a separate unlisted game with a deliberately separate visual system — out
-of scope. `/48cons` shares the engine, progress key and stylesheet with `/study`, so
-every change reaches it; it must not break.
+| Gates | `scripts/{corpus,render,deck,course_outline}_health.py`, `check_sim_citations.py`, `test_vehicle_prune.py` |
 
 ---
 
 ## Open work
 
-**Unverified, flagged by the owner as looking off**
-- The Board dashboard at desktop width.
-- A live card at desktop width.
+**The Rise treatment has only reached /study.** `/48cons` and `/source-selection` still have
+their old shapes, and the navigation between the three is unchanged. This is the largest
+remaining piece of what was asked for.
 
-**Deck content bugs — content calls, not code**
-- `dfb052112b10` / `429b12a0f587` — A&E fee ceiling: the answer puts 10% on estimated
-  construction cost, the explanations say 6% "rides on the design fee". Different
-  bases; the explanation looks wrong.
-- `2681c1606b97` vs `65924aa98b6f` — one card's explanation is the vague formulation
-  the other card explicitly corrects.
-- `c7957f46f47b` — asks for "two safeguards", lists three.
-- `23a76094f31e` — cites "DCMA/DCAA support thresholds", no regulation, no date.
-- Seven near-duplicate pairs in `recall_advanced`.
+**Course layer, known rough edges**
+- "Numbers You Must Know" is one lesson holding all 40 threshold cards. Its knowledge check
+  caps at 6. It probably wants splitting.
+- The teaching block shows the answer immediately above the question that checks it. That is
+  what Rise does, but it makes the check a recognition test rather than retrieval — Review is
+  where retrieval happens, and that split should be deliberate rather than incidental.
+- Section names in `VOL1`/`VOL2` are hand-authored and are a content call worth a second look.
 
-**Known low-severity**
-- ~35–40 advanced cards have padded checklists where element 1 is the whole answer.
-  Element 1 is always the core element, so a core/supporting split is a render change.
-- Content-hashed *filenames* would make the stale-cache race impossible rather than
-  detectable. Not done.
+**Deck content**
+- Seven near-duplicate pairs in `recall_advanced`. Not touched.
 
 **Never wired in**
-Three mockup screens were built and published as artifacts but never implemented:
-first-run, session-start, card. What shipped is the incumbent markup restyled. The
-first-run screen in particular — a five-question cold pretest replacing the
-Foundations/The Board choice — is the biggest unbuilt idea, and the research behind it
-is strong: learner control is worth roughly nothing for outcomes, and a newcomer
-cannot classify themselves.
+Three mockup screens were built and published as artifacts but never implemented: first-run,
+session-start, card. The course layer supersedes some of that, but the first-run idea — a
+five-question cold pretest replacing the module choice — is untouched and the research behind
+it is strong: learner control is worth roughly nothing for outcomes, and a newcomer cannot
+classify themselves.
+
+**Known low-severity**
+- Content-hashed *filenames* would make the stale-cache race impossible rather than
+  detectable. Not done.

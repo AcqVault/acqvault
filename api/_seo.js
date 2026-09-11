@@ -2446,6 +2446,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 
 /* ── lesson page ──────────────────────────────────────────────────────────── */
 /* two flagship simulators as peers on the landing page */
+.st-daily-stats-lab{align-self:center;flex:none;max-width:70px;margin-right:14px;font-size:9.5px;font-weight:800;letter-spacing:.12em;line-height:1.35;text-transform:uppercase;text-align:right;color:rgba(var(--brass-bright-rgb),.8)}
 .st-sims{display:grid;grid-template-columns:1fr;gap:12px;margin:0 0 14px}
 .st-sims .st-sim-feature{margin:0;width:100%;text-align:left;font:inherit;cursor:pointer}
 @media (min-width:820px){.st-sims{grid-template-columns:1fr 1fr}}

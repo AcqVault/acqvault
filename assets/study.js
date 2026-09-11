@@ -451,8 +451,11 @@
     var oldest = 0;
     due.forEach(function (c) { var st = cardState(c.id);
       if (st.box > 0) { var d = today() - st.due; if (d > oldest) oldest = d; } });
+    /* These three count the whole due pile, not the 25 in front of you — the session's
+       cards are not chosen until startSession() shuffles and slices. Unlabelled, that put
+       "337 new" beside "25 cards in today's session" and read as a contradiction. */
     function statBlock() {
-      return '<div class="st-daily-stats">' +
+      return '<div class="st-daily-stats"><span class="st-daily-stats-lab">Waiting overall</span>' +
         '<div><b>' + newDue + '</b><span>new</span></div>' +
         '<div><b>' + revDue + '</b><span>review</span></div>' +
         '<div><b>' + (oldest > 0 ? oldest + 'd' : '0') + '</b><span>' +
