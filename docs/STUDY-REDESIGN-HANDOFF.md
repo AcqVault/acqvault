@@ -39,7 +39,7 @@ knowledge check at the end. Lessons are the spine; spaced repetition sits behind
 
 | Concept | Where it comes from |
 |---|---|
-| Course | `S.track` — `basic` = Foundations (Vol. 1, 15 lessons), `advanced` = The Board (both volumes, 44 lessons) |
+| Course | `S.track` — `basic` = Basic (Vol. 1, 15 lessons), `advanced` = Advanced (both volumes, 44 lessons) |
 | Section | Hand-authored: `VOL1` / `VOL2` in `assets/study.js` |
 | Lesson | A **(level, topic)** pair, cards pulled live from `recallPool()` |
 | Teaching block | One card: `q` → heading, `a` → key point, `x` → body, `ref`/`links` → source line |
@@ -48,7 +48,7 @@ knowledge check at the end. Lessons are the spine; spaced repetition sits behind
 
 **A lesson is keyed on (level, topic), never topic alone.** Vol. 1 and Vol. 2 both carry
 "Competition (CICA)", "Small Business Programs" and "Authority, Unauthorized Commitments
-& Ratification", and The Board contains both volumes. Keying on topic collapsed them into
+& Ratification", and Advanced contains both volumes. Keying on topic collapsed them into
 one lesson and silently dropped the Vol. 2 cards.
 
 Every knowledge-check answer calls `grade()`, so walking the course schedules the cards.
@@ -60,7 +60,33 @@ volume is a colliding lesson key. Both are silent at runtime.
 
 ---
 
-## What shipped this session
+## The polish pass
+
+Reference model is a course platform's object graph, not a deck's. A lesson holds typed
+items — a **Reading** (own minutes, ticks when done) and a **Knowledge check** (question
+count) — each section says what it contains, and a previous/next bar means you can always
+see what follows and can leave without finishing the check.
+
+What made it read as generated was repetition, not aesthetics, and the fixes were specific:
+an uppercase eyebrow over every element ("KEY POINT" ×8 a lesson, "DESCRIBED IN" ×8,
+"Section n" ×13); outline metadata identical on all 44 rows; a progress ring that rendered
+0% as a dead grey donut; and a marketing hero stacked on the course cover, which was also
+the page's second `<h1>`. The answer carries itself as a serif lead now, minutes live on
+the section line where they actually differ, the ring is a hairline meter, and `.st-rise`
+collapses the hero the way a card session already did.
+
+Accessibility work from that pass, worth not regressing: `:focus-visible` on every control
+in the layer (it had none, and fell through to a global ring measuring 2.16:1 on the
+cover's navy); a named radiogroup with a roving tabindex; focus handed to the check panel
+whenever the node holding it is destroyed; `role="status"` on the verdict; and sidebar /
+next-lesson navigation routed through `goDepth` so Back steps lesson by lesson.
+
+`node <skill>/scripts/detect.mjs --json api/_seo.js assets/study.js` reports two findings
+inside the layer, both `transition:width` on a progress bar. That is what a progress bar
+should animate; the incumbent `.st-prog` does the same. Everything else it reports is
+incumbent `st-` CSS, outside that scope.
+
+## What shipped earlier
 
 **The desktop bug the owner flagged.** The dashboard hung 150px left of the hero and off
 the viewport edge. `.st-guilloche` is absolutely positioned at `right:-150px` inside
