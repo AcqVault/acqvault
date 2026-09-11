@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 95;
+const STUDY_V = 96;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
 const SLIP_V = 10;
 
@@ -1605,6 +1605,22 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-topic-meta .st-due{color:var(--brass-ink);font-weight:700}
 .st-btn:focus-visible,.st-topic:focus-visible,.st-mode:focus-visible,.st-trackcard:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
 .st-session-head{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink);margin:4px 0 8px}
+/* ── working state: the hero yields to the task ──────────────────────────────
+   The hero is the most-viewed element in the product and the least useful once a
+   session starts - it sat above every card, every simulator phase and every result.
+   While .st-working is set (see render() in assets/study.js) it collapses, and the
+   session head + progress bar become the header instead, pinned so position and the
+   way out are always on screen. */
+.st-working .lhero{display:none}
+.st-working .lband--room{border-top:none}
+.st-working .st-session-head{position:sticky;top:0;z-index:6;margin:0 -4px;padding:11px 4px 7px;
+  background:var(--off);align-items:baseline}
+.st-working .st-prog{position:sticky;top:34px;z-index:6;margin:0 -4px 14px;padding:0 4px;
+  background:var(--off);background-clip:content-box}
+@media (max-width:640px){
+  .st-working .st-session-head{font-size:11.5px}
+}
+@media print{ .st-working .lhero{display:block} }
 .st-prog{height:5px;background:#ece8dd;border-radius:99px;overflow:hidden;margin:0 0 14px}
 .st-prog span{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px;transition:width .3s ease}
 .st-prog-lg{height:8px;margin:14px 0 10px}

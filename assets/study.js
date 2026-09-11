@@ -282,6 +282,14 @@
   var app, rendered = false;
   function render(html) {
     app.innerHTML = html;
+    // The marketing hero persists through every card, every phase and every result.
+    // Measured at 375x812: entering a session put the question at y=869 and Reveal at
+    // y=954 — the entire first screen of a study session contained no study content.
+    // Collapse it the moment the app is in a working state, restore it on the menus.
+    try {
+      document.documentElement.classList.toggle('st-working',
+        /st-session-head|st-card\b/.test(html));
+    } catch (e) { /* styling only; never break a render */ }
     // Anchor each new view just below the top of the drill container so every card
     // lands in the same readable spot. NB: app.offsetTop is relative to the
     // position:relative .st-wrap (~its padding), NOT the page — using it scrolled
