@@ -2395,6 +2395,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
    body, earns the wide shell. */
 .st-rise .st-wrap{max-width:1280px !important}
 .st-lesson .st-wrap{max-width:1440px !important}
+.st-sim .st-wrap{max-width:1280px !important}
 /* Inside the course you are reading, not arriving: the marketing hero and its stat
    pills stack a second hero on top of the course cover, and put a second <h1> on the
    page. A card session already collapses it for the same reason. */
@@ -2569,6 +2570,38 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-side-done .rz-side-mark{background:var(--brass);border-color:var(--brass);color:#fff}
 .rz-side-now{background:rgba(var(--brass-rgb),.1);color:var(--ink);font-weight:700;box-shadow:inset 3px 0 0 var(--brass)}
 .rz-side-now .rz-side-mark{background:#fff;border-color:var(--brass);color:var(--brass-ink)}
+
+/* ── board simulator ──────────────────────────────────────────────────────── */
+.rz-sim{display:flex;flex-direction:column;gap:22px}
+.rz-sim-main{min-width:0}
+.rz-sim-rail{min-width:0;background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:16px 18px}
+.rz-sim-scen{margin:0 0 16px;font-size:var(--fs-md);line-height:1.62;color:var(--ink3,#474c55)}
+.rz-sim-ask{margin:0;font-size:var(--fs-md);line-height:1.55;font-weight:650;color:var(--ink)}
+.rz-sim-meta{margin:0 0 9px;font-size:var(--fs-sm);line-height:1.55;color:var(--muted2,#6f6c74)}
+.rz-sim-meta:last-of-type{margin-bottom:0}
+.rz-sim-rail .rz-rail-h{margin-top:16px}
+.rz-sim-rail .rz-rail-h:first-child{margin-top:0}
+.rz-sim-tally{margin-top:16px;padding-top:13px;border-top:1px solid var(--line2);
+  font-size:var(--fs-sm);color:var(--muted2,#6f6c74);font-variant-numeric:tabular-nums}
+.rz-sim-tally b{color:var(--brass-ink);font-weight:800}
+.rz-sim-exits{margin-top:14px}
+.rz-sim-hintnote{margin:14px 0 0;font-size:var(--fs-sm);line-height:1.55;color:var(--muted2,#6f6c74)}
+.rz-sim-hintnote b{color:var(--ink);font-weight:800}
+/* the model answer reads as a model, not a verdict on what you just did */
+.st-walk-head{font-size:var(--fs-xs);letter-spacing:var(--ls-widest)}
+
+/* the stage sequence, which was invisible: you could not tell how many follow-ups
+   were coming or that a self-grade ended it */
+.rz-steps{list-style:none;display:flex;align-items:center;gap:0;margin:0 0 18px;padding:0;overflow-x:auto}
+.rz-step{display:flex;align-items:center;gap:8px;flex:none;color:var(--muted2,#6f6c74);font-size:var(--fs-sm)}
+.rz-step+.rz-step::before{content:"";display:block;width:22px;height:1px;background:var(--line2);margin:0 10px}
+.rz-step-m{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:800;background:#fff;border:1px solid var(--line2)}
+.rz-step-t{white-space:nowrap}
+.rz-step-done{color:var(--ink3,#474c55)}
+.rz-step-done .rz-step-m{background:var(--brass);border-color:var(--brass);color:#fff}
+.rz-step-now{color:var(--ink);font-weight:700}
+.rz-step-now .rz-step-m{border-color:var(--brass);color:var(--brass-ink);box-shadow:0 0 0 3px rgba(var(--brass-rgb),.12)}
 
 .rz-main{min-width:0;background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:26px 30px}
 .rz-main>.rz-block:last-of-type{border-bottom:none}
@@ -2747,6 +2780,8 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .rz-lesson-shell{display:grid;grid-template-columns:262px minmax(0,1fr);gap:44px;align-items:start}
   /* the course home splits: outline reads down the left, the rail acts on the right */
   .rz-home{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:44px;align-items:start}
+  .rz-sim{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;align-items:start}
+  .rz-sim-rail{position:sticky;top:74px;max-height:calc(100vh - 94px);overflow:auto}
   .rz-aside{order:0;position:sticky;top:74px}
   .rz-side{display:block;position:sticky;top:74px;max-height:calc(100vh - 94px);overflow:auto;margin:0}
   .rz-side-open{display:none}
@@ -2787,6 +2822,9 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .rz-btn{width:100%}
   .rz-cover-actions,.rz-done-actions{flex-direction:column}
   .rz-nav{grid-template-columns:1fr}
+  .rz-steps{gap:0;font-size:var(--fs-xs)}
+  .rz-step+.rz-step::before{width:12px;margin:0 6px}
+  .rz-step:not(.rz-step-now) .rz-step-t{display:none}
   .rz-card{padding:18px}
   .rz-nav-next{text-align:left;align-items:flex-start}
   .rz-meter{max-width:none}

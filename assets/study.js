@@ -355,8 +355,9 @@
       document.documentElement.classList.toggle('st-working',
         working && !/st-summary/.test(html));
       // st-to-course appears only in viewHome, which is inside the course as well.
-      document.documentElement.classList.toggle('st-rise', /rz-cover|rz-lesson-shell|st-to-course/.test(html));
+      document.documentElement.classList.toggle('st-rise', /rz-cover|rz-lesson-shell|st-to-course|rz-sim/.test(html));
       document.documentElement.classList.toggle('st-lesson', /rz-lesson-shell/.test(html));
+      document.documentElement.classList.toggle('st-sim', /class="rz-sim"/.test(html));
     } catch (e) { /* styling only; never break a render */ }
     // Anchor each new view just below the top of the drill container so every card
     // lands in the same readable spot. NB: app.offsetTop is relative to the
@@ -622,8 +623,9 @@
   function chromeHtml(o) {
     var p = o.prog;
     return '<div class="rz-bar">' +
-      (o.back ? '<button class="rz-bar-back" id="rz-bar-back" aria-label="Back to the course outline">' +
-        '<span aria-hidden="true">\u2190</span> Outline</button>' : '') +
+      (o.back ? '<button class="rz-bar-back" id="rz-bar-back" aria-label="' +
+        esc(o.backAria || 'Back to the course outline') + '">' +
+        '<span aria-hidden="true">\u2190</span> ' + esc(o.backLabel || 'Outline') + '</button>' : '') +
       '<span class="rz-bar-crumb"><b>' + esc(o.course) + '</b>' +
       (o.now ? '<span class="rz-bar-sep" aria-hidden="true">/</span><span class="rz-bar-now">' +
         esc(o.now) + '</span>' : '') + '</span>' +
@@ -3642,22 +3644,36 @@
   }
   // The model answer, assembled methodically: name it → frameworks → help → default rule →
   // walk the facts → land the decision → close the loop. "That's the way you learn."
-  function boardWalkthrough(sc) {
+  /* One source for two surfaces. The steps ARE the standard a candidate should grade
+     themselves against, so they render twice: as the model answer here, and as a
+     tickable checklist beside the self-grade. The recall path already carries the
+     reasoning — a self-grade made seconds after the answer appears, at peak fluency, is
+     essentially uncorrelated with later performance, and an explicit standard to grade
+     against measurably improves calibration. The Board Sim needed it more than the cards
+     did: its grade is made after reading a perfect seven-step answer AND a verbatim
+     script, which is the worst possible condition for judging your own performance. */
+  function boardStepList(sc) {
     var co = sc.coach || {};
     var opener = sc.style === 'opener';
     var steps = [];
-    steps.push('<li><b>Name the question.</b> Out loud, first sentence: this is ' + esc(co.qtype || 'a frameworks question — name it, then walk it.') + '</li>');
+    steps.push({ k: 'Named the question', b: 'Name the question.',
+      body: 'Out loud, first sentence: this is ' + esc(co.qtype || 'a frameworks question — name it, then walk it.') });
     if (sc.frameworks && sc.frameworks.length) {
-      steps.push('<li><b>Name the framework(s) in play.</b> ' + sc.frameworks.map(function (f) {
-        return esc(typeof f === 'string' ? f : (f.framework + (f.why ? ' — ' + f.why : '')));
-      }).join('<br>') + '</li>');
+      steps.push({ k: 'Named the framework in play', b: 'Name the framework(s) in play.',
+        body: sc.frameworks.map(function (f) {
+          return esc(typeof f === 'string' ? f : (f.framework + (f.why ? ' — ' + f.why : '')));
+        }).join('<br>') });
     }
     if (opener) {
-      steps.push('<li><b>Own it.</b> ' + esc(co.smes || 'This one is yours — anchor on your own experience and what you actually control.') + '</li>');
-      steps.push('<li><b>Give it a spine.</b> ' + esc(co.rule || 'A definition, a concrete plan, and one example — in that order.') + '</li>');
+      steps.push({ k: 'Anchored it in your own experience', b: 'Own it.',
+        body: esc(co.smes || 'This one is yours — anchor on your own experience and what you actually control.') });
+      steps.push({ k: 'Gave it a spine — definition, plan, example', b: 'Give it a spine.',
+        body: esc(co.rule || 'A definition, a concrete plan, and one example — in that order.') });
     } else {
-      steps.push('<li><b>Name your help.</b> Boards reward knowing who to call: ' + esc(co.smes || 'your CO/chief, Legal (JA), and FM.') + '</li>');
-      steps.push('<li><b>State the default rule before any exception.</b> ' + esc(co.rule || 'Default first, exception second, facts third.') + '</li>');
+      steps.push({ k: 'Named who you would call', b: 'Name your help.',
+        body: 'Boards reward knowing who to call: ' + esc(co.smes || 'your CO/chief, Legal (JA), and FM.') });
+      steps.push({ k: 'Stated the default rule before any exception', b: 'State the default rule before any exception.',
+        body: esc(co.rule || 'Default first, exception second, facts third.') });
     }
     if (sc.facts) {
       var baits = sc.facts.filter(function (f) { return f.verdict === 'bait'; }).map(function (f) { return f.fact; });
@@ -3665,21 +3681,52 @@
       var walk = 'Take each planted fact and say whether it governs or baits (debrief above).';
       if (baits.length) walk += ' Call the bait by name: ' + baits.map(esc).join(' · ') + '.';
       if (govs.length) walk += ' Then anchor on what governs: “' + esc(govs[0]) + '”.';
-      steps.push('<li><b>Walk the facts — bait vs. governs.</b> ' + walk + '</li>');
+      steps.push({ k: 'Called the bait, and anchored on what governs', b: 'Walk the facts — bait vs. governs.', body: walk });
     } else if (sc.baits && sc.baits.length) {
-      steps.push('<li><b>Walk the facts — call the bait.</b> Say why each of these is in the scenario, and why it doesn\'t control: ' + sc.baits.map(esc).join(' · ') + '</li>');
+      steps.push({ k: 'Called the bait by name', b: 'Walk the facts — call the bait.',
+        body: 'Say why each of these is in the scenario, and why it doesn\'t control: ' + sc.baits.map(esc).join(' · ') });
     }
     if (sc.key_moves && sc.key_moves.length) {
-      steps.push('<li><b>Land the decision — your moves, in order.</b><ul>' + sc.key_moves.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul></li>');
+      steps.push({ k: 'Landed a decision, with your moves in order', b: 'Land the decision — your moves, in order.',
+        body: '<ul>' + sc.key_moves.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' });
     } else if (sc.board_answer) {
-      steps.push('<li><b>Land the decision.</b> ' + esc(sc.board_answer) + '</li>');
+      steps.push({ k: 'Landed a decision', b: 'Land the decision.', body: esc(sc.board_answer) });
     }
-    steps.push('<li><b>Close the loop.</b> ' + (opener
-      ? 'End in your own voice — one concrete thing you would change on Monday. Perspective questions are scored on judgment and specifics, not recitation.'
-      : 'Say where you\'d verify before acting — the live RFO/R-DFARS text, your Legal office — and what goes in the file. Never quote a threshold from memory.') + '</li>');
-    return '<div class="st-walk"><div class="st-walk-head">How you should have answered — step by step</div><ol>' + steps.join('') + '</ol>' +
+    steps.push({ k: opener ? 'Closed with one concrete thing you would change' : 'Said where you would verify before acting',
+      b: 'Close the loop.', body: opener
+        ? 'End in your own voice — one concrete thing you would change on Monday. Perspective questions are scored on judgment and specifics, not recitation.'
+        : 'Say where you\'d verify before acting — the live RFO/R-DFARS text, your Legal office — and what goes in the file. Never quote a threshold from memory.' });
+    return steps;
+  }
+  function boardWalkthrough(sc) {
+    var co = sc.coach || {};
+    /* "How you should have answered" was past tense and scolding, and it lands before the
+       follow-ups rather than after everything. It is a model, so it says so. */
+    return '<div class="st-walk"><div class="st-walk-head">What a strong answer covers</div><ol>' +
+      boardStepList(sc).map(function (x) { return '<li><b>' + x.b + '</b> ' + x.body + '</li>'; }).join('') + '</ol>' +
       (co.cite ? '<div class="st-explain-ref">Where it lives: <b>' + esc(co.cite) + '</b></div>' : '') +
       citesHtml(co.links) + '</div>';
+  }
+  function boardChecklist(sc) {
+    var steps = boardStepList(sc);
+    return '<div class="st-check" id="st-check"><div class="st-check-h">Tick what you actually said — ' +
+      'grade against this, not against how obvious it looks now</div><ul class="st-check-list">' +
+      steps.map(function (x) {
+        return '<li><button type="button" class="st-check-item" aria-pressed="false">' +
+          '<span class="st-check-box" aria-hidden="true"></span><span>' + esc(x.k) + '</span></button></li>';
+      }).join('') + '</ul></div>';
+  }
+  function boardSteps(stage, nFus) {
+    var labels = ['Scenario', 'Debrief'];
+    for (var i = 0; i < nFus; i++) labels.push('Follow-up ' + (i + 1));
+    labels.push('Self-grade');
+    return '<ol class="rz-steps" aria-label="Where you are in this scenario">' +
+      labels.map(function (t, i) {
+        var st = i < stage ? ' rz-step-done' : i === stage ? ' rz-step-now' : '';
+        return '<li class="rz-step' + st + '"' + (i === stage ? ' aria-current="step"' : '') + '>' +
+          '<span class="rz-step-m" aria-hidden="true">' + (i < stage ? '\u2713' : (i + 1)) + '</span>' +
+          '<span class="rz-step-t">' + t + '</span></li>';
+      }).join('') + '</ol>';
   }
   function viewBoard(pickId, startStage, startFu, startHints) {
     var pool = deck.scenarios.slice();
@@ -3698,10 +3745,9 @@
       // without this, following one to read a rule dumped you back at the track picker with
       // the sim gone — the exact regression the resume system exists to prevent.
       saveResume('board', S.track, [sc], stage, 0, 'Board Sim', { fu: fuRevealed, hs: hintsShown });
-      var body = '<div class="st-chip">Board Sim' + (sc.topics && sc.topics.length && stage > 0 ? ' · ' + esc(sc.topics.join(' · ')) : '') + '</div>';
+      var body = '';
       if (stage === 0) {
-        body = '<div class="st-chip">Board Sim</div>' +
-          '<div class="st-scenario"><div class="st-scen-eyebrow">The scenario</div>' + esc(sc.scenario) + '</div>' +
+        body = '<div class="st-scenario">' + esc(sc.scenario) + '</div>' +
           askHtml +
           '<p class="st-outloud">Answer <b>out loud</b> — ' + (sc.style === 'opener'
             ? 'in your own voice: a definition, a plan, one example. Stuck? Take a hint.'
@@ -3719,9 +3765,9 @@
             return '<div class="st-fact"><b>' + esc(f.fact) + '</b> ' + v + '<div>' + esc(f.why) + '</div></div>';
           }).join('');
         }
-        body += '<div class="st-scenario st-scenario-sm">' + esc(sc.scenario) + '</div>' + askHtml + d +
+        body += d +
           boardWalkthrough(sc) +
-          (sc.script ? '<div class="st-script"><div class="st-script-head">Say it like this</div><p>' + esc(sc.script) + '</p></div>' : '') +
+          (sc.script ? '<div class="st-script"><div class="st-script-head">One way to say it out loud</div><p>' + esc(sc.script) + '</p></div>' : '') +
           '<div class="st-actions"><button class="st-btn st-btn-reveal" id="next">' + (fus.length ? 'The panel follows up… <kbd>space</kbd>' : 'Grade yourself') + '</button></div>';
       } else if (stage - 2 < fus.length) {
         var k = stage - 2;
@@ -3743,15 +3789,50 @@
             '</div>';
         }
       } else {
-        body += '<div class="st-q">How did the whole exchange go?</div>' +
+        /* It asked "how did the whole exchange go?" — one judgment covering a scenario, a
+           debrief and two follow-ups, made straight after reading a perfect answer. It now
+           grades one thing against the standard the debrief just set, and it says how many
+           hints were taken, because taking three and calling it board-ready was free. */
+        body += '<div class="st-q">Against that standard, how was <i>your</i> answer?</div>' +
+          '<p class="st-outloud">Not how obvious it looks now \u2014 what you actually said before you revealed it.</p>' +
+          boardChecklist(sc) +
+          (hintsShown ? '<p class="rz-sim-hintnote">You took <b>' + hintsShown + '</b> hint' +
+            (hintsShown !== 1 ? 's' : '') + ' on this one. A board gives none.</p>' : '') +
           '<div class="st-actions">' +
           '<button class="st-btn st-g1" id="g1">Rough <kbd>1</kbd></button>' +
           '<button class="st-btn st-g2" id="g2">Getting there <kbd>2</kbd></button>' +
           '<button class="st-btn st-g3" id="g3">Board-ready <kbd>3</kbd></button></div>';
       }
-      render('<div class="st-session-head"><span>Board Sim</span><span>&nbsp;</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
-        '<button class="st-link st-quit" id="st-quit">Back to Review</button>');
-      el('st-quit').onclick = function () { clearResume(); backHome(); };
+      /* The sim is an activity you are inside, laid out the way the course is: pinned
+         chrome, a stepper, the work in the middle, and the scenario kept in view on the
+         right from the debrief onwards — it used to vanish the moment you left stage 0,
+         so you answered follow-ups about a scenario you could no longer read. */
+      var faced = Object.keys(S.scen).length, tot = deck.scenarios.length;
+      var ready = deck.scenarios.filter(function (x) { return S.scen[x.id] === 3; }).length;
+      var railBody = stage > 0
+        ? '<div class="rz-rail-h">The scenario</div>' +
+          '<p class="rz-sim-scen">' + esc(sc.scenario) + '</p>' +
+          (sc.ask ? '<div class="rz-rail-h">The panel asks</div><p class="rz-sim-ask">' + esc(sc.ask) + '</p>' : '')
+        : '<div class="rz-rail-h">What you are in for</div>' +
+          '<p class="rz-sim-meta">' + (fus.length ? 'The debrief, then <b>' + fus.length + '</b> panel follow-up' +
+            (fus.length !== 1 ? 's' : '') + ', then you grade yourself.' : 'A debrief, then you grade yourself.') + '</p>' +
+          '<p class="rz-sim-meta">Answer out loud before you reveal anything. Nobody sees the grade \u2014 it only decides what comes back.</p>';
+      render(
+        chromeHtml({ course: 'Board Sim', back: true, backLabel: 'Exit',
+          backAria: 'Leave the board simulator',
+          now: sc.topics && sc.topics.length ? sc.topics.join(' \u00b7 ') : '',
+          prog: { done: faced, total: tot, pct: tot ? Math.round(100 * faced / tot) : 0 } }) +
+        '<div class="rz-sim">' +
+        '<div class="rz-sim-main">' + boardSteps(stage, fus.length) +
+        '<div class="st-card" aria-live="polite">' + body + '</div>' +
+        '<div class="rz-sim-exits">' +
+        '<button class="st-link" id="st-skip">Skip to a different scenario</button></div></div>' +
+        '<aside class="rz-sim-rail" aria-label="Scenario reference">' + railBody +
+        '<div class="rz-sim-tally">' + faced + ' of ' + tot + ' faced \u00b7 <b>' + ready + '</b> board-ready</div>' +
+        '</aside></div>');
+      el('rz-bar-back').onclick = function () { clearResume(); backHome(); };
+      // there was no way past a scenario you did not want short of walking it or leaving
+      el('st-skip').onclick = function () { clearResume(); keyHandler(null); viewBoard(); };
       if (stage === 0 && el('st-hint')) {
         // re-show any hints already taken (render() wipes them)
         for (var hi = 0; hi < hintsShown; hi++) addHint(hints[hi]);
@@ -3806,11 +3887,42 @@
         el('next').onclick = function () { stage++; fuRevealed = false; step(); };
         keyHandler(function (k) { if (k === ' ' || k === 'Enter') { stage++; fuRevealed = false; step(); return true; } });
       } else {
+        wireChecklist();
         ['g1', 'g2', 'g3'].forEach(function (id, gi) {
-          el(id).onclick = function () { S.scen[sc.id] = gi + 1; bumpStreak(); save(); keyHandler(null); viewBoard(); };
+          el(id).onclick = function () { logScenario(gi + 1); };
         });
-        keyHandler(function (k) { if (k === '1' || k === '2' || k === '3') { S.scen[sc.id] = +k; bumpStreak(); save(); keyHandler(null); viewBoard(); return true; } });
+        keyHandler(function (k) { if (k === '1' || k === '2' || k === '3') { logScenario(+k); return true; } });
       }
+    }
+    /* Logging a grade used to drop you straight into a new scenario mid-thought. Name what
+       was recorded, show where it puts you across the 96, and let leaving be a choice. */
+    function logScenario(g) {
+      S.scen[sc.id] = g; bumpStreak(); save(); keyHandler(null); clearResume();
+      var faced = Object.keys(S.scen).length, tot = deck.scenarios.length;
+      var ready = deck.scenarios.filter(function (x) { return S.scen[x.id] === 3; }).length;
+      var word = g === 3 ? 'Board-ready' : g === 2 ? 'Getting there' : 'Rough';
+      render(
+        chromeHtml({ course: 'Board Sim', back: true, backLabel: 'Exit',
+          backAria: 'Leave the board simulator',
+          prog: { done: faced, total: tot, pct: tot ? Math.round(100 * faced / tot) : 0 } }) +
+        '<div class="rz-sim"><div class="rz-sim-main">' +
+        '<div class="st-card"><div class="rz-done">' +
+        '<div class="rz-done-tick" aria-hidden="true">\u2713</div>' +
+        '<h3>Logged \u2014 ' + word + '</h3>' +
+        '<p class="rz-done-score">' + (g === 3
+          ? 'Board-ready scenarios stop coming back first. The ones you marked rough are the pile worth returning to.'
+          : 'Marked for another pass. A scenario you graded honestly is worth more than one you graded kindly.') + '</p>' +
+        '<div class="rz-prog rz-prog-lg" aria-hidden="true"><span style="width:' +
+          (tot ? Math.round(100 * faced / tot) : 0) + '%"></span></div>' +
+        '<p class="rz-done-prog">' + faced + ' of ' + tot + ' scenarios faced \u00b7 ' + ready + ' board-ready</p>' +
+        '<div class="rz-done-actions">' +
+        '<button class="rz-btn rz-btn-go" id="bd-next">Next scenario \u2192</button>' +
+        '<button class="rz-btn rz-btn-ghost" id="bd-stop">That\u2019s enough for now</button>' +
+        '</div></div></div></div></div>');
+      el('rz-bar-back').onclick = backHome;
+      el('bd-next').onclick = function () { viewBoard(); };
+      el('bd-stop').onclick = backHome;
+      keyHandler(function (k) { if (k === ' ' || k === 'Enter') { viewBoard(); return true; } });
     }
     step();
   }
