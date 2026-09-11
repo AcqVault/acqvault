@@ -1736,6 +1736,35 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   line-height:1.62 !important;margin-top:20px !important;padding-top:18px !important}
 .st-produce-hint{margin-top:18px !important;font-size:13.5px !important}
 .st-actions{margin-top:22px !important;gap:10px !important}
+/* ── USE THE WIDTH ────────────────────────────────────────────────────────────
+   The previous pass restyled boxes inside an 880px column and left the sides of a
+   1280px screen empty. This is the layout change: the shell widens, and the
+   dashboard becomes two real columns — the session and how you can run it on the
+   left, readiness on the right — instead of one narrow stack. The card keeps a
+   reading measure, because a 1,100px line of prose is not an improvement.
+   ─────────────────────────────────────────────────────────────────────────────── */
+@media (min-width:1000px){
+  .st-wrap{max-width:1180px !important}
+  #study-app{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    gap:22px 34px;align-items:start}
+  /* full-bleed rows: the head, the session panel and anything not in the two lanes */
+  #study-app > .st-head,#study-app > .st-sub,#study-app > .st-intro{grid-column:1/-1}
+  #study-app > .st-daily{grid-column:1/-1}
+  #study-app > .st-modes{grid-column:1;margin-top:0 !important}
+  #study-app > .st-ready-head,#study-app > .st-topics{grid-column:2}
+  #study-app > .st-ready-head{margin-top:0 !important}
+  #study-app > .st-games-head,#study-app > .st-plates,#study-app > .st-foot-tools,
+  #study-app > .st-sim-feature,#study-app > .st-tracks,#study-app > .st-tools,
+  #study-app > .st-rungs,#study-app > .st-lad-boards{grid-column:1/-1}
+  .st-modes{grid-template-columns:1fr !important}
+  .st-topics{grid-template-columns:1fr !important}
+  /* a card session is a single column with a real measure, centred in the wider shell */
+  .st-working #study-app{display:block}
+  .st-working .st-wrap{max-width:900px !important}
+}
+@media (min-width:1000px) and (max-width:1180px){
+  .st-wrap{max-width:100% !important}
+}
 /* the working view ran 189px of empty band between the quit link and the footer */
 .st-working .lband--room .lband-inner,.st-working .st-wrap{padding-bottom:28px !important}
 .st-quit{margin-top:18px !important}
