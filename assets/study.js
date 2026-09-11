@@ -116,7 +116,7 @@
   function checklistHtml(id) {
     var els = elementsFor(id);
     if (!els) return '';
-    return '<div class="st-check"><div class="st-check-h">Did you say these? Grade against this, ' +
+    return '<div class="st-check" id="st-check"><div class="st-check-h">Did you say these? Grade against this, ' +
       'not against how familiar it felt</div><ul class="st-check-list">' +
       els.map(function (t, i) {
         return '<li><button type="button" class="st-check-item' + (i === 0 ? ' st-check-core' : '') +
@@ -234,10 +234,11 @@
       el('g1').onclick = function () { o.onGrade(1); };
       if (o.showShaky) el('g2').onclick = function () { o.onGrade(2); };
       el('g3').onclick = function () { o.onGrade(3); };
-      // Revealing replaces the action row in place, which blurs the button that was
-      // focused and drops focus to <body>. Hand it to the first grade control instead.
       var chk = checklistHtml(c.id);
-      if (chk && !el('st-why')) { el('st-a').insertAdjacentHTML('afterend', chk); wireChecklist(); }
+      if (chk && !el('st-check')) { el('st-a').insertAdjacentHTML('afterend', chk); wireChecklist(); }
+      // Revealing replaces the action row in place, which blurs whatever held focus and
+      // drops it to <body>. Hand focus to the card — never to a grade button, which would
+      // both swallow the number-key shortcuts and pre-select the destructive default.
       var c0 = app.querySelector('.st-card');
       if (c0) { c0.setAttribute('tabindex', '-1');
                 try { c0.focus({ preventScroll: true }); } catch (e) { c0.focus(); } }
