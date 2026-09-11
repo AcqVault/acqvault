@@ -1749,13 +1749,16 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
    ─────────────────────────────────────────────────────────────────────────────── */
 @media (min-width:1000px){
   .st-wrap{max-width:1180px !important}
-  /* the session panel: copy on a reading measure, the go-arrow held at the far edge */
-  .st-daily{display:flex !important;align-items:center !important;gap:32px !important;
-    justify-content:space-between !important}
-  .st-daily > div:first-child,.st-daily .st-daily-row{flex:1 1 auto;min-width:0}
-  .st-daily-go{flex:none !important;font-size:22px !important}
+  /* the session panel: eyebrow, figure and copy stack; only the arrow sits beside */
+  .st-daily{display:grid !important;grid-template-columns:minmax(0,1fr) auto !important;
+    gap:0 30px !important;align-items:center !important}
+  .st-daily-eyebrow{grid-column:1 !important;grid-row:1 !important}
+  .st-daily-row{grid-column:1 !important;grid-row:2 !important}
+  .st-daily-sub{grid-column:1 !important;grid-row:3 !important;max-width:78ch !important}
+  .st-daily-go{grid-column:2 !important;grid-row:1/4 !important;align-self:center !important;
+    font-size:22px !important}
   /* rows that were a narrow stack now run across the shell */
-  .st-modes{grid-template-columns:repeat(3,1fr) !important}
+  .st-modes{grid-template-columns:repeat(auto-fit,minmax(260px,1fr)) !important}
   .st-topics{grid-template-columns:repeat(3,1fr) !important;gap:10px !important}
   .st-plates{grid-template-columns:repeat(3,1fr) !important}
   .st-foot-tools{display:flex !important;gap:18px !important;align-items:baseline !important}
