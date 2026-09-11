@@ -15,7 +15,7 @@ const PART_NAV_V = 4;
 const ANALYTICS_V = 1;
 // study.js is now loaded by TWO pages (/study and the unlisted /48cons). One constant so a
 // bump can never reach one page and not the other.
-const STUDY_V = 93;
+const STUDY_V = 94;
 // assets/slip.js - same immutable-asset rule: bump on every edit.
 const SLIP_V = 10;
 
@@ -803,6 +803,7 @@ header.site a.cta{font-weight:650;font-size:14px;color:#fff;background:linear-gr
 header.site a.cta:hover{border-color:rgba(var(--brass-bright-rgb),.55)}
 .hdr-links{display:inline-flex;align-items:center;gap:16px}
 .hlink{font-weight:650;font-size:14px;color:var(--muted);text-decoration:none}
+@media (pointer:coarse){.hlink{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}}
 .hlink:hover{color:var(--accent);text-decoration:underline}
 /* federal-ink masthead — frames the page in the homepage's visual language */
 .lib-mast{position:relative;overflow:hidden;border-radius:18px;margin:0 0 34px;padding:42px 40px 36px;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8;box-shadow:inset 0 0 0 1px var(--brass-line),0 26px 54px -30px rgba(10,28,51,.62)}
@@ -1552,6 +1553,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
    and .st-quit is the ONLY exit from every view in the tool. The negative inline margin keeps
    the optical left edge where it was for the uses that sit inside a sentence. */
 .st-link{background:none;border:none;color:var(--brass-ink);text-decoration:underline;cursor:pointer;font-size:12.5px;padding:5px 8px;margin:0 -8px;border-radius:6px;min-height:24px;display:inline-flex;align-items:center;font-family:inherit}
+@media (pointer:coarse){.st-link{min-height:44px;padding:0 10px;margin:0 -10px}}
 @media (hover:hover) and (pointer:fine){.st-link:hover{background:#f6efdd}}
 .st-link:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
 .st-tracks{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
@@ -2075,7 +2077,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-lad-ready .st-bar{flex:1}
 .st-lad-ready-lab{flex:none;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .st-lad-q{margin:14px 0 0;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:#fff}.st-lad-q-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--off);border-bottom:1px solid var(--line2);padding:6px 12px}.st-lad-q-src{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--brass-ink);text-decoration:none}.st-lad-q-src:hover{text-decoration:underline}.st-lad-q-dodtag{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);opacity:.55}.st-lad-q-body{margin:0;padding:12px 14px;font-size:14.5px;line-height:1.65;color:#3d444d}.st-lad-q-dod .st-lad-q-bar{background:rgba(var(--brass-rgb),.09)}.st-lad-quote-link{color:var(--brass-ink);font-weight:700;text-decoration:underline}
-.st-sum-miss{margin:16px 0 4px;padding-top:14px;border-top:1px solid var(--line2);text-align:left}.st-sum-miss-head{font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink);opacity:.5;margin-bottom:9px}.st-sum-miss-item{font-size:13.5px;line-height:1.5;color:var(--ink);padding:5px 0 5px 11px;border-left:2px solid var(--line2)}.st-sum-miss-more{font-size:12px;color:var(--muted);padding:5px 0 0 11px}
+.st-sum-miss{margin:16px 0 4px;padding-top:14px;border-top:1px solid var(--line2);text-align:left}.st-sum-miss-head{font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink);opacity:.5;margin-bottom:9px}.st-sum-miss-item{font-size:13.5px;line-height:1.5;color:var(--ink);padding:5px 0 5px 11px;border-left:2px solid var(--line2)}
 .st-lad-sink{margin-top:24px}
 .st-lad-head{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-ink);margin-bottom:8px}
 .st-lad-sink-item{font-size:14px;line-height:1.6;color:#2a3140;padding:8px 0;border-top:1px solid var(--line2)}
@@ -2824,6 +2826,8 @@ function renderSourceSelectionPage() {
 .ss-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin:0 0 7px}
 .ss-h2{font-family:var(--serif);font-size:25px;line-height:1.15;letter-spacing:-.012em;color:var(--ink);margin:0 0 8px}
 .ss-prog-title{font-family:var(--serif);font-size:22px;line-height:1.2;color:var(--ink);margin:2px 0 3px}
+.ss-prog-title:focus{outline:none}
+.ss-prog-title:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:2px}
 .ss-hat{font-size:13.5px;color:var(--muted);margin:0 0 16px}
 .ss-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 2px}
 .ss-tag{font-size:12px;font-weight:700;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(var(--brass-rgb),.28);border-radius:999px;padding:5px 12px}
@@ -2844,7 +2848,8 @@ function renderSourceSelectionPage() {
 .ss-startnote{display:flex;gap:10px;align-items:flex-start;background:#faf3e0;border:1px solid rgba(var(--brass-rgb),.32);border-radius:var(--r-md);padding:11px 14px;margin:12px 0 4px;font-size:13px;color:#6f5416;line-height:1.5}
 .ss-startnote-ic{flex:none;width:19px;height:19px;border-radius:50%;background:#8a6d2e;color:#fff;font-size:12px;font-weight:800;font-style:italic;display:flex;align-items:center;justify-content:center;line-height:1}
 .ss-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;align-items:center}
-.ss-btn{border:none;border-radius:9px;padding:12px 20px;font-size:14.5px;font-weight:700;cursor:pointer;min-height:46px;font-family:inherit}
+.ss-btn{border:none;border-radius:9px;padding:12px 20px;font-size:14.5px;font-weight:700;cursor:pointer;min-height:46px;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.ss-btn svg{width:14px;height:14px;flex:none}
 .ss-btn-primary{background:linear-gradient(158deg,#173a60,#0f2540 70%);color:#f4f8fc}
 .ss-btn-primary:hover{filter:brightness(1.08)}
 .ss-btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
@@ -2959,7 +2964,7 @@ ${SEAL}
 <p class="lfoot-note"><strong>How it works:</strong> read the record for each phase, make the call the Source Selection Authority would make, then check it against the governing rule. Wrong calls add to a running protest-risk score that decides whether your award survives a GAO protest. The scenario is fictional; the procedures and citations are real. Adapted from a colleague's warrant-prep exercise and rebuilt on the current DoD Source Selection Procedures.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the <a href="/ssp">DoD Source Selection Procedures</a> and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
-<script defer src="/assets/source-selection.js?v=4"></script>`;
+<script defer src="/assets/source-selection.js?v=5"></script>`;
 
   return shell({ title, description, canonical, jsonld, body, bleed: true, ogImage: 'og-src-ssp-v2.png' });
 }

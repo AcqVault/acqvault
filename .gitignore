@@ -223,3 +223,6 @@ _local_archive/
 
 # Claude Code agent squads / local strategy — keep private, never publish
 .claude/
+
+# Impeccable design-tool local state
+.impeccable/

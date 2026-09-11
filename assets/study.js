@@ -189,6 +189,9 @@
       el('g1').onclick = function () { o.onGrade(1); };
       if (o.showShaky) el('g2').onclick = function () { o.onGrade(2); };
       el('g3').onclick = function () { o.onGrade(3); };
+      // Revealing replaces the action row in place, which blurs the button that was
+      // focused and drops focus to <body>. Hand it to the first grade control instead.
+      el('g1').focus();
       keyHandler(function (k) {
         if (k === '1') { o.onGrade(1); return true; }
         if (k === '2' && o.showShaky) { o.onGrade(2); return true; }
@@ -221,6 +224,7 @@
         act.innerHTML = '<button class="st-btn st-btn-reveal" id="st-next">' + (right ? 'Next' : 'Got it — next') + ' <kbd>space</kbd></button>';
         card.appendChild(act);
         el('st-next').onclick = function () { o.onGrade(g); };
+        el('st-next').focus();   // answering disables the picked option, blurring it
         keyHandler(function (key) { if (key === ' ' || key === 'Enter') { o.onGrade(g); return true; } });
       }
       Array.prototype.forEach.call(app.querySelectorAll('.st-opt'), function (b) {
@@ -250,7 +254,7 @@
     if (!links || !links.length) return '';
     return '<div class="st-cites"><span class="st-cites-lab">Described in</span>' +
       links.map(function (l) {
-        return '<a class="st-cite" href="' + esc(l.u) + '">' + esc(l.t) + '</a>';
+        return '<a class="st-cite" href="' + esc(l.u) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>';
       }).join('') + '</div>';
   }
   function explainHtml(card, right) {
@@ -448,12 +452,12 @@
       var missHtml = '';
       if (shaky.length) {
         missHtml = '<div class="st-sum-miss"><div class="st-sum-miss-head">Say these out loud before you close this tab</div>' +
-          shaky.slice(0, 5).map(function (m) {
+          shaky.map(function (m) {
             var l = m.links && m.links[0];
             return '<div class="st-sum-miss-item">' + esc(m.q) +
               (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
           }).join('') +
-          (shaky.length > 5 ? '<div class="st-sum-miss-more">+ ' + (shaky.length - 5) + ' more</div>' : '') +
+
           '</div>';
       }
       render('<div class="st-card st-summary"><div class="st-chip">' + esc(label) + '</div>' +
@@ -1678,12 +1682,12 @@
       var missHtml = '';
       if (shaky.length) {
         missHtml = '<div class="st-sum-miss"><div class="st-sum-miss-head">Say these out loud before you close this tab</div>' +
-          shaky.slice(0, 5).map(function (m) {
+          shaky.map(function (m) {
             var l = m.cite && m.cite.link;
             return '<div class="st-sum-miss-item">' + esc(m.q) +
               (l ? ' <a class="st-lad-quote-link" href="' + esc(l.u) + '">' + esc(l.t) + '</a>' : '') + '</div>';
           }).join('') +
-          (shaky.length > 5 ? '<div class="st-sum-miss-more">+ ' + (shaky.length - 5) + ' more</div>' : '') +
+
           '</div>';
       }
       render('<div class="st-card st-summary"><div class="st-chip">' + esc(label) + '</div>' +
@@ -2842,7 +2846,7 @@
       ? '<div class="st-gv-misslist"><div class="st-walk-head">The ones that got away</div>' +
         res.misses.map(function (m) {
           return '<div class="st-gv-miss"><span>' + esc(m.s) + '</span>' +
-            '<a class="st-cite" href="' + esc(m.u) + '">' + esc(m.p) + ' — ' + esc(deck.games.part_names[m.p] || '') + '</a></div>';
+            '<a class="st-cite" href="' + esc(m.u) + '" target="_blank" rel="noopener">' + esc(m.p) + ' — ' + esc(deck.games.part_names[m.p] || '') + '</a></div>';
         }).join('') + '</div>'
       : '<p class="st-sub" style="text-align:center">Nothing got away. Clean round.</p>';
     var SEAL = '<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="gv-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#gv-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="41" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity=".55"/><circle cx="50" cy="50" r="21" fill="none" stroke="#16263f" stroke-width="2.4" opacity=".9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity=".9"><line x1="50" y1="34" x2="50" y2="42"/><line x1="50" y1="66" x2="50" y2="58"/><line x1="34" y1="50" x2="42" y2="50"/><line x1="66" y1="50" x2="58" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#16263f" opacity=".9"/></svg>';
