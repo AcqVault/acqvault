@@ -1692,7 +1692,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 @media print{ .st-working .lhero{display:block} }
 .st-prog{height:5px;background:#ece8dd;border-radius:99px;overflow:hidden;margin:0 0 14px}
 .st-prog span{display:block;height:100%;background:linear-gradient(90deg,#6f521a,#b8934a);border-radius:99px;transition:width .3s ease}
-.st-prog-lg{height:8px;margin:14px 0 10px}
+.st-prog-lg{height:6px !important;margin:14px 0 10px}
 .st-card{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line2);border-radius:16px;padding:26px 28px;box-shadow:0 24px 48px -26px rgba(var(--navy-rgb),.35)}
 .st-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
 @media(max-width:640px){.st-card{padding:20px 18px}}
@@ -1853,7 +1853,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   border-radius:0 var(--r-sm) var(--r-sm) 0 !important}
 
 /* tiles and rows: one radius, hairlines, no lift */
-.st-topic,.st-mode,.st-trackcard,.st-plate,.st-mini-tile,.st-sim-feature,.st-rung{
+.st-topic,.st-mode,.st-trackcard,.st-plate,.st-mini-tile,.st-sim-feature,.st-rung,.st-opt{
   border-radius:var(--r-sm) !important;box-shadow:none !important;border:1px solid var(--line2) !important}
 .st-topic:hover:not(:active),.st-mode:hover:not(:active),.st-trackcard:hover:not(:active),
 .st-plate:hover:not(:active),.st-rung:hover:not(:active){
@@ -2085,7 +2085,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-cite{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--brass-ink);background:#fff;border:1px solid rgba(var(--brass-rgb),.4);border-radius:999px;padding:4px 11px;text-decoration:none;transition:background .13s,border-color .13s,transform .13s}
 .st-cite:hover{background:#f6efdd;border-color:rgba(var(--brass-rgb),.65);transform:translateY(-1px)}
 .st-cite:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
-.st-streak{display:inline-flex;align-items:center;gap:6px;margin-right:auto;font-size:12.5px;font-weight:800;color:var(--brass-ink);background:linear-gradient(158deg,#f6efdd,#f1e5c6);border:1px solid rgba(var(--brass-rgb),.35);border-radius:999px;padding:5px 12px;font-variant-numeric:tabular-nums}
+.st-streak{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--brass-ink);background:linear-gradient(158deg,#f6efdd,#f1e5c6);border:1px solid rgba(var(--brass-rgb),.35);border-radius:999px;padding:5px 12px;font-variant-numeric:tabular-nums}
 .st-streak svg{width:12px;height:12px;fill:var(--brass)}
 @keyframes st-right-pulse{0%{box-shadow:0 0 0 1px #1e6b43 inset,0 0 0 0 rgba(30,107,67,.35)}100%{box-shadow:0 0 0 1px #1e6b43 inset,0 0 0 9px rgba(30,107,67,0)}}
 .st-opt-right{animation:st-right-pulse .5s ease-out 1}
@@ -2392,7 +2392,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 
 .rz-eyebrow{display:block;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
 .rz-btn{font:inherit;font-size:var(--fs-md);font-weight:650;letter-spacing:-.004em;border-radius:var(--r-sm);padding:12px 20px;cursor:pointer;border:1px solid transparent;transition:transform .12s,box-shadow .18s,border-color .15s,background .15s;min-height:44px}
-.rz-btn-go{background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));color:#f4f8fc;border-color:var(--brass-line);box-shadow:0 14px 28px -16px rgba(var(--navy-rgb),.6)}
+.rz-btn-go{background:var(--ink-mid);color:#fff;border-color:var(--ink-mid);box-shadow:none}
 .rz-btn-ghost{background:#fff;color:var(--ink);border-color:var(--line2)}
 .rz-btn-ghost:hover{border-color:var(--brass-line);color:var(--brass-ink)}
 .rz-btn:disabled{opacity:.45;cursor:default;box-shadow:none}
@@ -2400,23 +2400,22 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
    :hover rule that sets translate, so a hovered button gave no press feedback.
    Same trap as button.st-sim-feature above — state the combination explicitly. */
 @media (hover:hover) and (pointer:fine){
-  .rz-btn-go:hover:not(:disabled){border-color:rgba(var(--brass-bright-rgb),.65);transform:translateY(-1px)}
-  .rz-btn-go:hover:active:not(:disabled){transform:translateY(-1px) scale(.985)}
+  .rz-btn-go:hover:not(:disabled){filter:brightness(1.18)}
 }
-.rz-btn:active:not(:disabled){transform:scale(.985);transition-duration:.1s}
+.rz-btn:active:not(:disabled){transform:scale(.97);transition-duration:.1s}
 
 /* progress: a hairline, not a ring. A ring reading 0% is a dead grey donut, and at
    every other value it says less than the sentence beside it. */
 .rz-meter{display:flex;flex-direction:column;gap:8px;margin-top:22px;max-width:280px}
 .rz-meter-bar{height:4px;border-radius:2px;background:var(--line2);overflow:hidden}
-.rz-meter-bar>span{display:block;height:100%;border-radius:2px;background:var(--brass);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.rz-meter-bar>span{display:block;height:100%;border-radius:2px;background:var(--brass);transition:width .35s cubic-bezier(.23,1,.32,1)}
 .rz-meter-n{font-size:var(--fs-sm);font-weight:650;color:var(--muted2,#6f6c74);letter-spacing:var(--ls-snug)}
 .rz-meter-dark .rz-meter-bar{background:rgba(255,255,255,.14)}
 .rz-meter-dark .rz-meter-bar>span{background:var(--brass-bright)}
 .rz-meter-dark .rz-meter-n{color:rgba(221,233,246,.78)}
 .rz-meter-side{margin:14px 8px 10px;max-width:none}
 .rz-prog{height:4px;background:var(--line2);border-radius:2px;overflow:hidden;margin:0 0 18px}
-.rz-prog>span{display:block;height:100%;background:var(--brass);border-radius:2px;transition:width .4s cubic-bezier(.2,.8,.2,1)}
+.rz-prog>span{display:block;height:100%;background:var(--brass);border-radius:2px;transition:width .35s cubic-bezier(.23,1,.32,1)}
 .rz-prog-lg{height:6px;margin:18px 0 10px}
 
 /* ── course cover ─────────────────────────────────────────────────────────── */
@@ -2438,7 +2437,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-cover .rz-btn-ghost:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(var(--brass-bright-rgb),.8)}
 
 /* ── outline ──────────────────────────────────────────────────────────────── */
-.rz-outline-head{font-family:var(--serif);font-weight:700;font-size:26px;letter-spacing:var(--ls-snug);margin:46px 0 0}
+.rz-outline-head{font-family:var(--serif);font-weight:700;font-size:24px;letter-spacing:var(--ls-snug);margin:46px 0 0}
 .rz-vol{display:flex;align-items:center;gap:14px;margin:34px 0 4px;font-size:var(--fs-xs);font-weight:800;
   letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
 .rz-vol::after{content:"";flex:1;height:1px;background:rgba(var(--brass-rgb),.28)}
@@ -2446,13 +2445,13 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:0 2px 9px}
 .rz-sec-head h3{margin:0;font-size:18px;font-weight:700;letter-spacing:var(--ls-snug)}
 .rz-sec-count{font-size:var(--fs-sm);color:var(--muted2,#6f6c74);white-space:nowrap}
-.rz-lessons{list-style:none;margin:0;padding:0;border:1px solid var(--line2);border-radius:var(--r-md);background:#fff;overflow:hidden}
+.rz-lessons{list-style:none;margin:0;padding:0;border:1px solid var(--line2);border-radius:var(--r-sm);background:#fff;overflow:hidden}
 .rz-lesson{display:flex;width:100%;align-items:center;gap:14px;text-align:left;background:#fff;border:none;border-top:1px solid var(--line2);
   padding:14px 18px;cursor:pointer;font:inherit;color:var(--ink);transition:background .14s}
 .rz-lessons li:first-child .rz-lesson{border-top:none}
-.rz-lesson:hover{background:rgba(var(--brass-rgb),.05)}
+.rz-lesson:hover{background:var(--off,#f7f6f2)}
 .rz-lesson:active{background:rgba(var(--brass-rgb),.1)}
-.rz-lesson-mark{flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+.rz-lesson-mark{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:var(--fs-sm);font-weight:800;background:var(--off,#f7f6f2);border:1px solid var(--line2);color:var(--muted2,#6f6c74)}
 .rz-lesson-done .rz-lesson-mark{background:var(--brass);border-color:var(--brass);color:#fff}
 .rz-lesson-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
@@ -2467,7 +2466,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-extra-card{display:flex;flex-direction:column;gap:4px;text-align:left;background:#fff;border:1px solid var(--line2);
   border-radius:var(--r-md);padding:16px 18px;cursor:pointer;font:inherit;color:var(--ink);
   transition:border-color .15s,transform .12s,box-shadow .18s}
-.rz-extra-card:hover{transform:translateY(-1px);box-shadow:0 16px 30px -22px rgba(var(--navy-rgb),.45);border-color:var(--brass-line)}
+.rz-extra-card:hover{border-color:var(--brass-line)}
 .rz-extra-card:active{transform:translateY(0) scale(.99)}
 .rz-extra-card b{font-size:var(--fs-lg);letter-spacing:var(--ls-snug)}
 .rz-extra-card span{font-size:var(--fs-md);color:var(--muted2,#6f6c74);line-height:1.55}
@@ -2520,7 +2519,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-nav-b{display:flex;flex-direction:column;gap:3px;font:inherit;text-align:left;background:#fff;cursor:pointer;
   border:1px solid var(--line2);border-radius:var(--r-md);padding:13px 16px;color:var(--ink);min-height:56px;
   transition:border-color .15s,box-shadow .18s,transform .12s}
-.rz-nav-b:hover{border-color:var(--brass-line);box-shadow:0 14px 28px -22px rgba(var(--navy-rgb),.45)}
+.rz-nav-b:hover{border-color:var(--brass-line)}
 .rz-nav-b:active{transform:scale(.995)}
 .rz-nav-b span{font-size:var(--fs-sm);font-weight:700;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--brass-ink)}
 .rz-nav-b b{font-size:var(--fs-md);font-weight:650;line-height:1.4;color:var(--ink3,#474c55)}
@@ -2566,9 +2565,9 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-block-p{margin:18px 0 0;font-size:var(--fs-lg);line-height:1.75;color:var(--ink3,#474c55);max-width:68ch}
 .rz-src{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:16px 0 0;font-size:var(--fs-sm);color:var(--muted2,#6f6c74)}
 .rz-src-t{margin-right:2px}
-.rz-cite{display:inline-block;color:var(--brass-ink);font-weight:700;font-size:var(--fs-xs);letter-spacing:var(--ls-wide);text-transform:uppercase;text-decoration:none;
-  background:var(--off,#f7f6f2);border:1px solid var(--line2);border-radius:var(--r-sm);padding:4px 10px}
-.rz-cite:hover{border-color:var(--brass-line);color:var(--brass-ink)}
+.rz-cite{display:inline-flex;align-items:center;font-size:12.5px;font-weight:700;color:var(--brass-ink);background:#fff;
+  border:1px solid rgba(var(--brass-rgb),.4);border-radius:999px;padding:4px 11px;text-decoration:none;transition:background .13s,border-color .13s}
+.rz-cite:hover{background:rgba(var(--brass-rgb),.07);border-color:var(--brass-line)}
 
 .rz-cite:hover{border-bottom-color:var(--brass-ink)}
 
@@ -2581,10 +2580,10 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   box-shadow:none;scroll-margin-top:20px}
 .rz-kc-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
 .rz-kc-count{font-size:var(--fs-sm);font-weight:700;color:var(--muted2,#6f6c74);font-variant-numeric:tabular-nums}
-.rz-kc-q{margin:0 0 20px;font-size:21px;font-weight:700;line-height:1.4;letter-spacing:var(--ls-snug);max-width:40ch}
+.rz-kc-q{margin:0 0 20px;font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.34;letter-spacing:-.012em;max-width:40ch}
 .rz-opts{display:flex;flex-direction:column;gap:9px}
-.rz-opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;font:inherit;font-size:var(--fs-lg);line-height:1.5;
-  background:#fff;border:1.5px solid var(--line2);border-radius:var(--r-md);padding:14px 16px;cursor:pointer;color:var(--ink);
+.rz-opt{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;font:inherit;font-size:14.5px;line-height:1.5;
+  background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:11px 14px;cursor:pointer;color:#2a3140;
   transition:border-color .14s,background .14s;min-height:44px}
 .rz-opt:hover:not(:disabled){border-color:var(--brass-line);background:rgba(var(--brass-rgb),.035)}
 .rz-opt:active:not(:disabled){background:rgba(var(--brass-rgb),.08)}
@@ -2598,7 +2597,8 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .rz-opt-wrong .rz-opt-dot{border-color:var(--bad);box-shadow:inset 0 0 0 3.5px #fff,inset 0 0 0 9px var(--bad)}
 .rz-kc-act{margin-top:22px}
 .rz-fb{margin:22px 0 20px;border-radius:var(--r-md);padding:18px 20px;border:1px solid var(--line2)}
-.rz-fb b{display:block;font-size:var(--fs-lg);margin-bottom:8px;letter-spacing:var(--ls-snug)}
+.rz-fb>b{display:block;font-size:var(--fs-lg);margin-bottom:8px;letter-spacing:var(--ls-snug)}
+.rz-fb-cap{margin:12px 0 0;font-size:var(--fs-sm);line-height:1.6;color:var(--ink3,#474c55)}
 .rz-fb p{margin:10px 0 0;font-size:var(--fs-lg);line-height:1.7;color:var(--ink3,#474c55);max-width:68ch}
 .rz-fb-ans{display:block;font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.5;color:var(--ink)}
 .rz-fb-ok{background:var(--ok-bg);border-color:var(--ok-line)}
@@ -2608,9 +2608,14 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 
 /* ── lesson complete ──────────────────────────────────────────────────────── */
 .rz-done{padding:6px 0 4px;max-width:52ch}
+/* The end of the course is the moment the tool exists for. Same panel, more weight. */
+.rz-done-all{max-width:56ch}
+.rz-done-all .rz-done-tick{width:56px;height:56px;font-size:26px;background:linear-gradient(160deg,var(--brass-bright),var(--brass))}
+.rz-done-all h3{font-size:30px}
+
 .rz-done-tick{width:44px;height:44px;margin:0 0 16px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:21px;color:#fff;background:var(--brass);box-shadow:0 12px 26px -14px rgba(var(--brass-rgb),.9)}
-.rz-done h3{margin:0 0 9px;font-family:var(--serif);font-weight:700;font-size:26px;letter-spacing:var(--ls-snug)}
+.rz-done h3{margin:0 0 9px;font-family:var(--serif);font-weight:700;font-size:24px;letter-spacing:var(--ls-snug)}
 .rz-done-score{margin:0;font-size:var(--fs-lg);color:var(--ink3,#474c55);line-height:1.6}
 .rz-done-prog{margin:0 0 24px;font-size:var(--fs-sm);color:var(--muted2,#6f6c74)}
 .rz-done-actions{display:flex;gap:10px;flex-wrap:wrap}
@@ -2655,7 +2660,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
   .rz-block-h{font-size:19px}
   .rz-lead{font-size:19px}
   .rz-kc{padding:20px 18px}
-  .rz-kc-q{font-size:19px}
+  .rz-kc-q{font-size:21px}
   .rz-btn{width:100%}
   .rz-cover-actions,.rz-done-actions{flex-direction:column}
   .rz-nav{grid-template-columns:1fr}
@@ -2678,7 +2683,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 function renderStudyPage() {
   const canonical = `${SITE}/study`;
   const title = 'AcqVault Study — practice & spaced review for the acquisition community | AcqVault';
-  const description = esc('Free, no-login practice for contracting professionals: spaced-repetition knowledge checks from the AcqVault Field Guides, rapid threshold sprints, and board-style scenario simulations with follow-up questions. Works offline. No account needed.');
+  const description = esc('Free, no-login contracting course: 44 lessons drawn from the AcqVault Field Guides, each ending in a knowledge check that feeds a spaced-repetition review queue — plus threshold sprints, board-style scenario simulations and the Source Selection Simulator. Works offline. No account needed.');
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'WebApplication',
@@ -2699,15 +2704,15 @@ ${SEAL_SVG}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Study</nav>
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Know it cold</h1>
-<p class="lede">Knowledge checks, threshold sprints, and board-style scenarios from the AcqVault Field Guides, plus the Source Selection Simulator, run against the DoD Source Selection Procedures. Every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
-<div class="stats"><span class="stat"><b>400+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+<p class="lede">Two courses drawn from the AcqVault Field Guides — 44 lessons, each ending in a knowledge check — plus threshold sprints, board-style scenarios and the Source Selection Simulator, run against the DoD Source Selection Procedures. Every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
+<div class="stats"><span class="stat"><b>44</b> lessons · <b>400+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
 <div id="study-app"${DECK_ATTRS}><noscript><p>AcqVault Study is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
 </div></section>
 </main>
 <footer class="lband lband--foot"><div class="lband-inner">
-<p class="lfoot-note"><strong>How it works:</strong> answer before you reveal — out loud when you can — then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
+<p class="lfoot-note"><strong>How it works:</strong> work a course lesson by lesson — read the block, then answer its knowledge check. In Review you answer before you reveal, out loud when you can, then grade yourself honestly. Missed cards return sooner; mastered ones stretch out. Every debrief cites where the rule lives and links to the full RFO/R-DFARS text on this site. Your progress lives only in this browser; use Export to move or back it up. Built from <a href="/library">Field Guide Vols. 1 &amp; 2</a>.</p>
 <p class="lfoot-legal">AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. Verify anything you'll rely on against the signed DoD class deviations and the official text at <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a>.</p>
 </div></footer>
 <script defer src="/assets/study.js?v=${STUDY_V}"></script>`;

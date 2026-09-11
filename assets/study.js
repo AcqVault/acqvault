@@ -96,6 +96,7 @@
     if (!deck) { popping = false; pendingRender = null; return; }
     var r = pendingRender; pendingRender = null;
     if (r) r(); // a goDepth() that popped its way down renders its own target view
+    else if (d === 2 && e.state && e.state.lesson) viewLesson(e.state.lesson);
     else if (d <= 0) topFn()(); else (depth1View || homeFn())();
     popping = false;
   });
@@ -353,7 +354,8 @@
         || /id="gv-card"/.test(html);
       document.documentElement.classList.toggle('st-working',
         working && !/st-summary/.test(html));
-      document.documentElement.classList.toggle('st-rise', /rz-cover|rz-lesson-shell/.test(html));
+      // st-to-course appears only in viewHome, which is inside the course as well.
+      document.documentElement.classList.toggle('st-rise', /rz-cover|rz-lesson-shell|st-to-course/.test(html));
       document.documentElement.classList.toggle('st-lesson', /rz-lesson-shell/.test(html));
     } catch (e) { /* styling only; never break a render */ }
     // Anchor each new view just below the top of the drill container so every card
@@ -385,13 +387,13 @@
     }
     render(
       '<p class="st-intro"><b>Learn</b> the whole domain as a course, then <b>practice by deciding</b> in the simulators.</p>' +
-      '<h2 class="st-h2" style="margin-top:2px">Study modules</h2>' +
+      '<h2 class="st-h2" style="margin-top:2px">Courses</h2>' +
       '<p class="st-sub">Two courses, walked lesson by lesson. Progress saves per lesson and per card, and you can switch between them any time without losing it.</p>' +
       '<div class="st-tracks">' +
-      cardHtml('t-basic', 'Module 1 · start here if contracting is new', 'Basic',
+      cardHtml('t-basic', 'Course 1 · start here if contracting is new', 'Basic',
         'Field Guide Vol. 1 as a 15-lesson course — the players, the money, the methods. Every lesson ends in a knowledge check.', last === 'basic', 'VOL I') +
-      cardHtml('t-adv', 'Module 2 · the full board-prep course', 'Advanced',
-        'All 15 Basic lessons plus 29 more from Vol. 2 — 44 lessons of board-probe depth, each with its own knowledge check.', last === 'advanced', 'VOL I·II') +
+      cardHtml('t-adv', 'Course 2 · the full board-prep course', 'Advanced',
+        'All 15 Basic lessons plus 29 more from Vol. 2 — 44 lessons at board-probe level, each ending in its own knowledge check.', last === 'advanced', 'VOL I·II') +
       '</div>' +
       gamesSectionHtml());
     el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewCourse; save(); goDepth(1, viewCourse); };
@@ -437,15 +439,8 @@
         '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
         '<span class="st-topic-meta">' + m + '%' + (d ? ' <b class="st-due">· ' + d + ' due</b>' : '') + '</span></button>';
     }).join('');
-    var scen = deck.scenarios;
-    var scenDone = scen.filter(function (s) { return S.scen[s.id]; }).length;
-    // The self-grade (1 rough / 2 getting there / 3 board-ready) was collected on every
-    // scenario and displayed nowhere — the most board-predictive signal in the tool,
-    // feeding nothing. It reads back here on the mode it belongs to.
-    var scenReady = scen.filter(function (s) { return S.scen[s.id] === 3; }).length;
-    var scenLine = scenDone
-      ? scenDone + ' of ' + scen.length + ' faced · ' + scenReady + ' board-ready — answer out loud, then the follow-ups'
-      : scenDone + ' of ' + scen.length + ' scenarios faced — answer out loud, then the follow-ups';
+    /* The scenario self-grade (1 rough / 2 getting there / 3 board-ready) reads back on
+       the Board Simulator card on the landing page — see gamesSectionHtml(). */
     var overall = mastery(pool);
     /* The headline used to be the whole backlog — 337 — while a session hands you 25, and
        finishing those 25 moved it to 333 because a missed card is due again immediately.
@@ -476,7 +471,7 @@
     var dailyInner;
     if (!due.length) {
       dailyInner = '<div class="st-daily-row"><span class="st-daily-what" style="font-size:19px">All caught up — nothing due today.</span></div>' +
-        '<span class="st-daily-sub">The scheduler has nothing urgent. Run a Deep Study shuffle or face a Board Sim scenario to stay sharp.</span>';
+        '<span class="st-daily-sub">The scheduler has nothing urgent. Take the next lesson, or run a Deep Study shuffle to stay sharp.</span>';
     } else if (dstate.sessions) {
       dailyInner = '<div class="st-daily-row"><span class="st-daily-what" style="font-size:19px">Done for today — ' +
         dstate.done + ' card' + (dstate.done !== 1 ? 's' : '') + ' answered.</span></div>' +
@@ -497,18 +492,17 @@
     var run = comeback ? 0 : streakRun();   // never greet a return with a reset counter
     render(
       '<div class="st-head">' +
-      '<button class="st-link st-to-course" id="st-to-course">\u2190 Course outline</button>' +
+      '<button class="rz-side-back st-to-course" id="st-to-course">\u2190 Course outline</button>' +
       (run >= 2 ? '<div class="st-streak" title="Days in a row with at least one card answered">' +
         '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l1.4 3.1L10.8 5 8.4 7.2l.7 3.3L6 8.8l-3.1 1.7.7-3.3L1.2 5l3.4-.9z"/></svg>' +
         run + '-day streak</div>' : '') +
       '<div class="st-track-chip">' + (S.track === 'basic' ? 'Basic' : 'Advanced') +
       ' <button class="st-link" id="st-switch">switch</button></div></div>' +
+      '<h2 class="st-h2" style="margin:0 0 14px">Review</h2>' +
       '<button class="st-daily' + (due.length ? '' : ' st-daily-dead') + '" id="m-daily"' + (due.length ? '' : ' disabled') + '><div class="st-daily-eyebrow">Today’s session · Daily Review</div>' + dailyInner + (due.length ? '<span class="st-daily-go" aria-hidden="true">→</span>' : '') + '</button>' +
       '<div class="st-modes">' +
       '<button class="st-mode" id="m-deep"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Deep Study</b><span>Endless random cards, every topic in the mix — go as long as you want</span></button>' +
       '<button class="st-mode" id="m-sprint"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Threshold Sprint</b><span>Rapid-fire numbers · best streak ' + (S.sprint.best || 0) + '</span></button>' +
-      (S.track === 'advanced' ?
-        '<button class="st-mode" id="m-board"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Board Sim</b><span>' + scenLine + '</span></button>' : '') +
       '</div>' +
       '<div class="st-ready-head"><h2 class="st-h2">Readiness by topic</h2><span class="st-overall">' + overall + '% overall</span></div>' +
       '<p class="st-sub">Tap a topic to study it directly, due or not.</p>' +
@@ -518,7 +512,6 @@
     if (due.length) el('m-daily').onclick = function () { goDepth(2, function () { startSession(due, 'Daily Review'); }); };
     el('m-deep').onclick = function () { goDepth(2, viewDeep); };
     el('m-sprint').onclick = function () { goDepth(2, viewSprint); };
-    if (el('m-board')) el('m-board').onclick = function () { goDepth(2, viewBoard); };
     el('st-switch').onclick = function () { goDepth(0, viewTrack); };
     el('st-to-course').onclick = function () { goDepth(1, viewCourse); };
     wireFootTools();
@@ -649,12 +642,12 @@
     var lessons = courseLessons();
     var prog = courseProgress(lessons);
     var next = lessons.filter(function (l) { return !lessonDone(l.key); })[0] || lessons[0];
+    var full = prog.total && prog.done === prog.total;
     var due = recallPool().filter(function (c) { return isDue(c.id); }).length;
     var secHtml = '', seen = {}, lastVol = null;
     courseSections().forEach(function (sec) {
       var rows = lessons.filter(function (l) { return l.level === sec[0] && l.section === sec[1]; });
       if (!rows.length) return;
-      var sn = (seen[sec[0]] = (seen[sec[0]] || 0) + 1);
       var sdone = rows.filter(function (l) { return lessonDone(l.key); }).length;
       var smins = rows.reduce(function (t, l) {
         return t + lessonMins(l.cards, checkCount(l.cards)); }, 0);
@@ -666,7 +659,7 @@
       secHtml += '<section class="rz-sec"><div class="rz-sec-head">' +
         '<h3>' + esc(sec[1]) + '</h3>' +
         '<span class="rz-sec-count">' + (sdone ? sdone + ' of ' + rows.length + ' complete'
-          : rows.length + ' reading' + (rows.length !== 1 ? 's' : '') +
+          : rows.length + ' lesson' + (rows.length !== 1 ? 's' : '') +
             (schecks ? ' · ' + schecks + ' knowledge check' + (schecks !== 1 ? 's' : '') : '')) +
         ' · \u2248 ' + smins + ' min</span></div>' +
         '<ol class="rz-lessons">' + rows.map(function (l) {
@@ -692,7 +685,7 @@
       '</ul>' +
       '<div class="rz-cover-actions">' +
       '<button class="rz-btn rz-btn-go" id="rz-start">' +
-      (prog.done ? (prog.done === prog.total ? 'Revisit the course' : 'Continue — Lesson ' + next.n) : 'Start course') + '</button>' +
+      (full ? 'Revisit — Lesson 1' : prog.done ? 'Continue — Lesson ' + next.n : 'Start course') + '</button>' +
       '<button class="rz-btn rz-btn-ghost" id="rz-switch">Switch course</button>' +
       '</div>' + barHtml(prog, 'rz-meter-dark') + '</div>' +
       '</div>' +
@@ -700,20 +693,39 @@
       secHtml +
       '<div class="rz-extra">' +
       '<button class="rz-extra-card" id="rz-review"><b>Review</b><span>' +
-      (due ? due + ' card' + (due !== 1 ? 's' : '') + ' the scheduler says you are about to forget' :
-        'Spaced repetition across everything you have studied') + '</span></button>' +
-      '<button class="rz-extra-card" id="rz-practice"><b>Practice range</b><span>Both simulators, threshold sprints and the daily games</span></button>' +
+      (due ? (function () {
+        var seen = recallPool().filter(function (c) { return isDue(c.id) && cardState(c.id).box > 0; }).length;
+        return seen ? seen + ' due for review · ' + (due - seen) + ' not met yet'
+          : due + ' card' + (due !== 1 ? 's' : '') + ' waiting, none met yet';
+      })() : 'Spaced repetition across everything you have studied') + '</span></button>' +
+      '<button class="rz-extra-card" id="rz-practice"><b>Practice Range</b><span>Both simulators and the daily rounds</span></button>' +
       '</div>' + footToolsHtml());
-    el('rz-start').onclick = function () { openLesson(next.key); };
+    if (next) el('rz-start').onclick = function () { openLesson(next.key); };
+    else el('rz-start').disabled = true;
     el('rz-switch').onclick = function () { goDepth(0, viewTrack); };
     el('rz-review').onclick = function () { goDepth(1, viewHome); };
-    el('rz-practice').onclick = function () { goDepth(0, viewTrack); };
+    el('rz-practice').onclick = function () {
+      // it and "Switch course" land on the same view, so send this one to the part it
+      // names. Inside the render callback: goDepth pops asynchronously, so a scroll
+      // beside it runs against the outgoing DOM and render() re-anchors afterwards.
+      goDepth(0, function () {
+        viewTrack();
+        var g = app.querySelector('.st-tools-label');
+        if (g) g.scrollIntoView({ block: 'start' });
+      });
+    };
     wireFootTools();
     Array.prototype.forEach.call(app.querySelectorAll('.rz-lesson'), function (b) {
       b.onclick = function () { openLesson(b.getAttribute('data-key')); };
     });
   }
-  function openLesson(key) { goDepth(2, function () { viewLesson(key); }); }
+  function openLesson(key) {
+    goDepth(2, function () { viewLesson(key); });
+    // Stamp the key on the entry goDepth just pushed. Without it a Forward pop carried
+    // only {st:2}, fell through to depth1View and repainted the OUTLINE at depth 2 —
+    // the outline twice in a row, the lesson unreachable forward, an extra Back to leave.
+    if (navDepth === 2) { try { history.replaceState({ st: 2, lesson: key }, ''); } catch (e) {} }
+  }
 
   /* ---- a lesson: teaching blocks, a continue gate, then the knowledge check ---- */
   var KC_MAX = 6;   // a lesson checks at most this many points; "Thresholds" has 40 cards
@@ -723,7 +735,7 @@
   function itemHead(icon, name, meta, done) {
     return '<div class="rz-item' + (done ? ' rz-item-done' : '') + '">' +
       '<span class="rz-item-ic" aria-hidden="true">' + icon + '</span>' +
-      '<h2 class="rz-item-n">' + name + '</h2>' +
+      '<h3 class="rz-item-n">' + name + '</h3>' +
       '<span class="rz-item-meta">' + meta + '</span></div>';
   }
   /* Removing the gate, advancing a question and finishing the check each destroy the
@@ -762,14 +774,25 @@
     // the separator is left dangling at the end of the one above it.
     return '<p class="rz-src">' + (c.ref ? '<span class="rz-src-t">' + esc(c.ref) + '</span>' : '') + links + '</p>';
   }
-  function viewLesson(key) {
+  function viewLesson(key, resume) {
     var lessons = courseLessons();
     var idx = -1;
     lessons.forEach(function (l, i) { if (l.key === key) idx = i; });
     if (idx < 0) return viewCourse();
     var L = lessons[idx], next = lessons[idx + 1] || null;
     var prog = courseProgress(lessons);
-    var checks = L.cards.filter(function (c) { return mcqOptions(c); }).slice(0, KC_MAX);
+    /* Shuffled, not the first six in deck order: 14 Advanced lessons hold more mcq-able
+       cards than KC_MAX, so a fixed slice left 54 cards that could be read but never
+       asked, and made "revisit" mean "answer the identical six again". */
+    var checks = shuffle(L.cards.filter(function (c) { return mcqOptions(c); })).slice(0, KC_MAX);
+    // Resuming: rebuild the exact question set that was saved, in its saved order, so
+    // "question 3 of 5" means the same three you had already answered.
+    if (resume && resume.ids && resume.ids.length) {
+      var byId = {};
+      L.cards.forEach(function (c) { byId[c.id] = c; });
+      var rebuilt = resume.ids.map(function (id) { return byId[id]; }).filter(Boolean);
+      if (rebuilt.length === resume.ids.length) checks = rebuilt;
+    }
 
     var isTable = L.cards.length > 1 && L.cards.every(function (c) { return c.kind === 'threshold'; });
     var blocks = isTable ? tableHtml(L.cards) : L.cards.map(function (c, i) {
@@ -865,23 +888,28 @@
       b.onclick = function () { openLesson(b.getAttribute('data-key')); };
     });
 
-    el('rz-continue').onclick = function () {
+    // Wire the gate BEFORE resuming into the check: openCheck() removes #rz-gate, and
+    // #rz-continue lives inside it, so calling it first left this assigning onto null.
+    el('rz-continue').onclick = openCheck;
+    if (resume) openCheck();
+    function openCheck() {
       var gate = el('rz-gate'); if (gate && gate.parentNode) gate.parentNode.removeChild(gate);
       var kc = el('rz-kc'); kc.hidden = false; kc.setAttribute('tabindex', '-1');
       if (!checks.length) { finish(kc, 0, 0); focusKc(kc); return; }
-      runChecks(kc);
-      kc.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      runChecks(kc, resume);
+      kc.scrollIntoView({ block: 'start', behavior: resume ? 'instant' : 'smooth' });
       focusKc(kc);
-    };
+    }
 
     /* The knowledge check. One question at a time, Rise-style: pick, submit, get the
        verdict and the explanation, move on. Every answer grades into the spaced-repetition
        engine — walking the course IS scheduling the cards, so Review is never empty for
        someone who has only ever taken lessons. */
-    function runChecks(host) {
-      var i = 0, right = 0;
+    function runChecks(host, resume) {
+      var i = (resume && resume.i) || 0, right = (resume && resume.got) || 0;
       function step() {
         if (i >= checks.length) return finish(host, right, checks.length);
+        saveResume('lesson', S.track, checks, i, right, L.key);
         var c = checks[i], opts = mcqOptions(c), picked = -1;
         host.innerHTML = '<div class="rz-kc-head"><span class="rz-kc-lab">Knowledge check</span>' +
           '<span class="rz-kc-count">Question ' + (i + 1) + ' of ' + checks.length + '</span></div>' +
@@ -920,7 +948,7 @@
           if (picked < 0) return;
           var ok = opts[picked] === c.a;
           if (ok) right++;
-          grade(c.id, ok ? 3 : 1);   // the course feeds the scheduler
+          grade(c.id, ok ? 2 : 1);   // the course feeds the scheduler — capped, see below
           bumpStreak();
           Array.prototype.forEach.call(host.querySelectorAll('.rz-opt'), function (o) {
             var k = +o.getAttribute('data-k');
@@ -930,10 +958,13 @@
           });
           el('rz-submit').outerHTML =
             '<div class="rz-fb ' + (ok ? 'rz-fb-ok' : 'rz-fb-no') + '" role="status">' +
-            '<b>' + (ok ? '✓ Correct' : '✗ Not quite') + '</b>' +
+            '<b>' + (ok ? RIGHT_LINES[Math.floor(Math.random() * RIGHT_LINES.length)]
+              : '✗ Not quite') + '</b>' +
             (ok ? '' : '<span class="rz-fb-ans">The answer is: ' + esc(c.a) + '</span>') +
             (c.x ? '<p>' + esc(c.x) + '</p>' : '') +
-            srcLine(c) + '</div>' +
+            srcLine(c) +
+            (ok ? '<p class="rz-fb-cap">Held at <b>Shaky</b> in Review \u2014 you picked it out of four, ' +
+              'which is not what a board asks of you. It comes back sooner.</p>' : '') + '</div>' +
             '<button class="rz-btn rz-btn-go" id="rz-kc-next">' +
             (i + 1 >= checks.length ? 'Finish lesson' : 'Next question') + '</button>';
           el('rz-kc-next').onclick = function () { i++; step(); };
@@ -963,22 +994,34 @@
       if (lab) lab.textContent = p3.done + ' of ' + p3.total + ' lessons complete';
     }
     function finish(host, right, total) {
+      clearResume();
       markLesson(L.key);
       markDoneInPlace();
       var p2 = courseProgress(courseLessons());
-      host.innerHTML = '<div class="rz-done">' +
+      var whole = p2.total && p2.done === p2.total;
+      var meta = COURSE_META[S.track === 'basic' ? 'basic' : 'advanced'];
+      var due = recallPool().filter(function (c) { return isDue(c.id); }).length;
+      host.innerHTML = '<div class="rz-done' + (whole ? ' rz-done-all' : '') + '">' +
         '<div class="rz-done-tick" aria-hidden="true">✓</div>' +
-        '<h3>Lesson complete</h3>' +
-        (total ? '<p class="rz-done-score">' + right + ' of ' + total + ' correct — the ones you missed are already queued in Review.</p>'
+        '<h3>' + (whole ? esc(meta.name) + ' complete' : 'Lesson complete') + '</h3>' +
+        (whole
+          ? '<p class="rz-done-score">All ' + p2.total + ' lessons, end to end. Reading them is the ' +
+            'easy half — a board asks you to produce the answer cold, with nothing on the screen. ' +
+            'That is what Review is for, and everything you just answered is already queued in it.</p>'
+          : total ? '<p class="rz-done-score">' + right + ' of ' + total + ' correct — the ones you missed are already queued in Review.</p>'
           : '<p class="rz-done-score">Marked complete.</p>') +
         '<div class="rz-prog rz-prog-lg" aria-hidden="true"><span style="width:' + p2.pct + '%"></span></div>' +
         '<p class="rz-done-prog">' + p2.done + ' of ' + p2.total + ' lessons complete</p>' +
         '<div class="rz-done-actions">' +
         // the bar below already names what is next; this one only has to be the way on
-        (next ? '<button class="rz-btn rz-btn-go" id="rz-next">Next lesson →</button>' : '') +
+        (whole
+          ? '<button class="rz-btn rz-btn-go" id="rz-to-review">Start reviewing' +
+            (due ? ' — ' + due + ' waiting' : '') + '</button>'
+          : next ? '<button class="rz-btn rz-btn-go" id="rz-next">Next lesson →</button>' : '') +
         '<button class="rz-btn rz-btn-ghost" id="rz-outline">Course outline</button>' +
         '</div></div>';
-      if (next) el('rz-next').onclick = function () { openLesson(next.key); };
+      if (el('rz-next')) el('rz-next').onclick = function () { openLesson(next.key); };
+      if (el('rz-to-review')) el('rz-to-review').onclick = function () { goDepth(1, viewHome); };
       el('rz-outline').onclick = function () { goDepth(1, viewCourse); };
     }
   }
@@ -1029,7 +1072,7 @@
         '<p class="st-sub">' + sumFlavor(pct, i) + '</p>' + missHtml +
         '<div class="st-actions">' +
         (shaky.length ? '<button class="st-btn st-btn-reveal" id="st-again">Go back over the ' + shaky.length + ' you dropped</button>' : '') +
-        '<button class="st-btn' + (shaky.length ? ' st-btn-hint' : ' st-btn-reveal') + '" id="st-home">Back to dashboard</button>' +
+        '<button class="st-btn' + (shaky.length ? ' st-btn-hint' : ' st-btn-reveal') + '" id="st-home">Back to Review</button>' +
         '</div></div>');
       if (shaky.length) el('st-again').onclick = function () { startSession(shaky.slice(), label); };
       el('st-home').onclick = backHome;
@@ -1083,7 +1126,7 @@
         '<div class="st-sum-num">' + got + '<span> of ' + seen + ' solid</span></div>' +
         '<div class="st-prog st-prog-lg" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
         '<p class="st-sub">' + (seen ? sumFlavor(pct, seen) + ' ' : '') + 'Every answer here also updated your spaced schedule.</p>' +
-        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to dashboard</button></div></div>');
+        '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">Back to Review</button></div></div>');
       el('st-home').onclick = backHome;
     }
     step();
@@ -1149,7 +1192,7 @@
         '<div class="st-sum-num">' + (S.sprint.best || 0) + '<span> best streak</span></div>' +
         '<p class="st-sub">Numbers rot fastest — sprint a few times a week and the board can’t rattle you with a dollar figure.</p>' +
         '<div class="st-actions"><button class="st-btn st-btn-reveal" id="st-home">' +
-        (isOrg() ? 'Back to the tools' : 'Back to dashboard') + '</button></div></div>');
+        (isOrg() ? 'Back to the tools' : 'Back to Review') + '</button></div></div>');
       el('st-home').onclick = backHome;
     }
     step();
@@ -2940,9 +2983,24 @@
       : r.mode === 'sprint' ? resumeSprint()
       : r.mode === 'governs' ? resumeGoverns()
       : r.mode === 'board' ? resumeBoard()
+      : r.mode === 'lesson' ? resumeLesson()
       : resumeLadder();
     if (!ok) rendered = false;   // nothing resumed — the next paint really is a cold arrival
     return ok;
+  }
+
+  /* A knowledge check resumes to its lesson and reopens the check at the question you
+     were on. The reading above it re-renders from the deck, so only the position and the
+     running score have to survive; ids are re-derived, and a lesson whose key no longer
+     exists after a deck refresh simply drops back to the outline. */
+  function resumeLesson() {
+    if (!S.track) return false;
+    var r = S.resume, key = r.label;
+    var exists = courseLessons().filter(function (l) { return l.key === key; }).length;
+    if (!exists) { clearResume(); return false; }
+    depth1View = viewCourse;
+    goDepth(2, function () { viewLesson(key, { i: r.i || 0, got: r.got || 0, ids: r.ids || [] }); });
+    return true;
   }
 
   /* ---- The Combination — the daily vault word ---- */
@@ -3605,7 +3663,7 @@
           '<button class="st-btn st-g3" id="g3">Board-ready <kbd>3</kbd></button></div>';
       }
       render('<div class="st-session-head"><span>Board Sim</span><span>&nbsp;</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
-        '<button class="st-link st-quit" id="st-quit">Back to dashboard</button>');
+        '<button class="st-link st-quit" id="st-quit">Back to Review</button>');
       el('st-quit').onclick = function () { clearResume(); backHome(); };
       if (stage === 0 && el('st-hint')) {
         // re-show any hints already taken (render() wipes them)
