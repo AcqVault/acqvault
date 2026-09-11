@@ -1777,6 +1777,21 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 }
 @media (min-width:1000px) and (max-width:1180px){ .st-wrap{max-width:100% !important} }
 @media (min-width:1400px){ .st-topics{grid-template-columns:repeat(4,1fr) !important} }
+/* Pressable tiles answer a press the way the buttons do. The site already uses
+   cubic-bezier(.23,1,.32,1) — a strong ease-out — so this borrows it rather than
+   introducing a second curve. Gated on a real pointer, and off under reduced motion. */
+@media (hover:hover) and (pointer:fine){
+  .st-topic,.st-mode,.st-trackcard,.st-plate,.st-rung,.st-daily{
+    transition:border-color .16s cubic-bezier(.23,1,.32,1),
+               background-color .16s cubic-bezier(.23,1,.32,1),
+               transform .16s cubic-bezier(.23,1,.32,1)}
+  .st-topic:active,.st-mode:active,.st-trackcard:active,.st-plate:active,
+  .st-rung:active,.st-daily:active{transform:scale(.985) !important;transition-duration:.1s}
+}
+@media (prefers-reduced-motion:reduce){
+  .st-topic:active,.st-mode:active,.st-trackcard:active,.st-plate:active,
+  .st-rung:active,.st-daily:active{transform:none !important}
+}
 /* the working view ran 189px of empty band between the quit link and the footer */
 .st-working .lband--room .lband-inner,.st-working .st-wrap{padding-bottom:28px !important}
 .st-quit{margin-top:18px !important}
@@ -1790,7 +1805,8 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 /* tiles and rows: one radius, hairlines, no lift */
 .st-topic,.st-mode,.st-trackcard,.st-plate,.st-mini-tile,.st-sim-feature,.st-rung{
   border-radius:var(--r-sm) !important;box-shadow:none !important;border:1px solid var(--line2) !important}
-.st-topic:hover,.st-mode:hover,.st-trackcard:hover,.st-plate:hover,.st-rung:hover{
+.st-topic:hover:not(:active),.st-mode:hover:not(:active),.st-trackcard:hover:not(:active),
+.st-plate:hover:not(:active),.st-rung:hover:not(:active){
   border-color:var(--brass-line) !important;transform:none !important;box-shadow:none !important}
 .st-topic-name{font-size:13.5px !important;font-weight:500 !important}
 .st-topic-meta{font-size:11.5px !important;font-variant-numeric:tabular-nums !important}
@@ -1800,7 +1816,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 /* buttons: one geometry, square-ish, no gradient lift */
 .st-btn{border-radius:var(--r-sm) !important;box-shadow:none !important;font-size:14px !important;
   font-weight:650 !important;letter-spacing:-.004em !important}
-.st-btn:hover{transform:none !important;box-shadow:none !important}
+.st-btn:hover:not(:active){transform:none !important;box-shadow:none !important}
 .st-btn-reveal{background:var(--ink-mid) !important;color:#fff !important;border:1px solid var(--ink-mid) !important}
 .st-btn-reveal:hover{filter:brightness(1.18) !important}
 .st-btn-opts,.st-btn-hint{background:#fff !important;color:var(--ink) !important;border:1px solid var(--line2) !important}
