@@ -846,6 +846,8 @@ header.site a.cta:hover{border-color:rgba(var(--brass-bright-rgb),.55)}
 .hlink{font-weight:650;font-size:var(--fs-md);color:var(--muted);text-decoration:none}
 @media (pointer:coarse){.hlink{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}}
 .hlink:hover{color:var(--accent);text-decoration:underline}
+.hlink--on{color:var(--ink);position:relative}
+.hlink--on::after{content:'';position:absolute;left:0;right:0;bottom:-5px;height:2px;background:var(--brass);border-radius:2px}
 /* federal-ink masthead — frames the page in the homepage's visual language */
 .lib-mast{position:relative;overflow:hidden;border-radius:var(--r-xl);margin:0 0 32px;padding:40px 40px 32px;background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 56%,var(--ink-to));color:#eaf1f8;box-shadow:inset 0 0 0 1px var(--brass-line),0 26px 54px -30px rgba(10,28,51,.62)}
 .lib-mast::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--brass-deep),var(--brass-bright) 50%,var(--brass-deep))}
@@ -1041,14 +1043,17 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
   .lnav-inner > *{min-width:0}
 }
 /* R5: the hubs and part pages use header.site, not .lnav-inner, so the phone fix
-   reached neither - measured 104px of stacked header at 320 and 375. Same treatment. */
-@media (max-width:420px){
-  header.site{gap:10px;padding-bottom:11px;margin-bottom:20px}
-  .hdr-links{gap:12px;min-width:0}
-}
-@media (min-width:360px) and (max-width:420px){
-  header.site{flex-wrap:nowrap}
-  header.site > *{min-width:0}
+   reached neither - measured 104px of stacked header at 320 and 375.
+   The section nav carries six destinations now, so below 900 it drops to its own
+   row and scrolls sideways rather than stacking the header six deep. */
+@media (max-width:900px){
+  header.site{gap:10px 14px;padding-bottom:11px;margin-bottom:20px}
+  .hdr-links{order:3;flex:1 0 100%;gap:16px;min-width:0;overflow-x:auto;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .hdr-links::-webkit-scrollbar{display:none}
+  .hdr-links .hlink{white-space:nowrap}
+  header.site > .cta{order:2;white-space:nowrap}
+  .hlink--on::after{bottom:-2px}
 }
 .lband{width:100%}
 .lband-inner{max-width:1060px;margin:0 auto;padding:56px 24px}
@@ -1191,6 +1196,19 @@ mark.pn-mark.active{background:var(--brass-bright);box-shadow:0 0 0 2px rgba(var
 :where(button,a,[role="button"],input,select,textarea,[tabindex]):focus-visible{outline-width:3px;outline-offset:2px}
 }`;
 
+// Every shell() page used to get Home + Search and nothing else, so a reader on a
+// part page had no route to Study, Library or the deviations index. The current
+// page is marked from `canonical` rather than a new argument at 8 call sites.
+const NAV = [['/library','Library'],['/study','Study'],['/source-selection','Source Selection'],['/deviations','Deviations'],['/changes','Changes']];
+function navLinks(canonical) {
+  const here = String(canonical || '').replace(SITE, '').replace(/[?#].*$/, '').replace(/\/$/, '');
+  const link = (href, label) => {
+    const cur = here === href || (href !== '/' && here.startsWith(href + '/'));
+    return `<a class="hlink${cur ? ' hlink--on' : ''}"${cur ? ' aria-current="page"' : ''} href="${href}">${label}</a>`;
+  };
+  return link('/?home=1', 'Home') + NAV.map(([h, l]) => link(h, l)).join('');
+}
+
 function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
@@ -1218,7 +1236,7 @@ ${preload || ''}<style>${STYLE}</style>
 <body>
 ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
 <a class="pn-skip" href="#main">Skip to content</a>
-<header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></header>
+<header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><nav class="hdr-links" aria-label="Sections">${navLinks(canonical)}</nav><a class="cta" href="/?q=">Search all sources →</a></header>
 <main id="main" tabindex="-1">${body}</main>
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. ${authorityLine(source)} Always verify before relying on any result in a contract file.</footer>
 </div>`}

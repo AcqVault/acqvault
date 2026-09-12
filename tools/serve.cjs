@@ -9,6 +9,9 @@
    away, the same property .local/serve.js has. */
 const http = require('http'), fs = require('fs'), path = require('path');
 const ROOT = path.join(__dirname, '..');
+// api/* read output/ and assets/ via process.cwd(); Vercel runs them from the repo
+// root, so the preview has to as well or every data-backed route 500s.
+process.chdir(ROOT);
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.json': 'application/json',
   '.css': 'text/css', '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.png': 'image/png',
   '.ico': 'image/x-icon', '.webmanifest': 'application/manifest+json' };
