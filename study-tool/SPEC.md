@@ -10,7 +10,15 @@ peer to /library, same theme. Two audiences via a **Basic / Advanced selector**:
 - **Basic** = new 1102s: Vol. 1 recall cards only (foundations).
 - **Advanced** = warrant-board prep: Vol. 2 recall + board-probe cards + scenario drills + threshold sprint.
 
-## The decks (in this folder — the hard part, already authored/extracted)
+## The decks
+
+> **These files are the ORIGINAL EXTRACTION, not the live source.**
+> `build_deck_v2.py` reads `assets/study-deck.json` as its base and overlays
+> `study-tool/mcq/*.json`. It never opens the `deck-*.json` files below. The deck
+> has moved well past them (221 advanced cards live vs 194 here), so an edit made
+> here changes nothing — edit `assets/study-deck.json`, then rebuild. Kept for
+> provenance only.
+
 | file | cards | what |
 |---|---|---|
 | deck-recall-basic.json | 30 | Vol. 1 Quick Checks (q/a, tagged by section) |
@@ -19,8 +27,10 @@ peer to /library, same theme. Two audiences via a **Basic / Advanced selector**:
 | deck-scenarios-new-1.json / -2.json | 58 | NEW spot-the-framework scenarios, 2/topic, all 29 topics: {scenario, frameworks[], baits[], key_moves[], follow_ups[]} |
 | deck-thresholds.json | 40 | rapid-fire threshold Q/A |
 
-Total ≈ 358 items. KNOWN CLEANUP: 5 cards in deck-recall-advanced.json have `note:"answers-combined"`
-(cost/pricing topic — the per-question answer split failed); hand-split them during build.
+Total ≈ 358 items at extraction. The `answers-combined` cleanup this file used to
+flag is done: the live deck has eight multi-part questions left and seven are
+deliberate ladder drills (one concept, several tiers — which is how a board tests
+a threshold ladder). The eighth paired two unrelated facts and was split.
 Regeneration: the extractor script pattern is in the 2026-07-02 session transcript; guide sources are
 `~/Documents/Projects/AF-Contracting-Study-Guides/Phase-{1,2}*/source*/guide.html`.
 
