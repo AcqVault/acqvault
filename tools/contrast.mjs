@@ -58,7 +58,11 @@ const PAIRS = [
   // .rz-lesson). WCAG 1.4.11 exempts a purely decorative line but not the visual
   // information that identifies a control, so the second use is a real failure.
   // --line (#948b7c) already measures 3.36:1 — the palette has the answer in it.
-  ['line2 hairline on white',       tok('line2'),    '#ffffff', 'ui'],
+  // --line2 is now decoration ONLY — dividers, card edges, the hairline under a heading.
+  // WCAG 1.4.11 exempts those, so it is not tested as a control border. Interactive
+  // controls moved to --line-ctl, which is what the row below checks. If a control ever
+  // goes back to --line2, that is the regression this comment exists to explain.
+  ['control border (--line-ctl) on white', tok('line-ctl'), '#ffffff', 'ui'],
   ['line hairline on white',        tok('line'),     '#ffffff', 'ui'],
   ['brass-line on white',           'rgb(154,115,32)', '#ffffff', 'ui'],
 ];

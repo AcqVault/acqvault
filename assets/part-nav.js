@@ -263,3 +263,53 @@
     sections.forEach(function (s) { if (s.id) io.observe(s); });
   }
 })();
+
+
+/* ---- Contents: collapse on narrow screens -------------------------------------------
+   The rail is a rail only above 1000px. Below it the list renders inline and costs the
+   reader ~350px of scrolling before the first section — on the page they opened to read
+   that section. Collapsed by default there, with the heading carrying a real toggle.
+
+   Progressive by construction: the CSS only hides the list when THIS script has set
+   data-collapsed, so with JS off, or before this runs, the list is exactly what it has
+   always been. */
+(function () {
+  var toc = document.getElementById('ptoc');
+  if (!toc) return;
+  var head = toc.querySelector('.ptoc-head');
+  var list = toc.querySelector('.ptoc-list');
+  if (!head || !list) return;
+
+  var mq = window.matchMedia('(max-width:999px)');
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'ptoc-toggle';
+  btn.setAttribute('aria-controls', list.id || (list.id = 'ptoc-list'));
+  head.appendChild(btn);
+
+  function paint(collapsed) {
+    toc.setAttribute('data-collapsed', collapsed ? '1' : '0');
+    btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    btn.textContent = collapsed ? 'Show' : 'Hide';
+  }
+  function sync() {
+    toc.setAttribute('data-collapsible', mq.matches ? '1' : '0');
+    // Above the breakpoint it is a sticky rail and must never be left collapsed.
+    paint(mq.matches);
+  }
+  btn.addEventListener('click', function () {
+    paint(toc.getAttribute('data-collapsed') !== '1');
+  });
+  // Tapping the heading is the bigger target, but only where it is actually collapsible.
+  head.addEventListener('click', function (e) {
+    if (!mq.matches || e.target === btn || e.target.closest('a')) return;
+    paint(toc.getAttribute('data-collapsed') !== '1');
+  });
+  // A link inside the list is a jump: on a phone, close behind it so the reader lands on
+  // the section rather than on the list they just used.
+  list.addEventListener('click', function (e) {
+    if (mq.matches && e.target.closest('a')) paint(true);
+  });
+  (mq.addEventListener ? mq.addEventListener.bind(mq, 'change') : mq.addListener.bind(mq))(sync);
+  sync();
+})();
