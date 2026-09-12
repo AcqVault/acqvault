@@ -646,6 +646,22 @@ requested — and an old social post embedding one would break.
 | `var(--x, var(--x))` | a bulk substitution eating a fallback |
 | `CONST_MIRRORS` | data copies drifting between server and client |
 | `course_outline_health` in refresh | a deck topic no lesson shows |
+| hand-versioned assets vs `asset-versions.json` | a changed `assets/*` file whose `?v=` in `index.html` was not bumped |
 
 Every one negative-tested against the exact bug that motivated it. **A gate that has never
 been seen to fail is not a gate.**
+
+### The cache token, missed twice
+
+`app.css` shipped stale: `?v=167` served `316cfe7b` against a local `ae4e38f7`, with
+`cf-cache-status: HIT` and `immutable` for 30 days. The fallback restoration changed
+`app.css` and I bumped `app.js` instead. `verify_deploy.py` caught it — but it only runs
+*after* a push, which is too late to stop the bad deploy.
+
+`render_health` now hashes every hand-versioned asset in `index.html` against
+`scripts/asset-versions.json` and fails when the bytes moved and the token did not. It
+refreshes the manifest itself on a legitimate bump, so it does not become a second thing to
+remember. Only `index.html`'s seven tokens are hand-maintained; the server-rendered pages
+were never at risk, because `assetV()` content-hashes those.
+
+The durable fix is still content-hashed *filenames* for these seven. Not done.
