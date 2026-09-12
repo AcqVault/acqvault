@@ -717,6 +717,13 @@ def run_health_gates(abort_msg="✗ SHIP ABORTED — fix the failing check(s) ab
     in-session. A run that only touched R-DFARS/PGI/SSP therefore validated
     nothing at all. Returns True when both pass.
     """
+    # Stamp before the gates, not after: render_health FAILS on a token that does not
+    # match its file, and the fix is mechanical, so do it rather than abort on it.
+    print("\nStamping index.html asset tokens…")
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "stamp_assets.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
+        print("\n" + abort_msg)
+        return False
     print("\nCorpus health…")
     if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "corpus_health.py")],
                       cwd=str(BASE_DIR)).returncode != 0:

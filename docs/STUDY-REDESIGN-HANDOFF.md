@@ -646,7 +646,7 @@ requested — and an old social post embedding one would break.
 | `var(--x, var(--x))` | a bulk substitution eating a fallback |
 | `CONST_MIRRORS` | data copies drifting between server and client |
 | `course_outline_health` in refresh | a deck topic no lesson shows |
-| hand-versioned assets vs `asset-versions.json` | a changed `assets/*` file whose `?v=` in `index.html` was not bumped |
+| `stamp_assets.py --check` | an `index.html` asset token that is not its file's content hash |
 
 Every one negative-tested against the exact bug that motivated it. **A gate that has never
 been seen to fail is not a gate.**
@@ -664,4 +664,15 @@ refreshes the manifest itself on a legitimate bump, so it does not become a seco
 remember. Only `index.html`'s seven tokens are hand-maintained; the server-rendered pages
 were never at risk, because `assetV()` content-hashes those.
 
-The durable fix is still content-hashed *filenames* for these seven. Not done.
+**Done properly now: nobody picks a number.** `scripts/stamp_assets.py` writes each
+token as its file's own content hash — the same property `assetV()` gives the
+server-rendered pages, with no build step (the repo stays buildless on purpose, and
+`verify_deploy.py` already accepted hex tokens). `index.html` carries
+`app.css?v=ae4e38f7121e` now, not `?v=168`. `refresh.py` stamps *before* the gates,
+because the fix is mechanical and aborting on it would be theatre; `render_health` still
+fails on a mismatch for anything that ships outside `refresh.py`. The manifest that
+briefly existed (`scripts/asset-versions.json`) is gone — a hash needs no bookkeeping.
+
+Content-hashed *filenames* would be the last increment, and would also let the tokens
+drop out of the URL entirely. Not done, and now low value: forgetting is no longer
+possible.
