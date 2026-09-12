@@ -1,0 +1,30 @@
+{
+  "analytics.js": {
+    "sha": "174b6d5d3dd2",
+    "v": 2
+  },
+  "app.css": {
+    "sha": "ae4e38f7121e",
+    "v": 168
+  },
+  "app.js": {
+    "sha": "24a68864746d",
+    "v": 106
+  },
+  "polish.js": {
+    "sha": "e6b2c26dc206",
+    "v": 5
+  },
+  "saved.js": {
+    "sha": "e60110aaa9c8",
+    "v": 10
+  },
+  "widgets.js": {
+    "sha": "f516d4755513",
+    "v": 83
+  },
+  "xlsxgen.js": {
+    "sha": "2389f2dc3cfa",
+    "v": 4
+  }
+}

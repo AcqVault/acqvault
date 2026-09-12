@@ -22,6 +22,7 @@ Each failure names the function and file to edit.
 Requires `node` (it drives the real renderer functions via scripts/render_probe.js).
 """
 
+import hashlib
 import json
 import re
 import shutil
@@ -492,7 +493,36 @@ def main():
         else:
             print(f'  PASS  index.html\'s {claimed}+ questions floor holds ({real} in the deck)')
 
-    # 12. no custom property is defined as itself
+    # 12. a hand-versioned asset that changed also got its ?v= bumped
+    #
+    # /assets/* ships `immutable` for 30 days, so a changed file behind an unchanged
+    # ?v= is pinned at the edge and returning visitors keep the old bytes. Content
+    # hashes handle the server-rendered pages; index.html's tokens are hand-maintained
+    # and were missed twice — verify_deploy catches it, but only AFTER the deploy.
+    man_path = BASE / 'scripts' / 'asset-versions.json'
+    idx_html = (BASE / 'index.html').read_text()
+    live = {}
+    for mm in re.finditer(r'/assets/([A-Za-z0-9._-]+\.(?:js|css|json))\?v=(\d+)', idx_html):
+        f = BASE / 'assets' / mm.group(1)
+        if f.exists():
+            live[mm.group(1)] = {'v': int(mm.group(2)),
+                                 'sha': hashlib.sha256(f.read_bytes()).hexdigest()[:12]}
+    man = json.loads(man_path.read_text()) if man_path.exists() else {}
+    unbumped = [n for n, cur in live.items()
+                if n in man and cur['sha'] != man[n]['sha'] and cur['v'] <= man[n]['v']]
+    if unbumped:
+        fail('changed without a ?v= bump in index.html: ' + ', '.join(sorted(unbumped)),
+             'bump the token, then refresh scripts/asset-versions.json - /assets/* is '
+             'immutable for 30 days, so the old bytes stay pinned at the edge')
+    else:
+        stale_man = [n for n, cur in live.items() if man.get(n) != cur]
+        if stale_man:
+            man_path.write_text(json.dumps(live, indent=2, sort_keys=True) + '\n')
+            print(f'  PASS  hand-versioned assets bumped (manifest refreshed: {", ".join(sorted(stale_man))})')
+        else:
+            print(f'  PASS  all {len(live)} hand-versioned assets match their ?v=')
+
+    # 13. no custom property is defined as itself
     #
     # Twice now a bulk hex -> var() substitution has rewritten the token's OWN
     # definition, leaving --brass: var(--brass). The property then resolves to
