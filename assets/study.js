@@ -409,15 +409,16 @@
         (active ? '<span class="st-tc-continue">Continue — you were here</span>' : '') +
         '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
+    var nBasic = trackLessonCount('basic'), nAdv = trackLessonCount('advanced');
     render(
       '<p class="st-intro"><b>Learn</b> the whole domain as a course, then <b>practice by deciding</b> in the simulators.</p>' +
       '<h2 class="st-h2" style="margin-top:2px">Courses</h2>' +
       '<p class="st-sub">Two courses, walked lesson by lesson. Progress saves per lesson and per card, and you can switch between them any time without losing it.</p>' +
       '<div class="st-tracks">' +
       cardHtml('t-basic', 'Course 1 · start here if contracting is new', 'Basic',
-        'Field Guide Vol. 1 as a 15-lesson course — the players, the money, the methods. Every lesson ends in a knowledge check.', last === 'basic', 'VOL I') +
+        'Field Guide Vol. 1 as a ' + nBasic + '-lesson course — the players, the money, the methods. Every lesson ends in a knowledge check.', last === 'basic', 'VOL I') +
       cardHtml('t-adv', 'Course 2 · the full board-prep course', 'Advanced',
-        'All 15 Basic lessons plus 29 more from Vol. 2 — 44 lessons at board-probe level, each ending in its own knowledge check.', last === 'advanced', 'VOL I·II') +
+        'All ' + nBasic + ' Basic lessons plus ' + (nAdv - nBasic) + ' more from Vol. 2 — ' + nAdv + ' lessons at board-probe level, each ending in its own knowledge check.', last === 'advanced', 'VOL I·II') +
       '</div>' +
       gamesSectionHtml());
     el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewCourse; save(); goDepth(1, viewCourse); };
@@ -642,6 +643,25 @@
     return S.track === 'basic' ? VOL1.map(function (s) { return ['basic', s[0], s[1]]; })
       : VOL1.map(function (s) { return ['basic', s[0], s[1]]; })
         .concat(VOL2.map(function (s) { return ['advanced', s[0], s[1]]; }));
+  }
+  /* Lesson counts for the course-picker copy. These were hardcoded ("15-lesson",
+     "44 lessons") and went stale the moment the thresholds split into seven, so they
+     are counted from the same outline the course actually walks. */
+  function trackLessonCount(track) {
+    var basic = VOL1.reduce(function (n, sec) {
+      return n + sec[1].filter(function (t) {
+        return deck.recall_basic.some(function (c) { return (c.topic || '') === t; });
+      }).length;
+    }, 0);
+    if (track === 'basic') return basic;
+    var advPool = deck.recall_advanced.concat(deck.thresholds.map(threshTopic).map(function (t) {
+      return { topic: t };
+    }));
+    return basic + VOL2.reduce(function (n, sec) {
+      return n + sec[1].filter(function (t) {
+        return advPool.some(function (c) { return (c.topic || '') === t; });
+      }).length;
+    }, 0);
   }
   function lessonKey(level, topic) { return level + '|' + topic; }
   function lessonCards(level, topic) {
