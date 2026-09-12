@@ -1,0 +1,17 @@
+{
+  "name": "acqvault-tools",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Local-only dev tooling. Deliberately NOT at the repo root: Vercel detects a root package.json and would start running an install/build on a site that is intentionally buildless. Nothing in here ships.",
+  "scripts": {
+    "measure": "node measure-css.mjs",
+    "contrast": "node contrast.mjs",
+    "visual": "playwright test",
+    "visual:update": "playwright test --update-snapshots"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "axe-core": "^4.13.0"
+  }
+}

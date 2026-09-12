@@ -139,7 +139,24 @@ emil-design-eng, apple-design, artifact-design, dataviz, design:*, figma:*.
   rulebook body text.
 - **Cost: trivial.**
 
-### 8. Tocbot — `tscanlin/tocbot`
+### 8. Tocbot — `tscanlin/tocbot` — **NOT NEEDED. Already built. 2026-09-11**
+
+> **Verified against the running site, not the source.** `renderPartPage` in `api/_seo.js`
+> already server-renders `<nav class="ptoc">` with a real `<a href="#anchor">` per section,
+> and `assets/part-nav.js` is a ~30-line `IntersectionObserver` scrollspy. Sticky rail above
+> 1000px, `aria-current` tracking, reduced-motion respected, existing tokens, no horizontal
+> overflow at 1320/1084/375. Tocbot would have *duplicated* it — and worse, tocbot builds
+> its list from headings at runtime, while this site renders the list server-side so it
+> works with JS off and is crawlable.
+>
+> **The one real gap it surfaced:** at 375px the rail does not collapse — it renders inline
+> as a ~352px block between the lede and the first section, pushing the document down on a
+> phone. That is a `@media(max-width:560px)` disclosure treatment in `STYLE` plus a small
+> toggle in `part-nav.js`. Tracked, not done.
+>
+> The entry below is left as written for the record of what was searched.
+
+### 8. Tocbot — `tscanlin/tocbot` (as originally assessed)
 - https://github.com/tscanlin/tocbot — MIT, ~1,500 stars, pushed 2026-05-15
 - Free. Vanilla JS, one `<script>`, ~8KB, no framework, no build.
 - **Fit: very good** — it is one of the very few UI libraries on this list that is

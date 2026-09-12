@@ -1574,6 +1574,51 @@ ${runHtml}`;
 
 // ── /study — the client-side drill room (Basic/Advanced tracks; assets/study.js does the work) ──
 // Shared by /study and the unlisted /48cons page — module scope so the two cannot drift.
+/* The pinned chrome bar, shared by every simulator and course view on the site:
+   /study, /48cons (STUDY_CSS) and /source-selection (SRCSEL_CSS). One definition, because
+   three copies of a component this visible is how the pages stopped looking related in the
+   first place. `pad` is the side padding of the shell it sits in — the bar spans the full
+   width by cancelling it — and /source-selection's .ss-wrap uses 22px where .st-wrap uses
+   24px, so it is a parameter rather than a hardcoded inset. */
+const CHROME_CSS = (pad, top) => `
+/* Pinned while you work. Spans the shell by cancelling .st-wrap's padding, and every
+   sticky thing below it and every jump target offsets by its height. */
+.rz-bar{position:sticky;top:0;z-index:8;display:flex;align-items:center;gap:14px;
+  margin:-${top}px -${pad}px 22px;padding:0 ${pad}px;height:54px;background:rgba(255,255,255,.94);
+  backdrop-filter:saturate(140%) blur(8px);-webkit-backdrop-filter:saturate(140%) blur(8px);
+  border-bottom:1px solid var(--line2)}
+.rz-bar-back{display:inline-flex;align-items:center;gap:6px;flex:none;font:inherit;font-size:var(--fs-sm);
+  font-weight:700;color:var(--brass-ink);background:none;border:none;padding:6px 10px 6px 0;cursor:pointer;
+  border-radius:var(--r-sm);min-height:44px}
+.rz-bar-back:hover{color:var(--ink)}
+.rz-bar-back:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.rz-bar-crumb{flex:1;min-width:0;display:flex;align-items:baseline;gap:9px;font-size:var(--fs-sm);
+  white-space:nowrap;overflow:hidden}
+.rz-bar-crumb b{flex:none;font-weight:800;letter-spacing:var(--ls-snug);color:var(--ink)}
+.rz-bar-sep{flex:none;color:var(--line);font-weight:400}
+.rz-bar-now{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--muted2,#6f6c74)}
+.rz-bar-prog{flex:none;display:flex;align-items:center;gap:9px}
+.rz-bar-track{width:96px;height:4px;border-radius:2px;background:var(--line2);overflow:hidden}
+.rz-bar-track>i{display:block;height:100%;border-radius:2px;background:var(--brass);
+  transition:width .35s cubic-bezier(.23,1,.32,1)}
+.rz-bar-n{font-size:var(--fs-sm);font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.rz-bar-n span{font-weight:600;color:var(--muted2,#6f6c74)}
+.rz-bar-next{flex:none;min-height:36px;padding:8px 14px;font-size:var(--fs-sm)}
+@media (max-width:860px){
+  /* the shell keeps its side padding at every width, so the cancel stays pad */
+  .rz-bar{gap:10px;margin:-${top}px -${pad}px 18px;padding:0 ${pad}px}
+  .rz-bar-sep,.rz-bar-now,.rz-bar-next{display:none}
+  .rz-bar-track{width:64px}
+}
+/* Inside a course or a simulator you are reading, not arriving: the marketing hero stacks
+   a second <h1> above the thing you came to work on. Collapsing it is the other half of
+   pinning the bar, so it lives with it — /source-selection set the class and nothing
+   happened, because this rule was in STUDY_CSS and that page has its own stylesheet. */
+.st-hero-off .lhero{display:none}
+.st-hero-off .lband--room{border-top:none}
+@media print{ .st-hero-off .lhero{display:block} }
+`;
+
 const STUDY_CSS = `<style>
 .lband--room{position:relative;overflow:hidden;overflow:clip;background:var(--off);border-top:1px solid rgba(var(--brass-rgb),.16)}
 .st-guilloche{position:absolute;right:-150px;top:-120px;width:520px;height:520px;opacity:.06;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%)}
@@ -2097,11 +2142,14 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
    invitation. Disabled when a filter would draw from nothing. */
 .rz-sim-exits .st-pick{display:inline-flex;gap:4px;margin-right:14px;vertical-align:middle}
 .st-pick-b{font:inherit;font-size:12px;font-weight:650;color:var(--muted);background:transparent;border:1px solid var(--line2);border-radius:999px;padding:3px 10px;cursor:pointer;letter-spacing:var(--ls-snug);transition:border-color .15s,color .15s}
-.st-pick-b i{font-style:normal;font-variant-numeric:tabular-nums;opacity:.7;margin-left:3px}
+/* The count carried opacity:.7 over --muted, which lands around 3.7:1 — under AA, and
+   the count is the informative half of the chip. Weight separates it from the label
+   instead; opacity is not a way to say 'secondary' when the result is unreadable. */
+.st-pick-b i{font-style:normal;font-variant-numeric:tabular-nums;font-weight:600;margin-left:4px}
 .st-pick-b:hover:not(:disabled){color:var(--ink);border-color:var(--line)}
 .st-pick-b:disabled{opacity:.42;cursor:default}
 .st-pick-b.st-pick-on{color:var(--brass-ink);border-color:var(--brass-line);background:rgba(var(--brass-rgb),.07)}
-.st-pick-b.st-pick-on i{opacity:.85}
+.st-pick-b.st-pick-on i{color:var(--brass-ink)}
 .st-walk ul li{font-size:13.5px;line-height:1.55;color:#3d444d;padding:2px 0}
 .st-btn-hint{background:#f6efdd;color:#5e4715;border:1px solid rgba(var(--brass-rgb),.35)}
 .st-btn-hint:disabled{opacity:.55;cursor:default}
@@ -2415,39 +2463,11 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 /* Inside the course you are reading, not arriving: the marketing hero and its stat
    pills stack a second hero on top of the course cover, and put a second <h1> on the
    page. A card session already collapses it for the same reason. */
-.st-hero-off .lhero{display:none}
-.st-hero-off .lband--room{border-top:none}
-@media print{ .st-hero-off .lhero{display:block} }
+/* .st-hero-off now travels with CHROME_CSS — see the constant. The marketing hero and
+   the pinned bar are the same idea: once you are working, the bar is the chrome and the
+   hero is a second heading in the way. */
 
-/* Pinned while you work. Spans the shell by cancelling .st-wrap's padding, and every
-   sticky thing below it and every jump target offsets by its height. */
-.rz-bar{position:sticky;top:0;z-index:8;display:flex;align-items:center;gap:14px;
-  margin:-38px -24px 22px;padding:0 24px;height:54px;background:rgba(255,255,255,.94);
-  backdrop-filter:saturate(140%) blur(8px);-webkit-backdrop-filter:saturate(140%) blur(8px);
-  border-bottom:1px solid var(--line2)}
-.rz-bar-back{display:inline-flex;align-items:center;gap:6px;flex:none;font:inherit;font-size:var(--fs-sm);
-  font-weight:700;color:var(--brass-ink);background:none;border:none;padding:6px 10px 6px 0;cursor:pointer;
-  border-radius:var(--r-sm);min-height:44px}
-.rz-bar-back:hover{color:var(--ink)}
-.rz-bar-back:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
-.rz-bar-crumb{flex:1;min-width:0;display:flex;align-items:baseline;gap:9px;font-size:var(--fs-sm);
-  white-space:nowrap;overflow:hidden}
-.rz-bar-crumb b{flex:none;font-weight:800;letter-spacing:var(--ls-snug);color:var(--ink)}
-.rz-bar-sep{flex:none;color:var(--line);font-weight:400}
-.rz-bar-now{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--muted2,#6f6c74)}
-.rz-bar-prog{flex:none;display:flex;align-items:center;gap:9px}
-.rz-bar-track{width:96px;height:4px;border-radius:2px;background:var(--line2);overflow:hidden}
-.rz-bar-track>i{display:block;height:100%;border-radius:2px;background:var(--brass);
-  transition:width .35s cubic-bezier(.23,1,.32,1)}
-.rz-bar-n{font-size:var(--fs-sm);font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
-.rz-bar-n span{font-weight:600;color:var(--muted2,#6f6c74)}
-.rz-bar-next{flex:none;min-height:36px;padding:8px 14px;font-size:var(--fs-sm)}
-@media (max-width:860px){
-  /* .st-wrap keeps 24px side padding at every width, so the cancel stays 24px */
-  .rz-bar{gap:10px;margin:-38px -24px 18px;padding:0 24px}
-  .rz-bar-sep,.rz-bar-now,.rz-bar-next{display:none}
-  .rz-bar-track{width:64px}
-}
+${CHROME_CSS(24, 38)}
 .rz-eyebrow{display:block;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
 .rz-btn{font:inherit;font-size:var(--fs-md);font-weight:650;letter-spacing:-.004em;border-radius:var(--r-sm);padding:12px 20px;cursor:pointer;border:1px solid transparent;transition:transform .12s,box-shadow .18s,border-color .15s,background .15s;min-height:44px}
 .rz-btn-go{background:var(--ink-mid);color:#fff;border-color:var(--ink-mid);box-shadow:none}
@@ -2665,7 +2685,14 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 
 /* the stage sequence, which was invisible: you could not tell how many follow-ups
    were coming or that a self-grade ended it */
-.rz-steps{list-style:none;display:flex;align-items:center;gap:0;margin:0 0 18px;padding:0;overflow-x:auto}
+/* tabindex=0 in the markup: a region that scrolls must be reachable by keyboard, or the
+   steps past the edge are unreachable without a mouse (axe: scrollable-region-focusable).
+   The outline is suppressed only where the browser would draw it on a non-interactive
+   list; :focus-visible still shows it. */
+.rz-steps{list-style:none;display:flex;align-items:center;gap:0;margin:0 0 18px;padding:0;overflow-x:auto;scrollbar-width:none}
+.rz-steps::-webkit-scrollbar{display:none}
+.rz-steps:focus{outline:none}
+.rz-steps:focus-visible{outline:3px solid var(--brass);outline-offset:3px;border-radius:var(--r-sm)}
 .rz-step{display:flex;align-items:center;gap:8px;flex:none;color:var(--muted2,#6f6c74);font-size:var(--fs-sm)}
 .rz-step+.rz-step::before{content:"";display:block;width:22px;height:1px;background:var(--line2);margin:0 10px}
 .rz-step-m{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
@@ -3652,6 +3679,7 @@ function renderSourceSelectionPage() {
   };
 
   const SRCSEL_CSS = `<style>
+${CHROME_CSS(22, 34)}
 .lband--room{position:relative;overflow:hidden;overflow:clip;background:var(--off);border-top:1px solid rgba(var(--brass-rgb),.16)}
 .st-guilloche{position:absolute;right:-150px;top:-120px;width:520px;height:520px;opacity:.06;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 38%,transparent 72%)}
 .st-guilloche svg{width:100%;height:100%}
@@ -3673,6 +3701,8 @@ function renderSourceSelectionPage() {
    kind of drift this project has already been bitten by. Same proportions, same
    tokens, same sticky offset as the study simulators. */
 .ss-steps{list-style:none;display:flex;align-items:center;gap:0;margin:0 0 18px;padding:0;overflow-x:auto;scrollbar-width:none}
+.ss-steps:focus{outline:none}
+.ss-steps:focus-visible{outline:3px solid var(--brass);outline-offset:3px;border-radius:var(--r-sm)}
 .ss-steps::-webkit-scrollbar{display:none}
 .ss-step{display:flex;align-items:center;gap:8px;flex:none;color:var(--muted2,#6f6c74);font-size:var(--fs-sm)}
 .ss-step+.ss-step::before{content:"";flex:none;width:18px;height:1px;background:var(--line2);margin:0 8px}

@@ -3905,7 +3905,7 @@
     for (var i = 0; i < nFus; i++) labels.push('Follow-up ' + (i + 1));
     labels.push('Self-grade');
     if (tail) labels.push(tail);   // the ladder's sim ends on a saved record
-    return '<ol class="rz-steps" aria-label="Where you are in this scenario">' +
+    return '<ol class="rz-steps" tabindex="0" aria-label="Where you are in this scenario">' +
       labels.map(function (t, i) {
         var st = i < stage ? ' rz-step-done' : i === stage ? ' rz-step-now' : '';
         return '<li class="rz-step' + st + '"' + (i === stage ? ' aria-current="step"' : '') + '>' +

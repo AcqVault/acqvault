@@ -91,7 +91,7 @@
      can see is a sequence you can place yourself in — the Board Sim got this in round 4.
      Titles ride only on the phase you are in; nine of them at once is a wall. */
   function phaseStepsHtml(cur) {
-    return '<ol class="ss-steps" aria-label="Where you are in this source selection">' +
+    return '<ol class="ss-steps" tabindex="0" aria-label="Where you are in this source selection">' +
       scen.phases.map(function (ph, i) {
         var st = i < cur ? ' ss-step-done' : i === cur ? ' ss-step-now' : '';
         return '<li class="ss-step' + st + '"' + (i === cur ? ' aria-current="step"' : '') + '>' +
@@ -165,9 +165,8 @@
     }
 
     app.innerHTML =
-      '<div class="ss-rail"><div class="ss-rail-top"><span>Phase ' + phase.n + ' of ' + scen.phases.length + ' · ' + esc(phase.title) + '</span>' +
-      '<span class="ss-meter ' + m.c + '"><span class="ss-meter-dot"></span>' + m.t + ' (' + S.risk + ')</span></div>' +
-      '<div class="ss-prog"><span style="width:' + Math.round((S.i + (locked ? 1 : 0)) / scen.phases.length * 100) + '%"></span></div></div>' +
+      chromeHtml(phase.title, { done: S.i + (locked ? 1 : 0), total: scen.phases.length,
+        pct: Math.round((S.i + (locked ? 1 : 0)) / scen.phases.length * 100) }) +
       phaseStepsHtml(S.i) +
       /* Two columns from here on: the decision on the left, the record you are deciding
          against on the right. Under the breakpoint the rail stacks BELOW the decision —
@@ -186,7 +185,7 @@
       '<p class="ss-side-meta">' + esc(scen.value) + ' \u00b7 ' + esc(scen.type) + '</p>' +
       '<div class="ss-side-h">The offerors</div>' +
       offerorTableHtml(true) +
-      '<p class="ss-side-meta ss-side-risk">Protest risk <b>' + m.t + '</b> (' + S.risk + ')</p>' +
+      '<p class="ss-side-meta ss-side-risk"><b>' + m.t + '</b> (' + S.risk + ')</p>' +
       '</aside></div>';
 
     /* The stepper scrolls horizontally, and on a phone the phase you are ON — the only
@@ -308,7 +307,32 @@
     save(); render();
   }
 
+  /* The same pinned chrome /study and /48cons use, from the same CHROME_CSS constant in
+     api/_seo.js — the three pages are one product and the way out of a simulator should
+     not be a different shape on each. Back goes to /study: it is this page's parent in the
+     breadcrumb and in the header link, and /48cons is deliberately unlisted. */
+  function chromeHtml(now, prog) {
+    return '<div class="rz-bar">' +
+      '<a class="rz-bar-back" href="/study" aria-label="Leave the simulator and go back to Study">' +
+      '<span aria-hidden="true">\u2190</span> Study</a>' +
+      '<span class="rz-bar-crumb"><b>Source Selection</b>' +
+      (now ? '<span class="rz-bar-sep" aria-hidden="true">/</span><span class="rz-bar-now">' +
+        esc(now) + '</span>' : '') + '</span>' +
+      (prog && prog.total
+        ? '<span class="rz-bar-prog">' +
+          '<span class="rz-bar-track" aria-hidden="true"><i style="width:' + prog.pct + '%"></i></span>' +
+          '<span class="rz-bar-n">' + prog.done + '<span> / ' + prog.total + '</span></span></span>'
+        : '') +
+      '</div>';
+  }
   function render() {
+    /* Collapse the marketing hero once you are working, not on the way in. The intro IS
+       this page's landing — the hero is doing its job there — but once a phase is on
+       screen it stacks a second heading above the decision, which is what .st-hero-off
+       exists to prevent everywhere else on the site. */
+    try {
+      document.documentElement.classList.toggle('st-hero-off', !!(S.started || S.done));
+    } catch (e) { /* styling only; never break a render */ }
     if (S.done) return renderVerdict();
     if (S.started) return renderPhase();
     return renderStart();

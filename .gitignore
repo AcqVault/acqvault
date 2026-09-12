@@ -227,3 +227,9 @@ _local_archive/
 # Impeccable design-tool local state
 .impeccable/
 .local/
+
+# Dev tooling lives under tools/ with its OWN package.json so the repo root stays
+# buildless — Vercel detects a ROOT package.json and would start running a build.
+tools/node_modules/
+tools/.playwright/
+tools/report/

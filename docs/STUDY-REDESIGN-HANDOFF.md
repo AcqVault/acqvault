@@ -72,11 +72,14 @@ of a 1.34MB deck, 3.6%, and no correctness gain. Skipped. The correctness half �
 per-scenario `coach.applies` line — needed no schema change. **Measure the claim before
 building to it.**
 
-**`compass` has no reader route.** 48 docs of DAF Contracting Compass guidance are in the
-corpus, excluded from the offline search index, and rendered through their own formatter
-that links out to CAC-gated DAF pages. This is deliberate, but it means DAF clearance
-policy can never carry a working citation on this site — which is why the six clearance
-approval rungs are attributed to the Approval Authority Matrix in prose instead.
+**DAF clearance policy has no in-site citation, by design — stop chasing it.** The
+Contracting Compass and the Approval Authority Matrix are behind CAC on a DAF SharePoint
+and are not coming to this site. The 48 `compass` docs in the corpus are summaries that
+link out to those pages, which is why compass has no reader route and is excluded from
+the offline index. The six clearance approval rungs are attributed to the matrix in prose
+and carry a confirm-the-current-matrix instruction; that is the answer. The build labels
+those seven cards unlinked **by design** and only lists a card as `UNLINKED` when it is an
+unexpected gap worth chasing.
 
 **Three fixes in the sweep were defects, not decoration**, and each was found by looking:
 a cover `<h1>` that repeated the marketing hero's verbatim (invisible on screen, doubled in
@@ -296,9 +299,25 @@ behind a forgotten bump was invisible to the check. It now covers five more asse
 | Deploy check | `scripts/verify_deploy.py` |
 | Gates | `scripts/{corpus,render,deck,course_outline}_health.py`, `check_sim_citations.py`, `test_vehicle_prune.py` |
 | Rebuild-clean gate | `ACQVAULT_CHECK_CLEAN=1 python3 study-tool/build_deck_v2.py` |
+| Visual + a11y harness | `tools/` — `cd tools && npm run visual` (see `tools/README.md`) |
 | Per-scenario coach | `study-tool/mcq/coach-applies.json` |
 | Scenario bait/governs facts | `study-tool/mcq/scenario-facts.json` |
 | Per-follow-up citations | `study-tool/mcq/scenario-followup-cites.json` |
+
+### The local visual + a11y harness
+
+`tools/` holds a Playwright suite that screenshots eight states (study cover, Board Sim
+scenario + debrief, /48cons cover / ladder / board sim, source-selection intro + phase)
+at 1084, 1320 and 375, and runs axe-core against a checked-in baseline of the site's
+current serious/critical violations. It drives `node .local/serve.js`, so it is
+localhost-only and deliberately **not** part of `verify_deploy.py`, which checks
+production.
+
+Run `cd tools && npm run visual` before pushing anything that touches `STUDY_CSS`,
+`assets/study.js` or `assets/source-selection.js`; `npm run visual:update` re-baselines
+when the change was intended. Install once with
+`cd tools && npm install && npx playwright install chromium`. Nothing in `tools/` ships —
+it stays out of the repo root so Vercel keeps treating the site as buildless.
 
 ---
 

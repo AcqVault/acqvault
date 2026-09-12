@@ -1026,8 +1026,25 @@ n_linked = sum(1 for c in all_q if c.get('links'))
 sec_linked = sum(1 for c in all_q if any('#' in l['u'] for l in c.get('links', [])))
 print(f'authority links: {n_linked}/{len(all_q)} cards linked ({sec_linked} section-precise) · '
       f'via ref {n_ref} · topic fallback {n_topic} · hand override {n_override} · UNLINKED {len(unlinked)}')
-for u in unlinked: print('  UNLINKED', u)
-coach_unlinked = [k for k, co in COACH.items() if not co.get('links')]
+# Some authorities are not on this site and never will be. DAF clearance policy lives in
+# the Contracting Compass and the Approval Authority Matrix, both behind CAC on a DAF
+# SharePoint; the 48 compass docs in the corpus are summaries that link OUT to those
+# CAC-gated pages, which is why compass has no reader route and is excluded from the
+# offline index. There is no version of this where a clearance card gets a working
+# in-site citation. Reporting those rows as UNLINKED every build made a permanent fact
+# look like a backlog, so they are named as expected and counted separately. Anything
+# NOT on this list is a real gap worth chasing.
+NO_IN_SITE_AUTHORITY = {'Clearance — Independent Review & Approval', 'Openers & Perspective', '_generic'}
+expected, real = [], []
+for u in unlinked:
+    (expected if any(t in u for t in NO_IN_SITE_AUTHORITY) else real).append(u)
+if expected:
+    print(f'  {len(expected)} card(s) unlinked by design — the authority is not on this site '
+          f'(DAF clearance policy is CAC-gated; openers cite nothing)')
+for u in real: print('  UNLINKED', u)
+if not real: print('  no unexpected unlinked cards')
+coach_unlinked = [k for k, co in COACH.items()
+                  if not co.get('links') and k not in NO_IN_SITE_AUTHORITY]
 if coach_unlinked: print(f'coach cites without links: {coach_unlinked}')
 print(f'acronym expansions applied this build: {_exp_stats[0]}')
 scen = deck['scenarios']

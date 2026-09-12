@@ -259,6 +259,10 @@ Three, each verified to fail when the thing it guards is reintroduced:
 - Nothing on the ranked list. The remaining known items are in
   `docs/STUDY-REDESIGN-HANDOFF.md` under "Open work" — chiefly that the Rise treatment has
   only reached `/study`, and seven near-duplicate pairs in `recall_advanced`.
-- `compass` (48 docs of DAF guidance) is in the corpus but has no reader route and is
-  excluded from the offline search index. That is deliberate — it links out to CAC-gated
-  DAF pages — but it does mean DAF clearance policy can never carry a working citation.
+- **DAF clearance policy will never carry an in-site citation, and that is settled.** The
+  Contracting Compass and the Approval Authority Matrix live behind CAC on a DAF
+  SharePoint; the 48 `compass` docs in the corpus are summaries that link out to those
+  pages, which is why compass has no reader route and is excluded from the offline index.
+  The clearance cards therefore state where their rungs come from in prose and say to
+  confirm the current matrix — that is the finished answer, not a workaround. The build
+  names those seven cards as unlinked **by design** rather than listing them as a backlog.

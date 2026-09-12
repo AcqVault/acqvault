@@ -360,6 +360,36 @@ def main():
     # 7. mirrored functions really are identical
     check_mirrors(fail)
 
+    # 8. every stylesheet the server emits is brace-balanced
+    #
+    # The CSS lives inside JS template literals (STYLE, STUDY_CSS, SRCSEL_CSS, and the
+    # shared CHROME_CSS), where nothing type-checks it. Hoisting the chrome bar into a
+    # shared constant once cut the block one "}" short: the @media at the end of it never
+    # closed, and because that constant is interpolated at the TOP of SRCSEL_CSS the
+    # unterminated block swallowed every rule after it. /source-selection rendered with no
+    # styling at all, the page still returned 200, and every existing gate passed. Node
+    # parses the file fine — the damage is in the string. Count the braces.
+    SEO = (BASE / 'api' / '_seo.js').read_text(encoding='utf-8')
+    css_bad = 0
+    for name in ('STYLE', 'STUDY_CSS', 'SRCSEL_CSS', 'CHROME_CSS'):
+        m = re.search(r'const ' + name + r' = (?:\(pad, top\) => )?`(.*?)`;', SEO, re.S)
+        if not m:
+            fail(f'{name} not found in api/_seo.js',
+                 'the brace-balance check cannot see it; did the constant get renamed?')
+            css_bad += 1
+            continue
+        body = m.group(1)
+        # interpolations are other literals checked on their own; blank them out
+        body = re.sub(r'\$\{[^}]*\}', '', body)
+        opens, closes = body.count('{'), body.count('}')
+        if opens != closes:
+            css_bad += 1
+            fail(f'{name} is not brace-balanced: {opens} "{{" vs {closes} "}}"',
+                 'an unclosed rule or @media swallows every rule after it and the page '
+                 'renders unstyled while still returning 200')
+    if not css_bad:
+        print('  PASS  STYLE, STUDY_CSS, SRCSEL_CSS and CHROME_CSS are brace-balanced')
+
     print()
     if failures:
         for msg, fix in failures:
