@@ -214,7 +214,9 @@ new_sc = 0
 for ns in load(os.path.join(MCQ, 'scenario-new.json')):
     card = dict(ns)
     card['type'] = 'scenario'
-    card['level'] = 'advanced'
+    # No 'level' on scenarios. It was 'advanced' on all 96 and read by nothing:
+    # recallPool() filters recall cards on (level, topic), and scenarios carry
+    # 'topics', so they never reach that branch. The Board Sim is track-independent.
     cid = hashlib.sha1(('scenario|' + '|'.join(card.get('topics', [])) + '|' + card['scenario']).encode()).hexdigest()[:12]
     card['id'] = cid
     if cid in sc_by_id:
@@ -909,6 +911,38 @@ deck['generated'] = date.today().isoformat()
 # sections "no such section".
 if os.environ.get('ACQVAULT_GATE_ONLY'):
     print('\n(gate-only: every gate ran, deck NOT written)')
+elif os.environ.get('ACQVAULT_CHECK_CLEAN'):
+    # Is the shipped deck reproducible from its sources? Twice now a correct fix was
+    # hand-applied to assets/study-deck.json only — a Type I/II call and a set of
+    # clearance thresholds — and both would have silently reverted on the next
+    # rebuild, because build_deck_v2.py overwrites coach, script and follow-up
+    # hint/debrief from study-tool/mcq/*.json. Nothing detected that. This does.
+    # 'generated' is a build date and is excluded; everything else must match.
+    with open(DECK) as f:
+        on_disk = json.load(f)
+    fresh = json.loads(json.dumps(deck))
+    on_disk.pop('generated', None)
+    fresh.pop('generated', None)
+    if on_disk == fresh:
+        print('\n  PASS  the shipped deck is exactly what these sources rebuild to')
+    else:
+        drift = []
+        for pool in ('recall_basic', 'recall_advanced', 'scenarios', 'thresholds'):
+            a = {c['id']: c for c in on_disk.get(pool) or []}
+            b = {c['id']: c for c in fresh.get(pool) or []}
+            for cid in sorted(set(a) | set(b)):
+                if a.get(cid) != b.get(cid):
+                    drift.append(f'{pool}/{cid}')
+        print(f'\n  FAIL  the shipped deck is NOT what these sources rebuild to '
+              f'({len(drift)} card(s) differ)')
+        for d in drift[:20]:
+            print(f'        {d}')
+        if len(drift) > 20:
+            print(f'        ... and {len(drift) - 20} more')
+        print('        A deck-only edit to a build-owned field (coach, script,')
+        print('        follow-up h/d) reverts on the next rebuild. Fix the source')
+        print('        in study-tool/mcq/ and rebuild, or accept the rebuild.')
+        sys.exit(1)
 else:
     with open(DECK, 'w') as f:
         json.dump(deck, f, ensure_ascii=False, separators=(',', ':'))

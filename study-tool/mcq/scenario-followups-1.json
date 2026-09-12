@@ -80,7 +80,7 @@
     },
     {
       "q": "SBA issues the CoC — can you appeal it?",
-      "h": "There's a dollar band where you can.",
+      "h": "Conclusive on responsibility — but DoD has a channel, and it runs on 5-day clocks.",
       "d": "A Certificate of Competency conclusively establishes responsibility — you award. There is no dollar band: RFO 19.204(i) makes a COC final on all elements of responsibility, and 19.204(j) says award elsewhere if no COC issues within 15 business days of the referral. For DoD, R-DFARS 219.204 sends me to PGI 219.204 — notify the department OSBP director within 5 working days of SBA Headquarters' written position, appeal file 5 working days after, and the OSBP director decides whether the agency appeals. And either way, the Government's protection shifts to administration: a hard QASP, milestone surveillance, early engagement at the first slip."
     }
   ],
@@ -92,7 +92,7 @@
     },
     {
       "q": "How long is research current, and what document carries it?",
-      "h": "A shelf life and a report.",
+      "h": "No clock — events trigger it, and a report records it.",
       "d": "RFO 10.001 sets no currency period. 10.001(b) ties research to events — before developing a new requirements document, before soliciting over the SAT, before a task or delivery order over the SAT — and 10.001(e) requires the results be documented to suit the acquisition's size and complexity. This file's 26-month-old research predates the requirement I'm soliciting, so 10.001(b) requires fresh research on its own terms. And the market research report is the document every downstream decision cites: the J&A, the set-aside determination, the CID. Research that was never documented can't support any of them — a post-hoc memo is reconstruction, not research."
     },
     {
@@ -165,8 +165,8 @@
     },
     {
       "q": "One more wrinkle: what changed in the 8(a) program recently that you'd verify before relying on it?",
-      "h": "Eligibility standards shifted in early 2026.",
-      "d": "As of January 2026, SBA moved the program to strictly race-neutral eligibility standards following litigation — admissions dropped sharply and many participants were affected. Before building a strategy on 8(a), verify the firm's current program status with SBA and your Small Business Professional. It's also a model board answer: naming a live regulatory shift shows you're current, and 'I'd verify before relying' is always the right closing note."
+      "h": "Do not recite program status from memory — verify it.",
+      "d": "Program eligibility has been the subject of litigation and SBA rulemaking, and this site does not carry SBA’s program regulations — so treat anything you remember about current 8(a) eligibility as unverified until you check it at the source. That is the board-safe answer and the correct practice: before building a strategy on 8(a), verify the firm's current program status with SBA and your Small Business Professional. It's also a model board answer: naming a live regulatory shift shows you're current, and 'I'd verify before relying' is always the right closing note."
     }
   ],
   "8747b956fb28": [
