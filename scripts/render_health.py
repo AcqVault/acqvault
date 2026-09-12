@@ -390,7 +390,26 @@ def main():
     if not css_bad:
         print('  PASS  STYLE, STUDY_CSS, SRCSEL_CSS and CHROME_CSS are brace-balanced')
 
-    # 9. no custom property is defined as itself
+    # 9. the threshold lesson grouping is identical in both copies
+    #
+    # api/_seo.js counts the course's lessons for the cover; assets/study.js builds the
+    # outline. Both group the 40 threshold cards by governing part, and if the two
+    # literals drift the cover advertises a lesson count the outline does not show.
+    def _groups(text):
+        m = re.search(r'THRESH_GROUPS = \[(.*?)\];', text, re.S)
+        return re.sub(r'\s+', '', m.group(1)) if m else None
+    g_seo = _groups(SEO)
+    g_js = _groups((BASE / 'assets' / 'study.js').read_text())
+    if g_seo is None or g_js is None:
+        fail('THRESH_GROUPS not found in both api/_seo.js and assets/study.js',
+             'the course lesson count and the course outline are derived from it in each')
+    elif g_seo != g_js:
+        fail('THRESH_GROUPS differs between api/_seo.js and assets/study.js',
+             'the /study cover would advertise a lesson count the outline does not show')
+    else:
+        print('  PASS  THRESH_GROUPS identical across 2 copies')
+
+    # 10. no custom property is defined as itself
     #
     # Twice now a bulk hex -> var() substitution has rewritten the token's OWN
     # definition, leaving --brass: var(--brass). The property then resolves to

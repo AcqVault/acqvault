@@ -114,7 +114,7 @@
          whole claim this site makes is that the cite is one click away.
          `kind` survives the remap so a renderer can tell a figure from a narrative —
          `type` has to stay 'recall' because the scheduler and the session code key on it. */
-      return { id: t.id, type: 'recall', kind: 'threshold', topic: 'Thresholds & Numbers',
+      return { id: t.id, type: 'recall', kind: 'threshold', topic: threshTopic(t),
         q: t.q, a: t.a, d: t.d, x: t.x, ref: t.ref, links: t.links };
     }));
   }
@@ -575,6 +575,36 @@
      contains both volumes. Keying on topic alone collapsed them into one lesson and
      lost the Vol. 2 cards.
      ──────────────────────────────────────────────────────────────────────────── */
+  /* All 40 threshold cards used to carry one topic, so the course showed them as a
+     single lesson whose knowledge check caps at 6 — 34 cards you could finish the
+     lesson without ever seeing. The grouping is read from each card's own governing
+     part rather than invented, so a deck refresh keeps sorting itself. */
+  var THRESH_GROUPS = [
+    ['Dollar Tiers & Buying Methods', [1, 2, 10, 12, 13]],
+    ['Competition & Sole Source', [6]],
+    ['Protests & Claims', [33]],
+    ['Pricing & Cost Data', [15]],
+    ['Contract Type & Finance', [16, 32]],
+    ['Small Business & Labor Standards', [19, 22, 28]],
+    ['Changes, Funds & Closeout', [43, 49, 52]]
+  ];
+  var THRESH_FALLBACK = 'Changes, Funds & Closeout';
+  function threshPart(t) {
+    var links = t.links || [];
+    for (var i = 0; i < links.length; i++) {
+      var m = /\/rfo\/part-(\d+)/.exec(String(links[i] && links[i].u || ''));
+      if (m) return +m[1];
+    }
+    var r = /\b(\d{1,2})\.\d/.exec(String(t.ref || ''));
+    return r ? +r[1] : null;
+  }
+  function threshTopic(t) {
+    var p = threshPart(t);
+    for (var i = 0; i < THRESH_GROUPS.length; i++) {
+      if (THRESH_GROUPS[i][1].indexOf(p) !== -1) return THRESH_GROUPS[i][0];
+    }
+    return THRESH_FALLBACK;
+  }
   var VOL1 = [
     ['Ground Rules', ['What Air Force Contracting Is', 'The Players: Roles & Who Does What',
       'Authority, Unauthorized Commitments & Ratification', 'The Rulebook: The RFO, R-DFARS & DAF Policy']],
@@ -598,7 +628,7 @@
     ['Changes and Disputes', ['Contract Modifications & Scope', 'Undefinitized Contract Actions',
       'Clearance — Independent Review & Approval', 'Protests', 'REAs & Claims', 'Terminations']],
     ['Specialized Buys', ['R&D Contracting — BAAs, SBIR & OTs', 'Construction & Service Contracting']],
-    ['Numbers You Must Know', ['Thresholds & Numbers']]
+    ['Numbers You Must Know', THRESH_GROUPS.map(function (g) { return g[0]; })]
   ];
   var COURSE_META = {
     basic: { name: 'Basic', vol: 'Field Guide Vol. 1',

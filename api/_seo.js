@@ -48,12 +48,39 @@ const DECK_ATTRS = ` data-deck="/assets/study-deck.json?v=${DECK_V}" data-elemen
    lesson is one (level, topic) pair, thresholds contribute the one synthetic topic
    recallPool() builds, and scripts/course_outline_health.py is the gate that keeps the
    hand-authored outline covering exactly these topics. */
+// KEEP IN SYNC with THRESH_GROUPS / threshPart in assets/study.js — scripts/render_health.py
+// fails if the two literals drift. The threshold cards are grouped by their own governing
+// part, so the course shows five lessons rather than one 40-card lesson.
+const THRESH_GROUPS = [
+  ['Dollar Tiers & Buying Methods', [1, 2, 10, 12, 13]],
+  ['Competition & Sole Source', [6]],
+  ['Protests & Claims', [33]],
+  ['Pricing & Cost Data', [15]],
+  ['Contract Type & Finance', [16, 32]],
+  ['Small Business & Labor Standards', [19, 22, 28]],
+  ['Changes, Funds & Closeout', [43, 49, 52]]
+];
+function threshPart(t) {
+  for (const l of t.links || []) {
+    const m = /\/rfo\/part-(\d+)/.exec(String((l && l.u) || ''));
+    if (m) return +m[1];
+  }
+  const r = /\b(\d{1,2})\.\d/.exec(String(t.ref || ''));
+  return r ? +r[1] : null;
+}
+function threshTopic(t) {
+  const p = threshPart(t);
+  for (const g of THRESH_GROUPS) if (g[1].indexOf(p) !== -1) return g[0];
+  return 'Changes, Funds & Closeout';
+}
+
 function courseCounts() {
   try {
     const d = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'assets', 'study-deck.json'), 'utf8'));
     const uniq = (rows) => new Set(rows.map((c) => c.topic)).size;
     const basic = uniq(d.recall_basic || []);
-    return { basic, advanced: basic + uniq(d.recall_advanced || []) + ((d.thresholds || []).length ? 1 : 0) };
+    const thresh = new Set((d.thresholds || []).map(threshTopic)).size;
+    return { basic, advanced: basic + uniq(d.recall_advanced || []) + thresh };
   } catch (e) { return null; }
 }
 const DECK_PRELOAD = `<link rel="preload" as="fetch" href="/assets/study-deck.json?v=${DECK_V}">
@@ -3096,7 +3123,7 @@ ${SEAL_SVG}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Study</nav>
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Know it cold</h1>
-<p class="lede">Two courses drawn from the AcqVault Field Guides — 44 lessons, each ending in a knowledge check — plus threshold sprints, board-style scenarios and the Source Selection Simulator, run against the DoD Source Selection Procedures. Every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
+<p class="lede">Two courses drawn from the AcqVault Field Guides — ${counts ? counts.advanced : 44} lessons, each ending in a knowledge check — plus threshold sprints, board-style scenarios and the Source Selection Simulator, run against the DoD Source Selection Procedures. Every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
 <div class="stats"><span class="stat"><b>44</b> lessons · <b>400+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
