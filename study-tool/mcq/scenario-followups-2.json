@@ -109,8 +109,8 @@
     },
     {
       "q": "Walk the clearance approval thresholds.",
-      "h": "Six rungs from the PCO to the Secretariat.",
-      "d": "Under $10M: the PCO. $10M to $75M: three levels below the SCO. $75M to $200M: two below. $200M to $500M: one below — the OSF. $500M to $1B: the SCO. Over $1B: SAF/AQC. This $40M action clears three levels below the SCO — and no calendar, quarter-close, or handshake moves the gate."
+      "h": "Six rungs from the PCO to the Secretariat — and name where they are written.",
+      "d": "These rungs come from the DAF Approval Authority Matrix, not from the RFO or the R-DFARS, and they move with policy memo — so say where they come from and that you would confirm the current matrix before quoting a level. As the matrix has stood: under $10M the PCO; $10M to $75M, three levels below the SCO; $75M to $200M, two below; $200M to $500M, one below — the OSF; $500M to $1B, the SCO; over $1B, SAF/AQC. This $40M action clears three levels below the SCO — and no calendar, quarter-close, or handshake moves the gate."
     },
     {
       "q": "What must the PNM tell the clearance reviewer?",

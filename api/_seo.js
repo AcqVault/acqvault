@@ -2086,6 +2086,22 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-walk ol>li::before{content:counter(walk);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:linear-gradient(158deg,#173a60,#0f2540);color:#e4c477;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
 .st-walk ol>li b{color:var(--ink)}
 .st-walk ul{margin:7px 0 0;padding-left:18px}
+/* The per-scenario half of the coach. co.rule is shared by every scenario on a topic,
+   so on some cards it states the subject truthfully without being the rule the card
+   turns on; .bs-applies is where the deck says how it bites here. Brass rule on the
+   left rather than a tint, to stay inside the .st-walk card without a second box. */
+.st-walk .bs-applies{display:block;margin:8px 0 0;padding:0 0 0 11px;border-left:2px solid var(--brass-line);font-size:13.5px;line-height:1.55;color:#3d444d}
+.st-walk .bs-applies b{color:var(--brass-ink);font-weight:800;letter-spacing:var(--ls-snug)}
+/* Board Sim scenario filter, in the exits row beside Skip. Chips rather than a select:
+   three options with live counts, and the count is the point — 'Rough 7' is the
+   invitation. Disabled when a filter would draw from nothing. */
+.rz-sim-exits .st-pick{display:inline-flex;gap:4px;margin-right:14px;vertical-align:middle}
+.st-pick-b{font:inherit;font-size:12px;font-weight:650;color:var(--muted);background:transparent;border:1px solid var(--line2);border-radius:999px;padding:3px 10px;cursor:pointer;letter-spacing:var(--ls-snug);transition:border-color .15s,color .15s}
+.st-pick-b i{font-style:normal;font-variant-numeric:tabular-nums;opacity:.7;margin-left:3px}
+.st-pick-b:hover:not(:disabled){color:var(--ink);border-color:var(--line)}
+.st-pick-b:disabled{opacity:.42;cursor:default}
+.st-pick-b.st-pick-on{color:var(--brass-ink);border-color:var(--brass-line);background:rgba(var(--brass-rgb),.07)}
+.st-pick-b.st-pick-on i{opacity:.85}
 .st-walk ul li{font-size:13.5px;line-height:1.55;color:#3d444d;padding:2px 0}
 .st-btn-hint{background:#f6efdd;color:#5e4715;border:1px solid rgba(var(--brass-rgb),.35)}
 .st-btn-hint:disabled{opacity:.55;cursor:default}

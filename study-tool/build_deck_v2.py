@@ -214,7 +214,9 @@ new_sc = 0
 for ns in load(os.path.join(MCQ, 'scenario-new.json')):
     card = dict(ns)
     card['type'] = 'scenario'
-    card['level'] = 'advanced'
+    # No 'level' on scenarios. It was 'advanced' on all 96 and read by nothing:
+    # recallPool() filters recall cards on (level, topic), and scenarios carry
+    # 'topics', so they never reach that branch. The Board Sim is track-independent.
     cid = hashlib.sha1(('scenario|' + '|'.join(card.get('topics', [])) + '|' + card['scenario']).encode()).hexdigest()[:12]
     card['id'] = cid
     if cid in sc_by_id:
@@ -225,10 +227,25 @@ for ns in load(os.path.join(MCQ, 'scenario-new.json')):
     sc_by_id[cid] = card
     new_sc += 1
 
+# coach-applies.json: the per-scenario half of the coach. The subject block is shared
+# by every scenario on that topic, so it states the subject's default rule — which is
+# sometimes true and still not the rule the card turns on (the Rule of Two on an 8(a)
+# follow-on that RFO 19.108-11 decides; the 6.103 ladder on a card whose real question
+# is price analysis after one offer). `applies` names how the subject bites HERE.
+# When the deciding subject is simply another topic the scenario already carries, fix
+# the topic ORDER instead — coach_for() walks topics in order and needs no entry here.
+APPLIES = {k: v for k, v in load(os.path.join(MCQ, 'coach-applies.json')).items()
+           if not k.startswith('_')}
+unknown_ap = [k for k in APPLIES if k not in sc_by_id]
+if unknown_ap: sys.exit(f'FATAL: coach-applies ids not in deck: {unknown_ap}')
+
 coached = generic = 0
 for sc in deck['scenarios']:
     c = coach_for(sc.get('topics'))
-    sc['coach'] = c
+    # COACH[key] is ONE dict shared by every scenario on that topic — assigning it and
+    # then setting a per-scenario key would write that key onto all of its siblings.
+    ap = APPLIES.get(sc['id'])
+    sc['coach'] = dict(c, applies=ap) if ap else c
     if c is COACH['_generic']: generic += 1
     else: coached += 1
 
@@ -678,6 +695,51 @@ for pool in ('recall_basic', 'recall_advanced', 'thresholds'):
             c.pop('links', None)
             unlinked.append(c['id'] + ' [' + (c.get('topic') or c.get('type', '?')) + '] ' + c.get('ref', '(no ref)'))
 
+# Per-follow-up citations. assets/study.js falls back to the SCENARIO's coach cite when
+# a follow-up has none, so a follow-up that walks a different part was showing a
+# "Where it lives" line for a part its debrief never mentions. These override that, and
+# resolve through the same cite_links() the coach cites use — FATAL if one resolves to
+# nothing, because an unresolvable cite renders as a dead label.
+# scenario-facts.json: the {fact, verdict, why} stack for the 65 scenarios that carried
+# only a flat `baits` array of strings. boardStepList() renders facts as a bait/governs
+# card per fact and falls back to a single "call the bait" line for baits-only scenarios,
+# so the sim was showing two different debriefs depending on which shape a card had.
+# Authored by redistributing what each card already said — no new law — and deck_health
+# fails if a facts entry names a section that does not appear on its own card.
+FACTS = {k: v for k, v in load(os.path.join(MCQ, 'scenario-facts.json')).items()
+         if not k.startswith('_')}
+bad_f = [k for k in FACTS if k not in sc_by_id]
+if bad_f: sys.exit(f'FATAL: scenario-facts ids not in deck: {bad_f}')
+n_facts = 0
+for sid, facts in FACTS.items():
+    for f in facts:
+        if f.get('verdict') not in ('bait', 'governs') or not f.get('fact') or not f.get('why'):
+            sys.exit(f'FATAL: malformed fact on {sid}: {str(f)[:70]}')
+    verdicts = {f['verdict'] for f in facts}
+    if verdicts != {'bait', 'governs'}:
+        sys.exit(f'FATAL: {sid} facts need both a bait and a governs, has {verdicts}')
+    sc_by_id[sid]['facts'] = facts
+    sc_by_id[sid].pop('baits', None)   # facts supersede; leaving both renders neither well
+    n_facts += len(facts)
+
+FU_CITES = {k: v for k, v in load(os.path.join(MCQ, 'scenario-followup-cites.json')).items()
+            if not k.startswith('_')}
+bad_fc = [k for k in FU_CITES if k not in sc_by_id]
+if bad_fc: sys.exit(f'FATAL: follow-up-cite ids not in deck: {bad_fc}')
+n_fu_cite = 0
+for sid, per_index in FU_CITES.items():
+    fus = sc_by_id[sid].get('follow_ups') or []
+    for idx, cite in per_index.items():
+        i = int(idx)
+        if i >= len(fus) or not isinstance(fus[i], dict):
+            sys.exit(f'FATAL: follow-up cite {sid}[{idx}] has no such follow-up')
+        links = cite_links(cite)
+        if not links:
+            sys.exit(f'FATAL: follow-up cite {sid}[{idx}] resolves to no links: {cite!r}')
+        fus[i]['cite'] = cite
+        fus[i]['links'] = links
+        n_fu_cite += 1
+
 for key, co in COACH.items():
     co['links'] = cite_links(co.get('cite', ''))
 
@@ -691,10 +753,18 @@ for key, co in COACH.items():
 # may be asking FOR the definition); scenarios expand all prose in reading order.
 GLOSS = load(os.path.join(MCQ, 'glossary.json'))['terms']
 
+# An acronym glued to another acronym by - or / is one token to the reader, not two:
+# expanding the tail produced "MA-indefinite-delivery/indefinite-quantity (IDIQ)" and
+# "(FPIF/cost-plus-incentive-fee (CPIF))". "other-than-FFP" still expands — only an
+# ALL-CAPS neighbour suppresses it.
 def _acro_re(acro):
-    return re.compile(r'(?<![(\w])' + re.escape(acro) + r"(s\b|'s|’s|\b)")
+    return re.compile(r'(?<![(\w])(?<![A-Z]{2}[-/])(?<![A-Z]{3}[-/])(?<![A-Z]{4}[-/])'
+                      + re.escape(acro) + r"(s\b|'s|’s|\b)")
 
 _SENT_END = re.compile(r'(?:^|[.!?…]["”)\]]?\s+|\n\s*)$')
+_DETERMINER = re.compile(
+    r'\b(?:[Tt]he|[Aa]n?|[Tt]his|[Tt]hat|[Tt]hese|[Tt]hose|[Aa]ny|[Nn]o|[Ee]very|[Ee]ach'
+    r'|[Ii]ts|[Tt]heir|[Yy]our|[Oo]ur|[Hh]is|[Hh]er|[Mm]y)\s+$')
 def _expand_in(text, acro, term):
     m = _acro_re(acro).search(text)
     if not m: return None
@@ -709,7 +779,10 @@ def _expand_in(text, acro, term):
     else:
         repl = exp + ' (' + acro + ')'
     before = text[:m.start()]
-    if term.get('the') and not term.get('literal') and not re.search(r'\b[Tt]he\s+$', before):
+    # Only add the article when the slot is empty. "a PIA problem" used to expand to
+    # "a the Procurement Integrity Act (PIA) problem" — any determiner already fills it.
+    if (term.get('the') and not term.get('literal')
+            and not _DETERMINER.search(before)):
         repl = 'the ' + repl
     # article agreement: "a UAC" → "an unauthorized commitment (UAC)" and the reverse
     art = re.search(r'\b([Aa]n?)(\s+)$', before)
@@ -898,6 +971,38 @@ deck['generated'] = date.today().isoformat()
 # sections "no such section".
 if os.environ.get('ACQVAULT_GATE_ONLY'):
     print('\n(gate-only: every gate ran, deck NOT written)')
+elif os.environ.get('ACQVAULT_CHECK_CLEAN'):
+    # Is the shipped deck reproducible from its sources? Twice now a correct fix was
+    # hand-applied to assets/study-deck.json only — a Type I/II call and a set of
+    # clearance thresholds — and both would have silently reverted on the next
+    # rebuild, because build_deck_v2.py overwrites coach, script and follow-up
+    # hint/debrief from study-tool/mcq/*.json. Nothing detected that. This does.
+    # 'generated' is a build date and is excluded; everything else must match.
+    with open(DECK) as f:
+        on_disk = json.load(f)
+    fresh = json.loads(json.dumps(deck))
+    on_disk.pop('generated', None)
+    fresh.pop('generated', None)
+    if on_disk == fresh:
+        print('\n  PASS  the shipped deck is exactly what these sources rebuild to')
+    else:
+        drift = []
+        for pool in ('recall_basic', 'recall_advanced', 'scenarios', 'thresholds'):
+            a = {c['id']: c for c in on_disk.get(pool) or []}
+            b = {c['id']: c for c in fresh.get(pool) or []}
+            for cid in sorted(set(a) | set(b)):
+                if a.get(cid) != b.get(cid):
+                    drift.append(f'{pool}/{cid}')
+        print(f'\n  FAIL  the shipped deck is NOT what these sources rebuild to '
+              f'({len(drift)} card(s) differ)')
+        for d in drift[:20]:
+            print(f'        {d}')
+        if len(drift) > 20:
+            print(f'        ... and {len(drift) - 20} more')
+        print('        A deck-only edit to a build-owned field (coach, script,')
+        print('        follow-up h/d) reverts on the next rebuild. Fix the source')
+        print('        in study-tool/mcq/ and rebuild, or accept the rebuild.')
+        sys.exit(1)
 else:
     with open(DECK, 'w') as f:
         json.dump(deck, f, ensure_ascii=False, separators=(',', ':'))
@@ -916,7 +1021,7 @@ print(f'authored distractor sets applied: {applied} existing + {nb+na} new')
 print(f'MCQ-ready recall cards: {mcq_n}/{len(recall)} · thresholds {thr_mcq}/{len(deck["thresholds"])}')
 print(f'debriefs: x on {x_n}/{len(all_q)} · ref on {ref_n}/{len(all_q)}')
 print(f'MCQ cards MISSING x: {len(mcq_no_x)}{" — " + ",".join(mcq_no_x[:8]) if mcq_no_x else ""}')
-print(f'scenario coaching: {coached} topic-matched · {generic} generic fallback')
+print(f'scenario coaching: {coached} topic-matched · {generic} generic fallback · {len(APPLIES)} with a per-scenario applies')
 n_linked = sum(1 for c in all_q if c.get('links'))
 sec_linked = sum(1 for c in all_q if any('#' in l['u'] for l in c.get('links', [])))
 print(f'authority links: {n_linked}/{len(all_q)} cards linked ({sec_linked} section-precise) · '
@@ -931,7 +1036,7 @@ no_script = [s['id'] for s in scen if not s.get('script')]
 fu_total = sum(len(s.get('follow_ups') or []) for s in scen)
 fu_helped = sum(1 for s in scen for f in (s.get('follow_ups') or []) if isinstance(f, dict) and f.get('h') and f.get('d'))
 print(f'board sim: {len(scen)} scenarios (+{new_sc} new) · asks {len(scen)-len(no_ask)}/{len(scen)} · scripts {len(scen)-len(no_script)}/{len(scen)}')
-print(f'follow-ups: {fu_total} total · {fu_helped} with hint+debrief')
+print(f'follow-ups: {fu_total} total · {fu_helped} with hint+debrief · {n_fu_cite} with their own citation')
 if no_ask: print(f'  MISSING ask: {no_ask[:6]}')
 if no_script: print(f'  MISSING script: {no_script[:6]}')
 print('ladder: ' + ' · '.join(f'{r} {len(deck["ladder"][r])}' for r in LADDER_RUNGS)

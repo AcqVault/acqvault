@@ -1,0 +1,1508 @@
+{
+ "_doc": "baits -> facts. 65 scenarios carried a flat `baits` array of strings while 28 carried the richer {fact, verdict, why} stack, so the Board Sim rendered two different debriefs. These are drafted strictly by redistributing what each card already says — script, key_moves, board_answer, coach, follow-ups — with no new law: every section number in a `why` was verified to appear on that same card. Keys are scenario id -> list of {fact, verdict, why}.",
+ "04a710389a96": [
+  {
+   "fact": "“Separate teams, separate buildings, no shared drives”",
+   "verdict": "bait",
+   "why": "The firewall sounds robust, but firewalls address information flow. No wall un-writes test criteria already drafted."
+  },
+  {
+   "fact": "“The acquisition just happened”",
+   "verdict": "bait",
+   "why": "“Nothing improper occurred yet” misses the disease. The influence is already baked into the documents every competitor will be measured against."
+  },
+  {
+   "fact": "Contractor drafting test criteria for the competition",
+   "verdict": "governs",
+   "why": "Biased ground rules — the hardest OCI to mitigate. The contractor comes off the criteria work now, the Government independently develops or scrubs what they touched, and the record documents exactly what their people authored."
+  },
+  {
+   "fact": "Parent company acquired a likely bidder",
+   "verdict": "governs",
+   "why": "If the affiliate wants to compete, it competes on ground rules it provably didn’t shape — otherwise exclusion stands."
+  },
+  {
+   "fact": "The call lands on me before solicitation",
+   "verdict": "governs",
+   "why": "I own the analysis and the recommendation, not the decision. RFO 9.506(b) sends my written analysis and recommended course of action to the chief of the contracting office before the solicitation issues; 9.506(c)(3) has that official approve, modify, or reject in writing."
+  }
+ ],
+ "072216f32652": [
+  {
+   "fact": "Three identical prior J&As in the file",
+   "verdict": "bait",
+   "why": "Repetition weakens rather than grandfathers. Each J&A must be true when written, and reviewers and protesters both read the file backward."
+  },
+  {
+   "fact": "OEM-proprietary calibration",
+   "verdict": "bait",
+   "why": "The lock may be genuinely real this year — that still doesn't excuse the record. A truthful J&A can carry the OEM; a copy-paste can't."
+  },
+  {
+   "fact": "“Intends to develop organic capability” — never happened",
+   "verdict": "governs",
+   "why": "A one-source justification must describe the actions that overcome the barrier to competition. Three broken promises make this year's justification confront the record: what was promised, why it didn't occur, and the funded, dated plan that changes it."
+  },
+  {
+   "fact": "$480K quote",
+   "verdict": "governs",
+   "why": "At $480K the J&A sits in the lowest band of RFO 6.104-2(a) — $900,000 or below, approved by the contracting officer through the certification in the justification's own content. There is no COCO rung on this ladder; don't invent one."
+  }
+ ],
+ "0a1e6ab4c146": [
+  {
+   "fact": "“New entity, clean slate”",
+   "verdict": "bait",
+   "why": "Formalism. True for the CAGE code, false for the humans — responsibility looks through paper."
+  },
+  {
+   "fact": "“We can’t hold the past against them”",
+   "verdict": "bait",
+   "why": "Fear that considering history is prejudice. Weighing documented history is the job under the RFO 9.104 standards, not bias."
+  },
+  {
+   "fact": "Same owners, same address, fresh CAGE code",
+   "verdict": "governs",
+   "why": "Same owners, same operations means the performance and integrity record follows them. Search FAPIIS, CPARS and SAM by the principals, not just the entity."
+  },
+  {
+   "fact": "Terminated for default eight months ago",
+   "verdict": "governs",
+   "why": "Exactly the documented history the standards exist to weigh. Evaluate any fresh-start claim on substance — new capital, new management, root causes fixed — and if it’s a costume, determine non-responsibility on documented facts."
+  },
+  {
+   "fact": "Apparent low offeror",
+   "verdict": "bait",
+   "why": "Price doesn’t launder the history. Doubt cuts in the Government’s favor — and if they’re small and I’m heading to “no,” the SBA referral follows."
+  }
+ ],
+ "1499cade705d": [
+  {
+   "fact": "“It’s a small business program, so they’re ineligible”",
+   "verdict": "bait",
+   "why": "Small-business intuition misapplied to Phase III. Phase III has no size requirement and no dollar cap."
+  },
+  {
+   "fact": "A competitor is making the argument",
+   "verdict": "bait",
+   "why": "Competitor advocacy shouldn’t shape the analysis. They get a courteous, correct answer; the file gets the proof."
+  },
+  {
+   "fact": "Acquired last year by a large defense prime",
+   "verdict": "bait",
+   "why": "Size matters for new Phase I/II awards, not for eligibility already derived. Phase III eligibility survives acquisition."
+  },
+  {
+   "fact": "Phase III derived from the competed Phase I/II work",
+   "verdict": "governs",
+   "why": "Eligibility follows derivation. The competition happened in the early phases; Phase III harvests it by statute, no J&A — so document the derivation chain like it will be challenged, because it just was."
+  },
+  {
+   "fact": "SBIR data rights earned under the awards",
+   "verdict": "governs",
+   "why": "They attach to the data and ride through the acquisition for their defined window — relevant to everyone’s expectations here. Verify the specific window and scope from the contracts."
+  }
+ ],
+ "17c3ac278de8": [
+  {
+   "fact": "“Ride it out since we might still win”",
+   "verdict": "bait",
+   "why": "Hope arguing with a record that already told us who wins. Riding a known defect buys a probable sustain, a GAO-directed remedy on GAO's terms, and the protester's costs on top."
+  },
+  {
+   "fact": "Decision is 60 days away",
+   "verdict": "bait",
+   "why": "Sixty days of waiting doesn't shorten the program — honest correction now is the faster path to award. Sunk cost is not a schedule argument."
+  },
+  {
+   "fact": "One factor scored against an unstated standard",
+   "verdict": "governs",
+   "why": "Agency counsel found a genuine defect in the evaluation record. That fact, not the odds, decides the response."
+  },
+  {
+   "fact": "Day 40, before any decision",
+   "verdict": "governs",
+   "why": "Voluntary corrective action now, scoped to the actual defect — reopen that factor and re-score against the stated criteria, not a panicked full redo. GAO typically dismisses as academic, the agency keeps control of the remedy, and prompt correction avoids reimbursing protest costs."
+  }
+ ],
+ "20e32891eb7b": [
+  {
+   "fact": "A formal-looking “protest” by email",
+   "verdict": "bait",
+   "why": "Formatting isn’t jurisdiction. The answer is a lane, not a shrug — and not a capitulation either."
+  },
+  {
+   "fact": "CCs the senior contracting official",
+   "verdict": "bait",
+   "why": "CC-intimidation. The SCO gets a heads-up from me first, with the facts."
+  },
+  {
+   "fact": "“Escalation to GAO and the Court” within five days",
+   "verdict": "bait",
+   "why": "The ultimatum sets no clock I owe. No stay attaches here; performance continues while the complaint is worked."
+  },
+  {
+   "fact": "$4M order, no scope-growth allegation",
+   "verdict": "governs",
+   "why": "Under $35M with no scope allegation, GAO lacks jurisdiction over a DoD task-order complaint. The lane Congress built is the task-order ombudsman."
+  },
+  {
+   "fact": "“Unfair evaluation” on an MA-IDIQ order",
+   "verdict": "governs",
+   "why": "Jurisdiction answers venue, not fairness — I owe both. Respond in writing naming the right lane, and give the order file, the evaluation and the consideration record an honest review before the ombudsman does."
+  }
+ ],
+ "25034f52840f": [
+  {
+   "fact": "“We legally can't exercise until October”",
+   "verdict": "bait",
+   "why": "Airtight-sounding and backwards. The availability-of-funds mechanism exists for exactly this seam."
+  },
+  {
+   "fact": "“The contractor will just have to gap two weeks”",
+   "verdict": "bait",
+   "why": "A gap normalized as inevitable isn't inevitable. No gap is required if the notice goes out on time with the availability language."
+  },
+  {
+   "fact": "Exercise due 15 September",
+   "verdict": "governs",
+   "why": "Missing the date kills the unilateral right — after that, continuation is a bilateral negotiation where the contractor holds the leverage. That's the real risk in the room."
+  },
+  {
+   "fact": "New fiscal year's funds don't exist yet",
+   "verdict": "governs",
+   "why": "RFO 32.703-2(a) allows the action only with the clause at 52.232-18 and only for operation and maintenance and continuing services necessary for normal operations that Congress previously had consistently funded — confirm this option sits inside that fence, then exercise subject to availability, accept nothing until written notice that funds are available (32.703-2(c)), and have FM ready to obligate on 1 October."
+  }
+ ],
+ "3141b8cd4cf5": [
+  {
+   "fact": "“Obligating the first two years now”",
+   "verdict": "bait",
+   "why": "Two years off one appropriation fails Time, period. Annual O&M funds a severable service for up to 12 months — it never reaches into a second year."
+  },
+  {
+   "fact": "“Since this year's money is healthy”",
+   "verdict": "bait",
+   "why": "Healthy money isn't the test; bona fide need of the appropriation's period is. A comfortable balance buys nothing the year can't lawfully need."
+  },
+  {
+   "fact": "Custodial and preventive maintenance",
+   "verdict": "governs",
+   "why": "Benefit delivered as performed — that's severable, and severability sets the funding rail. One year of money, one year of service, may cross the fiscal seam."
+  },
+  {
+   "fact": "“One award covering all five years”",
+   "verdict": "governs",
+   "why": "Structure solves what funding cannot — base year plus four one-year options: one award, one competition, each year funded by its own money. Base-plus-four is also exactly the SCLS ceiling (RFO 22.1002-2(a)(2))."
+  }
+ ],
+ "370f23a93603": [
+  {
+   "fact": "“Already told the contractor we're picking up the option”",
+   "verdict": "bait",
+   "why": "The PM's promise binds nothing — only the PCO commits the Government. Correct that channel today."
+  },
+  {
+   "fact": "Two missed surveillance reports and a near-miss",
+   "verdict": "governs",
+   "why": "Acceptable performance is an exercise gate, not a formality. Both failures go straight into the determination — exercise on time if the record supports it, and if it does not, say so and take a short extension or recompete."
+  },
+  {
+   "fact": "“Re-competing would take a year”",
+   "verdict": "bait",
+   "why": "Schedule convenience is not one of the gates. A year is exactly enough time to start now if the record says compete."
+  },
+  {
+   "fact": "Range officer directed “extra monitoring”",
+   "verdict": "governs",
+   "why": "Work directed by someone with no authority is an unauthorized commitment candidate. Stop it in writing today, sort entitlement through the ratification or constructive-change lane, and retrain everyone who touched it."
+  }
+ ],
+ "385df91a2aa9": [
+  {
+   "fact": "Orders “never top $3K”",
+   "verdict": "bait",
+   "why": "Each swipe is legitimately under the MPT — and that’s the trick. $140K of predictable annual demand is one requirement wearing fifty swipes, which evades both the MPT and the mandatory sources."
+  },
+  {
+   "fact": "“Cheaper than the mandatory source”",
+   "verdict": "bait",
+   "why": "Cheaper-and-faster feels like stewardship. Price alone doesn’t unlock the open market — if these items sit on the procurement list, AbilityOne is the source."
+  },
+  {
+   "fact": "“Delivery is faster”",
+   "verdict": "bait",
+   "why": "A requirement to work through the program channels, on the record — not a license to shop."
+  },
+  {
+   "fact": "Custodial supplies from an e-commerce site",
+   "verdict": "governs",
+   "why": "The RFO 8.103(a) supplies ladder is mandatory and runs in priority order. Check what’s actually covered before anyone touches the open market."
+  },
+  {
+   "fact": "About $140K annual spend across the unit",
+   "verdict": "governs",
+   "why": "Structure the real demand into a BPA or purchase orders against the correct source, retrain the cardholders, and document the transition. Fix the unit’s process, not just this order."
+  }
+ ],
+ "3ce08a3a44ae": [
+  {
+   "fact": "“That’s how we’ve always flexed the work”",
+   "verdict": "bait",
+   "why": "Habit normalizes the violation. Site leads don’t direct work — only a warranted CO binds the Government."
+  },
+  {
+   "fact": "“Small additions each time”",
+   "verdict": "bait",
+   "why": "Increments hide the cumulative problem. Scope is judged against the original contract with all changes cumulative, not one expansion at a time."
+  },
+  {
+   "fact": "“Verbal expansions approved by the site lead”",
+   "verdict": "governs",
+   "why": "Stop the practice in writing today and route every future need through the PCO. Then sort six months into lanes: unauthorized new work down the RFO 1.405 ratification path, Government-directed changes to existing work as constructive-change REAs."
+  },
+  {
+   "fact": "15% over the award across six months",
+   "verdict": "governs",
+   "why": "Fifteen percent cumulative growth gets tested against the original award — all four corners. And the process failure is its own finding: the file no longer describes the contract being performed."
+  },
+  {
+   "fact": "All documented in the contractor’s notes",
+   "verdict": "governs",
+   "why": "They performed in good faith and kept better records than we did. That helps them in the sorting and shames us in the finding."
+  }
+ ],
+ "3f06fb9f3c9d": [
+  {
+   "fact": "The requirement literally names the tool",
+   "verdict": "governs",
+   "why": "Steering wearing a requirements costume. Restate in performance terms — what the modeling must produce, to what fidelity, by when — and ask the other three holders the capability question directly."
+  },
+  {
+   "fact": "“Their engineer demoed it”",
+   "verdict": "bait",
+   "why": "The demo genuinely was impressive, and enthusiasm appears nowhere in a justification. It goes in a drawer; the performance requirement and the market answers go in the file."
+  },
+  {
+   "fact": "Naming the tool as precision",
+   "verdict": "bait",
+   "why": "Product names aren't specificity, they're restriction — and restriction has to be earned in writing, not assumed."
+  },
+  {
+   "fact": "Four holders on the IDIQ",
+   "verdict": "governs",
+   "why": "Fair opportunity is the default under RFO 16.507. If only the tool honestly satisfies the need in time, that's an only-one-capable Justification for an Exception to Fair Opportunity on evidence, approved at tier and posted — not smuggled into the spec."
+  }
+ ],
+ "42bfc7929490": [
+  {
+   "fact": "“Exigency justified it”",
+   "verdict": "bait",
+   "why": "Exigency doesn't create contracting authority. Engineers don't hold a warrant, and a good outcome doesn't retroactively supply one."
+  },
+  {
+   "fact": "“The base commander verbally concurred”",
+   "verdict": "bait",
+   "why": "Command concurrence is not contracting authority. Apparent authority binds nothing — this is an unauthorized commitment either way."
+  },
+  {
+   "fact": "The units arrive and work perfectly",
+   "verdict": "governs",
+   "why": "Benefit received is real, and price may be fair — which is why the path is a ratification package, not a refusal. Gather the statement, the storm timeline, receipt and use."
+  },
+  {
+   "fact": "$65K invoice",
+   "verdict": "governs",
+   "why": "Funds available then and now is the element that decides most of these. RFO 1.405(b)(2) sets no dollar tier — the ratifying level comes from my activity's delegation, never below the chief of the contracting office."
+  }
+ ],
+ "443b2d02e1b1": [
+  {
+   "fact": "“Consumed in testing years ago” with no records",
+   "verdict": "bait",
+   "why": "An unverifiable catch-all. It isn’t an outcome — it’s an unproven claim the investigation either substantiates or converts into liability."
+  },
+  {
+   "fact": "“Close out now and reconcile later”",
+   "verdict": "bait",
+   "why": "Closeout momentum. No closeout with an open property reconciliation — the leverage ends at closeout."
+  },
+  {
+   "fact": "9 items “probably at the subcontractor”",
+   "verdict": "bait",
+   "why": "Subcontractor-held property is still the prime’s accountability. Location doesn’t transfer the obligation."
+  },
+  {
+   "fact": "44 of 212 items missing",
+   "verdict": "governs",
+   "why": "Each one runs the clause machinery: report, investigate, and a CO liability determination under the contract’s risk allocation, with the property administrator managing the process."
+  },
+  {
+   "fact": "Five-year R&D contract’s property system",
+   "verdict": "governs",
+   "why": "Forty-four unaccounted items suggests the system, not just the items, needs the look. A recordkeeping failure is itself contractor fault, supporting broader liability and corrective demands — DCMA’s property specialists own that look."
+  }
+ ],
+ "457016c02cef": [
+  {
+   "fact": "“They never got a mod authorizing any of that”",
+   "verdict": "bait",
+   "why": "Exactly backwards. The missing modification is the Government's paperwork failure, not the contractor's entitlement bar."
+  },
+  {
+   "fact": "Consolidated $340K request",
+   "verdict": "bait",
+   "why": "The lump obscures the facts. Evaluate entitlement building by building, then quantum with technical and cost review — not resentment."
+  },
+  {
+   "fact": "Government's fiber-conduit maps prove wrong",
+   "verdict": "governs",
+   "why": "Defective Government-furnished maps plus the COR's “keep moving” direction is a constructive change — a theory that doesn't depend on the COR's warrant."
+  },
+  {
+   "fact": "A request for equitable adjustment, four months later",
+   "verdict": "governs",
+   "why": "It's an REA, not a claim: no CDA interest, no decision clock, no appeal rights, because interest starts on the CO's receipt of a claim (RFO 33.205-3(a)(1)). Output is a negotiated bilateral modification under RFO 43.203(a)(1) papered with a 43.304(c) release — and at $340K, under the $350,000 SAT, no 252.243-7002 certification."
+  }
+ ],
+ "4c134150cccb": [
+  {
+   "fact": "“Temporarily” — “everyone agrees it's working great”",
+   "verdict": "bait",
+   "why": "Working great is how drift survives. Duration and satisfaction don't create the violation or cure it — the relationship does."
+  },
+  {
+   "fact": "The contractor's site manager quits",
+   "verdict": "bait",
+   "why": "A vacancy is the contractor's obligation to cure, not the Government's invitation to supervise. The gap explains the drift; it doesn't authorize it."
+  },
+  {
+   "fact": "Leave approvals for contractor staff",
+   "verdict": "governs",
+   "why": "Daily standups, direct assignments and leave approval is relatively continuous supervision — the employer-employee pattern, unlawful without specific statutory authority this contract doesn't have. It stops today, in writing, with tasking flowing through the PWS and the contractor's own management."
+  },
+  {
+   "fact": "Tasking through the Government flight chief",
+   "verdict": "governs",
+   "why": "Enforce the contract instead: the key-personnel clause demands a qualified site-manager replacement on the clause's timeline, with interim management the contractor provides. Then check whether the PWS itself invites the drift."
+  }
+ ],
+ "4f318705f708": [
+  {
+   "fact": "T4C “so nobody’s record gets hurt”",
+   "verdict": "bait",
+   "why": "Convenience isn’t a record-laundering service. The termination decision follows the Government’s interest, honestly labeled."
+  },
+  {
+   "fact": "Novating “the whole contract” to the asset buyer",
+   "verdict": "bait",
+   "why": "Floated casually, and it fails on the facts. A novation needs the CONTRACTOR to have transferred its assets; here the buyer took the SUPPLIER’s, and the prime is unchanged — so there is no successor interest in this contract to recognize."
+  },
+  {
+   "fact": "The competitor bought the SUPPLIER’s assets",
+   "verdict": "governs",
+   "why": "RFO 42.903(a) recognizes a successor in interest only where the third party’s interest arises from transfer of all the contractor’s assets, or the entire portion performing this contract. My prime transferred nothing — there is no successor interest to recognize and nothing to novate. Putting that competitor on the work is a subcontract change or a new contract, decided on capability, responsibility and terms."
+  },
+  {
+   "fact": "Key-supplier bankruptcy, nine months of non-delivery",
+   "verdict": "governs",
+   "why": "Excusability comes first: beyond the control and without the fault of both prime and sub, with no substitute available. That record gets built before any termination posture."
+  },
+  {
+   "fact": "Units needed in six months",
+   "verdict": "governs",
+   "why": "Mission need may drive reprocurement of the six-month quantity — a deliberate Government decision, not a rescue reflex."
+  }
+ ],
+ "511b3e71ff48": [
+  {
+   "fact": "“Cure-notice an empty office?”",
+   "verdict": "bait",
+   "why": "Process formalism as an excuse to stall. When in doubt send it — it costs days and forecloses arguments — but the notice posture follows the facts, worked with Legal."
+  },
+  {
+   "fact": "Surety writes the firm “has ceased operations”",
+   "verdict": "governs",
+   "why": "Crews gone, three weeks of silence, and the surety's own letter is anticipatory failure. Build the documented abandonment record — every attempt to reach them, plus that letter."
+  },
+  {
+   "fact": "$2M roofing contract",
+   "verdict": "governs",
+   "why": "Bonded construction, so the performance bond is now the story: formal notice to the surety, who completes, funds completion, or pays the Government's cost to complete up to the penal sum. Document the reprocurement like the surety will audit it, because they will."
+  },
+  {
+   "fact": "Crews stopped two months in",
+   "verdict": "bait",
+   "why": "Treating this as a slow-moving process question ignores weather and schedule running against an unmanned roof. Move fast."
+  }
+ ],
+ "5ecfeace5e45": [
+  {
+   "fact": "COR emailed “keep at it — we need these units”",
+   "verdict": "governs",
+   "why": "The COR can't modify the schedule — but post-delinquency encouragement from someone the contractor reasonably heard as the Government raises schedule waiver. The original delivery date may no longer be enforceable."
+  },
+  {
+   "fact": "“You can't default us anyway”",
+   "verdict": "bait",
+   "why": "Waiver isn't permanent immunity. With Legal, re-establish a firm delivery date in writing on show-cause framing — that restores an enforceable schedule."
+  },
+  {
+   "fact": "PM wants them terminated today",
+   "verdict": "bait",
+   "why": "Terminate today and we buy the conversion to convenience later. No default notice moves before Legal and the waiver repair."
+  },
+  {
+   "fact": "Subcontractor's plant fire",
+   "verdict": "governs",
+   "why": "Excusability gets built before any default, not after: beyond the control and without the fault of both prime and sub, and the supplies not obtainable elsewhere in time."
+  }
+ ],
+ "619dae946aa3": [
+  {
+   "fact": "“Will just be the same thing again”",
+   "verdict": "bait",
+   "why": "That assumes five years of stasis — new entrants, changed size standards, a drifted requirement. Fresh research and a requirement scrub are how you find out."
+  },
+  {
+   "fact": "Wait five months for the new PM",
+   "verdict": "bait",
+   "why": "Reasonable-sounding, and it burns the runway. None of the strategy work needs the new PM to begin."
+  },
+  {
+   "fact": "Final option year ends in 10 months",
+   "verdict": "governs",
+   "why": "Ten months is barely enough for research, a set-aside look, and a requirement scrub. Sources-sought and requirement validation start today."
+  },
+  {
+   "fact": "A bridge caused by waiting for staff",
+   "verdict": "governs",
+   "why": "A staffing choice is fully within the Government's control — that's a planning failure, not an unforeseen cause, and it won't justify. Document the timeline so the record shows deliberate planning."
+  }
+ ],
+ "62e1e0c2b3b7": [
+  {
+   "fact": "“More competition is always better, right?”",
+   "verdict": "bait",
+   "why": "Virtuous-sounding and wrong here. Full-and-open without an SBA release is a program violation, not extra competition."
+  },
+  {
+   "fact": "SBA district office is slow answering emails",
+   "verdict": "bait",
+   "why": "Slow email is not a release. Escalate past the inbox through the Small Business Professional — a release is a written request to, and concurrence from, the SBA Associate Administrator for Business Development under RFO 19.108-11(b)."
+  },
+  {
+   "fact": "Six years, two competed-in-8(a) awards",
+   "verdict": "governs",
+   "why": "Unmistakably an 8(a) requirement. RFO 19.108-11(a) keeps the follow-on in the program unless a mandatory source applies, it's set aside under HUBZone, SDVOSB, or WOSB, or SBA agrees to release it."
+  },
+  {
+   "fact": "$5.8M follow-on estimate",
+   "verdict": "governs",
+   "why": "Over the $5.5M services line, so the lawful path is competitive 8(a) among eligible firms rather than sole source."
+  }
+ ],
+ "643ccd35960e": [
+  {
+   "fact": "“Nothing actually leaked”",
+   "verdict": "bait",
+   "why": "Unproven, and not his call. The question is what protected information was accessible in his position and whether any moved."
+  },
+  {
+   "fact": "“Never discussed the source selection at home”",
+   "verdict": "bait",
+   "why": "His sincerity isn't the test. The facts get established by record review — what he accessed, when the spouse's employment began."
+  },
+  {
+   "fact": "Spouse works for an offeror",
+   "verdict": "governs",
+   "why": "Access and appearance are the issue. Report to Legal now and establish the facts before anything else."
+  },
+  {
+   "fact": "Offers to keep evaluating",
+   "verdict": "governs",
+   "why": "Continued participation is decided by the PCO and SSA with Legal, not by self-assessment. Document the determination whichever way it lands, and re-brief the team — the next LinkedIn post shouldn't be how we find out."
+  }
+ ],
+ "6a46384cf480": [
+  {
+   "fact": "“O&M can cover integration and test”",
+   "verdict": "governs",
+   "why": "Purpose follows the work. Integration and test of a developmental system is development — RDT&E work under 31 U.S.C. 1301. That branch dies in the meeting, on the record."
+  },
+  {
+   "fact": "Fund it “as money shows up”",
+   "verdict": "bait",
+   "why": "Hope is not a funding profile. The strategy documents what's programmed, and the contract's ceiling and clauses reflect it."
+  },
+  {
+   "fact": "$6M in hand against a four-year, $40M effort",
+   "verdict": "governs",
+   "why": "Awarding the whole effort against six million is Anti-Deficiency exposure unless the structure honestly matches the money."
+  },
+  {
+   "fact": "“Award the whole effort now”",
+   "verdict": "bait",
+   "why": "She can start now; she just can't promise money the Treasury hasn't produced. The lawful shape is a cost-type development effort incrementally funded under Limitation of Funds discipline — or phased awards matched to real appropriations."
+  }
+ ],
+ "6b6384cdbb14": [
+  {
+   "fact": "Holder A maintains the requirements database",
+   "verdict": "governs",
+   "why": "Unequal access to non-public information — Holder A is competing on a picture the other four holders can't see. No bad act required; the imbalance is the conflict."
+  },
+  {
+   "fact": "Holder A did nothing overtly wrong",
+   "verdict": "bait",
+   "why": "They used what they knew. Intent isn't the test, and their innocence doesn't level the field."
+  },
+  {
+   "fact": "Cites unfunded requirements as “anticipated growth”",
+   "verdict": "bait",
+   "why": "The insight makes their proposal genuinely better — which is exactly the problem. A better proposal built on inaccessible data is the conflict, not a defense to it."
+  },
+  {
+   "fact": "Competition open to all five holders",
+   "verdict": "governs",
+   "why": "Fair opportunity is what has to be restored: release the scrubbed data to all holders, extend the clock, allow revisions — or neutralize or exclude, documented. And the support order gets OCI terms and data walls before the next competition."
+  }
+ ],
+ "7120cb3d8b78": [
+  {
+   "fact": "“Standard company template”",
+   "verdict": "bait",
+   "why": "A template doesn't rewrite funding history. A properly formatted legend that misstates the Government's rights is an unjustified marking, not a clerical one."
+  },
+  {
+   "fact": "“Sort it out during sustainment”",
+   "verdict": "bait",
+   "why": "Deferral is leverage surrender — it means competing sustainment against markings we accepted silently, on drawings we paid for."
+  },
+  {
+   "fact": "Drawings created under this fully Government-funded contract",
+   "verdict": "governs",
+   "why": "Development funded entirely by the Government yields unlimited rights, and R-DFARS 227.7103-12(b)(1) names this exact case: a limited rights legend on data developed at Government expense is an unjustified marking."
+  },
+  {
+   "fact": "Every drawing stamped limited-rights",
+   "verdict": "governs",
+   "why": "The remedy is process, not self-help: written challenge of the validity now, stating the grounds, with the burden of proving any restriction on them — and the assertion list from award is the yardstick. Honor the markings until it resolves."
+  }
+ ],
+ "75832160934e": [
+  {
+   "fact": "“Can’t handle the clearances”",
+   "verdict": "bait",
+   "why": "Asserted and disproven in the same breath — all three hold facility clearances per DISS. Record the objection as resolved rather than letting it haunt the strategy."
+  },
+  {
+   "fact": "Two large incumbents from predecessor work",
+   "verdict": "bait",
+   "why": "Incumbent gravity. Wrong-direction pressure gets answered with the file, not accommodated in the strategy."
+  },
+  {
+   "fact": "Three interested small firms",
+   "verdict": "governs",
+   "why": "A textbook Rule of Two expectation on documented capability — RFO 19.101(b)(3) with 19.104-1(a) makes the total small-business set-aside the obligation."
+  },
+  {
+   "fact": "One 8(a), one WOSB, one plain small",
+   "verdict": "governs",
+   "why": "The program lanes at 19.101(b)(4)-(7) are mays I weigh alongside the set-aside, and 19.104-1(e) says the set-aside requirement doesn’t preclude going 8(a) or WOSB instead. Coordinate the choice on the DD 2579."
+  }
+ ],
+ "7caf06e9444c": [
+  {
+   "fact": "“Give them everything so they feel heard”",
+   "verdict": "bait",
+   "why": "Generosity isn't a protest strategy when it releases the winner's proprietary data — you trade one protest for another, plus a Procurement Integrity problem."
+  },
+  {
+   "fact": "“All evaluator notes mentioning our company”",
+   "verdict": "bait",
+   "why": "A debrief is an accounting of their evaluation, not a document production. Explain the decision; don't hand over the working papers."
+  },
+  {
+   "fact": "The winner's staffing plan and CLIN-broken price",
+   "verdict": "governs",
+   "why": "Contractor bid and proposal information — protected. About the awardee, releasable is identity, total evaluated price, overall ratings, and the comparative rationale. Nothing revealing proposal content."
+  },
+  {
+   "fact": "Their own weaknesses (fine)",
+   "verdict": "governs",
+   "why": "That's the debrief's real substance: their significant weaknesses and deficiencies, their ratings and evaluated price, rankings, and the award rationale — run generously inside the lines. For DoD, R-DFARS 215.301-270 keeps it open: 2 business days for their written questions, 5 for my written answer, and it isn't concluded until that lands."
+  }
+ ],
+ "81e6c477871d": [
+  {
+   "fact": "“Stood up within 90 days”",
+   "verdict": "bait",
+   "why": "A directed timeline implies urgency that hasn’t been tested. Urgency under 6.103-2 is quantified mission harm — a deadline we set ourselves doesn’t qualify."
+  },
+  {
+   "fact": "“They briefed us at the symposium”",
+   "verdict": "bait",
+   "why": "A vendor in mind before any requirement exists — and symposium familiarity is marketing, not market research. Run a real capability look."
+  },
+  {
+   "fact": "No requirements document",
+   "verdict": "governs",
+   "why": "Strategy precedes paper. Nothing starts until the requirements conversation produces outcomes, quantities, measures and an IGCE — without those there is no research target and no defensible file."
+  },
+  {
+   "fact": "“Start the contract paperwork”",
+   "verdict": "governs",
+   "why": "The honest answer to the date is a right-sized initial capability competed quickly — plan backward from 90 days with the real process, not a sole source justified by our own calendar."
+  }
+ ],
+ "889ac661f351": [
+  {
+   "fact": "“So the funds don’t go to waste”",
+   "verdict": "bait",
+   "why": "The eternal siren. A “rolled” follow-on task is a new need, and new needs take current-year money — the suggestion fails Time no matter how efficient it sounds."
+  },
+  {
+   "fact": "The servicing agency suggests the roll",
+   "verdict": "bait",
+   "why": "Helpfulness isn’t authority. Unobligated MIPR balances come home — they don’t become the servicing agency’s seed corn."
+  },
+  {
+   "fact": "$1.5M O&M MIPRed last September",
+   "verdict": "governs",
+   "why": "The returning money keeps its identity: expiring O&M, good for adjustments to the original task and nothing new."
+  },
+  {
+   "fact": "$410K unspent, task ends next month",
+   "verdict": "governs",
+   "why": "Recover the balance now, reconcile the task’s final costs, and fund and compete any follow-on properly."
+  },
+  {
+   "fact": "Discovered in July",
+   "verdict": "governs",
+   "why": "Three quarters of silence is its own finding. Build quarterly balance reconciliation into the agreement — the problem was avoidable."
+  }
+ ],
+ "95e08834394b": [
+  {
+   "fact": "“Just make the scope smaller… call it complete”",
+   "verdict": "bait",
+   "why": "That's a constructive termination for convenience in a modification costume. Descoping is legitimate as a deliberate partial T4C or a deductive change, priced and papered — not as a handshake that leaves asbestos in the walls."
+  },
+  {
+   "fact": "“Wants to be paid for work done and released”",
+   "verdict": "bait",
+   "why": "A differing site condition is not a termination right. He gets an equitable adjustment and keeps performing as directed; ending the work is the Government's decision, not the discovery's."
+  },
+  {
+   "fact": "None of the specs or drawings mention it",
+   "verdict": "governs",
+   "why": "Silence in the documents is why this leads with Type II under RFO 52.236-2(a)(2) — unknown conditions of an unusual nature. Type I needs an affirmative indication to differ from."
+  },
+  {
+   "fact": "Stopped work, photographed, notified in writing same day",
+   "verdict": "governs",
+   "why": "Either type turns on written notice before disturbance — and he nailed it. Entitlement is on the table because the record is clean."
+  }
+ ],
+ "9606983a87e6": [
+  {
+   "fact": "“So definitization can proceed on real numbers”",
+   "verdict": "bait",
+   "why": "The qualifying proposal starts definitization; it doesn't reprice the ceiling. “Real numbers” is their arithmetic, not the Government's liability."
+  },
+  {
+   "fact": "Contractor requests the NTE be raised",
+   "verdict": "bait",
+   "why": "Raising an NTE is a formal Government decision requiring HCA approval under R-DFARS 217.7404-1, not a negotiating concession. It moves on our deliberate process, never on their proposal."
+  },
+  {
+   "fact": "$30M not-to-exceed",
+   "verdict": "governs",
+   "why": "The NTE is the Government's liability ceiling and the caps key to it: no more than 50 percent obligated before definitization, and the 75 percent step only if the qualifying proposal arrived before that point — and even then “may be increased,” my discretion. The arithmetic runs on thirty million, not forty-one."
+  },
+  {
+   "fact": "“Actual damage exceeded initial survey”",
+   "verdict": "governs",
+   "why": "Scope decides the path: in-scope growth of this repair can be negotiated within a deliberately increased ceiling; new work needs its own action and its own approvals. Months of incurred cost also burn down risk, and weighted guidelines will show it on fee."
+  }
+ ],
+ "9816f21a82dd": [
+  {
+   "fact": "Raise the rate “to the max allowed”",
+   "verdict": "bait",
+   "why": "Framed as an entitlement, and it isn't a negotiation. Progress payments ride the clause and the current class deviation — as a DoD small business they already get the favorable rate."
+  },
+  {
+   "fact": "A small business asking for help",
+   "verdict": "bait",
+   "why": "Sympathy isn't the analysis. If cash flow is the real issue, performance-based payments on defined events are the preferred structure — offer to build exactly that."
+  },
+  {
+   "fact": "Stockpile for “future orders that aren't on contract yet”",
+   "verdict": "governs",
+   "why": "No contract, no allocability, no title path, no liquidation path. That's not contract financing — it's an advance against nothing."
+  },
+  {
+   "fact": "Costs allocable to this contract",
+   "verdict": "governs",
+   "why": "Progress payments attach to THIS contract's performance, with title vesting in the Government as payments are made and liquidation against delivery invoices. That's the whole boundary."
+  }
+ ],
+ "99533bc58727": [
+  {
+   "fact": "“Like we did on the radar contract”",
+   "verdict": "bait",
+   "why": "The playbook feels transferable and isn’t. RFO 12.304(a) says do not use the part 49 procedures on a commercial contract."
+  },
+  {
+   "fact": "“Send a cure notice”",
+   "verdict": "governs",
+   "why": "Here the PM is half right and I’d say so. RFO 12.304(b)(1) and the clause at 52.212-4(m) both require a cure notice before terminating for cause unless the reason is late delivery."
+  },
+  {
+   "fact": "Awarded under Part 12 with the standard commercial clause",
+   "verdict": "governs",
+   "why": "The commercial clause runs this contract: termination for cause with the notice content prescribed at 12.304(b)(2), and convenience under the clause’s leaner settlement formula. Citing 49.x machinery hands the contractor a procedural-defect argument."
+  },
+  {
+   "fact": "Units fail in cold weather",
+   "verdict": "governs",
+   "why": "The performance record still does the work — document the cold-weather failures against the requirement, with the COR’s record, before any notice goes out."
+  }
+ ],
+ "9ebdcf249c43": [
+  {
+   "fact": "“Award it before they change their mind”",
+   "verdict": "bait",
+   "why": "Speed is fine — skipping the price-reasonableness record isn’t. “They might change their mind” is not price analysis."
+  },
+  {
+   "fact": "Solicited full-and-open, 30-day response",
+   "verdict": "governs",
+   "why": "The competition WAS full and open. One response doesn’t retroactively convert it to other than full and open — RFO Part 6 posture is settled; what changes is the pricing burden."
+  },
+  {
+   "fact": "One proposal arrives",
+   "verdict": "governs",
+   "why": "A single offer takes the pricing burden onto RFO 15.404-1 price analysis. It also sends me to the no-bids for informal debriefs — their answers either reveal a solicitation defect or confirm a thin market, and both belong in the file."
+  },
+  {
+   "fact": "6% under the IGCE",
+   "verdict": "bait",
+   "why": "A signal, not a finding. Support it with prior-buy history and catalog comparisons before calling the price fair and reasonable."
+  }
+ ],
+ "a121607dcbba": [
+  {
+   "fact": "“An OT fixes everything”",
+   "verdict": "bait",
+   "why": "Flexibility isn't magic. An OT tailors terms; it doesn't dissolve the Government's need for rights it can actually use."
+  },
+  {
+   "fact": "Weak cost volume",
+   "verdict": "bait",
+   "why": "That gets fixed in negotiation regardless of instrument. Don't hold a thin cost volume against the science, and don't pick an authority to dodge it."
+  },
+  {
+   "fact": "“Won't sign anything giving the Government our IP”",
+   "verdict": "bait",
+   "why": "“The Government gets nothing” isn't tailoring — it's failing the transition plan. Negotiate to the floor the roadmap defines: enough license to evaluate, integrate, test, and transition."
+  },
+  {
+   "fact": "Nontraditional startup, genuinely novel approach",
+   "verdict": "governs",
+   "why": "This is exactly what the 10 U.S.C. 4022 OT lane exists for. Verify nontraditional status rather than assume it — the justification rides on it, so the definition is load-bearing."
+  },
+  {
+   "fact": "“Whether an Other Transaction fixes everything”",
+   "verdict": "governs",
+   "why": "Instrument choice is where the transition gets bought or lost. An OT can carry this work, but only if the follow-on production pathway is written into the prototype agreement now — if you ever want transition, you buy it at the front, not later."
+  }
+ ],
+ "a322f19f5597": [
+  {
+   "fact": "“Informally — they only need it for one part run”",
+   "verdict": "bait",
+   "why": "Brevity doesn't license informality. No informal property loans, ever — on contract with the full clause set, or not at all."
+  },
+  {
+   "fact": "“Putting it on contract takes too long”",
+   "verdict": "bait",
+   "why": "The mod takes days. The paperwork vacuum takes a year — an REA, a property dispute, and a stopped part run at once."
+  },
+  {
+   "fact": "Lending a Government CNC machine to an FFP contractor",
+   "verdict": "governs",
+   "why": "Furnishing property moves schedule risk back to the Government that FFP had transferred away. Late, faulty, or broken GFP is Government-caused delay and REA exposure."
+  },
+  {
+   "fact": "Helping a struggling contractor meet schedule",
+   "verdict": "governs",
+   "why": "It can be the right call — as a priced, papered decision. The PM documents the four-part GFP justification, the machine goes on contract with marking, condition baselined, and the property clauses allocating risk."
+  }
+ ],
+ "a3a7624f2b7f": [
+  {
+   "fact": "“No-cost mod”",
+   "verdict": "bait",
+   "why": "The price is hidden, not absent. A 10-month extension and relief from two quality metrics are Government givings with real value — price the exchange and paper it as the bargain it is."
+  },
+  {
+   "fact": "Contractor cheerfully offers",
+   "verdict": "bait",
+   "why": "Cheerful offers deserve the same analysis as hostile ones — sometimes more."
+  },
+  {
+   "fact": "Spanish and Portuguese versions, ~40% more content-hours",
+   "verdict": "governs",
+   "why": "Run the four-corner scope test against the original competition — would the field have bid differently on a trilingual contract? Translation and localization could change who bid and how they priced."
+  },
+  {
+   "fact": "Competed in English",
+   "verdict": "governs",
+   "why": "In scope, it's a bilateral mod valuing both sides honestly. Beyond it, it's new work — competed or justified, not absorbed by a mod."
+  }
+ ],
+ "ae6156d42798": [
+  {
+   "fact": "“The fixed price transfers all the risk”",
+   "verdict": "bait",
+   "why": "Economically clever, legally empty. Risk transfer has value only when the transferring price was priced right — which is what the data exists to establish."
+  },
+  {
+   "fact": "“Skip the whole certified data exercise”",
+   "verdict": "bait",
+   "why": "Everyone loves skipping it. RFO 15.403-2's CLAWM — commercial, law, adequate competition, waiver, commercial mods — is the whole list, and contract type is nowhere on it."
+  },
+  {
+   "fact": "$14M sole-source development action",
+   "verdict": "governs",
+   "why": "Over the threshold, sole source, non-commercial: certified cost or pricing data is required whatever the contract type."
+  },
+  {
+   "fact": "Contractor offers to accept FFP",
+   "verdict": "governs",
+   "why": "An FFP priced without analysis locks in an unanalyzed number — if it's padded, we pay the padding with certainty. Data in, analyze, negotiate — then FFP may well be the right answer, at a defensible number."
+  }
+ ],
+ "bcd3199183a2": [
+  {
+   "fact": "Handshake deal “inside the objective”",
+   "verdict": "bait",
+   "why": "A good outcome isn't a pre-blessing. A handshake was always agreement subject to Government approval — and the contractor should have been told so Friday."
+  },
+  {
+   "fact": "CEO wants it papered “before our quarter closes”",
+   "verdict": "bait",
+   "why": "His quarter is real and it's his planning problem. It doesn't move the Government's approval sequence."
+  },
+  {
+   "fact": "“Sign now and ratify through clearance after”",
+   "verdict": "governs",
+   "why": "That inverts the design. No award before contract clearance — the review is the approval, not a receipt stamp, and independent eyes come before the Government commits."
+  },
+  {
+   "fact": "Clearance scheduled in twelve days",
+   "verdict": "governs",
+   "why": "The honest fast path: ask the clearance shop to accommodate an earlier review if the file is truly ready, with a finished PNM telling the full story — inside-objective or not."
+  }
+ ],
+ "bf80a26beb90": [
+  {
+   "fact": "“Just deducting it from next month’s invoice quietly”",
+   "verdict": "bait",
+   "why": "Quiet netting feels efficient and fails audit, forfeits interest, and manufactures a dispute over an unexplained short payment."
+  },
+  {
+   "fact": "“To avoid the paperwork of a formal demand”",
+   "verdict": "bait",
+   "why": "The paperwork IS the recovery. A quiet deduction leaves the debt unestablished and the accounting records false."
+  },
+  {
+   "fact": "Paid twice for the same invoice — $38K",
+   "verdict": "governs",
+   "why": "An overpayment is a Government debt with a process: written demand establishing the amount, interest per the debt rules, recovery by payment or formal offset, with FM running their own machinery."
+  },
+  {
+   "fact": "The contractor never mentioned it in eight months",
+   "verdict": "governs",
+   "why": "Silence on a known double payment is an integrity data point — raised directly, documented, and carried into the relationship record."
+  },
+  {
+   "fact": "An audit flagged it, not us",
+   "verdict": "governs",
+   "why": "Fix the payment-review breakdown that let it happen. Recovering the money doesn’t close the finding."
+  }
+ ],
+ "bfcb0cd1824f": [
+  {
+   "fact": "Just finished a basic-research grant",
+   "verdict": "bait",
+   "why": "Grant history blurs the instrument question. How the last award was papered doesn’t decide what this one is."
+  },
+  {
+   "fact": "“To preserve research continuity”",
+   "verdict": "bait",
+   "why": "Continuity is an argument, not an authority. It supports a 6.103-1 case only with market research showing unique capability behind it."
+  },
+  {
+   "fact": "“Grants don’t need J&As so neither should this”",
+   "verdict": "bait",
+   "why": "The instrument determines the rules, not the habit. Once this is acquisition, CICA attaches and the $2M either competes or stands on a real justification."
+  },
+  {
+   "fact": "SOW reads like applied development with deliverable prototypes",
+   "verdict": "governs",
+   "why": "Principal purpose decides it: deliverable prototypes for a Government capability need are acquisition — a contract. And RFO 35.102(a) carves system-specific development out of the BAA lane, so a BAA could NOT have covered this work; it could only have covered the original study phase."
+  }
+ ],
+ "c23dfef26d5e": [
+  {
+   "fact": "“Just get it obligated by Friday”",
+   "verdict": "bait",
+   "why": "Expiring funds create urgency, never authority. The test is the need's year — not the money's expiration date."
+  },
+  {
+   "fact": "Everything under the simplified acquisition threshold",
+   "verdict": "bait",
+   "why": "Low dollars ease the procedure, not the fiscal test. Time, Purpose and Amount run item by item regardless of how easy the buy looks."
+  },
+  {
+   "fact": "Two years of software licenses ($22K)",
+   "verdict": "governs",
+   "why": "A license term is a service period: 12 months on current-year O&M works, 24 months fails Time. Buy the one-year term, or structure base-plus-option so each year's money funds each year's term."
+  },
+  {
+   "fact": "A training course occurring in November ($9K)",
+   "verdict": "governs",
+   "why": "This one gets a bona fide need analysis with FM — when does the need actually arise? — not an assumption because September's money is dying."
+  },
+  {
+   "fact": "“Stocking up” on toner and cables ($16K)",
+   "verdict": "governs",
+   "why": "Reasonable stock replenishment is legitimate current-year need; hoarding is next year's need wearing this year's money. Document the consumption basis."
+  }
+ ],
+ "c34aeab9c4f4": [
+  {
+   "fact": "Quotes already collected from “the companies we used last year”",
+   "verdict": "bait",
+   "why": "Completed-looking legwork that fails the rule. Under RFO 12.201-1(c)(2) you solicit at least three sources and, whenever practicable, two not in the previous solicitation."
+  },
+  {
+   "fact": "“Setup can start Monday”",
+   "verdict": "bait",
+   "why": "The deadline is real and it's reachable — done properly this is hours, not weeks. Streamlined is not standard-free."
+  },
+  {
+   "fact": "Toilets, fencing, and light towers",
+   "verdict": "governs",
+   "why": "Catalog commercial services, so RFO Part 12 governs — 13.001(a)(1) allows Part 13 only when no commercial product or service can satisfy the need. The small-business obligation runs through RFO 19.104-1(a), so the vendors' size status is the first check."
+  },
+  {
+   "fact": "One quote per item at $120K",
+   "verdict": "governs",
+   "why": "Too thin to carry price reasonableness. Solicit competitors fast or support the quotes with history and catalog comparisons — and put the recurring exercise demand on a BPA so next year's deadline doesn't produce another one-quote file."
+  }
+ ],
+ "c4521547f681": [
+  {
+   "fact": "“The protection must be expired by now”",
+   "verdict": "bait",
+   "why": "Assumed, not verified. The period begins at contract award and runs 20 years unless the agency and contractor negotiated a different protection period after award — verify the actual dates from the contract before anyone acts."
+  },
+  {
+   "fact": "“Just reverse-engineering it from delivered units”",
+   "verdict": "bait",
+   "why": "Framed as a clean workaround; it isn’t. Reverse-engineering has its own legal limits and real costs, and engineering around data we hold under restriction is a Legal conversation, not a shop decision."
+  },
+  {
+   "fact": "The firm asserts SBIR data rights",
+   "verdict": "governs",
+   "why": "During the protection window the Government holds limited rights in the technical data and restricted rights in the software — not government purpose rights — and R-DFARS 227.7104-2(b) bars releasing it except as authorized for those categories. That closes the second-source door while the window is open."
+  },
+  {
+   "fact": "Program wants the design data years later",
+   "verdict": "governs",
+   "why": "When the window closes the licence steps up to government purpose rights, which do not expire — government purposes only, with the use and nondisclosure agreement before it goes anywhere. Until then the constructive paths are negotiating a licence or specially-tailored rights, which 227.7104-2(c) allows only after award by mutual agreement."
+  }
+ ],
+ "c9a0025d6ad4": [
+  {
+   "fact": "“We already agreed on price”",
+   "verdict": "bait",
+   "why": "Agreement isn’t signature. The certificate speaks as of the date of agreement on price, and the corrected data gets used before the mod is signed."
+  },
+  {
+   "fact": "Their own sweep surfaced it",
+   "verdict": "bait",
+   "why": "Good faith shouldn’t be punished — and isn’t. But the sweep doesn’t buy the old price; it earns credit while the price still adjusts."
+  },
+  {
+   "fact": "Quote 22% below the one in the proposal",
+   "verdict": "governs",
+   "why": "The price adjusts downward before signature and the PNM is updated to tell the true story, so the certificate is executed against accurate, complete, current data."
+  },
+  {
+   "fact": "Three weeks after agreement, before the mod is signed",
+   "verdict": "governs",
+   "why": "Timing is the whole lesson. Caught today it’s a correction; caught six months after award it’s defective pricing — price reduction plus interest, with Legal."
+  }
+ ],
+ "c9d40313f63b": [
+  {
+   "fact": "“Award without discussions to the least-bad offeror”",
+   "verdict": "bait",
+   "why": "No initial proposal supports a clean award — two Marginals and an Unacceptable. Award without discussions is off the table even if the solicitation preserved it."
+  },
+  {
+   "fact": "Keeping B in the range out of caution",
+   "verdict": "bait",
+   "why": "An unawardable proposal priced 40% above the estimate has to earn inclusion, not inertia. The range is the most highly rated proposals, and B is not among them on any honest reading."
+  },
+  {
+   "fact": "A and C rated Marginal, priced within 10%",
+   "verdict": "governs",
+   "why": "Marginal with fixable weaknesses is exactly what meaningful discussions exist to cure. Both go in the competitive range, then each hears its own significant weaknesses and deficiencies — tailored, even-handed, never another offeror's standing."
+  },
+  {
+   "fact": "B at 40% above estimate, Unacceptable",
+   "verdict": "governs",
+   "why": "Out on ratings and price together, documented in the CRDD signed by the CO and SSA. B gets a pre-award debrief explaining the exclusion; it doesn't get discussions the range determination lawfully denied it."
+  },
+  {
+   "fact": "Competitive tradeoff, Government estimate $16.5M",
+   "verdict": "governs",
+   "why": "The sequence is the answer the panel wants: range, meaningful discussions, final proposal revisions, re-evaluation, then a tradeoff selection on the stated criteria — each step on the record."
+  }
+ ],
+ "ce2e0c0afc63": [
+  {
+   "fact": "Score them down on technical “to reflect the pricing games”",
+   "verdict": "bait",
+   "why": "Cross-lane punishment corrupts both records and is protest fuel. Technical ratings reflect technical merit."
+  },
+  {
+   "fact": "“Games” assumed",
+   "verdict": "bait",
+   "why": "Assumed, not analyzed. The finding comes from cost analysis on evidence, not from an evaluator's read of motive."
+  },
+  {
+   "fact": "Rates 30% below their own DCMA-recognized rates",
+   "verdict": "governs",
+   "why": "Competitive cost-type, so RFO 15.404-3 cost realism is the lane: adjust upward on the DCMA rate evidence and document the basis."
+  },
+  {
+   "fact": "Their technical volume is strong",
+   "verdict": "governs",
+   "why": "They can still win — at most-probable cost, because on cost-type the Government eats the overrun. They just can't win with arithmetic we know is fiction."
+  }
+ ],
+ "cfc77cdeb86e": [
+  {
+   "fact": "“We only pay actuals plus profit anyway”",
+   "verdict": "bait",
+   "why": "That misunderstands FPIF. Past the PTA every additional cost dollar comes out of contractor profit until the ceiling — the ceiling is the Government’s hard protection, not an accounting detail."
+  },
+  {
+   "fact": "“To reflect supply-chain reality”",
+   "verdict": "bait",
+   "why": "The risk may be genuine; the cure isn’t a ceiling raise. Adjust target cost on evidence or scope an EPA-style protection to the named exposure — price it in daylight."
+  },
+  {
+   "fact": "Ceiling quietly moved 125% to 135%",
+   "verdict": "governs",
+   "why": "That shifts the PTA from $24.25M to $26.75M and adds $2M of Government exposure — the contractor rides the 80/20 share longer before cost discipline gets personal."
+  },
+  {
+   "fact": "Everything else unchanged",
+   "verdict": "governs",
+   "why": "Every FPIF element is negotiated geometry — one parameter can’t move alone. The ceiling stays and the PTA math goes on the table."
+  }
+ ],
+ "d84503ac71ff": [
+  {
+   "fact": "Every offeror misread it the same way",
+   "verdict": "bait",
+   "why": "Consistent confusion doesn't cure a defect — it proves it. A level playing field built on a misstated requirement is still the wrong requirement."
+  },
+  {
+   "fact": "“Fix it with the winner after award”",
+   "verdict": "bait",
+   "why": "That's negotiating scope after award: the price shifts, the losers protest, and they'd be right."
+  },
+  {
+   "fact": "Ambiguous PWS paragraph priced 24/7",
+   "verdict": "governs",
+   "why": "Proposals are evaluated against the solicitation as written, and this one misstates the requirement. Amend, state the real coverage, and let all offerors revise."
+  },
+  {
+   "fact": "Avoiding schedule slip",
+   "verdict": "bait",
+   "why": "An amendment costs two weeks now. The alternative costs a sustained protest, a descoping mod, and the program's credibility — and before amending, run RFO 15.106(e)(2), which mandates cancelling and reissuing the RFP when a post-receipt change exceeds what offerors reasonably could have anticipated and additional sources likely would have offered."
+  }
+ ],
+ "d958c1fe7efa": [
+  {
+   "fact": "Zero responses to the sources-sought",
+   "verdict": "bait",
+   "why": "Zero responses to a badly shaped notice measures the notice, not the market. Absence must be demonstrated, not inferred."
+  },
+  {
+   "fact": "Internal acronym in the title, generic NAICS, 10 days over a holiday",
+   "verdict": "governs",
+   "why": "Three defects in one notice — wrong codes, a title that hides the work, a window that died over a holiday. Reshape and rerun it, plus direct outreach to plausible performers."
+  },
+  {
+   "fact": "PM wants the J&A started",
+   "verdict": "bait",
+   "why": "His conclusion matches what the program wanted anyway. Research is the evidence; the J&A is a conclusion the evidence must earn."
+  },
+  {
+   "fact": "A J&A resting on this research",
+   "verdict": "governs",
+   "why": "The market-research section is the J&A's spine, and it inherits the notice's defect. Document round two either way — if genuine absence emerges the J&A writes itself; if competition surfaces we just avoided a protest."
+  }
+ ],
+ "de2a59ebf22f": [
+  {
+   "fact": "“Everyone at the symposium uses them”",
+   "verdict": "bait",
+   "why": "Social proof is not acquisition analysis. Popularity establishes nothing about scope, competition posture, or fee reasonableness."
+  },
+  {
+   "fact": "“Pre-competed innovation vehicles”",
+   "verdict": "bait",
+   "why": "The one-page flyer doesn't identify the underlying contracts — “marketplace” is marketing. Identify the actual vehicles and their authority before a dollar moves."
+  },
+  {
+   "fact": "Award in 30 days",
+   "verdict": "bait",
+   "why": "If the speed is something we could achieve in-house, it fails the best-interest-of-DoD analysis outright. Speed is a claim to test, not a reason to transfer funds."
+  },
+  {
+   "fact": "The fee is 6%",
+   "verdict": "governs",
+   "why": "Fee lands inside the R-DFARS 217.670(a)(3) cost-effectiveness factor — what does 6% buy, and is it reasonable against alternatives? If the order rides the Economy Act, RFO 17.502-2(c)(4) caps the fee at the actual or estimated cost of entering into and administering the contract."
+  },
+  {
+   "fact": "$3.2M to another agency's office",
+   "verdict": "governs",
+   "why": "They'd award for us — assisted acquisition: a signed RFO 17.502-1(a)(1) interagency agreement before funds move. Over the SAT to a non-DoD shop, add the RFO 17.603(a) compliance certification from that agency's head and my component's R-DFARS 217.670 review."
+  }
+ ],
+ "e05dd5a0d1c5": [
+  {
+   "fact": "“The vehicle's ceiling has room”",
+   "verdict": "bait",
+   "why": "Ceiling is capacity, not permission. Scope is the question, and money left on a vehicle answers none of it."
+  },
+  {
+   "fact": "“The contractor is willing”",
+   "verdict": "bait",
+   "why": "Willingness is feasibility for them, not authority for you. Riding the vehicle because the incumbent knows the environment is a sole source without a justification."
+  },
+  {
+   "fact": "Different system owned by another PEO",
+   "verdict": "governs",
+   "why": "The scope test runs at two levels — the IDIQ's scope statement and this order's own scope — and unrelated work for another PEO fails both. That's a new requirement, not growth of this one."
+  },
+  {
+   "fact": "Month 30 of 36",
+   "verdict": "governs",
+   "why": "An out-of-scope order is effectively a sole-source award of new work, protestable at GAO at any dollar value, with the vehicle's other holders complaining to the ombudsman. The clock never makes it in scope."
+  }
+ ],
+ "e131654f29c2": [
+  {
+   "fact": "“Skip the paperwork given the threat”",
+   "verdict": "bait",
+   "why": "The exception is the paperwork lane — a justification takes hours, not weeks, when the facts are real. An undocumented direct award is the path that actually risks the 60 days."
+  },
+  {
+   "fact": "Five-vendor multiple-award IDIQ",
+   "verdict": "governs",
+   "why": "Fair opportunity to all five holders is the default under RFO 16.507-2. The builder's authorship doesn't move the default; a written justification does."
+  },
+  {
+   "fact": "60-day operational order, original firmware builder",
+   "verdict": "governs",
+   "why": "Two RFO 16.507-6 exceptions braid here — unacceptable delay for an urgent need, and only one awardee capable. Write the Justification for an Exception to Fair Opportunity on whichever the evidence actually carries."
+  },
+  {
+   "fact": "$1.4M direct task order",
+   "verdict": "governs",
+   "why": "The dollar sets the rung: above $900K to $20M, the Competition Advocate approves. Post the redacted justification within 14 days of the order — 30 under urgency."
+  }
+ ],
+ "e2a8b964dfec": [
+  {
+   "fact": "“Harmless, they obviously heard nothing specific”",
+   "verdict": "bait",
+   "why": "Impact is determined on the record, not presumed by the PM. “Harmless” isn’t a determination the PM gets to make."
+  },
+  {
+   "fact": "Past-performance rating said in front of two support contractors",
+   "verdict": "governs",
+   "why": "An evaluation result in an active selection is source selection information, and saying it in that room is a disclosure under RFO 3.104. Legal comes in now."
+  },
+  {
+   "fact": "Capture lead emails four days later about FPRs",
+   "verdict": "governs",
+   "why": "Evidence the information may have reached an offeror — the serious branch. An offeror acting on protected information compounds the violation."
+  },
+  {
+   "fact": "The analyst was the one who said it",
+   "verdict": "governs",
+   "why": "Containment runs on paper: affidavits on what was heard and where it went, an MFR from the analyst, then my written impact determination. If it reached the offeror, the HCA decides whether this selection proceeds."
+  }
+ ],
+ "e639009b6943": [
+  {
+   "fact": "“Interest from the original submission”",
+   "verdict": "governs",
+   "why": "Wrong trigger. Interest runs from receipt of the certified claim, not the earlier REA — correct the math respectfully while owning the delay."
+  },
+  {
+   "fact": "Seven months unanswered",
+   "verdict": "bait",
+   "why": "Indefensible, and not entitlement. The silence costs goodwill and negotiating position; it doesn't change what's owed."
+  },
+  {
+   "fact": "$85K, certified, decision demanded in 60 days",
+   "verdict": "governs",
+   "why": "As submitted — certified, sum certain, decision demanded — it's a CDA claim and the machinery runs. Under $100K certification wasn't required, but the substance controls and the decision clock is real."
+  },
+  {
+   "fact": "Government-caused test-range delays",
+   "verdict": "governs",
+   "why": "The merits didn't age out. Real entitlement, honest quantum review, and move fast toward settlement or a written final decision — this file has already demonstrated what silence costs."
+  }
+ ],
+ "e9abca37a7c6": [
+  {
+   "fact": "“Exactly like GSA Advantage shows”",
+   "verdict": "bait",
+   "why": "GSA established schedule-level prices as fair and reasonable — for the schedule, not for your order. The determination doesn't come free with the listing."
+  },
+  {
+   "fact": "Four holders carry the same OEM line",
+   "verdict": "governs",
+   "why": "Two with published prices 6-9% lower is a comparison begging to be run. RFQ among the holders, seek discounts — schedule prices are ceilings, not floors — and document the comparison as the price analysis."
+  },
+  {
+   "fact": "The customer wants Vendor Q",
+   "verdict": "bait",
+   "why": "Vendor preference without a differentiator is steering. Limiting an order to one holder takes a written basis, and “we liked their listing” isn't one."
+  },
+  {
+   "fact": "$290K order price",
+   "verdict": "governs",
+   "why": "The ordering CO independently determines the order price fair and reasonable. Ten minutes of eBuy competition is the difference between a defensible order and a $290K habit."
+  }
+ ],
+ "f02f6a5c96ef": [
+  {
+   "fact": "“The engine is genuinely COTS”",
+   "verdict": "bait",
+   "why": "Commerciality is determined at the level of what you're buying — the platform, not its ingredients. A commercial database doesn't launder the product wrapped around it."
+  },
+  {
+   "fact": "Catalog created last month",
+   "verdict": "bait",
+   "why": "Catalogs corroborate; they don't substitute. One built for this proposal is advocacy, not evidence."
+  },
+  {
+   "fact": "One prior sale — to a foreign navy",
+   "verdict": "governs",
+   "why": "Commercial means sold, leased, or licensed to the general public. A sale to a navy is a government sale, so the assertion likely fails — and the CID says so with the comparison analysis written down."
+  },
+  {
+   "fact": "$4.2M sole source",
+   "verdict": "governs",
+   "why": "Non-commercial at this value sits above the SAT but below the certified-data trigger: demand data other than certified cost or pricing data, price analysis always, cost analysis as needed. No data, no deal."
+  }
+ ],
+ "f1c0af926c37": [
+  {
+   "fact": "“The contractor… won't hold a firm price”",
+   "verdict": "bait",
+   "why": "Contractor preference presented as necessity. The type follows where risk actually lives, not who volunteers to carry it."
+  },
+  {
+   "fact": "CPFF for the follow-on lot",
+   "verdict": "bait",
+   "why": "Cost-type hands the whole cost risk of a proven production line back to the Government, and RFO 16.301-3's gates would have to be cleared for a type the work doesn't need. E.O. 14402 makes other-than-FFP a justified decision (RFO 16.104)."
+  },
+  {
+   "fact": "Three prior FFP lots, extensive and stable",
+   "verdict": "governs",
+   "why": "Mature production with deep actuals is fixed-price territory. Cost history is the evidence that the effort prices firmly."
+  },
+  {
+   "fact": "Stable “except for two commodity metals”",
+   "verdict": "governs",
+   "why": "That names and bounds the real risk — price it surgically with an economic price adjustment under the RFO 16.203-3 use test, and for basic steel, aluminum, brass, bronze, or copper mill products R-DFARS 216.203-470(a)(1) names clause 252.216-7000. Everything else stays firm."
+  }
+ ],
+ "f40d9fc54cb7": [
+  {
+   "fact": "“Unabsorbed overhead” across the surviving sites",
+   "verdict": "bait",
+   "why": "Wrong document. RFO 49.208 makes that a request for equitable adjustment in the price of the continued portion, firewalled so nothing gets paid twice — and on the merits it still needs proven idle capacity, pools and causation with DCAA support. Assertion isn't absorption."
+  },
+  {
+   "fact": "Anticipated profit on the cancelled option years",
+   "verdict": "bait",
+   "why": "Out, categorically. A convenience termination pays profit on work performed — never anticipatory profit on work it cancelled, and option years are the purest form of unperformed work."
+  },
+  {
+   "fact": "Partial termination for convenience",
+   "verdict": "governs",
+   "why": "The frame decides every line item: costs incurred on the terminated work, reasonable profit on work performed, plus settlement expenses. Negotiate the honest package and paper it with a release."
+  },
+  {
+   "fact": "$12K in settlement-proposal preparation costs",
+   "verdict": "governs",
+   "why": "Generally allowable as settlement expenses — the Government chose convenience and pays for the unwinding. That's the opposite answer from CDA claim prep costs, which are adversarial and unallowable."
+  }
+ ],
+ "f5df1837f435": [
+  {
+   "fact": "“Just decline the references and move on quietly”",
+   "verdict": "bait",
+   "why": "Declining doesn't un-ring the leak. Quiet handling converts a recoverable incident into the protest and the scandal."
+  },
+  {
+   "fact": "“We'd like to submit supplemental references”",
+   "verdict": "bait",
+   "why": "Decline it in writing as an improper exchange — but that's the smallest part of the response. An offeror holding protected information must stop, safeguard, report, and not use it; acting on the rating compounds the violation."
+  },
+  {
+   "fact": "“We heard we're rated second”",
+   "verdict": "governs",
+   "why": "Ratings are source selection information, and the call is evidence they reached an offeror — the serious branch of RFO 3.104. Legal immediately, trace the leak, take affidavits."
+  },
+  {
+   "fact": "Nobody outside the team should know any ratings",
+   "verdict": "governs",
+   "why": "Because the disclosure reached an offeror, the proceed/cancel/disqualify decision rises to the HCA on my written impact determination. The venue for “does this competition survive” sits above the person who ran it."
+  }
+ ],
+ "f9eb9f7bedb1": [
+  {
+   "fact": "Solicitation announces “estimated value $8.4M” verbatim",
+   "verdict": "governs",
+   "why": "Publishing the IGE hands every offeror our position. RFO 36.101-6(b) keeps the estimate with the CO until proposals are in; what the solicitation carries is a target “design to” price range, per FC 36.101-3 guidance."
+  },
+  {
+   "fact": "Transparency instinct",
+   "verdict": "bait",
+   "why": "Openness feels principled and here it's a negotiating giveaway. The estimate is not solicitation content."
+  },
+  {
+   "fact": "Payment bond only, “to save the contractor money”",
+   "verdict": "governs",
+   "why": "RFO 28.102-1(a) requires performance AND payment bonds on construction exceeding $150K. Dropping the performance bond isn't thrifty, it's unlawful — and the payment bond exists for subs who can't lien Government property."
+  },
+  {
+   "fact": "$25K/day “that will motivate them”",
+   "verdict": "bait",
+   "why": "RFO 11.401(b) says liquidated damages are not punitive and not negative performance incentives — the rate must be a reasonable forecast of just compensation, stated per day of delay under 11.402(b) from daily inspection and superintendence costs plus other expected costs of delayed completion. Penalties don't survive review."
+  }
+ ],
+ "faada1b2235b": [
+  {
+   "fact": "The program's 40-page spec",
+   "verdict": "bait",
+   "why": "“We wrote a 40-page spec” doesn't make an item noncommercial. Research exists to reshape requirements, not to ratify the document that walked in."
+  },
+  {
+   "fact": "“Except one vibration profile”",
+   "verdict": "bait",
+   "why": "One unmet parameter isn't disqualification — it's a negotiation about performance terms. Push the requirement toward performance and the catalog covers it."
+  },
+  {
+   "fact": "Three commercial chamber makers",
+   "verdict": "governs",
+   "why": "A real market of three makers is the evidence the commerciality call rides on. Compete among them under commercial procedures — market pricing, no certified data, fast."
+  },
+  {
+   "fact": "“Routinely add as a factory option”",
+   "verdict": "governs",
+   "why": "Customarily available in the commercial marketplace puts this at RFO 2.101(3)(i), not the (3)(ii) minor-modification branch. The label matters: the DoD cap on the certified-data exemption attaches to (3)(ii)."
+  }
+ ],
+ "fede6544f88c": [
+  {
+   "fact": "“Price is excellent and references check out”",
+   "verdict": "bait",
+   "why": "Responsibility is a separate gate from price and past performance. A good number never substitutes for the seven RFO 9.104 standards."
+  },
+  {
+   "fact": "“We lease everything per job”",
+   "verdict": "bait",
+   "why": "Leasing is a legitimate construction model — undocumented leasing is not. Demand the equipment lease commitments for this job before crediting the answer."
+  },
+  {
+   "fact": "Office address is a mailbox store",
+   "verdict": "governs",
+   "why": "Adequate organization and experience is a standard, and a mailbox with no visible operation puts it in play. Doubt cuts in the Government's favor — but the doubt must stand on verified facts, so run a pre-award survey."
+  },
+  {
+   "fact": "Superintendent full-time on another company's site",
+   "verdict": "governs",
+   "why": "Key personnel actually available fails unless there's a real transition plan. If the facts net to non-responsible and they're small, the SBA referral is mandatory — and a Certificate of Competency, if issued, is conclusive."
+  }
+ ],
+ "ff18caab6ec5": [
+  {
+   "fact": "“The certified proposal covers everything going forward”",
+   "verdict": "bait",
+   "why": "Sounds complete; it’s a scope argument against their own certificate. Certified cost or pricing data spans the whole action."
+  },
+  {
+   "fact": "“Actuals would just confuse the comparison”",
+   "verdict": "bait",
+   "why": "The confusion is the point. Facts don’t confuse a price — they replace an estimate."
+  },
+  {
+   "fact": "Nine months of work already performed",
+   "verdict": "governs",
+   "why": "Performed work has actuals, and incurred costs ARE cost or pricing data. The performed portion gets priced on facts, the remaining work on honestly-priced estimates."
+  },
+  {
+   "fact": "Forward rates for the remaining work",
+   "verdict": "governs",
+   "why": "Fee follows the risk actually remaining — weighted guidelines price risk, and nine months burned much of it down. Paying a forward risk premium on retired risk is what the actuals prevent."
+  },
+  {
+   "fact": "A 9-month-old UCA being definitized",
+   "verdict": "governs",
+   "why": "If they won’t open the books, the R-DFARS 217.74 caps hold and the definitization clock presses. No agreement happens on estimates where facts exist."
+  }
+ ],
+ "ffc2bef72b93": [
+  {
+   "fact": "Option CLIN reads “TBD, to be negotiated”",
+   "verdict": "governs",
+   "why": "An option is a unilateral right because it was priced and evaluated at award. “TBD” fails the pricing half — there was never an option, only an agreement to negotiate later."
+  },
+  {
+   "fact": "COR emailed that “the option is being picked up”",
+   "verdict": "bait",
+   "why": "Apparent momentum that binds nothing — but it complicates the negotiation. Correct that channel today in writing."
+  },
+  {
+   "fact": "Performance continues seamlessly in three weeks",
+   "verdict": "bait",
+   "why": "Continuity pressure doesn’t create a right to exercise. Bridge honestly while the real path is worked."
+  },
+  {
+   "fact": "Continuing with the incumbent",
+   "verdict": "governs",
+   "why": "It’s a negotiation, and its competition posture goes to Legal before anything is signed. Meanwhile: a justified bilateral extension or the extension-of-services clause buys months, the recompete starts now, and the award-time failure that let “TBD” through gets documented."
+  }
+ ]
+}

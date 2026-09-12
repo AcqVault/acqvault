@@ -1,7 +1,8 @@
 # Study redesign — handoff
 
-State as of 2026-09-11 (fourth round). Working tree clean, all six gates green,
-everything pushed to `main`. Last commit `ada0acd`.
+State as of 2026-09-11 (**fifth round**). All six gates green plus two new ones, on
+branch `board-sim-content-fixes` — **not merged to `main` and not deployed**. The fourth
+round ended at `ada0acd`.
 
 **The direction changed this session.** /study is no longer a spaced-repetition
 dashboard you land on and pick a mode from. It is a course, in the shape Articulate
@@ -37,9 +38,49 @@ knowledge check at the end. Lessons are the spine; spaced repetition sits behind
 > - The owner's Chrome viewport measured **1084px**. The lesson's third column only
 >   appears at 1320+, so at his normal width he sees the two-column layout.
 >
-> Next up: `docs/BOARD-SIM-CONTENT-FINDINGS.md` — 14 remaining P0s (wrong law) across the
-> 96 board scenarios, and the systemic coach-per-topic defect behind most of them. Ask
-> which slice he wants before mass-editing his regulatory content.
+> The Board Sim content audit is fully worked — every item on the ranked list in
+> `docs/BOARD-SIM-CONTENT-FINDINGS.md` is closed. Read that doc for what was done and why.
+> The largest remaining piece of the original ask is that **the Rise treatment has only
+> reached `/study`** — `/48cons` and `/source-selection` still have their old shapes.
+> `docs/UI-UX-TOOLING-RESEARCH.md` is a survey of free tooling for that work.
+
+---
+
+## Round 5 — the content audit, worked to the end
+
+Every item on the ranked list in `docs/BOARD-SIM-CONTENT-FINDINGS.md` is closed: all 15
+P0s, the follow-up citations, the systemic coach defect, the `baits` → `facts` migration,
+the dead `level` field, and the scenario picker. That doc carries the detail and the
+corpus quote behind each call. Three things from it are worth knowing before touching
+this layer again.
+
+**The deck was not reproducible from its sources, and nothing noticed.** `build_deck_v2.py`
+overwrites `coach`, `script` and follow-up `h`/`d` from `study-tool/mcq/*.json`, so a
+deck-only edit to those fields reverts on the next rebuild. Round 4's Type I/II correction
+on `95e08834394b` was deck-only, and the first rebuild this session silently reverted it —
+that is how the problem was found rather than theorised. Everything is mirrored into
+sources now, and `ACQVAULT_CHECK_CLEAN=1 python3 study-tool/build_deck_v2.py` fails when
+the shipped deck is not what its sources rebuild to, naming the cards. **Run it after any
+deck edit.**
+
+**Two of the audit's own conclusions were wrong, and the corpus said so.** The construction
+magnitude rule was called uncitable; FC 36.101-3 states it plainly, and it is Companion
+*guidance* rather than an RFO mandate — so it was attributed, not deleted. And the
+recommended `coach` hoist to `deck.coach_subjects` was measured before being built: 48.8KB
+of a 1.34MB deck, 3.6%, and no correctness gain. Skipped. The correctness half — a
+per-scenario `coach.applies` line — needed no schema change. **Measure the claim before
+building to it.**
+
+**`compass` has no reader route.** 48 docs of DAF Contracting Compass guidance are in the
+corpus, excluded from the offline search index, and rendered through their own formatter
+that links out to CAC-gated DAF pages. This is deliberate, but it means DAF clearance
+policy can never carry a working citation on this site — which is why the six clearance
+approval rungs are attributed to the Approval Authority Matrix in prose instead.
+
+New in the layer: `coach.applies` (rendered under the default rule, `.bs-applies`), the
+Board Sim scenario filter (`.st-pick`, Any/Rough/Unseen with live counts, persisted in
+`S.boardPick`), and three new source files under `study-tool/mcq/` — `coach-applies.json`,
+`scenario-facts.json`, `scenario-followup-cites.json`.
 
 ---
 
@@ -214,6 +255,9 @@ behind a forgotten bump was invisible to the check. It now covers five more asse
 - **`assets/app.css` does not load on study pages.** `STUDY_CSS` in `api/_seo.js`.
 - **Card ids are `sha1(type|topic|q)`.** Editing a question mints a new card and orphans
   every learner's progress and that card's checklist. Fix answers and explanations instead.
+- **A deck-only edit to `coach`, `script` or a follow-up's `h`/`d` reverts on rebuild.**
+  Those come from `study-tool/mcq/*.json`. Fix the source, then rebuild. The
+  `ACQVAULT_CHECK_CLEAN` gate catches it; it exists because this bit twice.
 - **`assets/study-deck.json` is the canonical store**, not a build artifact.
   `study-tool/build_deck_v2.py` reads it as its base and merges distractors into it. The
   `study-tool/deck-recall-*.json` files are older sources.
@@ -243,6 +287,10 @@ behind a forgotten bump was invisible to the check. It now covers five more asse
 | Local preview | `.local/serve.js` — `node .local/serve.js`, then :4321 (gitignored) |
 | Deploy check | `scripts/verify_deploy.py` |
 | Gates | `scripts/{corpus,render,deck,course_outline}_health.py`, `check_sim_citations.py`, `test_vehicle_prune.py` |
+| Rebuild-clean gate | `ACQVAULT_CHECK_CLEAN=1 python3 study-tool/build_deck_v2.py` |
+| Per-scenario coach | `study-tool/mcq/coach-applies.json` |
+| Scenario bait/governs facts | `study-tool/mcq/scenario-facts.json` |
+| Per-follow-up citations | `study-tool/mcq/scenario-followup-cites.json` |
 
 ---
 

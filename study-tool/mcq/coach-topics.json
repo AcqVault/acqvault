@@ -38,19 +38,19 @@
  "Required Sources of Supplies & Services": {
   "qtype": "a required-sources question — the RFO Part 8 priority ladder before the open market.",
   "smes": "your policy shop, the AbilityOne/UNICOR program channels, and the schedule's ordering guide.",
-  "rule": "Work the RFO Part 8 ladder in order — inventory, excess, UNICOR, AbilityOne, schedules — and mandatory means mandatory; price alone doesn't unlock the open market.",
+  "rule": "Work the RFO 8.103(a) ladder in order — agency inventories, excess from other agencies, Federal Prison Industries (UNICOR), then AbilityOne — and mandatory means mandatory. Schedules are not a fifth mandatory rung: when 8.103 can’t fill the need, 8.104 sends you to OFPP-designated “required use” governmentwide contracts or BPAs unless the head of the contracting activity grants an exception, and otherwise says you should consider other existing governmentwide vehicles. Price alone doesn’t unlock the open market.",
   "cite": "RFO Part 8 · Vol. 2, Required Sources"
  },
  "Commercial Products & Services": {
   "qtype": "a commerciality question — the RFO 2.101 definition, the CID, and what RFO Part 12 changes.",
   "smes": "your pricing office, Legal, and the CID approval level one above you.",
-  "rule": "Commercial rides the market: the RFO 2.101 definition (including minor mods that keep form, fit, and function) is a documented CID call over the SAT, and RFO Part 12 trades certified data for market evidence.",
+  "rule": "Commercial rides the market: the RFO 2.101 definition — where a minor modification is one that does not significantly alter the function or essential physical characteristics of the item or component (2.101, “Commercial product” (3)(ii)) — is a documented CID call over the SAT, and RFO Part 12 trades certified data for market evidence.",
   "cite": "RFO 2.101 & Part 12 · Vol. 2, Commercial"
  },
  "Simplified Acquisition Procedures": {
-  "qtype": "a simplified-acquisition question — RFO Part 13: the right lane by dollar band.",
+  "qtype": "a simplified-acquisition question — RFO Part 13: the right part first, then the right lane by dollar band.",
   "smes": "your GPC program coordinator, Small Business Professional, and COCO.",
-  "rule": "The band picks the RFO Part 13 lane: GPC to $15K, purchase orders to the $350K SAT — reserved for small business under the RFO Part 19 Rule of Two — and splitting a known requirement to stay under a threshold is a bright-line violation.",
+  "rule": "Check the part before the band. RFO 13.000 confines Part 13 to noncommercial products and services at or below the SAT, and 13.001(a) allows it only when no commercial product or service can meet the need and no required source under Part 8 can fill it — commercial buys ride Part 12, whose simplified ceiling is $9M (12.001(c), 12.201-1). Inside Part 13: GPC at or under the $15K MPT, purchase orders up to the SAT. The Rule of Two bites above the MPT (19.104-1(a)) — there is no reserved MPT-to-SAT band — and splitting a known requirement to stay under a threshold is a bright-line violation (13.001(c)).",
   "cite": "RFO Part 13 · Vol. 2, SAP"
  },
  "Small Business Programs": {

@@ -1,0 +1,15 @@
+{
+  "_doc": "Per-scenario coach override. `coach` is authored per canonical topic and inherited from the scenario's FIRST topic, so ~29 blocks serve 96 cards. That is fine when the subject's default rule is the rule the card turns on, and wrong when it is not: the subject is right, the rule is true, and neither is what decides this scenario. An `applies` line says how the subject bites HERE. Where the deciding subject is simply a different topic the scenario already carries, fix the topic ORDER instead — that needs no entry here.",
+
+  "62e1e0c2b3b7": "The Rule of Two is not what decides this one. Once SBA accepts a requirement into the 8(a) program, RFO 19.108-11(a) keeps every follow-on in the program unless there is a mandatory source, the follow-on is set aside under HUBZone/SDVOSB/WOSB, or SBA releases it — and release takes a written request to, and concurrence from, the SBA Associate Administrator for Business Development (19.108-11(b)). A slow SBA inbox is not a release.",
+
+  "d84503ac71ff": "The exchange lanes are real, but the thing that decides this card sits upstream of them. The solicitation itself is defective — Section M asked offerors to price coverage the Government never wanted — and no evaluation discipline and no post-award cleanup with the winner cures that. Amend and give everyone a fair shot at the requirement you actually have.",
+
+  "6b6384cdbb14": "Same three types and the same avoid/neutralize/mitigate order, but the remedy runs inside an RFO 16.507 fair-opportunity competition. 'Avoid' here means keeping a vehicle holder out of this order, so the fair-opportunity record has to carry why that was necessary — the OCI determination and the ordering file are the same story told once.",
+
+  "bf80a26beb90": "Time-Purpose-Amount is the subject, but this card turns on the other end of the money. An overpayment already made is a Government debt, and collecting it is financial management's statutory machinery — not a quiet deduction from the next invoice arranged between a program manager and a contracting officer. Naming the debt route, and refusing the quiet offset, is what the panel is listening for.",
+
+  "9ebdcf249c43": "The RFO 6.103 exception ladder is not in play — the competition WAS full and open, and one response does not retroactively convert it to other than full and open. What a single offer changes is pricing: without competing offers to compare, price reasonableness has to be established another way, which is RFO 15.404-1 price analysis territory.",
+
+  "bfcb0cd1824f": "Competition is the back half of the answer; the instrument question comes first and settles it. RFO 35.102(a) keeps the broad agency announcement away from development related to a specific system or hardware procurement, so deliverable prototypes for a named capability are an acquisition — and once that is settled, this exception ladder is the one that governs the sole-source extension."
+}

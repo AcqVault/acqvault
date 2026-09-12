@@ -29,7 +29,7 @@
   },
   "95e08834394b": {
     "ask": "The contractor wants to be paid and released; the customer wants the scope quietly shrunk. What's your ruling on each?",
-    "script": "This is a differing-site-conditions question — the RFO Part 36 clause machinery — and for once, the contractor did everything right. My help: Legal, civil engineering, and the labor advisor on abatement requirements. The rule: a latent condition materially different from the contract documents, with written notice before further disturbance — textbook Type I. That entitles him to an equitable adjustment — abatement, schedule, price — not to walk away; a DSC is not a termination right, and I'd negotiate the adjustment on the documented record. On the customer's idea: quietly descoping to 'call it complete' is a constructive termination for convenience wearing a modification costume — if the Government genuinely wants less work, we do a partial T4C with a proper settlement, honestly labeled. The clause machinery exists so nobody improvises."
+    "script": "This is a differing-site-conditions question — the RFO Part 36 clause machinery — and for once, the contractor did everything right. My help: Legal, civil engineering, and the labor advisor on abatement requirements. The rule: the documents are silent on the asbestos, so this leads with Type II under 52.236-2(a)(2) — unknown conditions of an unusual nature, materially different from what is ordinarily encountered. Type I needs an affirmative indication to differ from; either type turns on the notice he gave before disturbing anything. That entitles him to an equitable adjustment — abatement, schedule, price — not to walk away; a DSC is not a termination right, and I'd negotiate the adjustment on the documented record. On the customer's idea: quietly descoping to 'call it complete' is a constructive termination for convenience wearing a modification costume — if the Government genuinely wants less work, we do a partial T4C with a proper settlement, honestly labeled. The clause machinery exists so nobody improvises."
   },
   "81e6c477871d": {
     "ask": "Leadership wants the innovation cell stood up in 90 days and the PM has a vendor picked. Where do you start?",
@@ -74,7 +74,7 @@
     "script": "This is an authority question — an RFO 1.405 unauthorized commitment with good intentions. My help: Legal first, FM on the funds timeline, then the ratifying official. The rule: engineers don't hold contracting authority, and exigency doesn't create it — the Government isn't bound until an official with actual authority ratifies. The path: stop anything ongoing, gather the record — the engineer's statement, the storm timeline, receipt and use of the units — then run the elements: proper if a CO had done it, benefit received, fair and reasonable price, and the one that decides most cases: funds available then and now. Ratification authority is the head of the contracting activity's, delegable but never below the chief of the contracting office (RFO 1.405(b)(2)) — there is no dollar tier, so at $65K I'd confirm my activity's delegation rather than assume one. Then prevention: that unit gets trained on the lawful rapid-buy tools they actually had."
   },
   "3ce08a3a44ae": {
-    "ask": "Fifteen percent of unbilled 'verbal expansions' just surfaced. How do you sort this out?",
+    "ask": "Fifteen percent of billed 'verbal expansions' just surfaced. How do you sort this out?",
     "fu": [
       {
         "h": "One lane is for brand-new work nobody authorized; the other is for Government conduct that changed existing work.",
@@ -92,7 +92,7 @@
     "fu": [
       {
         "h": "Two categories, RFO 3.104 — one belongs to the Government, one to the offerors.",
-        "d": "Protected classes: source selection information — rankings, evaluation results, the source selection plan, competitive-range lists, the Government estimate — and contractor bid and proposal information. The spouse's post suggests offeror awareness of momentum, which is why the question isn't the evaluator's intent but what information was accessible in his position and whether any of it could have moved. The PIA reaches attempts and appearances, not just proven leaks."
+        "d": "Protected classes: source selection information — rankings, evaluation results, the source selection plan, competitive-range lists, the Government estimate — and contractor bid and proposal information. The spouse's post suggests offeror awareness of momentum, which is why the question isn't the evaluator's intent but what information was accessible in his position and whether any of it could have moved. Be precise about what the PIA itself reaches: RFO 3.104-3(a) and (b) / 41 U.S.C. 2102 prohibit knowingly disclosing and knowingly obtaining contractor bid or proposal information and source selection information before award. Appearance is not a PIA violation — it runs on RFO 3.101-1, 18 U.S.C. 208 and 5 CFR 2635.502. Still your problem; different authority, and saying so is what separates a candidate who has read 3.104 from one who has heard about it."
       },
       {
         "h": "Recusal instincts are personal; disqualification decisions are institutional.",
@@ -179,8 +179,8 @@
         "d": "An effective sources-sought is findable and answerable: right NAICS and PSC codes, a title that says what the work is, a response window that doesn't die over a holiday, a description with enough substance to let a capable firm self-identify, and direct outreach to the firms research already suggests. Zero responses to a mis-coded, badly-timed notice measures the notice, not the market — and a J&A whose market-research section rests on it inherits the defect."
       },
       {
-        "h": "Scale the evidence to a $10M sole-source claim.",
-        "d": "For a $10M sole source, the research has to support the strongest claim in contracting: nobody else can do this. That means a properly shaped notice AND direct industry outreach, trade channels, adjacent-NAICS sweeps, other services' experience, and documented conversations — an effort a competitor's lawyer will read line by line. The J&A's market-research section is its spine; thin research is the number-one way sole-source justifications die at review or protest."
+        "h": "Scale the evidence to the size of the claim you are making.",
+        "d": "Research is scaled to the acquisition — RFO 10.001(e) documents it “in a manner that suits the acquisition’s size and complexity” — and a sole source has to support the strongest claim in contracting: nobody else can do this. That means a properly shaped notice AND direct industry outreach, trade channels, adjacent-NAICS sweeps, other services' experience, and documented conversations — an effort a competitor's lawyer will read line by line. The J&A's market-research section is its spine; thin research is the number-one way sole-source justifications die at review or protest."
       }
     ],
     "script": "This is a market-research question — RFO Part 10 — and the evidence doesn't say what the PM thinks it says. My help: my Small Business Professional, industry channels, and the requiring activity to fix the requirement description. The rule: research is the evidence; the J&A is a conclusion the evidence must earn. Zero responses to a notice with the wrong codes, a holiday window, and a vague title proves the notice failed — not that the market is empty. So: reshape and rerun it — right NAICS, real title, adequate window — plus direct outreach to plausible performers. If genuine absence emerges, the J&A writes itself on solid ground. If competition surfaces, we just avoided a protest. Either way, the file shows we measured the market, not our own noise."
@@ -256,7 +256,7 @@
     "script": "This is a terminations question on a commercial contract — RFO 12.304 territory, not RFO Part 49 — and the seam is the whole answer. My help: Legal before any notice, and the COR's cold-weather failure record. The rule: Part 49 doesn't run Part 12 contracts — RFO 12.304(a) says do not use the procedures in part 49. But the PM is half right, and I'd say so: the cure notice is required, not a habit. RFO 12.304(b)(1) and the clause at 52.212-4(m) both direct a cure notice before terminating for cause unless the reason is late delivery. What's actually different is the label and the machinery — termination for cause under the commercial clause with the notice content prescribed at 12.304(b)(2), not a Part 49 termination for default, and convenience under the clause's leaner settlement formula. So: document the cold-weather failures against the requirement, give the clause's notice honestly, and if we terminate for cause, do it under the right authority with the right words — because citing 49.x machinery on a commercial award hands the contractor a procedural-defect argument. Same destination as the radar contract; different road, and the road matters."
   },
   "c34aeab9c4f4": {
-    "ask": "One quote per item, award by Friday. What does this buy actually need?",
+    "ask": "One quote per item, POs today, setup Monday. What does this buy actually need?",
     "fu": [
       {
         "h": "Check which part you're in before you answer — the commercial lane puts a number on it.",

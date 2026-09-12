@@ -44,6 +44,9 @@
     if (!s.games) s.games = {};
     if (!s.sprint) s.sprint = { best: 0 };
     if (s.track !== 'basic' && s.track !== 'advanced') s.track = null;
+    // Board Sim scenario filter. A string, not an object, so it needs its own branch:
+    // anything that is not one of the three known values is dropped rather than trusted.
+    if (s.boardPick !== 'rough' && s.boardPick !== 'unseen') s.boardPick = 'any';
     if (!s.created) s.created = Date.now();
     return s;
   }
@@ -3681,8 +3684,15 @@
     } else {
       steps.push({ k: 'Named who you would call', b: 'Name your help.',
         body: 'Boards reward knowing who to call: ' + esc(co.smes || 'your CO/chief, Legal (JA), and FM.') });
+      /* co.applies is the per-scenario half of the coach. co.rule is authored per
+         canonical topic and shared by every scenario on it, so on some cards it is a
+         true statement of the subject that is not the rule the card turns on. When
+         the deck carries an applies line, it says how the subject bites here — and
+         it renders after the default rule, because at a board you still state the
+         default first. */
       steps.push({ k: 'Stated the default rule before any exception', b: 'State the default rule before any exception.',
-        body: esc(co.rule || 'Default first, exception second, facts third.') });
+        body: esc(co.rule || 'Default first, exception second, facts third.') +
+          (co.applies ? '<span class="bs-applies"><b>On these facts.</b> ' + esc(co.applies) + '</span>' : '') });
     }
     if (sc.facts) {
       var baits = sc.facts.filter(function (f) { return f.verdict === 'bait'; }).map(function (f) { return f.fact; });
@@ -3753,11 +3763,70 @@
           '<span class="rz-step-t">' + t + '</span></li>';
       }).join('') + '</ol>';
   }
+  /* Which scenarios the Board Sim draws from. 'rough' is every scenario the candidate
+     self-graded 1; 'unseen' is every one never faced. Counts drive the chip labels and
+     disable a chip that would draw from nothing. */
+  function boardPool(filter) {
+    return deck.scenarios.filter(function (s) {
+      if (filter === 'rough') return S.scen[s.id] === 1;
+      if (filter === 'unseen') return !S.scen[s.id];
+      return true;
+    });
+  }
+  var BOARD_PICKS = [['any', 'Any'], ['rough', 'Rough'], ['unseen', 'Unseen']];
+  function boardPickHtml() {
+    return '<div class="st-pick" role="radiogroup" aria-label="Which scenarios to draw from">' +
+      BOARD_PICKS.map(function (p) {
+        var n = boardPool(p[0]).length, on = S.boardPick === p[0];
+        return '<button type="button" class="st-pick-b' + (on ? ' st-pick-on' : '') +
+          '" role="radio" aria-checked="' + (on ? 'true' : 'false') +
+          '" tabindex="' + (on ? '0' : '-1') + '" data-f="' + p[0] + '"' +
+          (n ? '' : ' disabled') + '>' + p[1] + ' <i>' + n + '</i></button>';
+      }).join('') + '</div>';
+  }
+  function wireBoardPick() {
+    var host = document.querySelector('.st-pick');
+    if (!host) return;
+    var bs = Array.prototype.slice.call(host.querySelectorAll('.st-pick-b'));
+    /* Choosing re-renders the whole sim, which destroys the button that had focus.
+       Round 3 treated exactly that as a regression elsewhere in this layer, so the
+       chip is re-focused after the render when the choice came from the keyboard. */
+    function choose(b, viaKey) {
+      if (!b || b.disabled) return;
+      S.boardPick = b.getAttribute('data-f'); save();
+      clearResume(); keyHandler(null); viewBoard();
+      if (viaKey) {
+        var again = document.querySelector('.st-pick-b[data-f="' + S.boardPick + '"]');
+        if (again) again.focus();
+      }
+    }
+    bs.forEach(function (b, k) {
+      b.onclick = function () { choose(b, false); };
+      b.onkeydown = function (e) {
+        var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1
+          : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        // step over disabled chips rather than landing focus on a dead control
+        for (var i = 1; i <= bs.length; i++) {
+          var nb = bs[((k + d * i) % bs.length + bs.length) % bs.length];
+          if (!nb.disabled) { choose(nb, true); return; }
+        }
+      };
+    });
+  }
   function viewBoard(pickId, startStage, startFu, startHints) {
     var pool = deck.scenarios.slice();
     var sc = pickId ? pool.filter(function (s) { return s.id === pickId; })[0] : null;
     if (!sc) {
-      var fresh = pool.filter(function (s) { return !S.scen[s.id]; });
+      /* Draw order: the chosen filter first, then unseen, then anything. 'rough' is the
+         one worth replaying — a self-grade of 1 is the candidate's own note that the
+         answer did not come out — and the data for it was already being written by
+         logScenario; there was just no way to ask for it back. Each fallback is
+         deliberate: an empty filtered pool must still hand you a scenario, never a
+         dead screen. */
+      var want = boardPool(S.boardPick);
+      var fresh = want.length ? want : pool.filter(function (s) { return !S.scen[s.id]; });
       sc = (fresh.length ? shuffle(fresh) : shuffle(pool))[0];
     }
     var stage = startStage || 0; // 0 scenario, 1 debrief, 2+ follow-ups
@@ -3854,7 +3923,7 @@
         '<div class="rz-sim">' +
         '<div class="rz-sim-main">' + boardSteps(stage, fus.length) +
         '<div class="st-card" aria-live="polite">' + body + '</div>' +
-        '<div class="rz-sim-exits">' +
+        '<div class="rz-sim-exits">' + boardPickHtml() +
         '<button class="st-link" id="st-skip">Skip to a different scenario</button></div></div>' +
         '<aside class="rz-sim-rail" aria-label="Scenario reference">' + railBody +
         '<div class="rz-sim-tally">' + faced + ' of ' + tot + ' faced \u00b7 <b>' + ready + '</b> board-ready</div>' +
@@ -3862,6 +3931,7 @@
       el('rz-bar-back').onclick = function () { clearResume(); backHome(); };
       // there was no way past a scenario you did not want short of walking it or leaving
       el('st-skip').onclick = function () { clearResume(); keyHandler(null); viewBoard(); };
+      wireBoardPick();
       if (stage === 0 && el('st-hint')) {
         // re-show any hints already taken (render() wipes them)
         for (var hi = 0; hi < hintsShown; hi++) addHint(hints[hi]);
