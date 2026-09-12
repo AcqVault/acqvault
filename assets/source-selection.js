@@ -57,13 +57,49 @@
     var map = { Outstanding: 'ss-pill-o', Good: 'ss-pill-p', Acceptable: 'ss-pill-g', Marginal: 'ss-pill-y', Unacceptable: 'ss-pill-m' };
     return '<span class="ss-pill ' + (map[rating] || 'ss-pill-g') + '">' + esc(rating) + '</span>';
   }
-  function renderStart() {
+  /* The offeror table was inlined in renderStart and therefore visible only before you
+     began. Every phase after that asks you to evaluate these offerors, and you could no
+     longer see their ratings or their prices — the same defect the Board Sim had, where
+     the scenario scrolled away before the follow-ups about it. Lifted out so the rail
+     can hold it too; `compact` drops the prose notes that only the full card has room for. */
+  function offerorTableHtml(compact) {
+    /* Five columns need ~560px. The rail has 320, where a table just grows a horizontal
+       scrollbar and hides the price — the column you most need while deciding. Same data,
+       stacked per offeror instead, so nothing is dropped to make it fit. */
+    if (compact) {
+      return '<ul class="ss-side-offs" role="list">' + scen.offerors.map(function (o) {
+        var gone = o.priceFinal === '\u2014';
+        return '<li><span class="ss-off-name">' + esc(o.name) + '</span>' +
+          '<span class="ss-side-off-l">' + pill(o.tech) +
+          '<span>' + esc(o.risk) + ' risk \u00b7 ' + esc(o.pp) + '</span></span>' +
+          '<span class="ss-side-off-p">' + (gone ? 'Eliminated \u00b7 ' + esc(o.priceInitial)
+            : '<b>' + esc(o.priceFinal) + '</b> from ' + esc(o.priceInitial)) + '</span></li>';
+      }).join('') + '</ul>';
+    }
     var rows = scen.offerors.map(function (o) {
       return '<tr><td><span class="ss-off-name">' + esc(o.name) + '</span><small>' + esc(o.note) + '</small></td>' +
         '<td>' + pill(o.tech) + '</td><td>' + esc(o.risk) + '</td><td>' + esc(o.pp) + '</td>' +
-        '<td><b>' + esc(o.priceFinal !== '—' ? o.priceFinal : o.priceInitial) + '</b>' +
-        (o.priceFinal !== '—' ? '<small>from ' + esc(o.priceInitial) + '</small>' : '<small>eliminated</small>') + '</td></tr>';
+        '<td><b>' + esc(o.priceFinal !== '\u2014' ? o.priceFinal : o.priceInitial) + '</b>' +
+        (o.priceFinal !== '\u2014' ? '<small>from ' + esc(o.priceInitial) + '</small>'
+                                   : '<small>eliminated</small>') + '</td></tr>';
     }).join('');
+    return '<div class="ss-off-wrap"><table class="ss-off"><thead><tr><th>Offeror</th>' +
+      '<th>Technical</th><th>Risk</th><th>Past perf.</th><th>Evaluated price</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody></table></div>';
+  }
+  /* Nine phases, and the only thing saying so was the words "Phase 1 of 9". A sequence you
+     can see is a sequence you can place yourself in — the Board Sim got this in round 4.
+     Titles ride only on the phase you are in; nine of them at once is a wall. */
+  function phaseStepsHtml(cur) {
+    return '<ol class="ss-steps" aria-label="Where you are in this source selection">' +
+      scen.phases.map(function (ph, i) {
+        var st = i < cur ? ' ss-step-done' : i === cur ? ' ss-step-now' : '';
+        return '<li class="ss-step' + st + '"' + (i === cur ? ' aria-current="step"' : '') + '>' +
+          '<span class="ss-step-m" aria-hidden="true">' + (i < cur ? '\u2713' : (i + 1)) + '</span>' +
+          '<span class="ss-step-t">' + esc(ph.title) + '</span></li>';
+      }).join('') + '</ol>';
+  }
+  function renderStart() {
     var train = scen.trainingNote ? '<div class="ss-startnote"><span class="ss-startnote-ic" aria-hidden="true">i</span><span>' + esc(scen.trainingNote) + '</span></div>' : '';
     app.innerHTML =
       '<div class="ss-card"><div class="ss-eyebrow">The requirement</div>' +
@@ -71,7 +107,7 @@
       train +
       '<p class="ss-hat">' + esc(scen.role) + '</p>' +
       '<div class="ss-meta"><span class="ss-tag">' + esc(scen.value) + '</span><span class="ss-tag">' + esc(scen.type) + '</span><span class="ss-tag">9 decisions · untimed</span></div>' +
-      '<div class="ss-off-wrap"><table class="ss-off"><thead><tr><th>Offeror</th><th>Technical</th><th>Risk</th><th>Past perf.</th><th>Evaluated price</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      offerorTableHtml(false) +
       '<p class="ss-note">' + esc(scen.ratingNote) + ' <a class="ss-cite-src" href="' + esc(scen.ratingCite.u) + '">' + IC_ARROW + esc(scen.ratingCite.t) + '</a></p>' +
       '<p class="ss-note" style="border-top:none;padding-top:2px">' + esc(scen.sourceNote) + '</p>' +
       '<div class="ss-actions"><button class="ss-btn ss-btn-primary" id="ss-begin">Begin the source selection ' + IC_ARROW + '</button></div></div>';
@@ -132,10 +168,37 @@
       '<div class="ss-rail"><div class="ss-rail-top"><span>Phase ' + phase.n + ' of ' + scen.phases.length + ' · ' + esc(phase.title) + '</span>' +
       '<span class="ss-meter ' + m.c + '"><span class="ss-meter-dot"></span>' + m.t + ' (' + S.risk + ')</span></div>' +
       '<div class="ss-prog"><span style="width:' + Math.round((S.i + (locked ? 1 : 0)) / scen.phases.length * 100) + '%"></span></div></div>' +
+      phaseStepsHtml(S.i) +
+      /* Two columns from here on: the decision on the left, the record you are deciding
+         against on the right. Under the breakpoint the rail stacks BELOW the decision —
+         it is reference material, and pushing the question off a phone screen to show a
+         table first would be the wrong trade. */
+      '<div class="ss-sim">' +
+      '<div class="ss-sim-main">' +
       '<div class="ss-card"><div class="ss-eyebrow">' + esc(phase.hat) + '</div><h2 class="ss-prog-title" tabindex="-1" id="ss-ptitle">' + esc(phase.title) + '</h2>' +
       docChips +
       '<p class="ss-prompt">' + esc(phase.prompt) + '</p>' + opts + tail + '</div>' +
-      '<div class="ss-actions" style="margin-top:14px"><button class="ss-btn ss-btn-ghost" id="ss-reset" type="button" style="font-size:13px;padding:8px 14px;min-height:38px">Start over</button></div>';
+      '<div class="ss-actions" style="margin-top:14px"><button class="ss-btn ss-btn-ghost" id="ss-reset" type="button" style="font-size:13px;padding:8px 14px;min-height:38px">Start over</button></div>' +
+      '</div>' +
+      '<aside class="ss-side" aria-label="The record">' +
+      '<div class="ss-side-h">The requirement</div>' +
+      '<p class="ss-side-t">' + esc(scen.title) + '</p>' +
+      '<p class="ss-side-meta">' + esc(scen.value) + ' \u00b7 ' + esc(scen.type) + '</p>' +
+      '<div class="ss-side-h">The offerors</div>' +
+      offerorTableHtml(true) +
+      '<p class="ss-side-meta ss-side-risk">Protest risk <b>' + m.t + '</b> (' + S.risk + ')</p>' +
+      '</aside></div>';
+
+    /* The stepper scrolls horizontally, and on a phone the phase you are ON — the only
+       one carrying a title — sits past the right edge. Scroll the container, not the
+       element: scrollIntoView() would also jump the page vertically away from the
+       question. Same fix the study layer's stepper got. */
+    var steps = app.querySelector('.ss-steps');
+    var now = steps && steps.querySelector('[aria-current="step"]');
+    if (steps && now && steps.scrollWidth > steps.clientWidth) {
+      var want = now.offsetLeft - (steps.clientWidth - now.offsetWidth) / 2;
+      steps.scrollLeft = Math.max(0, Math.min(want, steps.scrollWidth - steps.clientWidth));
+    }
 
     var chips = app.querySelectorAll('.ss-doc-chip');
     for (var i = 0; i < chips.length; i++) chips[i].onclick = function () { openDoc(this.getAttribute('data-doc'), this); };

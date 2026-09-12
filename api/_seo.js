@@ -3666,6 +3666,47 @@ function renderSourceSelectionPage() {
 .ss-prog-title{font-family:var(--serif);font-size:22px;line-height:1.2;color:var(--ink);margin:2px 0 3px}
 .ss-prog-title:focus{outline:none}
 .ss-prog-title:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:2px}
+/* ── the phase sequence, and the record you decide against ──────────────────────
+   Deliberately written in this page's own ss- vocabulary rather than importing the
+   study layer's rz- shell: the two share every token through STYLE, and /source-
+   selection has its own stylesheet, so copying forty rules across would create the
+   kind of drift this project has already been bitten by. Same proportions, same
+   tokens, same sticky offset as the study simulators. */
+.ss-steps{list-style:none;display:flex;align-items:center;gap:0;margin:0 0 18px;padding:0;overflow-x:auto;scrollbar-width:none}
+.ss-steps::-webkit-scrollbar{display:none}
+.ss-step{display:flex;align-items:center;gap:8px;flex:none;color:var(--muted2,#6f6c74);font-size:var(--fs-sm)}
+.ss-step+.ss-step::before{content:"";flex:none;width:18px;height:1px;background:var(--line2);margin:0 8px}
+.ss-step-m{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--line2);font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;background:#fff}
+/* Nine titles at once is a wall, so only the phase you are in is named. */
+.ss-step-t{display:none;white-space:nowrap}
+.ss-step-now .ss-step-t{display:inline}
+.ss-step-done{color:var(--ink3,#474c55)}
+.ss-step-done .ss-step-m{background:var(--brass);border-color:var(--brass);color:#fff}
+.ss-step-now{color:var(--ink);font-weight:700}
+.ss-step-now .ss-step-m{border-color:var(--brass);color:var(--brass-ink);box-shadow:0 0 0 3px rgba(var(--brass-rgb),.12)}
+.ss-sim{display:flex;flex-direction:column;gap:22px}
+.ss-sim-main{min-width:0}
+.ss-side{min-width:0;background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:16px 18px}
+.ss-side-h{margin:16px 0 8px;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);
+  text-transform:uppercase;color:var(--brass-ink)}
+.ss-side-h:first-child{margin-top:0}
+.ss-side-t{margin:0 0 3px;font-size:var(--fs-md);font-weight:700;line-height:1.4;color:var(--ink)}
+.ss-side-meta{margin:0;font-size:var(--fs-sm);line-height:1.5;color:var(--muted2,#6f6c74)}
+.ss-side-risk{margin-top:14px;padding-top:12px;border-top:1px solid var(--line2)}
+.ss-side-risk b{color:var(--ink)}
+.ss-side-offs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ss-side-offs li{display:flex;flex-direction:column;gap:3px;padding:9px 0 0;border-top:1px solid var(--line2)}
+.ss-side-offs li:first-child{padding-top:0;border-top:none}
+.ss-side-offs .ss-off-name{font-size:var(--fs-md);font-weight:700;color:var(--ink);line-height:1.3}
+.ss-side-off-l{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:var(--fs-sm);color:var(--muted2,#6f6c74)}
+.ss-side-off-p{font-size:var(--fs-sm);color:var(--muted2,#6f6c74);font-variant-numeric:tabular-nums}
+.ss-side-off-p b{color:var(--ink);font-weight:800}
+@media(min-width:1080px){
+  .ss-wrap{max-width:1240px}
+  .ss-sim{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:36px;align-items:start}
+  .ss-side{position:sticky;top:18px;max-height:calc(100vh - 38px);overflow:auto}
+}
 .ss-hat{font-size:13.5px;color:var(--muted);margin:0 0 16px}
 .ss-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 2px}
 .ss-tag{font-size:12px;font-weight:700;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(var(--brass-rgb),.28);border-radius:999px;padding:5px 12px}
