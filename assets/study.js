@@ -3681,8 +3681,15 @@
     } else {
       steps.push({ k: 'Named who you would call', b: 'Name your help.',
         body: 'Boards reward knowing who to call: ' + esc(co.smes || 'your CO/chief, Legal (JA), and FM.') });
+      /* co.applies is the per-scenario half of the coach. co.rule is authored per
+         canonical topic and shared by every scenario on it, so on some cards it is a
+         true statement of the subject that is not the rule the card turns on. When
+         the deck carries an applies line, it says how the subject bites here — and
+         it renders after the default rule, because at a board you still state the
+         default first. */
       steps.push({ k: 'Stated the default rule before any exception', b: 'State the default rule before any exception.',
-        body: esc(co.rule || 'Default first, exception second, facts third.') });
+        body: esc(co.rule || 'Default first, exception second, facts third.') +
+          (co.applies ? '<span class="bs-applies"><b>On these facts.</b> ' + esc(co.applies) + '</span>' : '') });
     }
     if (sc.facts) {
       var baits = sc.facts.filter(function (f) { return f.verdict === 'bait'; }).map(function (f) { return f.fact; });

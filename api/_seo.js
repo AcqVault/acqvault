@@ -2086,6 +2086,12 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-walk ol>li::before{content:counter(walk);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:linear-gradient(158deg,#173a60,#0f2540);color:#e4c477;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
 .st-walk ol>li b{color:var(--ink)}
 .st-walk ul{margin:7px 0 0;padding-left:18px}
+/* The per-scenario half of the coach. co.rule is shared by every scenario on a topic,
+   so on some cards it states the subject truthfully without being the rule the card
+   turns on; .bs-applies is where the deck says how it bites here. Brass rule on the
+   left rather than a tint, to stay inside the .st-walk card without a second box. */
+.st-walk .bs-applies{display:block;margin:8px 0 0;padding:0 0 0 11px;border-left:2px solid var(--brass-line);font-size:13.5px;line-height:1.55;color:#3d444d}
+.st-walk .bs-applies b{color:var(--brass-ink);font-weight:800;letter-spacing:var(--ls-snug)}
 .st-walk ul li{font-size:13.5px;line-height:1.55;color:#3d444d;padding:2px 0}
 .st-btn-hint{background:#f6efdd;color:#5e4715;border:1px solid rgba(var(--brass-rgb),.35)}
 .st-btn-hint:disabled{opacity:.55;cursor:default}

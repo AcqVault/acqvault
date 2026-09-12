@@ -227,10 +227,25 @@ for ns in load(os.path.join(MCQ, 'scenario-new.json')):
     sc_by_id[cid] = card
     new_sc += 1
 
+# coach-applies.json: the per-scenario half of the coach. The subject block is shared
+# by every scenario on that topic, so it states the subject's default rule — which is
+# sometimes true and still not the rule the card turns on (the Rule of Two on an 8(a)
+# follow-on that RFO 19.108-11 decides; the 6.103 ladder on a card whose real question
+# is price analysis after one offer). `applies` names how the subject bites HERE.
+# When the deciding subject is simply another topic the scenario already carries, fix
+# the topic ORDER instead — coach_for() walks topics in order and needs no entry here.
+APPLIES = {k: v for k, v in load(os.path.join(MCQ, 'coach-applies.json')).items()
+           if not k.startswith('_')}
+unknown_ap = [k for k in APPLIES if k not in sc_by_id]
+if unknown_ap: sys.exit(f'FATAL: coach-applies ids not in deck: {unknown_ap}')
+
 coached = generic = 0
 for sc in deck['scenarios']:
     c = coach_for(sc.get('topics'))
-    sc['coach'] = c
+    # COACH[key] is ONE dict shared by every scenario on that topic — assigning it and
+    # then setting a per-scenario key would write that key onto all of its siblings.
+    ap = APPLIES.get(sc['id'])
+    sc['coach'] = dict(c, applies=ap) if ap else c
     if c is COACH['_generic']: generic += 1
     else: coached += 1
 
@@ -961,7 +976,7 @@ print(f'authored distractor sets applied: {applied} existing + {nb+na} new')
 print(f'MCQ-ready recall cards: {mcq_n}/{len(recall)} · thresholds {thr_mcq}/{len(deck["thresholds"])}')
 print(f'debriefs: x on {x_n}/{len(all_q)} · ref on {ref_n}/{len(all_q)}')
 print(f'MCQ cards MISSING x: {len(mcq_no_x)}{" — " + ",".join(mcq_no_x[:8]) if mcq_no_x else ""}')
-print(f'scenario coaching: {coached} topic-matched · {generic} generic fallback')
+print(f'scenario coaching: {coached} topic-matched · {generic} generic fallback · {len(APPLIES)} with a per-scenario applies')
 n_linked = sum(1 for c in all_q if c.get('links'))
 sec_linked = sum(1 for c in all_q if any('#' in l['u'] for l in c.get('links', [])))
 print(f'authority links: {n_linked}/{len(all_q)} cards linked ({sec_linked} section-precise) · '
