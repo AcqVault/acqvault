@@ -321,6 +321,34 @@ it stays out of the repo root so Vercel keeps treating the site as buildless.
 
 ---
 
+## The coherence brief — measured, mostly not yet acted on
+
+`node tools/measure-css.mjs` counts what the stylesheets actually contain. Run it before
+and after any sweep; these are the numbers to drive down.
+
+| | now |
+|---|---|
+| distinct font-sizes | **70** — and **46 are raw px literals** despite a five-step `--fs-*` scale |
+| distinct colours | **314** |
+| distinct spacing values | **85**, of which **54 distinct positive px** (1, 2, 3, 4, 4.5, 5, 6, 7, 8, 9, 10, 11, 12, 13 …) |
+| distinct radii | **34** despite `--r-sm/md/lg/xl/2xl` |
+| declarations | 13,742 across STYLE, STUDY_CSS, SRCSEL_CSS and app.css |
+
+A 54-step spacing ramp is not a scale, and 46 hand-written font sizes beside a token scale
+is why four engines read as four products. **The migration itself is not done** — it is a
+large, mechanical, high-blast-radius edit, and the right order is: baseline the visual
+harness, change one ramp, review the diff, repeat. The harness and the baseline now exist,
+so that work is unblocked rather than risky.
+
+Two things the tooling proved that are worth keeping in mind when you do it:
+
+- **The screenshot suite cannot see a 1px border recolour.** It falls under the 0.01
+  `maxDiffPixelRatio`. Token changes that alter hairlines need `tools/contrast.mjs` and an
+  eyeball, not just a green suite.
+- **`tools/contrast.mjs` is the gate for colour**, and it is written so a pairing the site
+  does not actually use is not listed. It caught me inventing a brass-on-navy failure that
+  no rule produces.
+
 ## Open work
 
 **Known and deliberately left**
