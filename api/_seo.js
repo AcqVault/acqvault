@@ -1400,16 +1400,23 @@ function renderDeviationsPage() {
     isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
   };
 
-  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/r-dfars">R-DFARS Deviations</a> › Index</nav>
+  const withMemo = rows.filter(r => r.pdf_url).length;
+  const hero = `<section class="lband lhero"><div class="lband-inner">
+<nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/r-dfars">R-DFARS Deviations</a> › Index</nav>
+<div class="eyebrow">AcqVault · R-DFARS</div>
 <h1>R-DFARS Deviations Index</h1>
-<p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul (${rows.length} deviations), with its RFO part, legacy DFARS reference, effective date, and DARS tracking number. Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
+<p class="lede">Every DoD class deviation implementing the Revolutionary FAR Overhaul, with its RFO part, legacy DFARS reference, effective date, and DARS tracking number.</p>
+<div class="stats"><span class="stat"><b>${rows.length}</b> deviations</span><span class="stat"><b>${withMemo}</b> signed memos</span><span class="stat">Linked to the full text</span></div>
+${HUB_SEAL}
+</div></section>`;
+  const body = `<p class="lede lede--hub">Click a part for the full text on AcqVault, or the signed memo for the authoritative source.</p>
 <table class="devtable">
 <thead><tr><th scope="col">RFO Part</th><th scope="col">Legacy DFARS ref</th><th scope="col">Effective</th><th scope="col">DARS Tracking #</th><th scope="col">Read</th></tr></thead>
 <tbody>
 ${tr}
 </tbody></table>`;
 
-  return shell({ title, description, canonical, jsonld, body });
+  return shell({ title, description, canonical, jsonld, body, hero });
 }
 
 function renderLibraryPage() {
@@ -1618,12 +1625,18 @@ ul.chg-list a{color:var(--accent);text-decoration:none}ul.chg-list a:hover{text-
 ul.chg-other{font-size:var(--fs-md);color:var(--muted);margin:4px 0 0;padding-left:20px}
 </style>`;
 
-  const body = `${CHG_STYLE}<nav class="crumbs"><a href="/?home=1">AcqVault</a> › What changed</nav>
+  const hero = `<section class="lband lhero"><div class="lband-inner">
+<nav class="crumbs"><a href="/?home=1">AcqVault</a> › What changed</nav>
+<div class="eyebrow">AcqVault · Change record</div>
 <h1>What changed</h1>
-<p class="lede">Each time AcqVault re-fetches a source it diffs the new text against the last copy and records the sections whose wording moved. This is that log — cite it when you need to show a regulation changed under you. It records CHANGES to text already indexed, so a source&rsquo;s first ingest does not appear here, and a source is listed only for the runs in which it was re-fetched. Section links open the current full text; always verify against the signed deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on a result in a contract file.</p>
+<p class="lede">Every re-index, diffed against the last copy — the sections whose wording moved, with the date it moved. Cite it when you need to show a regulation changed under you.</p>
+<div class="stats"><span class="stat"><b>${runs.length}</b> refreshes logged</span><span class="stat">Latest ${fmtRunDate(latest.run_at)}</span><span class="stat">Links to current text</span></div>
+${HUB_SEAL}
+</div></section>`;
+  const body = `${CHG_STYLE}<p class="lede lede--hub">Each time AcqVault re-fetches a source it diffs the new text against the last copy and records the sections whose wording moved. This is that log — cite it when you need to show a regulation changed under you. It records CHANGES to text already indexed, so a source&rsquo;s first ingest does not appear here, and a source is listed only for the runs in which it was re-fetched. Section links open the current full text; always verify against the signed deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on a result in a contract file.</p>
 ${runHtml}`;
 
-  return shell({ title, description, canonical, jsonld, body });
+  return shell({ title, description, canonical, jsonld, body, hero });
 }
 
 // ── /study — the client-side drill room (Basic/Advanced tracks; assets/study.js does the work) ──
@@ -3960,9 +3973,15 @@ function renderExplainerPage() {
       '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }
   ]};
 
-  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › What is the RFO?</nav>
-<h1>What is the Revolutionary FAR Overhaul?</h1>
-<p class="lede">The <strong>Revolutionary FAR Overhaul (RFO)</strong> is a restructuring of the Federal Acquisition Regulation directed by <strong>Executive Order 14275</strong>, "Restoring Common Sense to Federal Procurement." Agencies use the overhauled FAR text — published on the government’s Revolutionary FAR Overhaul web page — <em>in lieu of</em> the text codified at 48 CFR.</p>
+  const hero = `<section class="lband lhero"><div class="lband-inner">
+<nav class="crumbs"><a href="/?home=1">AcqVault</a> › What is the RFO?</nav>
+<div class="eyebrow">AcqVault · Explainer</div>
+<h1>What is the Revolutionary FAR&nbsp;Overhaul?</h1>
+<p class="lede">A plain-English read on the overhaul: the order behind it, how DoD puts it into effect, and when it started binding.</p>
+<div class="stats"><span class="stat">E.O. <b>14275</b></span><span class="stat"><b>46</b> class deviations</span><span class="stat">Effective Feb–Mar 2026</span></div>
+${HUB_SEAL}
+</div></section>`;
+  const body = `<p class="lede lede--hub">The <strong>Revolutionary FAR Overhaul (RFO)</strong> is a restructuring of the Federal Acquisition Regulation directed by <strong>Executive Order 14275</strong>, "Restoring Common Sense to Federal Procurement." Agencies use the overhauled FAR text — published on the government’s Revolutionary FAR Overhaul web page — <em>in lieu of</em> the text codified at 48 CFR.</p>
 <section class="sec"><h2>How the Department of Defense implements it</h2>
 <p>DoD puts the overhaul into effect through signed <strong>class deviations</strong> — the materials AcqVault indexes as <strong>R-DFARS</strong>. There are <strong>46 deviations</strong>, each with its own effective date and DARS tracking number. See the <a href="/deviations">R-DFARS Deviations Index</a> for the full list, or <a href="/r-dfars">browse R-DFARS by part</a>.</p></section>
 <section class="sec"><h2>When it took effect</h2>
@@ -3972,7 +3991,7 @@ function renderExplainerPage() {
 <h2 style="margin-top:32px">Frequently asked questions</h2>
 ${faqHtml}`;
 
-  return shell({ title, description, canonical, jsonld, body, ogImage: 'og-src-rfo-v2.png' });
+  return shell({ title, description, canonical, jsonld, body, hero, ogImage: 'og-src-rfo-v2.png' });
 }
 
 function renderSitemap() {
