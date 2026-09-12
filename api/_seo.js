@@ -1612,11 +1612,28 @@ function renderChangesPage() {
       rfo.unchanged != null ? `<span class="chg-stat"><b>${Number(rfo.unchanged).toLocaleString()}</b> unchanged</span>` : ''
     ].filter(Boolean).join('\n');
 
+    const heading = `Re-index of ${runDate}${dayCount[String(run.run_at || '').slice(0, 10)] > 1 ? ` · ${esc(String(run.run_at).slice(11, 16))} UTC` : ''}`;
+    const id = `run-${esc(runSlug(run.run_at))}`;
+    const otherBlock = otherSources
+      ? `<details class="chg-checked"><summary>Sources checked</summary><ul class="chg-other">${otherSources}</ul></details>`
+      : '';
+
+    // A run that moved no text is still a record worth keeping — it is the proof
+    // the corpus was checked on that date — but it should not occupy the same
+    // height as one that did. Four of the five runs here changed nothing.
+    if (!added.length && !modified.length && !removed.length) {
+      return `<section class="sec chg-run chg-run--quiet">
+<h2 id="${id}">${heading}</h2>
+<p class="chg-quiet-note">No text changes${rfo.unchanged != null ? ` · <b>${Number(rfo.unchanged).toLocaleString()}</b> sections unchanged` : ''}</p>
+${otherBlock}
+</section>`;
+    }
+
     return `<section class="sec chg-run">
-<h2 id="run-${esc(runSlug(run.run_at))}">Re-index of ${runDate}${dayCount[String(run.run_at || '').slice(0, 10)] > 1 ? ` · ${esc(String(run.run_at).slice(11, 16))} UTC` : ''}</h2>
+<h2 id="${id}">${heading}</h2>
 <div class="chg-stats">${counts}</div>
-${partBlocks || '<p>No RFO text changes in this re-index.</p>'}
-${otherSources ? `<p class="srcref" style="margin-top:14px"><strong>Other sources checked:</strong></p><ul class="chg-other">${otherSources}</ul>` : ''}
+${partBlocks}
+${otherBlock}
 </section>`;
   }).join('\n');
 
@@ -1640,6 +1657,14 @@ ul.chg-list a{color:var(--accent);text-decoration:none}ul.chg-list a:hover{text-
 .chg-kind-added{background:#f0fdf4;color:#166534}
 .chg-kind-removed{background:#fff1f2;color:#991b1b}
 ul.chg-other{font-size:var(--fs-md);color:var(--muted);margin:4px 0 0;padding-left:20px}
+.chg-run--quiet{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;padding:11px 0}
+.chg-run--quiet h2{font-size:var(--fs-lg);margin:0;font-family:inherit;font-weight:700}
+.chg-quiet-note{margin:0;color:var(--muted);font-size:var(--fs-md)}
+.chg-quiet-note b{color:var(--ink);font-variant-numeric:tabular-nums}
+.chg-checked{margin-top:10px}
+.chg-checked summary{cursor:pointer;font-size:var(--fs-base);font-weight:650;color:var(--muted)}
+.chg-checked summary:hover{color:var(--accent)}
+.chg-run--quiet .chg-checked{margin-top:0;flex-basis:100%}
 </style>`;
 
   const hero = `<section class="lband lhero"><div class="lband-inner">
