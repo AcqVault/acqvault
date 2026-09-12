@@ -47,7 +47,7 @@
     {
       "q": "Where do the post-Government-employment rules bite in this scenario?",
       "h": "The clock started at the employment contact, not the resignation.",
-      "d": "The moment the evaluator began employment discussions with an offeror, disqualification duties attached — recusal from anything affecting that firm and prompt disclosure. His danger window isn't when he told the team; it's everything he touched after the contact began. That's why the investigation reconstructs the contact date first, then maps what protected information he accessed after it."
+      "d": "Two rules, biting at different moments. During the procurement it is RFO 3.104-3(c) / 41 U.S.C. 2103: the moment the evaluator contacted or was contacted by an offeror about non-Federal employment, he had to promptly report it in writing to his supervisor and the agency ethics official, and then either reject the possibility or disqualify himself from further personal and substantial participation. His danger window isn’t when he told the team; it’s everything he touched after the contact began — which is why the investigation reconstructs the contact date first, then maps what protected information he accessed after it. After he leaves it is RFO 3.104-3(d) / 41 U.S.C. 2104: if he served on this procurement as the PCO, the source selection authority, an SSEB member, or chief of a financial or technical evaluation team and that firm received a contract over $10M, he cannot accept compensation from that contractor as an employee, officer, director, or consultant for one year. Name both at the board — panels ask this one to see whether you stop at recusal."
     }
   ],
   "b034ddbb2029": [
@@ -143,8 +143,8 @@
     },
     {
       "q": "What competition does SAP actually require at these values?",
-      "h": "Reserved band, local solicitation, synopsis line.",
-      "d": "The MPT-to-SAT band is reserved for small business under the Rule of Two. Post a presolicitation notice to the governmentwide point of entry for actions expected to exceed $20,000 (RFO 5.101(a)), unless a 5.101(b) exemption applies; and when I solicit quotations directly at or below the SAT, I go to at least three sources and, whenever practicable, to two sources not in the previous solicitation (RFO 12.201-1(c)(2)). Award can be made on price alone, but price reasonableness must always be supportable — quotes, history, catalogs, the IGCE. Streamlined never means standard-free; it means proportionate documentation."
+      "h": "Rule of Two, local solicitation, synopsis line.",
+      "d": "There is no reserved MPT-to-SAT band — that was legacy FAR 19.203(c)/13.003(b)(1), and the RFO dropped it. Under RFO 19.104-1(a) the Rule of Two runs above the micro-purchase threshold with no upper band: set it aside when I reasonably expect offers from two or more responsible small business concerns that are competitive on fair market price, quality and delivery. Post a presolicitation notice to the governmentwide point of entry for actions expected to exceed $20,000 (RFO 5.101(a)), unless a 5.101(b) exemption applies; and when I solicit quotations directly at or below the SAT, I go to at least three sources and, whenever practicable, to two sources not in the previous solicitation (RFO 12.201-1(c)(2)). Award can be made on price alone, but price reasonableness must always be supportable — quotes, history, catalogs, the IGCE. Streamlined never means standard-free; it means proportionate documentation."
     },
     {
       "q": "When does an under-SAT sole source need a J&A?",

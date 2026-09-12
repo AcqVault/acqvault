@@ -691,10 +691,18 @@ for key, co in COACH.items():
 # may be asking FOR the definition); scenarios expand all prose in reading order.
 GLOSS = load(os.path.join(MCQ, 'glossary.json'))['terms']
 
+# An acronym glued to another acronym by - or / is one token to the reader, not two:
+# expanding the tail produced "MA-indefinite-delivery/indefinite-quantity (IDIQ)" and
+# "(FPIF/cost-plus-incentive-fee (CPIF))". "other-than-FFP" still expands — only an
+# ALL-CAPS neighbour suppresses it.
 def _acro_re(acro):
-    return re.compile(r'(?<![(\w])' + re.escape(acro) + r"(s\b|'s|’s|\b)")
+    return re.compile(r'(?<![(\w])(?<![A-Z]{2}[-/])(?<![A-Z]{3}[-/])(?<![A-Z]{4}[-/])'
+                      + re.escape(acro) + r"(s\b|'s|’s|\b)")
 
 _SENT_END = re.compile(r'(?:^|[.!?…]["”)\]]?\s+|\n\s*)$')
+_DETERMINER = re.compile(
+    r'\b(?:[Tt]he|[Aa]n?|[Tt]his|[Tt]hat|[Tt]hese|[Tt]hose|[Aa]ny|[Nn]o|[Ee]very|[Ee]ach'
+    r'|[Ii]ts|[Tt]heir|[Yy]our|[Oo]ur|[Hh]is|[Hh]er|[Mm]y)\s+$')
 def _expand_in(text, acro, term):
     m = _acro_re(acro).search(text)
     if not m: return None
@@ -709,7 +717,10 @@ def _expand_in(text, acro, term):
     else:
         repl = exp + ' (' + acro + ')'
     before = text[:m.start()]
-    if term.get('the') and not term.get('literal') and not re.search(r'\b[Tt]he\s+$', before):
+    # Only add the article when the slot is empty. "a PIA problem" used to expand to
+    # "a the Procurement Integrity Act (PIA) problem" — any determiner already fills it.
+    if (term.get('the') and not term.get('literal')
+            and not _DETERMINER.search(before)):
         repl = 'the ' + repl
     # article agreement: "a UAC" → "an unauthorized commitment (UAC)" and the reverse
     art = re.search(r'\b([Aa]n?)(\s+)$', before)

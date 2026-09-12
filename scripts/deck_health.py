@@ -318,6 +318,41 @@ def main():
         print(f'  PASS  all {len(shipped)} shipped JSON assets parse and are '
               f'version-stamped')
 
+    # ── 8. the acronym expander left nothing reader-visible ─────────────────
+    # Two shapes shipped for months because nothing looked for them: the expander
+    # prepended "the" into a slot a determiner already filled ("a the Procurement
+    # Integrity Act (PIA)"), and it expanded the tail of an acronym compound
+    # ("MA-indefinite-delivery/indefinite-quantity (IDIQ)"). Both are fixed in
+    # study-tool/build_deck_v2.py; this is the check that keeps them fixed.
+    expander = {
+        'a determiner followed by an injected "the"': re.compile(r'\b[Aa]n?\s+the\s+[A-Z]'),
+        'half an acronym compound expanded': re.compile(r'\b[A-Z]{2,}[-/][a-z][a-z\-/]*\s\([A-Z]{2,}\)'),
+    }
+
+    def _strings(node, where):
+        if isinstance(node, dict):
+            for k, v in node.items():
+                yield from _strings(v, f'{where}/{k}')
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                yield from _strings(v, f'{where}[{i}]')
+        elif isinstance(node, str):
+            yield where, node
+
+    scanned = artifacts = 0
+    for sect in ('scenarios', 'recall_basic', 'recall_advanced', 'thresholds'):
+        for card in deck.get(sect) or []:
+            for where, text in _strings(card, f'{sect}/{card.get("id")}'):
+                scanned += 1
+                for label, pat in expander.items():
+                    m = pat.search(text)
+                    if m:
+                        artifacts += 1
+                        fail(f'{where}: {label} — '
+                             f'"...{text[max(0, m.start() - 30):m.end() + 15]}..."')
+    if not artifacts:
+        print(f'  PASS  no acronym-expander artifacts in {scanned} deck strings')
+
     print()
     if failures:
         print(f'✗ {len(failures)} failure(s) — what ships disagrees with the corpus '
