@@ -745,6 +745,14 @@ def run_health_gates(abort_msg="✗ SHIP ABORTED — fix the failing check(s) ab
                       cwd=str(BASE_DIR)).returncode != 0:
         print("\n" + abort_msg)
         return False
+    # api/_seo.js calls this "the gate that keeps the outline honest" and nothing ran
+    # it. It was failing when I finally did: the outline's threshold section had become
+    # seven lessons and the script still expected one. A gate nobody runs is a comment.
+    print("\nCourse outline…")
+    if subprocess.run([sys.executable, str(BASE_DIR / "scripts" / "course_outline_health.py")],
+                      cwd=str(BASE_DIR)).returncode != 0:
+        print("\n" + abort_msg)
+        return False
     return True
 
 

@@ -18,8 +18,18 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 JS = (ROOT / "assets" / "study.js").read_text()
 DECK = json.loads((ROOT / "assets" / "study-deck.json").read_text())
 
-# Thresholds enter recallPool() under a synthetic topic, not as a deck section.
-SYNTHETIC = {"advanced": {"Thresholds & Numbers"}}
+# Threshold cards carry no topic of their own: recallPool() assigns one per card from
+# THRESH_GROUPS, so those names are synthetic topics the deck never contains. Read them
+# from the literal rather than restating them — restating is how this gate went stale
+# when the single "Thresholds & Numbers" lesson became seven.
+def thresh_groups():
+    m = re.search(r"var THRESH_GROUPS = \[(.*?)\n  \];", JS, re.S)
+    if not m:
+        sys.exit("FAIL: could not find `var THRESH_GROUPS = [...]` in assets/study.js")
+    return [g for g in re.findall(r"\[\s*'((?:[^'\\]|\\.)*)'\s*,", m.group(1))]
+
+
+SYNTHETIC = {"advanced": set(thresh_groups())}
 
 
 def outline(name):
@@ -48,6 +58,10 @@ def deck_topics(key):
 bad = []
 for vol, deck_key, level in (("VOL1", "recall_basic", "basic"), ("VOL2", "recall_advanced", "advanced")):
     listed = outline(vol)
+    # VOL2's last section is ['Numbers You Must Know', THRESH_GROUPS.map(...)] — a call,
+    # not a bracketed list of string literals, so outline() cannot see those seven.
+    if vol == "VOL2":
+        listed = listed + thresh_groups()
     dupes = sorted({t for t in listed if listed.count(t) > 1})
     if dupes:
         bad.append("%s lists a topic twice, which collides on one lesson key: %s" % (vol, ", ".join(dupes)))
@@ -67,14 +81,15 @@ for vol, deck_key, level in (("VOL1", "recall_basic", "basic"), ("VOL2", "recall
 # from the deck's distinct topics. That only equals what the outline renders while the
 # checks above hold, so assert the number here rather than leaving SEO to drift silently.
 n_basic = len(outline("VOL1"))
-n_adv = n_basic + len(outline("VOL2"))
+n_adv = n_basic + len(outline("VOL2")) + len(thresh_groups())
 seo = (ROOT / "api" / "_seo.js").read_text()
 if "courseCounts" not in seo:
     bad.append("api/_seo.js no longer defines courseCounts(); the published lesson counts "
                "are unverified.")
 else:
     derived_basic = len(deck_topics("recall_basic"))
-    derived_adv = derived_basic + len(deck_topics("recall_advanced")) + (1 if DECK["thresholds"] else 0)
+    derived_adv = (derived_basic + len(deck_topics("recall_advanced"))
+                   + (len(thresh_groups()) if DECK["thresholds"] else 0))
     if (derived_basic, derived_adv) != (n_basic, n_adv):
         bad.append("courseCounts() would publish %d/%d lessons; the outline renders %d/%d."
                    % (derived_basic, derived_adv, n_basic, n_adv))

@@ -1298,6 +1298,21 @@ ${partNav ? `<script src="/assets/part-nav.js?v=${PART_NAV_V}" defer></script>` 
 </html>`;
 }
 
+// The most recent re-index in which THIS part's text actually moved, or '' if it has
+// not moved since it was first indexed. loadChangesLog() only carries section-level
+// detail for the RFO; the other sources are recorded as a one-line status string.
+function partModified(source, part) {
+  if (source !== 'rfo') return '';
+  let latest = '';
+  for (const run of loadChangesLog() || []) {
+    const rfo = run.rfo || {};
+    const touched = [].concat(rfo.modified || [], rfo.added || [])
+      .some(x => String(x.part) === String(part));
+    if (touched && String(run.run_at || '') > latest) latest = String(run.run_at);
+  }
+  return latest;
+}
+
 function renderPartPage(source, part) {
   const meta = SOURCES[source];
   const { groups } = partsForSource(source);
@@ -1377,8 +1392,15 @@ ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
     headline: `${meta.name} — ${label}`,
     description: descPlain,
     isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE },
+    // author is required by Google's Article guidance and was absent on all 225 pages.
+    author: { '@type': 'Organization', name: 'AcqVault', url: SITE },
     publisher: { '@type': 'Organization', name: 'AcqVault', url: SITE },
-    mainEntityOfPage: canonical
+    image: `${SITE}/assets/og-src-${source}-v2.png`,
+    // Only when the refresh log actually recorded this part changing. Stamping today's
+    // date on text that has not moved since ingest would be a false freshness signal,
+    // and the log only tracks section-level changes for the RFO.
+    ...(partModified(source, part) ? { dateModified: partModified(source, part) } : {}),
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonical }
   };
 
   // Contents — server-rendered so it works, and crawls, with JavaScript off.
