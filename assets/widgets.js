@@ -345,7 +345,7 @@
                 <input type="text" id="acro-input" placeholder="e.g. IDIQ, J&amp;A, LPTA\u2026" autocomplete="off" spellcheck="false" aria-label="Search acronyms" />
                 <span class="acro-count" id="acro-count"></span>
               </div>
-              <div class="acro-results" id="acro-results"></div>
+              <div class="acro-results" id="acro-results" tabindex="0" role="region" aria-label="Acronym search results"></div>
               <div class="acro-foot"><b>Tip:</b> acronyms in document text are underlined \u2014 hover any one to see what it means.</div>
             </div>
           </div>

@@ -12,8 +12,13 @@ for (const w of WIDTHS) {
     for (const s of STATES) {
       test(s.name, async ({ page }) => {
         await s.setup(page);
+        if (s.settle) await s.settle(page);
         await expect(page).toHaveScreenshot(`${s.name}-${w}.png`, {
-          fullPage: true,
+          // A rulebook part is ~71,000px tall; shooting it whole is both slow and
+          // dominated by body text that no CSS change we care about moves. Those states
+          // set fullPage:false and are judged on the chrome, the Contents and the first
+          // sections — which is where the layout actually lives.
+          fullPage: s.fullPage !== false,
           maxDiffPixelRatio: 0.01,
           animations: 'disabled',
         });
