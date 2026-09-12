@@ -130,6 +130,10 @@ export const STATES = [
     async setup(page) { await go(page, '/changes'); await page.locator('h1').first().waitFor(); },
   },
   {
+    name: 'deviations',
+    async setup(page) { await go(page, '/deviations'); await page.locator('h1').first().waitFor(); },
+  },
+  {
     name: 'source-selection-phase',
     async setup(page) {
       await go(page, '/source-selection');

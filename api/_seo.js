@@ -1057,12 +1057,12 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
    row and scrolls sideways rather than stacking the header six deep. */
 @media (max-width:900px){
   header.site{gap:10px 14px;padding-bottom:11px;margin-bottom:20px}
-  .hdr-links{order:3;flex:1 0 100%;gap:16px;min-width:0;overflow-x:auto;
+  header.site .hdr-links{order:3;flex:1 0 100%;gap:16px;min-width:0;overflow-x:auto;
     scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
-  .hdr-links::-webkit-scrollbar{display:none}
-  .hdr-links .hlink{white-space:nowrap}
+  header.site .hdr-links::-webkit-scrollbar{display:none}
+  header.site .hdr-links .hlink{white-space:nowrap}
   header.site > .cta{order:2;white-space:nowrap}
-  .hlink--on::after{bottom:-2px}
+  header.site .hlink--on::after{bottom:-2px}
 }
 .lband{width:100%}
 .lband-inner{max-width:1060px;margin:0 auto;padding:56px 24px}
