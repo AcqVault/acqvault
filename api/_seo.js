@@ -836,6 +836,10 @@ html{-webkit-tap-highlight-color:transparent}
 :root{accent-color:var(--accent)}
 :where(button,a,input,select):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wrap{max-width:820px;margin:0 auto;padding:20px 20px 80px}
+/* A hero page splits the wrap: the first one carries only the header, so its
+   80px bottom padding would be dead white above the band. */
+.wrap--hdr{padding-bottom:0}
+.wrap--hdr header.site{margin-bottom:0;border-bottom:none}
 .wrap--wide{max-width:1060px}
 header.site{border-bottom:1px solid var(--line);margin-bottom:24px;padding-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 header.site a.brand{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-0.03em;color:var(--ink);text-decoration:none}
@@ -878,7 +882,7 @@ section.sec:target>h2{color:var(--accent)}
 @media(prefers-reduced-motion:reduce){section.sec:target{animation:none}}
 .srcref{font-size:var(--fs-base);color:var(--muted);margin:0 0 10px}
 .srcref a{color:var(--accent);text-decoration:none}
-.parts a .hublabel{display:block;font-size:var(--fs-base);font-weight:500;color:var(--muted);margin-top:2px;line-height:1.3}
+.parts a .hublabel{display:block;font-size:var(--fs-base);font-weight:500;color:var(--muted);margin-top:3px;line-height:1.35}
 section.sec p a.xref{color:var(--accent);text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(var(--brass-rgb),.45)}
 section.sec p a.xref:hover{text-decoration-color:var(--accent)}
 /* Rule ⇄ procedure pairing — KEEP IN SYNC with .br-pair/.br-partpair in assets/app.css.
@@ -962,8 +966,13 @@ section.sec p a.xref:hover{text-decoration-color:var(--accent)}
 .alt-head a:hover{color:var(--accent)}
 .sec p{margin:.5em 0;font-size:var(--fs-lg);overflow-wrap:break-word}
 .sec p a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}.sec p a:hover{color:var(--brass-ink)}
-.parts{columns:2;gap:24px}.parts a{display:block;padding:7px 0;color:var(--accent);text-decoration:none;font-size:var(--fs-lg);break-inside:avoid}
-.parts a:hover{text-decoration:underline}
+.parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:10px}
+.parts a{display:block;padding:13px 15px;color:var(--accent);text-decoration:none;font-size:var(--fs-lg);font-weight:650;
+  background:var(--bg);border:1px solid var(--line2);border-left:3px solid var(--brass-line);border-radius:var(--r-md);
+  transition:border-color .15s,background .15s,transform .15s}
+.parts a:hover{border-color:var(--brass);border-left-color:var(--brass);background:var(--off);transform:translateY(-1px)}
+.parts a:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.lede--hub{margin-top:0}
 footer{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;font-size:var(--fs-base);color:var(--muted)}
 footer a{color:var(--accent)}
 table.devtable{width:100%;border-collapse:collapse;font-size:var(--fs-md);margin-top:10px}
@@ -980,7 +989,7 @@ table.ratetable thead th{font-size:var(--fs-sm);text-transform:uppercase;letter-
 table.ratetable tbody th{font-weight:700;color:var(--ink);white-space:nowrap}
 table.ratetable tbody td{color:#3d444d}
 table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:none}
-@media(max-width:560px){.parts{columns:1}table.devtable{font-size:var(--fs-base)}table.devtable th,table.devtable td{padding:7px 6px}}
+@media(max-width:560px){.parts{grid-template-columns:1fr}table.devtable{font-size:var(--fs-base)}table.devtable th,table.devtable td{padding:7px 6px}}
 .libcat{padding:28px 0 8px;border-top:none}
 .libcat+.libcat{border-top:1px solid var(--line);padding-top:32px}
 .libcat .eyebrow{display:flex;align-items:center;gap:9px;font-size:var(--fs-xs);font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin:0 0 6px}
@@ -1209,7 +1218,7 @@ function navLinks(canonical) {
   return link('/?home=1', 'Home') + NAV.map(([h, l]) => link(h, l)).join('');
 }
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1234,9 +1243,12 @@ ${preload || ''}<style>${STYLE}</style>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>
-${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}">
+${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}${hero ? ' wrap--hdr' : ''}">
 <a class="pn-skip" href="#main">Skip to content</a>
-<header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><nav class="hdr-links" aria-label="Sections">${navLinks(canonical)}</nav><a class="cta" href="/?q=">Search all sources →</a></header>
+<header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><nav class="hdr-links" aria-label="Sections">${navLinks(canonical)}</nav><a class="cta" href="/?q=">Search all sources →</a></header>${hero ? `
+</div>
+${hero}
+<div class="wrap${wide ? ' wrap--wide' : ''}">` : ''}
 <main id="main" tabindex="-1">${body}</main>
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. ${authorityLine(source)} Always verify before relying on any result in a contract file.</footer>
 </div>`}
@@ -1322,6 +1334,10 @@ ${partSrc}
   return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png`, partNav: true, wide: docs.length > 1 });
 }
 
+// The library seal, reused so the hubs speak the same language as /library and
+// /study rather than opening on bare text links.
+const HUB_SEAL = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="hs-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#hs-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
+
 function renderHubPage(source) {
   const meta = SOURCES[source];
   if (!meta) return null;
@@ -1347,13 +1363,20 @@ function renderHubPage(source) {
   const devLink = source === 'r-dfars'
     ? `<p class="lede" style="margin-top:-12px"><strong><a href="/deviations">→ R-DFARS Deviations Index</a></strong> — every deviation with effective date &amp; DARS tracking number.</p>`
     : '';
-  const body = `<nav class="crumbs"><a href="/?home=1">AcqVault</a> › ${esc(meta.name)}</nav>
+  const unit = hubUnit(source, parts.length);
+  const hero = `<section class="lband lhero"><div class="lband-inner">
+<nav class="crumbs"><a href="/?home=1">AcqVault</a> › ${esc(meta.name)}</nav>
+<div class="eyebrow">AcqVault · Full text</div>
 <h1>${esc(meta.name)}</h1>
-<p class="lede">${esc(meta.desc)} Browse all ${parts.length} ${hubUnit(source, parts.length)} below, or <a href="/?home=1">search the full text</a>.</p>
+<p class="lede">${esc(meta.desc)}</p>
+<div class="stats"><span class="stat"><b>${parts.length}</b> ${esc(unit)}</span><span class="stat">Free · no account</span><span class="stat">Official text, every word</span></div>
+${HUB_SEAL}
+</div></section>`;
+  const body = `<p class="lede lede--hub">Browse all ${parts.length} ${unit} below, or <a href="/?home=1">search the full text</a>.</p>
 ${devLink}
 <div class="parts">${links}</div>`;
 
-  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png` });
+  return shell({ title, description, canonical, jsonld, body, hero, source, ogImage: `og-src-${source}-v2.png` });
 }
 
 function renderDeviationsPage() {
