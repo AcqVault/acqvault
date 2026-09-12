@@ -1,8 +1,8 @@
 # Study redesign — handoff
 
-State as of 2026-09-11 (**fifth round**). All six gates green plus two new ones, on
-branch `board-sim-content-fixes` — **not merged to `main` and not deployed**. The fourth
-round ended at `ada0acd`.
+State as of 2026-09-11 (**fifth round**). All six gates green plus two new ones, merged
+to `main` and **deployed**; `scripts/verify_deploy.py` agrees after each of the three
+pushes. The fourth round ended at `ada0acd`.
 
 **The direction changed this session.** /study is no longer a spaced-repetition
 dashboard you land on and pick a mode from. It is a course, in the shape Articulate
@@ -38,11 +38,12 @@ knowledge check at the end. Lessons are the spine; spaced repetition sits behind
 > - The owner's Chrome viewport measured **1084px**. The lesson's third column only
 >   appears at 1320+, so at his normal width he sees the two-column layout.
 >
-> The Board Sim content audit is fully worked — every item on the ranked list in
-> `docs/BOARD-SIM-CONTENT-FINDINGS.md` is closed. Read that doc for what was done and why.
-> The largest remaining piece of the original ask is that **the Rise treatment has only
-> reached `/study`** — `/48cons` and `/source-selection` still have their old shapes.
-> `docs/UI-UX-TOOLING-RESEARCH.md` is a survey of free tooling for that work.
+> The Board Sim content audit is fully worked and the Rise treatment has reached all three
+> pages. Read `docs/BOARD-SIM-CONTENT-FINDINGS.md` for the content calls and the round-5
+> section below for the layer. `docs/UI-UX-TOOLING-RESEARCH.md` surveys free tooling for
+> whatever comes next; its own conclusion is that this site does not need a CSS framework,
+> it needs a space scale, reading affordances on the rulebook pages, and something
+> automatically checking that a change did not regress contrast or layout.
 
 ---
 
@@ -76,6 +77,13 @@ corpus, excluded from the offline search index, and rendered through their own f
 that links out to CAC-gated DAF pages. This is deliberate, but it means DAF clearance
 policy can never carry a working citation on this site — which is why the six clearance
 approval rungs are attributed to the Approval Authority Matrix in prose instead.
+
+**Three fixes in the sweep were defects, not decoration**, and each was found by looking:
+a cover `<h1>` that repeated the marketing hero's verbatim (invisible on screen, doubled in
+print, because `@media print` restores the hero); `barHtml()` hardcoding "lessons" on a page
+that has none; and "64 due today" on an untouched rung, because `isDue()` is true at box 0
+and every unseen card counted as a backlog. Hiding the hero and widening the shell also had
+to be split (`.st-hero-off`), since the ladder interior needs the first without the second.
 
 New in the layer: `coach.applies` (rendered under the default rule, `.bs-applies`), the
 Board Sim scenario filter (`.st-pick`, Any/Rough/Unseen with live counts, persisted in
@@ -307,9 +315,13 @@ behind a forgotten bump was invisible to the check. It now covers five more asse
 - `viewTrack` claims "Every lesson ends in a knowledge check". True for this deck (0 of 44
   lessons have zero checks) but unguarded if a topic's cards ever lose their distractors.
 
-**The Rise treatment has only reached /study.** `/48cons` and `/source-selection` still have
-their old shapes, and the navigation between the three is unchanged. This is the largest
-remaining piece of what was asked for.
+**The Rise treatment now covers all three pages.** `/48cons` has a cover, an outline of its
+four ceilings, a rail, and pinned chrome on the ladder, the board sim and the Introduction
+Builder. `/source-selection` keeps its own `ss-` vocabulary — it has a separate stylesheet,
+and copying forty `rz-` rules across is how drift starts — but gained the two structural
+wins: a nine-phase stepper, and a sticky rail holding the requirement and the offerors,
+which had been invisible from phase 1 onward on a page whose whole job is evaluating them.
+The navigation *between* the three is still unchanged.
 
 **Course layer, known rough edges**
 - "Numbers You Must Know" is one lesson holding all 40 threshold cards. Its knowledge check
