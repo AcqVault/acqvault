@@ -1,7 +1,8 @@
 # Adding a source — behavior contract & checklist
 
-Every source added to AcqVault must behave identically to the existing six
-(RFO, R-DFARS, FAR Companion, Category Management, DAFI 63-138, DoD FMR).
+Every source added to AcqVault must behave identically to the existing eight
+(RFO, R-DFARS, R-DFARS PGI, FAR Companion, Category Management, DAFI 63-138,
+DoD FMR, DoD Source Selection Procedures).
 This file is the contract: the enumeration sites you must touch, and the
 behaviors the new source must inherit. Work through it top to bottom.
 
@@ -45,17 +46,19 @@ name is not a citation.
 ## 1. Enumeration sites (all of them — they are scattered on purpose)
 
 **`index.html`**
-- Source filter pills in the search bar (`.fpill[data-source]`, ~line 213).
-- Browse source pills in the sticky bar (`.browse-src-pill[data-bsource]`, ~line 234).
+- Source filter pills in the search bar — grep `.fpill[data-source]`.
+- Browse source pills in the sticky bar — grep `.browse-src-pill[data-bsource]`.
 - Browse source dropdown menu items (`#browse-source-menu` buttons, with the LIVE chip).
 - Coverage section copy if it names sources.
 
 **`assets/app.js`**
 - `SOURCE_URLS` — official-source link ("View original"). CAC-gated sources get
   special handling (see the compass pattern in `renderReaderPage`).
-- `SOURCE_LABELS` — display name used in cites, badges, and the reader.
+- `SOURCE_SHORT` / `SOURCE_FULL` — display name used in cites, badges, and the reader.
+  (This was one `SOURCE_LABELS` map; it split, and the note above already said so while
+  this line did not.)
 - `PARTS_BY_SOURCE` — the part/volume list that renders the left panel.
-- `liveSources` (in the coverage/status code, ~line 2094).
+- `liveSources` in the coverage/status code — grep `liveSources`.
 - `indexPartForSource` / `displayPartForSource` / `partWord` — how the corpus
   `part` field maps to the UI (R-DFARS subtracts 200; FMR says "Volume").
 - `buildReaderHTML` `tagBg`/`tagClr` — the per-source badge colors (per-source

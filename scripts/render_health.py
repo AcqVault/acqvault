@@ -81,6 +81,26 @@ MIRRORS = [
     ('regOrderKey', ['assets/app.js', 'api/_seo.js', 'api/search.js']),
     ('regTitleCmp', ['assets/app.js', 'api/_seo.js', 'api/search.js']),
     ('pairKey',     ['assets/app.js', 'api/_seo.js']),
+    # Every one of these carried a KEEP IN SYNC comment and no check behind it.
+    # clauseSuppressSet decides which duplicate R-DFARS clause wins, so drift there
+    # silently changes search RANKING between the server and the in-app scorer.
+    ('clauseSuppressSet',    ['api/search.js', 'assets/app.js']),
+    ('displayPartForSource', ['api/_seo.js', 'assets/app.js']),
+    ('partWord',             ['api/_seo.js', 'assets/app.js']),
+    ('tokenLevel',           ['api/_seo.js', 'assets/app.js']),
+]
+
+# Same idea for data. Two mirrors are deliberately NOT here: parseRatingTable takes an
+# extra escFn argument server-side, and threshPart is ES5 in the browser file and ES6 in
+# _seo.js — so their TEXT can never match. For threshPart the thing that actually has to
+# agree is the grouping data, and THRESH_GROUPS below covers that.
+CONST_MIRRORS = [
+    ('CATEGORY_VEHICLE_TABLES', ['api/_seo.js', 'assets/app.js']),
+    ('PART_200_SOURCES',        ['api/_seo.js', 'assets/app.js']),
+    ('PAIR_SOURCE',             ['api/_seo.js', 'assets/app.js']),
+    ('ALT_BOUNDARY',            ['api/_seo.js', 'assets/app.js']),
+    ('ALT_HEAD',                ['api/_seo.js', 'assets/app.js']),
+    ('THRESH_GROUPS',           ['api/_seo.js', 'assets/study.js']),
 ]
 
 # Every place a source key must appear for the source to be fully wired. Derived by
@@ -245,6 +265,28 @@ def check_mirrors(fail):
                  f"fix: these carry a KEEP IDENTICAL comment; make them match or delete the comment AND the MIRRORS entry")
         else:
             print(f"  PASS  {name}() identical across {len(files)} copies")
+
+    for name, files in CONST_MIRRORS:
+        bodies = {}
+        for f in files:
+            src = (BASE / f).read_text(encoding='utf-8')
+            m = re.search(r'(?:const|var)\s+' + name + r'\s*=\s*(.*?);\s*?\n(?=\s*(?:const|var|let|function|//|/\*|\n))',
+                          src, re.S)
+            if m is None:
+                fail(f"mirror parity — {name} not found in {f}",
+                     f"fix: the CONST_MIRRORS table in {Path(__file__).name} is stale, or it was renamed")
+                bodies = None
+                break
+            bodies[f] = _strip(m.group(1))
+        if not bodies:
+            continue
+        if len(set(bodies.values())) > 1:
+            ref = files[0]
+            drifted = [f for f in files[1:] if bodies[f] != bodies[ref]]
+            fail(f"mirror parity — {name} differs between {ref} and {', '.join(drifted)}",
+                 "fix: these carry a KEEP IN SYNC comment; make them match or delete the comment AND the entry")
+        else:
+            print(f"  PASS  {name} identical across {len(files)} copies")
 
 
 def main():
@@ -431,24 +473,24 @@ def main():
     else:
         print('  PASS  all 12 renderers return a page')
 
-    # 11. the threshold lesson grouping is identical in both copies
+    # 11. index.html's "N+ questions" floor is still true
     #
-    # api/_seo.js counts the course's lessons for the cover; assets/study.js builds the
-    # outline. Both group the 40 threshold cards by governing part, and if the two
-    # literals drift the cover advertises a lesson count the outline does not show.
-    def _groups(text):
-        m = re.search(r'THRESH_GROUPS = \[(.*?)\];', text, re.S)
-        return re.sub(r'\s+', '', m.group(1)) if m else None
-    g_seo = _groups(SEO)
-    g_js = _groups((BASE / 'assets' / 'study.js').read_text())
-    if g_seo is None or g_js is None:
-        fail('THRESH_GROUPS not found in both api/_seo.js and assets/study.js',
-             'the course lesson count and the course outline are derived from it in each')
-    elif g_seo != g_js:
-        fail('THRESH_GROUPS differs between api/_seo.js and assets/study.js',
-             'the /study cover would advertise a lesson count the outline does not show')
-    else:
-        print('  PASS  THRESH_GROUPS identical across 2 copies')
+    # /study computes this figure; index.html is static and cannot, so the claim is a
+    # hardcoded floor. A floor is fine — it just has to stay a floor. It had 32 of
+    # headroom when this was written.
+    idx = (BASE / 'index.html').read_text()
+    m = re.search(r'(\d[\d,]*)\+\s*questions', idx)
+    if m:
+        claimed = int(m.group(1).replace(',', ''))
+        deck = json.loads((BASE / 'assets' / 'study-deck.json').read_text())
+        real = sum(len(deck.get(k) or []) for k in
+                   ('recall_basic', 'recall_advanced', 'thresholds', 'scenarios'))
+        if real < claimed:
+            fail(f'index.html claims {claimed}+ questions but the deck holds {real}',
+                 'lower the claim in index.html, or add cards - a floor that is no longer '
+                 'a floor is a false statement on the home page')
+        else:
+            print(f'  PASS  index.html\'s {claimed}+ questions floor holds ({real} in the deck)')
 
     # 12. no custom property is defined as itself
     #

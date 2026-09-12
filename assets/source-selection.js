@@ -106,7 +106,7 @@
       '<h2 class="ss-h2">' + esc(scen.title) + '</h2>' +
       train +
       '<p class="ss-hat">' + esc(scen.role) + '</p>' +
-      '<div class="ss-meta"><span class="ss-tag">' + esc(scen.value) + '</span><span class="ss-tag">' + esc(scen.type) + '</span><span class="ss-tag">9 decisions · untimed</span></div>' +
+      '<div class="ss-meta"><span class="ss-tag">' + esc(scen.value) + '</span><span class="ss-tag">' + esc(scen.type) + '</span><span class="ss-tag">' + scen.phases.length + ' decisions · untimed</span></div>' +
       offerorTableHtml(false) +
       '<p class="ss-note">' + esc(scen.ratingNote) + ' <a class="ss-cite-src" href="' + esc(scen.ratingCite.u) + '">' + IC_ARROW + esc(scen.ratingCite.t) + '</a></p>' +
       '<p class="ss-note" style="border-top:none;padding-top:2px">' + esc(scen.sourceNote) + '</p>' +
@@ -185,7 +185,7 @@
       '<p class="ss-side-meta">' + esc(scen.value) + ' \u00b7 ' + esc(scen.type) + '</p>' +
       '<div class="ss-side-h">The offerors</div>' +
       offerorTableHtml(true) +
-      '<p class="ss-side-meta ss-side-risk"><b>' + m.t + '</b> (' + S.risk + ')</p>' +
+      '<p class="ss-side-meta ss-side-risk ' + m.c + '"><b>' + m.t + '</b> (' + S.risk + ')</p>' +
       '</aside></div>';
 
     /* The stepper scrolls horizontally, and on a phone the phase you are ON — the only

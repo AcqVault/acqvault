@@ -17,9 +17,19 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
   '.ico': 'image/x-icon', '.webmanifest': 'application/manifest+json' };
 const PART_SOURCES = ['rfo', 'r-dfars', 'far-companion', 'afi-63-138', 'category-management', 'fmr', 'ssp', 'pgi'];
 
+// Reload only when the file actually changed. Busting the cache on EVERY request
+// re-read the whole corpus each time and left the old copies behind: crawling the
+// ~250 part pages killed the server with a heap OOM. mtime keeps "an edit is one
+// reload away" without the leak.
+let seoMtime = 0;
 function seo() {
-  delete require.cache[require.resolve('../api/_seo.js')];
-  return require('../api/_seo.js');
+  const p = require.resolve('../api/_seo.js');
+  const m = fs.statSync(p).mtimeMs;
+  if (m !== seoMtime) {
+    seoMtime = m;
+    delete require.cache[p];
+  }
+  return require(p);
 }
 function html(res, body) {
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });

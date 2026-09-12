@@ -2987,7 +2987,6 @@ function formatCompassContent(text, hit, baseCite) {
   return html;
 }
 
-function cleanSnippet(t){return t?t.replace(/L\d:/g,"").replace(/\s+/g," ").trim():"";}
 
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -4718,15 +4717,7 @@ function stRenderSpark(values) {
   el.style.display = 'block';
 }
 
-function stToday() {
-  return new Date().toISOString().slice(0, 10);
-}
 
-function stFiscalYearStart() {
-  var now = new Date();
-  var fyStartYear = now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1;
-  return fyStartYear + '-10-01';
-}
 
 function stFyStats() {
   // FY runs Oct 1 – Sep 30

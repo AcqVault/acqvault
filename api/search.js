@@ -151,7 +151,8 @@ function clauseNum(title) {
 let clauseSuppressCache = null;
 function clauseSuppressSet(entries) {
   if (clauseSuppressCache) return clauseSuppressCache;
-  const best = new Map();   // clause -> winning doc
+  // clause -> winning doc
+  const best = new Map();
   const rank = d => (String(d.part) !== '52' ? 2 : 1) * 1000000 + Math.min(String(d.content || '').length, 999999);
   for (const { doc } of entries) {
     if (doc.source !== 'r-dfars') continue;

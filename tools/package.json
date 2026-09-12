@@ -7,7 +7,8 @@
     "measure": "node measure-css.mjs",
     "contrast": "node contrast.mjs",
     "visual": "playwright test",
-    "visual:update": "playwright test --update-snapshots"
+    "visual:update": "playwright test --update-snapshots",
+    "a11y:sweep": "node a11y-sweep.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

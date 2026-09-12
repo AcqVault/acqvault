@@ -2012,34 +2012,6 @@
       : 'Nothing due today · ' + pool.length + ' cards scheduled at this level.';
     return '<p class="st-lad-count" role="status">' + s + '</p>';
   }
-  function ladderSectionHtml() {
-    // The ladder is the 48 CONS page's main event now — no step kicker, it isn't step 2 of
-    // anything. S.ladderBeta is a leftover record of the original unlisted link and is no
-    // longer a gate; LADDER_ENABLED still kills the whole feature.
-    // The heading carried a "Beta" chip while the ladder sat on public /study behind an
-    // unlisted link. It is not a beta any more, and the hero eyebrow, the crumb and the lede
-    // all name 48 CONS already — a chip here only said it a third time, so there is none.
-    if (!LADDER_ENABLED || !deck.ladder) return '';
-    var sel = ladderRung();
-    /* The bolded clause used to read "Each ceiling includes everything under it." It was not
-       true of the deck: the four rung pools are disjoint (64+61+51+30 = 206 cards, 206 unique
-       ids, zero overlap), and ladderPool() hands back only the selected rung. An Unlimited
-       candidate was being told their 30 cards covered the 176 below them. */
-    return '<h2 class="st-h2" style="margin-top:2px">The Warrant Ladder</h2>' +
-      '<p class="st-sub">A warrant carries signature authority up to a dollar ceiling — and holds you ' +
-      'to every rule below it. Scope your prep to the warrant you’re testing for. ' +
-      '<span class="st-lad-cum">Each level holds the material that ceiling adds — the levels below it still apply.</span></p>' +
-      rungStripHtml(sel, true);
-  }
-  function wireLadderSection() {
-    Array.prototype.forEach.call(app.querySelectorAll('.st-rung'), function (b) {
-      b.onclick = function () {
-        S.ladderRung = b.getAttribute('data-rung'); save();
-        depth1View = viewLadder; goDepth(1, viewLadder);
-      };
-    });
-  }
-
   /* ---- 48 CONS page ---------------------------------------------------------------------
      The unlisted org page: the Warrant Ladder plus the Board Introduction Builder. The cards
      are the same corpus-built deck the rest of the site uses, so a corpus refresh reaches

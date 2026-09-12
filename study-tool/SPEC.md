@@ -68,7 +68,7 @@ weighted Leitner-box distribution of its cards + scenario self-grades. Click row
   free/no-login/works-offline; JSON-LD; canonical /study). Rewrite in `vercel.json`:
   `{ "source": "/study", "destination": "/api/study" }`. Add /study to the sitemap.
 - Interactivity in a NEW asset `assets/study.js` (+ styles appended to app.css or a study.css) — vanilla JS,
-  no framework, no build step, self-hosted everything. Decks merged into ONE `output/study-deck.json`
+  no framework, no build step, self-hosted everything. Decks merged into ONE `assets/study-deck.json`
   (or /assets/study-deck.json) fetched at load; ~150KB raw, fine.
 - Offline: decks + assets ride the existing service worker (cache-first for /assets and /output). If deck
   goes under /output, **bump the SW CACHE version** per the deploy ritual.
