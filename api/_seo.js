@@ -1545,6 +1545,15 @@ function renderChangesPage() {
   const description = esc(`Every AcqVault re-index of the Revolutionary FAR Overhaul and its companion sources, with the exact sections that changed. Latest refresh: ${fmtRunDate(latest.run_at)}.`);
 
   // Newest run first.
+  // Two re-indexes can land on the same day (2026-09-10 ran twice). Both headings
+  // then read identically AND shared an id, so the anchor only ever reached the
+  // first one. Same-day runs carry their UTC time in both.
+  const dayCount = {};
+  for (const r of runs) { const d = String(r.run_at || '').slice(0, 10); dayCount[d] = (dayCount[d] || 0) + 1; }
+  const runSlug = (iso) => {
+    const d = String(iso || '').slice(0, 10);
+    return dayCount[d] > 1 ? `${d}-${String(iso).slice(11, 16).replace(':', '')}` : d;
+  };
   const runHtml = [...runs].reverse().map(run => {
     const rfo = run.rfo || {};
     const added = rfo.added || [];
@@ -1596,7 +1605,7 @@ function renderChangesPage() {
     ].filter(Boolean).join('\n');
 
     return `<section class="sec chg-run">
-<h2 id="run-${esc(String(run.run_at || '').slice(0, 10))}">Re-index of ${runDate}</h2>
+<h2 id="run-${esc(runSlug(run.run_at))}">Re-index of ${runDate}${dayCount[String(run.run_at || '').slice(0, 10)] > 1 ? ` · ${esc(String(run.run_at).slice(11, 16))} UTC` : ''}</h2>
 <div class="chg-stats">${counts}</div>
 ${partBlocks || '<p>No RFO text changes in this re-index.</p>'}
 ${otherSources ? `<p class="srcref" style="margin-top:14px"><strong>Other sources checked:</strong></p><ul class="chg-other">${otherSources}</ul>` : ''}
