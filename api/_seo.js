@@ -1045,24 +1045,20 @@ table.ratetable tr:last-child th,table.ratetable tr:last-child td{border-bottom:
   .lnav .cta{padding:8px 12px;font-size:var(--fs-base);white-space:nowrap}
   .lnav .hlink{font-size:var(--fs-base)}
 }
-/* Single row only where it actually fits. Below 360 it does not, and forcing nowrap
-   sliced the CTA off the right edge with no way to scroll to it. */
-@media (min-width:360px) and (max-width:420px){
-  .lnav-inner{flex-wrap:nowrap}
-  .lnav-inner > *{min-width:0}
-}
+
 /* R5: the hubs and part pages use header.site, not .lnav-inner, so the phone fix
    reached neither - measured 104px of stacked header at 320 and 375.
    The section nav carries six destinations now, so below 900 it drops to its own
    row and scrolls sideways rather than stacking the header six deep. */
 @media (max-width:900px){
-  header.site{gap:10px 14px;padding-bottom:11px;margin-bottom:20px}
-  header.site .hdr-links{order:3;flex:1 0 100%;gap:16px;min-width:0;overflow-x:auto;
+  header.site,.lnav-inner{gap:10px 14px;padding-bottom:11px;margin-bottom:20px}
+  .lnav-inner{margin-bottom:0}
+  header.site .hdr-links,.lnav-inner .hdr-links{order:3;flex:1 0 100%;gap:16px;min-width:0;overflow-x:auto;
     scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
-  header.site .hdr-links::-webkit-scrollbar{display:none}
-  header.site .hdr-links .hlink{white-space:nowrap}
-  header.site > .cta{order:2;white-space:nowrap}
-  header.site .hlink--on::after{bottom:-2px}
+  header.site .hdr-links::-webkit-scrollbar,.lnav-inner .hdr-links::-webkit-scrollbar{display:none}
+  header.site .hdr-links .hlink,.lnav-inner .hdr-links .hlink{white-space:nowrap}
+  header.site > .cta,.lnav-inner > .cta{order:2;white-space:nowrap}
+  header.site .hlink--on::after,.lnav-inner .hlink--on::after{bottom:-2px}
 }
 .lband{width:100%}
 .lband-inner{max-width:1060px;margin:0 auto;padding:56px 24px}
@@ -1218,6 +1214,19 @@ function navLinks(canonical) {
   return link('/?home=1', 'Home') + NAV.map(([h, l]) => link(h, l)).join('');
 }
 
+// One copy of the mark: it was a function-local const in four renderers and
+// inlined a fifth time in shell().
+const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
+
+// The four .lnav headers were hand-rolled and all different: two linked Home,
+// two linked Study, none reached Library or the deviations index. Same nav as
+// shell() now. /48cons is deliberately absent from NAV and stays unlisted.
+function lnavHtml(canonical) {
+  return `<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a>` +
+         `<nav class="hdr-links" aria-label="Sections">${navLinks(canonical)}</nav>` +
+         `<a class="cta" href="/?q=">Search all sources →</a></div></header>`;
+}
+
 function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
@@ -1245,7 +1254,7 @@ ${preload || ''}<style>${STYLE}</style>
 <body>
 ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}${hero ? ' wrap--hdr' : ''}">
 <a class="pn-skip" href="#main">Skip to content</a>
-<header class="site"><a class="brand" href="/?home=1"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>AcqVault</a><nav class="hdr-links" aria-label="Sections">${navLinks(canonical)}</nav><a class="cta" href="/?q=">Search all sources →</a></header>${hero ? `
+<header class="site"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><nav class="hdr-links" aria-label="Sections">${navLinks(canonical)}</nav><a class="cta" href="/?q=">Search all sources →</a></header>${hero ? `
 </div>
 ${hero}
 <div class="wrap${wide ? ' wrap--wide' : ''}">` : ''}
@@ -1506,9 +1515,8 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
     }))
   };
 
-  const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
 
-  const body = `<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></div></header>
+  const body = `${lnavHtml(canonical)}
 <main>
 <section class="lband lhero"><div class="lband-inner">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Library</nav>
@@ -3052,11 +3060,10 @@ function renderStudyPage() {
     course('Advanced', 'Every Basic lesson plus Vol. 2 — planning, integrity, pricing, contract type, changes, disputes and the thresholds a board expects cold.', counts && counts.advanced)
   ];
 
-  const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
 
   const SEAL_SVG = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="st-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#st-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
 
-  const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/?home=1">Home</a><a class="cta" href="/?q=">Search all sources →</a></span></div></header>
+  const body = `${STUDY_CSS}${lnavHtml(canonical)}
 <main>
 <section class="lband lhero"><div class="lband-inner">
 ${SEAL_SVG}
@@ -3098,9 +3105,8 @@ function render48ConsPage() {
     isPartOf: { '@type': 'WebSite', name: 'AcqVault', url: SITE }
   };
 
-  const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
 
-  const body = `${STUDY_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/study">Study</a><a class="cta" href="/?q=">Search all sources &rarr;</a></span></div></header>
+  const body = `${STUDY_CSS}${lnavHtml(canonical)}
 <main>
 <section class="lband lhero lhero--cons lband--rail"><div class="lband-inner">
 <img class="cons-patch" src="/assets/48cons-patch.png?v=3" alt="48th Contracting Squadron emblem" width="182" height="186" decoding="async">
@@ -3927,11 +3933,10 @@ ${CHROME_CSS(22, 34)}
 .ss-fail h2{font-family:var(--serif);font-size:20px;color:var(--ink);margin:0 0 8px}
 </style>`;
 
-  const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="#0f2540"/><rect x="13" y="13" width="74" height="74" rx="11" fill="none" stroke="rgba(var(--brass-bright-rgb),.5)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="#e4c477" stroke-width="3"/><g stroke="#e4c477" stroke-width="3.4" stroke-linecap="round"><line x1="50" y1="32" x2="50" y2="40"/><line x1="50" y1="68" x2="50" y2="60"/><line x1="32" y1="50" x2="40" y2="50"/><line x1="68" y1="50" x2="60" y2="50"/></g><circle cx="50" cy="50" r="5" fill="#e4c477"/></svg>';
 
   const SEAL = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="ss-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#ss-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
 
-  const body = `${SRCSEL_CSS}<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><span class="hdr-links"><a class="hlink" href="/study">Study</a><a class="cta" href="/?q=">Search all sources →</a></span></div></header>
+  const body = `${SRCSEL_CSS}${lnavHtml(canonical)}
 <main>
 <section class="lband lhero"><div class="lband-inner">
 ${SEAL}
