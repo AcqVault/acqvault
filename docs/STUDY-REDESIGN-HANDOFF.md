@@ -482,12 +482,70 @@ var(--warn)` — for the second time in this work. A self-referential property r
 initial value with no error and every other gate stays green. `render_health.py` now fails on
 it, and the check was negative-tested.
 
-### Still open
+### The rough-edge list, closed
 
-- `/changes` same-day runs: fixed (they shared a heading *and* an `id`). But the log itself
-  records two runs 56 minutes apart with identical zero counts — worth asking whether the
-  pipeline should coalesce those.
-- Navigation between `/study`, `/48cons` and `/source-selection` is still unchanged.
-  `/48cons` stays unlisted with zero inbound links, on purpose.
-- `assets/app.css` still holds ~161 distinct hexes. What remains is genuinely per-component
-  (cyan tokens, chart series, shadows), not a competing palette.
+Every item that had been parked as a question is decided and shipped.
+
+**Navigation, finished.** The `shell()` nav left the four `.lnav` pages behind — they were
+hand-rolled and all different (two linked Home, two linked Study, none reached Library).
+All five surfaces share `lnavHtml()` now. `/48cons` is absent from `NAV` and stays unlisted,
+so the three simulators reach each other through Study and Source Selection without ever
+surfacing it. `BRAND_SVG` was a function-local const repeated verbatim in four renderers and
+inlined a fifth time; one module-level copy now.
+
+**Same-day re-indexes: keep both, compact the quiet ones.** Coalescing would destroy the
+record that the corpus *was* checked on a date. Instead, a run that moved no text gets one
+line — four of the five runs changed nothing and each was taking a full section with four
+zero-counts, which buried the one real 209-section change.
+
+**Per-section provenance: kept, moved.** The `acquisition.gov` link deep-links each section
+to its official anchor — that is the citation path and worth a repeat. It sat immediately
+after the heading text so it read as part of all 40 titles; it is at the right margin now.
+No opacity fade: `--muted` is 6.9:1 on white and 72% of that is ~3.3:1, under AA.
+
+**Duplicate cards: two removed.** "Commercial streamlined ceiling and cite?" and
+"Streamlined commercial procedures — cite and ceiling?" were one fact reversed, filed under
+two topics; `RFO 12.201-1` is Part 12, so the Simplified Acquisition copy was a misfile.
+"Order-debrief breakpoint? GAO order-protest thresholds?" asked two unrelated things and the
+second half already had its own card. The other seven multi-part questions **stay** — they
+are ladder drills, one concept across several tiers, which is how a board tests a ladder.
+Highest answer similarity in the pool: 0.969 → 0.641.
+
+**"Numbers You Must Know": seven lessons, not one.** It held all 40 thresholds behind a
+check that caps at 6, so 34 cards could never be tested and the lesson could be completed
+without meeting most of its material. Grouped by each card's own governing part — so a deck
+refresh keeps sorting itself — into lessons of 4–7 cards, which is what a 6-question check
+can actually cover.
+
+**Three hardcoded counts, now computed.** The cover's "44 lessons" was a literal while
+`courseCounts()` sat computed twenty lines above it and fed only the JSON-LD; the picker
+claimed "15-lesson" and "44 lessons" too. All derived from the outline the course walks.
+
+### Two new gates
+
+- **`THRESH_GROUPS` identical across 2 copies.** The server counts the lessons, the client
+  builds the outline; if the literals drift the cover advertises a count the outline does not
+  show.
+- **No custom property defined as itself.** A bulk hex→`var()` substitution wrote
+  `--warn: var(--warn)` for the second time in this work. Such a token resolves to the
+  initial value with no error and every other gate stays green.
+
+Both negative-tested — a gate that has never been seen to fail is not a gate.
+
+### Genuinely out of scope, and why
+
+- `assets/app.css` holds ~161 distinct hexes. What remains is per-component (cyan tokens,
+  chart series, shadow rgba), not a competing palette. The second family is gone.
+- `study-tool/deck-*.json` are the original extraction and nothing reads them. SPEC.md said
+  otherwise and cost a wasted edit; it now says so plainly. Kept for provenance.
+- The teaching block still shows the answer above the check that tests it. That is the
+  deliberate Rise split — Review is where retrieval happens — and changing it is a pedagogy
+  decision, not a defect.
+
+### The screenshot suite's blind spot, stated plainly
+
+`maxDiffPixelRatio: 0.01` on a tall page cannot see a moved 1px border, a 2px corner, or a
+line of small text sliding across a column. Three changes in this pass — the provenance move,
+the lnav desktop nav, the cover's lesson count — were real and the suite passed them all. Each
+was verified by eye. **Treat a green suite as "nothing large broke", never as "nothing
+changed".**
