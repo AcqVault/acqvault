@@ -390,6 +390,25 @@ def main():
     if not css_bad:
         print('  PASS  STYLE, STUDY_CSS, SRCSEL_CSS and CHROME_CSS are brace-balanced')
 
+    # 9. no custom property is defined as itself
+    #
+    # Twice now a bulk hex -> var() substitution has rewritten the token's OWN
+    # definition, leaving --brass: var(--brass). The property then resolves to
+    # nothing, the colour silently falls back to the initial value, and every
+    # gate stays green because the page still renders. Cheap to check, so check it.
+    circ = []
+    for path in ('assets/app.css', 'api/_seo.js'):
+        text = (BASE / path).read_text()
+        for name, ref in re.findall(r'(--[\w-]+)\s*:\s*var\(\s*(--[\w-]+)\s*\)', text):
+            if name == ref:
+                circ.append(f'{path}: {name}')
+    if circ:
+        fail('custom properties defined as themselves: ' + ', '.join(circ),
+             'a token that resolves to itself renders as the initial value with no '
+             'error - give it a literal, or point it at a different token')
+    else:
+        print('  PASS  no custom property resolves to itself')
+
     print()
     if failures:
         for msg, fix in failures:
