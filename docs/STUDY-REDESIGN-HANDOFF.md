@@ -415,3 +415,79 @@ classify themselves.
 **Known low-severity**
 - Content-hashed *filenames* would make the stale-cache race impossible rather than
   detectable. Not done.
+
+---
+
+## The site-wide sweep — thirteen engines, not three
+
+The Rise work covered `/study`, `/48cons` and `/source-selection`. That left ten engines
+untouched, and the owner was right to say the site looked the same: **the home page and the
+reader are where visitors land, and neither had changed.** `index.html` moved four lines in
+the whole scale migration, all of them the cache token.
+
+**The navigation hole (the real one).** `shell()` rendered brand + Home + "Search all
+sources" and nothing else. The full nav lives in `index.html`, which no `shell()` page loads.
+So a reader on `/rfo/part-1` had **no route to Study, Library, Source Selection, Deviations
+or Changes at all.** Six destinations now, current one marked from `canonical` rather than a
+new argument threaded through eight call sites. It is a nav, not a copy of the home nav —
+the home nav is anchor-based (`#market-research`, `#quick-links`) and depends on `widgets.js`
+plus `app.css`, neither of which exists on these pages.
+
+**Three visual languages became one.** `/library` and the home page speak navy hero + brass
+seal + eyebrow rule + cards; `/study` had converged on the same thing. The hubs, deviations,
+changes and the explainer opened on a bare `h1` over white. All four now use `.lhero` and the
+library seal **verbatim** — reusing the vocabulary, not authoring a parallel one. Hub parts
+moved from CSS `columns` (which runs down one column and jumps back up — wrong reading order
+for a numbered sequence) to a card grid.
+
+`shell()` grew a `hero` slot because a full-bleed band cannot live inside `.wrap`. When one
+is present the wrap splits and the header-only half drops its 80px bottom padding.
+
+**Part pages deliberately have no hero.** They are long-form reading; a navy band would push
+the text below the fold. The per-section `acquisition.gov` link repeating forty times is
+visual noise, but it is a per-section deep link to the official text — collapsing it is a
+content call on regulatory provenance and was left alone.
+
+### What the harness caught that review would not have
+
+- The `max-width:900px` nav rule was **unscoped**, and `.lnav` on `/study`, `/48cons` and
+  `/source-selection` reuses `.hdr-links` — so it re-laid-out their navs too. All three
+  passed at 1084 and 1320 and failed **only at 375**. Scoped to `header.site`.
+- `tools/serve.cjs` never ran `process.chdir(ROOT)`. `api/*` read `output/` and `assets/`
+  through `process.cwd()`, so every data-backed route 500'd in the preview — which is why
+  only the three study routes were ever previewed in the first place.
+
+### The palette decision, made
+
+The question was "which green is the site's green?" The answer is that **two meanings were
+tangled in one family**, and the fix is not to pick a winner:
+
+- *success* — a copied button, a check, a positive trend (`#15803d`, `#047857`) → `--ok`
+- *live* — the small dots saying an index is current (`#16a34a`) → `--live`, kept vivid
+
+Flattening the live dots into a muted forest green would have killed the signal those dots
+exist to send. `#a87f28` and `#b8923a` were two attempts at the same brass-ramp midpoint
+(true middle of `--brass` → `--brass-bright` is `#b59449`) and are one `--brass-mid`. The
+amber became `--warn` — a third state the palette never named, distinct from `--bad` on
+purpose.
+
+Five values gone; **43 scattered literals became 9 named tokens**; 75/75 green with nothing
+re-baselined. The win is not "fewer hexes" — the remaining single occurrences *are* the token
+definitions. It is that the second family no longer exists.
+
+### A gate for the bug that bit twice
+
+A bulk hex→`var()` substitution rewrote two tokens' **own definitions** — `--warn:
+var(--warn)` — for the second time in this work. A self-referential property resolves to the
+initial value with no error and every other gate stays green. `render_health.py` now fails on
+it, and the check was negative-tested.
+
+### Still open
+
+- `/changes` same-day runs: fixed (they shared a heading *and* an `id`). But the log itself
+  records two runs 56 minutes apart with identical zero counts — worth asking whether the
+  pipeline should coalesce those.
+- Navigation between `/study`, `/48cons` and `/source-selection` is still unchanged.
+  `/48cons` stays unlisted with zero inbound links, on purpose.
+- `assets/app.css` still holds ~161 distinct hexes. What remains is genuinely per-component
+  (cyan tokens, chart series, shadows), not a competing palette.
