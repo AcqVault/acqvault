@@ -318,6 +318,36 @@ def main():
         print(f'  PASS  all {len(shipped)} shipped JSON assets parse and are '
               f'version-stamped')
 
+    # ── 7b. scenario facts cite nothing their own card does not ─────────────
+    # The bait/governs stack on 65 scenarios was backfilled by redistributing what each
+    # card already said, on the rule that no new law enters through a `why`. That rule is
+    # only worth having if something enforces it: a section number appearing in a fact's
+    # `why` but nowhere else on that scenario is either a fabrication or a citation that
+    # belongs in the card proper, and both should stop the build.
+    sec_pat = re.compile(r'\b(?:RFO|R-DFARS|PGI|FC)\s+(?:Parts?\s+)?\d{1,3}(?:\.[\d.\-]+)?'
+                         r'|\b\d{1,3}\.\d{3}(?:-\d+)?(?:\([a-z0-9]+\))*'
+                         r'|\b\d{2}\s+U\.S\.C\.\s*(?:\u00a7+\s*)?[\d.]+')
+
+    def _flat(x):
+        return re.sub(r'[\s()\u00a7]+', '', x).strip('.').lower()
+
+    fact_n = fact_bad = 0
+    for sc in deck.get('scenarios') or []:
+        facts = sc.get('facts') or []
+        if not facts:
+            continue
+        rest = json.dumps({k: v for k, v in sc.items() if k != 'facts'}, ensure_ascii=False)
+        rest_flat = _flat(rest)
+        for f in facts:
+            fact_n += 1
+            for m in sec_pat.finditer(f.get('why') or ''):
+                if _flat(m.group(0)) not in rest_flat:
+                    fact_bad += 1
+                    fail(f'scenarios/{sc["id"]}: fact cites {m.group(0)!r}, which appears '
+                         f'nowhere else on that scenario')
+    if not fact_bad:
+        print(f'  PASS  all {fact_n} scenario facts cite only sections their own card cites')
+
     # ── 8. the acronym expander left nothing reader-visible ─────────────────
     # Two shapes shipped for months because nothing looked for them: the expander
     # prepended "the" into a slot a determiner already filled ("a the Procurement

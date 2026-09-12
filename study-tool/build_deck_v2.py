@@ -700,6 +700,28 @@ for pool in ('recall_basic', 'recall_advanced', 'thresholds'):
 # "Where it lives" line for a part its debrief never mentions. These override that, and
 # resolve through the same cite_links() the coach cites use — FATAL if one resolves to
 # nothing, because an unresolvable cite renders as a dead label.
+# scenario-facts.json: the {fact, verdict, why} stack for the 65 scenarios that carried
+# only a flat `baits` array of strings. boardStepList() renders facts as a bait/governs
+# card per fact and falls back to a single "call the bait" line for baits-only scenarios,
+# so the sim was showing two different debriefs depending on which shape a card had.
+# Authored by redistributing what each card already said — no new law — and deck_health
+# fails if a facts entry names a section that does not appear on its own card.
+FACTS = {k: v for k, v in load(os.path.join(MCQ, 'scenario-facts.json')).items()
+         if not k.startswith('_')}
+bad_f = [k for k in FACTS if k not in sc_by_id]
+if bad_f: sys.exit(f'FATAL: scenario-facts ids not in deck: {bad_f}')
+n_facts = 0
+for sid, facts in FACTS.items():
+    for f in facts:
+        if f.get('verdict') not in ('bait', 'governs') or not f.get('fact') or not f.get('why'):
+            sys.exit(f'FATAL: malformed fact on {sid}: {str(f)[:70]}')
+    verdicts = {f['verdict'] for f in facts}
+    if verdicts != {'bait', 'governs'}:
+        sys.exit(f'FATAL: {sid} facts need both a bait and a governs, has {verdicts}')
+    sc_by_id[sid]['facts'] = facts
+    sc_by_id[sid].pop('baits', None)   # facts supersede; leaving both renders neither well
+    n_facts += len(facts)
+
 FU_CITES = {k: v for k, v in load(os.path.join(MCQ, 'scenario-followup-cites.json')).items()
             if not k.startswith('_')}
 bad_fc = [k for k in FU_CITES if k not in sc_by_id]
