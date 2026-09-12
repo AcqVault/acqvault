@@ -411,10 +411,14 @@ The navigation *between* the three is still unchanged.
 
 **Never wired in**
 Three mockup screens were built and published as artifacts but never implemented: first-run,
-session-start, card. The course layer supersedes some of that, but the first-run idea — a
-five-question cold pretest replacing the module choice — is untouched and the research behind
-it is strong: learner control is worth roughly nothing for outcomes, and a newcomer cannot
-classify themselves.
+session-start, card. The course layer supersedes most of that.
+
+**Decided, 2026-09-12: the module choice stays.** The first-run idea was a five-question
+cold pretest *replacing* Basic/Advanced with a recommendation. The owner's call is that
+people choose for themselves, explicitly. Do not re-propose it — the research argument
+(learner control buys little for outcomes, a newcomer cannot self-classify) was heard and
+overruled, and it is his product. The two-card choice on `/study` is the intended flow, and
+switching between courses keeps progress by design.
 
 **Known low-severity**
 - ~~Content-hashed *filenames*.~~ Superseded: `scripts/stamp_assets.py` makes every
