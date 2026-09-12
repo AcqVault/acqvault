@@ -358,7 +358,27 @@
       document.documentElement.classList.toggle('st-working',
         working && !/st-summary/.test(html));
       // st-to-course appears only in viewHome, which is inside the course as well.
-      document.documentElement.classList.toggle('st-rise', /rz-cover|rz-lesson-shell|st-to-course|rz-sim/.test(html));
+      var rise = /rz-cover|rz-lesson-shell|st-to-course|rz-sim|rz-home/.test(html);
+      document.documentElement.classList.toggle('st-rise', rise);
+      /* Hiding the marketing hero and widening the shell were one class, and /48cons
+         needs them apart. Its cover collapses the hero, but its interior views are not
+         rz- views, so entering a ceiling popped the hero and its second <h1> back onto
+         a page you are working in — the exact thing .st-rise exists to prevent. The
+         interiors still want the 880px reading measure they were built for, so only the
+         hero half follows org mode. */
+      document.documentElement.classList.toggle('st-hero-off', rise || isOrg());
+      /* The stage stepper is overflow-x:auto, so a long sequence simply scrolls — and the
+         step you are ON can sit outside the visible run with nothing saying so. Seven
+         stages (the ladder's sim adds a saved record) overflow at 1084px, and /study
+         overflows too once a scenario carries enough follow-ups. Scroll the container,
+         never the element: scrollIntoView() would also move the page vertically and
+         undo the anchoring done a few lines below. */
+      var steps = app.querySelector('.rz-steps');
+      var now = steps && steps.querySelector('[aria-current="step"]');
+      if (steps && now && steps.scrollWidth > steps.clientWidth) {
+        var want = now.offsetLeft - (steps.clientWidth - now.offsetWidth) / 2;
+        steps.scrollLeft = Math.max(0, Math.min(want, steps.scrollWidth - steps.clientWidth));
+      }
       document.documentElement.classList.toggle('st-lesson', /rz-lesson-shell/.test(html));
       document.documentElement.classList.toggle('st-sim', /class="rz-sim"/.test(html));
     } catch (e) { /* styling only; never break a render */ }
@@ -632,19 +652,28 @@
       '<span class="rz-bar-crumb"><b>' + esc(o.course) + '</b>' +
       (o.now ? '<span class="rz-bar-sep" aria-hidden="true">/</span><span class="rz-bar-now">' +
         esc(o.now) + '</span>' : '') + '</span>' +
-      '<span class="rz-bar-prog">' +
-      '<span class="rz-bar-track" aria-hidden="true"><i style="width:' + p.pct + '%"></i></span>' +
-      '<span class="rz-bar-n">' + p.done + '<span> / ' + p.total + '</span></span></span>' +
+      /* Some views inside the course have nothing countable — the Introduction Builder is
+         four text fields, not a sequence. An empty meter reading "0 / 0" beside them looks
+         like a broken counter, so a view with no total simply gets no meter. */
+      (p && p.total
+        ? '<span class="rz-bar-prog">' +
+          '<span class="rz-bar-track" aria-hidden="true"><i style="width:' + p.pct + '%"></i></span>' +
+          '<span class="rz-bar-n">' + p.done + '<span> / ' + p.total + '</span></span></span>'
+        : '') +
       (o.nextLabel ? '<button class="rz-btn rz-btn-go rz-bar-next" id="rz-bar-next">' +
         esc(o.nextLabel) + ' <span aria-hidden="true">\u2192</span></button>' : '') +
       '</div>';
   }
-  function barHtml(prog, cls) {
+  /* `unit` because this meter now serves two courses with different units: /study counts
+     lessons complete, /48cons counts cards met at a ceiling. It read "64 lessons" on a
+     page that has no lessons. */
+  function barHtml(prog, cls, unit) {
+    var u = unit || { one: 'lesson', many: 'lessons', verb: 'complete' };
     return '<div class="rz-meter' + (cls ? ' ' + cls : '') + '">' +
       '<div class="rz-meter-bar" aria-hidden="true"><span style="width:' + prog.pct + '%"></span></div>' +
       '<span class="rz-meter-n">' + (prog.done
-        ? prog.done + ' of ' + prog.total + ' lessons complete'
-        : 'Not started \u00b7 ' + prog.total + ' lessons') + '</span></div>';
+        ? prog.done + ' of ' + prog.total + ' ' + u.many + ' ' + u.verb
+        : 'Not started \u00b7 ' + prog.total + ' ' + (prog.total === 1 ? u.one : u.many)) + '</span></div>';
   }
   /* An e-learning outline that says "5 key points \u00b7 knowledge check" on all 44 rows is
      44 rows of the same sentence. Minutes differ per lesson and are the thing somebody
@@ -1967,57 +1996,122 @@
      this page automatically — the whole reason the ladder was not forked into a static copy
      when it moved off /study. */
   function view48Cons() {
-    // No orienting paragraph here — the hero lede directly above already says this, and
-    // saying it twice weakens both.
+    /* The Rise treatment, same vocabulary as the course on /study: a cover that describes
+       the thing and an action card that starts it, then an outline, then a rail. Rendering
+       rz-cover is also what flips documentclass st-rise, which collapses the marketing hero
+       above and widens the wrap to 1280 — the same fix /study got when its hero and its
+       course cover were stacked, and the hero was the page's second <h1>.
+       Every piece of content the old page carried is still here: the ladder and its lede,
+       the four ceilings with their card counts, and all three tools. What changed is that
+       the ceilings are rows with their own progress instead of four chips, and the tools
+       moved into the rail where the course keeps Review and the Practice Range. */
+    var sel = ladderRung();
+    var selR = RUNGS.filter(function (r) { return r.k === sel; })[0] || RUNGS[0];
+    var pool = ladderPool(sel);
+    var seen = pool.filter(function (c) { return cardState(c.id).box > 0; }).length;
+    // isDue() is true at box 0, so "due" on an untouched rung means "all of them".
+    // Only cards that have been met and come back around are a review backlog.
+    var due = pool.filter(function (c) { return isDue(c.id) && cardState(c.id).box > 0; }).length;
+    var prog = { done: seen, total: pool.length,
+                 pct: pool.length ? Math.round(100 * seen / pool.length) : 0 };
+    var nCards = RUNGS.reduce(function (t, r) { return t + ladderPool(r.k).length; }, 0);
+    var nBoards = RUNGS.reduce(function (t, r) { return t + ladderBoardPool(r.k).length; }, 0);
     var nThresh = (deck.thresholds && deck.thresholds.length) || 0;
-    /* The three tools sit in a grid and read as one subordinate band under the ladder. Each
-       card fills the same three slots the same way — kicker = what kind of tool, chip = YOUR
-       state, meta = what it is — because filling them with whatever each tool happened to have
-       is what made the row read as a template. The long descriptions moved into each tool's
-       own view, where there is room for them.
-       aria-label carries the tool + its state: the whole card was the button's accessible
-       name, running 40+ words, so .st-sim-desc is hidden from the name and stays visible. */
     var nMy = myDeck().cards.length;
+    var bmap = ladderBoardMap();
+
+    /* One row per ceiling. The old strip showed a card count and nothing else; a candidate
+       choosing where to spend an evening wants to know what is met and what is due, and the
+       row has room for it where a chip did not. aria-label carries ceiling + state, because
+       the whole row would otherwise read as a 20-word accessible name. */
+    var rungRows = RUNGS.map(function (r, i) {
+      var p = ladderPool(r.k), b = ladderBoardPool(r.k);
+      var met = p.filter(function (c) { return cardState(c.id).box > 0; }).length;
+      var bFaced = b.filter(function (x) { return bmap[x.id]; }).length;
+      var on = r.k === sel;
+      var state = met ? met + ' of ' + p.length + ' cards met' : p.length + ' cards, none met yet';
+      var meta = state + ' · ' + b.length + ' board sim' + (b.length === 1 ? '' : 's') +
+        (bFaced ? ' (' + bFaced + ' faced)' : '');
+      return '<li><button class="rz-lesson' + (met === p.length && p.length ? ' rz-lesson-done' : '') +
+        '" data-rung="' + r.k + '"' + (on ? ' aria-current="true"' : '') +
+        ' aria-label="' + esc(r.ceiling + ' — ' + r.what.replace(/&amp;/g, 'and') + ' — ' + state) + '">' +
+        '<span class="rz-lesson-mark" aria-hidden="true">' + (met === p.length && p.length ? '\u2713' : (i + 1)) + '</span>' +
+        '<span class="rz-lesson-body"><b>' + esc(r.ceiling) + ' \u00b7 ' + r.what + '</b><span>' + esc(meta) +
+        (on ? ' · your ceiling' : '') + '</span></span>' +
+        '<span class="rz-lesson-go" aria-hidden="true">\u2192</span></button></li>';
+    }).join('');
+
     render(
-      ladderSectionHtml() +
-      '<h2 class="st-tools-label">The rest of your prep</h2>' +
-      '<div class="st-tools">' +
-      '<button class="st-sim-feature st-intro-open" id="st-intro-open" aria-label="Board Introduction Builder — ' + introDoneChip() + '">' +
-      '<span class="st-sim-kick">Builder</span>' +
-      '<b class="st-sim-title">Board Introduction Builder</b>' +
-      '<span class="st-sim-desc" aria-hidden="true">Draft the opener and the closer every board asks for, in your own words.</span>' +
-      '<span class="st-sim-chips"><span class="st-sim-chip">' + introDoneChip() + '</span>' +
-      '<span class="st-sim-meta">4 questions · printable</span></span>' +
-      '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
-      // The same corpus-built threshold drill /study has run for months — surfaced here rather
-      // than rebuilt, so there is one quizzer to keep correct instead of two.
-      '<button class="st-sim-feature" id="st-sprint-open" aria-label="Threshold Sprint — ' +
-      (S.sprint.best ? 'best streak ' + S.sprint.best : 'not started') + '">' +
-      '<span class="st-sim-kick">Drill</span>' +
-      '<b class="st-sim-title">Threshold Sprint</b>' +
-      '<span class="st-sim-desc" aria-hidden="true">Rapid-fire on the dollar figures a panel can rattle you with.</span>' +
-      '<span class="st-sim-chips"><span class="st-sim-chip">' +
-      (S.sprint.best ? 'Best streak ' + S.sprint.best : 'Not started') + '</span>' +
-      '<span class="st-sim-meta">' + nThresh + ' thresholds · every answer cited</span></span>' +
-      '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
-      // Kept visibly apart from the corpus decks above: its own tool, its own storage, its
-      // own study view, and every card labelled unverified.
-      '<button class="st-sim-feature" id="st-my-open" aria-label="My Cards — ' +
-      (nMy ? nMy + ' card' + (nMy === 1 ? '' : 's') : 'none yet') + '">' +
-      '<span class="st-sim-kick">Yours</span>' +
-      '<b class="st-sim-title">My Cards</b>' +
-      '<span class="st-sim-desc" aria-hidden="true">Write the local policy the rulebook cannot know — approval chains, squadron procedure.</span>' +
-      '<span class="st-sim-chips"><span class="st-sim-chip">' +
-      (nMy ? nMy + ' card' + (nMy === 1 ? '' : 's') : 'None yet') + '</span>' +
-      '<span class="st-sim-meta">Yours · not from the rulebook</span></span>' +
-      '<span class="st-sim-go" aria-hidden="true">→</span></button>' +
+      chromeHtml({ course: '48 CONS \u00b7 Warrant Prep', now: selR.ceiling, prog: prog }) +
+      '<div class="rz-cover">' +
+      '<div class="rz-cover-body">' +
+      '<span class="rz-eyebrow">AcqVault \u00b7 48 CONS</span>' +
+      // NOT the hero's "Hold the ceiling": .st-rise hides that hero on screen but
+      // @media print restores it, and two h1s reading the same five words is what the
+      // course cover was fixed for in round 2. The cover carries the course name.
+      '<h1 class="rz-cover-h">48 CONS Warrant Prep</h1>' +
+      '<p class="rz-cover-p">A warrant carries signature authority up to a dollar ceiling \u2014 and holds ' +
+      'you to every rule below it. Scope your prep to the warrant you\u2019re testing for, and every card ' +
+      'carries the governing rule in its own words.</p>' +
+      '<ul class="rz-facts" role="list">' +
+      '<li><b>' + nCards + '</b> cards</li>' +
+      '<li><b>' + RUNGS.length + '</b> ceilings</li>' +
+      '<li><b>' + nBoards + '</b> board sims</li>' +
+      '</ul></div>' +
+      '<div class="rz-card rz-card-hero">' +
+      barHtml(prog, '', { one: 'card', many: 'cards', verb: 'met' }) +
+      '<button class="rz-btn rz-btn-go rz-btn-wide" id="rz-lad-start">' +
+      (seen ? 'Continue \u2014 ' + selR.ceiling : 'Start \u2014 ' + selR.ceiling) + '</button>' +
+      '<button class="rz-btn rz-btn-ghost rz-btn-wide" id="rz-lad-switch">Choose a different ceiling</button>' +
+      '<div class="rz-card-h">What\u2019s included</div>' +
+      '<ul class="rz-incl" role="list">' +
+      '<li><b>' + pool.length + '</b> cards at ' + esc(selR.ceiling) +
+      (due ? ', <b>' + due + '</b> due for review' : seen ? '' : ', none met yet') + '</li>' +
+      '<li><b>' + ladderBoardPool(sel).length + '</b> board sims at this ceiling</li>' +
+      '<li>Every card quotes the governing rule</li>' +
+      '</ul></div></div>' +
+      '<div class="rz-home">' +
+      '<div class="rz-home-main">' +
+      '<h2 class="rz-outline-head" id="rz-lad-outline">The Warrant Ladder</h2>' +
+      '<section class="rz-sec"><div class="rz-sec-head">' +
+      '<h3>Choose your ceiling</h3>' +
+      '<span class="rz-sec-count">' + RUNGS.length + ' levels \u00b7 ' + nCards + ' cards \u00b7 ' + nBoards + ' board sims</span>' +
       '</div>' +
-      footToolsHtml());
-    wireLadderSection();
+      // the cumulative note the strip carried — still true, still needed, now in the one
+      // place a candidate reads before picking a level
+      '<p class="rz-sec-note">Each level holds the material that ceiling adds \u2014 the levels below it still apply.</p>' +
+      '<ol class="rz-lessons">' + rungRows + '</ol></section>' +
+      '</div>' +
+      '<aside class="rz-aside rz-aside-sub" aria-label="The rest of your prep">' +
+      '<div class="rz-card-h rz-aside-h">The rest of your prep</div>' +
+      '<button class="rz-extra-card" id="st-intro-open" aria-label="Board Introduction Builder \u2014 ' + introDoneChip() + '">' +
+      '<b>Board Introduction Builder</b><span>Draft the opener and the closer every board asks for, in your own words. \u00b7 ' +
+      esc(introDoneChip()) + '</span></button>' +
+      '<button class="rz-extra-card" id="st-sprint-open" aria-label="Threshold Sprint \u2014 ' +
+      (S.sprint.best ? 'best streak ' + S.sprint.best : 'not started') + '">' +
+      '<b>Threshold Sprint</b><span>Rapid-fire on the dollar figures a panel can rattle you with. \u00b7 ' +
+      nThresh + ' thresholds' + (S.sprint.best ? ', best streak ' + S.sprint.best : '') + '</span></button>' +
+      '<button class="rz-extra-card" id="st-my-open" aria-label="My Cards \u2014 ' +
+      (nMy ? nMy + ' card' + (nMy === 1 ? '' : 's') : 'none yet') + '">' +
+      '<b>My Cards</b><span>Write the local policy the rulebook cannot know \u2014 approval chains, squadron procedure. \u00b7 ' +
+      (nMy ? nMy + ' card' + (nMy === 1 ? '' : 's') : 'none yet') + '</span></button>' +
+      '</aside></div>' + footToolsHtml());
+
     wireFootTools();
+    el('rz-lad-start').onclick = function () { depth1View = viewLadder; goDepth(1, viewLadder); };
+    el('rz-lad-switch').onclick = function () {
+      var h = app.querySelector('#rz-lad-outline');
+      if (h) h.scrollIntoView({ block: 'start' });
+      var first = app.querySelector('.rz-lesson');
+      if (first) first.focus();   // the ghost button promises a choice; land on it
+    };
+    Array.prototype.forEach.call(app.querySelectorAll('.rz-lesson'), function (b) {
+      b.onclick = function () {
+        S.ladderRung = b.getAttribute('data-rung'); save();
+        depth1View = viewLadder; goDepth(1, viewLadder);
+      };
+    });
     el('st-intro-open').onclick = function () { depth1View = viewIntro; goDepth(1, viewIntro); };
-    // Activities launched from the org page live at depth 1 (the ladder's own sessions sit at
-    // depth 2 under viewLadder), matching the Introduction Builder above.
     el('st-sprint-open').onclick = function () { depth1View = viewSprint; goDepth(1, viewSprint); };
     el('st-my-open').onclick = function () { myErr = ''; myEditId = null; depth1View = viewMyCards; goDepth(1, viewMyCards); };
   }
@@ -2054,9 +2148,16 @@
     var sel = ladderRung();
     var ceiling = (RUNGS.filter(function (r) { return r.k === sel; })[0] || RUNGS[0]).ceiling;
     render(
-      '<div class="st-session-head"><span>Board Introduction Builder</span>' +
-      '<span>' + esc(ceiling) + ' ceiling</span></div>' +
-      '<div class="st-card">' +
+      // Same pinned chrome as the rest of /48cons: the way out was a link at the bottom
+      // of a four-textarea form, which is the furthest possible place from where you
+      // decide to leave. No progress meter — there is nothing here to be partway through
+      // that a count would describe honestly.
+      chromeHtml({ course: '48 CONS \u00b7 Warrant Prep', back: true, backLabel: 'Prep',
+        backAria: 'Back to warrant board prep',
+        now: 'Introduction Builder \u00b7 ' + ceiling + ' ceiling' }) +
+      '<div class="rz-home"><div class="rz-home-main">' +
+      '<h2 class="rz-outline-head">Board Introduction Builder</h2>' +
+      '<div class="rz-card">' +
       '<p class="st-sub" style="margin-top:0">Answer in your own words — plain speech, not résumé ' +
       'bullets. The script below is assembled from exactly what you type; nothing is invented ' +
       'for you, and nothing leaves this browser.</p>' +
@@ -2069,14 +2170,16 @@
       // Bare .st-btn sets border:none and NO background, so this landed as the UA grey
       // buttonface — 1.15:1 against its own white card, reading as disabled. It is this
       // view's one primary action and gets the navy every other primary action uses.
-      '<button class="st-btn st-btn-reveal" id="in-build">Build my script</button>' +
+      '<button class="rz-btn rz-btn-go" id="in-build">Build my script</button>' +
       '<button class="st-link" id="in-clear">Clear</button>' +
       '</div>' +
       '<div id="in-out" class="st-intro-out" role="status" aria-live="polite"></div>' +
-      '</div>' +
+      '</div></div></div>' +
       // Went to view48Cons (the tools view), not viewLadder — the label named a place it
-      // never reached.
-      '<button class="st-link st-quit" id="st-quit">← Warrant board prep</button>');
+      // never reached. Kept beneath the form as well as in the chrome: finishing the last
+      // field and leaving is a real path, and it should not need a trip back to the top.
+      '<div class="rz-sim-exits"><button class="st-link st-quit" id="st-quit">\u2190 Warrant board prep</button></div>');
+    el('rz-bar-back').onclick = function () { depth1View = null; goDepth(0, view48Cons); };
 
     INTRO_FIELDS.forEach(function (f) {
       el('in-' + f.k).addEventListener('input', function () {
@@ -2230,31 +2333,49 @@
         '<span class="st-topic-meta">' + m + '%</span></div>'
       : '<div class="st-lad-ready"><span class="st-lad-ready-lab">Card mastery</span>' +
         '<span class="st-topic-meta">Not started — grade a card and it fills in</span></div>';
+    /* The Rise treatment, matching the cover and /study's lesson view: pinned chrome
+       instead of a link at the bottom of the page, the working column beside a rail, and
+       one card carrying the state rather than eight stacked strips. Every control keeps
+       its id, so the handlers below are untouched — this is a markup change, not a
+       behaviour change. .rz-home is in the st-rise regex, so the shell widens for the
+       two columns and the marketing hero stays collapsed. */
+    var metN = pool.filter(function (c) { return cardState(c.id).box > 0; }).length;
+    var lprog = { done: metN, total: pool.length,
+                  pct: pool.length ? Math.round(100 * metN / pool.length) : 0 };
     render(
-      '<h2 class="st-h2" style="margin-top:0">The Warrant Ladder</h2>' +
-      '<p class="st-sub">Pick the ceiling you’re testing for.</p>' +
-      rungStripHtml(sel) +
+      chromeHtml({ course: '48 CONS \u00b7 Warrant Prep', back: true, backLabel: 'Ladder',
+        backAria: 'Back to the warrant ladder', now: label, prog: lprog }) +
+      '<div class="rz-home">' +
+      '<div class="rz-home-main">' +
+      '<h2 class="rz-outline-head">' + esc(label) + '</h2>' +
+      '<div class="rz-card">' +
+      readyHtml +
       topicHtml +
       ladderCountLine(pool, due.length, !!tsel) +
       hiddenHtml +
-      readyHtml +
-      boardHtml +
-      simHtml +
       '<div class="st-actions">' +
       // No pool, no study button: "Review all 0" started a session with nothing in it, so the
       // control looked broken rather than inapplicable. The count line above says why.
       (!pool.length ? ''
         : due.length
-        ? '<button class="st-btn st-btn-reveal" id="lad-start">Study ' + nDue +
+        ? '<button class="rz-btn rz-btn-go" id="lad-start">Study ' + nDue +
           (nDue < due.length ? ' of ' + due.length + ' due' : ' due') + ' <kbd>space</kbd></button>'
-        : '<button class="st-btn st-btn-hint" id="lad-start">Review all ' + pool.length + ' <kbd>space</kbd></button>') +
-      (boards.length ? '<button class="st-btn st-btn-hint" id="lad-board">Face the board</button>' : '') +
+        : '<button class="rz-btn rz-btn-go" id="lad-start">Review all ' + pool.length + ' <kbd>space</kbd></button>') +
+      (boards.length ? '<button class="rz-btn rz-btn-ghost" id="lad-board">Face the board</button>' : '') +
       (due.length && due.length < pool.length
         ? '<button class="st-link" id="lad-all">Review all ' + pool.length + '</button>' : '') +
-      '</div>' +
+      '</div></div>' +
       sinkHtml +
-      '<button class="st-link st-quit" id="st-quit">← Warrant board prep</button>');
-    el('st-quit').onclick = backToTools;
+      '</div>' +
+      '<aside class="rz-aside rz-aside-sub" aria-label="This ceiling">' +
+      boardHtml +
+      simHtml +
+      '<nav class="rz-rungnav" aria-label="Switch ceiling">' +
+      '<div class="rz-card-h rz-aside-h">Ceilings</div>' +
+      rungStripHtml(sel) +
+      '</nav>' +
+      '</aside></div>');
+    el('rz-bar-back').onclick = backToTools;
     Array.prototype.forEach.call(app.querySelectorAll('.st-rung'), function (b) {
       b.onclick = function () {
         S.ladderRung = b.getAttribute('data-rung'); save(); viewLadder();
@@ -2920,10 +3041,38 @@
         : stage === 1 ? 'the model answer'
         : stage < CHECK_STAGE ? 'follow-up ' + (stage - 1) + ' of ' + fus.length
         : stage === CHECK_STAGE ? 'your call' : 'the record';
-      render('<div class="st-session-head"><span>' + esc(label) + ' · board sim</span><span>' + headNote +
-        '</span></div><div class="st-card" aria-live="polite">' + body + '</div>' +
-        '<button class="st-link st-quit" id="st-quit">End this sim</button>');
+      /* The same shape round 4 gave the /study Board Sim, for the same reasons: the stage
+         sequence was invisible, and from the debrief on the scenario and the panel's
+         question scrolled away — so you answered follow-ups about a scenario you could no
+         longer read. Rendering .rz-sim also pins the chrome and widens the shell.
+         The recorder and the bottom-line-up-front field stay exactly as they are: both are
+         owner decisions, and the BLUF is captured BEFORE the reveal, which is the point. */
+      var facedN = pool.filter(function (x) { return done[x.id]; }).length;
+      var railBody = stage > 0
+        ? '<div class="rz-rail-h">The scenario</div>' +
+          '<p class="rz-sim-scen">' + esc(sc.scenario) + '</p>' +
+          (sc.ask ? '<div class="rz-rail-h">The panel asks</div><p class="rz-sim-ask">' + esc(sc.ask) + '</p>' : '')
+        : '<div class="rz-rail-h">What you are in for</div>' +
+          '<p class="rz-sim-meta">' + (fus.length ? 'The model answer, then <b>' + fus.length +
+            '</b> panel follow-up' + (fus.length !== 1 ? 's' : '') + ', then you grade yourself.'
+            : 'The model answer, then you grade yourself.') + '</p>' +
+          '<p class="rz-sim-meta">Answer out loud before you reveal anything. Nobody sees the grade \u2014 it only decides what comes back.</p>';
+      render(
+        chromeHtml({ course: '48 CONS \u00b7 Warrant Prep', back: true, backLabel: 'Exit',
+          backAria: 'End this sim and go back to the ladder',
+          now: label + ' \u00b7 ' + sc.topic,
+          prog: { done: facedN, total: pool.length,
+                  pct: pool.length ? Math.round(100 * facedN / pool.length) : 0 } }) +
+        '<div class="rz-sim">' +
+        '<div class="rz-sim-main">' + boardSteps(Math.min(stage, CHECK_STAGE + 1), fus.length, 'Record') +
+        '<div class="st-card" aria-live="polite">' + body + '</div>' +
+        '<div class="rz-sim-exits">' +
+        '<button class="st-link" id="st-quit">End this sim</button></div></div>' +
+        '<aside class="rz-sim-rail" aria-label="Scenario reference">' + railBody +
+        '<div class="rz-sim-tally">' + facedN + ' of ' + pool.length + ' faced at ' + esc(label) + '</div>' +
+        '</aside></div>');
       el('st-quit').onclick = function () { recRelease(); clearResume(); viewLadder(); };
+      el('rz-bar-back').onclick = function () { recRelease(); clearResume(); viewLadder(); };
 
       // Notes autosave silently, like the Introduction Builder's fields. No per-keystroke
       // "Saved" flash: .st-card is an aria-live region, so that would interrupt a screen
@@ -3751,10 +3900,11 @@
       return t ? t.charAt(0).toUpperCase() + t.slice(1) : '';
     }).filter(Boolean).join(' \u00b7 ');
   }
-  function boardSteps(stage, nFus) {
+  function boardSteps(stage, nFus, tail) {
     var labels = ['Scenario', 'Debrief'];
     for (var i = 0; i < nFus; i++) labels.push('Follow-up ' + (i + 1));
     labels.push('Self-grade');
+    if (tail) labels.push(tail);   // the ladder's sim ends on a saved record
     return '<ol class="rz-steps" aria-label="Where you are in this scenario">' +
       labels.map(function (t, i) {
         var st = i < stage ? ' rz-step-done' : i === stage ? ' rz-step-now' : '';
