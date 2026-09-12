@@ -695,6 +695,29 @@ for pool in ('recall_basic', 'recall_advanced', 'thresholds'):
             c.pop('links', None)
             unlinked.append(c['id'] + ' [' + (c.get('topic') or c.get('type', '?')) + '] ' + c.get('ref', '(no ref)'))
 
+# Per-follow-up citations. assets/study.js falls back to the SCENARIO's coach cite when
+# a follow-up has none, so a follow-up that walks a different part was showing a
+# "Where it lives" line for a part its debrief never mentions. These override that, and
+# resolve through the same cite_links() the coach cites use — FATAL if one resolves to
+# nothing, because an unresolvable cite renders as a dead label.
+FU_CITES = {k: v for k, v in load(os.path.join(MCQ, 'scenario-followup-cites.json')).items()
+            if not k.startswith('_')}
+bad_fc = [k for k in FU_CITES if k not in sc_by_id]
+if bad_fc: sys.exit(f'FATAL: follow-up-cite ids not in deck: {bad_fc}')
+n_fu_cite = 0
+for sid, per_index in FU_CITES.items():
+    fus = sc_by_id[sid].get('follow_ups') or []
+    for idx, cite in per_index.items():
+        i = int(idx)
+        if i >= len(fus) or not isinstance(fus[i], dict):
+            sys.exit(f'FATAL: follow-up cite {sid}[{idx}] has no such follow-up')
+        links = cite_links(cite)
+        if not links:
+            sys.exit(f'FATAL: follow-up cite {sid}[{idx}] resolves to no links: {cite!r}')
+        fus[i]['cite'] = cite
+        fus[i]['links'] = links
+        n_fu_cite += 1
+
 for key, co in COACH.items():
     co['links'] = cite_links(co.get('cite', ''))
 
@@ -991,7 +1014,7 @@ no_script = [s['id'] for s in scen if not s.get('script')]
 fu_total = sum(len(s.get('follow_ups') or []) for s in scen)
 fu_helped = sum(1 for s in scen for f in (s.get('follow_ups') or []) if isinstance(f, dict) and f.get('h') and f.get('d'))
 print(f'board sim: {len(scen)} scenarios (+{new_sc} new) · asks {len(scen)-len(no_ask)}/{len(scen)} · scripts {len(scen)-len(no_script)}/{len(scen)}')
-print(f'follow-ups: {fu_total} total · {fu_helped} with hint+debrief')
+print(f'follow-ups: {fu_total} total · {fu_helped} with hint+debrief · {n_fu_cite} with their own citation')
 if no_ask: print(f'  MISSING ask: {no_ask[:6]}')
 if no_script: print(f'  MISSING script: {no_script[:6]}')
 print('ladder: ' + ' · '.join(f'{r} {len(deck["ladder"][r])}' for r in LADDER_RUNGS)

@@ -1,0 +1,53 @@
+{
+  "_doc": "Per-follow-up citation override. The renderer falls back to the SCENARIO's coach cite when a follow-up carries none (assets/study.js: fu.cite || sc.coach.cite), so a follow-up whose debrief walks a different part shows a 'Where it lives' line pointing at a part that debrief never mentions. Keys are scenario id -> follow-up index -> cite string. The build resolves each into links with the same cite_links() the coach cites use, and FATALs if one resolves to nothing, so an unresolvable cite cannot ship.",
+
+  "d98a4561f069": {
+    "0": "R-DFARS 227 · Vol. 2, Data Rights",
+    "1": "RFO 6.103-1 · RFO 6.104 · Vol. 2, Competition"
+  },
+  "994ae910af13": {
+    "2": "RFO 19.204 · R-DFARS 219.204 · Vol. 2, Small Business"
+  },
+  "df05a1cf3a0d": {
+    "1": "RFO 19.104-1 · RFO 5.101 · RFO 12.201-1 · Vol. 2, SAP"
+  },
+  "8747b956fb28": {
+    "2": "RFO 16.507 · Vol. 2, Competition"
+  },
+  "c530d151efa8": {
+    "3": "R-DFARS 215.403-3 · Vol. 2, Pricing"
+  },
+  "d707f7ff05cc": {
+    "2": "R-DFARS 216.601-370 · Vol. 2, Contract Types"
+  },
+  "2b7ae5c2864c": {
+    "1": "RFO 52.245-1 · Vol. 2, Property"
+  },
+  "eeb37836c1b8": {
+    "0": "RFO 52.236-2 · Vol. 2, Construction",
+    "1": "RFO Part 37 · Vol. 2, Services"
+  },
+  "370f23a93603": {
+    "1": "RFO 1.405 · Vol. 2, Authority"
+  },
+  "3141b8cd4cf5": {
+    "1": "RFO 22.1002-2 · R-DFARS 217.201-270 · Vol. 2, Fiscal"
+  },
+  "9ebdcf249c43": {
+    "0": "RFO 15.403-2 · RFO 15.404-1 · Vol. 2, Pricing",
+    "2": "RFO 15.403-2 · Vol. 2, Pricing"
+  },
+  "fede6544f88c": {
+    "1": "RFO 19.204 · R-DFARS 219.204 · Vol. 2, Small Business"
+  },
+  "faada1b2235b": {
+    "0": "RFO 2.101 · Vol. 2, Commercial",
+    "1": "RFO Part 12 · RFO 15.403-2 · R-DFARS 215.403-3 · Vol. 2, Commercial"
+  },
+  "bfcb0cd1824f": {
+    "1": "RFO 35.102 · Vol. 2, R&D"
+  },
+  "25034f52840f": {
+    "0": "RFO 32.703-2 · Vol. 2, Fiscal"
+  }
+}
