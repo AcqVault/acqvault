@@ -549,3 +549,103 @@ line of small text sliding across a column. Three changes in this pass — the p
 the lnav desktop nav, the cover's lesson count — were real and the suite passed them all. Each
 was verified by eye. **Treat a green suite as "nothing large broke", never as "nothing
 changed".**
+
+---
+
+## The audit pass — four read-only agents, everything verified before acting
+
+Four agents audited the repo read-only and reported; every finding was re-checked against
+the code or the served output before anything changed. **Three of their claims were wrong**,
+which is the argument for checking rather than applying:
+
+- "`clauseSuppressSet` has already drifted" — it differed by a trailing `//` comment, not logic.
+- "`THRESH_GROUPS` has no gate" — it had one; it just was not in `MIRRORS`.
+- A "broken UTF-8 character" in a hub description was my own `cut -c` splitting an ellipsis.
+
+### Mirrors: 3 gated → 13
+
+Every addition carried a `KEEP IN SYNC` comment with nothing behind it. The one that
+matters most is **`clauseSuppressSet`**: it decides which duplicate R-DFARS clause wins, so
+drift there silently changes search *ranking* between the server and the in-app scorer.
+Constants needed their own extractor, so `CONST_MIRRORS` now covers `CATEGORY_VEHICLE_TABLES`
+(6KB, byte-identical in two files), `PART_200_SOURCES`, `PAIR_SOURCE`, `ALT_BOUNDARY`,
+`ALT_HEAD` and `THRESH_GROUPS`.
+
+Two are deliberately **not** gated, and say so in the table: `parseRatingTable` takes an
+extra `escFn` server-side, and `threshPart` is ES5 in the browser file and ES6 in `_seo.js`.
+Their text can never match; for `threshPart` the thing that must agree is the grouping
+data, which `CONST_MIRRORS` covers.
+
+### The fallbacks my own colour pass deleted
+
+`var(--muted2,#6f6c74)` had become `var(--muted2,var(--muted2))` — pass 5 substituted the
+hex inside the **fallback** as well as the value, in 53 places. Nothing rendered wrong,
+because those tokens are defined today. That is exactly why it survived four gates and two
+screenshot passes. They exist because of a real incident (`bf7f754`, "--ink3 and --muted2
+were undefined on every SSR page"). `render_health` now fails on `var(--x, var(--x))`.
+
+### SEO: the money pages had no usable meta
+
+`metaDescription()` returned the first 155 characters of the regulation, so `/r-dfars/part-5`
+shipped `"205.002 Policy."` — sixteen characters, no source name, nothing to click. 112 of
+225 started with a digit. All 225 now land between 70 and 155. Titles: 74 ran past what a
+result shows, worst at 94 (`DoD SSP 1. Purpose… — DoD Source Selection Procedures | AcqVault`
+names the source three times); max is 61 now, via a length-driven fallback rather than a
+hand-maintained exception list.
+
+Also fixed: `og:type` was `article` on every server-rendered page including hubs whose own
+JSON-LD says `CollectionPage`; the library's `/\.pdf$/` test meant the three field guides
+with `?v=` cache-busters were typed `WebPage`; the two `Course` nodes shared one `url` and
+gave `syllabusSections` an integer (schema.org drops it); `Article` had no `author`, which
+Google's Article guidance requires.
+
+**`dateModified` is emitted only for parts the refresh log actually recorded changing.**
+Stamping today's date on text that has not moved since ingest is a false freshness signal.
+
+### A gate that called itself a gate
+
+`api/_seo.js` describes `scripts/course_outline_health.py` as "the gate that keeps the
+outline honest". Nothing invoked it, and it was **failing** when finally run — it expected
+the single `Thresholds & Numbers` topic that had become seven lessons, and `outline()` could
+not see those seven at all because `VOL2` now ends in `THRESH_GROUPS.map(...)`, a call
+rather than string literals. Both sides read the literal now. Wired into `refresh.py`.
+
+### Coverage: page STATES are not page TYPES
+
+`a11y.spec.mjs` drives 15 states of the interactive pages. `tools/a11y-sweep.mjs` walks one
+URL per page **type** — 22 of them, every hub source, a part page from a differently-shaped
+source, and `/slip`, which had no coverage of any kind. It immediately found `/slip` failing
+AA twice: `--label-3` was tuned against `--surface` but `.topic` sits on the lighter
+`--surface-2` (4.33:1), and the system blue was used as 15px text at 3.82:1. Both were
+tokens tuned against one surface and used on two.
+
+The sweep counts an errored page as a failure. The first version of it errored on all 22
+and printed "no violations" — silence is not success.
+
+### Performance: two taken, one refused
+
+Taken: part and hub pages set `s-maxage` with no `max-age`, so paging back through a rulebook
+re-fetched 437KB gzipped from the CDN every time. And `xlsxgen.js` (32KB) was deferred into
+every home page view for a button most visitors never press — injected on first press now,
+with the URL kept in the HTML as `body[data-xlsx]` so `verify_deploy` still hashes it.
+
+**Refused: chunking or `<details>`-collapsing the big part pages.** `/rfo/part-52` is 2.4MB
+and by far the heaviest page on the site. Full text at one URL, findable with Ctrl-F, is the
+thing this site is *for*; splitting it would trade the product for a metric.
+
+Also refused: deleting ~7MB of unreferenced `og-*.png`. They cost deploy size only — never
+requested — and an old social post embedding one would break.
+
+### Gates added this pass
+
+| gate | catches |
+|---|---|
+| shipped scripts parse | a syntax error in `assets/study.js` serving a blank page with a 200 |
+| all 12 renderers return a page | a TDZ error that parses fine and 500s at request time |
+| `index.html`'s `N+ questions` floor | a static claim the deck no longer supports |
+| `var(--x, var(--x))` | a bulk substitution eating a fallback |
+| `CONST_MIRRORS` | data copies drifting between server and client |
+| `course_outline_health` in refresh | a deck topic no lesson shows |
+
+Every one negative-tested against the exact bug that motivated it. **A gate that has never
+been seen to fail is not a gate.**
