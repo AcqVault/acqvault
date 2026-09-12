@@ -321,33 +321,57 @@ it stays out of the repo root so Vercel keeps treating the site as buildless.
 
 ---
 
-## The coherence brief — measured, mostly not yet acted on
+## The coherence sweep — done, and what is deliberately left
 
-`node tools/measure-css.mjs` counts what the stylesheets actually contain. Run it before
-and after any sweep; these are the numbers to drive down.
+`node tools/measure-css.mjs` is the scoreboard. Run it before and after any CSS work.
 
-| | now |
-|---|---|
-| distinct font-sizes | **70** — and **46 are raw px literals** despite a five-step `--fs-*` scale |
-| distinct colours | **314** |
-| distinct spacing values | **85**, of which **54 distinct positive px** (1, 2, 3, 4, 4.5, 5, 6, 7, 8, 9, 10, 11, 12, 13 …) |
-| distinct radii | **34** despite `--r-sm/md/lg/xl/2xl` |
-| declarations | 13,742 across STYLE, STUDY_CSS, SRCSEL_CSS and app.css |
+| | before | now |
+|---|---|---|
+| font-size literals | 46, eight of them fractional | **31, zero fractional** |
+| distinct radii | 34 | **17** |
+| distinct spacing values | 85 | **73** |
+| distinct colours | 314 | **295** |
 
-A 54-step spacing ramp is not a scale, and 46 hand-written font sizes beside a token scale
-is why four engines read as four products. **The migration itself is not done** — it is a
-large, mechanical, high-blast-radius edit, and the right order is: baseline the visual
-harness, change one ramp, review the diff, repeat. The harness and the baseline now exist,
-so that work is unblocked rather than risky.
+Done in five passes, in the order that makes each reviewable:
 
-Two things the tooling proved that are worth keeping in mind when you do it:
+1. **Tokenise what already matches.** 151 literals replaced by the token equal to them.
+   Zero pixels move — and that is the point, because it is the only pass whose correctness
+   a screenshot suite can prove absolutely.
+2. **No fractional font-size or radius.** Rounding .5 *up* lands five of the eight
+   fractional steps directly on existing tokens, so the same edit removes the fractions and
+   tokenises 127 more declarations. Rounding down would have done only the first half.
+3. **A spacing ramp for the tail only.** Below 16px every integer 1–15 is in heavy use and
+   that density IS the design. Above 16px it was 30 one-off values nobody can tell apart.
+4. **Radii onto the token ramp**, with 999px and its typo-twin 99px becoming `--r-pill`.
+5. **Colours that already equal a token**, 339 uses, with `#fff` only on backgrounds.
 
-- **The screenshot suite cannot see a 1px border recolour.** It falls under the 0.01
-  `maxDiffPixelRatio`. Token changes that alter hairlines need `tools/contrast.mjs` and an
-  eyeball, not just a green suite.
-- **`tools/contrast.mjs` is the gate for colour**, and it is written so a pairing the site
-  does not actually use is not listed. It caught me inventing a brass-on-navy failure that
-  no rule produces.
+### The colour dimension is only half done, on purpose
+
+295 distinct colours remain, 237 of them in `assets/app.css`. **146 bare hexes have no
+token equal to them**, and the interesting part is that they are not noise: app.css carries
+a *second* green family (`#15803d`, `#16a34a`, `#047857`, `#bbf7d0`) distinct from the
+site's `--ok:#1e6b43`, plus an amber (`#b45309`) and two extra brasses (`#b8923a`,
+`#a87f28`). That is the real colour incoherence, and collapsing it is a **design decision
+about the palette**, not a migration — which green is the site's green?
+
+A blind perceptual merge was tried and rejected: only 26 of the 146 are close enough to a
+token to be called the same colour, and several of those are semantically wrong anyway
+(`#f7f4ec`, a warm cream, sits numerically near `--bad-bg`, an error tint). Mapping it
+there would read fine and be a real mistake. Left for a decision, not a script.
+
+### Three things the tooling proved, worth not relearning
+
+- **A screenshot suite cannot see a 1px border or a 2px corner.** Both fall under the 0.01
+  `maxDiffPixelRatio`. The radius pass shipped a squared-off pill on the home page and 42/42
+  passed. Token and colour changes need `tools/contrast.mjs`, `tools/tokens.spec.mjs` and an
+  eyeball — not a green suite.
+- **index.html has no server-rendered STYLE block.** `assets/app.css` is the only stylesheet
+  the home page loads, so a token defined only in `api/_seo.js` resolves to nothing there.
+  Five did. `tools/tokens.spec.mjs` now asserts, per page, that every referenced custom
+  property is defined by a stylesheet that page loads.
+- **`app.css` and `widgets.js` carry hand-maintained `?v=` tokens in index.html**, not the
+  content hashes the study assets use. Change either and you must bump it or the immutable
+  cache pins the old bytes for 30 days. `verify_deploy.py` caught exactly this.
 
 ## Open work
 
