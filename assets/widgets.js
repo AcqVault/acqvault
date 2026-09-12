@@ -1525,8 +1525,25 @@
 
       osrSyncCols();
 
-      const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', () => {
-        if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV \u2192'; return; }
+      const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', async () => {
+        // xlsxgen.js is 32KB and was deferred into every home page view for a button
+        // most visitors never press. Fetched on the first press instead; the URL comes
+        // from body[data-xlsx] so it stays in the HTML for verify_deploy to hash.
+        if (typeof window.acqBuildXlsx !== 'function') {
+          const src = document.body.getAttribute('data-xlsx');
+          if (!src) { xl.textContent = 'Use CSV \u2192'; return; }
+          const before = xl.textContent;
+          xl.disabled = true; xl.textContent = 'Preparing\u2026';
+          try {
+            await (window.__acqXlsxLoad || (window.__acqXlsxLoad = new Promise((res, rej) => {
+              const t = document.createElement('script');
+              t.src = src; t.onload = res; t.onerror = rej;
+              document.head.appendChild(t);
+            })));
+          } catch (e) { xl.disabled = false; xl.textContent = 'Use CSV \u2192'; return; }
+          xl.disabled = false; xl.textContent = before;
+          if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV \u2192'; return; }
+        }
         try {
           const u8 = window.acqBuildXlsx(osrWorkbookData({
             offices: gotOffices, nameOf: nameOf, label: label, chartFys: chartFys, rows: rows,

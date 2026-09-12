@@ -10,6 +10,6 @@ module.exports = function handler(req, res) {
     res.status(404);
     return res.send(renderNotFoundPage());
   }
-  res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
+  res.setHeader('Cache-Control', 'public, max-age=600, s-maxage=86400, stale-while-revalidate=604800');
   return res.send(html);
 };

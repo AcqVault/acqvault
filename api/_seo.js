@@ -94,21 +94,29 @@ const DECK_PRELOAD = `<link rel="preload" as="fetch" href="/assets/study-deck.js
 
 const SOURCES = {
   'rfo':                 { name: 'Revolutionary FAR Overhaul', short: 'RFO',
-    desc: 'Full text of the Revolutionary FAR Overhaul (RFO) — the overhauled acquisition rulebook agencies cite for new awards, implemented for DoD via class deviations under E.O. 14275.' },
+    desc: 'Full text of the Revolutionary FAR Overhaul (RFO) — the overhauled acquisition rulebook agencies cite for new awards, implemented for DoD via class deviations under E.O. 14275.',
+    metaDesc: "Full text of the Revolutionary FAR Overhaul \u2014 the rulebook agencies cite for new awards, implemented for DoD by class deviation under E.O. 14275." },
   'r-dfars':             { name: 'R-DFARS Deviations', short: 'R-DFARS',
-    desc: 'DoD class deviations implementing the RFO for the Department of Defense — the deviation set you cite in place of the legacy supplement. Part 252 additionally carries the pre-deviation clause library, kept for reference and labelled as such.' },
+    desc: 'DoD class deviations implementing the RFO for the Department of Defense — the deviation set you cite in place of the legacy supplement. Part 252 additionally carries the pre-deviation clause library, kept for reference and labelled as such.',
+    metaDesc: "Full text of the DoD class deviations that implement the FAR Overhaul \u2014 the set you cite in place of the legacy DFARS supplement. All 46, by part." },
   'far-companion':       { name: 'FAR Companion', short: 'FAR Companion',
-    desc: 'Practitioner guidance accompanying the Revolutionary FAR Overhaul.' },
+    desc: 'Practitioner guidance accompanying the Revolutionary FAR Overhaul.',
+    metaDesc: "Full text of the FAR Companion \u2014 the practitioner guidance that accompanies the Revolutionary FAR Overhaul. Free, searchable, no account needed." },
   'afi-63-138':          { name: 'DAFI 63-138', short: 'DAFI 63-138',
-    desc: 'Department of the Air Force Instruction 63-138, Acquisition of Services.' },
+    desc: 'Department of the Air Force Instruction 63-138, Acquisition of Services.',
+    metaDesc: "Full text of DAFI 63-138, Acquisition of Services \u2014 the Department of the Air Force instruction governing how services are bought. Free and searchable." },
   'category-management': { name: 'Category Management Buying Guide', short: 'Category Management',
-    desc: 'Federal category management buying guidance.' },
+    desc: 'Federal category management buying guidance.',
+    metaDesc: "Full text of the federal Category Management Buying Guide \u2014 the spend-category guidance and the vehicles it points to. Free, searchable, no account." },
   'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
-    desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.' },
+    desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.',
+    metaDesc: "Full text of the DoD Financial Management Regulation, 7000.14-R \u2014 all 16 volumes covering budget, accounting, disbursing, pay and contract payment." },
   'pgi':                 { name: 'R-DFARS Procedures, Guidance, and Information', short: 'R-DFARS PGI',
-    desc: 'The PGI attachment that ships with each DoD class deviation \u2014 the procedural companion to the R-DFARS rule: how to build a PIID, what a contract action report must carry, how to run a mentor-prot\u00e9g\u00e9 agreement. Guidance, not regulation: it tells you how to execute a rule, it does not impose one.' },
+    desc: 'The PGI attachment that ships with each DoD class deviation \u2014 the procedural companion to the R-DFARS rule: how to build a PIID, what a contract action report must carry, how to run a mentor-prot\u00e9g\u00e9 agreement. Guidance, not regulation: it tells you how to execute a rule, it does not impose one.',
+    metaDesc: "Full text of the R-DFARS PGI \u2014 the procedural companion shipped with each DoD class deviation. Guidance on executing a rule, not the rule itself." },
   'ssp':                 { name: 'DoD Source Selection Procedures', short: 'DoD SSP',
-    desc: 'The Department of Defense Source Selection Procedures (August 20, 2022) — what every competitively negotiated DoD source selection above $10 million runs on: source selection team roles, the rating methods and their adjectival definitions, the tradeoff and LPTA processes, and the debriefing guide.' }
+    desc: 'The Department of Defense Source Selection Procedures (August 20, 2022) — what every competitively negotiated DoD source selection above $10 million runs on: source selection team roles, the rating methods and their adjectival definitions, the tradeoff and LPTA processes, and the debriefing guide.',
+    metaDesc: "Full text of the DoD Source Selection Procedures \u2014 team roles, rating methods, tradeoff and LPTA, and the debriefing guide. Free and searchable." }
 };
 const SOURCE_KEYS = Object.keys(SOURCES);
 
@@ -1250,7 +1258,7 @@ function lnavHtml(canonical) {
          `<a class="cta" href="/?q=">Search all sources →</a></div></header>`;
 }
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero, ogType }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1260,7 +1268,7 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed, ogIma
 <title>${esc(title)}</title>
 <meta name="description" content="${description}">
 ${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<link rel="canonical" href="${canonical}">
-<meta property="og:type" content="article">
+<meta property="og:type" content="${ogType || 'website'}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${description}">
 <meta property="og:url" content="${canonical}">
@@ -1297,8 +1305,38 @@ function renderPartPage(source, part) {
   if (!meta || !docs || !docs.length) return null;
   const canonical = `${SITE}/${source}/part-${encodeURIComponent(part)}`;
   const label = partLabel(source, part);   // "Part 6" for most; "Appendix A — Debriefing Guide" for ssp
-  const title = `${meta.short} ${label} — ${meta.name} | AcqVault`;
-  const descPlain = metaDescription(docs);
+  // The title repeated the source twice — "DoD SSP 1. Purpose... — DoD Source Selection
+  // Procedures | AcqVault" ran to 94 characters, well past what a result shows. The
+  // short name already identifies the source, so the long one only returns when the
+  // label does not carry it.
+  // Sources whose label is descriptive (the SSP's "1. Purpose, Roles, and
+  // Responsibilities") already say what the page is, so appending the full source name
+  // ran /ssp/part-1 to 94 characters. Only append it when the label is a bare number.
+  // Prefer the fuller title, but a result listing truncates past ~62 characters, so
+  // fall back to the short form rather than ship something the reader never sees.
+  // "Category Management Part 1 — Category Management Buying Guide | AcqVault" said it
+  // twice in 72; "DoD SSP 1. Purpose, Roles, and Responsibilities — DoD Source
+  // Selection Procedures | AcqVault" ran to 94.
+  const longTitle = `${meta.short} ${label} — ${meta.name} | AcqVault`;
+  const title = longTitle.length <= 62 ? longTitle : `${meta.short} ${label} | AcqVault`;
+  // metaDescription() returns the first 155 characters of the regulation itself, which
+  // on a short part is the whole snippet: /r-dfars/part-5 served "205.002 Policy." and
+  // /rfo/part-11 served "Subpart 11.1 - Preaward". Neither tells a searcher anything,
+  // and neither names the source. Lead with what the page IS, then the statute text.
+  const nm = (partNames()[source] || {})[String(part)]
+    || (partNames()[source] || {})[String(displayPartForSource(source, part))] || '';
+  // A descriptive label already IS the part name, so appending it produced
+  // "DoD SSP 1. Purpose, Roles, and Responsibilities — Purpose, Roles, and Responsibilities".
+  const partNm = (nm && !label.includes(nm)) ? nm : '';
+  const secWord = docs.length === 1 ? 'section' : 'sections';
+  const lead = `${meta.short} ${label}${partNm ? ' — ' + partNm : ''}. `;
+  const tail = `Full official text, ${docs.length} ${secWord}, free and searchable on AcqVault.`;
+  // clampDesc(t, n) with n <= 0 returns t.slice(0, -1) — the whole string — so the
+  // budget has to be checked before it is spent, not after. Descriptions ran to 303
+  // characters on the first cut.
+  const budget = 152 - lead.length - tail.length;
+  const snippet = budget >= 40 ? clampDesc(metaDescription(docs), budget) : '';
+  const descPlain = clampDesc(snippet ? `${lead}${snippet} ${tail}` : `${lead}${tail}`, 155);
   const description = esc(descPlain);   // meta/og attributes need escaping; JSON-LD does not
 
   // Sources published as one document (the SSP, for instance) give every section the
@@ -1363,7 +1401,7 @@ ${partPairBanner(source, part, pairIdx)}
 ${partSrc}
 <div class="part-cols">${toc}<div class="part-main">${sections}</div></div>`;
 
-  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png`, partNav: true, wide: docs.length > 1 });
+  return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png`, partNav: true, wide: docs.length > 1, ogType: 'article' });
 }
 
 // The library seal, reused so the hubs speak the same language as /library and
@@ -1376,8 +1414,9 @@ function renderHubPage(source) {
   const { parts } = partsForSource(source);
   if (!parts.length) return null;
   const canonical = `${SITE}/${source}`;
-  const title = `${meta.name} — full text & parts | AcqVault`;
-  const description = esc(clampDesc(meta.desc, 155));
+  const longHubTitle = `${meta.name} — full text & parts | AcqVault`;
+  const title = longHubTitle.length <= 62 ? longHubTitle : `${meta.short} — full text & parts | AcqVault`;
+  const description = esc(meta.metaDesc || clampDesc(meta.desc, 155));
 
   const names = partNames()[source] || {};
   const links = parts.map(p => {
@@ -1530,7 +1569,9 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
       // (SSP → /ssp browse hub), or a hosted PDF. The old code prefixed SITE onto all three,
       // producing "https://www.acqvault.comhttps://…" for FMR, and declared everything a PDF.
       const abs = /^https?:/i.test(it.file || '');
-      const isPdf = /\.pdf$/i.test(it.file || '');
+      // The field guides carry a ?v= cache-buster, so a $-anchored test called the three
+      // biggest downloads on the page WebPage and dropped their encodingFormat.
+      const isPdf = /\.pdf($|\?)/i.test(it.file || '');
       const node = { '@type': isPdf ? 'DigitalDocument' : 'WebPage',
                      name: it.title, url: abs ? it.file : `${SITE}${it.file}` };
       if (isPdf) node.encodingFormat = 'application/pdf';
@@ -3076,15 +3117,16 @@ function renderStudyPage() {
   const description = esc(`Free, no-login contracting course: ${counts ? counts.advanced : 44} lessons drawn from the AcqVault Field Guides, each ending in a knowledge check that feeds a spaced-repetition review queue — plus threshold sprints, board-style scenario simulations and the Source Selection Simulator. Works offline. No account needed.`);
 
   /* A WebApplication node alone described a tool, not the two courses that are now the
-     spine of this page. Course is the type a 44-lesson syllabus actually is, and the one
+     spine of this page. Course is the type this syllabus actually is, and the one
      search engines render course results from. Both nodes, one graph. */
   const provider = { '@type': 'Organization', name: 'AcqVault', url: SITE };
   const course = (name, blurb, lessons) => ({
     '@context': 'https://schema.org', '@type': 'Course',
-    name: `AcqVault Study — ${name}`, description: blurb, url: canonical,
+    '@id': `${canonical}#${name.toLowerCase()}`,
+    name: `AcqVault Study — ${name}`,
+    description: lessons ? `${blurb} ${lessons} lessons.` : blurb, url: canonical,
     provider, isAccessibleForFree: true, inLanguage: 'en',
     educationalLevel: name, teaches: 'US federal and Department of the Air Force contracting',
-    ...(lessons ? { syllabusSections: lessons } : {}),
     hasCourseInstance: {
       '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'PT30M',
       instructor: provider
@@ -4044,7 +4086,7 @@ ${HUB_SEAL}
 <h2 style="margin-top:32px">Frequently asked questions</h2>
 ${faqHtml}`;
 
-  return shell({ title, description, canonical, jsonld, body, hero, ogImage: 'og-src-rfo-v2.png' });
+  return shell({ title, description, canonical, jsonld, body, hero, ogImage: 'og-src-rfo-v2.png', ogType: 'article' });
 }
 
 function renderSitemap() {
