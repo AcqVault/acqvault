@@ -871,7 +871,8 @@ h1{font-family:var(--serif);font-weight:700;font-size:30px;letter-spacing:var(--
 .lede a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
 section.sec{padding:18px 0;border-top:1px solid var(--line);scroll-margin-top:14px}
 section.sec h2{font-size:18px;letter-spacing:var(--ls-tight);margin:0 0 6px;scroll-margin-top:16px}
-.sec-hd{display:flex;align-items:baseline;flex-wrap:wrap}
+.sec-hd{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.sec-hd > h2{flex:1 1 auto;min-width:0}
 section.sec h2 a{color:inherit;text-decoration:none}
 /* Landing from a deep link (study chips, TOC, copied anchors): bathe the exact section
    in the house brass so the reader spots it without sweeping the page. The :target wash
@@ -934,7 +935,7 @@ section.sec p a.xref:hover{text-decoration-color:var(--accent)}
 .cm-vehicle-table td:first-child{width:15%;font-weight:var(--fw-black);color:var(--cm-txt);background:var(--cm-bg);}
 .cm-vehicle-table td:nth-child(2){width:31%;font-weight:var(--fw-heavy);color:var(--ink);}
 .cm-vehicle-table td:nth-child(4){width:12%;font-weight:var(--fw-heavy);color:var(--muted);}
-.srclink{font-size:var(--fs-sm);font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap;margin-left:8px;vertical-align:2px}
+.srclink{font-size:var(--fs-sm);font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap;flex:0 0 auto;transition:color .15s}
 .srclink:hover{color:var(--accent);text-decoration:underline}
 /* Paragraph nesting — the rulebook's own tiering. acquisition.gov indents 24px per
    level (ListL1/ListL2/…) and the corpus already stores that depth as L0:/L1:/L2:
