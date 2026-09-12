@@ -503,7 +503,13 @@ def main():
         text = (BASE / path).read_text()
         for name, ref in re.findall(r'(--[\w-]+)\s*:\s*var\(\s*(--[\w-]+)\s*\)', text):
             if name == ref:
-                circ.append(f'{path}: {name}')
+                circ.append(f'{path}: {name} (defined as itself)')
+        # var(--x, var(--x)) reads as "has a fallback" and has none. A bulk hex -> var()
+        # substitution rewrote the FALLBACK too and quietly deleted 53 of them, on the
+        # very tokens that had once been undefined on every SSR page.
+        for tok in set(re.findall(r'var\(\s*(--[\w-]+)\s*,\s*var\(\s*\1\s*\)\s*\)', text)):
+            n = len(re.findall(r'var\(\s*' + re.escape(tok) + r'\s*,\s*var\(\s*' + re.escape(tok) + r'\s*\)\s*\)', text))
+            circ.append(f'{path}: {tok} falls back to itself x{n}')
     if circ:
         fail('custom properties defined as themselves: ' + ', '.join(circ),
              'a token that resolves to itself renders as the initial value with no '

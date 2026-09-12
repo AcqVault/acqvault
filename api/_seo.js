@@ -1728,13 +1728,13 @@ const CHROME_CSS = (pad, top) => `
   white-space:nowrap;overflow:hidden}
 .rz-bar-crumb b{flex:none;font-weight:800;letter-spacing:var(--ls-snug);color:var(--ink)}
 .rz-bar-sep{flex:none;color:var(--line);font-weight:400}
-.rz-bar-now{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--muted2,var(--muted2))}
+.rz-bar-now{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--muted2,#6f6c74)}
 .rz-bar-prog{flex:none;display:flex;align-items:center;gap:9px}
 .rz-bar-track{width:96px;height:4px;border-radius:2px;background:var(--line2);overflow:hidden}
 .rz-bar-track>i{display:block;height:100%;border-radius:2px;background:var(--brass);
   transition:width .35s cubic-bezier(.23,1,.32,1)}
 .rz-bar-n{font-size:var(--fs-sm);font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
-.rz-bar-n span{font-weight:600;color:var(--muted2,var(--muted2))}
+.rz-bar-n span{font-weight:600;color:var(--muted2,#6f6c74)}
 .rz-bar-next{flex:none;min-height:36px;padding:8px 14px;font-size:var(--fs-sm)}
 @media (max-width:860px){
   /* the shell keeps its side padding at every width, so the cancel stays pad */
@@ -1765,7 +1765,7 @@ const STUDY_CSS = `<style>
 /* 64ch. This was the smallest body size on the page AND the widest measure (84 cpl at 832px)
    — the two errors compound. The neighbouring .st-intro and .st-summary .st-sub already cap. */
 .st-sub{color:var(--muted);font-size:var(--fs-md);margin:0 0 14px;line-height:1.55;max-width:64ch}
-.st-intro{font-size:var(--fs-lg);line-height:1.6;color:var(--ink3,var(--ink3));margin:0 0 20px;max-width:60ch}
+.st-intro{font-size:var(--fs-lg);line-height:1.6;color:var(--ink3,#474c55);margin:0 0 20px;max-width:60ch}
 .st-intro b{color:var(--ink);font-weight:700}
 .st-lad-cum{display:inline;color:var(--brass-ink);font-weight:700}
 /* Board Introduction Builder (48 CONS page). Reuses the board-sim input idiom (.st-bd-bluf)
@@ -1904,7 +1904,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 @media (hover:hover) and (pointer:fine){.st-btn-reveal:hover{filter:brightness(1.08);box-shadow:0 14px 26px -14px rgba(var(--navy-rgb),.78)}.st-btn-hint:hover:not(:disabled){border-color:var(--accent)}}
 .st-btn-opts{background:var(--bg);color:var(--muted);border:1px solid var(--line-ctl);font-weight:650}
 .st-btn-opts:hover{border-color:rgba(var(--brass-rgb),.5);color:var(--brass-ink)}
-.st-produce-hint{margin-top:14px;font-size:var(--fs-base);font-style:italic;color:var(--muted2,var(--muted2))}
+.st-produce-hint{margin-top:14px;font-size:var(--fs-base);font-style:italic;color:var(--muted2,#6f6c74)}
 /* ═══════════════════════════════════════════════════════════════════════════
    SURFACE PASS — the instrument-panel look, applied to the existing markup.
    Flat sheets instead of gradient slabs, one 4px radius instead of five, 1px
@@ -2079,7 +2079,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 .st-check{margin-top:14px;border:1px solid var(--line2);border-radius:var(--r-sm);overflow:hidden;background:var(--bg)}
 .st-check-h{background:var(--off,#f7f6f2);padding:7px 12px;border-bottom:1px solid var(--line2);font-size:var(--fs-xs);font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .st-check-list{margin:0;padding:3px 0;list-style:none}
-.st-check-item{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:left;background:none;border:none;font:inherit;font-size:var(--fs-md);line-height:1.45;color:var(--ink3,var(--ink3));padding:7px 12px;cursor:pointer;min-height:44px;transition:background-color .16s ease}
+.st-check-item{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:left;background:none;border:none;font:inherit;font-size:var(--fs-md);line-height:1.45;color:var(--ink3,#474c55);padding:7px 12px;cursor:pointer;min-height:44px;transition:background-color .16s ease}
 .st-check-item:hover{background:var(--off,#f7f6f2)}
 .st-check-item:focus-visible{outline:3px solid var(--brass);outline-offset:-3px}
 .st-check-box{flex:none;width:15px;height:15px;margin-top:1px;border:1.5px solid var(--line2);border-radius:var(--r-sm);background:var(--bg)}
@@ -2090,7 +2090,7 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 @media (max-width:640px){.st-check-item{font-size:var(--fs-base)}}
 .st-why{margin-top:13px;padding:9px 13px;border-left:2px solid rgba(var(--brass-rgb),.45);
   background:var(--off,#f7f6f2);border-radius:0 var(--r-sm) var(--r-sm) 0;
-  font-size:var(--fs-base);line-height:1.5;color:var(--ink3,var(--ink3))}
+  font-size:var(--fs-base);line-height:1.5;color:var(--ink3,#474c55)}
 .st-why b{color:var(--ink);font-weight:700}
 @media (max-width:640px){.st-why{font-size:var(--fs-base);padding:8px 11px}}
 .st-capped{margin-top:12px;font-size:var(--fs-base);line-height:1.5;color:var(--brass-ink);background:#f6efdd;border:1px solid rgba(var(--brass-rgb),.28);border-radius:var(--r-md);padding:9px 12px}
@@ -2619,7 +2619,7 @@ ${CHROME_CSS(24, 38)}
 .rz-meter{display:flex;flex-direction:column;gap:8px;margin-top:20px;max-width:280px}
 .rz-meter-bar{height:4px;border-radius:2px;background:var(--line2);overflow:hidden}
 .rz-meter-bar>span{display:block;height:100%;border-radius:2px;background:var(--brass);transition:width .35s cubic-bezier(.23,1,.32,1)}
-.rz-meter-n{font-size:var(--fs-sm);font-weight:650;color:var(--muted2,var(--muted2));letter-spacing:var(--ls-snug)}
+.rz-meter-n{font-size:var(--fs-sm);font-weight:650;color:var(--muted2,#6f6c74);letter-spacing:var(--ls-snug)}
 .rz-prog{height:4px;background:var(--line2);border-radius:2px;overflow:hidden;margin:0 0 18px}
 .rz-prog>span{display:block;height:100%;background:var(--brass);border-radius:2px;transition:width .35s cubic-bezier(.23,1,.32,1)}
 .rz-prog-lg{height:6px;margin:18px 0 10px}
@@ -2665,7 +2665,7 @@ ${CHROME_CSS(24, 38)}
 .rz-card-h{margin:20px 0 9px;padding-top:16px;border-top:1px solid var(--line2);font-size:var(--fs-xs);
   font-weight:800;letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
 .rz-incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;
-  font-size:var(--fs-md);line-height:1.45;color:var(--ink3,var(--ink3))}
+  font-size:var(--fs-md);line-height:1.45;color:var(--ink3,#474c55)}
 .rz-incl b{color:var(--ink);font-weight:700}
 /* Section index: what a 44-row outline needs beside it, and what was filling the rail
    with nothing before. */
@@ -2678,7 +2678,7 @@ ${CHROME_CSS(24, 38)}
    lede. It has to read as a caveat rather than a lesson row, so it is muted and sits
    inside the section above the list it qualifies. */
 .rz-aside-h{margin:0 2px 2px;padding-top:0;border-top:none}
-.rz-sec-note{margin:0 2px 10px;font-size:var(--fs-md);line-height:1.55;color:var(--muted2,var(--muted2))}
+.rz-sec-note{margin:0 2px 10px;font-size:var(--fs-md);line-height:1.55;color:var(--muted2,#6f6c74)}
 /* ── /48cons ladder interior in the Rise layer ──────────────────────────────────
    The rung strip was built as a four-across grid under an 880px column. In the rail
    it has ~300px, so the fourth ceiling fell off the edge. Same buttons, stacked —
@@ -2713,22 +2713,22 @@ ${CHROME_CSS(24, 38)}
    .st-actions top margin double-counted the card padding. */
 .rz-card>.st-actions{margin-top:16px;margin-bottom:0}
 .rz-secnav-i{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:var(--r-sm);
-  font-size:var(--fs-sm);line-height:1.4;color:var(--ink3,var(--ink3));text-decoration:none}
+  font-size:var(--fs-sm);line-height:1.4;color:var(--ink3,#474c55);text-decoration:none}
 .rz-secnav-i span{flex:1;min-width:0}
-.rz-secnav-i b{flex:none;font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted2,var(--muted2))}
+.rz-secnav-i b{flex:none;font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted2,#6f6c74)}
 .rz-secnav-i:hover{background:var(--off,#f7f6f2);color:var(--ink)}
 .rz-secnav-i:focus-visible{outline:3px solid var(--brass);outline-offset:-2px}
 .rz-secnav-done b{color:var(--brass-ink)}
 .rz-sec{scroll-margin-top:80px}
 .rz-outline-head{font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);text-transform:uppercase;
-  color:var(--muted2,var(--muted2));margin:0 0 2px;font-family:inherit}
+  color:var(--muted2,#6f6c74);margin:0 0 2px;font-family:inherit}
 .rz-vol{display:flex;align-items:center;gap:14px;margin:18px 0 2px;font-size:var(--fs-xs);font-weight:800;
   letter-spacing:var(--ls-widest);text-transform:uppercase;color:var(--brass-ink)}
 .rz-vol::after{content:"";flex:1;height:1px;background:rgba(var(--brass-rgb),.28)}
 .rz-sec{margin-top:18px}
 .rz-sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:0 2px 9px}
 .rz-sec-head h3{margin:0;font-size:18px;font-weight:700;letter-spacing:var(--ls-snug)}
-.rz-sec-count{font-size:var(--fs-sm);color:var(--muted2,var(--muted2));white-space:nowrap}
+.rz-sec-count{font-size:var(--fs-sm);color:var(--muted2,#6f6c74);white-space:nowrap}
 .rz-lessons{list-style:none;margin:0;padding:0;border:1px solid var(--line2);border-radius:var(--r-sm);background:var(--bg);overflow:hidden}
 .rz-lesson{display:flex;width:100%;align-items:center;gap:13px;text-align:left;background:var(--bg);border:none;border-top:1px solid var(--line-ctl);
   padding:10px 14px;cursor:pointer;font:inherit;color:var(--ink);transition:background .14s}
@@ -2736,14 +2736,14 @@ ${CHROME_CSS(24, 38)}
 .rz-lesson:hover{background:var(--off,#f7f6f2)}
 .rz-lesson:active{background:rgba(var(--brass-rgb),.1)}
 .rz-lesson-mark{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:var(--fs-sm);font-weight:800;background:var(--off,#f7f6f2);border:1px solid var(--line2);color:var(--muted2,var(--muted2))}
+  font-size:var(--fs-sm);font-weight:800;background:var(--off,#f7f6f2);border:1px solid var(--line2);color:var(--muted2,#6f6c74)}
 .rz-lesson-done .rz-lesson-mark{background:var(--brass);border-color:var(--brass);color:#fff}
 .rz-lesson-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .rz-lesson-body b{font-size:var(--fs-lg);font-weight:700;letter-spacing:var(--ls-snug)}
-.rz-lesson-body span{font-size:var(--fs-sm);color:var(--muted2,var(--muted2))}
+.rz-lesson-body span{font-size:var(--fs-sm);color:var(--muted2,#6f6c74)}
 .rz-lesson-go{flex:none;color:var(--brass);font-size:17px;transition:transform .15s}
 .rz-lesson:hover .rz-lesson-go{transform:translateX(3px)}
-.rz-lesson-done .rz-lesson-body b{color:var(--ink3,var(--ink3))}
+.rz-lesson-done .rz-lesson-body b{color:var(--ink3,#474c55)}
 
 /* the two things that are not lessons */
 .rz-extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:0}
@@ -2753,7 +2753,7 @@ ${CHROME_CSS(24, 38)}
 .rz-extra-card:hover{border-color:var(--brass-line)}
 .rz-extra-card:active{transform:translateY(0) scale(.99)}
 .rz-extra-card b{font-size:var(--fs-lg);letter-spacing:var(--ls-snug)}
-.rz-extra-card span{font-size:var(--fs-md);color:var(--muted2,var(--muted2));line-height:1.55}
+.rz-extra-card span{font-size:var(--fs-md);color:var(--muted2,#6f6c74);line-height:1.55}
 
 /* ── lesson page ──────────────────────────────────────────────────────────── */
 .rz-lesson-shell{display:block}
@@ -2769,14 +2769,14 @@ ${CHROME_CSS(24, 38)}
 .rz-side-back:hover{background:rgba(var(--brass-rgb),.07)}
 .rz-side-nav{display:flex;flex-direction:column;gap:1px}
 .rz-side-sec{margin:16px 0 5px;padding:0 8px;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);
-  text-transform:uppercase;color:var(--muted2,var(--muted2))}
+  text-transform:uppercase;color:var(--muted2,#6f6c74)}
 .rz-side-nav .rz-side-sec:first-child{margin-top:8px}
 .rz-side-lesson{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;font-size:var(--fs-md);line-height:1.4;
-  background:none;border:none;border-radius:var(--r-sm);padding:8px;cursor:pointer;color:var(--ink3,var(--ink3));transition:background .14s,color .14s}
+  background:none;border:none;border-radius:var(--r-sm);padding:8px;cursor:pointer;color:var(--ink3,#474c55);transition:background .14s,color .14s}
 .rz-side-lesson:hover{background:rgba(var(--brass-rgb),.06);color:var(--ink)}
 .rz-side-lesson:active{background:rgba(var(--brass-rgb),.11)}
 .rz-side-mark{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:var(--fs-xs);font-weight:800;background:var(--off,#f7f6f2);border:1px solid var(--line2);color:var(--muted2,var(--muted2))}
+  font-size:var(--fs-xs);font-weight:800;background:var(--off,#f7f6f2);border:1px solid var(--line2);color:var(--muted2,#6f6c74)}
 .rz-side-done .rz-side-mark{background:var(--brass);border-color:var(--brass);color:#fff}
 .rz-side-now{background:rgba(var(--brass-rgb),.1);color:var(--ink);font-weight:700;box-shadow:inset 3px 0 0 var(--brass)}
 .rz-side-now .rz-side-mark{background:var(--bg);border-color:var(--brass);color:var(--brass-ink)}
@@ -2785,17 +2785,17 @@ ${CHROME_CSS(24, 38)}
 .rz-sim{display:flex;flex-direction:column;gap:20px}
 .rz-sim-main{min-width:0}
 .rz-sim-rail{min-width:0;background:var(--bg);border:1px solid var(--line2);border-radius:var(--r-sm);padding:16px 18px}
-.rz-sim-scen{margin:0 0 16px;font-size:var(--fs-md);line-height:1.62;color:var(--ink3,var(--ink3))}
+.rz-sim-scen{margin:0 0 16px;font-size:var(--fs-md);line-height:1.62;color:var(--ink3,#474c55)}
 .rz-sim-ask{margin:0;font-size:var(--fs-md);line-height:1.55;font-weight:650;color:var(--ink)}
-.rz-sim-meta{margin:0 0 9px;font-size:var(--fs-sm);line-height:1.55;color:var(--muted2,var(--muted2))}
+.rz-sim-meta{margin:0 0 9px;font-size:var(--fs-sm);line-height:1.55;color:var(--muted2,#6f6c74)}
 .rz-sim-meta:last-of-type{margin-bottom:0}
 .rz-sim-rail .rz-rail-h{margin-top:16px}
 .rz-sim-rail .rz-rail-h:first-child{margin-top:0}
 .rz-sim-tally{margin-top:16px;padding-top:13px;border-top:1px solid var(--line2);
-  font-size:var(--fs-sm);color:var(--muted2,var(--muted2));font-variant-numeric:tabular-nums}
+  font-size:var(--fs-sm);color:var(--muted2,#6f6c74);font-variant-numeric:tabular-nums}
 .rz-sim-tally b{color:var(--brass-ink);font-weight:800}
 .rz-sim-exits{margin-top:14px}
-.rz-sim-hintnote{margin:14px 0 0;font-size:var(--fs-sm);line-height:1.55;color:var(--muted2,var(--muted2))}
+.rz-sim-hintnote{margin:14px 0 0;font-size:var(--fs-sm);line-height:1.55;color:var(--muted2,#6f6c74)}
 .rz-sim-hintnote b{color:var(--ink);font-weight:800}
 /* The spoken script opens on request: shown inline straight after a model answer that said
    the same thing structurally, it was the strongest inducement to grading recognition as
@@ -2820,12 +2820,12 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 .rz-steps::-webkit-scrollbar{display:none}
 .rz-steps:focus{outline:none}
 .rz-steps:focus-visible{outline:3px solid var(--brass);outline-offset:3px;border-radius:var(--r-sm)}
-.rz-step{display:flex;align-items:center;gap:8px;flex:none;color:var(--muted2,var(--muted2));font-size:var(--fs-sm)}
+.rz-step{display:flex;align-items:center;gap:8px;flex:none;color:var(--muted2,#6f6c74);font-size:var(--fs-sm)}
 .rz-step+.rz-step::before{content:"";display:block;width:22px;height:1px;background:var(--line2);margin:0 10px}
 .rz-step-m{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:var(--fs-xs);font-weight:800;background:var(--bg);border:1px solid var(--line2)}
 .rz-step-t{white-space:nowrap}
-.rz-step-done{color:var(--ink3,var(--ink3))}
+.rz-step-done{color:var(--ink3,#474c55)}
 .rz-step-done .rz-step-m{background:var(--brass);border-color:var(--brass);color:#fff}
 .rz-step-now{color:var(--ink);font-weight:700}
 .rz-step-now .rz-step-m{border-color:var(--brass);color:var(--brass-ink);box-shadow:0 0 0 3px rgba(var(--brass-rgb),.12)}
@@ -2836,16 +2836,16 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 .rz-rail-h{margin:0 0 10px;font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);
   text-transform:uppercase;color:var(--brass-ink)}
 .rz-rail-pos{padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid var(--line2);
-  font-size:var(--fs-sm);line-height:1.5;color:var(--muted2,var(--muted2))}
+  font-size:var(--fs-sm);line-height:1.5;color:var(--muted2,#6f6c74)}
 .rz-rail-pos b{color:var(--ink);font-weight:700}
 .rz-rail-pos span{display:block;color:var(--brass-ink);font-weight:700}
 .rz-jump{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:2px;
   counter-reset:rzj}
 .rz-jump li{counter-increment:rzj}
 .rz-jump a{display:flex;gap:9px;padding:6px 8px 6px 0;font-size:var(--fs-sm);line-height:1.45;
-  color:var(--ink3,var(--ink3));text-decoration:none;border-radius:var(--r-sm)}
+  color:var(--ink3,#474c55);text-decoration:none;border-radius:var(--r-sm)}
 .rz-jump a::before{content:counter(rzj);flex:none;width:17px;text-align:right;
-  font-variant-numeric:tabular-nums;color:var(--muted2,var(--muted2));font-weight:700}
+  font-variant-numeric:tabular-nums;color:var(--muted2,#6f6c74);font-weight:700}
 .rz-jump a:hover{color:var(--brass-ink)}
 .rz-jump a:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
 .rz-rail-kc{display:block;padding:11px 13px;background:var(--off,#f7f6f2);border:1px solid var(--line2);
@@ -2854,7 +2854,7 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 .rz-rail-kc:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
 .rz-lhead{padding-bottom:18px;border-bottom:1px solid var(--line2);margin-bottom:2px}
 .rz-lhead h1{font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.1;letter-spacing:var(--ls-snug);margin:9px 0 8px;max-width:26ch}
-.rz-lhead-meta{margin:0;font-size:var(--fs-base);color:var(--muted2,var(--muted2))}
+.rz-lhead-meta{margin:0;font-size:var(--fs-base);color:var(--muted2,#6f6c74)}
 
 /* A lesson holds typed items — a reading and a knowledge check — and names each one
    with what it costs you, the way a course platform does. Without this the lesson is
@@ -2864,7 +2864,7 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
   background:rgba(var(--brass-rgb),.1)}
 .rz-item-ic svg{width:15px;height:15px;fill:none;stroke:var(--brass-ink);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
 .rz-item-n{flex:1;margin:0;font-size:var(--fs-lg);font-weight:700;letter-spacing:var(--ls-snug)}
-.rz-item-meta{font-size:var(--fs-sm);color:var(--muted2,var(--muted2));white-space:nowrap;font-variant-numeric:tabular-nums}
+.rz-item-meta{font-size:var(--fs-sm);color:var(--muted2,#6f6c74);white-space:nowrap;font-variant-numeric:tabular-nums}
 .rz-item-done .rz-item-ic{background:var(--brass)}
 .rz-item-done .rz-item-ic svg{stroke:#fff}
 
@@ -2876,7 +2876,7 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 .rz-nav-b:hover{border-color:var(--brass-line)}
 .rz-nav-b:active{transform:scale(.995)}
 .rz-nav-b span{font-size:var(--fs-sm);font-weight:700;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--brass-ink)}
-.rz-nav-b b{font-size:var(--fs-md);font-weight:650;line-height:1.4;color:var(--ink3,var(--ink3))}
+.rz-nav-b b{font-size:var(--fs-md);font-weight:650;line-height:1.4;color:var(--ink3,#474c55)}
 .rz-nav-next{text-align:right;align-items:flex-end}
 .rz-nav-prev span::before{content:"← "}
 .rz-nav-next span::after{content:" →"}
@@ -2902,7 +2902,7 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
   transform:rotate(45deg) translateY(-2px);transition:transform .16s}
 .rz-row-x[open] .rz-row-go{transform:rotate(-135deg) translateY(-2px)}
 .rz-row-body{padding:2px 16px 16px}
-.rz-row-body p{margin:0;font-size:var(--fs-lg);line-height:1.7;color:var(--ink3,var(--ink3));max-width:68ch}
+.rz-row-body p{margin:0;font-size:var(--fs-lg);line-height:1.7;color:var(--ink3,#474c55);max-width:68ch}
 .rz-row-body .rz-src{margin-top:12px}
 @media (max-width:560px){
   .rz-row summary,.rz-row:not(.rz-row-x){grid-template-columns:minmax(0,1fr) 10px;gap:3px 12px}
@@ -2916,8 +2916,8 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
    times a lesson. It carries itself in the serif this site already uses for its
    headings — no label, no rule, no tinted box. */
 .rz-lead{margin:0;font-family:var(--serif);font-size:21px;line-height:1.52;color:var(--ink);max-width:44ch;font-weight:600}
-.rz-block-p{margin:18px 0 0;font-size:var(--fs-lg);line-height:1.75;color:var(--ink3,var(--ink3));max-width:68ch}
-.rz-src{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:16px 0 0;font-size:var(--fs-sm);color:var(--muted2,var(--muted2))}
+.rz-block-p{margin:18px 0 0;font-size:var(--fs-lg);line-height:1.75;color:var(--ink3,#474c55);max-width:68ch}
+.rz-src{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:16px 0 0;font-size:var(--fs-sm);color:var(--muted2,#6f6c74)}
 .rz-src-t{margin-right:2px}
 .rz-cite{display:inline-flex;align-items:center;font-size:var(--fs-base);font-weight:700;color:var(--brass-ink);background:var(--bg);
   border:1px solid rgba(var(--brass-rgb),.4);border-radius:var(--r-pill);padding:4px 11px;text-decoration:none;transition:background .13s,border-color .13s}
@@ -2927,13 +2927,13 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 
 /* the gate: nothing below it exists until you say you have read the above */
 .rz-gate{padding:24px 0 4px}
-.rz-gate p{margin:0 0 14px;font-size:var(--fs-lg);color:var(--muted2,var(--muted2))}
+.rz-gate p{margin:0 0 14px;font-size:var(--fs-lg);color:var(--muted2,#6f6c74)}
 
 /* ── knowledge check ──────────────────────────────────────────────────────── */
 .rz-kc{margin-top:6px;background:var(--bg);border:1px solid var(--line2);border-radius:var(--r-sm);padding:28px 32px;
   box-shadow:none;scroll-margin-top:80px}
 .rz-kc-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
-.rz-kc-count{font-size:var(--fs-sm);font-weight:700;color:var(--muted2,var(--muted2));font-variant-numeric:tabular-nums}
+.rz-kc-count{font-size:var(--fs-sm);font-weight:700;color:var(--muted2,#6f6c74);font-variant-numeric:tabular-nums}
 .rz-kc-q{margin:0 0 20px;font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.34;letter-spacing:-.012em;max-width:40ch}
 .rz-opts{display:flex;flex-direction:column;gap:9px}
 .rz-opt{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;font:inherit;font-size:var(--fs-lg);line-height:1.5;
@@ -2960,8 +2960,8 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 .rz-kc-act{margin-top:20px}
 .rz-fb{margin:20px 0 20px;border-radius:var(--r-md);padding:18px 20px;border:1px solid var(--line2)}
 .rz-fb>b{display:block;font-size:var(--fs-lg);margin-bottom:8px;letter-spacing:var(--ls-snug)}
-.rz-fb-cap{margin:12px 0 0;font-size:var(--fs-sm);line-height:1.6;color:var(--ink3,var(--ink3))}
-.rz-fb p{margin:10px 0 0;font-size:var(--fs-lg);line-height:1.7;color:var(--ink3,var(--ink3));max-width:68ch}
+.rz-fb-cap{margin:12px 0 0;font-size:var(--fs-sm);line-height:1.6;color:var(--ink3,#474c55)}
+.rz-fb p{margin:10px 0 0;font-size:var(--fs-lg);line-height:1.7;color:var(--ink3,#474c55);max-width:68ch}
 .rz-fb-ans{display:block;font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.5;color:var(--ink)}
 .rz-fb-ok{background:var(--ok-bg);border-color:var(--ok-line)}
 .rz-fb-ok b{color:var(--ok-ink)}
@@ -2978,8 +2978,8 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 .rz-done-tick{width:44px;height:44px;margin:0 0 16px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:21px;color:#fff;background:var(--brass);box-shadow:0 12px 26px -14px rgba(var(--brass-rgb),.9)}
 .rz-done h3{margin:0 0 9px;font-family:var(--serif);font-weight:700;font-size:24px;letter-spacing:var(--ls-snug)}
-.rz-done-score{margin:0;font-size:var(--fs-lg);color:var(--ink3,var(--ink3));line-height:1.6}
-.rz-done-prog{margin:0 0 24px;font-size:var(--fs-sm);color:var(--muted2,var(--muted2))}
+.rz-done-score{margin:0;font-size:var(--fs-lg);color:var(--ink3,#474c55);line-height:1.6}
+.rz-done-prog{margin:0 0 24px;font-size:var(--fs-sm);color:var(--muted2,#6f6c74)}
 .rz-done-actions{display:flex;gap:10px;flex-wrap:wrap}
 
 /* Focus. Without these the layer falls through to the global 2px var(--accent) ring,
@@ -3829,14 +3829,14 @@ ${CHROME_CSS(22, 34)}
 .ss-steps:focus{outline:none}
 .ss-steps:focus-visible{outline:3px solid var(--brass);outline-offset:3px;border-radius:var(--r-sm)}
 .ss-steps::-webkit-scrollbar{display:none}
-.ss-step{display:flex;align-items:center;gap:8px;flex:none;color:var(--muted2,var(--muted2));font-size:var(--fs-sm)}
+.ss-step{display:flex;align-items:center;gap:8px;flex:none;color:var(--muted2,#6f6c74);font-size:var(--fs-sm)}
 .ss-step+.ss-step::before{content:"";flex:none;width:18px;height:1px;background:var(--line2);margin:0 8px}
 .ss-step-m{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   border:1px solid var(--line2);font-size:var(--fs-xs);font-weight:800;font-variant-numeric:tabular-nums;background:var(--bg)}
 /* Nine titles at once is a wall, so only the phase you are in is named. */
 .ss-step-t{display:none;white-space:nowrap}
 .ss-step-now .ss-step-t{display:inline}
-.ss-step-done{color:var(--ink3,var(--ink3))}
+.ss-step-done{color:var(--ink3,#474c55)}
 .ss-step-done .ss-step-m{background:var(--brass);border-color:var(--brass);color:#fff}
 .ss-step-now{color:var(--ink);font-weight:700}
 .ss-step-now .ss-step-m{border-color:var(--brass);color:var(--brass-ink);box-shadow:0 0 0 3px rgba(var(--brass-rgb),.12)}
@@ -3847,15 +3847,15 @@ ${CHROME_CSS(22, 34)}
   text-transform:uppercase;color:var(--brass-ink)}
 .ss-side-h:first-child{margin-top:0}
 .ss-side-t{margin:0 0 3px;font-size:var(--fs-md);font-weight:700;line-height:1.4;color:var(--ink)}
-.ss-side-meta{margin:0;font-size:var(--fs-sm);line-height:1.5;color:var(--muted2,var(--muted2))}
+.ss-side-meta{margin:0;font-size:var(--fs-sm);line-height:1.5;color:var(--muted2,#6f6c74)}
 .ss-side-risk{margin-top:14px;padding-top:12px;border-top:1px solid var(--line2)}
 .ss-side-risk b{color:inherit}
 .ss-side-offs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .ss-side-offs li{display:flex;flex-direction:column;gap:3px;padding:9px 0 0;border-top:1px solid var(--line2)}
 .ss-side-offs li:first-child{padding-top:0;border-top:none}
 .ss-side-offs .ss-off-name{font-size:var(--fs-md);font-weight:700;color:var(--ink);line-height:1.3}
-.ss-side-off-l{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:var(--fs-sm);color:var(--muted2,var(--muted2))}
-.ss-side-off-p{font-size:var(--fs-sm);color:var(--muted2,var(--muted2));font-variant-numeric:tabular-nums}
+.ss-side-off-l{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:var(--fs-sm);color:var(--muted2,#6f6c74)}
+.ss-side-off-p{font-size:var(--fs-sm);color:var(--muted2,#6f6c74);font-variant-numeric:tabular-nums}
 .ss-side-off-p b{color:var(--ink);font-weight:800}
 @media(min-width:1080px){
   .ss-wrap{max-width:1240px}
@@ -3887,7 +3887,7 @@ ${CHROME_CSS(22, 34)}
 .ss-btn-primary{background:linear-gradient(158deg,var(--ink-from),var(--ink-mid) 70%);color:#f4f8fc}
 .ss-btn-primary:hover{filter:brightness(1.08)}
 .ss-btn-ghost{background:var(--bg);border:1px solid var(--line);color:var(--ink)}
-.ss-btn-ghost:hover{border-color:var(--muted2,var(--muted2))}
+.ss-btn-ghost:hover{border-color:var(--muted2,#6f6c74)}
 .ss-btn:disabled{opacity:.45;cursor:default}
 .ss-btn:focus-visible,.ss-opt:focus-within,.ss-doc-chip:focus-visible,.ss-cite-src:focus-visible,.ss-modal-close:focus-visible{outline:3px solid rgba(var(--brass-rgb),.42);outline-offset:2px}
 .ss-resume{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:#f6efdd;border:1px solid rgba(var(--brass-rgb),.3);border-radius:var(--r-md);padding:13px 16px;margin-bottom:16px}
