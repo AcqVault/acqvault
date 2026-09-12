@@ -390,7 +390,48 @@ def main():
     if not css_bad:
         print('  PASS  STYLE, STUDY_CSS, SRCSEL_CSS and CHROME_CSS are brace-balanced')
 
-    # 9. the threshold lesson grouping is identical in both copies
+    # 9. the server modules actually parse
+    #
+    # render_probe already refuses to run on a broken api/_seo.js, but nothing checked
+    # the SHIPPED client scripts: a syntax error in assets/study.js serves a blank /study
+    # with a 200 and every gate green. This also turns _seo.js's failure from
+    # "could not extract the renderer functions" into the actual SyntaxError.
+    import subprocess as _sp
+    for mod in ('api/_seo.js', 'assets/study.js', 'assets/source-selection.js', 'assets/app.js'):
+        f = BASE / mod
+        if not f.exists():
+            continue
+        if mod.startswith('api/'):
+            chk = _sp.run(['node', '-e', f'require({str(f)!r})'], capture_output=True, text=True)
+        else:
+            # browser files are not modules; wrap them so node parses without running
+            chk = _sp.run(['node', '-e',
+                           f'new Function(require("fs").readFileSync({str(f)!r}, "utf8"))'],
+                          capture_output=True, text=True)
+        if chk.returncode != 0:
+            errs = [l.strip() for l in (chk.stderr or '').splitlines()
+                    if 'Error' in l and 'node:internal' not in l]
+            fail(f'{mod} does not parse: ' + (errs[0] if errs else 'see node output'),
+                 'every other check here is a regex over the source and will pass a file '
+                 'that cannot load at all')
+            break
+    else:
+        print('  PASS  api/_seo.js and the shipped scripts parse')
+
+    # 10. every renderer actually returns a page
+    #
+    # A parse gate cannot see `const counts` declared below the line that reads it: the
+    # file parsed, /study threw at request time, and every regex check here stayed green.
+    # Twelve renderers, called for real.
+    smoke = _sp.run(['node', str(BASE / 'scripts' / 'render_smoke.js'), str(BASE / 'api' / '_seo.js')],
+                    capture_output=True, text=True, cwd=str(BASE))
+    if smoke.returncode != 0:
+        fail('a renderer threw or returned no page: ' + (smoke.stderr or '').strip().replace('\n', '; '),
+             'the page would serve a 500 in production while every other check here passes')
+    else:
+        print('  PASS  all 12 renderers return a page')
+
+    # 11. the threshold lesson grouping is identical in both copies
     #
     # api/_seo.js counts the course's lessons for the cover; assets/study.js builds the
     # outline. Both group the 40 threshold cards by governing part, and if the two
@@ -409,7 +450,7 @@ def main():
     else:
         print('  PASS  THRESH_GROUPS identical across 2 copies')
 
-    # 10. no custom property is defined as itself
+    # 12. no custom property is defined as itself
     #
     # Twice now a bulk hex -> var() substitution has rewritten the token's OWN
     # definition, leaving --brass: var(--brass). The property then resolves to

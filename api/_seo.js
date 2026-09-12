@@ -80,7 +80,12 @@ function courseCounts() {
     const uniq = (rows) => new Set(rows.map((c) => c.topic)).size;
     const basic = uniq(d.recall_basic || []);
     const thresh = new Set((d.thresholds || []).map(threshTopic)).size;
-    return { basic, advanced: basic + uniq(d.recall_advanced || []) + thresh };
+    // "400+" was a literal too. Floored to the nearest 50 off the real total so the
+    // claim stays true as the deck grows and never has to be re-authored.
+    const items = (d.recall_basic || []).length + (d.recall_advanced || []).length
+      + (d.thresholds || []).length + (d.scenarios || []).length;
+    return { basic, advanced: basic + uniq(d.recall_advanced || []) + thresh,
+             questions: Math.floor(items / 50) * 50 };
   } catch (e) { return null; }
 }
 const DECK_PRELOAD = `<link rel="preload" as="fetch" href="/assets/study-deck.json?v=${DECK_V}">
@@ -3081,13 +3086,13 @@ details.st-script>summary:focus-visible{outline:3px solid var(--brass);outline-o
 
 function renderStudyPage() {
   const canonical = `${SITE}/study`;
+  const counts = courseCounts();
   const title = 'AcqVault Study — practice & spaced review for the acquisition community | AcqVault';
-  const description = esc('Free, no-login contracting course: 44 lessons drawn from the AcqVault Field Guides, each ending in a knowledge check that feeds a spaced-repetition review queue — plus threshold sprints, board-style scenario simulations and the Source Selection Simulator. Works offline. No account needed.');
+  const description = esc(`Free, no-login contracting course: ${counts ? counts.advanced : 44} lessons drawn from the AcqVault Field Guides, each ending in a knowledge check that feeds a spaced-repetition review queue — plus threshold sprints, board-style scenario simulations and the Source Selection Simulator. Works offline. No account needed.`);
 
   /* A WebApplication node alone described a tool, not the two courses that are now the
      spine of this page. Course is the type a 44-lesson syllabus actually is, and the one
      search engines render course results from. Both nodes, one graph. */
-  const counts = courseCounts();
   const provider = { '@type': 'Organization', name: 'AcqVault', url: SITE };
   const course = (name, blurb, lessons) => ({
     '@context': 'https://schema.org', '@type': 'Course',
@@ -3124,7 +3129,7 @@ ${SEAL_SVG}
 <div class="eyebrow">AcqVault · Study</div>
 <h1>Know it cold</h1>
 <p class="lede">Two courses drawn from the AcqVault Field Guides — ${counts ? counts.advanced : 44} lessons, each ending in a knowledge check — plus threshold sprints, board-style scenarios and the Source Selection Simulator, run against the DoD Source Selection Procedures. Every debrief links straight to the governing RFO or R-DFARS text, one click away. Spaced repetition decides what you see; you decide how honest your self-grade is.</p>
-<div class="stats"><span class="stat"><b>44</b> lessons · <b>400+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
+<div class="stats"><span class="stat"><b>${counts ? counts.advanced : 44}</b> lessons · <b>${counts ? counts.questions : 400}+</b> questions</span><span class="stat">A daily word · a 90-second round</span><span class="stat">Free · no account</span><span class="stat">Progress stays on your device</span><span class="stat">Works offline</span></div>
 </div></section>
 <section class="lband lband--room"><div class="st-guilloche" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><g fill="none" stroke="#0f2540" stroke-width="0.6"><circle cx="300" cy="300" r="150"/><circle cx="300" cy="300" r="120"/><circle cx="300" cy="300" r="90"/><circle cx="300" cy="300" r="60"/></g></svg></div><div class="st-wrap">
 <div id="study-app"${DECK_ATTRS}><noscript><p>AcqVault Study is an interactive study tool and needs JavaScript. The same material lives in the <a href="/library">Field Guides</a>.</p></noscript><p class="st-sub">Loading the deck…</p></div>
