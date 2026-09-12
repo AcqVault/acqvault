@@ -272,8 +272,9 @@ behind a forgotten bump was invisible to the check. It now covers five more asse
 - **`assets/study-deck.json` is the canonical store**, not a build artifact.
   `study-tool/build_deck_v2.py` reads it as its base and merges distractors into it. The
   `study-tool/deck-recall-*.json` files are older sources.
-- **`DECK_URL` and `ELEMENTS_URL` carry hardcoded `?v=` tokens** inside `assets/study.js`.
-  Bump them when that content changes. `verify_deploy.py` catches this now — it did not before.
+- ~~**`DECK_URL` and `ELEMENTS_URL` carry hardcoded `?v=` tokens.**~~ Stamped with content
+  hashes by `scripts/stamp_assets.py`, along with the `source-selection.json` fetch — which
+  was not a fallback at all, but the live one.
 - **`/48cons` shares the engine, progress key and stylesheet with `/study`.** Every change
   reaches it; it must not break. `/slip` is a separate unlisted game with a deliberately
   separate visual system — out of scope.
@@ -403,7 +404,10 @@ The navigation *between* the three is still unchanged.
 - Section names in `VOL1`/`VOL2` are hand-authored and are a content call worth a second look.
 
 **Deck content**
-- Seven near-duplicate pairs in `recall_advanced`. Not touched.
+- ~~Seven near-duplicate pairs in `recall_advanced`.~~ Measured: there was **one** real
+  duplicate (the same fact reversed under two topics) plus one compound card whose second
+  half had its own entry. Both fixed; highest answer similarity in the pool is 0.641. The
+  "seven" was never verified against the deck.
 
 **Never wired in**
 Three mockup screens were built and published as artifacts but never implemented: first-run,
@@ -413,8 +417,9 @@ it is strong: learner control is worth roughly nothing for outcomes, and a newco
 classify themselves.
 
 **Known low-severity**
-- Content-hashed *filenames* would make the stale-cache race impossible rather than
-  detectable. Not done.
+- ~~Content-hashed *filenames*.~~ Superseded: `scripts/stamp_assets.py` makes every
+  hand-written `?v=` its file's content hash, in `index.html` **and** in `study.js` /
+  `source-selection.js`. Filenames would be tidier; forgetting is already impossible.
 
 ---
 

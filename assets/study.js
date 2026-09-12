@@ -7,8 +7,8 @@
      they are deliberately stale-proof, because a shell old enough to lack them is old
      enough that its deck is the one it shipped with. */
   var _app0 = document.getElementById('study-app');
-  var DECK_URL = (_app0 && _app0.getAttribute('data-deck')) || '/assets/study-deck.json?v=43';
-  var ELEMENTS_URL = (_app0 && _app0.getAttribute('data-elements')) || '/assets/study-elements.json?v=3';
+  var DECK_URL = (_app0 && _app0.getAttribute('data-deck')) || '/assets/study-deck.json?v=ed17ae921ee8';
+  var ELEMENTS_URL = (_app0 && _app0.getAttribute('data-elements')) || '/assets/study-elements.json?v=28c3c0e9f3a7';
   var ELEMENTS = null;
   var LS_KEY = 'acq-study-v1';
   var INTERVALS = [0, 1, 3, 7, 21]; // days until due, by box (box 1..5 → idx 0..4)

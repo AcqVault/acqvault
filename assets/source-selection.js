@@ -347,7 +347,7 @@
     }
   });
 
-  fetch('/assets/source-selection.json?v=3')
+  fetch('/assets/source-selection.json?v=49c4d061c801')
     .then(function (r) { if (!r.ok) throw new Error('load'); return r.json(); })
     .then(function (data) {
       scen = data; S = load() || fresh();
