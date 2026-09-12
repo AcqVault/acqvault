@@ -2415,9 +2415,9 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 /* Inside the course you are reading, not arriving: the marketing hero and its stat
    pills stack a second hero on top of the course cover, and put a second <h1> on the
    page. A card session already collapses it for the same reason. */
-.st-rise .lhero{display:none}
-.st-rise .lband--room{border-top:none}
-@media print{ .st-rise .lhero{display:block} }
+.st-hero-off .lhero{display:none}
+.st-hero-off .lband--room{border-top:none}
+@media print{ .st-hero-off .lhero{display:block} }
 
 /* Pinned while you work. Spans the shell by cancelling .st-wrap's padding, and every
    sticky thing below it and every jump target offsets by its height. */
@@ -2501,6 +2501,12 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
 /* ── outline ──────────────────────────────────────────────────────────────── */
 .rz-home{display:flex;flex-direction:column;gap:26px;margin-top:26px}
 .rz-aside{order:-1}
+/* On /study the rail holds ACTIONS — Review, the Practice Range — so order:-1 keeps
+   them above the outline on a phone. On /48cons the rail is subordinate to the
+   column beside it: the ceiling you pick is the whole point of the page, and the
+   three tools are the rest of your prep. Stacking those first pushed the primary
+   choice 440px down a 375px screen. */
+.rz-aside-sub{order:0}
 .rz-home-main{min-width:0}
 .rz-aside{min-width:0;display:flex;flex-direction:column;gap:12px}
 .rz-card{background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:20px}
@@ -2518,6 +2524,47 @@ button.st-sim-feature:active{transform:scale(.985);transition-duration:.1s}
    with nothing before. */
 .rz-secnav{background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:6px 6px 8px}
 .rz-secnav-h{margin:10px 10px 6px;padding-top:0;border-top:none}
+/* /48cons in the Rise layer. .rz-aside-h heads the tool rail the way .rz-secnav-h heads
+   the section nav on /study — same eyebrow, no top rule, because it is the first thing
+   in the column and a rule above nothing reads as a stray line.
+   .rz-sec-note carries the cumulative-ceiling caveat that used to sit in the strip's
+   lede. It has to read as a caveat rather than a lesson row, so it is muted and sits
+   inside the section above the list it qualifies. */
+.rz-aside-h{margin:0 2px 2px;padding-top:0;border-top:none}
+.rz-sec-note{margin:0 2px 10px;font-size:var(--fs-md);line-height:1.55;color:var(--muted2,#6f6c74)}
+/* ── /48cons ladder interior in the Rise layer ──────────────────────────────────
+   The rung strip was built as a four-across grid under an 880px column. In the rail
+   it has ~300px, so the fourth ceiling fell off the edge. Same buttons, stacked —
+   the strip keeps its own selected-state styling, this only changes the axis, and
+   the ceiling can drop to the label size because it is a switcher here, not the
+   page's main choice (that lives on the cover). */
+.rz-rungnav .st-rungs{grid-template-columns:1fr;gap:6px;margin-top:0}
+.rz-rungnav .st-rung{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:2px 8px;padding:10px 12px}
+.rz-rungnav .st-rung-ceiling{font-size:16px}
+.rz-rungnav .st-rung-what{flex:1 1 100%;order:3}
+.rz-rungnav .st-rung-n{margin-top:0;padding-top:0}
+/* The strip's own selected state is a 3px left border that the surface pass flattens
+   back to a hairline in this context; in a vertical list the selection has to be
+   unmistakable, since it is the only thing saying which ceiling you are in. State
+   it explicitly here rather than depending on that cascade. */
+.rz-rungnav .st-rung{border-left:3px solid transparent}
+.rz-rungnav .st-rung-on{border-left-color:var(--brass);background:rgba(var(--brass-rgb),.05)}
+/* kbd was styled only for .st-btn; the ladder's actions are .rz-btn now and the hint
+   rendered as the bare word "space" inside the label. */
+.rz-btn kbd{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;opacity:.65;font-weight:600;
+  margin-left:6px;border:1px solid currentColor;border-radius:3px;padding:0 4px}
+@media (pointer:coarse){.rz-btn kbd{display:none}}
+/* The board-sim readout was a strip with a rule above it, sitting under the mastery
+   block in one column. In the rail it is its own object, so it gets the card the
+   neighbouring .rz-extra-card and .st-lad-sim already have. */
+.rz-aside .st-lad-boards{margin-top:0;padding:14px 16px;border-top:none;border:1px solid var(--line2);
+  border-radius:var(--r-sm);background:#fff;align-items:baseline}
+.rz-aside .st-lad-boards-lab{font-size:var(--fs-xs);font-weight:800;letter-spacing:var(--ls-widest);
+  text-transform:uppercase;color:var(--brass-ink);flex:1 1 100%}
+.rz-aside .st-lad-sim{margin-top:0}
+/* The ladder's own action row inside .rz-card — the buttons are rz- now, so the old
+   .st-actions top margin double-counted the card padding. */
+.rz-card>.st-actions{margin-top:16px;margin-bottom:0}
 .rz-secnav-i{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:var(--r-sm);
   font-size:var(--fs-sm);line-height:1.4;color:var(--ink3,#474c55);text-decoration:none}
 .rz-secnav-i span{flex:1;min-width:0}
