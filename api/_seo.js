@@ -1424,7 +1424,7 @@ ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
 
   const body = `<nav class="crumbs" aria-label="Breadcrumb"><a href="/?home=1">AcqVault</a> › <a href="/${source}">${esc(meta.name)}</a> › ${esc(label)}</nav>
 <h1>${esc(meta.name)} · ${esc(label)}</h1>
-<p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} section${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
+<p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} ${docs.every(d => /^Chapter /.test(d.title || '')) ? 'chapter' : 'section'}${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${partPairBanner(source, part, pairIdx)}
 ${partSrc}
 <div class="part-cols">${toc}<div class="part-main">${sections}</div></div>`;
