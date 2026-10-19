@@ -118,15 +118,15 @@
         },
         {
           "id": "src-fmr",
-          "title": "DoD Financial Management Regulation",
-          "subtitle": "DoD 7000.14-R · Volumes 1–16",
-          "desc": "The full DoD Financial Management Regulation — searchable and browsable in-app by volume and chapter. The official combined PDF (all 16 volumes) is hosted by the DoD Comptroller and opens on their site.",
-          "file": "https://comptroller.war.gov/portals/45/documents/fmr/Combined_Volume1-16.pdf",
+          "title": "DoW Financial Management Regulation",
+          "subtitle": "DoW 7000.14-R · Volumes 1–16",
+          "desc": "The full DoW Financial Management Regulation (September 2026 policy edition) — searchable and browsable in-app by volume and section (chapters in Volumes 7A and 7B). The official combined policy PDF (all 16 volumes) is hosted by the DoW Comptroller and opens on their site.",
+          "file": "https://comptroller.war.gov/Portals/45/documents/fmr/current/Policy/Combined_FMR_Vol_1-16.pdf",
           "download": "",
           "type": "Official PDF",
-          "meta": "304 chapters · 16 volumes",
-          "origin": "Official source (DoD Comptroller)",
-          "updated": "Mar 2024"
+          "meta": "211 sections · 101 chapters · 16 volumes",
+          "origin": "Official source (DoW Comptroller)",
+          "updated": "Sep 2026"
         },
         {
           "id": "src-ssp",

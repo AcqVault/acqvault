@@ -172,7 +172,7 @@
     ODC: ['Other Direct Costs'],
     'G&A': ['General and Administrative expense'],
     FMS: ['Foreign Military Sales'],
-    FMR: ['Financial Management Regulation', 'DoD 7000.14-R'],
+    FMR: ['Financial Management Regulation', 'DoW 7000.14-R'],
     NDAA: ['National Defense Authorization Act'],
     USC: ['United States Code'],
     CFR: ['Code of Federal Regulations'],

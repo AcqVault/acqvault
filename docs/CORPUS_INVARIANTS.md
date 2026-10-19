@@ -83,7 +83,7 @@ a new lettered paragraph with its own CITE button.
 Health check fails above **5%** of line breaks falling mid-sentence.
 → `scripts/rewrap_pdf_lines.py`
 
-⚠️ **FMR is excluded on purpose.** 303 of its 304 docs contain tabular rows;
+⚠️ **FMR is excluded on purpose.** Most of its docs (one per chapter or top-level section) contain tabular rows;
 joining lines there would destroy tables. Its lower rate is table structure, not
 wrapped prose.
 
@@ -218,7 +218,7 @@ The reader said "Part 204" while the crawlable page at the same URL said "Part 4
 
 * **`[Reserved]` titles parse fine.** `52.233 [Reserved]` leads with a digit. No exemption
   needed — don't add one.
-* **FMR `Chapter N:` and Category Management `Part N -` titles have no section number,
+* **FMR `Chapter N:` / `Section N.0:` and Category Management `Part N -` titles have no section number,
   legitimately.** They are declared `TITLE_STYLE` `'chapter'` / `'part'` and are exempt
   from the parse check — but NOT from the citation checks, which is what keeps the
   exemption honest.

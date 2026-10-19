@@ -1,4 +1,9 @@
 {
+  "redirects": [
+    { "source": "/fmr/part-:v(2[ABab])", "destination": "/fmr/part-2", "permanent": true },
+    { "source": "/fmr/part-:v(6[ABab])", "destination": "/fmr/part-6", "permanent": true },
+    { "source": "/fmr/part-:v(11[ABab])", "destination": "/fmr/part-11", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/deviations", "destination": "/api/deviations" },

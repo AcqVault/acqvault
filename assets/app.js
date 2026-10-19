@@ -340,7 +340,7 @@ const SOURCE_SHORT = {
 };
 const SOURCE_FULL = {
   'rfo': 'Revolutionary FAR Overhaul', 'r-dfars': 'R-DFARS Deviations', 'far-companion': 'FAR Companion',
-  'category-management': 'Category Management Buying Guide', 'fmr': 'DoD Financial Management Regulation',
+  'category-management': 'Category Management Buying Guide', 'fmr': 'DoW Financial Management Regulation',
   'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD Source Selection Procedures',
   'pgi': 'R-DFARS Procedures, Guidance, and Information',
   'compass': 'DAF Contracting Compass',
@@ -456,17 +456,15 @@ const PARTS_BY_SOURCE = {
   ],
   'fmr': [
     ['1','General Financial Management Information, Systems, and Requirements'],
-    ['2A','Budget Formulation and Presentation (2A)'],
-    ['2B','Budget Formulation and Presentation (2B)'],
+    ['2','Budget Formulation and Presentation'],
     ['3','Budget Execution — Availability and Use of Budgetary Resources'],
-    ['4','Accounting Policy'],['5','Disbursing Policy'],
-    ['6A','Reporting Policy'],['6B','Form and Content of the DoD Audited Financial Statements'],
+    ['4','Accounting Policy'],['5','Disbursing Policy'],['6','Reporting Policy'],
     ['7A','Military Pay Policy — Active Duty and Reserve Pay'],['7B','Military Pay Policy — Retired Pay'],
     ['8','Civilian Pay Policy'],['9','Travel Policy'],['10','Contract Payment Policy'],
-    ['11A','Reimbursable Operations Policy — General'],['11B','Reimbursable Operations Policy — Working Capital Funds'],
-    ['12','Special Accounts, Funds, and Programs'],['13','Nonappropriated Funds Policy and Procedures'],
+    ['11','Reimbursable Operations Policy'],
+    ['12','Special Accounts, Funds, and Programs'],['13','Nonappropriated Funds Policy'],
     ['14','Administrative Control of Funds and Antideficiency Act Violations'],
-    ['15','Security Cooperation Policy'],['16','Department of Defense Debt Management']
+    ['15','Security Cooperation Policy'],['16','Department of War Debt Management']
   ]
 };
 
@@ -1687,20 +1685,26 @@ function parseBrowseTitle(hit, source) {
   return { type: 'other', num: '', label: title, anchor };
 }
 
-// ── FMR browse: chapter index + single-chapter view ───────────────────────────
+// ── FMR browse: chapter/section index + single-unit view ──────────────────────
+// The September 2026 edition restructured most volumes: each is now ONE outline of
+// top-level sections ("Section 5.0: Receivables"); only Volumes 7A/7B keep chapters
+// ("Chapter 26: Housing Allowances"). One doc per chapter or top-level section.
 let fmrBrowseState = null; // { partNum, partLabel, hits } for the active FMR volume
-function fmrChapterNum(hit) { const m = String(hit && hit.title || '').match(/Chapter\s+([\w-]+)/i); return m ? m[1] : ''; }
+const FMR_UNIT_RE = /^(Chapter|Section)\s+([\w.-]+)\s*[:.\-]?\s*/i;
+function fmrChapterNum(hit) { const m = String(hit && hit.title || '').match(FMR_UNIT_RE); return m ? m[2] : ''; }
+function fmrUnitWord(hits) { return (hits || []).some(h => /^Section\s/i.test(String(h && h.title || ''))) ? 'section' : 'chapter'; }
 function fmrChapterLabel(hit) {
   const t = String(hit && hit.title || '');
-  return t.replace(/^Chapter\s+[\w-]+\s*[:.\-]?\s*/i, '').trim() || t || 'Chapter';
+  return t.replace(FMR_UNIT_RE, '').trim() || t || 'Chapter';
 }
 function renderFmrVolumeIndex(scroll) {
   const st = fmrBrowseState; if (!st) return;
   const reader = document.getElementById('browse-reader-inner');
   const srcLabel = SOURCE_SHORT['fmr'] || 'DoD FMR';
+  const unit = fmrUnitWord(st.hits), Unit = unit === 'section' ? 'Section' : 'Chapter';
   const items = st.hits.map((hit, i) =>
     `<li><a class="br-toc-link" href="#" data-fmr-ch="${i}">
-      <span class="br-toc-link-num">Ch ${esc(fmrChapterNum(hit) || String(i + 1))}</span>
+      <span class="br-toc-link-num">${unit === 'section' ? '§' : 'Ch'} ${esc(fmrChapterNum(hit) || String(i + 1))}</span>
       <span class="br-toc-link-title">${esc(fmrChapterLabel(hit))}</span>
     </a></li>`).join('');
   reader.innerHTML = `
@@ -1708,13 +1712,13 @@ function renderFmrVolumeIndex(scroll) {
       <span class="br-source-badge" style="background:var(--fmr-bg);color:var(--fmr-txt)">${esc(String(srcLabel))}</span>
       <div class="br-part-num">Volume ${esc(String(st.partNum))}</div>
       <div class="br-part-title">${esc(String(st.partLabel))}</div>
-      <div class="br-meta"><span>${st.hits.length} chapter${st.hits.length !== 1 ? 's' : ''}</span><span class="br-meta-dot"></span><span>Select a chapter to read</span></div>
+      <div class="br-meta"><span>${st.hits.length} ${unit}${st.hits.length !== 1 ? 's' : ''}</span><span class="br-meta-dot"></span><span>Select a ${unit} to read</span></div>
     </div>
-    <div class="br-toc"><div class="br-toc-title">Chapters</div>
+    <div class="br-toc"><div class="br-toc-title">${Unit}s</div>
       <div class="br-fmr-filter">
-        <label class="sr-only" for="fmr-ch-filter">Filter chapters in this volume</label>
+        <label class="sr-only" for="fmr-ch-filter">Filter ${unit}s in this volume</label>
         <input type="text" id="fmr-ch-filter" class="br-fmr-filter-input" autocomplete="off" spellcheck="false"
-               placeholder="Filter ${st.hits.length} chapter${st.hits.length !== 1 ? 's' : ''}…">
+               placeholder="Filter ${st.hits.length} ${unit}${st.hits.length !== 1 ? 's' : ''}…">
         <span class="br-fmr-filter-count" id="fmr-ch-count"></span>
       </div>
       <ul class="br-toc-list">${items}</ul></div>`;
@@ -1744,7 +1748,7 @@ function openFmrChapter(idx) {
   const hit = st.hits[idx]; if (!hit) return;
   const reader = document.getElementById('browse-reader-inner');
   reader.innerHTML =
-    `<button type="button" class="br-fmr-back" id="br-fmr-back">← All chapters in Volume ${esc(String(st.partNum))}</button>` +
+    `<button type="button" class="br-fmr-back" id="br-fmr-back">← All ${fmrUnitWord(st.hits)}s in Volume ${esc(String(st.partNum))}</button>` +
     buildReaderHTML([hit], 'fmr', st.partNum, fmrChapterLabel(hit), 1);
   const back = document.getElementById('br-fmr-back');
   if (back) back.addEventListener('click', () => renderFmrVolumeIndex(true));
@@ -2332,14 +2336,16 @@ function generateCitation(hit) {
       : `${label} ${levelLabel}${secNum}`;
   }
 
-  // FMR chapters: "Chapter N: Title" — cite volume + chapter, not just the volume
-  const chM = title.match(/^Chapter\s+([\w-]+)\s*[:.\-]?\s*(.*)/i);
+  // FMR units: "Chapter N: Title" (Vols 7A/7B) or "Section N.0: Title" (every other
+  // volume since the Sept 2026 restructure) — cite volume + unit, not just the volume
+  const chM = title.match(/^(Chapter|Section)\s+([\w.-]+?)\s*[:\-]\s*(.*)$/i) || title.match(/^(Chapter|Section)\s+([\w.-]+)()$/i);
   if (chM && hit.source === 'fmr') {
     const vol = hit.part ? `${partWord(hit.source)} ${displayPartForSource(hit.source, hit.part)}, ` : '';
-    const chTitle = chM[2].replace(/\.$/, '').trim();
+    const unit = chM[1][0].toUpperCase() + chM[1].slice(1).toLowerCase();
+    const chTitle = chM[3].replace(/\.$/, '').trim();
     return chTitle
-      ? `${label} ${vol}Chapter ${chM[1]} — ${chTitle}`
-      : `${label} ${vol}Chapter ${chM[1]}`;
+      ? `${label} ${vol}${unit} ${chM[2]} — ${chTitle}`
+      : `${label} ${vol}${unit} ${chM[2]}`;
   }
 
   // Part-level: "Part X — Title" stored as title
@@ -2656,9 +2662,9 @@ function formatContent(text, hit) {
     .match(/^(?:PGI\s+|FC\s+)?([A-E]?\d{1,3}\.\d{1,6}(?:-\d+)*)/) || [])[1] || null;
 
   function buildCite() {
-    // The FMR numbers paragraphs on a dotted outline ("1.0", "3.1") INSIDE a chapter.
-    // Printed alone those look like FAR-style sections and resolve to nothing — a
-    // pasted "DoD FMR 1.0" is unfindable. Cite the volume and chapter instead, which
+    // The FMR numbers paragraphs on a dotted outline ("1.0", "3.1") INSIDE a volume or
+    // chapter. Printed alone those look like FAR-style sections and resolve to nothing — a
+    // pasted "DoD FMR 1.0" is unfindable. Cite the volume and chapter/section instead, which
     // is what generateCitation already produced.
     if (hit && hit.source === 'fmr') return baseCite;
     if (!curSection) return baseCite;

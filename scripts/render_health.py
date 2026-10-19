@@ -36,7 +36,8 @@ BASE = Path(__file__).resolve().parent.parent
 # ── declarations ──────────────────────────────────────────────────────────────
 # How a source titles its units, and therefore what the renderers must be able to parse.
 #   'numbered'  every title leads with a section number (FAR-style, or a PGI/FC prefix)
-#   'chapter'   "Chapter N: Title"  (FMR)  — no section number exists to parse
+#   'chapter'   "Chapter N: Title" / "Section N.0: Title"  (FMR) — a volume-level unit, not a
+#               FAR-style section number; cited as "Volume V, Chapter N" / "Volume V, Section N.0"
 #   'part'      "Part N - Title"    (Category Management) — one doc per part
 TITLE_STYLE = {
     'rfo': 'numbered', 'r-dfars': 'numbered', 'far-companion': 'numbered',

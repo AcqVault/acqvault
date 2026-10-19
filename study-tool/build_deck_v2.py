@@ -636,9 +636,11 @@ for _p in _board_paths: _board_items.extend(load(_p)['items'])
 deck['ladder_boards'] = ladder_board_gate(_board_items)
 
 SRC_WORD = {'RFO': 'rfo', 'R-DFARS': 'r-dfars'}
-# DoD FMR chapters are deep-linkable (the part page renders id="fmr-vol-V-ch-C").
+# DoD FMR units are deep-linkable (the part page renders id=<doc id>): chapters in Vols
+# 7A/7B ("DoD FMR Vol 7A Ch 26" -> fmr-vol-7a-ch-26) and top-level sections everywhere else
+# since the Sept 2026 restructure ("DoD FMR Vol 14 Sec 3.0" -> fmr-vol-14-sec-3).
 # Fiscal-law cards (bona fide need, purpose statute, Anti-Deficiency Act) live in the FMR,
-# not the RFO — so a "DoD FMR Vol V Ch C" cite resolves to that chapter, verified to exist.
+# not the RFO — so such a cite resolves to that unit, verified to exist.
 FMR_IDS = {d['id'] for d in docs if d.get('source') == 'fmr'}
 def cite_links(cite):
     """Parse a cite string ('RFO 6.103/6.104 · R-DFARS 217.74 · Vol. 2, Competition') into
@@ -650,12 +652,13 @@ def cite_links(cite):
         m = re.match(r'^(RFO|R-DFARS)\b\s*(.*)$', tok.strip())
         if not m:
             t = tok.strip()
-            mf = re.match(r'^DoD FMR\s+Vol\s+(\d+)\s+Ch\s+(\d+)$', t)
+            mf = re.match(r'^DoD FMR\s+Vol\s+(\d+[AB]?)\s+(Ch|Sec)\s+(\d+)(\.0)?$', t)
             if mf:
-                did = 'fmr-vol-%s-ch-%s' % (mf.group(1), mf.group(2))
+                vol, unit, n = mf.group(1), mf.group(2), mf.group(3)
+                did = 'fmr-vol-%s-%s-%s' % (vol.lower(), unit.lower(), n)
                 if did in FMR_IDS:
-                    push({'t': 'DoD FMR Vol %s Ch %s' % (mf.group(1), mf.group(2)),
-                          'u': '/fmr/part-%s#%s' % (mf.group(1), did)})
+                    push({'t': 'DoD FMR Vol %s %s %s' % (vol, unit, n + ('.0' if unit == 'Sec' else '')),
+                          'u': '/fmr/part-%s#%s' % (vol, did)})
             elif t == 'DoD FMR':
                 push({'t': 'DoD FMR', 'u': '/fmr'})
             continue

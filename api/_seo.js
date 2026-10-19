@@ -108,9 +108,9 @@ const SOURCES = {
   'category-management': { name: 'Category Management Buying Guide', short: 'Category Management',
     desc: 'Federal category management buying guidance.',
     metaDesc: "Full text of the federal Category Management Buying Guide \u2014 the spend-category guidance and the vehicles it points to. Free, searchable, no account." },
-  'fmr':                 { name: 'DoD Financial Management Regulation', short: 'DoD FMR',
-    desc: 'DoD 7000.14-R Financial Management Regulation — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and chapter.',
-    metaDesc: "Full text of the DoD Financial Management Regulation, 7000.14-R \u2014 all 16 volumes covering budget, accounting, disbursing, pay and contract payment." },
+  'fmr':                 { name: 'DoW Financial Management Regulation', short: 'DoD FMR',
+    desc: 'DoW 7000.14-R Financial Management Regulation (September 2026 policy edition) — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and section (chapters in Volumes 7A and 7B).',
+    metaDesc: "Full text of the DoW Financial Management Regulation, 7000.14-R (September 2026 policy edition) \u2014 all 16 volumes covering budget, accounting, disbursing, pay and contract payment." },
   'pgi':                 { name: 'R-DFARS Procedures, Guidance, and Information', short: 'R-DFARS PGI',
     desc: 'The PGI attachment that ships with each DoD class deviation \u2014 the procedural companion to the R-DFARS rule: how to build a PIID, what a contract action report must carry, how to run a mentor-prot\u00e9g\u00e9 agreement. Guidance, not regulation: it tells you how to execute a rule, it does not impose one.',
     metaDesc: "Full text of the R-DFARS PGI \u2014 the procedural companion shipped with each DoD class deviation. Guidance on executing a rule, not the rule itself." },
@@ -158,11 +158,11 @@ function clampDesc(text, max) {
   return t.slice(0, max - 1).replace(/\s+\S*$/, '') + '…';
 }
 // The authority depends on the SOURCE. A single global line claiming "the signed DoD
-// class deviations and acquisition.gov" was stamped on the FMR (authority: DoD
-// Comptroller, DoD 7000.14-R) and the DoD SSP (authority: OUSD A&S/DPC), which is
+// class deviations and acquisition.gov" was stamped on the FMR (authority: DoW
+// Comptroller, DoW 7000.14-R) and the DoD SSP (authority: OUSD A&S/DPC), which is
 // simply the wrong provenance for those documents.
 function authorityLine(source) {
-  if (source === 'fmr') return 'The authoritative source is the official DoD Financial Management Regulation (DoD 7000.14-R) published by the Under Secretary of Defense (Comptroller).';
+  if (source === 'fmr') return 'The authoritative source is the official DoW Financial Management Regulation (DoW 7000.14-R) published by the Under Secretary of War (Comptroller).';
   if (source === 'ssp') return 'The authoritative source is the official DoD Source Selection Procedures issued by OUSD(A&amp;S)/DPC.';
   if (source === 'afi-63-138') return 'The authoritative source is the official Department of the Air Force Instruction published on e-Publishing.';
   if (source === 'category-management') return 'The authoritative source is the official category management guidance published by the FAR Council.';

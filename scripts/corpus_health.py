@@ -136,7 +136,10 @@ def main():
     # follow-up is recovering it onto PGI 225.070, not keeping an orphan here.
     # 2026-10-19: pgi 9 -> 34 and r-dfars 10 -> 11 when 21 parts were rebuilt from DPCAP's
     # docx attachments, which carry real Word tables (scripts/ingest_dpcap_docx.py).
-    TABLE_FLOOR = {'afi-63-138': 5, 'far-companion': 7, 'fmr': 130, 'pgi': 34, 'r-dfars': 11, 'rfo': 56}
+    # 2026-10-19: fmr 130 -> 415 on the re-ingest from the Sept 2026 combined policy PDF
+    # (scripts/attach_fmr_tables.py; 411 of them in Vols 7A/7B — the restructured volumes
+    # moved nearly all their tables into the separate Supplemental documents).
+    TABLE_FLOOR = {'afi-63-138': 5, 'far-companion': 7, 'fmr': 415, 'pgi': 34, 'r-dfars': 11, 'rfo': 56}
     have = {}
     for d in docs:
         if d.get("tables"):

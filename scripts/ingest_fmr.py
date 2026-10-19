@@ -1,150 +1,73 @@
 #!/usr/bin/env python3
 """
-Ingest the DoD 7000.14-R Financial Management Regulation (FMR), Volumes 1-16,
-from the PDF-extracted markdown into AcqVault corpus docs (source = 'fmr').
+Ingest the DoW 7000.14-R Financial Management Regulation (FMR) into AcqVault corpus
+docs (source = 'fmr') from the official combined POLICY PDF
+(comptroller.war.gov/Portals/45/documents/fmr/current/Policy/Combined_FMR_Vol_1-16.pdf).
 
-One doc per CHAPTER; `part` = volume (e.g. "1", "2A"). Front matter is dropped:
-volume covers, volume/chapter Tables of Contents (dot/ellipsis leaders), and the
-"Summary of Major Changes" blocks. Content starts at the first real numbered
-section (1.0 ...). PDF page artifacts and running headers/footers are stripped.
+The September 2026 edition separated policy from procedure. Two shapes now coexist:
+
+  * CONSOLIDATED volumes (1-6, 8-16): one volume = one outline of top-level sections
+    "N.0 TITLE" (each roughly a former chapter). One doc per top-level SECTION:
+    id `fmr-vol-<v>-sec-<n>`, title "Section N.0: Title". The FMR's own cross-references
+    cite these as "Volume 5, section 3.0".
+  * CHAPTERED volumes (7A, 7B — not part of the restructure): one doc per CHAPTER, as
+    before: id `fmr-vol-<v>-ch-<n>`, title "Chapter N: Title". "ARCHIVED" placeholders,
+    appendices, comparable grades and definitions are not chapters and are skipped.
+
+Volumes 2A/2B, 6A/6B and 11A/11B merged into 2, 6 and 11. The combined PDF carries
+Volume 12 TWICE; the PDF outline points at the second copy (the one with the
+Voluntary Separation Incentive Fund in 15.4), so only pages from the outline's
+Volume 12 entry onward are used.
+
+Pipeline (LAYOUT_CONTRACT order): pdftotext -layout per page -> strip running
+header/footer + TOC pages -> split -> reflow into paragraphs -> THEN attach tables
+(scripts/attach_fmr_tables.py, by each doc's page range).
 
 Usage:
-  python3 scripts/ingest_fmr.py --md <path> --dry       # diagnostics + samples, no write
-  python3 scripts/ingest_fmr.py --md <path> --write     # merge into output/documents.json
+  python3 scripts/ingest_fmr.py --pdf <combined.pdf>            # diagnostics, no write
+  python3 scripts/ingest_fmr.py --pdf <combined.pdf> --write    # replace fmr in output/documents.json
 """
-import re, json, sys, argparse, hashlib
+import re, json, sys, argparse, subprocess
 from datetime import datetime, timezone
+from pathlib import Path
 
-# Canonical FMR volume titles (verified against the source covers).
+BASE = Path(__file__).resolve().parent.parent
+
+# Titles as listed in the edition's own Introduction ("VOLUMES" table).
 VOLUME_TITLES = {
     "1":  "General Financial Management Information, Systems, and Requirements",
-    "2A": "Budget Formulation and Presentation",
-    "2B": "Budget Formulation and Presentation",
+    "2":  "Budget Formulation and Presentation",
     "3":  "Budget Execution — Availability and Use of Budgetary Resources",
     "4":  "Accounting Policy",
     "5":  "Disbursing Policy",
-    "6A": "Reporting Policy",
-    "6B": "Form and Content of the DoD Audited Financial Statements",
+    "6":  "Reporting Policy",
     "7A": "Military Pay Policy — Active Duty and Reserve Pay",
     "7B": "Military Pay Policy — Retired Pay",
     "8":  "Civilian Pay Policy",
     "9":  "Travel Policy",
     "10": "Contract Payment Policy",
-    "11A": "Reimbursable Operations Policy — General",
-    "11B": "Reimbursable Operations Policy — Defense Working Capital Funds",
+    "11": "Reimbursable Operations Policy",
     "12": "Special Accounts, Funds, and Programs",
-    "13": "Nonappropriated Funds Policy and Procedures",
+    "13": "Nonappropriated Funds Policy",
     "14": "Administrative Control of Funds and Antideficiency Act Violations",
     "15": "Security Cooperation Policy",
-    "16": "Department of Defense Debt Management",
+    "16": "Department of War Debt Management",
 }
-VOL_ORDER = ["1","2A","2B","3","4","5","6A","6B","7A","7B","8","9","10","11A","11B","12","13","14","15","16"]
+VOL_ORDER = list(VOLUME_TITLES)
+CHAPTERED = {"7A", "7B"}
+EDITION = "September 2026"
+URL = "https://comptroller.war.gov/FMR/"
+SOURCE_LABEL = "DoW Financial Management Regulation"
+FILENAME = "DoW 7000.14-R"
 
-# Real chapter headings start with an uppercase "VOLUME" and carry a colon before the
-# title ("VOLUME x, CHAPTER n:"). The line-start check (case-sensitive, in parse()) excludes
-# mixed-case prose cross-references ("Volume 10, Chapter 1 of ..."); re.I here only so a
-# title-case "Chapter" in a real heading still matches.
-CH_RE = re.compile(r'VOLUME\s+0*(\d+[A-C]?)\s*,\s*CHAPTER\s+0*(\d+)\s*[:：]\s*(.*)', re.I)
 MONTHS = r'(January|February|March|April|May|June|July|August|September|October|November|December)'
-DATE_RE = re.compile(r'^\*?\s*' + MONTHS + r'\s+\d{4}\s*$', re.I)
-RUNHDR_RE = re.compile(r'^\s*Volume\s+\d+[A-C]?\s*,\s*Chapter\s+\d+\s*$', re.I)
-PAGENO_RE = re.compile(r'^\s*(\*?\s*)?([A-Z]{0,3}-?\d{1,4}|\d{1,2}-\d{1,3})\s*$')
-SECTION_RE = re.compile(r'^\s*(\d+)\.0\s+[A-Z“"]')          # real top-level section heading
-ANY_SECTION_RE = re.compile(r'^\s*\d+\.0\s+\S')
+DATE_RE = re.compile(r'^\s*\*?\s*' + MONTHS + r'\s+\d{4}\s*$', re.I)
+HDR_RE = re.compile(r'Financial Management Regulation\s+(?:Volume\s+(\w+)(?:\s*,?\s*(Chapter|Appendix)\s+(\w+))?|Introduction)')
+FOOTER_RE = re.compile(r'^\s*\*?\s*[A-Z0-9]{1,4}-\d{1,3}\s*$')
+TOPSEC_RE = re.compile(r'^\s{0,16}\*?\s*(\d{1,2})\.0\s+(\S.*)$')
+LEADER_RE = re.compile(r'\.{4,}|…')
 
-def norm_vol(v):
-    v = v.upper()
-    return v
-
-def is_noise(s):
-    if s.startswith('<!-- Page'): return True
-    if s == '---': return True
-    if 'DoD 7000.14-R' in s: return True
-    # running header/footer — these always carry the spelled-out regulation name,
-    # often combined on one line with a volume code / chapter ref / date.
-    if re.search(r'Financial Management Regulation', s, re.I): return True
-    if s.strip().lower().startswith('table of contents'): return True
-    if DATE_RE.match(s): return True
-    if RUNHDR_RE.match(s): return True
-    if PAGENO_RE.match(s) and not re.search(r'[A-Za-z]{4,}', s): return True
-    if '....' in s or '…' in s: return True            # dot / ellipsis leaders (TOC)
-    if re.match(r'^[.…\s]+\d*$', s): return True        # leftover leader fragments
-    return False
-
-_HEAD = re.compile(r'^\s*\*?\s*\d+\.0\s+\S')                       # top section "1.0 GENERAL"
-_SUBHEAD = re.compile(r'^\s*\*?\s*\d+\.\d+\s+\S')                  # "1.1 Purpose"
-_NEWPARA = re.compile(r'^\s*\*?\s*(?:(?:\d+\.)+\d+\.?|\(?[A-Za-z]\)|\(?\d+\)|[-•])\s+\S')
-_CAP = re.compile(r'^\s*\*?\s*(Table|Figure|Annex|Exhibit|Section)\b', re.I)
-
-def reflow(lines):
-    """Rejoin PDF-wrapped prose into paragraphs for readability. Numbered section/subsection
-    headings stay on their own line; numbered/lettered paragraphs keep their enumerator and
-    absorb their wrapped continuation lines; columnar (tabular) rows are left preformatted."""
-    out, para = [], []
-    def flush():
-        if para:
-            out.append(' '.join(x.strip() for x in para)); para.clear()
-    for raw in lines:
-        s = raw.rstrip()
-        st = s.strip()
-        if not st:
-            flush(); out.append(''); continue
-        tabular = len(re.findall(r'\S {2,}\S', s)) >= 2 and not _NEWPARA.match(s)
-        is_head = bool(_HEAD.match(s)) or (bool(_SUBHEAD.match(s)) and len(st) < 70) \
-            or (st.isupper() and len(st) < 70 and not _CAP.match(s))
-        if tabular:
-            flush(); out.append(s)
-        elif is_head:
-            flush(); out.append(st)
-        elif _NEWPARA.match(s) or _CAP.match(s):
-            flush(); para.append(s)
-        else:
-            para.append(s)
-    flush()
-    return re.sub(r'\n{3,}', '\n\n', '\n'.join(out)).strip()
-
-_SMALL = {'of','the','and','for','to','in','a','an','or','with','by','on','at','from','as','per','into'}
-_ACR = {'DOD':'DoD','US':'U.S.','USD':'USD','CFO':'CFO','FMR':'FMR','NATO':'NATO','FYDP':'FYDP',
-        'BRAC':'BRAC','RDT&E':'RDT&E','O&M':'O&M','IT':'IT','DFAS':'DFAS','DCAA':'DCAA','GPC':'GPC',
-        'MWR':'MWR','NAF':'NAF','TDY':'TDY','SNAP':'SNaP','BIRD':'BIRD','AFRH':'AFRH','OMB':'OMB',
-        'DTS':'DTS','EFT':'EFT','SF':'SF','UCFR':'UCFR','ADA':'ADA','FMS':'FMS'}
-def smartcase(t):
-    if not t.isupper():
-        return t
-    words = t.split()
-    out = []
-    for i, w in enumerate(words):
-        core = re.sub(r'[^A-Za-z&.]', '', w).upper()
-        pre = w[:len(w) - len(w.lstrip('(“"'))]
-        post = w[len(w.rstrip(').,:;”"')):]
-        mid = w[len(pre):len(w) - len(post)] if post else w[len(pre):]
-        if core in _ACR:
-            cased = _ACR[core]
-        elif core.lower() in _SMALL and 0 < i < len(words) - 1:
-            cased = mid.lower()
-        else:
-            cased = mid.capitalize()
-        out.append(pre + cased + post)
-    return ' '.join(out)
-
-def clean_title(first, follow):
-    """Build chapter title from the heading line + up to 2 following lines, until the closing quote."""
-    buf = first
-    for f in follow:
-        if '”' in buf or '"' in buf[1:]:
-            break
-        buf += ' ' + f.strip()
-    # cut at closing curly/straight quote
-    m = re.split(r'[”"]', buf, maxsplit=1)
-    t = m[0]
-    t = re.sub(r'\s+', ' ', t).strip(' :“"')
-    t = re.sub(r'\s*\.{2,}.*$', '', t)        # strip any dot-leader tail
-    return smartcase(t)
-
-# Symbol/Wingdings fonts map em-dashes and bullets into the private-use area;
-# they render as tofu boxes (▯). Normalize on the way in — mirrors
-# scripts/scrub_pua_glyphs.py, which fixes any already in output/documents.json.
-_PUA_MAP = {'': '—', '': '—', '': '•', '': '•', '': '•'}
+_PUA_MAP = {'': '•', '': '•', '': '•', '': '—', '': '—'}
 
 
 def _scrub_pua(text):
@@ -153,146 +76,349 @@ def _scrub_pua(text):
     return text
 
 
-def parse(md_path):
-    lines = _scrub_pua(open(md_path, encoding='utf-8', errors='replace').read()).split('\n')
-    # locate every chapter-heading occurrence
-    heads = []
-    for i, ln in enumerate(lines):
-        m = CH_RE.search(ln)
-        if m and ln.lstrip().startswith('VOLUME'):   # case-sensitive: excludes prose "Volume ..."
-            heads.append((i, norm_vol(m.group(1)), m.group(2), m.group(3)))
-    heads.append((len(lines), None, None, None))  # sentinel
+_SMALL = {'of','the','and','for','to','in','a','an','or','with','by','on','at','from','as','per','into'}
+_ACR = {'DOD':'DoD','DOW':'DoW','US':'U.S.','USD':'USD','CFO':'CFO','FMR':'FMR','NATO':'NATO','FYDP':'FYDP',
+        'BRAC':'BRAC','RDT&E':'RDT&E','O&M':'O&M','IT':'IT','DFAS':'DFAS','DCAA':'DCAA','GPC':'GPC',
+        'MWR':'MWR','NAF':'NAF','TDY':'TDY','PDT':'PDT','SNAP':'SNaP','BIRD':'BIRD','AFRH':'AFRH','OMB':'OMB',
+        'DTS':'DTS','EFT':'EFT','SF':'SF','UCFR':'UCFR','ADA':'ADA','FMS':'FMS','SC':'SC','DWCF':'DWCF',
+        'DOWEA':'DoWEA','T&A':'T&A','IPA':'IPA','JROTC':'JROTC','GPP&E':'GPP&E','ADVANA':'Advana','FM':'FM',
+        'HPO':'HPO','AIP':'AIP','CSP':'CSP','FLPB':'FLPB','AVB':'AvB','FSA':'FSA','MIA':'MIA','FICA':'FICA',
+        'SGLI':'SGLI','AD':'AD','IDT':'IDT','SROTC':'SROTC','IRR':'IRR','RR':'RR','CP':'CP','COLA':'COLA',
+        'CONUS':'CONUS','OCONUS':'OCONUS','TLA':'TLA','TDRL':'TDRL','SSB':'SSB','VSI':'VSI','FITW':'FITW',
+        'RSFPP':'RSFPP','SBP':'SBP','RCSBP':'RCSBP','ACMSS':'ACMSS','CRSC':'CRSC','DVA':'DVA','NONDOW':'Non-DoW',
+        'USW':'USW'}
 
-    # build spans grouped by (vol,ch); keep the longest (= real chapter, not cover/TOC entry)
-    spans = {}
-    for idx in range(len(heads) - 1):
-        start, vol, ch, rest = heads[idx]
-        end = heads[idx + 1][0]
-        key = (vol, ch)
-        body = lines[start:end]
-        length = sum(len(x) for x in body)
-        if key not in spans or length > spans[key][0]:
-            spans[key] = (length, start, end, rest)
 
+def smartcase(t):
+    letters = re.sub(r'[^A-Za-z]', '', t)
+    if not letters or sum(c.isupper() for c in letters) / len(letters) < 0.8:
+        return t
+    words = t.split()
+    out = []
+    for i, w in enumerate(words):
+        pre = w[:len(w) - len(w.lstrip('(“"[\''))]
+        post = w[len(w.rstrip(').,:;”"]\'')):]
+        mid = w[len(pre):len(w) - len(post)] if post else w[len(pre):]
+        # hyphenated / slashed compounds are cased part by part ("NON-DOW", "BUDGET/FAMILY")
+        parts = re.split(r'([-/–])', mid)
+        cased = []
+        for k, p in enumerate(parts):
+            core = re.sub(r'[^A-Za-z&]', '', p).upper()
+            if p in '-/–':
+                cased.append(p)
+            elif core in _ACR:
+                cased.append(p.upper().replace(core, _ACR[core]) if core else p)
+            elif core.lower() in _SMALL and ((len(parts) == 1 and 0 < i < len(words) - 1) or k > 0):
+                cased.append(p.lower())
+            else:
+                cased.append(p.capitalize())
+        out.append(pre + ''.join(cased) + post)
+    return ' '.join(out)
+
+
+# ── reflow ────────────────────────────────────────────────────────────────────
+_HEAD = re.compile(r'^\s*\*?\s*\d+\.0\s+\S')
+_SUBHEAD = re.compile(r'^\s*\*?\s*\d+\.\d+\s+\S')
+_NEWPARA = re.compile(r'^\s*\*?\s*(?:(?:\d+\.)+\d+\.?|\(?[A-Za-z]\)|\(?\d+\)|[-•])\s+\S')
+_CAP = re.compile(r'^\s*\*?\s*(Table|Figure|Annex|Exhibit|Section)\b', re.I)
+
+
+def _gaps(s):
+    """End columns of interior runs of 2+ spaces — where a column of text starts."""
+    lead = len(s) - len(s.lstrip())
+    return {m.end() for m in re.finditer(r' {2,}', s) if m.start() > lead}
+
+
+def _tabular_flags(lines):
+    """A line is tabular when it has an interior column gap that lines up (±1) with a gap
+    on an adjacent line. pdftotext -layout also stretches some justified prose lines
+    ("UNMATCHED        DISBURSEMENTS"), but those gaps are isolated, so they reflow."""
+    g = [_gaps(l) if l.strip() else set() for l in lines]
+    flags = []
+    for i, gi in enumerate(g):
+        hit = False
+        if gi:
+            for j in (i - 1, i + 1):
+                if 0 <= j < len(g) and any(abs(a - b) <= 1 for a in gi for b in g[j]):
+                    hit = True
+                    break
+        flags.append(hit)
+    return flags
+
+
+def reflow(lines):
+    """Rejoin PDF-wrapped prose into paragraphs. Numbered headings stay on their own line;
+    numbered/lettered paragraphs keep their enumerator and absorb their wrapped
+    continuation lines; columnar (tabular) rows are left preformatted."""
+    out, para = [], []
+    flags = _tabular_flags(lines)
+
+    def flush():
+        if para:
+            out.append(re.sub(r' {2,}', ' ', ' '.join(x.strip() for x in para))); para.clear()
+    for raw, tabular in zip(lines, flags):
+        s = raw.rstrip()
+        st = s.strip()
+        if not st:
+            flush(); out.append(''); continue
+        tabular = tabular and not _NEWPARA.match(s)
+        is_head = bool(_HEAD.match(s)) or (bool(_SUBHEAD.match(s)) and len(st) < 70) \
+            or (st.isupper() and len(st) < 70 and not _CAP.match(s))
+        if tabular:
+            flush(); out.append(s)
+        elif is_head:
+            st = re.sub(r' {2,}', ' ', st)
+            flush(); out.append(re.sub(r'^(\*?\s*[\d.]+) ', r'\1    ', st) if _HEAD.match(s) or _SUBHEAD.match(s) else st)
+        elif _NEWPARA.match(s) or _CAP.match(s):
+            flush(); para.append(s)
+        else:
+            para.append(s)
+    flush()
+    return re.sub(r'\n{3,}', '\n\n', '\n'.join(out)).strip()
+
+
+# ── page handling ─────────────────────────────────────────────────────────────
+def load_pages(pdf):
+    txt = subprocess.run(['pdftotext', '-layout', str(pdf), '-'], check=True,
+                         capture_output=True, text=True).stdout
+    return _scrub_pua(txt).split('\f')
+
+
+def outline_vol12_page(pdf):
+    """1-based page the PDF outline gives for VOLUME 12 (the copy to keep)."""
+    import pypdf
+    r = pypdf.PdfReader(str(pdf))
+    for x in r.outline:
+        if not isinstance(x, list) and re.match(r'\s*VOLUME 12\b', x.title or ''):
+            return r.get_destination_page_number(x) + 1
+    raise SystemExit('outline has no VOLUME 12 entry')
+
+
+def page_info(text):
+    """-> (volume, chapter-or-None, kind, body_lines) or None for a page with no running head."""
+    lines = text.split('\n')
+    head = lines[:5]
+    m = None
+    for h in head:
+        m = HDR_RE.search(h)
+        if m:
+            break
+    if not m:
+        return None
+    vol = m.group(1)
+    kind = (m.group(2) or '').lower() or ('volume' if vol else 'intro')
+    ch = m.group(3)
+    # strip the header zone: leading lines that are the reg id, the running head, the date
+    i = 0
+    while i < min(6, len(lines)):
+        s = lines[i].strip()
+        if not s or '7000.14' in s or 'Financial Management Regulation' in s or DATE_RE.match(s) \
+                or re.fullmatch(r'2B|[A-Z]?\d{1,2}[A-Z]?(,?\s*(Chapter|Appendix)\s+\w+)?', s) \
+                or re.fullmatch(r'Volume\s+\w+(\s*,?\s*(Chapter|Appendix)\s+\w+)?', s):
+            i += 1
+            continue
+        break
+    body = lines[i:]
+    while body and not body[-1].strip():
+        body.pop()
+    if body and FOOTER_RE.match(body[-1]):
+        body.pop()
+    while body and not body[-1].strip():
+        body.pop()
+    return vol, ch, kind, body
+
+
+def is_toc_page(body):
+    top = [l.strip() for l in body[:4]]
+    if any(t.lower().startswith('table of contents') for t in top):
+        return True
+    return sum(1 for l in body if LEADER_RE.search(l)) >= 3
+
+
+def join_pages(pbs):
+    """[(page, body_lines)] -> [(page, line)]. Concatenated so a paragraph broken across a
+    page reflows as one, but a paragraph that ended at the foot of a page stays separate
+    from the next."""
+    out = []
+    for pg, body in pbs:
+        b = list(body)
+        while b and not b[0].strip():
+            b.pop(0)
+        if out and b:
+            prev = out[-1][1].rstrip()
+            if re.search(r'[.:;!?”")]$', prev) or TOPSEC_RE.match(b[0]) or _NEWPARA.match(b[0]):
+                out.append((pg, ''))
+        out.extend((pg, l) for l in b)
+    return out
+
+
+def clean_body(lines):
+    return [l for l in lines if not LEADER_RE.search(l)]
+
+
+def doc(vid, vol, title, content, pages):
+    return {
+        "id": vid,
+        "source": "fmr",
+        "source_label": SOURCE_LABEL,
+        "part": vol,
+        "title": title,
+        "content": content,
+        "filename": FILENAME,
+        "status": "Current",
+        "date": EDITION,
+        "url": URL,
+        "indexed_at": datetime.now(timezone.utc).isoformat(),
+        "_pages": pages,          # stripped before write; used by the table pass
+    }
+
+
+def split_sections(vol, items):
+    """items: [(page_no, line)] for one consolidated volume, TOC pages removed.
+    Split at sequential top-level headings 1.0, 2.0, ... ."""
+    heads, want = [], 1
+    for k, (pg, ln) in enumerate(items):
+        m = TOPSEC_RE.match(ln)
+        if not m or int(m.group(1)) != want:
+            continue
+        t = m.group(2).strip()
+        letters = re.sub(r'[^A-Za-z]', '', t)
+        if not letters or sum(c.isupper() for c in letters) / len(letters) < 0.8:
+            continue
+        heads.append(k)
+        want += 1
     docs = []
-    diag = []
-    for (vol, ch), (length, start, end, rest) in spans.items():
+    for n, k in enumerate(heads, start=1):
+        end = heads[n] if n < len(heads) else len(items)
+        block = items[k:end]
+        # heading may wrap onto the next line(s) (all caps, no blank between)
+        m = TOPSEC_RE.match(block[0][1])
+        title_parts, j = [m.group(2).strip()], 1
+        while j < len(block) and block[j][1].strip() and block[j][1].strip().isupper() \
+                and not re.match(r'^\s*\d+\.\d', block[j][1]) and len(title_parts) < 3:
+            title_parts.append(block[j][1].strip()); j += 1
+        title = re.sub(r'\s+', ' ', ' '.join(title_parts)).strip()
+        title = re.sub(r'(\w)([-/]) (\w)', r'\1\2\3', title)       # 'INTERMEDIATE- LEVEL' wrap
+        body = [f"{n}.0    {title}"] + [ln for _, ln in block[j:]]
+        content = reflow(clean_body(body))
+        pages = [block[0][0], block[-1][0]]
+        docs.append(doc(f"fmr-vol-{vol.lower()}-sec-{n}", vol,
+                        f"Section {n}.0: {smartcase(title)}", content, pages))
+    return docs
+
+
+def chapter_title(lines, ch):
+    """'VOLUME 7A, CHAPTER 5: “HEALTH PROFESSIONS ... PAY”' (may wrap) -> smart-cased title."""
+    for i, l in enumerate(lines):
+        if re.search(r'CHAPTER\s+0*' + ch + r'\s*:', l):
+            buf = l.split(':', 1)[1]
+            for f in lines[i + 1:i + 4]:
+                if re.search(r'[”"]', buf.strip()[1:]):
+                    break
+                buf += ' ' + f.strip()
+            t = re.split(r'[”"]', buf.strip().lstrip('“"'), maxsplit=1)[0]
+            return smartcase(re.sub(r'\s+', ' ', t).strip(' :“"'))
+    return f"Chapter {ch}"
+
+
+def parse(pdf):
+    pages = load_pages(pdf)
+    v12 = outline_vol12_page(pdf)
+    vol_items = {}                 # consolidated: vol -> [(page, line)]
+    chap_pages = {}                # chaptered: (vol, ch) -> [(page, body)]
+    for idx, text in enumerate(pages):
+        pg = idx + 1
+        info = page_info(text)
+        if not info:
+            continue
+        vol, ch, kind, body = info
         if vol not in VOLUME_TITLES:
             continue
-        block = lines[start:end]
-        # title from heading line + following lines
-        title = clean_title(block[0].split(':',1)[-1] if ':' in block[0] else rest,
-                            block[1:4])
-        if not title:
-            title = f"Chapter {ch}"
-        # drop heading line(s), then strip noise
-        kept = []
-        for ln in block[1:]:
-            s = ln.rstrip()
-            if not s.strip():
-                kept.append('')
-                continue
-            if is_noise(s.strip()):
-                continue
-            kept.append(s)
-        # Find where the real body starts. The reliable marker: a centered "CHAPTER n"
-        # banner sits immediately before the body (after the heading + the chapter TOC,
-        # whose wrapped entries otherwise look like real section headings). Anchor at the
-        # first top-level section ("*?n.0 ...") after this chapter's banner. Fall back to a
-        # prose-nearby heuristic (FMR prose lines wrap to ~90 chars) if no banner is found.
-        TOPSEC = re.compile(r'^\s*\*?\s*\d+\.0\b')
-        banner = re.compile(r'^\s*CHAPTER\s+0*' + re.escape(ch) + r'\b\s*$', re.I)
-        cap = re.compile(r'^\s*\*?\s*(Table|Figure)\b', re.I)
-        def is_heading(s):
-            return bool(re.match(r'^\s*\*?\s*\d+(?:\.\d+)+\.?\s+\S', s)) or bool(re.match(r'^\s*\*?\s*\d+\.0\s+\S', s))
-        anchor = None
-        banner_idx = None
-        for i, s in enumerate(kept):
-            if banner.match(s):
-                banner_idx = i  # keep the last banner for this chapter
-        if banner_idx is not None:
-            for j in range(banner_idx + 1, len(kept)):
-                if TOPSEC.match(kept[j]):
-                    anchor = j; break
-            if anchor is None:
-                anchor = banner_idx + 1
-        if anchor is None:
-            # no banner: first top-level section with real prose (not table captions) nearby
-            def prose_near(i):
-                seen = 0
-                for j in range(i + 1, min(i + 12, len(kept))):
-                    t = kept[j].strip()
-                    if not t:
-                        continue
-                    if len(t) > 60 and not is_heading(kept[j]) and not cap.match(kept[j]):
-                        return True
-                    seen += 1
-                    if seen > 10:
-                        break
-                return False
-            for i, s in enumerate(kept):
-                if TOPSEC.match(s) and prose_near(i):
-                    anchor = i; break
-            if anchor is None:
-                for i, s in enumerate(kept):
-                    if TOPSEC.match(s):
-                        anchor = i; break
-        body_lines = kept[anchor:] if anchor is not None else kept
-        # drop stray front-matter headers if any slipped past
-        body_lines = [s for s in body_lines
-                      if s.strip().upper() not in ('TABLE OF CONTENTS', 'SUMMARY OF MAJOR CHANGES')]
-        text = reflow(body_lines)
-        if len(text) < 120:
-            diag.append((vol, ch, 'SHORT', len(text), title))
+        if vol == '12' and pg < v12:
+            continue               # the superseded duplicate copy of Volume 12
+        if is_toc_page(body):
             continue
-        docs.append({
-            "id": f"fmr-vol-{vol.lower()}-ch-{ch}",
-            "source": "fmr",
-            "source_label": "DoD Financial Management Regulation",
-            "part": vol,
-            "title": f"Chapter {ch}: {title}",
-            "content": text,
-            "filename": "DoD 7000.14-R",
-            "status": "Current",
-            "date": "",
-            "url": "https://comptroller.war.gov/FMR/",
-            "indexed_at": datetime.now(timezone.utc).isoformat(),
-        })
-    # sort by volume order then chapter number
-    docs.sort(key=lambda d: (VOL_ORDER.index(d['part']) if d['part'] in VOL_ORDER else 99,
-                             int(re.sub(r'\D','',d['id'].split('-ch-')[1]) or 0)))
-    return docs, diag
+        if vol in CHAPTERED:
+            if kind == 'chapter':
+                chap_pages.setdefault((vol, ch), []).append((pg, body))
+            continue
+        vol_items.setdefault(vol, []).append((pg, body))
+
+    docs = []
+    for vol, pbs in vol_items.items():
+        docs.extend(split_sections(vol, join_pages(pbs)))
+
+    for (vol, ch), pbs in chap_pages.items():
+        all_lines = [l for _, b in pbs for l in b]
+        title = chapter_title(all_lines, ch)
+        if title.upper() == 'ARCHIVED':
+            continue
+        lines = [l for _, l in join_pages(pbs)]
+        banner = re.compile(r'^\s*CHAPTER\s+0*' + re.escape(ch) + r'\s*$')
+        bi = max((i for i, l in enumerate(lines) if banner.match(l)), default=None)
+        start = None
+        rng = range(bi + 1, len(lines)) if bi is not None else range(len(lines))
+        for i in rng:
+            if TOPSEC_RE.match(lines[i]):
+                start = i; break
+        if start is None:
+            continue
+        body = [l for l in clean_body(lines[start:])
+                if l.strip().upper() not in ('TABLE OF CONTENTS', 'SUMMARY OF MAJOR CHANGES')]
+        content = reflow(body)
+        if len(content) < 120:
+            continue
+        docs.append(doc(f"fmr-vol-{vol.lower()}-ch-{ch}", vol, f"Chapter {ch}: {title}",
+                        content, [pbs[0][0], pbs[-1][0]]))
+
+    def key(d):
+        n = re.search(r'-(?:ch|sec)-(\d+)$', d['id'])
+        return (VOL_ORDER.index(d['part']), int(n.group(1)))
+    docs.sort(key=key)
+    return docs
+
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--md', required=True)
+    ap.add_argument('--pdf', required=True)
     ap.add_argument('--write', action='store_true')
-    ap.add_argument('--dry', action='store_true')
-    ap.add_argument('--out', default='/tmp/fmr_docs.json')
+    ap.add_argument('--no-tables', action='store_true')
+    ap.add_argument('--out', default=None, help='also dump the candidate docs here')
     a = ap.parse_args()
-    docs, diag = parse(a.md)
+    docs = parse(a.pdf)
 
-    # diagnostics
-    from collections import Counter, defaultdict
+    from collections import Counter
     byvol = Counter(d['part'] for d in docs)
-    lens = [len(d['content']) for d in docs]
-    print(f"FMR docs: {len(docs)}  | total content chars: {sum(lens):,}  (~{sum(lens)//1024}KB raw text)")
-    print("chapters per volume:", {v: byvol.get(v,0) for v in VOL_ORDER})
+    lens = sorted(len(d['content']) for d in docs)
+    print(f"FMR docs: {len(docs)}  | total content chars: {sum(lens):,}")
+    print("docs per volume:", {v: byvol.get(v, 0) for v in VOL_ORDER})
     if lens:
-        lens_s = sorted(lens)
-        print(f"content len min/median/max: {lens_s[0]} / {lens_s[len(lens_s)//2]} / {lens_s[-1]}")
-    if diag:
-        print(f"skipped (short/no content): {len(diag)} -> {diag[:8]}")
-    json.dump(docs, open(a.out,'w'), ensure_ascii=False)
-    print("wrote candidate ->", a.out)
+        print(f"content len min/median/max: {lens[0]} / {lens[len(lens)//2]} / {lens[-1]}")
+
+    if not a.no_tables:
+        sys.path.insert(0, str(BASE / 'scripts'))
+        import attach_fmr_tables
+        attach_fmr_tables.attach(docs, a.pdf)
+    for d in docs:
+        d.pop('_pages', None)
+    if a.out:
+        Path(a.out).write_text(json.dumps(docs, ensure_ascii=False))
+        print("wrote candidate ->", a.out)
 
     if a.write:
-        DOCS='output/documents.json'
-        corpus=json.load(open(DOCS))
-        corpus=[d for d in corpus if d.get('source')!='fmr']  # idempotent
-        corpus.extend(docs)
-        json.dump(corpus, open(DOCS,'w'), ensure_ascii=False)
-        print(f"merged into {DOCS}; corpus now {len(corpus)} docs")
+        p = BASE / 'output' / 'documents.json'
+        corpus = json.loads(p.read_text())
+        old = [d for d in corpus if d.get('source') == 'fmr']
+        at = next((i for i, d in enumerate(corpus) if d.get('source') == 'fmr'), len(corpus))
+        rest = [d for d in corpus if d.get('source') != 'fmr']
+        at -= sum(1 for d in corpus[:at] if d.get('source') == 'fmr')
+        corpus = rest[:at] + docs + rest[at:]          # same place in the file: a readable diff
+        p.write_text(json.dumps(corpus, ensure_ascii=False))
+        old_ids, new_ids = {d['id'] for d in old}, {d['id'] for d in docs}
+        print(f"merged into {p}; corpus now {len(corpus)} docs "
+              f"(fmr {len(old)} -> {len(docs)}; kept {len(old_ids & new_ids)}, "
+              f"added {len(new_ids - old_ids)}, removed {len(old_ids - new_ids)})")
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()

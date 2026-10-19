@@ -33,7 +33,7 @@ storage** (one document). They should be the same thing.
 | far-companion | entry (`FC 8.401`) | one entry | yes |
 | ssp | section / appendix (`3.9`, `A.3`) | one section | yes |
 | afi-63-138 | paragraph (`1.1`) | one paragraph group | yes |
-| **fmr** | **volume + chapter** | **one chapter** | **yes — declared** |
+| **fmr** | **volume + chapter (7A/7B) or top-level section (all other volumes, Sept 2026 edition)** | **one chapter / section** | **yes — declared** |
 | category-management | part | one part | yes — declared |
 
 The FMR has a **median document of 26,792 characters** against the RFO's 642, because a

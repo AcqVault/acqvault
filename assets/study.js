@@ -7,7 +7,7 @@
      they are deliberately stale-proof, because a shell old enough to lack them is old
      enough that its deck is the one it shipped with. */
   var _app0 = document.getElementById('study-app');
-  var DECK_URL = (_app0 && _app0.getAttribute('data-deck')) || '/assets/study-deck.json?v=2b8bdda2683a';
+  var DECK_URL = (_app0 && _app0.getAttribute('data-deck')) || '/assets/study-deck.json?v=fdbd826e156c';
   var ELEMENTS_URL = (_app0 && _app0.getAttribute('data-elements')) || '/assets/study-elements.json?v=33d13fb7a86d';
   var ELEMENTS = null;
   var LS_KEY = 'acq-study-v1';
