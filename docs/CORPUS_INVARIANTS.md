@@ -99,6 +99,16 @@ Part 48 is allow-listed: its memo is a 2,479-char cover letter with no sections.
 ### 8. Structural basics
 Unique ids, no empty content.
 
+### 8a. A retired id never dead-ends
+Ids live on in shared `?doc=` links, saved pins and `#anchors` on part pages. When an
+update removes ids (DPCAP renumbering, the Sept 2026 FMR restructure), map each to its
+successor: `git show <commit-before>:output/documents.json > /tmp/old.json && python3
+scripts/build_id_aliases.py /tmp/old.json` (merges into `output/id-aliases.json`; review
+its low-score and FALLBACK rows by hand, fix in its `MANUAL` table). The client resolves
+aliases in `fetchDocumentById`, the part-page hash rewrite in `part-nav.js`, and the pin
+migration in `saved.js`. Gate: `corpus_health.py` "id aliases resolve" (every target
+exists; no key is a live id).
+
 ---
 
 ## Things that are NOT bugs

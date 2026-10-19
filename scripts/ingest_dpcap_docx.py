@@ -151,7 +151,7 @@ SUBPART_H = re.compile(rf"^(?:PGI\s+)?SUBPART\s+(2\d\d\.\d+)(?:{DASH}|\s+(?=\[))
                        rf"|^PGI\s+(2\d\d\.\d{{1,2}}){DASH}(.+)$", re.I)
 HEAD_STYLE = re.compile(r"style3|section|heading", re.I)
 STANDALONE = re.compile(r"^\((?:[A-Z]{3,4}\.? ?\d{4}|DEVIATION[^)]*)\)$", re.I)
-NUM = r"(2\d\d\.\d+(?:-\d+)*)"
+NUM = r"(2\d\d\.\d+(?:[-\u2011\u2013\u2014]\d+)*)"   # the docx sometimes types an en-dash (252.216–7004)
 SEC_H = re.compile(rf"^{NUM}\.?\s+([A-Z\[“\"].*)$")
 PGI_SEC_H = re.compile(rf"^PGI\s+{NUM}\.?\s+([A-Z\[“\"].*)$")
 TOKEN = re.compile(r"^\(([a-z]|\d{1,2}|[ivx]{1,5}|[A-Z])\)")
@@ -215,7 +215,7 @@ def heading(text, pgi, style="", family=""):
     if not m and pgi and HEAD_STYLE.search(style or ""):
         m = SEC_H.match(text)        # a few A2s drop the "PGI" prefix on Style3 headings
     if m and len(m.group(2)) <= 250:
-        return ("sec", m.group(1), clean(m.group(2)))
+        return ("sec", re.sub("[\u2011\u2013\u2014]", "-", m.group(1)), clean(m.group(2)))
     # Source typo: Part 222's A1 heads a section "22.1704  Postaward." (its own
     # paragraph below reads 222.1704(a)). Recover the family digit, nothing else.
     m = family and re.match(rf"^(?:PGI\s+)?({family[1:]}\.\d+(?:-\d+)*)\.?\s+([A-Z\[].{{0,120}})$", text)
@@ -450,6 +450,8 @@ def _selftest():
     assert heading("201.101-70  Framework.", False) == ("sec", "201.101-70", "Framework.")
     assert heading("SUBPART 217.72 [RESERVED]", False)[0] == "subpart"
     assert heading("PGI 222.1—BASIC LABOR POLICIES", True) == ("subpart", "222.1", "BASIC LABOR POLICIES")
+    assert heading("252.216\u20137004  Award Fee Reduction.", False) == ("sec", "252.216-7004", "Award Fee Reduction.")
+    assert heading("243.370\u20137  Reports.", False) == ("sec", "243.370-7", "Reports.")
     assert heading("PGI 234.201(a)(3) for conducting a cost-benefit", True) is None
     assert heading("225.7002-1 for exceptions", False) is None
     assert heading("201.201-71  Local provisions.", True) is None             # bare number in PGI ...

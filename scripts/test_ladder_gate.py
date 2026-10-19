@@ -8,7 +8,7 @@ ACQVAULT_LADDER_FILE hook and asserts each one FATALs with the RIGHT reason.
 Negative runs never touch assets/study-deck.json: the gate sys.exit()s before the
 deck is written. The final positive run leaves the deck in its normal built state.
 
-Exit 0 = all 6 seeds pass + all 9 negative cases FATAL correctly. Exit 1 otherwise.
+Exit 0 = all 6 seeds pass + all 10 negative cases FATAL correctly. Exit 1 otherwise.
 """
 import json, os, re, subprocess, sys, tempfile
 
@@ -116,6 +116,26 @@ else:
         print(f'FAIL [ssp citeable]: link wrong — {link}')
         failures += 1
 
+# ---- board DoD overlay: a board cite on 6.104-2 with no `dod` must FATAL ----
+# 6.104-2 is displaced by 206.104-71 (Table 206-1) without a mirrored number, so only
+# _DOD_EXTRA reaches it. Boards never consulted that table, and a board quoting the
+# civilian J&A tiers built clean — this keeps that hole closed.
+board = {'rung': '5m', 'topic': 'Competition (CICA)', 'scenario': 'Test scenario.',
+         'ask': 'Who approves this test J&A?', 'script': 'Test script.',
+         'follow_ups': [{'q': 'q', 'h': 'h', 'd': 'd'}],
+         'cites': [{'src': 'rfo', 'sec': '6.104-2',
+                    'quote': 'A justification must include the estimated dollar value of all options to determine the approval level.'}]}
+bpath = os.path.join(tmpdir, 'bad-board.json')
+with open(bpath, 'w') as f:
+    json.dump({'items': [board]}, f)
+r = run({'ACQVAULT_BOARD_FILE': bpath})
+blob = r.stdout + r.stderr
+if r.returncode != 0 and 'FATAL: ladder board DoD overlay' in blob and '206.104-71' in blob:
+    print('PASS (FATAL as required) [board cite on 6.104-2 with no dod review]')
+else:
+    print(f'FAIL [board dod overlay]: expected FATAL naming 206.104-71. Got: {blob.strip()[-300:]}')
+    failures += 1
+
 # ---- positive case: the real 6-seed file must build clean ----
 r = run()
 if r.returncode != 0:
@@ -156,4 +176,4 @@ print()
 if failures:
     print(f'{failures} test(s) FAILED')
     sys.exit(1)
-print('ALL TESTS PASSED: 6 seed items pass the gate, 9 negative cases FATAL with the right reasons')
+print('ALL TESTS PASSED: 6 seed items pass the gate, 10 negative cases FATAL with the right reasons')

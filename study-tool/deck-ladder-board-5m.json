@@ -5,17 +5,17 @@
    "topic": "Competition (CICA)",
    "scenario": "A program office brings you a follow-on requirement for engineering support on a fielded sensor system — about $12 million over three years. The incumbent has held the work for six years. The package contains one paragraph of justification: \"Contractor X is the only vendor with the necessary experience — request sole source.\" The last market research in the file is four years old.",
    "ask": "The program manager wants the sole-source paperwork started today. Walk the panel through how you handle this request.",
-   "script": "The default is full and open competition, and the burden of escaping it sits on the file, not on incumbency. The only plausible authority is only-one-responsible-source, and for a follow-on that means demonstrating substantial duplication of cost not recoverable through competition, or unacceptable delay — demonstrated, not asserted. My first move is market research, because four-year-old research supports nothing. If the facts hold, the J&A carries the full 6.104-1 content: the unique-qualifications demonstration, efforts to solicit as many sources as practicable, a fair-and-reasonable price determination, the market research results, and the statement of actions to remove barriers before the next buy. \"They have the experience\" is a starting allegation, never the demonstration.",
+   "script": "The default is full and open competition, and the burden of escaping it sits on the file, not on incumbency. The only plausible authority is only-one-responsible-source, and for a follow-on that means demonstrating substantial duplication of cost not recoverable through competition, or unacceptable delay — demonstrated, not asserted. My first move is market research, because four-year-old research supports nothing — and for DoD it isn’t optional: PGI 206.103-170 requires a posted request for information or sources-sought notice before I cite this authority, with the results in the J&A. If the facts hold, the J&A carries the full 6.104-1 content: the unique-qualifications demonstration, efforts to solicit as many sources as practicable, a fair-and-reasonable price determination, the market research results, and the statement of actions to remove barriers before the next buy. \"They have the experience\" is a starting allegation, never the demonstration.",
    "follow_ups": [
     {
      "q": "Say the facts support the J&A. At $12 million, who approves it?",
-     "h": "Above $900,000 but not above $20 million.",
-     "d": "The advocate for competition, and that authority is not delegable (6.104-2). The contracting officer's certification carries approval only at $900K or below. A good answer also knows a higher official may approve a lower-dollar justification — the trap is treating the bands as exclusive lanes, or 'delegating' the advocate's approval to make routing easier."
+     "h": "For DoD, R-DFARS 206.104-71 replaces the 6.104-2 table: above $10 million but not above $100 million.",
+     "d": "The competition advocate, and that authority is not delegable. For an Air Force buyer the tiers come from R-DFARS 206.104-71 Table 206-1, which applies in lieu of the 6.104-2 table (the civilian bands happen to land at the advocate too, at >$900K–$20M). The contracting officer’s certification carries approval only at $10 million or below for DoD — $900K on the civilian table. A good answer also knows a higher official may approve a lower-dollar justification — the trap is quoting the civilian bands as the DoD answer, or 'delegating' the advocate's approval to make routing easier."
     },
     {
      "q": "The base is $12 million, but two option years could take it to $24 million. Does that change anything?",
      "h": "What dollar value sets the approval level?",
-     "d": "6.104-2(c): the justification must include the estimated value of all options to determine the approval level — at $24M this climbs out of the advocate band into the head-of-the-procuring-activity band. The trap is pricing only the base to keep the approval low; that is threshold engineering and boards hunt for it."
+     "d": "6.104-2(c): the justification must include the estimated value of all options to determine the approval level. For an Air Force buyer, $24M still sits with the competition advocate — R-DFARS 206.104-71 runs that band to $100 million — though on the civilian 6.104-2 table it would have climbed to the head of the procuring activity. Either way, the trap is pricing only the base to keep the approval low; that is threshold engineering and boards hunt for it."
     },
     {
      "q": "What does DoD change about the only-one-source authority itself?",
@@ -32,17 +32,28 @@
     {
      "src": "rfo",
      "sec": "6.103-1",
-     "quote": "Substantial duplication of cost to the Government that is not expected to be recovered through competition"
+     "quote": "Substantial duplication of cost to the Government that is not expected to be recovered through competition",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "206.103-170",
+      "quote": "Follow the procedures at PGI 206.103-170 prior to soliciting a proposal without providing for full and open competition under this authority."
+     }
     },
     {
      "src": "rfo",
      "sec": "6.104-2",
-     "quote": "A justification must include the estimated dollar value of all options to determine the approval level."
+     "quote": "A justification must include the estimated dollar value of all options to determine the approval level.",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "206.104-71",
+      "quote": "In lieu of the thresholds at FAR 6.104-2(b) Table 6-1 and in accordance with 10 U.S.C. 3204(e)(1)(B), approval levels are as follows:"
+     }
     },
     {
      "src": "rfo",
      "sec": "6.103",
-     "quote": "A lack of planning by the requiring activity"
+     "quote": "A lack of planning by the requiring activity",
+     "dod": "n/a"
     }
    ]
   },
@@ -83,7 +94,8 @@
     {
      "src": "rfo",
      "sec": "6.103",
-     "quote": "Contracting without providing for full and open competition must not be justified on the basis of"
+     "quote": "Contracting without providing for full and open competition must not be justified on the basis of",
+     "dod": "n/a"
     }
    ]
   },
@@ -114,7 +126,12 @@
     {
      "src": "rfo",
      "sec": "6.103-1",
-     "quote": "use of brand-name descriptions, or specification of attributes peculiar to one manufacturer, prevents full and open competition"
+     "quote": "use of brand-name descriptions, or specification of attributes peculiar to one manufacturer, prevents full and open competition",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "206.103-170",
+      "quote": "the justification and approval (J&A) addressed in FAR 6.104 is required to use brand name or equal descriptions"
+     }
     },
     {
      "src": "r-dfars",
@@ -133,12 +150,12 @@
    "topic": "Small Business Programs",
    "scenario": "An Air Force base-operations-support requirement, roughly $40 million, is headed to the 8(a) program, and SBA has identified a participant for a sole-source award. A sharp new specialist objects: \"Anything sole source over $900K needs a J&A through the competition advocate\" — and drafts one for your signature.",
    "ask": "Is your specialist right? What actually governs this award, and what do you do with the draft?",
-   "script": "The instinct is right and the answer is still no — this is the classic DoD deviation. Under 206.104-70(b) the DoD justification trigger for a sole-source 8(a) award sits at $100 million, not the FAR line, so no justification and approval is required up to $100 million; above it, section 823 of the FY20 NDAA makes the HCA the approver (206.104-71(d)). The 8(a) authority is its own statutory lane, not a 6.103 exception riding the approval ladder. What I do owe the file: the acquisition sits far above the 8(a) competitive thresholds — $8.5M manufacturing, $5.5M for everything else — so the real question is why this isn't a competitive 8(a) among eligible participants, and that conversation happens with SBA before acceptance, not in a J&A. I thank the specialist for the reflex, park the draft, and document the offering-and-acceptance trail instead.",
+   "script": "The instinct is right and the answer is still no — this is the classic DoD deviation. Under 206.103-570(d) the DoD justification trigger for a sole-source 8(a) award sits at $100 million, not the FAR line, so no justification and approval is required up to $100 million; above it, section 823 of the FY20 NDAA makes the HCA the approver (206.104-71(d)). The 8(a) authority is its own statutory lane, not a 6.103 exception riding the approval ladder. What I do owe the file: the acquisition sits far above the 8(a) competitive thresholds — $8.5M manufacturing, $5.5M for everything else — so the real question is why this isn't a competitive 8(a) among eligible participants, and that conversation happens with SBA before acceptance, not in a J&A. I thank the specialist for the reflex, park the draft, and document the offering-and-acceptance trail instead.",
    "follow_ups": [
     {
      "q": "Same requirement at $120 million. Now what?",
      "h": "The $100 million line flips the whole posture.",
-     "d": "Above $100M DoD requires the works: a justification with the FAR 6.104-1 content, approval by the head of the procuring activity — delegable only to an official above brigadier general or rear admiral (lower half), or the civilian equivalent — and public posting after award. A strong candidate states the approval level and the delegation floor; a weak one says 'SPE, probably.'"
+     "d": "Above $100M DoD requires the works: a justification with the FAR 6.104-1 content, approval by the head of the contracting activity — delegable only to a general or flag officer, or a civilian at brigadier general/rear admiral (lower half) grade or higher (R-DFARS 206.104-71(a), (d)) — and public posting after award. A strong candidate states the approval level and the delegation floor; a weak one says 'SPE, probably.'"
     },
     {
      "q": "Why isn't this simply competed among 8(a) firms?",
@@ -174,7 +191,7 @@
    "topic": "IDIQ Ordering & Fair Opportunity",
    "scenario": "On a five-awardee services MAC, one vendor won the original engineering-support order in open competition two years ago. Since then the program has issued two \"logical follow-on\" orders to the same vendor without notifying the field, and a third — $4.8 million — just arrived with a one-line justification: \"continuation of ongoing work.\"",
    "ask": "The third order is on your desk. Take the panel through your review.",
-   "script": "Fair opportunity is the default for every order above the micro-purchase threshold; the logical follow-on exception exists for economy and efficiency, but it's earned order by order, never inherited as a habit. Three checks. Anchor: the exception is available only if all awardees had a fair opportunity at the original order — and if these chained follow-ons have drifted in scope, the chain back to that competed order may already be broken. Content: above the SAT the justification carries the full 16.507-6(d)(2) package, and the rationale must say why the relationship is logical in terms of scope, period of performance, or value — \"continuation of ongoing work\" is a wish, not a rationale. Approval and posting: at $4.8M this goes to the advocate for competition, not delegable, and the justification gets posted. If the package can't clear those, the order competes.",
+   "script": "Fair opportunity is the default for every order above the micro-purchase threshold; the logical follow-on exception exists for economy and efficiency, but it's earned order by order, never inherited as a habit. Three checks. Anchor: the exception is available only if all awardees had a fair opportunity at the original order — and if these chained follow-ons have drifted in scope, the chain back to that competed order may already be broken. Content: above the SAT the justification carries the full 16.507-6(d)(2) package, and the rationale must say why the relationship is logical in terms of scope, period of performance, or value — \"continuation of ongoing work\" is a wish, not a rationale. Approval and posting: for DoD, R-DFARS 216.507-6(e) replaces the RFO approval ladder with the J&A tiers in 206.104-71 (its text still says 206.104-72, the pre-renumbering number), so $4.8M is contracting-officer territory where the civilian rule would send it to the advocate for competition — but because this is a follow-on to a follow-on, PGI 216.507-6(b) makes the package carry the prior justification and bumps approval one level above the last approver if its barrier-removal actions were never done. And the justification gets posted. If the package can't clear those, the order competes.",
    "follow_ups": [
     {
      "q": "What does a defensible logical-follow-on rationale actually contain?",
@@ -184,7 +201,7 @@
     {
      "q": "What does DoD add for exactly this situation?",
      "h": "DoD saw the chaining problem coming.",
-     "d": "R-DFARS 216.507-6: for an order above the SAT that is a follow-on to an order previously issued for the same supply or service under the (b)(2) or (b)(3) exceptions, follow the PGI procedures — extra scrutiny aimed precisely at serial follow-ons. Volunteering the deviation is what separates the Air Force answer from the textbook answer."
+     "d": "R-DFARS 216.507-6: for an order above the SAT that is a follow-on to an order previously issued for the same supply or service under the (b)(2) or (b)(3) exceptions, follow PGI 216.507-6(b): the new justification carries a copy of the previous one, the approver checks whether its actions to remove barriers were actually completed, and if they weren’t, approval moves one level above whoever approved the last one (an SPE approval stays at the SPE). That is extra scrutiny aimed precisely at serial follow-ons. Volunteering the deviation is what separates the Air Force answer from the textbook answer."
     },
     {
      "q": "One of the other four awardees says they never see these orders. Where does that complaint go?",
@@ -196,12 +213,22 @@
     {
      "src": "rfo",
      "sec": "16.507-6",
-     "quote": "it is a logical follow-on to an order already issued under the contract, provided that all awardees were given a fair opportunity to be considered for the original order"
+     "quote": "it is a logical follow-on to an order already issued under the contract, provided that all awardees were given a fair opportunity to be considered for the original order",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "216.507-6",
+      "quote": "In lieu of approvals at FAR 16.507(e), for any proposed order the justification must be approved by the approval authorities established at 206.104-72."
+     }
     },
     {
      "src": "rfo",
      "sec": "16.507-6",
-     "quote": "the justification must be approved by the advocate for competition of the activity placing the order"
+     "quote": "the justification must be approved by the advocate for competition of the activity placing the order",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "216.507-6",
+      "quote": "In lieu of approvals at FAR 16.507(e), for any proposed order the justification must be approved by the approval authorities established at 206.104-72."
+     }
     },
     {
      "src": "r-dfars",
@@ -237,12 +264,14 @@
     {
      "src": "rfo",
      "sec": "6.001",
-     "quote": "The contract was awarded under 6.101 or 6.102, and all responsible sources were realistically permitted to compete for the requirements contained in the order"
+     "quote": "The contract was awarded under 6.101 or 6.102, and all responsible sources were realistically permitted to compete for the requirements contained in the order",
+     "dod": "n/a"
     },
     {
      "src": "rfo",
      "sec": "6.103",
-     "quote": "Concerns related to the amount of funds available to the agency or activity for acquisition"
+     "quote": "Concerns related to the amount of funds available to the agency or activity for acquisition",
+     "dod": "n/a"
     }
    ]
   },
@@ -254,14 +283,14 @@
    "script": "Above $7.5 million the procedures stiffen: a fair notice of intent to all awardees offering the service — not two favorites — with a clear statement of the requirement, a reasonable response period, and disclosure of the significant evaluation factors and subfactors, including cost or price, and their relative importance. Then I document that every response was fairly considered, and on a best-value selection, the relative importance of quality against price. Postaward, notices and debriefings run per part 15 and a summary of the debriefing goes in the order file. What I don't need is part 15 machinery: no formal evaluation plan, no scoring, no competitive range — the ordering process is exempt from part 6 and subpart 15.3. Streamlined is legal; selective solicitation is not. That distinction is the whole game.",
    "follow_ups": [
     {
-     "q": "With options the order lands at $10.2 million. What changes about debriefings?",
+     "q": "With options the order lands at $15.4 million. What changes about debriefings?",
      "h": "DoD drew its own line above the RFO's.",
-     "d": "R-DFARS 216.507-5: at $10 million or more a written or oral postaward debriefing is required — for successful and unsuccessful awardees — following the 215.301 procedures. Below that, part 15 debriefing practice applies via 16.507-5(c). Missing the DoD $10M line is the most common miss on this question."
+     "d": "R-DFARS 216.507-5: at $15 million or more a written or oral postaward debriefing is required — for successful and unsuccessful awardees — following DoD’s 215.301 debriefing procedures (the clause text still cites them by their pre-renumbering numbers, 215.301-170 and -270; they are now 215.301-70 and -71). Below that, part 15 debriefing practice applies via 16.507-5(c). Missing the DoD $15M line is the most common miss on this question."
     },
     {
      "q": "Your fair notice goes to all seven and exactly one offer comes back. Now what?",
      "h": "DoD has a one-offer rule for competitive orders.",
-     "d": "R-DFARS 216.507-70: one offer on a competitive order above the SAT sends you to the 215.271-6 procedures before award. [Note: 215.271-6 is a stale cross-reference in the regulation’s own text — no 215.27x section exists. The operative DoD one-offer rule is 215.202-71.] One response to a genuinely fair notice can be a fine outcome — but DoD makes you verify the price stands without competitive pressure, not just shrug and award."
+     "d": "R-DFARS 216.507-70: one offer on a competitive order expected to exceed the SAT sends you to DoD’s one-offer policy. [Note: the regulation’s own text points at 215.202-70, which since the 2026 renumbering is the past-performance section — the operative one-offer rule is 215.202-71.] Under it, if your notice allowed fewer than 30 days you consult the requiring activity and resolicit for at least 30 more; otherwise you establish a fair and reasonable price through cost or price analysis, with certified data above the threshold unless an exception applies. One response to a genuinely fair notice can be a fine outcome — but DoD makes you verify the price stands without competitive pressure, not just shrug and award."
     },
     {
      "q": "The program office asks for scoring sheets and a competitive range 'to be safe.' Is safer better here?",
@@ -273,7 +302,12 @@
     {
      "src": "rfo",
      "sec": "16.507-5",
-     "quote": "A summary of the debriefing must be included in the task or delivery order file."
+     "quote": "A summary of the debriefing must be included in the task or delivery order file.",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "216.507-5",
+      "quote": "a written or oral postaward debriefing of successful and unsuccessful awardees is required for task orders and delivery orders valued at $15 million or more"
+     }
     },
     {
      "src": "r-dfars",
@@ -282,8 +316,13 @@
     },
     {
      "src": "r-dfars",
-     "sec": "208.470",
-     "quote": "If only one offer is received in response to an order exceeding the simplified acquisition threshold that is placed on a competitive basis"
+     "sec": "216.507-70",
+     "quote": "if only one offer is received in response to a competitive solicitation for an order expected to exceed the simplified acquisition threshold"
+    },
+    {
+     "src": "r-dfars",
+     "sec": "215.202-71",
+     "quote": "Resolicit, allowing an additional period of at least 30 days for receipt of proposals"
     }
    ]
   },
@@ -302,7 +341,7 @@
     {
      "q": "What paper does even the right-sized order need?",
      "h": "Sole source above the MPT is never paper-free on a MAC.",
-     "d": "A written justification per 16.507-6(d) — the exception cited with supporting rationale, a fair-and-reasonable price determination, and above the SAT the full content, approval at the level the value commands, and posting. The minimum-guarantee exception changes the rationale, not the ritual."
+     "d": "A written justification per 16.507-6(d) — the exception cited with supporting rationale, a fair-and-reasonable price determination, and above the SAT the full content, approval at the level the value commands (for DoD, the 206.104-71 J&A tiers, by way of R-DFARS 216.507-6(e)), and posting. The minimum-guarantee exception changes the rationale, not the ritual."
     },
     {
      "q": "A different awardee sees the order and objects. Exposure?",
@@ -314,12 +353,22 @@
     {
      "src": "rfo",
      "sec": "16.507-6",
-     "quote": "It is necessary to place an order to satisfy a minimum guarantee."
+     "quote": "It is necessary to place an order to satisfy a minimum guarantee.",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "216.507-6",
+      "quote": "In lieu of approvals at FAR 16.507(e), for any proposed order the justification must be approved by the approval authorities established at 206.104-72."
+     }
     },
     {
      "src": "rfo",
      "sec": "16.507-6",
-     "quote": "A determination by the contracting officer that the anticipated cost to the Government will be fair and reasonable."
+     "quote": "A determination by the contracting officer that the anticipated cost to the Government will be fair and reasonable.",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "216.507-6",
+      "quote": "In lieu of approvals at FAR 16.507(e), for any proposed order the justification must be approved by the approval authorities established at 206.104-72."
+     }
     }
    ]
   },
@@ -391,12 +440,18 @@
     {
      "src": "rfo",
      "sec": "16.301-3",
-     "quote": "The contractor’s accounting system can adequately segregate, accumulate and allocate costs specifically attributed to the contract or order during contract performance"
+     "quote": "The contractor’s accounting system can adequately segregate, accumulate and allocate costs specifically attributed to the contract or order during contract performance",
+     "dod": "n/a"
     },
     {
      "src": "rfo",
      "sec": "16.601-3",
-     "quote": "no other contract type is suitable"
+     "quote": "no other contract type is suitable",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "216.601-370",
+      "quote": "the approval authority for the determination and findings must be the senior contracting official within the contracting activity. This authority may not be delegated."
+     }
     },
     {
      "src": "r-dfars",
@@ -437,12 +492,18 @@
     {
      "src": "rfo",
      "sec": "10.001",
-     "quote": "A commercial product or commercial service on an existing governmentwide contract can meet the agency's requirements"
+     "quote": "A commercial product or commercial service on an existing governmentwide contract can meet the agency's requirements",
+     "dod": "n/a"
     },
     {
      "src": "rfo",
      "sec": "12.104",
-     "quote": "Do not use any cost-reimbursement contract type to procure commercial products or commercial services."
+     "quote": "Do not use any cost-reimbursement contract type to procure commercial products or commercial services.",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "212.104-70",
+      "quote": "use of time-and-materials and labor-hour contracts for the acquisition of commercial services is authorized only for the following:"
+     }
     },
     {
      "src": "r-dfars",
@@ -456,7 +517,7 @@
    "topic": "Market Research",
    "scenario": "A sources-sought for depot-level repair of a legacy radar ran ten days over the winter holidays and drew zero responses. The PM declares victory: \"Market research complete — nobody else can do it. Write the sole-source J&A to the OEM.\"",
    "ask": "Does this market research carry a sole-source justification? What do you do next?",
-   "script": "Zero responses to a badly aimed notice proves the notice, not the market. The standard is research appropriate to the circumstances — and for a repair market where third-party shops are known to exist, ten days over the holidays isn't it. Before any J&A, I rerun the research like I mean it: a properly timed notice, direct outreach to known repair houses, and real exchanges with industry, which the regulation encourages within the procurement-integrity rails. The J&A itself will force the issue anyway — it must contain the market research conducted and the results, the efforts to solicit as many sources as possible, any sources that expressed interest in writing, and the actions we'll take to remove barriers next time. A justification built on a dead notice hands the advocate every reason to bounce it. And if honest research still says one source, the J&A then writes itself — honestly.",
+   "script": "Zero responses to a badly aimed notice proves the notice, not the market. The standard is research appropriate to the circumstances — and for a repair market where third-party shops are known to exist, ten days over the holidays isn't it. Before any J&A, I rerun the research like I mean it: a properly timed notice, direct outreach to known repair houses, and real exchanges with industry, which the regulation encourages within the procurement-integrity rails. The J&A itself will force the issue anyway — it must contain the market research conducted and the results, the efforts to solicit as many sources as possible, any sources that expressed interest in writing, and the actions we'll take to remove barriers next time. For DoD the bar is explicit: PGI 206.103-170 requires a posted request for information or sources-sought notice, with its results in the J&A, before the only-one-source authority is cited — and R-DFARS 206.104-70(a)(2) adds the PGI content on top of the 6.104-1 list. A justification built on a dead notice hands the advocate every reason to bounce it. And if honest research still says one source, the J&A then writes itself — honestly.",
    "follow_ups": [
     {
      "q": "What if market research genuinely wasn't conducted at all?",
@@ -478,12 +539,18 @@
     {
      "src": "rfo",
      "sec": "10.001",
-     "quote": "Agencies must conduct market research appropriate to the circumstances"
+     "quote": "Agencies must conduct market research appropriate to the circumstances",
+     "dod": "n/a"
     },
     {
      "src": "rfo",
      "sec": "6.104-1",
-     "quote": "The market research conducted (see part 10) and the results or a statement of the reason market research was not conducted."
+     "quote": "The market research conducted (see part 10) and the results or a statement of the reason market research was not conducted.",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "206.104-70",
+      "quote": "Include the information required by PGI 206.104-70 in justifications citing the authority at 206.103-170 or FAR 6.103-1."
+     }
     }
    ]
   },
@@ -524,7 +591,8 @@
     {
      "src": "rfo",
      "sec": "6.001",
-     "quote": "exercising priced options that were evaluated as part of the original competition"
+     "quote": "exercising priced options that were evaluated as part of the original competition",
+     "dod": "n/a"
     }
    ]
   },

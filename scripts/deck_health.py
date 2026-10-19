@@ -71,7 +71,7 @@ def fig_forms(v):
 
 SRC_OF_LABEL = {'RFO': 'rfo', 'R-DFARS': 'r-dfars', 'PGI': 'pgi', 'DoD SSP': 'ssp',
                 'DAFI 63-138': 'afi-63-138', 'FAR Companion': 'far-companion',
-                'DoD FMR': 'fmr'}
+                'DoD FMR': 'fmr', 'DoW FMR': 'fmr'}   # FMR label went DoD -> DoW (Sept 2026)
 
 
 def src_sec_from_label(t):
@@ -80,7 +80,7 @@ def src_sec_from_label(t):
     m = re.match(r'^(PGI)\s+([\d.\-]+)', t)
     if m:
         return 'pgi', m.group(2)
-    m = re.match(r'^(R-DFARS|RFO|DoD SSP|DAFI 63-138|FAR Companion|DoD FMR)\s+([\d.\-]+)', t)
+    m = re.match(r'^(R-DFARS|RFO|DoD SSP|DAFI 63-138|FAR Companion|DoD FMR|DoW FMR)\s+([\d.\-]+)', t)
     return (SRC_OF_LABEL[m.group(1)], m.group(2)) if m else (None, None)
 
 

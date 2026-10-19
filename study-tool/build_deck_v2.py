@@ -565,6 +565,15 @@ def ladder_board_gate(items):
             links.append({'t': cite_label(c['src'], c['sec']),
                           'u': '/' + c['src'] + '/part-' + part + '#' + str(d.get('anchor') or d['id']),
                           'quote': c['quote']})
+            # A reviewed DoD supplement that changes the answer ships as its own
+            # "Resting on" link — same verbatim bar, validated in _board_dod_overlay.
+            _dd = c.get('dod')
+            if isinstance(_dd, dict):
+                _doc = sec_idx.get((_dd.get('src'), _dd.get('sec')))
+                _p = str((_doc or {}).get('part') or '').strip()
+                _u = '/' + str(_dd.get('src')) + '/part-' + _p + '#' + str((_doc or {}).get('anchor') or (_doc or {}).get('id'))
+                if _doc and _p and _u not in {l['u'] for l in links}:
+                    links.append({'t': cite_label(_dd['src'], _dd['sec']), 'u': _u, 'quote': _dd['quote']})
         sid = hashlib.sha1(('board|' + it['rung'] + '|' + it['ask']).encode()).hexdigest()[:12]
         if sid in seen: sys.exit(f'FATAL: ladder board {tag}: duplicate id {sid}')
         seen.add(sid)
@@ -585,13 +594,16 @@ def ladder_board_gate(items):
 # SME read found it live on a board too: board-25m[8] cited RFO 15.403-2 without
 # its DoD carve-out.
 #
-# A RATCHET, not a FATAL and not a bare warning. Making it fatal today would
-# block every deck build behind 27 sections of content review; printing it
-# without a bound is the validate-then-discard pattern this repo keeps getting
-# caught by. So the existing backlog stays visible and counted, and the build
-# FAILS the moment it GROWS. Lower the baseline as cards get reviewed; the goal
-# is 0, at which point this should become fatal.
-_BOARD_DOD_BASELINE = 40
+# It was a ratchet (baseline 40, lowered as cards got reviewed). The backlog hit
+# 0 in the Oct 2026 DPCAP pass, so it is now FATAL like the recall-ladder check:
+# every RFO board cite that rests on a section R-DFARS supplements carries a
+# per-cite review record, `dod` — the same contract as the ladder's:
+#   "n/a"                                 read the supplement; it doesn't change this cite
+#   {"src": "r-dfars", "sec", "quote"}    it does; the quote must be verbatim, and the
+#                                         section ships as its own "Resting on" link
+# The record is per cite, not per board: one scenario often rests on several RFO
+# sections, and only some of them have a DoD deviation that matters.
+_BOARD_DOD_BASELINE = 0
 
 
 def _board_dod_overlay(items):
@@ -603,7 +615,28 @@ def _board_dod_overlay(items):
     unreviewed = []
     for it in items:
         for c in (it.get('cites') or []):
+            _dd = c.get('dod')
+            _t = (it.get('ask') or '')[:56]
+            if isinstance(_dd, dict):
+                for f in ('src', 'sec', 'quote'):
+                    if not _dd.get(f): sys.exit(f'FATAL: ladder board {_t}: dod.{f} missing')
+                _doc = sec_idx.get((_dd['src'], _dd['sec']))
+                if not _doc: sys.exit(f'FATAL: ladder board {_t}: dod cites no such section {_dd["sec"]}')
+                if _norm(_dd['quote']) not in _norm(_doc['content']):
+                    sys.exit(f'FATAL: ladder board {_t}: dod quote not verbatim in {_dd["sec"]}')
+                continue
+            if _dd is not None:
+                if _dd != 'n/a': sys.exit(f'FATAL: ladder board {_t}: dod must be an object or "n/a"')
+                continue
             if c.get('src') != 'rfo': continue
+            # Displacements that don't mirror the number (6.104-2 <- 206.104-71) — the
+            # same table the recall ladder uses. Boards never consulted it, so a board
+            # quoting the civilian J&A approval tiers built clean.
+            _extra = [k for k in _DOD_EXTRA.get(c.get('sec', ''), ())
+                      if k in idx and len(_norm(idx[k]['content'])) >= 160]
+            if _extra:
+                unreviewed.append((it.get('rung'), c['sec'], _extra[0]))
+                continue
             head, _, tail = (c.get('sec') or '').partition('.')
             if not head.isdigit() or not tail: continue
             base = '2%02d.%s' % (int(head), tail)
@@ -637,8 +670,8 @@ deck['ladder_boards'] = ladder_board_gate(_board_items)
 
 SRC_WORD = {'RFO': 'rfo', 'R-DFARS': 'r-dfars'}
 # DoD FMR units are deep-linkable (the part page renders id=<doc id>): chapters in Vols
-# 7A/7B ("DoD FMR Vol 7A Ch 26" -> fmr-vol-7a-ch-26) and top-level sections everywhere else
-# since the Sept 2026 restructure ("DoD FMR Vol 14 Sec 3.0" -> fmr-vol-14-sec-3).
+# 7A/7B ("DoW FMR Vol 7A Ch 26" -> fmr-vol-7a-ch-26) and top-level sections everywhere else
+# since the Sept 2026 restructure ("DoW FMR Vol 14 Sec 3.0" -> fmr-vol-14-sec-3).
 # Fiscal-law cards (bona fide need, purpose statute, Anti-Deficiency Act) live in the FMR,
 # not the RFO — so such a cite resolves to that unit, verified to exist.
 FMR_IDS = {d['id'] for d in docs if d.get('source') == 'fmr'}
@@ -652,19 +685,30 @@ def cite_links(cite):
         m = re.match(r'^(RFO|R-DFARS)\b\s*(.*)$', tok.strip())
         if not m:
             t = tok.strip()
-            mf = re.match(r'^DoD FMR\s+Vol\s+(\d+[AB]?)\s+(Ch|Sec)\s+(\d+)(\.0)?$', t)
+            # The Sept 2026 edition is titled "DoW 7000.14-R" — "DoW FMR" is the current
+            # name, "DoD FMR" stays accepted for older prose. Labels follow the token.
+            mf = re.match(r'^(DoD|DoW) FMR\s+Vol\s+(\d+[AB]?)\s+(Ch|Sec)\s+(\d+)(\.0)?$', t)
             if mf:
-                vol, unit, n = mf.group(1), mf.group(2), mf.group(3)
+                org, vol, unit, n = mf.group(1), mf.group(2), mf.group(3), mf.group(4)
                 did = 'fmr-vol-%s-%s-%s' % (vol.lower(), unit.lower(), n)
                 if did in FMR_IDS:
-                    push({'t': 'DoD FMR Vol %s %s %s' % (vol, unit, n + ('.0' if unit == 'Sec' else '')),
+                    push({'t': '%s FMR Vol %s %s %s' % (org, vol, unit, n + ('.0' if unit == 'Sec' else '')),
                           'u': '/fmr/part-%s#%s' % (vol, did)})
-            elif t == 'DoD FMR':
-                push({'t': 'DoD FMR', 'u': '/fmr'})
+            elif t in ('DoD FMR', 'DoW FMR'):
+                push({'t': t, 'u': '/fmr'})
             continue
         src, body = SRC_WORD[m.group(1)], m.group(2)
         if not body:
             push({'t': m.group(1), 'u': '/' + src})
+            continue
+        # A subpart is cited as a subpart ("R-DFARS Subpart 217.74"), never as a bare
+        # section number — "R-DFARS 217.74" names no section and only resolved through
+        # find_sec's prefix fallback, which made it look like a dangling ref. The link
+        # lands on the subpart's first section (217.74 -> 217.7400 Scope).
+        msub = re.match(r'^Subpart\s+(\d{1,3}\.\d+)$', body)
+        if msub:
+            l = sec_link(src, msub.group(1))
+            if l: push(dict(l, t=m.group(1) + ' Subpart ' + msub.group(1)))
             continue
         secs = re.findall(r'\d{1,3}\.[\d.-]+', body)
         for s in secs: push(sec_link(src, s))

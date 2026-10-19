@@ -2,7 +2,7 @@
 
 Every source added to AcqVault must behave identically to the existing eight
 (RFO, R-DFARS, R-DFARS PGI, FAR Companion, Category Management, DAFI 63-138,
-DoD FMR, DoD Source Selection Procedures).
+DoW FMR, DoD Source Selection Procedures).
 This file is the contract: the enumeration sites you must touch, and the
 behaviors the new source must inherit. Work through it top to bottom.
 

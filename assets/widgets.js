@@ -1905,8 +1905,18 @@
     function loadVehDir() {
       if (vehDir) return Promise.resolve(vehDir);
       if (!vehDirPromise) {
-        vehDirPromise = fetch('/assets/vehicles.json?v=6').then(r => r.ok ? r.json() : null)
-          .then(d => { vehDir = d; return d; }).catch(() => null);
+        vehDirPromise = fetch('/assets/vehicles.json?v=7').then(r => r.ok ? r.json() : null)
+          .then(d => {
+            // Owner rule: a closed vehicle is never listed. refresh.py prunes the file, but
+            // only when it runs; this enforces the rule on the day the window closes. A
+            // 'pending' vehicle with an ordering_start opens itself the same way.
+            const today = new Date().toLocaleDateString('en-CA');
+            if (d && Array.isArray(d.vehicles)) {
+              d.vehicles = d.vehicles.filter(v => !v.ordering_end || v.ordering_end >= today);
+              for (const v of d.vehicles) if (v.ordering === 'pending' && v.ordering_start && v.ordering_start <= today) v.ordering = 'direct';
+            }
+            vehDir = d; return d;
+          }).catch(() => null);
       }
       return vehDirPromise;
     }

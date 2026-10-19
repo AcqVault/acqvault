@@ -8,7 +8,8 @@ Each doc carries `_pages` = [first, last] (1-based) from the ingest, so a table 
 ever tested against the one document its page can belong to.
 
 The safety rules are the corpus-wide ones (scripts/extract_tables.py):
-  * document `content` is never modified, only a `tables` field is added;
+  * document `content` is never reworded, only a `tables` field is added (the one edit is
+    a newline that splits wrapped header words off a table caption, see _caption_split);
   * a table is placed only where its cells match the flattened text, on the
     separator-stripped form (ordered first, then the tight unordered fallback);
   * and it is refused unless every word in the span it would replace is reproduced by
@@ -91,45 +92,117 @@ def find_span_words(line_words, cells, min_cover=0.9):
     return (s0, e)
 
 
+_CAPTION = re.compile(r"^\s*\*?\s*Table\s+[0-9A-Z]+-\d+[A-Z]?\.?\s")
+
+
+def _leftover(lines, start, end, cells):
+    """Cell words the matched span does not itself reproduce."""
+    have = Counter(w for c in cells for w in _W.findall(c.lower()))
+    have.subtract(w for l in lines[start:end + 1] for w in _W.findall(l.lower()))
+    return +have
+
+
+def _caption_split(line, left):
+    """Where a caption line's tail of absorbed header words begins, or None.
+
+    pdftotext -layout puts a table's wrapped header words on the lines right under its
+    caption, and when they do not line up as columns the reflow joins them onto the
+    caption: "Table 1-3. Disability Retirement R with retired pay U may retire ...". The
+    table draws those words again in its header row, so the reader sees them twice. Only
+    words the table owns and its span lacks (`left`) can be split off, so a title that
+    merely shares words with its header ("Table 7-1 Capitalization Threshold", whose
+    header text sits inside the span) is never touched; a caption keeps its number and at
+    least one word of title, and the tail must be 2+ words."""
+    m = _CAPTION.match(line)
+    if not m:
+        return None
+    toks = list(_W.finditer(line.lower()))
+    floor = next((i for i, t in enumerate(toks) if t.start() >= m.end()), len(toks)) + 1
+    have, i = left.copy(), len(toks)
+    while i > floor and have[toks[i - 1].group()] > 0:
+        have[toks[i - 1].group()] -= 1
+        i -= 1
+    if len(toks) - i < 2:
+        return None
+    cut = line.rfind(" ", 0, toks[i].start())
+    return cut if cut > m.end() else None
+
+
+def _match(d, cache):
+    lines = [et.norm(et.strip_marker(l)) for l in d["content"].split("\n")]
+    hay, owner = et.build_haystack(lines)
+    line_words = [_W.findall(l.lower()) for l in lines]
+    found, unmatched, refused = [], 0, 0
+    for p in range(d["_pages"][0], d["_pages"][1] + 1):
+        for raw in cache.get(str(p), []):
+            rows = et.clean_table(raw)
+            if not rows:
+                continue
+            placed = False
+            for cand in (rows, rows[1:] if len(rows) > et.MIN_ROWS else None):
+                if cand is None:
+                    continue
+                cells = et.table_cells(cand)
+                span = (et.find_span(lines, cells, hay, owner) or et.find_span_unordered(cells, hay, owner)
+                        or find_span_words(line_words, cells))
+                if not span:
+                    continue
+                if not et.span_is_covered(lines, span, cells):
+                    refused += 1
+                    continue
+                # Header words stranded just above the match (a lone "Table 3-1" from a
+                # wrapped header cell) belong to the table: take them in while every word
+                # is one the cells still owe, so the coverage rule holds by construction.
+                # Measured against every row, header included: that is what gets drawn,
+                # even when the match itself was made without the header row.
+                drawn = et.table_cells(rows)
+                start, end = span
+                while start > 0 and line_words[start - 1] and not _CAPTION.match(lines[start - 1]):
+                    left = _leftover(lines, start, end, drawn)
+                    if any(left[w] < n for w, n in Counter(line_words[start - 1]).items()):
+                        break
+                    start -= 1
+                found.append({"start": start, "end": end, "rows": rows, "cells": drawn})
+                placed = True
+                break
+            if not placed:
+                unmatched += 1
+    return lines, found, unmatched, refused
+
+
 def attach(docs, pdf_path):
     pages = {p for d in docs for p in range(d["_pages"][0], d["_pages"][1] + 1)}
     cache = page_tables(pdf_path, pages)
-    attached = unmatched = refused = 0
+    attached = unmatched = refused = split = 0
     for d in docs:
-        lines = [et.norm(et.strip_marker(l)) for l in d["content"].split("\n")]
-        hay, owner = et.build_haystack(lines)
-        line_words = [_W.findall(l.lower()) for l in lines]
-        found = []
-        for p in range(d["_pages"][0], d["_pages"][1] + 1):
-            for raw in cache.get(str(p), []):
-                rows = et.clean_table(raw)
-                if not rows:
-                    continue
-                placed = False
-                for cand in (rows, rows[1:] if len(rows) > et.MIN_ROWS else None):
-                    if cand is None:
-                        continue
-                    cells = et.table_cells(cand)
-                    span = (et.find_span(lines, cells, hay, owner) or et.find_span_unordered(cells, hay, owner)
-                            or find_span_words(line_words, cells))
-                    if not span:
-                        continue
-                    if not et.span_is_covered(lines, span, cells):
-                        refused += 1
-                        continue
-                    found.append({"start": span[0], "end": span[1], "rows": rows})
-                    placed = True
-                    break
-                if not placed:
-                    unmatched += 1
+        lines, found, um, rf = _match(d, cache)
+        # Split absorbed header words off their caption onto a line of their own (a newline
+        # is the only edit content ever gets: no word is added, dropped or reordered), then
+        # match again so the table's span takes that line in and draws it once, as header.
+        raw = d["content"].split("\n")
+        cuts = {}
+        for t in found:
+            c = t["start"] - 1
+            if c >= 0 and c not in cuts:
+                at = _caption_split(raw[c], _leftover(lines, t["start"], t["end"], t["cells"]))
+                if at is not None:
+                    cuts[c] = at
+        if cuts:
+            for c in sorted(cuts, reverse=True):
+                raw[c:c + 1] = [raw[c][:cuts[c]].rstrip(), raw[c][cuts[c]:].strip()]
+            d["content"] = "\n".join(raw)
+            split += len(cuts)
+            lines, found, um, rf = _match(d, cache)
+        unmatched += um
+        refused += rf
         found.sort(key=lambda t: t["start"])
         keep, last = [], -1
         for t in found:                      # drop overlaps (a table split across pages, etc.)
             if t["start"] > last:
-                keep.append(t)
+                keep.append({"start": t["start"], "end": t["end"], "rows": t["rows"]})
                 last = t["end"]
         if keep:
             d["tables"] = keep
             attached += len(keep)
     print(f"tables attached: {attached} on {sum(1 for d in docs if d.get('tables'))} docs  "
-          f"(unmatched {unmatched}, refused as unsafe {refused})")
+          f"(unmatched {unmatched}, refused as unsafe {refused}, captions split {split})")

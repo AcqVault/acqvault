@@ -37,7 +37,8 @@ storage** (one document). They should be the same thing.
 | category-management | part | one part | yes — declared |
 
 The FMR has a **median document of 26,792 characters** against the RFO's 642, because a
-DoD FMR citation addresses a chapter (`DoD FMR, Vol. 1, Ch. 1`), not a section. That is
+DoW FMR citation addresses a whole chapter or top-level section (`DoW FMR Volume 7A, Chapter 1`,
+`DoW FMR Volume 1, Section 2.0`), not a numbered paragraph. That is
 not a defect to fix — it is a different unit, and it is **declared** in
 `TITLE_STYLE` in `render_health.py` (`'chapter'`) so the gate stops demanding section
 numbers from it. What is forbidden is leaving it *undeclared* and letting the checks

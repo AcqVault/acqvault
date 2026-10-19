@@ -80,7 +80,8 @@
       "dpa": false,
       "fee": "0.34% surcharge, embedded in prices",
       "scope": "Successor to SEWP V with expanded IT-services scope (ICT/AV solutions).",
-      "status": "Awarded — anticipated period 11/1/2026–10/31/2036; not yet open for ordering (opens 11/1/2026).",
+      "status": "Awarded June 2026 (2,115 awards) — ordering period 11/1/2026–10/31/2036. Some holders are still completing NASA onboarding.",
+      "ordering_start": "2026-11-01",
       "ordering_end": "2036-10-31",
       "url": "https://www.sewp.nasa.gov/sewpvi/",
       "tags": {

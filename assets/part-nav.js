@@ -313,3 +313,29 @@
   (mq.addEventListener ? mq.addEventListener.bind(mq, 'change') : mq.addListener.bind(mq))(sync);
   sync();
 })();
+
+/* ── Retired anchors: #<old id> → its successor ─────────────────────
+ * Corpus updates retire section ids (DPCAP renumbering, the FMR restructure); bookmarks
+ * and shared links still carry them as #fragments, which the server never sees. When the
+ * fragment names nothing on the page, look it up in output/id-aliases.json: jump to the
+ * successor here, or open it in the reader when it lives on another page. */
+(function () {
+  'use strict';
+  function resolve() {
+    var id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch (e) { return; }
+    if (!id || document.getElementById(id)) return;
+    fetch('/output/id-aliases.json').then(function (r) { return r.ok ? r.json() : {}; }).then(function (A) {
+      if (!Object.prototype.hasOwnProperty.call(A, id)) return;
+      var to = A[id], el = document.getElementById(to);
+      if (el) {
+        try { history.replaceState(history.state, '', '#' + encodeURIComponent(to)); } catch (e) {}
+        el.scrollIntoView();
+      } else {
+        location.replace('/?view=reader&doc=' + encodeURIComponent(to));
+      }
+    }).catch(function () {});
+  }
+  resolve();
+  window.addEventListener('hashchange', resolve);
+})();

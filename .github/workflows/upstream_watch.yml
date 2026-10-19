@@ -1,0 +1,42 @@
+name: Upstream watch
+
+# The site shows no freshness banner, so upstream changes are caught here instead:
+# weekly, read-only, and an open issue (which emails the owner) when something moved.
+on:
+  schedule:
+    - cron: '0 13 * * 1'   # Mondays 13:00 UTC
+  workflow_dispatch:
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 python-docx
+
+      - name: Probe upstream sources
+        id: probe
+        continue-on-error: true
+        run: python scripts/upstream_watch.py --md watch.md
+
+      - name: Open or update the watch issue
+        if: steps.probe.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Upstream watch: AcqVault sources need an update"
+          n=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          if [ -n "$n" ]; then
+            gh issue comment "$n" --body-file watch.md
+          else
+            gh issue create --title "$title" --body-file watch.md
+          fi

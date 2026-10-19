@@ -103,9 +103,9 @@
  },
  "Contract Finance & Fiscal Law": {
   "qtype": "a fiscal-law question — Time, Purpose, Amount under the appropriations statutes, with RFO Part 32 carrying the financing side.",
-  "smes": "FM/Comptroller first and always, then Legal; the GAO Red Book and DoD FMR are the references.",
+  "smes": "FM/Comptroller first and always, then Legal; the GAO Red Book and DoW FMR are the references.",
   "rule": "Run T-P-A on every dollar: the right-year money for a bona fide need of that period, the appropriated purpose (31 U.S.C. 1301), within the available amount — Anti-Deficiency violations are the serious, reportable kind.",
-  "cite": "RFO Part 32 · GAO Red Book / DoD FMR · Vol. 2, Fiscal"
+  "cite": "RFO Part 32 · GAO Red Book / DoW FMR · Vol. 2, Fiscal"
  },
  "Data Rights": {
   "qtype": "a data-rights question — R-DFARS 227: the funding source drives the license.",
@@ -126,10 +126,10 @@
   "cite": "RFO Part 45 · Vol. 2, Property"
  },
  "Undefinitized Contract Actions": {
-  "qtype": "a UCA question — R-DFARS 217.74: undefinitized work and decaying negotiation leverage.",
+  "qtype": "a UCA question — R-DFARS Subpart 217.74: undefinitized work and decaying negotiation leverage.",
   "smes": "your pricing office, the clearance authority, and Legal; DCMA for actuals once performance starts.",
-  "rule": "R-DFARS 217.74 makes UCAs the exception: obligations capped at 50% of the not-to-exceed price, raised to no more than 75% only if the qualifying proposal arrives before that 50% point (217.7404-4(a)); definitization by the earlier of 180 days after the qualifying proposal or the date obligations pass 50% of the NTE (217.7404-3(a)); clearance at definitization — and neither poor planning nor administrative convenience ever justifies one.",
-  "cite": "R-DFARS 217.74 · Vol. 2, UCAs"
+  "rule": "R-DFARS Subpart 217.74 makes UCAs the exception: obligations capped at 50% of the not-to-exceed price, raised to no more than 75% only if the qualifying proposal arrives before that 50% point (217.7404-4(a)); definitization by the earlier of 180 days after the qualifying proposal or the date obligations pass 50% of the NTE (217.7404-3(a)); clearance at definitization — and neither poor planning nor administrative convenience ever justifies one.",
+  "cite": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
  },
  "Clearance — Independent Review & Approval": {
   "qtype": "a clearance question — DAF clearance procedures: independent review before the Government commits.",

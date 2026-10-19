@@ -125,8 +125,33 @@
     if (dirty) persist();
     updateCounts(); if (panelOpen) renderPanel();
   }
+  // A pin whose id a corpus update retired moves to its successor (output/id-aliases.json).
+  // Its chash stays the old one, so it surfaces as "Updated" with the old wording to diff.
+  function migrateRetiredPins() {
+    var stale = state.clauses.filter(function (c) { return !HASHES[c.id]; });
+    if (!stale.length || typeof window.acqIdAliases !== 'function') return Promise.resolve();
+    return window.acqIdAliases().then(function (A) {
+      var dirty = false;
+      stale.forEach(function (c) {
+        var to = Object.prototype.hasOwnProperty.call(A, c.id) && A[c.id];
+        if (!to) return;
+        dirty = true;
+        if (isPinned(to)) { state.clauses.splice(state.clauses.indexOf(c), 1); return; }
+        c.id = to;
+        if (typeof window.fetchDocumentById === 'function') {
+          window.fetchDocumentById(to).then(function (d) {
+            if (d) { c.title = d.title || c.title; c.part = d.part || c.part; persist(); if (panelOpen) renderPanel(); }
+          }).catch(function () {});
+        }
+      });
+      if (dirty) persist();
+    });
+  }
   function ensureHashes() {
-    if (!HASHES && state.clauses.length) loadHashes().then(reconcileHashes).catch(function () {});
+    if (!HASHES && state.clauses.length) {
+      loadHashes().then(function () { return migrateRetiredPins().catch(function () {}); })
+        .then(reconcileHashes).catch(function () {});
+    }
   }
 
   // ── Snapshot + diff: show EXACTLY what changed in a pinned clause ────────────

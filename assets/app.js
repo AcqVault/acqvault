@@ -333,7 +333,7 @@ const SOURCE_URLS = {
 // Both agree with SOURCES[].short / SOURCES[].name in api/_seo.js.
 const SOURCE_SHORT = {
   'rfo': 'RFO', 'r-dfars': 'R-DFARS', 'far-companion': 'FAR Companion', 'category-management': 'Category Management',
-  'fmr': 'DoD FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD SSP', 'pgi': 'R-DFARS PGI',
+  'fmr': 'DoW FMR', 'afi-63-138': 'DAFI 63-138', 'ssp': 'DoD SSP', 'pgi': 'R-DFARS PGI',
   // Not publicly merchandised (see the positioning note), but it IS in the corpus, and a
   // source missing here cites as its own shouting id — "COMPASS Part 27".
   'compass': 'DAF Contracting Compass',
@@ -1700,7 +1700,7 @@ function fmrChapterLabel(hit) {
 function renderFmrVolumeIndex(scroll) {
   const st = fmrBrowseState; if (!st) return;
   const reader = document.getElementById('browse-reader-inner');
-  const srcLabel = SOURCE_SHORT['fmr'] || 'DoD FMR';
+  const srcLabel = SOURCE_SHORT['fmr'] || 'DoW FMR';
   const unit = fmrUnitWord(st.hits), Unit = unit === 'section' ? 'Section' : 'Chapter';
   const items = st.hits.map((hit, i) =>
     `<li><a class="br-toc-link" href="#" data-fmr-ch="${i}">
@@ -2664,7 +2664,7 @@ function formatContent(text, hit) {
   function buildCite() {
     // The FMR numbers paragraphs on a dotted outline ("1.0", "3.1") INSIDE a volume or
     // chapter. Printed alone those look like FAR-style sections and resolve to nothing — a
-    // pasted "DoD FMR 1.0" is unfindable. Cite the volume and chapter/section instead, which
+    // pasted "DoW FMR 1.0" is unfindable. Cite the volume and chapter/section instead, which
     // is what generateCitation already produced.
     if (hit && hit.source === 'fmr') return baseCite;
     if (!curSection) return baseCite;
@@ -3168,7 +3168,21 @@ async function searchDocumentLookup(docId, lookup) {
   return (data.hits || []).find(hit => String(hit.id) === String(docId)) || null;
 }
 
+// Corpus updates retire ids (DPCAP renumbering, the FMR chapter→section restructure), but the
+// old ones live on in shared links, pins and bookmarks. output/id-aliases.json maps each to
+// its successor (scripts/build_id_aliases.py; corpus_health.py fails on a dead target).
+let _idAliases = null;
+function loadIdAliases() {
+  return _idAliases || (_idAliases = fetch('/output/id-aliases.json')
+    .then(r => (r.ok ? r.json() : {}))
+    .catch(() => { _idAliases = null; return {}; }));
+}
+window.acqIdAliases = loadIdAliases;
+
 async function fetchDocumentById(docId, lookup = {}) {
+  const aliases = await loadIdAliases();
+  // The old title/part would steer the metadata lookup at the retired section.
+  if (Object.prototype.hasOwnProperty.call(aliases, docId)) { docId = aliases[docId]; lookup = {}; }
   const cached = readCachedDocument(docId);
   if (cached) return cached;
 
@@ -4266,6 +4280,12 @@ window.acqExitToLanding = exitToLanding;
     const hit = await fetchDocumentById(docId, {
       source: params.get('source'), part: params.get('part'), title: params.get('title')
     });
+    // A retired id resolved to its successor: put the live id in the address bar so the
+    // next share or bookmark carries it.
+    if (hit && hit.id && String(hit.id) !== docId) {
+      params.set('doc', hit.id);
+      try { history.replaceState(history.state, '', '?' + params.toString() + location.hash); } catch (e) {}
+    }
     if (hit) { if (readerMode) renderReaderPage(hit); else openDrawer(hit); }
     else if (readerMode) renderReaderError();
   } catch (e) { if (readerMode) renderReaderError(); }
@@ -4362,7 +4382,7 @@ document.getElementById('feedback-form').addEventListener('submit', async e => {
 // ── (particle canvas removed — generic decoration + a continuous O(n²) loop) ───
 
 // ── TYPING ANIMATION ──────────────────────────────────────────────────────────
-const QUERIES=[["sole source justification","47"],["RFO 6.302-1 only one source","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["DoD FMR volume 3 payments","34"],["DAFI 63-138 services acquisition","12"],["other than full and open competition","34"],["undefinitized contract action","12"]];
+const QUERIES=[["sole source justification","47"],["RFO 6.302-1 only one source","23"],["simplified acquisition threshold","61"],["R-DFARS class deviation 2025","18"],["DoW FMR volume 3 payments","34"],["DAFI 63-138 services acquisition","12"],["other than full and open competition","34"],["undefinitized contract action","12"]];
 let qi=0,ci=0,del=false;
 function tick(){const el=document.getElementById('btyping'),rc=document.getElementById('bcount');if(!el)return;const[q,cnt]=QUERIES[qi];if(!del){el.textContent=q.slice(0,ci+1);ci++;if(ci===q.length){del=true;rc.textContent=cnt+' results';setTimeout(tick,2200);return;}setTimeout(tick,52);}else{el.textContent=q.slice(0,ci-1);ci--;if(ci===0){del=false;rc.textContent='— results';qi=(qi+1)%QUERIES.length;setTimeout(tick,380);return;}setTimeout(tick,26);}}
 setTimeout(tick,900);

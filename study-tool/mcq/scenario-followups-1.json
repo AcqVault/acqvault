@@ -8,7 +8,7 @@
     {
       "q": "If you conclude only the incumbent can perform, what authority do you use — and who approves it?",
       "h": "One of the seven, plus a ladder that runs on dollars.",
-      "d": "RFO 6.103-1, only one responsible source — a J&A built on market research that would survive a competitor's lawyer. Approval rides the RFO 6.104 ladder: the CO's certification to $900K, Competition Advocate to $20M, HPA/PEO to $90M ($150M DoD), SPE above. Post to SAM.gov within 14 days of award. For a sustainment effort of this size, expect the Competition Advocate or higher — and expect the market-research section to carry the whole document."
+      "d": "RFO 6.103-1, only one responsible source — a J&A built on market research that would survive a competitor's lawyer. For DoD, approval rides R-DFARS 206.104-71 Table 206-1 instead of the RFO 6.104-2 ladder: the CO's certification to $10M, Competition Advocate to $100M (not delegable), HCA to $500M, SPE above. Post to SAM.gov within 14 days of award. For a sustainment effort of this size, expect the CO's certification to $10M and the Competition Advocate above it — and expect the market-research section to carry the whole document."
     },
     {
       "q": "And if the follow-on can't award in time — what makes a bridge contract justifiable?",
@@ -156,7 +156,7 @@
     {
       "q": "When does an 8(a) sole source need a J&A?",
       "h": "There's a dollar line, and it's high for DoD.",
-      "d": "For DoD, not below $100M ($30M for civilian agencies) — below those lines the program's statutory basis is the competition authority, the 'authorized by statute' lane, no J&A required. SBA must approve the contract. Above the lines, a J&A enters. Know the pair: $100M DoD / $30M civilian is a favorite board number."
+      "d": "For DoD, not below $100M ($30M for civilian agencies) — below those lines the program's statutory basis is the competition authority, the 'authorized by statute' lane, no J&A required. Under the DoD–SBA Partnership Agreement SBA accepts the requirement into the program, but SBA approval of the contract itself is not required (PGI 219.208-70). Above the lines, a J&A enters. Know the pair: $100M DoD / $30M civilian is a favorite board number."
     },
     {
       "q": "Where does competitive 8(a) begin?",
@@ -177,8 +177,8 @@
     },
     {
       "q": "Walk me up the J&A approval ladder.",
-      "h": "Four rungs, and the DoD line at the top differs.",
-      "d": "RFO 6.104, at October 2025 values: to $900K, the contracting officer's certification is the approval; above $900K to $20M, the Competition Advocate; above $20M to $90M — $150M for DoD — the Head of the Procuring Activity or PEO; above that, the Senior Procurement Executive. Post the J&A to SAM.gov within 14 days of award, 30 for urgency. This $2.8M action, if it goes sole source, sits with the Competition Advocate."
+      "h": "Four rungs — and DoD runs its own table.",
+      "d": "For DoD, R-DFARS 206.104-71 Table 206-1 replaces the RFO 6.104-2 ladder: to $10M, the contracting officer's certification is the approval; above $10M to $100M, the Competition Advocate (not delegable); above $100M to $500M, the head of the contracting activity; above that, the Senior Procurement Executive. Post the J&A to SAM.gov within 14 days of award, 30 for urgency. This $2.8M action, if it goes sole source, sits with the contracting officer's certification."
     },
     {
       "q": "And when does CICA not apply at all?",
@@ -239,7 +239,7 @@
     {
       "q": "What gates must every cost-type contract clear?",
       "h": "Four gates at 16.301-3(a) — and no D&F among them.",
-      "d": "RFO 16.301-3(a) lists four, and a D&F is not one of them. (1) A written acquisition plan approved at least one level above the contracting officer, per 7.102(d). (2) Agency head approval of a justification if 16.104 requires one — that is the Executive Order 14402 justification, and for DoD it starts at $100 million, so a $28M action doesn't trigger it. (3) A contractor accounting system that can adequately segregate, accumulate, and allocate costs specifically attributed to the contract or order during performance — because the Government pays incurred costs, the system that captures them must be trustworthy. (4) Before award, sufficient Government resources available to award and manage a contract other than firm-fixed-price, including a designated contracting officer's representative to monitor contractor performance and cost controls. Then 16.301-3(b): cost-reimbursement is not allowed at all for commercial products and commercial services. The HCA-signed D&F people reflexively attach to cost-type belongs somewhere else — RFO 16.401-2(a) requires it for all incentive- and award-fee contracts. No accounting system, no cost-type award, whatever the mission pressure, which is why this scenario's accounting-system question comes before any structure conversation."
+      "d": "RFO 16.301-3(a) lists four, and a D&F is not one of them. (1) A written acquisition plan approved at least one level above the contracting officer, per 7.102(d). (2) Agency head approval of a justification if 16.104 requires one — that is the Executive Order 14402 justification, and for DoD it starts at $100 million, so a $28M action doesn't trigger it. (3) A contractor accounting system that can adequately segregate, accumulate, and allocate costs specifically attributed to the contract or order during performance — because the Government pays incurred costs, the system that captures them must be trustworthy. (4) Before award, sufficient Government resources available to award and manage a contract other than firm-fixed-price, including a designated contracting officer's representative to monitor contractor performance and cost controls. Then 16.301-3(b): cost-reimbursement is not allowed at all for commercial products and commercial services. The D&F people reflexively attach to cost-type belongs somewhere else — RFO 16.401-2(a) requires it for all incentive- and award-fee contracts, and for DoD R-DFARS 216.401-70 lets it be signed as low as one level below the HCA (award-fee) or one level above the CO (incentive-fee). No accounting system, no cost-type award, whatever the mission pressure, which is why this scenario's accounting-system question comes before any structure conversation."
     },
     {
       "q": "If they push T&M for the improvement work — what does the D&F have to say?",
@@ -256,7 +256,7 @@
     {
       "q": "What does an over-SAT exception require, and who approves it?",
       "h": "Same ladder as the J&A, different document.",
-      "d": "A Justification for an Exception to Fair Opportunity — the name RFO 16.507-6(d)(2)(i) requires the document to carry — structured like a J&A and riding the same tiers: at or below $900K the ordering activity contracting officer's own certification serves as approval, Competition Advocate to $20M (not delegable), HPA/PEO to $90M ($150M DoD), SPE above — posted to SAM.gov (redacted) within 14 days, 30 for urgency. This $260K order sits below the SAT, so the full justification isn't required; RFO 16.507-6(d)(1) requires me to document the basis for the exception instead — but the fair-opportunity obligation itself never goes away; the file still shows genuine consideration."
+      "d": "A Justification for an Exception to Fair Opportunity — the name RFO 16.507-6(d)(2)(i) requires the document to carry — structured like a J&A and riding the same tiers — for DoD, R-DFARS 216.507-6(e) puts it on Table 206-1: the contracting officer's own certification serves as approval at or below $10M, Competition Advocate to $100M (not delegable), HCA to $500M, SPE above (the civilian RFO ladder is $900K / $20M / $90M) — posted to SAM.gov (redacted) within 14 days, 30 for urgency. This $260K order sits below the SAT, so the full justification isn't required; RFO 16.507-6(d)(1) requires me to document the basis for the exception instead — but the fair-opportunity obligation itself never goes away; the file still shows genuine consideration."
     },
     {
       "q": "What are the order-protest rules on this vehicle?",

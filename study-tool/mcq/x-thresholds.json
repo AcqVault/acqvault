@@ -28,28 +28,28 @@
     "ref": "RFO 10.001"
   },
   "8cb1c429ea52": {
-    "x": "Up to $900K the CO's own certification on the J&A is the approval — no separate signature needed. The ladder starts above that: Competition Advocate to $20M.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
+    "x": "Up to $900K the CO's own certification on the J&A is the approval — no separate signature needed. For DoD the CO band actually runs to $10M, with the Competition Advocate above that to $100M (R-DFARS 206.104-71 Table 206-1); the civilian RFO ladder hands off to the Competition Advocate at $900K.",
+    "ref": "R-DFARS 206.104-71 · RFO 6.104-2 · Vol. 2, Competition"
   },
   "3cc4afd547e2": {
-    "x": "Both $5M and $15M sit in the Competition Advocate's band, which runs from above $900K to $20M. Boards love asking two values inside one tier to see if you know the band, not just a number.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
+    "x": "For DoD the two values straddle a line: $5M is the CO's own certification (the DoD CO band runs to $10M), $15M goes to the Competition Advocate (>$10M–$100M, not delegable) — R-DFARS 206.104-71 Table 206-1, in lieu of the RFO 6.104-2 table where both would sit with the advocate. Boards love asking two values near a line to see if you know the band, not just a number.",
+    "ref": "R-DFARS 206.104-71 · RFO 6.104-2 · Vol. 2, Competition"
   },
   "00794581889d": {
-    "x": "$60M sits in the HPA/PEO tier, which for DoD runs from above $20M to $150M. The $150M DoD line (vs. $90M elsewhere) is the detail that separates the prepared from the guessing.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
+    "x": "$60M sits in DoD's Competition Advocate tier, which under R-DFARS 206.104-71 Table 206-1 runs from above $10M to $100M, not delegable. Knowing DoD works its own $10M / $100M / $500M table — not the RFO's $900K / $20M / $90M — is the detail that separates the prepared from the guessing.",
+    "ref": "R-DFARS 206.104-71 · RFO 6.104-2 · Vol. 2, Competition"
   },
   "adcba9449eb9": {
-    "x": "Above $150M (DoD) the J&A goes to the Senior Procurement Executive. There's no USD(A&S) tier in this ladder — SPE is the top rung.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
+    "x": "At $200M (DoD) the J&A goes to the head of the contracting activity — R-DFARS 206.104-71 Table 206-1 runs the HCA tier from above $100M to $500M, delegable only to a general or flag officer or civilian equivalent. The SPE rung starts above $500M; there's no separate USD(A&S) tier.",
+    "ref": "R-DFARS 206.104-71 · RFO 6.104-2 · Vol. 2, Competition"
   },
   "5edb3a487fb9": {
     "x": "14 days after award is the standard posting window; urgency awards get 30 — the one exception where posting trails longer, because the buy couldn't wait for paperwork. Posting before award isn't the rule.",
     "ref": "RFO 6.301 · SAM.gov"
   },
   "0df8e100e849": {
-    "x": "$100M for DoD, $30M civilian — and know WHICH section carries it. The DoD rule is R-DFARS 206.104-70(b), which sets the 8(a) justification trigger at “a sole-source 8(a) contract exceeding $100 million” in lieu of the FAR threshold; above it the HCA approves (206.104-71(d), section 823 of the FY2020 NDAA). The underlying competition exception is RFO 6.103-5, Authorized or required by statute. ⚠ RFO 19.108-7 is a different rule — it sets the COMPETITIVE 8(a) threshold ($8.5M manufacturing / $5.5M other), not the J&A line, and citing it here is the common misdirect.",
-    "ref": "R-DFARS 206.104-70 · RFO 6.103-5 · Vol. 2, Small Business"
+    "x": "$100M for DoD, $30M civilian — and know WHICH section carries it. The DoD rule is R-DFARS 206.103-570(d), which in lieu of FAR 6.104-1(b) authorizes a sole-source 8(a) award not exceeding $100 million with no J&A (206.104-70(b) then sets the content for one above it); above it the HCA approves (206.104-71(d), section 823 of the FY2020 NDAA). The underlying competition exception is RFO 6.103-5, Authorized or required by statute. ⚠ RFO 19.108-7 is a different rule — it sets the COMPETITIVE 8(a) threshold ($8.5M manufacturing / $5.5M other), not the J&A line, and citing it here is the common misdirect.",
+    "ref": "R-DFARS 206.103-570(d) · RFO 6.103-5 · Vol. 2, Small Business"
   },
   "ba6d444cbe87": {
     "x": "Competitive 8(a) begins at $8.5M manufacturing / $5.5M other — above those, requirements in the program compete among 8(a) firms. Same numbers as the HUBZone/WOSB caps; that's not a coincidence, it's the pattern.",
@@ -72,11 +72,11 @@
     "ref": "10 U.S.C. §3406 · RFO 16.508"
   },
   "16cac2656f7e": {
-    "x": "Order-level debriefing rights begin above $7.5M — RFO 16.507-5 is literally titled “Orders valued above $7.5 million”. ⚠ Two corrections worth carrying: RFO 16.507-4 (above the SAT but not above $7.5M) requires fair notice and file documentation — it says nothing about “brief explanations” to unsuccessful holders; that is legacy FAR 16.505(b)(6) language. And for DoD the rule is stricter than the RFO: R-DFARS 216.507-5(c) makes a written or oral postaward debriefing REQUIRED for task and delivery orders valued at $10 million or more, for successful and unsuccessful awardees alike.",
+    "x": "Order-level debriefing rights begin above $7.5M — RFO 16.507-5 is literally titled “Orders valued above $7.5 million”. ⚠ Two corrections worth carrying: RFO 16.507-4 (above the SAT but not above $7.5M) requires fair notice and file documentation — it says nothing about “brief explanations” to unsuccessful holders; that is legacy FAR 16.505(b)(6) language. And for DoD the rule is stricter than the RFO: R-DFARS 216.507-5(c) makes a written or oral postaward debriefing REQUIRED for task and delivery orders valued at $15 million or more, for successful and unsuccessful awardees alike.",
     "ref": "RFO 16.507-5 · R-DFARS 216.507-5 · Vol. 2, IDIQ"
   },
   "0d274e32d3e5": {
-    "x": "Fair-opportunity exceptions ride a Justification for an Exception to Fair Opportunity — the name RFO 16.507-6(d)(2)(i) requires — up the same ladder as J&As: at or below $900K the ordering activity CO's own certification serves as approval, Competition Advocate to $20M (not delegable), HPA/PEO to $90M ($150M DoD), SPE above. One ladder, two documents — learn it once, cite it twice.",
+    "x": "Fair-opportunity exceptions ride a Justification for an Exception to Fair Opportunity — the name RFO 16.507-6(d)(2)(i) requires — up the same ladder as J&As. On the RFO ladder: at or below $900K the ordering activity CO's own certification serves as approval, Competition Advocate to $20M (not delegable), HPA/PEO to $90M, SPE above. For DoD, R-DFARS 216.507-6(e) swaps in the Table 206-1 J&A tiers instead — CO certification to $10M, Competition Advocate to $100M, HCA to $500M, SPE above. One ladder, two documents — learn it once, cite it twice.",
     "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
   },
   "cdf19e4ec307": {
@@ -97,11 +97,11 @@
   },
   "b76ac785923e": {
     "x": "50% of the not-to-exceed before the qualifying proposal; 75% once it's in. The caps are the Government's leverage — an undefinitized contractor runs out of funded runway unless the proposal shows up.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+    "ref": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
   },
   "65924aa98b6f": {
     "x": "R-DFARS 217.7404-3(a): definitization by the EARLIER of (1) 180 days after the contractor submits a qualifying proposal — extendable by up to 90 more only on a written determination by the HCA without power of redelegation, the combatant commander, or USD(A&S) — or (2) “the date on which the amount of funds obligated under the contract action is equal to more than 50 percent of the not-to-exceed price.” ⚠ One specific obligation trigger at 50%, not a vague “when obligations hit the caps”. The 75% figure is the post-qualifying-proposal obligation ceiling, a different rule.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+    "ref": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
   },
   "e3866ad99322": {
     "x": "Performance and payment bonds are required for construction over $150,000 — the Miller Act pattern. Payment bonds exist because subs and suppliers can't lien Government property.",
@@ -141,7 +141,7 @@
   },
   "8e87862c50b3": {
     "x": "O&M lives 1 year, RDT&E 2, Procurement 3 (MILCON 5). After the window funds expire (adjustments only, 5 more years), then cancel. The 1-2-3 ladder is the fiscal skeleton under every funding question.",
-    "ref": "DoD FMR · Vol. 1 §5"
+    "ref": "DoW FMR · Vol. 1 §5"
   },
   "364be33ffc3b": {
     "x": "Both limitation clauses require notice around 75% — of the total estimate (Limitation of Cost, fully funded) or of the allotted amount (Limitation of Funds, incremental). The notice is the contractor's duty; missing it forfeits overrun entitlement.",

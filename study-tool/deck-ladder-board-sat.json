@@ -155,7 +155,12 @@
         {
           "src": "rfo",
           "sec": "12.102",
-          "quote": "For acquisitions valued at or below the simplified acquisition threshold (SAT), document the decision that only one source is available and the basis for the decision."
+          "quote": "For acquisitions valued at or below the simplified acquisition threshold (SAT), document the decision that only one source is available and the basis for the decision.",
+          "dod": {
+            "src": "r-dfars",
+            "sec": "212.102-70",
+            "quote": "the documentation addressed in FAR 12.102 is required to use brand name or equal descriptions or proprietary specifications and standards."
+          }
         },
         {
           "src": "r-dfars",
@@ -201,7 +206,8 @@
         {
           "src": "rfo",
           "sec": "10.001",
-          "quote": "Agencies must procure commercial products and commercial services to the maximum extent practicable."
+          "quote": "Agencies must procure commercial products and commercial services to the maximum extent practicable.",
+          "dod": "n/a"
         }
       ]
     },
@@ -314,7 +320,8 @@
         {
           "src": "rfo",
           "sec": "1.404",
-          "quote": "A COR has no authority to make any commitments or changes that affect price, quality, quantity, delivery, or other terms and conditions of the contract."
+          "quote": "A COR has no authority to make any commitments or changes that affect price, quality, quantity, delivery, or other terms and conditions of the contract.",
+          "dod": "n/a"
         },
         {
           "src": "rfo",
@@ -355,12 +362,14 @@
         {
           "src": "rfo",
           "sec": "32.905",
-          "quote": "Payment will be based on receipt of a proper invoice and satisfactory contract performance."
+          "quote": "Payment will be based on receipt of a proper invoice and satisfactory contract performance.",
+          "dod": "n/a"
         },
         {
           "src": "rfo",
           "sec": "32.905",
-          "quote": "the designated billing office must return it within 7 days after receipt"
+          "quote": "the designated billing office must return it within 7 days after receipt",
+          "dod": "n/a"
         },
         {
           "src": "r-dfars",
@@ -478,7 +487,12 @@
         {
           "src": "rfo",
           "sec": "46.404",
-          "quote": "the Government must inspect contracts at or below the simplified acquisition threshold at destination and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking, if applicable."
+          "quote": "the Government must inspect contracts at or below the simplified acquisition threshold at destination and only for type and kind; quantity; damage; operability (if readily determinable); and preservation, packaging, packing, and marking, if applicable.",
+          "dod": {
+            "src": "r-dfars",
+            "sec": "246.404",
+            "quote": "Do not require Government contract quality assurance at source for contracts or delivery orders valued at or below the simplified acquisition threshold unless the criteria at 246.402 have been met."
+          }
         },
         {
           "src": "r-dfars",
@@ -519,7 +533,8 @@
         {
           "src": "rfo",
           "sec": "5.101",
-          "quote": "For proposed contract actions expected to be greater than $20,000, post a presolicitation notice to the GPE unless an exemption in paragraph (b) applies."
+          "quote": "For proposed contract actions expected to be greater than $20,000, post a presolicitation notice to the GPE unless an exemption in paragraph (b) applies.",
+          "dod": "n/a"
         },
         {
           "src": "rfo",

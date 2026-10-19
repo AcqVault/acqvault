@@ -248,7 +248,7 @@
   },
   "f10497ad0ee0": {
     "x": "For DoD, 8(a) sole source needs no J&A below $100M — the program's statutory basis IS the competition exception ('authorized by statute'). The $30M figure is the civilian line; mixing the two is the standard miss.",
-    "ref": "R-DFARS 206.104-70 · RFO 6.103-5 · Vol. 2, Small Business"
+    "ref": "R-DFARS 206.103-570(d) · RFO 6.103-5 · Vol. 2, Small Business"
   },
   "a78f420d29c1": {
     "x": "SAMO: Simplified acquisition, Authorized by statute, in-scope Modifications, Orders under existing vehicles — the four lanes where CICA's full-and-open machinery doesn't attach in the first place. Distinct from the seven exceptions, which excuse competition where it DOES attach.",
@@ -259,8 +259,8 @@
     "ref": "RFO 6.103 · Vol. 2, Competition"
   },
   "2406b1119b1b": {
-    "x": "$18M → Competition Advocate (to $20M). $95M DoD → HPA/PEO (DoD tier runs to $150M). $160M DoD → SPE. The DoD $150M line is the tell — elsewhere the HPA tier tops at $90M.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
+    "x": "$18M → Competition Advocate. For DoD, R-DFARS 206.104-71 Table 206-1 replaces the RFO 6.104-2 ladder: $95M DoD → still the Competition Advocate (>$10M–$100M, not delegable); $160M DoD → head of the contracting activity (HCA) (>$100M–$500M); the senior procurement executive (SPE) only above $500M. The DoD table is the tell — the civilian $900K / $20M / $90M ladder (and the RFO's old $150M DoD parenthetical) is the wrong book for an Air Force J&A.",
+    "ref": "R-DFARS 206.104-71 · RFO 6.104-2 · Vol. 2, Competition"
   },
   "c06634e050d7": {
     "x": "14 days after award standard; 30 for urgency — urgency is the one case where posting trails longer, because the buy couldn't wait. Reversing the pair is the classic error.",
@@ -274,8 +274,8 @@
     "ref": "RFO Part 6 · Vol. 2, Competition"
   },
   "e1ade89aced2": {
-    "x": "$40M → HPA/PEO; $15M → Competition Advocate. Boards ask the ladder twice in a row precisely to catch memorized-once answers — know the bands ($900K / $20M / $90M–$150M DoD / above), not just one rung.",
-    "ref": "RFO 6.104 · Vol. 2, Competition"
+    "x": "For DoD, $40M and $15M both go to the Competition Advocate, not delegable — R-DFARS 206.104-71 Table 206-1 runs that band from above $10M to $100M (on the civilian RFO ladder $40M would go to the head of the procuring activity). Boards ask the ladder twice in a row precisely to catch memorized-once answers — know the bands (DoD: $10M / $100M / $500M / above; civilian RFO: $900K / $20M / $90M / above), not just one rung.",
+    "ref": "R-DFARS 206.104-71 · RFO 6.104-2 · Vol. 2, Competition"
   },
   "6e1d02b83f70": {
     "ref": "RFO Part 6 · Vol. 2, Competition"

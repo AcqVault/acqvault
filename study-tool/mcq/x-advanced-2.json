@@ -33,7 +33,7 @@
     "ref": "RFO 16.508 · Vol. 2, IDIQ"
   },
   "e55b451c54d0": {
-    "x": "RFO 16.507-6(d)(2)(i) requires the document be identified as a “Justification for an Exception to Fair Opportunity” — it is a justification, not a “determination and approval”, and that phrase appears nowhere in the RFO. It is a different document from a part 6 J&A but rides the same ladder, and $12M lands with the Competition Advocate under 16.507-6(e)(2), not delegable. Name it the way the regulation names it, then give the tier.",
+    "x": "RFO 16.507-6(d)(2)(i) requires the document be identified as a “Justification for an Exception to Fair Opportunity” — it is a justification, not a “determination and approval”, and that phrase appears nowhere in the RFO. It is a different document from a part 6 J&A but rides the same ladder, and $12M lands with the Competition Advocate, not delegable — for DoD under R-DFARS 216.507-6(e) and Table 206-1 ($10M–$100M band), in lieu of RFO 16.507-6(e)(2). Name it the way the regulation names it, then give the tier.",
     "ref": "RFO 16.507-6 · Vol. 2, IDIQ"
   },
   "7f8ae2a073cc": {
@@ -101,7 +101,7 @@
   },
   "f811078a5729": {
     "x": "O&M 1 year, RDT&E 2, Procurement 3 (MILCON 5). The 1-2-3 ladder decides which year's money a need belongs to — and every 'can we use this money?' question starts here.",
-    "ref": "DoD FMR · Vol. 1 §5"
+    "ref": "DoW FMR · Vol. 1 §5"
   },
   "92137dc41e3b": {
     "x": "Severable services: up to 12 months on current funds, may cross fiscal years. Non-severable: one end product, fully funded up front, can run long. Funding a non-severable effort incrementally is the violation this pair exists to catch.",
@@ -207,28 +207,28 @@
   },
   "a3f545156ece": {
     "x": "50% of the not-to-exceed before the qualifying proposal, 75% after. The caps are the taxpayer's brake: an undefinitized contractor who wants more funded runway has to produce the proposal that starts real negotiation.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+    "ref": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
   },
   "2681c1606b97": {
     "x": "180 days from the qualifying proposal — or when obligations hit the caps, whichever bites first. From the PROPOSAL, not award: that anchoring is what makes proposal slow-rolling a leverage play, and cap enforcement the counter.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+    "ref": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
   },
   "9da327c97058": {
     "x": "Lack of planning and administrative convenience never justify a UCA. Real urgency can. If the 'emergency' traces to a requirement everyone saw coming, the UCA is the symptom and the finding writes itself.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+    "ref": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
   },
   "1ea9123b0f07": {
     "x": "UCO: an unpriced unilateral change WITHIN an existing contract's scope. UCA: a NEW undefinitized contract action. Same discipline (definitize fast, caps bite), different starting points — one modifies a bargain, the other opens one.",
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+    "ref": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
   },
   "1a7f42afd631": {
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+    "ref": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
   },
   "8cb02d32afa8": {
     "ref": "DD 1547 weighted guidelines · Vol. 2, UCAs"
   },
   "5ec5181c0dc4": {
-    "ref": "R-DFARS 217.74 · Vol. 2, UCAs"
+    "ref": "R-DFARS Subpart 217.74 · Vol. 2, UCAs"
   },
   "228ce47e2920": {
     "x": "Business clearance approves releasing the solicitation / opening negotiations — the strategy gate. Contract clearance approves the negotiated result — the deal gate. Two different failures get caught: a bad strategy well executed, and a good strategy badly landed.",

@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AcqVault Field Guide — Vol. 1: Contracting Foundations</title>
+<meta name="author" content="AcqVault">
+<meta name="description" content="Air Force contracting foundations — training aid. Current as of October 2026.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+<!--
+  SOURCE OF TRUTH for pdfs/acqvault-field-guide-vol-1.pdf.
+  Rebuild:  python3 library-src/build_field_guides.py 1
+  - TOC page numbers (.toc .p) are filled in automatically from the rendered PDF.
+  - Running footers ("Page X of N") are stamped by the build script, not here.
+  - Every factual change goes in CHANGES.md with its corpus citation.
+-->
+
+<!-- ===================== COVER ===================== -->
+<section class="cover">
+  <img class="guill" src="../../assets/guilloche.svg" alt="">
+  <div class="brand"><img src="../../assets/favicon-vault.svg" alt=""><span>Acq<span class="v">Vault</span></span><span class="fg">FIELD GUIDE</span></div>
+  <div class="vol"><small>VOL</small><span>01</span></div>
+  <h1>Contracting<br>Foundations</h1>
+  <p class="sub">Air Force contracting — from your first day to a defensible decision</p>
+  <div class="bar"></div>
+  <div class="tag">VOLUME 1 · THE BASICS</div>
+  <p class="blurb">Core concepts in plain language, decision flowcharts, and realistic Air Force scenarios — the field reference a new 1102 keeps within reach.</p>
+  <div class="cfoot"><span>AcqVault Field Guide &nbsp;·&nbsp; Vol. 1 of 2 &nbsp;·&nbsp; v1.3 (October 2026)</span><span>acqvault.com &nbsp;·&nbsp; Training aid — verify against the RFO / R-DFARS</span></div>
+</section>
+
+<!-- ===================== HOW TO USE ===================== -->
+<section class="page">
+  <div class="sechead first"><div class="eyebrow">Read this first</div><h2 class="sec">How to Use This Guide</h2></div>
+  <p class="lede">This is a foundations guide for newer Air Force contracting professionals — contract specialists, new contracting officers, and anyone learning how Air Force buying actually works. It explains the <em>why</em> behind the rules, not just the rule numbers.</p>
+  <div class="two" style="margin-top:12pt">
+    <div><h4>What this guide is</h4><ul>
+      <li>A plain-language tour of the core concepts you use every week.</li>
+      <li>Visual — flowcharts, tables, and decision ladders so the structure sticks.</li>
+      <li>Practical — every concept is tied to an Air Force example or scenario.</li>
+      <li>A <b>starting map</b>, not the final authority. The regulation always wins.</li></ul></div>
+    <div><h4>What this guide is not</h4><ul>
+      <li>Not a substitute for the RFO, R-DFARS, DoD/DAF policy, or your local guidance.</li>
+      <li>Not legal advice — when in doubt, your <b>Judge Advocate (JA)</b> is your friend.</li>
+      <li>Not the warrant-board study guide. That deeper, verbatim, board-focused volume is <b>Volume 2</b>.</li></ul></div>
+  </div>
+
+  <div class="box red">
+    <div class="t">⚠ Reference currency — the most important caveat in this book</div>
+    <p>Federal acquisition rules are being rewritten <em>right now</em>. The <b>Revolutionary FAR Overhaul (RFO)</b>, launched by Executive Order 14275 (April 2025), is replacing the legacy FAR — and DoD's DFARS is being reissued in parallel as the <b>R-DFARS</b> — part-by-part through <em>class deviations</em> and formal rulemaking. Dollar thresholds also jumped on <b>1 October 2025</b>; more statutory changes landed in mid-2026 (e.g., DoD's certified cost-or-pricing-data threshold — Section 11); and between July and October 2026 DoD revised 20 R-DFARS parts, <b>renumbering many sections</b>.</p>
+    <p><b>Never quote a threshold or citation from memory — or from an old guide — without confirming it.</b> This volume references the <b>RFO and R-DFARS</b>, not the retired FAR/DFARS/DAFFARS, and every number and citation was checked against the official text <b>as of October 2026</b> — but treat them as a snapshot. Cross-reference everything against the <b>RFO, R-DFARS, and current R-DFARS class deviations</b> (Acquisition.gov/far-overhaul and the DoD DARS pages), the <b>Federal Register</b>, and — for DAF-specific procedures — the CAC-restricted <b>DAF Contracting Compass</b>.</p>
+  </div>
+  <p>Most sections give you a short <b>plain-language explanation</b>, a <b>visual or table</b>, a <span style="color:var(--green);font-weight:650">Field Example</span>, and a <span style="color:var(--red);font-weight:650">Common Pitfall</span>; Part V then walks you through full scenarios the way a mentor would.</p>
+  <div class="box green">
+    <div class="t">By the end of Volume 1 you'll be able to…</div>
+    <ul>
+      <li>Explain who can legally bind the Government — and spot an unauthorized commitment.</li>
+      <li>Name the right rulebook (RFO / R-DFARS) and verify a reference instead of guessing.</li>
+      <li>Apply the Time-Purpose-Amount test to a funding question.</li>
+      <li>Pick the right buying method and contract type for a given need.</li>
+      <li>Recognize when competition is required and when an exception is justified.</li>
+      <li>Protect procurement integrity and flag a conflict of interest early.</li>
+      <li>Tell an in-scope modification from new work that needs competition.</li>
+    </ul>
+  </div>
+  <p class="asof">Current as of October 2026 (v1.3). Thresholds and citations verified against the RFO, R-DFARS, DFARS PGI and DoW FMR text in effect on 19 October 2026.</p>
+</section>
+
+<!-- ===================== TOC ===================== -->
+<section class="page toc">
+  <h1>Table of Contents</h1>
+  <div class="grp">START HERE</div>
+  <a href="#play"><span class="n">▸</span><span class="x">When You're Handed a Requirement — A Starter Playbook</span><span class="p">00</span></a>
+  <div class="grp">PART I · ORIENTATION</div>
+  <a href="#s1"><span class="n">1</span><span class="x">What Air Force Contracting Is</span><span class="p">00</span></a>
+  <a href="#s2"><span class="n">2</span><span class="x">The Players: Roles &amp; Who Does What</span><span class="p">00</span></a>
+  <a href="#s3"><span class="n">3</span><span class="x">Authority, Warrants &amp; Unauthorized Commitments</span><span class="p">00</span></a>
+  <div class="grp">PART II · THE FRAMEWORK</div>
+  <a href="#s4"><span class="n">4</span><span class="x">The Rulebook: The RFO, R-DFARS &amp; DAF Policy</span><span class="p">00</span></a>
+  <a href="#s5"><span class="n">5</span><span class="x">Colors of Money &amp; Fiscal Law Basics</span><span class="p">00</span></a>
+  <a href="#s6"><span class="n">6</span><span class="x">The Acquisition Lifecycle</span><span class="p">00</span></a>
+  <div class="grp">PART III · GETTING TO AWARD</div>
+  <a href="#s7"><span class="n">7</span><span class="x">Requirements &amp; Market Research</span><span class="p">00</span></a>
+  <a href="#s8"><span class="n">8</span><span class="x">Competition &amp; CICA</span><span class="p">00</span></a>
+  <a href="#s9"><span class="n">9</span><span class="x">Buying Methods by Dollar Value</span><span class="p">00</span></a>
+  <a href="#s10"><span class="n">10</span><span class="x">Contract Types &amp; Risk</span><span class="p">00</span></a>
+  <a href="#s11"><span class="n">11</span><span class="x">Pricing: Getting to Fair &amp; Reasonable</span><span class="p">00</span></a>
+  <a href="#s12"><span class="n">12</span><span class="x">Source Selection Basics</span><span class="p">00</span></a>
+  <a href="#s13"><span class="n">13</span><span class="x">Ethics &amp; Procurement Integrity</span><span class="p">00</span></a>
+  <a href="#s14"><span class="n">14</span><span class="x">Small Business Programs</span><span class="p">00</span></a>
+  <div class="grp">PART IV · AFTER AWARD</div>
+  <a href="#s15"><span class="n">15</span><span class="x">Contract Administration: Mods, Options, Claims &amp; Terminations</span><span class="p">00</span></a>
+  <div class="grp">PART V · APPLY IT</div>
+  <a href="#s16"><span class="n">16</span><span class="x">Scenario Walkthroughs (Think-It-Through Practice)</span><span class="p">00</span></a>
+  <div class="grp">REFERENCE SHELF</div>
+  <a href="#aA"><span class="n">A</span><span class="x">Thresholds Quick-Reference</span><span class="p">00</span></a>
+  <a href="#aB"><span class="n">B</span><span class="x">Acronym Glossary</span><span class="p">00</span></a>
+  <a href="#aC"><span class="n">C</span><span class="x">Sources &amp; Where to Verify</span><span class="p">00</span></a>
+  <a href="#aD"><span class="n">D</span><span class="x">Systems &amp; Tools You'll Actually Use</span><span class="p">00</span></a>
+  <a href="#aE"><span class="n">E</span><span class="x">Contract-File Checklist</span><span class="p">00</span></a>
+  <a href="#aF"><span class="n">F</span><span class="x">Who to Ask &amp; Where to Look It Up</span><span class="p">00</span></a>
+</section>
+
+<!-- ===================== PLAYBOOK ===================== -->
+<section class="page" id="play">
+  <div class="sechead first"><div class="eyebrow">Start here · The playbook</div><h2 class="sec">When You're Handed a Requirement: A Starter Playbook</h2></div>
+  <p class="lede">A new requirement just landed on your desk. What now? This is the seven-step loop you'll run on almost every buy — it's the spine that ties this whole guide together. You won't do all of it alone, and you'll get faster with reps, but the <em>order</em> rarely changes. Each step points to the section that goes deeper.</p>
+  <div class="loop">
+    <div><i>1</i><b>Need</b><small>what &amp; how much</small></div>
+    <div><i>2</i><b>Money</b><small>funded? color? year?</small></div>
+    <div><i>3</i><b>Market</b><small>who can do it?</small></div>
+    <div><i>4</i><b>Path</b><small>method &amp; competition</small></div>
+    <div><i>5</i><b>Type</b><small>who bears the risk</small></div>
+    <div><i>6</i><b>Award</b><small>&amp; document why</small></div>
+    <div><i>7</i><b>Manage</b><small>mods · close out</small></div>
+  </div>
+  <p class="cap">The seven-step loop. You rarely skip a step — you just spend more or less time on each depending on the dollar value and risk.</p>
+  <div class="steps">
+    <div class="s"><span class="num">1</span><div><b>Understand the need.</b> What exactly is being bought, how much, by when, and who's the customer (the requiring activity)? Push for a clear requirement and an <b>Independent Government Cost Estimate (IGCE)</b> — you can't run a buy off a vague ask.<span class="go">→ Section 7</span></div></div>
+    <div class="s"><span class="num">2</span><div><b>Confirm the money.</b> Is it funded — the <em>right color</em> and the <em>right year</em>? Run <b>Time · Purpose · Amount</b>. No funds, no award — so check this early, with your FM.<span class="go">→ Section 5</span></div></div>
+    <div class="s"><span class="num">3</span><div><b>Look at the market.</b> Who can do this? Is it a <b>commercial product or service</b>? Can a <b>small business</b> do it? Market research drives nearly every decision that follows.<span class="go">→ Section 7</span></div></div>
+    <div class="s"><span class="num">4</span><div><b>Pick the path.</b> The dollar value points you to a <b>buying method</b> (micro-purchase, simplified procedures, or a full action), and you decide whether <b>competition</b> is required or a justified exception applies.<span class="go">→ Sections 8 &amp; 9</span></div></div>
+    <div class="s"><span class="num">5</span><div><b>Choose the contract type.</b> Match <em>who bears the cost risk</em> to how well-defined the work is — firm-fixed-price when it's clear, cost-type when it's not.<span class="go">→ Section 10</span></div></div>
+    <div class="s"><span class="num">6</span><div><b>Get to award — and document the why.</b> Solicit, evaluate, and award; price has to be fair and reasonable, and <b>the file tells the story of every decision</b> so it survives an auditor or a protest.<span class="go">→ Sections 11 &amp; 12</span></div></div>
+    <div class="s"><span class="num">7</span><div><b>Manage it and close out.</b> The COR watches performance; you handle modifications, options, and closeout — and you fix an unauthorized commitment the right way if one happens.<span class="go">→ Section 15</span></div></div>
+  </div>
+
+  <div class="box blue">
+    <div class="t">The new-1102 golden rule</div>
+    <p><b>Ask, document, and loop people in early.</b> You're a <em>business advisor, not a paperwork processor</em> — your value is the judgment between what the customer wants and an action you can defend. Nobody expects you to know it all on day one; they expect you to know <em>who to ask</em> and <em>where to look it up</em>. When in doubt, your <b>CO, JA, and FM</b> are your friends (and Appendix F shows who does what).</p>
+  </div>
+  <div class="box red">
+    <div class="t">⚠ The trap that catches new specialists</div>
+    <p>Skipping straight to "just put it on contract" to go fast. The customer hands you a <em>conclusion</em> ("only this vendor can do it," "use this money before it expires," "just add it to the existing contract") — your job is to <b>test it</b>, not type it up. Walking the seven steps <em>is</em> the fast way, because it's the way that doesn't get unwound later.</p>
+  </div>
+  <div class="box green">
+    <div class="t">The playbook, walked once — a $180K tool-control buy</div>
+    <p>The maintenance group asks for "tool-control cabinets for three shops, before the inspection cycle." Here's the whole loop on one small, real-shaped buy:</p>
+    <p><b>1 · Need.</b> Sit with the customer: 14 cabinets, keyed-alike, sized to existing bays — and get an IGCE (~$180K from catalog pricing). "Before the inspection" becomes a real date.<br>
+    <b>2 · Money.</b> FM confirms current-year O&amp;M — right purpose (day-to-day equipment), right year. Funded? Yes, certified on the requirement.<br>
+    <b>3 · Market.</b> Quick research: several vendors sell these commercially, and at least two are small businesses. That one hour just decided most of what follows.<br>
+    <b>4 · Path.</b> $180K sits between the micro-purchase threshold ($15K) and the SAT ($350K) → simplified acquisition (commercial, so RFO 12.201-1 simplified procedures), <em>reserved for small business</em>. Competition: solicit quotes — no exception needed, none claimed.<br>
+    <b>5 · Type.</b> Commercial product, well-defined, catalog-priced → firm-fixed-price. The contractor bears the cost risk because the work is certain enough to price.<br>
+    <b>6 · Award &amp; the why.</b> Three quotes come back; low quote is 8% under the IGCE from a responsible small business (SAM checked). The file gets one tight page: quotes compared, price found fair and reasonable, award basis stated.<br>
+    <b>7 · Manage.</b> Delivery accepted against the order, invoice paid, done — and when the shop chief later asks the vendor directly for "two more cabinets," you catch it: that's new work, back through the loop (no unauthorized commitment occurred — the vendor knew to route the request to you instead of performing).</p>
+  </div>
+</section>
+
+<!-- ===================== PART I ===================== -->
+<section class="page">
+  <div class="part"><div class="eyebrow">Part I</div><h2>Orientation</h2><p>Who you are, who you work with, and where your authority comes from.</p></div>
+
+  <div class="sechead first" id="s1"><div class="eyebrow">Section 1</div><h2 class="sec">What Air Force Contracting Is</h2></div>
+  <p class="lede">Contracting is how the Air Force legally turns appropriated dollars into the goods, services, and capabilities Airmen and Guardians need — from jet-engine parts to base custodial services to billion-dollar weapon systems.</p>
+  <p>A <b>contracting officer (CO)</b> is the <em>only</em> person with legal authority to obligate the Government on a contract. Engineers define what to build, program managers run the schedule and budget, and users state the need — but none of them can bind the Government to spend money. That power is delegated, in writing, to the CO through a <b>warrant</b> (Section 3). This is the single most important idea in the entire field.</p>
+  <h3>You are a business advisor, not a paperwork processor</h3>
+  <p>New professionals often think the job is "running the package." It isn't. Your real value is <b>business judgment</b>: choosing the right strategy, protecting competition, getting a fair price, managing risk, and keeping the action defensible if it's ever challenged. The paperwork documents that judgment — it doesn't replace it.</p>
+  <div class="cards">
+    <div class="card"><h4>Stewardship</h4><p>You spend the public's money. Every action should survive an auditor, an Inspector General, and a protest. "Because the program wanted it" is never a complete answer.</p></div>
+    <div class="card"><h4>Mission</h4><p>Speed matters. A perfect contract that arrives after the need has passed has failed. Balance compliance with getting capability to the warfighter on time.</p></div>
+    <div class="card"><h4>Integrity</h4><p>Competition and fairness aren't bureaucracy — they are how the Government gets the best value and keeps the public's trust. Guard them.</p></div>
+    <div class="card"><h4>Documentation</h4><p>If it isn't in the file, it didn't happen. The contract file tells the story of <em>why</em> you made each decision.</p></div>
+  </div>
+  <div class="box green"><div class="t">Field example</div>
+    <p>A maintenance squadron needs a specialized hydraulic test stand "as soon as possible." The requiring activity sends you a brand name and one vendor. Your job isn't to type up that order — it's to ask: Is this truly the only source? Is the price fair? Is it commercial? Could a short market check find competition without blowing the schedule? That questioning <em>is</em> the contracting job.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>Who is the only person who can legally obligate the Government on a contract?<span class="a">→ The contracting officer (CO), through a warrant.</span></li>
+    <li>Your real value as a 1102 isn't running the package — it's what?<span class="a">→ Business judgment — sound, defensible decisions.</span></li></ol></div>
+
+  <div class="sechead" id="s2"><div class="eyebrow">Section 2</div><h2 class="sec">The Players: Roles &amp; Who Does What</h2></div>
+  <p class="lede">You almost never work alone. Knowing each teammate's lane — and its limits — keeps you out of trouble and speeds every action.</p>
+  <p class="tcap">Core players on a typical Air Force contract action</p>
+  <table><thead><tr><th>Role</th><th>What they do &amp; their limits</th></tr></thead><tbody>
+    <tr><td class="k">Contracting Officer (CO / PCO)</td><td>Holds the warrant; the only one who can sign/obligate the Government. The <em>Procuring CO (PCO)</em> awards and manages the contract.</td></tr>
+    <tr><td class="k">Administrative CO (ACO)</td><td>Often at DCMA; handles post-award administration (payments, mods, monitoring) for assigned contracts.</td></tr>
+    <tr><td class="k">Contract Specialist (1102)</td><td>Builds the action under the CO — drafts the strategy, solicitation, analysis, and file. Likely <em>your</em> role starting out. No authority to bind the Government.</td></tr>
+    <tr><td class="k">Contracting Officer's Representative (COR)</td><td>The CO's eyes on technical performance. <b>Cannot</b> change price, scope, terms, or direct new work. A COR who "tells the contractor to start" creates an unauthorized commitment (Section 3).</td></tr>
+    <tr><td class="k">Program Manager / Requiring Activity</td><td>Owns the requirement, the money, and the schedule. Tells you <em>what</em> is needed and <em>why</em> — but not <em>how</em> to contract for it.</td></tr>
+    <tr><td class="k">Judge Advocate (JA / Legal)</td><td>Legal review and your partner on anything novel, high-dollar, or contested (J&amp;As, protests, claims, integrity issues). Loop them in <em>early</em>.</td></tr>
+    <tr><td class="k">Financial Management (FM / Comptroller)</td><td>Certifies funds are available and the right "color" of money. No funds, no award.</td></tr>
+    <tr><td class="k">Small Business Professional</td><td>Reviews actions for small-business opportunity; coordinates with the SBA.</td></tr>
+    <tr><td class="k">DCMA / DCAA</td><td><em>Defense Contract Management Agency</em> administers contracts and verifies systems; <em>Defense Contract Audit Agency</em> audits contractor cost/pricing data and rates.</td></tr>
+    <tr><td class="k">GSA</td><td>Runs government-wide schedules and supply sources you can order from instead of building a contract from scratch.</td></tr>
+  </tbody></table>
+  <div class="box blue"><div class="t">The golden rule of channels</div>
+    <p>All contractual direction flows <b>through the CO</b>. Technical folks talk technically; only the CO changes the deal. When a contractor says "the COR told us to…," that's a flag to stop and check authority before anyone spends another dollar.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>Can a COR change a contract's price, scope, or terms?<span class="a">→ No — only the CO can.</span></li>
+    <li>Who certifies that funds are available?<span class="a">→ Financial Management (FM / Comptroller).</span></li></ol></div>
+
+  <div class="sechead" id="s3"><div class="eyebrow">Section 3</div><h2 class="sec">Authority, Warrants &amp; Unauthorized Commitments</h2></div>
+  <p class="lede">Authority is the foundation under every contract. Get this wrong and even a well-intentioned deal isn't binding on the Government.</p>
+  <h3>Three kinds of authority</h3>
+  <h4>Express authority</h4><p class="def">Written and explicit — the CO's warrant. This is the real, reliable authority.</p>
+  <h4>Implied authority</h4><p class="def">Reasonably flows from express authority (things a CO must do to carry out the warrant). Still valid.</p>
+  <h4>Apparent authority</h4><p class="def">Someone <em>acts</em> as if authorized but isn't. <b>Not binding on the Government.</b> A contractor cannot rely on it — and neither can you.</p>
+  <h3>The warrant</h3>
+  <p>A warrant (Standard Form 1402, Certificate of Appointment — RFO 1.403-2) is the written delegation that makes someone a CO, usually up to a stated dollar limit and type of action. An <b>unlimited warrant</b> removes the dollar ceiling — which is exactly why it demands deep experience and is the subject of Volume 2. DoD adds statutory qualification standards for COs above the SAT (R-DFARS 201.403-70). As a new professional, you'll typically support warranted COs before holding your own warrant.</p>
+  <h3>Unauthorized commitments &amp; ratification</h3>
+  <p>An <b>unauthorized commitment (UAC)</b> happens when someone <em>without</em> contract authority makes the contractor think it should perform — a COR says "go ahead," a PM verbally approves a buy. The Government isn't legally bound… but the contractor performed in good faith, so there's a problem to fix. The fix is <b>ratification</b>: an official with actual authority approves the commitment after the fact (RFO 1.405).</p>
+  <div class="flow avoid">
+    <div class="f-red"><b>UAC occurs</b>Someone w/o authority commits</div><span class="ar">▶</span>
+    <div class="f-blue"><b>Investigate</b>What happened? Get MFRs + docs</div><span class="ar">▶</span>
+    <div class="f-blue"><b>Test the facts</b>Benefit received? Fair price? Funds?</div><span class="ar">▶</span>
+    <div class="f-green"><b>Ratify</b>Authorized official approves + pays</div><span class="ar">▶</span>
+    <div class="f-gold"><b>Prevent</b>Train + kickoff letters</div>
+  </div>
+  <p class="cap">The unauthorized-commitment to ratification path. Ratification is the exception, not a routine tool.</p>
+  <p>Ratification requires that all of these be true (RFO 1.405(c)): the Government received a benefit; the ratifying official has authority to enter the commitment; the action would have been proper if a CO had done it; the reviewing CO finds the price fair and reasonable; the CO recommends payment and legal concurs; and funds were available then and are available now. Under RFO 1.405(b) the <b>head of the contracting activity</b> may ratify, and that authority may be delegated <b>no lower than the chief of the contracting office</b>. DoD/DAF policy sets the actual delegations — <em>look them up, don't memorize a level from an old guide.</em></p>
+  <div class="box red"><div class="t">Common pitfall</div>
+    <p>Treating ratification as a convenient back-door for "we forgot to put it on contract." It is a documented exception with a real investigation, and repeated UACs in a unit signal a training problem. Prevent them up front: hold a <b>kickoff meeting</b>, send the contractor a <b>letter naming who can give direction</b>, and train CORs and PMs on the limits of their role.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>What document makes someone a CO?<span class="a">→ A written warrant (SF 1402).</span></li>
+    <li>Someone without authority tells a contractor to start work — what is that, and is the Government bound?<span class="a">→ An unauthorized commitment (UAC); not bound unless it's ratified.</span></li></ol></div>
+</section>
+
+<!-- ===================== PART II ===================== -->
+<section class="page">
+  <div class="part"><div class="eyebrow">Part II</div><h2>The Framework</h2><p>The rulebook, the money, and the lifecycle every action moves through.</p></div>
+  <div class="sechead first" id="s4"><div class="eyebrow">Section 4</div><h2 class="sec">The Rulebook: The RFO, R-DFARS &amp; DAF Policy</h2></div>
+  <p class="lede">There's a hierarchy of rules, each layering on the one above it. Knowing the stack tells you where to look — and which rule wins when they seem to conflict. We are now in the middle of a once-in-a-generation rewrite, so <b>this guide references the new framework</b>, not the legacy one.</p>
+  <div class="box blue"><div class="t">Which rules this guide uses</div>
+    <p>The legacy <b>FAR</b>, <b>DFARS</b>, and <b>DAFFARS</b> are being retired and should no longer be your go-to citations. Cross-reference everything against the <b>RFO</b> (Revolutionary FAR Overhaul — the streamlined, governing FAR), the <b>R-DFARS</b> (the revised DFARS), and the current <b>R-DFARS class deviations</b>. The Department of the Air Force's authoritative day-to-day resource is the <b>DAF Contracting Compass</b> — but it is CAC-restricted, so this guide doesn't reproduce it; confirm DAF-specific procedures there.</p></div>
+  <div class="pyr avoid">
+    <div style="background:var(--navy);width:62%">U.S. Code (statute) — e.g., Title 10, Title 41, CICA<small>Congress. Beats every regulation below it.</small></div>
+    <div style="background:#1d3f6a;width:54%">RFO — the overhauled, governing FAR<small>Government-wide. Replaces the legacy FAR. (Acquisition.gov/far-overhaul)</small></div>
+    <div style="background:#2e4d78;width:46%">R-DFARS + class deviations + PGI<small>DoD supplement under the overhaul. Replaces the legacy DFARS.</small></div>
+    <div style="background:var(--slate);width:38%">DAF policy: DAFIs + Contracting Compass<small>Air/Space Force. DAFIs are public; the Compass is CAC-restricted.</small></div>
+    <div style="background:var(--gold);width:30%">Local / MAJCOM / center guidance<small>Your office's procedures &amp; clause logic.</small></div>
+  </div>
+  <p class="cap">Each layer can add to — but not contradict — the layer above. When in conflict, the higher (broader) authority controls. The legacy FAR/DFARS/DAFFARS are superseded by the RFO and R-DFARS.</p>
+
+  <div class="box red"><div class="t">⚠ The Revolutionary FAR Overhaul (RFO) &amp; R-DFARS — why your citations are moving</div>
+    <p>Under <b>Executive Order 14275 (April 2025)</b>, the FAR Council is carrying out the largest acquisition-rules rewrite in 40 years. It rolls out in two waves — and DoD's DFARS is being overhauled in parallel as the <b>R-DFARS</b>:</p>
+    <ul>
+      <li><b>Model deviation text (RFO)</b> is published part-by-part at <b>Acquisition.gov/far-overhaul</b>; agencies issue <b>class deviations</b> that COs follow now. DoD's <b>R-DFARS class deviations</b> took effect <b>1 February 2026</b>, relocating procedures to the DFARS PGI — and DoD keeps revising them: <b>20 R-DFARS parts were reissued between July and October 2026</b>, many with renumbered sections (e.g., the CO-qualification text is now 201.403-70).</li>
+      <li><b>Formal rulemaking</b> to permanently codify the RFO and R-DFARS is still working through the Federal Register — until it finishes, the class deviations are what you follow. Check the Federal Register for the current status.</li>
+    </ul>
+    <p><b>Part numbers are largely kept, but content is being moved, renumbered, and trimmed.</b> For example, the seven exceptions to full-and-open competition (historically the legacy <em>6.302-1…-7</em>) are now <b>RFO 6.103-1 through 6.103-7</b>, and security content moved to a new <b>Part 40</b>. So the <em>concept</em> may be stable while the <em>exact paragraph</em> has shifted. <b>Always confirm the live RFO/R-DFARS text and whether a class deviation applies to your action.</b></p></div>
+
+  <h3>Where to actually look it up</h3>
+  <table><thead><tr><th>You need…</th><th>Go to</th></tr></thead><tbody>
+    <tr><td>The governing rule (overhauled FAR)</td><td><b>RFO</b> — Acquisition.gov/far-overhaul (model deviation text &amp; part summaries)</td></tr>
+    <tr><td>The DoD supplement</td><td><b>R-DFARS &amp; R-DFARS class deviations</b> — DoD DARS / Defense Pricing &amp; Contracting pages</td></tr>
+    <tr><td>Whether a deviation applies to your action</td><td>Current <b>R-DFARS class deviation</b> list &amp; your local policy office</td></tr>
+    <tr><td>DAF-specific procedures</td><td><b>DAF Contracting Compass</b> (CAC-restricted — not reproduced here)</td></tr>
+    <tr><td>Air Force services / lifecycle policy</td><td><b>DAFI 63-138 &amp; DAFI 63-101/20-101</b> (public)</td></tr>
+    <tr><td>The newest statutory changes</td><td>The annual <b>NDAA</b> &amp; the <b>Federal Register</b></td></tr>
+  </tbody></table>
+  <p class="note">Note: This guide references the <b>RFO, R-DFARS, and current R-DFARS class deviations</b> — not the legacy FAR/DFARS/DAFFARS, which are being retired. It also avoids CAC-restricted material: the <b>DAF Contracting Compass</b> is the authoritative DAF resource but requires CAC access, so confirm DAF-specific procedures there. Where your office's internal guidance differs, it governs your action — follow it and confirm with your chain.</p>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>What's the governing rulebook now, and what's being retired?<span class="a">→ The RFO and R-DFARS; the legacy FAR / DFARS / DAFFARS.</span></li>
+    <li>Where do you confirm a current threshold or rule?<span class="a">→ acquisition.gov/far-overhaul — never quote from memory.</span></li></ol></div>
+
+  <div class="sechead" id="s5"><div class="eyebrow">Section 5</div><h2 class="sec">Colors of Money &amp; Fiscal Law Basics</h2></div>
+  <p class="lede">You can run a flawless competition and still break the law if you use the wrong money. Appropriated funds come in "colors," each with rules on <em>what</em> they buy and <em>how long</em> they last.</p>
+  <h3>The T-P-A test — apply it to every obligation</h3>
+  <div class="cards">
+    <div class="card"><h4>Time</h4><p>Funds are only available for a limited window (their <em>period of availability</em>). You must obligate them for a <b>bona fide need</b> of that period.</p></div>
+    <div class="card"><h4>Purpose</h4><p>Funds may be used <em>only</em> for the purpose Congress appropriated them for (the <b>Purpose Statute</b>). O&amp;M money can't buy a production aircraft.</p></div>
+    <div class="card wide"><h4>Amount</h4><p>You may not obligate more than is available, or before it's available — that's the <b>Anti-Deficiency Act (ADA)</b>. ADA violations are serious and reportable.</p></div>
+  </div>
+  <p class="tcap">Common DoD appropriations ("colors of money") — typical uses and life (DoW FMR, Vol. 3, Sec. 12)</p>
+  <table><thead><tr><th style="width:24%">Appropriation</th><th>Buys</th><th style="text-align:right">Obligation life*</th></tr></thead><tbody>
+    <tr><td class="k">O&amp;M (3400)</td><td>Day-to-day operations, sustainment, most services, supplies used now</td><td class="r">1 year</td></tr>
+    <tr><td class="k">RDT&amp;E (3600)</td><td>Research, development, test &amp; evaluation</td><td class="r">2 years</td></tr>
+    <tr><td class="k">Procurement (e.g., 3010 / 3080)</td><td>Production &amp; modification of end items (aircraft, other major systems)</td><td class="r">3 years</td></tr>
+    <tr><td class="k">MILCON</td><td>Major construction</td><td class="r">5 years</td></tr>
+  </tbody></table>
+  <p class="note">*Period for new obligations. After that, funds <b>expire</b> (still pay/adjust existing obligations for 5 years) and then <b>cancel</b> (gone for any purpose). Confirm exact rules and any current exceptions before you act.</p>
+  <h3>Severable vs. non-severable services — the bona-fide-need wrinkle</h3>
+  <div class="two">
+    <p><b>Severable</b> services give a benefit as they're performed (e.g., monthly grounds maintenance). With annual money, a severable service contract generally <b>can't exceed 12 months</b>, but it may cross fiscal years.</p>
+    <p><b>Non-severable</b> services produce a single end product (e.g., one study, one engine overhaul). They are a bona fide need of the year you award, must be <b>fully funded</b> up front, and may run longer than a year.</p>
+  </div>
+  <div class="box green"><div class="t">Field example</div>
+    <p>In September, a unit wants to use this year's expiring O&amp;M to buy 12 months of help-desk support starting in October. Severable services + annual funds = generally fine to obligate now for a period that crosses into the new year, capped near 12 months. But if they tried to use that same O&amp;M to buy a production spare governed by procurement funds, that's a <b>Purpose</b> problem — stop and call FM/JA.</p></div>
+  <div class="box sand"><div class="t">Reference</div>
+    <p>Fiscal law lives largely in statute and the GAO "Red Book" (Principles of Federal Appropriations Law), plus the <b>DoW Financial Management Regulation (FMR), DoW 7000.14-R</b> — reissued in September 2026 with most volumes reorganized into numbered sections (and Volumes 2A/2B, 6A/6B, and 11A/11B each merged into one). Cite it by volume and section, not the old chapter numbers. Your <b>FM/Comptroller and JA</b> are the authoritative voices — when a fiscal question appears, ask early.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>Name the three-part fiscal test.<span class="a">→ Time · Purpose · Amount (TPA).</span></li>
+    <li>Can you use this year's money for next year's need?<span class="a">→ Generally no — the bona fide need rule.</span></li></ol></div>
+
+  <div class="sechead" id="s6"><div class="eyebrow">Section 6</div><h2 class="sec">The Acquisition Lifecycle</h2></div>
+  <p class="lede">Almost every action — a $9,000 buy or a $90M system — moves through the same arc. Learn the arc and you'll always know "what comes next."</p>
+  <div class="avoid">
+  <div class="arc">
+    <div>1 · Requirement<small>What is needed &amp; why</small></div>
+    <div>2 · Planning<small>Market research, strategy</small></div>
+    <div>3 · Solicit<small>RFQ / RFP to industry</small></div>
+    <div class="lt">4 · Evaluate<small>Price &amp; merit analysis</small></div>
+    <div style="visibility:hidden"></div>
+    <div>7 · Close-out<small>Reconcile &amp; close file</small></div>
+    <div>6 · Administer<small>CORs, mods, payments</small></div>
+    <div class="gr">5 · Award<small>CO signs &amp; obligates</small></div>
+  </div>
+  <div class="band"><b>Runs underneath the whole arc</b>Competition &amp; fairness · Fiscal law (T-P-A) · Fair &amp; reasonable price · Documentation in the file<br>Legal &amp; small-business coordination at the right gates</div>
+  <p class="cap">The seven-phase arc (1→4 across the top, then 5→7 back along the bottom). The bottom band never stops — it applies at every phase.</p>
+  </div>
+  <p>Each phase has its own sections in this guide: planning &amp; market research (Section 7), competition (8), choosing a buying method (9) and contract type (10), pricing (11), and source selection (12); then administration after award (15). Keep the arc in your head and the details will have somewhere to attach.</p>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>What runs underneath every phase of the lifecycle?<span class="a">→ Competition &amp; fairness, fiscal law (T-P-A), fair &amp; reasonable pricing, and documentation in the file.</span></li>
+    <li>If it isn't in the file…<span class="a">→ …it didn't happen. The file tells the story of every decision.</span></li></ol></div>
+</section>
+
+<!-- ===================== PART III ===================== -->
+<section class="page">
+  <div class="part"><div class="eyebrow">Part III</div><h2>Getting to Award</h2><p>From "we need something" to a signed, defensible contract.</p></div>
+  <div class="sechead first" id="s7"><div class="eyebrow">Section 7</div><h2 class="sec">Requirements &amp; Market Research</h2></div>
+  <p class="lede">Good contracting starts <em>before</em> any solicitation, with two questions: exactly what do we need, and what can the market actually provide?</p>
+  <h3>A clear requirement</h3>
+  <p>The requiring activity describes the need in a <b>requirements document</b> — often a <em>Statement of Work (SOW)</em>, <em>Performance Work Statement (PWS)</em>, or <em>Statement of Objectives (SOO)</em> for services, or a spec/salient characteristics for supplies. Your job is to pressure-test it: Is it clear? Is it unnecessarily restrictive (e.g., a brand name that locks out competition)? Is it measurable?</p>
+  <h3>Market research — the foundation under every later decision</h3>
+  <p>Market research (RFO Part 10) is how you learn the market before you commit. It answers questions that drive the <em>entire</em> strategy:</p>
+  <ul>
+    <li>Is this a <b>commercial</b> product or service? (If so, streamlined rules apply — Section 9.)</li>
+    <li>Can <b>small businesses</b> meet the need? (Drives set-aside decisions — Section 14.)</li>
+    <li>Is there real <b>competition</b>, or genuinely one source?</li>
+    <li>How should the requirement be defined so industry can actually bid it?</li>
+  </ul>
+  <table><thead><tr><th>Common research methods</th><th>Good for</th></tr></thead><tbody>
+    <tr><td>Sources Sought / Request for Information (RFI)</td><td>Finding who can do the work &amp; gauging small-business interest</td></tr>
+    <tr><td>Internet / catalog / price searches</td><td>Commerciality &amp; rough price reality</td></tr>
+    <tr><td>Reviewing prior buys (e.g., in FPDS)</td><td>What was paid before, by whom</td></tr>
+    <tr><td>Industry Day / one-on-ones</td><td>Complex needs; shaping the requirement</td></tr>
+  </tbody></table>
+  <div class="box blue"><div class="t">Why this matters so much</div>
+    <p>Nearly every significant decision you'll defend later — set-aside or not, commercial or not, sole-source or competitive, the price you call fair — <b>rests on market research</b>. Skipping it isn't just sloppy; it removes the foundation under your whole file. Match the depth of research to the dollar value and complexity, and <b>document what you found</b>.</p></div>
+  <div class="box red"><div class="t">Common pitfall</div>
+    <p>Accepting a brand-name, one-vendor package at face value because "engineering said so." A brand name needs justification. Often a quick sources-sought reveals two or three capable firms — turning a risky sole-source into a clean competition.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>What does market research tell you?<span class="a">→ Who can perform, whether it's commercial, whether small businesses can compete, and a realistic price.</span></li>
+    <li>What's the Government's own price estimate called?<span class="a">→ The IGCE (Independent Government Cost Estimate).</span></li></ol></div>
+
+  <div class="sechead" id="s8"><div class="eyebrow">Section 8</div><h2 class="sec">Competition &amp; CICA</h2></div>
+  <p class="lede">Competition is the default, and it's the law. The <b>Competition in Contracting Act (CICA)</b> requires <b>full and open competition</b> for most actions over the Simplified Acquisition Threshold (<b>SAT</b> — currently $350K) — unless a specific, documented exception applies.</p>
+  <p>Why the Government insists on it: competition drives prices down, improves quality, broadens the industrial base, and protects the integrity of the process. "We've always used this vendor" is not a reason to skip it.</p>
+  <div class="avoid">
+  <div class="tree">
+    <div></div><div class="nd dk"><b>New requirement</b>over the SAT?</div><div></div>
+    <div class="lbl">◀ Yes</div><div class="nd f-blue"><b>Can full &amp; open competition work?</b>(market research answers this)</div><div class="lbl">No ▶</div>
+    <div class="nd f-green"><b>Compete it (default)</b>Full &amp; open — or full &amp; open after exclusion (e.g., set-aside)</div><div></div><div class="nd f-gold"><b>Other than full &amp; open</b>Pick 1 of 7 exceptions → justify in a J&amp;A, get it approved</div>
+  </div>
+  <div class="band"><b>Either path: market research + documentation + JA on anything novel/high-$</b>Wrong exception or thin documentation = protest exposure.</div>
+  <p class="cap">The competition decision in one picture. The right-hand path is the exception and must be justified.</p>
+  </div>
+  <h3>The three CICA "buckets"</h3>
+  <h4>Full &amp; open competition</h4><p class="def">All responsible sources may compete. The default.</p>
+  <h4>Full &amp; open after exclusion of sources</h4><p class="def">You narrow the field for a valid reason — most commonly a <b>small-business set-aside</b>.</p>
+  <h4>Other than full &amp; open competition</h4><p class="def">The least-competitive route. Allowed only under one of <b>seven exceptions</b>, documented in a <b>Justification &amp; Approval (J&amp;A)</b>.</p>
+  <h3>The seven exceptions (concept-level)</h3>
+  <p>You don't need these verbatim yet — but recognize them: (1) only one responsible source; (2) unusual &amp; compelling urgency; (3) industrial mobilization / R&amp;D capability; (4) international agreement; (5) authorized or required by statute; (6) national security; (7) public interest. Each has its own documentation and approval rules. Under the RFO they are <b>6.103-1 through 6.103-7</b>, and the J&amp;A content and approval rules are at <b>RFO 6.104</b>.</p>
+  <div class="box red"><div class="t">⚠ Currency check — new citations and new DoD approval tiers</div>
+    <p>The exceptions historically numbered <em>FAR 6.302-1 through -7</em> are now <b>RFO 6.103-1 through 6.103-7</b>. Who approves the J&amp;A depends on the dollar value — and <b>DoD now uses its own table</b>. Under <b>R-DFARS 206.104-71, Table 206-1</b> (in lieu of RFO 6.104-2): <b>$10M or below</b> — the contracting officer (by certification); <b>over $10M to $100M</b> — the competition advocate (not delegable); <b>over $100M to $500M</b> — the head of the contracting activity; <b>over $500M</b> — the senior procurement executive. Civilian agencies still use the RFO 6.104-2 tiers (CO approval only to $900K). Confirm the live text and any class deviation before you cite it in a J&amp;A.</p></div>
+  <div class="box green"><div class="t">Field example</div>
+    <p>A program insists only "Vendor X" can supply a flight-critical part. Before writing a sole-source J&amp;A under exception (1), you run a sources-sought notice. Two other firms respond that they can build to the same spec. Competition is back on the table — and you just saved the file from a likely protest.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>What's the default for buys over the SAT ($350K)?<span class="a">→ Full and open competition.</span></li>
+    <li>If you can't compete it, what do you need?<span class="a">→ A justification (J&amp;A) under a recognized exception.</span></li></ol></div>
+
+  <div class="sechead" id="s9"><div class="eyebrow">Section 9</div><h2 class="sec">Buying Methods by Dollar Value</h2></div>
+  <p class="lede">Dollar value (and whether the item is commercial) steers you to the right buying method. More money generally means more process — and more protection for the Government.</p>
+  <div class="stairs avoid" style="margin-top:10pt">
+    <div style="background:var(--green);width:46%">≤ $15K — Micro-purchase<small>Usually the Government Purchase Card (GPC). RFO subpart 12.4.</small></div>
+    <div style="background:var(--navy3);width:62%">$15K – $350K — Simplified procedures (SAP)<small>Purchase orders / BPAs. Commercial: RFO 12.201-1; noncommercial: RFO Part 13. Reserved for small business under the Rule of Two.</small></div>
+    <div style="background:var(--navy2);width:78%">&gt; $350K (over SAT) — Full RFO procedures<small>RFO Part 15 negotiation / source selection, or sealed bidding. Full CICA &amp; J&amp;A.</small></div>
+    <div style="background:var(--slate);width:92%">Cross-cutting — Commercial products &amp; services (RFO Part 12)<small>If commercial, streamlined commercial terms at most dollar levels — fewer clauses, market pricing.</small></div>
+  </div>
+  <p class="cap">Thresholds shown reflect the 1 Oct 2025 inflation adjustment (RFO 2.101 definitions). Always confirm the current figure in the RFO/R-DFARS (see Appendix A).</p>
+  <h3>The methods in plain terms</h3>
+  <h4>Micro-purchase (≤ $15K)</h4><p class="def">The fast lane, usually on the GPC (RFO subpart 12.4). No formal competition documentation, but spread purchases fairly among capable sources. Lower limits apply to construction ($2,000) and covered services ($2,500).</p>
+  <h4>Simplified Acquisition Procedures — SAP ($15K–$350K)</h4><p class="def">Reduced paperwork to speed routine buys and create small-business opportunity. Tools: <b>purchase orders</b> and <b>blanket purchase agreements (BPAs)</b>. Under the RFO, simplified procedures for commercial buys sit in Part 12 (12.201-1) and for noncommercial buys in Part 13. Above the micro-purchase threshold, an acquisition must be <b>set aside for small business</b> when the <b>Rule of Two</b> is met — a reasonable expectation of offers from two or more responsible small businesses at fair market prices (RFO 19.104-1). That set-aside rule applies at <em>every</em> dollar level above the MPT, not just the SAP band (Section 14).</p>
+  <h4>Commercial buying (RFO Part 12)</h4><p class="def">When the market already sells it, the Government rides commercial terms: simpler clauses, preference for firm-fixed-price, market-based pricing, fewer Government-unique requirements. Determining commerciality early can save enormous time.</p>
+  <h4>Negotiated procurement / source selection (over SAT)</h4><p class="def">The full <b>RFO Part 15</b> process for larger or more complex needs — covered in Section 12.</p>
+  <div class="box red"><div class="t">⚠ Currency check</div>
+    <p>The <b>$15K micro-purchase</b> and <b>$350K SAT</b> took effect <b>1 October 2025</b> and are the figures in the RFO 2.101 definitions. Contingency/emergency operations have <em>higher</em> thresholds. Confirm the figure that applies to your specific situation against the current RFO/R-DFARS text before you rely on it.</p></div>
+  <div class="box red"><div class="t">Common pitfall — Government Purchase Card (GPC) do's &amp; don'ts</div>
+    <p>The GPC is where many new professionals start — and where most violations happen. The big ones:</p>
+    <ul>
+      <li><b>Never split a purchase</b> to stay under the micro-purchase threshold or your single-purchase limit. Two $9K buys to dodge a $15K limit is a "split purchase" — a finding.</li>
+      <li><b>Stay within your delegated limits</b> (single-purchase and monthly) and buy only what your delegation allows.</li>
+      <li><b>No prohibited items</b> (e.g., items requiring special handling/approval); check <b>mandatory sources</b> first where required.</li>
+      <li><b>Reconcile and document</b> every transaction — keep receipts and your log current for your approving official.</li>
+    </ul></div>
+  <div class="box blue"><div class="t">How a contract is physically built — CLINs</div>
+    <p>Whatever the method, a contract is organized into <b>Contract Line Item Numbers (CLINs)</b>. Each CLIN is a discrete thing being bought — a supply, a service period, an option — with its own <b>description, quantity, price, and funding</b>. CLINs are how the contract gets priced, funded, invoiced, and (later) modified, so a clean CLIN structure up front saves you pain at every later phase.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>Micro-purchase threshold?<span class="a">→ $15,000.</span></li>
+    <li>Simplified Acquisition Threshold (SAT)?<span class="a">→ $350,000.</span></li></ol></div>
+
+  <div class="sechead" id="s10"><div class="eyebrow">Section 10</div><h2 class="sec">Contract Types &amp; Risk</h2></div>
+  <p class="lede">Contract type is really a question of <b>who carries the cost risk</b> — the contractor or the Government — and how hard the contractor is pushed to perform efficiently.</p>
+  <div class="spectrum avoid">
+    <div class="ends"><span>Contractor bears cost risk</span><span>Government bears cost risk</span></div>
+    <div class="bar"></div>
+    <div class="ticks"><div>FFP<small>well-defined</small></div><div>FP-EPA<small>&nbsp;</small></div><div>FPIF<small>incentive / shared</small></div><div>CPIF<small>&nbsp;</small></div><div>CPFF<small>high uncertainty</small></div><div>Cost<small>(e.g., research)</small></div></div>
+    <div class="goal">Goal (RFO Part 16): put risk on the party best able to manage it &amp; give the contractor the greatest incentive for efficiency.</div>
+  </div>
+  <p class="cap">The contract-type spectrum, from contractor-risk (left) to Government-risk (right). T&amp;M sits off to the side as a last resort.</p>
+  <div class="box blue"><div class="t">What you actually need to remember</div>
+    <p>Don't memorize all six abbreviations on day one. Learn the <b>two families</b> (fixed-price vs. cost-reimbursement) and <b>where the risk sits</b> on the bar. The exact incentive mechanics (FPIF/CPIF formulas, the Point of Total Assumption, etc.) are Volume 2 depth — the spectrum <em>position</em> is the load-bearing idea here.</p>
+    <p>And know the default: under the revised RFO Part 16, <b>fixed-price types are the default and preferred contract types</b> (RFO 16.102(b)). Large non-fixed-price (or FFP level-of-effort) contracts now require a written justification approved at the <em>agency-head</em> level — for DoD, at or above <b>$100M</b> (RFO 16.104, implementing E.O. 14402 of 30 April 2026).</p></div>
+  <div class="two">
+    <div><h4>Fixed-price family</h4>
+      <p><b>FFP</b> (firm-fixed-price): one price, contractor owns all cost risk. Best when the requirement is well-defined — commercial products, production.<br><b>FPIF</b>: a target cost/profit with a formula and a ceiling that rewards cost control.<br><b>FP-EPA</b>: a fixed price that can adjust to a named economic index over long periods.</p></div>
+    <div><h4>Cost-reimbursement family</h4>
+      <p>The Government pays <b>allowable, allocable, reasonable</b> costs; used when the work is too uncertain to price firmly (R&amp;D, complex development). <b>Cost</b> (a cost contract) = costs paid with no fee, for the most uncertain work; <b>CPFF</b> = fixed fee regardless of cost; <b>CPIF</b> = fee flexes with cost performance. All cost-type contracts require an approved contractor accounting system and higher-level approval.</p></div>
+  </div>
+  <h3>Time-and-Materials (T&amp;M) — the careful exception</h3>
+  <p>T&amp;M pays fixed hourly labor rates plus materials at cost, with a not-to-exceed ceiling. Use it <b>only</b> when you genuinely can't estimate the extent of the work, because it gives the contractor little incentive to control cost. It requires a <b>Determination &amp; Findings (D&amp;F)</b> and active surveillance.</p>
+  <div class="box green"><div class="t">Field example</div>
+    <p>Renewing 500 commercial software licenses? <b>FFP</b> — the price is knowable and risk is low. Developing a brand-new sensor where nobody knows the hours? A <b>cost-type</b> contract is honest about the uncertainty; forcing FFP would just buy you a padded price or a contractor that cuts corners.</p></div>
+  <div class="box red"><div class="t">Common pitfall</div>
+    <p>Reaching for T&amp;M because it's "flexible." Flexible for the contractor often means open-ended for the Government. Exhaust fixed-price and cost-type options first, and if you must use T&amp;M, write a tight ceiling and watch it closely.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>On a firm-fixed-price contract, who bears the cost risk?<span class="a">→ The contractor.</span></li>
+    <li>When is a cost-type contract appropriate?<span class="a">→ When the work is too uncertain to price firmly (e.g., R&amp;D).</span></li></ol></div>
+
+  <div class="sechead" id="s11"><div class="eyebrow">Section 11</div><h2 class="sec">Pricing: Getting to Fair &amp; Reasonable</h2></div>
+  <p class="lede">Before you obligate a dollar, you must conclude — and document — that the price is <b>fair and reasonable</b>. How you get there depends on how much competition and data you have.</p>
+  <h3>Price analysis vs. cost analysis</h3>
+  <table><thead><tr><th style="width:18%">Technique</th><th>What it looks at</th><th style="width:26%">When</th></tr></thead><tbody>
+    <tr><td class="k">Price analysis</td><td>The bottom-line price, without digging into cost elements. Best technique: compare competing offers. Sole source: compare to prior buys, similar items, catalog/market prices, or the IGCE.</td><td><b>Always</b> — at minimum.</td></tr>
+    <tr><td class="k">Cost analysis</td><td>Each cost element — labor hours &amp; rates, materials, overhead, G&amp;A (general &amp; administrative), profit/fee — evaluated individually.</td><td>When competition is weak and you need certified cost or pricing data, or to judge realism.</td></tr>
+  </tbody></table>
+  <p>Two tools you'll meet immediately: the <b>IGCE</b> (Independent Government Cost Estimate — your own pre-negotiation estimate of what the work should cost) and <b>reasonableness vs. realism</b> (reasonableness asks "is the price too <em>high</em>?"; realism, used mainly on competitive cost-type work, asks "is it unrealistically <em>low</em> such that they'll overrun?").</p>
+  <h3>Truthful (certified) cost or pricing data</h3>
+  <p>When competition can't establish a fair price and no other exception applies, the <b>Truthful Cost or Pricing Data statute (10 U.S.C. §§3701–3708</b> for DoD; 41 U.S.C. chapter 35 for civilian agencies) — still widely called <b>TINA</b>, the legacy "Truth in Negotiations Act" — requires the contractor to submit and <em>certify</em> cost or pricing data so you negotiate from the same facts. Common exceptions (RFO 15.403-2) include adequate <b>price competition</b>, <b>commercial</b> products/services, and prices set by law.</p>
+  <div class="box red"><div class="t">⚠ Currency check — DoD's certified-data threshold changed mid-2026</div>
+    <p>For <b>DoD</b>, the certified-data threshold is <b>$10M for prime contracts awarded after 30 June 2026</b> (FY26 NDAA §1804; R-DFARS 215.403-3 (10 U.S.C. 3702)) — the same date and threshold apply to subcontracts under those primes. DoD prime contracts awarded on or before that date — and their modifications — keep the old <b>$2.5M</b> trigger. <b>Civilian agencies</b> still use <b>$2.5M</b> (RFO 15.403-3). Know which figure governs your action. For a <em>modification</em>, the trigger value is the sum of the absolute values of increases and decreases — a mod adding $1M and deleting $1M is a $2M pricing action.</p></div>
+  <div class="box sand"><div class="t">Reference</div>
+    <p>Pricing support partners: <b>DCAA</b> (audits cost/pricing data), <b>DCMA</b> (field pricing, forward-pricing rates), and your local pricing shop. Bring them in at the dollar levels and situations current policy specifies.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>What's the goal of price analysis, and is it always required?<span class="a">→ A fair and reasonable price — and yes, always.</span></li>
+    <li>Mod adds $1M and deletes $1M — what value counts for the certified-data threshold?<span class="a">→ $2M (absolute value of each, not the net).</span></li></ol></div>
+
+  <div class="sechead" id="s12"><div class="eyebrow">Section 12</div><h2 class="sec">Source Selection Basics</h2></div>
+  <p class="lede">When you compete a larger requirement, <b>source selection</b> is how you pick the offeror that gives the best value. The mechanics protect fairness — and protect you in a protest.</p>
+  <h3>The best-value continuum</h3>
+  <div class="cards">
+    <div class="card"><h4>LPTA</h4><p><em>Lowest Price Technically Acceptable.</em> Award to the cheapest offer that meets clearly-defined, pass/fail requirements. Best when risk is low and "acceptable" is easy to define.</p></div>
+    <div class="card"><h4>Tradeoff</h4><p>Pay more for a better solution when it's worth it. Used when requirements are less definitive and a superior technical/past-performance offer justifies a higher price. More flexible, more work.</p></div>
+  </div>
+  <h3>Sections L and M — the heart of a solicitation</h3>
+  <p>Two parts of the solicitation must line up perfectly:</p>
+  <ul>
+    <li><b>Section L</b> tells offerors <em>how to prepare and submit</em> proposals.</li>
+    <li><b>Section M</b> tells them <em>how you'll evaluate</em> — the factors and their relative importance. <b>Cost/price and quality are mandatory factors</b> in every competitive source selection (RFO 15.104).</li>
+  </ul>
+  <p>If L asks for something M never evaluates (or vice-versa), you've created a flaw a protester will find. Traceability between L and M is everything.</p>
+  <h3>Exchanges with industry — know the difference</h3>
+  <table><thead><tr><th style="width:22%">Type</th><th>What's allowed</th></tr></thead><tbody>
+    <tr><td class="k">Clarifications</td><td>Resolve minor/clerical issues — may even address a perceived deficiency or weakness. <em>No</em> proposal revisions. Allowed any time after proposals arrive through award (RFO 15.202(a)(2)).</td></tr>
+    <tr><td class="k">Negotiations</td><td>After the competitive range is set — must address each offeror's deficiencies and significant weaknesses. Offerors <em>may</em> revise (RFO 15.204-2). Formerly called "discussions."</td></tr>
+  </tbody></table>
+  <h3>Debriefings</h3>
+  <p>Losing (and sometimes excluded) offerors can request a <b>debriefing</b> within the required window. A timely, complete, well-documented debrief explains the decision, shows the process was fair, and frequently <em>prevents</em> a protest. Treat it as risk management, not a chore.</p>
+  <div class="box red"><div class="t">Common pitfall</div>
+    <p>"Buried" weaknesses. If negotiations don't actually address a significant weakness or deficiency with an offeror in the competitive range, the award is vulnerable. Be fair and be clear with everyone still in the running.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>Section L vs. Section M?<span class="a">→ L = how to submit; M = how you'll be evaluated.</span></li>
+    <li>What is "best value"?<span class="a">→ The best mix of price and non-price factors for the Government.</span></li></ol></div>
+
+  <div class="sechead" id="s13"><div class="eyebrow">Section 13</div><h2 class="sec">Ethics &amp; Procurement Integrity</h2></div>
+  <p class="lede">Integrity isn't a poster on the wall — it's enforceable law, and it's the fastest way a new professional (or a whole office) gets into real trouble. You handle the public's money and industry's most sensitive information; guard both.</p>
+  <h3>Standards of conduct — the everyday rules</h3>
+  <p>As a public servant you follow the Government's <b>standards of ethical conduct</b> (RFO 3.101). The ones you'll meet first:</p>
+  <ul>
+    <li><b>Gifts &amp; gratuities:</b> as a general rule, don't accept gifts, meals, or favors from a contractor or anyone doing business with your office. The narrow exceptions are exactly that — narrow. When in doubt, decline and ask.</li>
+    <li><b>Impartiality &amp; financial interest:</b> don't work an action where you (or family) have a financial stake, and avoid even the <em>appearance</em> of favoritism.</li>
+    <li><b>Post-Government employment ("revolving door"):</b> talking to industry about a job while you have official dealings with them creates a serious conflict — disclose and recuse.</li>
+  </ul>
+  <h3>The Procurement Integrity Act (PIA)</h3>
+  <p>The PIA (RFO 3.104) protects two kinds of information during a competition. Disclosing — or improperly obtaining — either is a federal violation:</p>
+  <div class="cards">
+    <div class="card"><h4>Source Selection Information</h4><p>Government information that could give an offeror an unfair edge — proposed rankings, the source-selection plan, evaluation results, competitive-range lists, the Government estimate.</p></div>
+    <div class="card"><h4>Contractor Bid &amp; Proposal Information</h4><p>An offeror's proprietary pricing, costs, and proposal contents. It belongs to <em>them</em>; you safeguard it and never share it with a competitor.</p></div>
+  </div>
+  <p>The <b>CO is the conduit</b> for this information. Mark it, control distribution, and never email a proposal to the wrong party. A PIA problem can void an award, disqualify an offeror, and carry civil or criminal penalties — notify your <b>JA</b> immediately if one is even suspected.</p>
+  <h3>Organizational Conflicts of Interest (OCI)</h3>
+  <p>An <b>OCI</b> (RFO subpart 9.5) arises when a contractor's other work could bias its judgment or give it an unfair advantage. Spot it <em>early</em> — before solicitation — and <b>avoid, neutralize, or mitigate</b> it. Three classic types:</p>
+  <table><thead><tr><th style="width:30%">Type</th><th>What it looks like</th></tr></thead><tbody>
+    <tr><td class="k">Unequal access to information</td><td>A contractor has nonpublic info (e.g., a competitor's data) that gives it an edge.</td></tr>
+    <tr><td class="k">Impaired objectivity</td><td>A contractor would evaluate or assess its own work — it can't be neutral.</td></tr>
+    <tr><td class="k">Biased ground rules</td><td>A contractor helped write the requirement/spec it now wants to bid on.</td></tr>
+  </tbody></table>
+  <div class="box green"><div class="t">Field example</div>
+    <p>An offeror's proposal lands in your inbox and you notice it was accidentally cc'd to a competitor. Stop. That's a potential PIA disclosure: preserve the evidence, do <em>not</em> forward anything, and call your JA and CO today. Quietly "handling it" yourself is how a recoverable mistake becomes a voided award.</p></div>
+  <div class="box red"><div class="t">Common pitfall</div>
+    <p>Treating ethics as common sense you'll "just know." The rules on gifts, conflicts, and source-selection information are <em>specific</em> and counter-intuitive in places. Your <b>ethics counselor / JA</b> exists for exactly these questions — a 5-minute call beats an IG referral.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>What are you protecting during a source selection?<span class="a">→ Source-selection information and contractor proposal data (the PIA).</span></li>
+    <li>You spot an integrity problem — first move?<span class="a">→ Stop, and call your CO and JA (legal) immediately.</span></li></ol></div>
+
+  <div class="sechead" id="s14"><div class="eyebrow">Section 14</div><h2 class="sec">Small Business Programs</h2></div>
+  <p class="lede">Federal policy strongly favors giving small businesses a fair shot. Above the micro-purchase threshold, you must <em>consider</em> small business on essentially every action.</p>
+  <h3>The Rule of Two</h3>
+  <p>The core concept: if you reasonably expect offers from <b>at least two</b> capable small businesses at fair-market prices, you generally <b>set the acquisition aside</b> for small business (RFO 19.104-1). This is why market research matters — it's how you learn whether the Rule of Two is met. In DoD, the small business review is documented on the <b>DD Form 2579</b> (PGI 219.102).</p>
+  <h3>The NAICS code drives everything</h3>
+  <p>You assign a <b>NAICS code</b> describing the principal purpose of the buy. It determines the <b>size standard</b> — i.e., who counts as "small" for this action. Wrong code, wrong set-aside analysis.</p>
+  <table><thead><tr><th style="width:30%">Program</th><th>In one line</th></tr></thead><tbody>
+    <tr><td class="k">Small Business Set-Aside</td><td>Reserve the buy for small business when the Rule of Two is met.</td></tr>
+    <tr><td class="k">8(a) Business Development</td><td>For firms in the SBA's development program (RFO 19.108; see currency note).</td></tr>
+    <tr><td class="k">HUBZone</td><td>Firms in Historically Underutilized Business Zones; includes a price evaluation preference.</td></tr>
+    <tr><td class="k">SDVOSB</td><td>Service-Disabled Veteran-Owned Small Business.</td></tr>
+    <tr><td class="k">WOSB / EDWOSB</td><td>Women-Owned (and Economically Disadvantaged Women-Owned) Small Business.</td></tr>
+  </tbody></table>
+  <div class="box red"><div class="t">⚠ Currency check — 8(a) is in flux</div>
+    <p>The SBA's 8(a) program changed substantially in 2025–2026 (a shift to strictly race-neutral eligibility following litigation, with many participants affected). <b>Verify a firm's current 8(a) eligibility</b> and the current program rules before relying on an 8(a) award. Coordinate with your Small Business Professional and SBA.</p></div>
+  <div class="box green"><div class="t">Field example</div>
+    <p>A $200K base-services buy. Your sources-sought yields four small businesses that have done this work elsewhere. Rule of Two is clearly met → you set it aside for small business. No exotic analysis needed; the research did the work.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>State the Rule of Two.<span class="a">→ Set it aside if you expect two or more small businesses to compete at fair market prices.</span></li>
+    <li>What drives the small-business size standard?<span class="a">→ The NAICS code you assign.</span></li></ol></div>
+</section>
+
+<!-- ===================== PART IV ===================== -->
+<section class="page">
+  <div class="part"><div class="eyebrow">Part IV</div><h2>After Award</h2><p>Signing the contract is the middle of the story, not the end.</p></div>
+  <div class="sechead first" id="s15"><div class="eyebrow">Section 15</div><h2 class="sec">Contract Administration: Mods, Options, Claims &amp; Terminations</h2></div>
+  <p class="lede">Once performance starts, your job shifts to keeping the contract on track, documenting changes correctly, and resolving disputes — all without quietly creating a new, un-competed contract.</p>
+  <h3>Modifications &amp; the scope question</h3>
+  <p>Every change needs a <b>scope</b> check. The key question: <em>would the original competitors have reasonably anticipated this change at award?</em> If yes, it's likely <b>in scope</b> and you can modify. If no, it may be <b>out of scope</b> — new work that needs competition or a J&amp;A.</p>
+  <table><thead><tr><th style="width:30%">Type of mod</th><th>What it is</th></tr></thead><tbody>
+    <tr><td class="k">Unilateral</td><td>Signed only by the CO — admin changes, in-scope change orders, exercising options, funding.</td></tr>
+    <tr><td class="k">Bilateral (supplemental agreement)</td><td>Signed by both parties — preferred for any substantive change.</td></tr>
+    <tr><td class="k">Constructive change</td><td>The Government acts in a way that changes the work <em>without</em> a formal mod — and may owe an equitable adjustment. Avoid creating these by accident.</td></tr>
+    <tr><td class="k">Cardinal change</td><td>So far beyond scope it's effectively a breach. The Changes clause can't authorize it — it needs new competition or a J&amp;A.</td></tr>
+  </tbody></table>
+  <div class="box red"><div class="t">Common pitfall — scope creep</div>
+    <p>Each small change can be in scope on its own, yet the <em>cumulative</em> effect drifts the contract out of scope. When you evaluate change #20, compare the whole modified contract to the <b>original</b> award — not just to change #19.</p></div>
+  <h3>Options</h3>
+  <p>An <b>option</b> is the Government's unilateral right to buy more or extend, on terms priced and evaluated at award. Before exercising one, confirm the basics: price still fair, funds available, still the best way to meet a real need, contractor not excluded, performance satisfactory — and give written notice on time. Miss the notice date and the unilateral right may become a bilateral negotiation.</p>
+  <h3>REAs &amp; claims</h3>
+  <div class="two">
+    <p><b>Request for Equitable Adjustment (REA)</b> — an <em>informal</em> request for more money/time after a change. No formal CO decision required; <b>no interest as an REA</b> (but if it converts to a claim, interest runs from when the CO receives the <em>claim</em>); proposal-prep and legal fees may be allowable. (On DoD contracts, certification kicks in above the SAT.)</p>
+    <p><b>Claim</b> (Contract Disputes Act) — the <em>formal</em> path. In writing, with appeal rights; interest accrues; claims <b>exceeding $100,000</b> must be certified (RFO 33.205-2; clause 52.233-1). If an REA can't be resolved, it can become a claim. The CO issues a final decision with appeal rights.</p>
+  </div>
+  <p class="note"><b>Don't conflate the two certifications:</b> the <em>REA certification</em> (on DoD contracts, above the SAT — R-DFARS 243.371 and clause 252.243-7002) and the <em>CDA claim certification</em> (above $100K) are different certifications at different dollar thresholds.</p>
+  <h3>Terminations</h3>
+  <p>The distinction that trips people up is simple once you anchor on it: <b>who's at fault drives what's owed.</b> Convenience is the Government's <em>choice</em> with no contractor fault, so the contractor is made whole. Default and cause are the contractor's <em>failure</em>, so the Government owes far less — and a cure notice usually comes first.</p>
+  <h4>Termination for Convenience (T4C)</h4><p class="def">The Government's right to end a contract when it's in its best interest. The contractor is made whole for costs incurred plus reasonable profit on work done.</p>
+  <h4>Termination for Default (T4D)</h4><p class="def">A remedy of <em>last resort</em> for the contractor's failure to perform on a <em>non-commercial</em> contract. Usually preceded by a <b>cure notice</b> (a chance to fix the problem) and involves significant legal coordination.</p>
+  <h4>Termination for Cause</h4><p class="def">The <em>commercial-contract</em> equivalent of default — same idea (contractor failure), handled under commercial contract terms (52.212-4) rather than the default clause.</p>
+  <p class="tcap">The three terminations at a glance — fault drives the remedy</p>
+  <table><thead><tr><th style="width:20%">Type</th><th style="width:22%">Who's at fault?</th><th style="width:20%">Notice first</th><th>What the contractor gets</th></tr></thead><tbody>
+    <tr><td class="k">Convenience (T4C)</td><td>No one — Government's choice / best interest</td><td>Termination notice</td><td>Costs incurred <b>+ reasonable profit</b> on work done (a negotiated settlement)</td></tr>
+    <tr><td class="k">Default (T4D)<br><span style="font-weight:400;color:var(--muted)">non-commercial</span></td><td>Contractor failed to perform</td><td><b>Cure notice</b> (chance to fix) in most cases</td><td>Paid only for accepted work; may owe <b>excess reprocurement costs</b></td></tr>
+    <tr><td class="k">For Cause<br><span style="font-weight:400;color:var(--muted)">commercial</span></td><td>Contractor failed to perform</td><td>Per the commercial contract terms</td><td>Commercial remedies — like default, the contractor is <em>not</em> made whole</td></tr>
+  </tbody></table>
+  <div class="box blue"><div class="t">The administration mindset</div>
+    <p>Most administration problems are really <em>authority</em> and <em>documentation</em> problems wearing a costume. Keep direction flowing through the CO, write down every change and the reason for it, and check scope before you modify. Do that and the hard cases get a lot easier.</p></div>
+  <div class="box blue qc"><div class="t">Quick check</div><ol>
+    <li>Who watches contractor performance day-to-day?<span class="a">→ The COR — but only the CO changes the deal.</span></li>
+    <li>A change so big it goes beyond the original contract's scope is a…?<span class="a">→ Cardinal change — it needs new competition or a J&amp;A, not a modification.</span></li></ol></div>
+</section>
+
+<!-- ===================== PART V ===================== -->
+<section class="page" id="s16">
+  <div class="part"><div class="eyebrow">Part V</div><h2>Apply It — Scenario Walkthroughs</h2><p>Now think like a contracting professional. Each scenario shows the reasoning, step by step.</p></div>
+  <p class="lede">For each scenario, try to answer <em>before</em> reading the walkthrough. The goal isn't a memorized answer — it's the <b>thinking pattern</b>: identify the issue, find the framework, ask the right questions, and land on a defensible action.</p>
+
+  <div class="scn"><div class="hd"><div class="eyebrow">Scenario 1 · Buying method &amp; competition</div><h3>The "we already picked the vendor" tool buy</h3></div><div class="bd">
+    <div class="prompt">A maintenance flight needs a specialized $9,000 diagnostic tool "by next week." The requiring activity sends you a quote from a single vendor and a brand-name part number. What do you do?</div>
+    <div class="wk">▼ WORK IT OUT YOURSELF FIRST — THEN READ THE WALKTHROUGH</div>
+    <div class="steps">
+      <div class="s"><span class="num">1</span><div><b>Spot the dollar band.</b> $9,000 is at/under the micro-purchase threshold ($15K as of Oct 2025), so this can likely be a GPC micro-purchase — minimal process. That's good for the schedule.</div></div>
+      <div class="s"><span class="num">2</span><div><b>But check commerciality &amp; competition reflexively.</b> Even under the micro-purchase threshold you should distribute purchases fairly. Is this tool sold by more than one source? A two-minute web/catalog check answers it.</div></div>
+      <div class="s"><span class="num">3</span><div><b>Test the brand name.</b> Is the brand truly required (a real form-fit-function reason), or just habit? If equivalent tools exist, you don't owe this vendor the buy.</div></div>
+      <div class="s"><span class="num">4</span><div><b>Confirm the money.</b> Quick check with FM: right color (likely O&amp;M), available now, bona fide need of this year. No funds, no buy.</div></div>
+      <div class="s"><span class="num">5</span><div><b>Act and document.</b> If it's commercial, fairly priced, and the brand isn't artificially locking out competition, make the micro-purchase. Note the price reasonableness basis (e.g., "compared to two online catalog prices"). Done — fast <em>and</em> defensible.</div></div>
+    </div>
+    <div class="take"><span class="lab">TAKEAWAY</span>Low dollar value buys speed, not a free pass on judgment. A 5-minute price/competition check is what separates a clean micro-purchase from a habit no one can defend.<span class="rv">↩ Review: Sections 8 (Competition) &amp; 9 (Buying Methods)</span></div>
+  </div></div>
+
+  <div class="scn page"><div class="hd"><div class="eyebrow">Scenario 2 · CICA &amp; sole source</div><h3>"Only Vendor X can do it" — a $1.2M sole-source push</h3></div><div class="bd">
+    <div class="prompt">A program office wants to award a $1.2M production-support contract sole-source to the incumbent, citing "they're the only ones who know the system." How do you think through it?</div>
+    <div class="wk">▼ WORK IT OUT YOURSELF FIRST — THEN READ THE WALKTHROUGH</div>
+    <div class="steps">
+      <div class="s"><span class="num">1</span><div><b>Frame it under CICA.</b> $1.2M is well over the SAT, so the <em>default is full and open competition</em>. Sole-source needs a recognized exception and a J&amp;A — it's not yours to grant on the program's say-so.</div></div>
+      <div class="s"><span class="num">2</span><div><b>Demand market research, don't assume.</b> "They're the only ones" is a hypothesis. Issue a sources-sought / RFI. Often two or three firms surface — and the sole-source evaporates.</div></div>
+      <div class="s"><span class="num">3</span><div><b>If it's genuinely one source,</b> identify the right exception (here likely "only one responsible source," RFO 6.103-1) and build the J&amp;A: the facts, the market research, why no one else can do it, the fair-and-reasonable basis, and steps to enable future competition.</div></div>
+      <div class="s"><span class="num">4</span><div><b>Check the citation against current rules.</b> The legacy 6.302 exceptions are now <b>RFO 6.103-1 through -7</b> — confirm the live RFO/R-DFARS citation and any class deviation before you finalize.</div></div>
+      <div class="s"><span class="num">5</span><div><b>Route for approval &amp; pricing.</b> J&amp;A approval rises with dollar value. In DoD, a $1.2M J&amp;A sits in the <b>contracting officer's</b> tier (≤ $10M, by certification — R-DFARS 206.104-71, Table 206-1), so the quality of the file rests squarely on you; check whether your DAF/local policy sets a higher review. Loop in JA and your pricing support early. Without competition you'll lean on cost analysis to prove the price is fair.</div></div>
+    </div>
+    <div class="take"><span class="lab">TAKEAWAY</span>Sole-source is an <em>exception you justify</em>, not a default you accept. Market research is both your reality check and your protest insurance.<span class="rv">↩ Review: Section 8 (Competition &amp; CICA) &amp; Section 7 (Market Research)</span></div>
+  </div></div>
+
+  <div class="scn page"><div class="hd"><div class="eyebrow">Scenario 3 · Authority</div><h3>The COR who said "go ahead"</h3></div><div class="bd">
+    <div class="prompt">A contractor emails you an invoice for extra work, saying "your COR told us to start, so we did." The work isn't on the contract. Now what?</div>
+    <div class="wk">▼ WORK IT OUT YOURSELF FIRST — THEN READ THE WALKTHROUGH</div>
+    <div class="steps">
+      <div class="s"><span class="num">1</span><div><b>Name the problem.</b> A COR can't direct new work or change price/scope. This is an <b>unauthorized commitment</b> — the Government isn't bound, but the contractor performed in good faith.</div></div>
+      <div class="s"><span class="num">2</span><div><b>Stop the bleeding.</b> Make sure no one keeps directing un-contracted work. Notify the contractor that only the CO can authorize work going forward.</div></div>
+      <div class="s"><span class="num">3</span><div><b>Investigate.</b> Get the facts: what was said, by whom, when; proof the Government received a benefit; MFRs from the COR and the contractor.</div></div>
+      <div class="s"><span class="num">4</span><div><b>Run the ratification test (RFO 1.405(c)).</b> Would it have been proper if a CO did it? Benefit received? Price fair and reasonable? Funds available then and now? If all yes, prepare the ratification package for the official with authority, with JA concurrence.</div></div>
+      <div class="s"><span class="num">5</span><div><b>Prevent the next one.</b> Re-brief the COR and PM on their limits, hold a kickoff, and send the contractor a letter naming exactly who may give direction.</div></div>
+    </div>
+    <div class="take"><span class="lab">TAKEAWAY</span>Authority is binary: either the person could bind the Government or they couldn't. Ratification fixes the honest mistake — but the real win is preventing it with clear channels.<span class="rv">↩ Review: Section 3 (Authority &amp; UACs) &amp; Section 2 (Roles)</span></div>
+  </div></div>
+
+  <div class="scn page"><div class="hd"><div class="eyebrow">Scenario 4 · Contract type</div><h3>The fuzzy-scope software effort</h3></div><div class="bd">
+    <div class="prompt">A program wants new software built, but the requirements are still evolving and nobody can confidently estimate the hours. They ask for firm-fixed-price "to be safe." Is that the right call?</div>
+    <div class="wk">▼ WORK IT OUT YOURSELF FIRST — THEN READ THE WALKTHROUGH</div>
+    <div class="steps">
+      <div class="s"><span class="num">1</span><div><b>Diagnose the risk.</b> The defining feature here is <em>uncertainty</em>. Contract type is about who carries that cost risk.</div></div>
+      <div class="s"><span class="num">2</span><div><b>See what FFP would really do.</b> Force FFP onto an unknowable scope and you'll either get a heavily padded price (you pay for risk that may not happen) or a contractor who cuts corners when reality bites. "Safe" is an illusion here.</div></div>
+      <div class="s"><span class="num">3</span><div><b>Match type to maturity.</b> Early, uncertain development points toward a <b>cost-type</b> contract (e.g., CPFF or CPIF) that's honest about the unknowns — provided the contractor has an adequate accounting system and you get the required approvals (fixed-price is now the stated default, RFO 16.102(b), and a DoD cost-type award of $100M or more needs an E.O. 14402 justification under RFO 16.104).</div></div>
+      <div class="s"><span class="num">4</span><div><b>Resist T&amp;M as the easy button.</b> Only if you truly can't estimate extent, with a tight ceiling, a D&amp;F, and a surveillance plan.</div></div>
+      <div class="s"><span class="num">5</span><div><b>Plan to migrate risk.</b> As the design firms up, future phases can move toward fixed-price/incentive types. Type isn't forever — it should track the maturity of the work.</div></div>
+    </div>
+    <div class="take"><span class="lab">TAKEAWAY</span>The "safe" contract type is the one that puts cost risk on whoever can actually control it. Honesty about uncertainty up front beats a comfortable label that breaks under pressure.<span class="rv">↩ Review: Section 10 (Contract Types) &amp; Section 11 (Pricing)</span></div>
+  </div></div>
+
+  <div class="scn page"><div class="hd"><div class="eyebrow">Scenario 5 · Scope</div><h3>"It's just one more mod"</h3></div><div class="bd">
+    <div class="prompt">A services contract has had several small add-ons. The program wants one more — adding a new task that wasn't in the original PWS. It's only 4% more money. In scope?</div>
+    <div class="wk">▼ WORK IT OUT YOURSELF FIRST — THEN READ THE WALKTHROUGH</div>
+    <div class="steps">
+      <div class="s"><span class="num">1</span><div><b>Ask the scope question.</b> Would the original competitors have reasonably anticipated this task at award? A genuinely <em>new</em> task they couldn't have seen is a red flag.</div></div>
+      <div class="s"><span class="num">2</span><div><b>Look cumulatively, not incrementally.</b> 4% sounds tiny — but compare the <em>whole</em> modified contract to the <b>original</b> award. Several "small" add-ons can collectively push you out of scope.</div></div>
+      <div class="s"><span class="num">3</span><div><b>Check all four lenses.</b> Scope of competition, contract type, period of performance, and cost/price — together, not just dollars.</div></div>
+      <div class="s"><span class="num">4</span><div><b>If out of scope,</b> it's new work: compete it, or justify a sole-source with a J&amp;A and the right exception. Don't disguise new work as a modification.</div></div>
+      <div class="s"><span class="num">5</span><div><b>Document the determination.</b> Whether in or out of scope, write the analysis down. A clean scope D&amp;F is what protects you if it's ever questioned.</div></div>
+    </div>
+    <div class="take"><span class="lab">TAKEAWAY</span>Scope creep is the quiet way a clean contract becomes an improper sole-source. Always measure the cumulative change against the original deal.<span class="rv">↩ Review: Section 15 (Mods &amp; Scope) &amp; Section 8 (Competition)</span></div>
+  </div></div>
+</section>
+
+<!-- ===================== APPENDICES ===================== -->
+<section class="page">
+  <div class="part"><div class="eyebrow">Reference shelf</div><h2>Appendices</h2><p>Quick-reference tools — verify every number before you rely on it.</p></div>
+  <div class="sechead first" id="aA"><div class="eyebrow">Appendix A</div><h2 class="sec">Thresholds Quick-Reference</h2></div>
+  <div class="box red"><div class="t">⚠ Read before using this table</div>
+    <p>These reflect the <b>1 Oct 2025</b> inflation adjustment and the FY2026 NDAA as implemented in the RFO and R-DFARS, <b>current as of October 2026</b>. Thresholds change, and contingency/emergency operations use higher figures. <b>Confirm the live number in the RFO/R-DFARS (or the Federal Register)</b> before citing it in an action.</p></div>
+  <table><thead><tr><th style="width:38%">Threshold</th><th>Value (as of October 2026)</th></tr></thead><tbody>
+    <tr><td>Micro-purchase threshold (general)</td><td><b>$15,000</b> (RFO 2.101)</td></tr>
+    <tr><td>Simplified Acquisition Threshold (SAT)</td><td><b>$350,000</b> (RFO 2.101)</td></tr>
+    <tr><td>Certified (truthful) cost or pricing data</td><td><b>DoD: $10M</b> for contracts awarded after 30 Jun 2026 (FY26 NDAA §1804; R-DFARS 215.403-3 (10 U.S.C. 3702)); earlier contracts &amp; their mods keep <b>$2.5M</b>.<br><b>Civilian agencies: $2.5M</b> (RFO 15.403-3)</td></tr>
+    <tr><td>J&amp;A approval — contracting officer limit</td><td><b>DoD: $10M</b> (R-DFARS 206.104-71, Table 206-1); civilian: $900K (RFO 6.104-2)</td></tr>
+    <tr><td>Subcontracting plan trigger (large prime)</td><td><b>$900K</b> ($2M construction) (RFO 19.109)</td></tr>
+    <tr><td>E.O. 14402 justification for non-fixed-price contracts</td><td><b>DoD: $100M</b> (RFO 16.104)</td></tr>
+    <tr><td>Cost Accounting Standards (CAS)</td><td>Applies at <b>$35M</b> (41 U.S.C. 1502(b)(1)(B); DoD: R-DFARS 230.201-70(b)); <b>DoD-only units:</b> full coverage &amp; Disclosure Statement at <b>$100M</b> (R-DFARS 230.201-70(a)) — FY26 NDAA §1806</td></tr>
+    <tr><td>CDA claim certification</td><td>Claims exceeding <b>$100,000</b> (RFO 33.205-2)</td></tr>
+    <tr><td>Commercial &amp; emergency/contingency thresholds</td><td>Higher than standard — look up the specific case</td></tr>
+  </tbody></table>
+  <p class="note">Only the most common foundations are listed. The FY2026 NDAA (§1806) also raised Cost Accounting Standards thresholds: CAS applies to contracts of <b>$35M</b> or more (41 U.S.C. 1502(b)(1)(B) as amended; for DoD, R-DFARS 230.201-70(b)), and the old $7.5M trigger-contract concept is gone. For DoD-only business units, full CAS coverage and the Disclosure Statement start at <b>$100M</b> (R-DFARS 230.201-70(a), 230.101); units with mixed DoD and civilian work stay under FAR 30.201(b). Several socioeconomic sole-source caps are also moving. Treat any number you haven't verified against the current RFO/R-DFARS as "approximate."</p>
+
+  <div class="sechead" id="aB"><div class="eyebrow">Appendix B</div><h2 class="sec">Acronym Glossary</h2></div>
+  <p class="note">All acronyms used in this guide are defined below.</p>
+  <div class="gloss">
+    <div><b>ACO / PCO</b>Administrative / Procuring Contracting Officer</div>
+    <div><b>ADA</b>Anti-Deficiency Act</div>
+    <div><b>BPA</b>Blanket Purchase Agreement</div>
+    <div><b>CAS</b>Cost Accounting Standards</div>
+    <div><b>CDA</b>Contract Disputes Act</div>
+    <div><b>CICA</b>Competition in Contracting Act</div>
+    <div><b>CLIN</b>Contract Line Item Number</div>
+    <div><b>CO / COR</b>Contracting Officer / CO's Representative</div>
+    <div><b>Cost contract</b>Costs reimbursed, no fee (the simplest cost-reimbursement type)</div>
+    <div><b>CPFF / CPIF</b>Cost Plus Fixed / Incentive Fee</div>
+    <div><b>D&amp;F</b>Determination &amp; Findings</div>
+    <div><b>DAFI</b>Department of the Air Force Instruction</div>
+    <div><b>DCAA / DCMA</b>Defense Contract Audit / Management Agency</div>
+    <div><b>DoW</b>Department of War (secondary name for DoD; used on the FMR)</div>
+    <div><b>FAR / DFARS</b><em>Legacy</em> Federal / Defense FAR — being retired; use the RFO / R-DFARS</div>
+    <div><b>FFP / FPIF / FP-EPA</b>Firm-Fixed-Price / FP-Incentive (Firm) / FFP w/ Economic Price Adjustment</div>
+    <div><b>FM</b>Financial Management / Comptroller</div>
+    <div><b>FMR</b>Financial Management Regulation (DoW 7000.14-R)</div>
+    <div><b>FPDS</b>Federal Procurement Data System</div>
+    <div><b>GPC</b>Government Purchase Card</div>
+    <div><b>GSA</b>General Services Administration</div>
+    <div><b>HCA</b>Head of the Contracting Activity</div>
+    <div><b>IGCE</b>Independent Government Cost Estimate</div>
+    <div><b>J&amp;A</b>Justification &amp; Approval</div>
+    <div><b>JA</b>Judge Advocate (legal)</div>
+    <div><b>LPTA</b>Lowest Price Technically Acceptable</div>
+    <div><b>MFR</b>Memorandum for Record</div>
+    <div><b>MPT</b>Micro-Purchase Threshold</div>
+    <div><b>NAICS</b>North American Industry Classification System</div>
+    <div><b>NDAA</b>National Defense Authorization Act</div>
+    <div><b>O&amp;M / RDT&amp;E</b>Operations &amp; Maintenance / Research, Dev, Test &amp; Evaluation (appropriations)</div>
+    <div><b>OCI</b>Organizational Conflict of Interest</div>
+    <div><b>PGI</b>Procedures, Guidance &amp; Information (DFARS companion)</div>
+    <div><b>PIA</b>Procurement Integrity Act</div>
+    <div><b>PWS / SOW / SOO</b>Performance Work Statement / Statement of Work / Objectives</div>
+    <div><b>R-DFARS</b>Revised DFARS — DoD supplement under the overhaul (replaces legacy DFARS)</div>
+    <div><b>REA</b>Request for Equitable Adjustment</div>
+    <div><b>RFI / RFP / RFQ</b>Request for Information / Proposals / Quotations</div>
+    <div><b>RFO</b>Revolutionary FAR Overhaul — the overhauled, governing FAR</div>
+    <div><b>SAM</b>System for Award Management (SAM.gov)</div>
+    <div><b>SAP / SAT</b>Simplified Acquisition Procedures / Threshold</div>
+    <div><b>SBA</b>Small Business Administration</div>
+    <div><b>SDVOSB / WOSB</b>Service-Disabled Veteran-Owned / Women-Owned Small Business</div>
+    <div><b>SPE</b>Senior Procurement Executive</div>
+    <div><b>SSDD</b>Source Selection Decision Document</div>
+    <div><b>T&amp;M · T4C / T4D</b>Time &amp; Materials · Termination for Convenience / Default</div>
+    <div><b>TINA</b>Truthful Cost or Pricing Data statute (legacy "Truth in Negotiations Act")</div>
+    <div><b>UAC</b>Unauthorized Commitment</div>
+  </div>
+
+  <div class="sechead" id="aC"><div class="eyebrow">Appendix C</div><h2 class="sec">Sources &amp; Where to Verify</h2></div>
+  <p>This guide references the <b>RFO, R-DFARS, and current R-DFARS class deviations</b> — not the legacy FAR/DFARS/DAFFARS, which are being retired. Everything was checked against the official text as of <b>October 2026</b>. The authoritative DAF resource is the <b>DAF Contracting Compass</b>, but it is CAC-restricted, so it is not reproduced here. Use these to confirm anything before you act:</p>
+  <table><thead><tr><th style="width:34%">Source</th><th>What it gives you</th></tr></thead><tbody>
+    <tr><td class="k">RFO — Acquisition.gov/far-overhaul</td><td>The overhauled, governing FAR: model deviation text, part summaries, and status</td></tr>
+    <tr><td class="k">R-DFARS &amp; class deviations — DoD DARS / Defense Pricing &amp; Contracting</td><td>The revised DoD supplement (and DFARS PGI) and which deviations your DoD action must follow now</td></tr>
+    <tr><td class="k">Federal Register</td><td>Final &amp; proposed RFO/R-DFARS rules, effective dates, threshold adjustments</td></tr>
+    <tr><td class="k">DAF Contracting Compass (CAC-restricted)</td><td>Authoritative DAF-specific procedures — confirm here; not reproduced in this guide</td></tr>
+    <tr><td class="k">DAFI 63-138 &amp; 63-101/20-101 (public)</td><td>Air Force Acquisition of Services &amp; Integrated Life Cycle Management</td></tr>
+    <tr><td class="k">DoW FMR (DoW 7000.14-R, Sept 2026 ed.)</td><td>DoD financial management policy — appropriations, availability, ADA reporting (cite by volume &amp; section)</td></tr>
+    <tr><td class="k">Annual NDAA (Public Law)</td><td>Statutory changes (e.g., FY2026 NDAA certified-data and CAS thresholds)</td></tr>
+    <tr><td class="k">GAO "Red Book"</td><td>Principles of Federal Appropriations Law (fiscal law)</td></tr>
+    <tr><td class="k">Your JA, FM, pricing &amp; small-business offices</td><td>The authoritative human check on any hard call</td></tr>
+  </tbody></table>
+
+  <div class="sechead" id="aD"><div class="eyebrow">Appendix D</div><h2 class="sec">Systems &amp; Tools You'll Actually Use</h2></div>
+  <p>Concepts are taught above; these are the systems you'll log into in your first weeks. Names and access change — confirm your office's current toolset and get your accounts set up early.</p>
+  <table><thead><tr><th style="width:30%">System</th><th>What you do in it</th></tr></thead><tbody>
+    <tr><td class="k">SAM.gov</td><td>Vendor registration, exclusions (debarment) checks, and posting/searching opportunities</td></tr>
+    <tr><td class="k">Contract writing system</td><td>Build, route, and award the contract document (your office's system, e.g., a DoD CWS)</td></tr>
+    <tr><td class="k">PIEE (incl. WAWF)</td><td>Procurement Integrated Enterprise Environment — invoicing/acceptance (WAWF), COR appointments (JAM — Joint Appointment Module), and performance reporting (CPARS — Contractor Performance Assessment Reporting System)</td></tr>
+    <tr><td class="k">FPDS</td><td>Federal Procurement Data System — reporting contract actions</td></tr>
+    <tr><td class="k">GSA eBuy / GSA Advantage</td><td>Searching schedules and issuing RFQs/orders against them</td></tr>
+    <tr><td class="k">Acquisition.gov</td><td>The RFO model deviation text, R-DFARS links, and reference material</td></tr>
+  </tbody></table>
+  <p class="note">Access is usually role-based and takes time to provision — ask your supervisor which accounts you need on day one.</p>
+
+  <div class="sechead" id="aE"><div class="eyebrow">Appendix E</div><h2 class="sec">Contract-File Checklist</h2></div>
+  <p>"If it isn't in the file, it didn't happen." The file tells the story of <em>why</em> you made each decision. Exact contents are tailored to dollar value and type — this is a typical skeleton by phase. Confirm your office's required index.</p>
+  <table><thead><tr><th style="width:20%">Phase</th><th>Typical documents</th></tr></thead><tbody>
+    <tr><td class="k">Planning</td><td>Requirement (PWS/SOW/SOO or spec); acquisition strategy/plan; market research report; IGCE; funding document; J&amp;A or D&amp;F if applicable</td></tr>
+    <tr><td class="k">Solicitation</td><td>Synopsis/posting; the solicitation (incl. Sections L &amp; M); clause matrix; questions &amp; answers/amendments</td></tr>
+    <tr><td class="k">Evaluation</td><td>Abstract of offers; price/cost analysis; technical/past-performance evaluation; competitive-range &amp; exchanges record; source-selection decision (SSDD)</td></tr>
+    <tr><td class="k">Award</td><td>Responsibility determination; the signed contract; funding/obligation document; debriefing records</td></tr>
+    <tr><td class="k">Administration</td><td>COR appointment &amp; surveillance; modifications &amp; scope determinations; invoices/acceptance; CPARS</td></tr>
+    <tr><td class="k">Close-out</td><td>Final reconciliation; release of claims; de-obligation; closeout statement</td></tr>
+  </tbody></table>
+
+  <div class="sechead" id="aF"><div class="eyebrow">Appendix F</div><h2 class="sec">Who to Ask — and Where to Look It Up</h2></div>
+  <p class="lede">Nobody expects a new specialist to know it all. They expect you to know <em>who to pull in</em> and <em>where the rule actually lives.</em> Keep this page handy — it turns "I don't know" into "I know who to ask."</p>
+  <p class="tcap">Who to ask — your teammates and what they help with</p>
+  <table><thead><tr><th style="width:30%">Who</th><th>Pull them in for…</th></tr></thead><tbody>
+    <tr><td class="k">Your CO</td><td>Anything you're unsure of — they hold the warrant and the final call. Ask early, not after.</td></tr>
+    <tr><td class="k">Judge Advocate (JA / legal)</td><td>Anything novel, sole-source, integrity/conflict, a protest, a claim, or a termination.</td></tr>
+    <tr><td class="k">Financial Management (FM)</td><td>Is it funded? Right color of money? Right fiscal year? FM certifies funds.</td></tr>
+    <tr><td class="k">Pricing / DCMA / DCAA</td><td>Cost and price analysis, audits, and contractor rates on bigger or cost-type buys.</td></tr>
+    <tr><td class="k">Small Business Specialist</td><td>Rule of Two, set-asides, NAICS, the DD 2579, and the SBA programs.</td></tr>
+    <tr><td class="k">Program Manager / requiring activity</td><td>The requirement, the IGCE basis, and the technical evaluation. They own the <em>what</em>; you own the <em>how</em>.</td></tr>
+    <tr><td class="k">COR</td><td>Eyes on performance after award — but remember, only the CO changes the deal.</td></tr>
+    <tr><td class="k">Policy / Competition Advocate</td><td>J&amp;A coordination and approval (DoD: over $10M to $100M), deviations, and clearance/review at higher dollar values.</td></tr>
+    <tr><td class="k">GSA</td><td>Schedules and supply sources you can order from instead of building a contract from scratch.</td></tr>
+  </tbody></table>
+  <p class="tcap">Where to look it up — the part of the RFO / R-DFARS that governs (confirm the live text at acquisition.gov/far-overhaul)</p>
+  <table><thead><tr><th style="width:44%">When the question is about…</th><th>Start in RFO / R-DFARS Part</th></tr></thead><tbody>
+    <tr><td>Authority, warrants, unauthorized commitments</td><td>Part 1 (warrants 1.403; ratification 1.405)</td></tr>
+    <tr><td>Procurement integrity / ethics</td><td>Part 3 (3.104)</td></tr>
+    <tr><td>Conflicts of interest (OCI) &amp; responsibility</td><td>Part 9 (OCI 9.5)</td></tr>
+    <tr><td>Competition &amp; justifications (J&amp;A)</td><td>Part 6 (exceptions 6.103-1…-7; J&amp;A 6.104; DoD approval R-DFARS 206.104-71)</td></tr>
+    <tr><td>Required (mandatory) sources</td><td>Part 8</td></tr>
+    <tr><td>Market research</td><td>Part 10</td></tr>
+    <tr><td>Commercial products &amp; services</td><td>Part 12</td></tr>
+    <tr><td>Simplified acquisition (small buys)</td><td>Micro-purchases 12.4; commercial SAP 12.201-1; noncommercial SAP Part 13</td></tr>
+    <tr><td>Pricing &amp; certified cost or pricing data</td><td>Part 15 (pricing 15.4; threshold 15.403-3; DoD R-DFARS 215.403-3)</td></tr>
+    <tr><td>Source selection</td><td>Part 15 (15.2)</td></tr>
+    <tr><td>Contract types &amp; IDIQ ordering</td><td>Part 16</td></tr>
+    <tr><td>Options &amp; interagency buys</td><td>Part 17</td></tr>
+    <tr><td>Small business programs</td><td>Part 19 (set-asides 19.104; 8(a) 19.108)</td></tr>
+    <tr><td>Fiscal law (color of money, TPA)</td><td>Appropriations law (31 U.S.C.) + GAO Red Book + DoW FMR</td></tr>
+    <tr><td>Modifications &amp; scope</td><td>Part 43</td></tr>
+    <tr><td>Protests, disputes &amp; claims</td><td>Part 33</td></tr>
+    <tr><td>Government property</td><td>Part 45</td></tr>
+    <tr><td>Terminations</td><td>Part 49 (commercial: 52.212-4)</td></tr>
+    <tr><td>Clearance / independent review</td><td>DAF policy (the DAF Contracting Compass — CAC)</td></tr>
+  </tbody></table>
+  <div class="box sand"><div class="t">Remember the framing</div>
+    <p>FAR part <em>numbers</em> are still a handy shorthand, but the governing text now lives in the <b>RFO and R-DFARS</b> — and the overhaul renumbered some sub-sections (R-DFARS renumbered many more in mid-2026). When it matters, confirm the live text at <b>acquisition.gov/far-overhaul</b> (and search it fast at <b>acqvault.com</b>). Never quote a threshold or citation from memory.</p></div>
+
+  <div class="box blue" style="margin-top:18pt"><div class="t">The next volume — AcqVault Field Guide, Vol. 2</div>
+    <p>This Volume 1 builds your foundation. <b>Volume 2 — The Unlimited Warrant Board</b> goes deeper: verbatim standards, branching board questions, and step-by-step coaching for the unlimited contracting-officer warrant board.</p></div>
+  <p class="end">— End of Volume 1 · AcqVault Field Guide —<br>Training aid only. Not legal advice. Verify all references against current official sources before acting.</p>
+</section>
+</body>
+</html>

@@ -32,12 +32,18 @@
     {
      "src": "rfo",
      "sec": "15.403-2",
-     "quote": "Certified cost or pricing data must not be obtained for acquisitions at or below the simplified acquisition threshold."
+     "quote": "Certified cost or pricing data must not be obtained for acquisitions at or below the simplified acquisition threshold.",
+     "dod": "n/a"
     },
     {
      "src": "rfo",
      "sec": "15.403-3",
-     "quote": "Unless prohibited because an exception at 15.403-2 applies, the HCA without power of delegation, may authorize the contracting officer to obtain certified cost or pricing data for pricing actions below the pertinent threshold in paragraph (a) of this subsection, provided the action exceeds the simplified acquisition threshold."
+     "quote": "Unless prohibited because an exception at 15.403-2 applies, the HCA without power of delegation, may authorize the contracting officer to obtain certified cost or pricing data for pricing actions below the pertinent threshold in paragraph (a) of this subsection, provided the action exceeds the simplified acquisition threshold.",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "215.403-3",
+      "quote": "In lieu of the requirements of FAR 15.403-3(a), obtain certified cost or pricing data when a prime contract is expected to exceed $10 million and is awarded after June 30, 2026"
+     }
     }
    ]
   },
@@ -94,7 +100,8 @@
     {
      "src": "rfo",
      "sec": "15.202",
-     "quote": "Agencies must evaluate each competitive proposal based solely on the factors and subfactors in the RFP."
+     "quote": "Agencies must evaluate each competitive proposal based solely on the factors and subfactors in the RFP.",
+     "dod": "n/a"
     },
     {
      "src": "rfo",
@@ -151,7 +158,12 @@
     {
      "src": "rfo",
      "sec": "15.201",
-     "quote": "A contracting officer is designated as the source selection authority (SSA), unless the agency head appoints another individual for a particular acquisition or group of acquisitions."
+     "quote": "A contracting officer is designated as the source selection authority (SSA), unless the agency head appoints another individual for a particular acquisition or group of acquisitions.",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "215.201",
+      "quote": "the source selection authority must approve a source selection plan before the solicitation is issued"
+     }
     }
    ]
   },
@@ -243,7 +255,7 @@
     {
      "q": "So what does DoD require when only one offer comes in?",
      "h": "There is a specific DoD rule about what you do next.",
-     "d": "R-DFARS 215.202-71 governs — the general expectation is to resolicit for an additional period, with a path involving price reasonableness determination or certified data, a defined set of exceptions, and an HCA waiver. A candidate who says 'one offer, so I just do a price analysis' has skipped the rule that applies to them."
+     "d": "R-DFARS 215.202-71 governs — if the solicitation allowed fewer than 30 days, consult the requiring activity and resolicit for at least 30 more; otherwise establish a fair and reasonable price through cost or price analysis, requiring certified data above the threshold unless a 15.403-2(b)(2)–(5) exception applies, with a defined set of exceptions to the rule and an HCA waiver. A candidate who says 'one offer, so I just do a price analysis' has skipped the rule that applies to them."
     },
     {
      "q": "Which exceptions to certified cost or pricing data are still open to you?",
@@ -255,7 +267,12 @@
     {
      "src": "rfo",
      "sec": "15.403-2",
-     "quote": "(ii) For agencies other than DoD, NASA, and the Coast Guard, a price is also based on adequate price competition when (A) There was a reasonable expectation, based on market research or other assessment, that two or more responsible offerors, competing independently, would submit priced offers in response to the request for proposal’s (RFP) expressed requirement, even though only one offer is received from a responsible offeror"
+     "quote": "(ii) For agencies other than DoD, NASA, and the Coast Guard, a price is also based on adequate price competition when (A) There was a reasonable expectation, based on market research or other assessment, that two or more responsible offerors, competing independently, would submit priced offers in response to the request for proposal’s (RFP) expressed requirement, even though only one offer is received from a responsible offeror",
+     "dod": {
+      "src": "r-dfars",
+      "sec": "215.202-71",
+      "quote": "complies with the statutory requirement for certified cost or pricing data"
+     }
     }
    ]
   },
@@ -281,7 +298,8 @@
     {
      "src": "rfo",
      "sec": "15.104",
-     "quote": "Contracting officers may choose not to include price or cost as an evaluation factor for award when an RFP"
+     "quote": "Contracting officers may choose not to include price or cost as an evaluation factor for award when an RFP",
+     "dod": "n/a"
     }
    ]
   }

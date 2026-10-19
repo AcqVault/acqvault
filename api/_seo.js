@@ -108,7 +108,7 @@ const SOURCES = {
   'category-management': { name: 'Category Management Buying Guide', short: 'Category Management',
     desc: 'Federal category management buying guidance.',
     metaDesc: "Full text of the federal Category Management Buying Guide \u2014 the spend-category guidance and the vehicles it points to. Free, searchable, no account." },
-  'fmr':                 { name: 'DoW Financial Management Regulation', short: 'DoD FMR',
+  'fmr':                 { name: 'DoW Financial Management Regulation', short: 'DoW FMR',
     desc: 'DoW 7000.14-R Financial Management Regulation (September 2026 policy edition) — the full text of all 16 volumes (budget, accounting, disbursing, pay, contract payment, and more), by volume and section (chapters in Volumes 7A and 7B).',
     metaDesc: "Full text of the DoW Financial Management Regulation, 7000.14-R (September 2026 policy edition) \u2014 all 16 volumes covering budget, accounting, disbursing, pay and contract payment." },
   'pgi':                 { name: 'R-DFARS Procedures, Guidance, and Information', short: 'R-DFARS PGI',
@@ -1525,7 +1525,7 @@ function renderLibraryPage() {
   const canonical = `${SITE}/library`;
   const title = `AcqVault Library — field guides, templates & source PDFs | AcqVault`;
   const totalItems = cats.reduce((n, c) => n + c.items.length, 0);
-  const description = esc(`Free downloadable AcqVault field guides and templates for the DoD acquisition community, plus the full text of every indexed source (RFO, R-DFARS, the R-DFARS PGI, FAR Companion, Category Management, DAFI 63-138, the DoD FMR, and the DoD Source Selection Procedures). ${totalItems} resources, no account required.`);
+  const description = esc(`Free downloadable AcqVault field guides and templates for the DoD acquisition community, plus the full text of every indexed source (RFO, R-DFARS, the R-DFARS PGI, FAR Companion, Category Management, DAFI 63-138, the DoW FMR, and the DoD Source Selection Procedures). ${totalItems} resources, no account required.`);
 
   // engraved brass vault emblem (line-art, no glow) — matches the homepage covers
   const EMBLEM = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#cdb277" stroke-width="1.6"><circle cx="47" cy="50" r="33"/><circle cx="47" cy="50" r="26"/><circle cx="47" cy="50" r="9"/></g><g stroke="#cdb277" stroke-width="3" stroke-linecap="round"><line x1="47" y1="24" x2="47" y2="37"/><line x1="47" y1="76" x2="47" y2="63"/><line x1="21" y1="50" x2="34" y2="50"/><line x1="73" y1="50" x2="60" y2="50"/></g><g stroke="#cdb277" stroke-width="2.6" stroke-linecap="round"><line x1="28" y1="31" x2="37" y2="40"/><line x1="66" y1="31" x2="57" y2="40"/><line x1="28" y1="69" x2="37" y2="60"/><line x1="66" y1="69" x2="57" y2="60"/></g><circle cx="47" cy="50" r="3.4" fill="#cdb277"/></svg>';
@@ -1687,7 +1687,7 @@ function renderChangesPage() {
 </details>`;
     }).join('\n');
 
-    const OTHER_LABELS = { r_dfars: 'R-DFARS', far_companion: 'FAR Companion', category_management: 'Category Mgmt', fmr: 'DoD FMR', afi_63_138: 'DAFI 63-138', ssp: 'DoD SSP' };
+    const OTHER_LABELS = { r_dfars: 'R-DFARS', far_companion: 'FAR Companion', category_management: 'Category Mgmt', fmr: 'DoW FMR', afi_63_138: 'DAFI 63-138', ssp: 'DoD SSP' };
     const otherSources = Object.keys(OTHER_LABELS)
       .filter(k => run[k] != null)
       .map(k => {

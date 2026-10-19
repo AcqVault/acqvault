@@ -46,7 +46,7 @@
   {
    "fact": "$480K quote",
    "verdict": "governs",
-   "why": "At $480K the J&A sits in the lowest band of RFO 6.104-2(a) — $900,000 or below, approved by the contracting officer through the certification in the justification's own content. There is no COCO rung on this ladder; don't invent one."
+   "why": "At $480K the J&A sits in DoD's lowest band (R-DFARS 206.104-71 Table 206-1, $10 million or below, the contracting officer's certification) — but because three prior J&As promised barrier removal that never happened, PGI 206.104-71(b) moves approval one level above the previous approver. There is no COCO rung on this ladder; don't invent one."
   }
  ],
  "0a1e6ab4c146": [
@@ -873,7 +873,7 @@
   {
    "fact": "“Skip the whole certified data exercise”",
    "verdict": "bait",
-   "why": "Everyone loves skipping it. RFO 15.403-2's CLAWM — commercial, law, adequate competition, waiver, commercial mods — is the whole list, and contract type is nowhere on it."
+   "why": "Everyone loves skipping it. RFO 15.403-2's CLAWM — commercial, law, adequate competition, waiver, commercial mods — plus DoD's R-DFARS 215.403-71 carve-outs (indirect offsets, nontraditional defense contractors) is the whole list, and contract type is nowhere on it."
   },
   {
    "fact": "$14M sole-source development action",
@@ -1048,6 +1048,11 @@
    "fact": "Three weeks after agreement, before the mod is signed",
    "verdict": "governs",
    "why": "Timing is the whole lesson. Caught today it’s a correction; caught six months after award it’s defective pricing — price reduction plus interest, with Legal."
+  },
+  {
+   "fact": "The prime contract was awarded in August 2026; this mod is $16M",
+   "verdict": "governs",
+   "why": "Certified data on a modification follows the prime’s threshold. A prime awarded after 30 June 2026 carries DoD’s $10M trigger, and $16M clears it — so certification is required, and the sweep-and-certify machinery applies in full."
   }
  ],
  "c9d40313f63b": [
@@ -1233,7 +1238,7 @@
   {
    "fact": "$1.4M direct task order",
    "verdict": "governs",
-   "why": "The dollar sets the rung: above $900K to $20M, the Competition Advocate approves. Post the redacted justification within 14 days of the order — 30 under urgency."
+   "why": "The dollar sets the rung: for DoD, $10M or below, the contracting officer's certification is the approval (R-DFARS 216.507-6(e), Table 206-1). Post the redacted justification within 14 days of the order — 30 under urgency."
   }
  ],
  "e2a8b964dfec": [
@@ -1480,7 +1485,7 @@
   {
    "fact": "A 9-month-old UCA being definitized",
    "verdict": "governs",
-   "why": "If they won’t open the books, the R-DFARS 217.74 caps hold and the definitization clock presses. No agreement happens on estimates where facts exist."
+   "why": "If they won’t open the books, the R-DFARS Subpart 217.74 caps hold and the definitization clock presses. No agreement happens on estimates where facts exist."
   }
  ],
  "ffc2bef72b93": [

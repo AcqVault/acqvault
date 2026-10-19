@@ -97,7 +97,7 @@ FOOT = '<div class="foot">acqvault.com<b> · </b>free · no login · no CAC</div
 
 SOURCE_PILLS = [
     ('RFO', '#2f5aa6'), ('R-DFARS', '#2c6a44'), ('FAR Companion', '#67508f'),
-    ('Category Mgmt', '#1c6377'), ('DAFI 63-138', '#a8324e'), ('DoD FMR', '#a84e22'),
+    ('Category Mgmt', '#1c6377'), ('DAFI 63-138', '#a8324e'), ('DoW FMR', '#a84e22'),
 ]
 
 def source(head, sub, pill, color, parts=None):
@@ -136,9 +136,9 @@ VARIANTS = {
   'src-afi-63-138': source('DAFI<br>63-138.',
      'Air Force acquisition program management — reproduced in full and searchable, no CAC.',
      'DAFI 63-138', '#a8324e'),
-  'src-fmr': source('DoD Financial<br>Management Reg.',
-     'DoD 7000.14-R — all 16 volumes, budget to contract payment, by volume and chapter.',
-     'DoD FMR', '#a84e22'),
+  'src-fmr': source('DoW Financial<br>Management Reg.',
+     'DoW 7000.14-R — all 16 volumes, budget to contract payment, by volume and section.',
+     'DoW FMR', '#a84e22'),
   'src-ssp': source('DoD Source<br>Selection.',
      'The DoD Source Selection Procedures — team roles, the rating methods, tradeoff and LPTA, and the debriefing guide.',
      'Source Selection', '#87651c'),

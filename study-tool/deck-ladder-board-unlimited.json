@@ -62,7 +62,7 @@
     {
      "q": "The program manager says holding fee back will hurt the contractor's cash flow and cost us goodwill. Your response?",
      "h": "What is award fee for?",
-     "d": "Award fee buys performance, not goodwill, and a structure that pays it out in full each period is a fixed fee with extra paperwork. A strong candidate says that plainly — and names the right lever. R-DFARS 216.402-470(2) prohibits award-fee payments other than those resulting from the evaluation at the end of an award-fee period, and expressly exempts base-fee payments. So cash flow is addressed through base fee (capped at three percent of estimated cost) and ordinary cost reimbursement — not by paying award fee early, which is the one thing the rule forbids, and not by negotiating away the final evaluation."
+     "d": "Award fee buys performance, not goodwill, and a structure that pays it out in full each period is a fixed fee with extra paperwork. A strong candidate says that plainly — and names the right lever. R-DFARS 216.402-470(b) prohibits award-fee payments other than those resulting from the evaluation at the end of an award-fee period, and expressly exempts base-fee payments. So cash flow is addressed through base fee (capped at three percent of estimated cost) and ordinary cost reimbursement — not by paying award fee early, which is the one thing the rule forbids, and not by negotiating away the final evaluation."
     },
     {
      "q": "Should you be using weighted guidelines on this action?",
@@ -197,7 +197,7 @@
     {
      "q": "What has to happen before DoD can even use a multiyear contract on a buy this size?",
      "h": "There is a statutory authorization step and a certification step.",
-     "d": "For DoD, multiyear contracts above defined thresholds require specific statutory authorization and a Secretary-level certification to Congress in advance, and the contract must be a fixed-price type. A candidate who treats multiyear as a contracting officer's discretionary tool has skipped the entire authorization regime."
+     "d": "For DoD, a multiyear contract over $900 million must be specifically authorized by law (R-DFARS 217.103-70), a defense program using multiyear authority needs the Secretary’s written certification to Congress at least 30 days before award, every DoD multiyear needs a present-value analysis showing it beats annual buys, and the contract must be a fixed-price type (17.104-5). A candidate who treats multiyear as a contracting officer's discretionary tool has skipped the entire authorization regime."
     },
     {
      "q": "How does this differ from a contract with four option years?",
@@ -209,7 +209,13 @@
     {
      "src": "rfo",
      "sec": "17.102",
-     "quote": "Cancellation means the cancellation (within a contractually specified time) of the total requirements of all remaining program years."
+     "quote": "Cancellation means the cancellation (within a contractually specified time) of the total requirements of all remaining program years.",
+     "dod": "n/a"
+    },
+    {
+     "src": "r-dfars",
+     "sec": "217.103-70",
+     "quote": "Multiyear contracts in amounts exceeding $900 million must be specifically authorized by law in an act other than an appropriations act"
     }
    ]
   },
@@ -227,8 +233,8 @@
     },
     {
      "q": "Does EVMS even apply to all four of those contracts?",
-     "h": "DoD has thresholds and one flat exemption.",
-     "d": "Not necessarily. R-DFARS 234.201-70 sets DoD's applicability by dollar value, makes it optional and risk-based below the lower tier, discourages it on firm-fixed-price at any value, and exempts contracts primarily for software. Knowing which of their contracts is actually in scope is the first thing a senior candidate checks."
+     "h": "DoD has thresholds and two exemptions.",
+     "d": "Not necessarily. R-DFARS 234.201-70 sets DoD's applicability by dollar value, makes it optional and risk-based below the lower tier, discourages it on firm-fixed-price at any value, and exempts contracts primarily for software and, unless the HCA waives it, contracts awarded to nontraditional defense contractors. Knowing which of their contracts is actually in scope is the first thing a senior candidate checks."
     }
    ],
    "cites": [

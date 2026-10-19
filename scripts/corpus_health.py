@@ -367,6 +367,20 @@ def main():
           f"parts downloaded but NOT in the corpus: {missing}",
           "scripts/ingest_rdfars_missing.py")
 
+    # ── retired ids still resolve ─────────────────────────────────────────────
+    # Shared links, pins and #anchors carrying a retired id resolve through
+    # output/id-aliases.json. A target that no longer exists is a dead end again, and an
+    # alias whose key is live would shadow the real doc.
+    aliases_path = REPO / "output" / "id-aliases.json"
+    aliases = json.loads(aliases_path.read_text(encoding="utf-8")) if aliases_path.exists() else {}
+    idset = set(ids)
+    dead = sorted(k for k, v in aliases.items() if v not in idset)
+    shadow = sorted(k for k in aliases if k in idset)
+    check("id aliases resolve", not dead and not shadow,
+          f"{len(dead)} alias target(s) missing (e.g. {dead[:3]}), "
+          f"{len(shadow)} alias key(s) are live ids (e.g. {shadow[:3]})",
+          "scripts/build_id_aliases.py <old documents.json>")
+
     # ── report ────────────────────────────────────────────────────────────────
     by_src = defaultdict(int)
     for d in live:

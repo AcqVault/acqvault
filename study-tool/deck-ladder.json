@@ -64,7 +64,7 @@
       "topic": "Competition",
       "q": "Who approves a J&A above $900,000 up to $20M, and is it delegable?",
       "a": "The advocate for competition. Not delegable.",
-      "x": "Half-credit trap: candidates name the advocate and drop 'not delegable.' Note the asymmetry — the next tier up, the head of the procuring activity, IS delegable to the general/flag-officer or above-GS-15 level, so non-delegability is specific to the advocate's tier, not a blanket rule. And officials at a higher level may always approve lower-dollar justifications; the table sets floors, not exclusive lanes.",
+      "x": "Half-credit trap: candidates name the advocate and drop 'not delegable.' (That's the RFO band — a DoD office uses R-DFARS 206.104-71 Table 206-1, where the CO approves to $10M and the non-delegable competition advocate runs above $10M to $100M.) Note the asymmetry — the next tier up, the head of the procuring activity, IS delegable to the general/flag-officer or above-GS-15 level, so non-delegability is specific to the advocate's tier, not a blanket rule. And officials at a higher level may always approve lower-dollar justifications; the table sets floors, not exclusive lanes.",
       "d": [
         "The head of the procuring activity. Delegable to the flag-officer level.",
         "The senior procurement executive. Not delegable.",

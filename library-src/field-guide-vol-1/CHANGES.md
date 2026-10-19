@@ -1,0 +1,39 @@
+# Field Guide Vol. 1 — change log
+
+Source: `index.html` + `guide.css` (this folder). Build and lock: `python3 library-src/build_field_guides.py 1`.
+Corpus: `output/documents.json` (RFO, R-DFARS, PGI, FMR, SSP). Log every factual change here with the text you checked it against.
+
+## v1.3 — 19 October 2026 (rebuild from lost source + fact audit)
+
+The v1.2 PDF (29 Jul 2026, 39 pp) had no surviving source. It was rebuilt as HTML/CSS from `pdftotext` output and page images. The prose, structure, callouts, diagrams, tables, glossary and Quick Checks are kept. The result is 36 pp: the layout is a little tighter, and the cover is now full-bleed. Every citation, threshold, approval authority and date was then checked against the corpus as of 19 Oct 2026.
+
+### Factual changes
+
+| # | Where | Was (v1.2) | Now (v1.3) | Verified against |
+|---|---|---|---|---|
+| 1 | Cover, How to Use, App. A/C | "v1.2 (July 2026)"; "checked … as of July 2026"; "current as of July 2026" | v1.3 (October 2026); "as of October 2026", plus a new "Current as of October 2026" line on p. 2 | — |
+| 2 | Reference-currency callout (p. 2) | Mid-2026 statutory change described generically | Adds that 20 R-DFARS parts were revised Jul–Oct 2026 with renumbered sections; the certified-data change is described as DoD's | R-DFARS corpus (e.g., 201.403-70, 215.403-3) |
+| 3 | §11 currency check, App. A (cited to FY26 NDAA §1804; R-DFARS 215.403-3 (10 U.S.C. 3702); applies to subcontracts too) | "$10M for contracts entered after 30 Jun 2026 (FY26 NDAA §1804) … printed regulation text may still show the old figure; the statute controls" (applied to everyone) | **DoD:** $10M for prime contracts awarded after 30 Jun 2026; earlier contracts and their mods keep $2.5M (R-DFARS 215.403-3, 10 U.S.C. 3702). **Civilian:** $2.5M (RFO 15.403-3). The "printed text lags the statute" sentence is gone because R-DFARS now implements the change | R-DFARS 215.403-3(a); RFO 15.403-3(a) |
+| 4 | §11 | TINA cited as 10 U.S.C. §§3701–3708 only; exceptions not cited | Adds 41 U.S.C. ch. 35 for civilian agencies; exceptions cited as RFO 15.403-2 | RFO 15.403-2 title / 15.403-3 |
+| 5 | §8 (new currency check), Scenario 2 step 5, App. A, App. F | "J&A approval rises with dollar value" (no tiers given) | DoD tiers per **R-DFARS 206.104-71 Table 206-1**: ≤$10M CO (by certification); >$10M–$100M competition advocate (not delegable); >$100M–$500M HCA; >$500M SPE. Civilian RFO 6.104-2: CO ≤$900K. Scenario 2 ($1.2M) now says the J&A falls in the DoD CO tier | R-DFARS 206.104-71; RFO 6.104-2 |
+| 6 | §4 callout, §8, Scenario 2 step 4, App. F | "exceptions … renumbered under RFO Part 6" (no number given) | Exceptions are **RFO 6.103-1 through 6.103-7**; J&A at RFO 6.104 | RFO 6.103-1…-7, 6.104 titles |
+| 7 | §4 RFO callout | "proposed rules … in public comment through mid-2026" (out of date) | Formal rulemaking is still working through the Federal Register; until it finishes, follow the class deviations. Adds the Jul–Oct 2026 R-DFARS reissues and renumbering (example: 201.403-70) | Corpus shows R-DFARS still issued as class-deviation text (Oct 2026) |
+| 8 | §5 Reference box, colors-of-money caption, App. C, App. F, glossary | "DoD FMR (Financial Management Regulation)" | **DoW FMR, DoW 7000.14-R**, Sept 2026 edition: most volumes reorganized into sections, and 2A/2B, 6A/6B, 11A/11B merged. Cite by volume and section. The periods of availability are now cited to FMR Vol. 3, Sec. 12 | FMR corpus (source label "DoW Financial Management Regulation"; Vol. 3 Sec. 12.0 text on 1/2/3/5-year availability) |
+| 9 | §3 | "Approval levels … set by current DoD/DAF policy" | RFO 1.405(b): the HCA may ratify, delegable no lower than the chief of the contracting office. The criteria list follows RFO 1.405(c) (adds "CO recommends payment" and "ratifying official has authority"). SF 1402 cited to RFO 1.403-2. Adds the DoD CO-qualification standard at R-DFARS 201.403-70 (renumbered in 2026) | RFO 1.405, 1.403-2; R-DFARS 201.403-70 |
+| 10 | §9 stairs and text, App. F | "Simplified acquisition (small buys) — Part 13" | Micro-purchases are RFO subpart 12.4; commercial simplified procedures are RFO 12.201-1; Part 13 covers noncommercial buys at or below the SAT. Adds the lower MPT for construction ($2,000) and services ($2,500). MPT/SAT cited to RFO 2.101 | RFO 2.101, 12.000, 12.201-1, 12.401, 13.000 |
+| 11 | §12 | "Cost/price and quality are mandatory factors (confirm … under RFO Part 15)" | Cited to **RFO 15.104**. Clarifications cited to 15.202(a)(2), "any time after receipt of proposals through award" | RFO 15.104, 15.202 |
+| 12 | §15 | REA/CDA certifications uncited | REA certification: R-DFARS 243.371 / 252.243-7002 (DoD, above the SAT). CDA claim certification >$100K: RFO 33.205-2 / 52.233-1. For Cause tied to 52.212-4 | R-DFARS 243.371; RFO 33.205-2 |
+| 13 | App. A note + new CAS row | FY26 NDAA §1806 CAS "full coverage to $100M; applicability to $35M — enacted, implementing regulations pending" | Implemented. CAS applies at $35M (41 U.S.C. 1502(b)(1)(B) as amended; DoD: R-DFARS 230.201-70(b)), and the $7.5M trigger-contract concept is eliminated. For DoD-only business units, full coverage and the Disclosure Statement are at $100M (R-DFARS 230.201-70(a), 230.101); mixed units stay under FAR 30.201(b). Cited to FY26 NDAA §1806. The guide had no $50M statement to adjust | R-DFARS 230.101, 230.201-70; $35M value confirmed by coordinator 19 Oct 2026 |
+| 14 | App. A table | 5 rows | Adds the DoD J&A CO limit ($10M), the E.O. 14402 justification threshold (DoD $100M, RFO 16.104) and the CDA claim certification ($100K, RFO 33.205-2). Each value now carries its citation (MPT/SAT RFO 2.101; subcontracting plan RFO 19.109) | RFO 2.101, 16.104, 19.109, 33.205-2 |
+| 15 | §10, Scenario 4 | E.O. 14402 undated; "since the July 2026 revision of RFO Part 16"; Scenario 4 silent on it | E.O. 14402 dated 30 Apr 2026. The unsupported "July 2026" revision date is removed (now "under the revised RFO Part 16"). Scenario 4 notes the fixed-price default (16.102(b)) and the DoD $100M justification | RFO 16.102(b), 16.104(b),(c) |
+| 16 | §13, §14 | Uncited | Standards of conduct RFO 3.101; PIA RFO 3.104; OCI RFO subpart 9.5; Rule of Two RFO 19.104-1; 8(a) RFO 19.108; DD Form 2579 PGI 219.102 | RFO and PGI titles |
+| 17 | How to Use, §3, §10 | Warrant-board guide is "Phase 2 and comes later" / "Phase 2 board guide" / "Phase 2 depth" | "Volume 2", which is published (pdfs/acqvault-field-guide-vol-2.pdf) | — |
+| 18 | Glossary | — | Adds CAS, DoW, FMR, HCA, MPT, SPE (all now used in the text) | — |
+| 19 | TOC | Fixed page numbers | Generated from the rendered PDF at build time | — |
+
+### Re-checked and unchanged
+MPT $15K and SAT $350K (RFO 2.101); Rule of Two above the MPT (RFO 19.104-1); subcontracting plan $900K / $2M construction (RFO 19.109); RFO 16.102(b) fixed-price default; RFO 16.104 DoD $100M; clarifications 15.202 and negotiations 15.204-2; CDA $100K; REA certification above the SAT (R-DFARS 243.371); R-DFARS class deviations effective 1 Feb 2026 (R-DFARS Part 213 deviation memo); Part 40 security content; RFO Part 10 market research; Parts 3/8/9/17/33/43/45/49 and 52.212-4 exist under those numbers; EO 14275 (April 2025); O&M 1 / RDT&E 2 / Procurement 3 / MILCON 5 years (FMR Vol. 3 Sec. 12); 12-month severable-services limit (FMR Vol. 14 Sec. 3 example). The guide never cites 233.105-70 (task-order protest $35M) or RFO 12.205, so neither change affects it.
+
+### Open items / judgment calls
+- Resolved 19 Oct 2026 (coordinator): FY26 NDAA §1804 is the statutory source of the $10M certified-data threshold; FY26 NDAA §1806 sets CAS applicability at $35M; the "July 2026" Part 16 date was removed because the corpus can't support it.
+- **Ratification delegations.** Actual DoD/DAF delegation levels live in DAF policy (Compass, CAC-only) and are not given.

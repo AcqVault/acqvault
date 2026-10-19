@@ -39,8 +39,12 @@ const byId = new Map(docs.map(d => [d.id, d]));
 ok(server.has('r-dfars-52-252-204-7022'), 'stale part-52 252.204-7022 suppressed from queries');
 ok(server.has('r-dfars-12-252-204-7022'), 'title-only stub 252.204-7022 suppressed from queries');
 ok(!server.has('r-dfars-4-252-204-7022'), 'the memo copy (part 4, correct prescription) survives');
-// a clause that exists ONLY in part 52 must NOT be suppressed
-ok(!server.has('r-dfars-52-252-204-7012'), '252.204-7012 (exists only in part 52) is NOT suppressed');
+// a clause that exists ONLY in part 52 must NOT be suppressed. (252.204-7012 was the
+// example until DPCAP's Part 240 Rev 3 moved it under 240.370-5(c), Aug 2026 — now the
+// part-40 memo copy is the one that must survive.)
+ok(!server.has('r-dfars-52-252-204-7007'), '252.204-7007 (exists only in part 52) is NOT suppressed');
+ok(!server.has('r-dfars-40-252-204-7012') && server.has('r-dfars-52-252-204-7012'),
+   '252.204-7012 resolves to its Part 240 memo copy, not the part-52 library');
 
 // nothing suppressed outside r-dfars, and every suppressed doc has a surviving twin
 let alien = 0, orphaned = 0;
