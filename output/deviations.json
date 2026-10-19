@@ -3,9 +3,10 @@
 "rfo_part": "1",
 "dfars_part": "201",
 "dars": "2026-O0002",
-"effective": "February 1, 2026",
+"effective": "August 5, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-1.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-201/2026-O0002_Rev1_TAB_A_Deviation_Memo.pdf",
+"revision": 1
 },
 {
 "rfo_part": "3",
@@ -27,25 +28,28 @@
 "rfo_part": "5",
 "dfars_part": "205",
 "dars": "2026-O0003",
-"effective": "February 1, 2026",
+"effective": "August 24, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-5.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-205/2026-O0003_Rev_1_TAB_A_Deviation_Memo.pdf",
+"revision": 1
 },
 {
 "rfo_part": "6",
 "dfars_part": "206",
 "dars": "2026-O0017",
-"effective": "February 1, 2026",
+"effective": "August 5, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-6.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-206/2026-O0017_Rev2_TAB_A_Class_Deviation_USA002119-26.pdf",
+"revision": 2
 },
 {
 "rfo_part": "7",
 "dfars_part": "207",
 "dars": "2026-O0020",
-"effective": "February 1, 2026",
+"effective": "September 2, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-7.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-207/2026-O0020_Rev_1_TAB_A_Deviation_Memo_USA002390-26.pdf",
+"revision": 1
 },
 {
 "rfo_part": "8",
@@ -107,25 +111,28 @@
 "rfo_part": "15",
 "dfars_part": "215",
 "dars": "2026-O0048",
-"effective": "March 16, 2026",
+"effective": "July 22, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-15.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-215/2026-O0048_Rev_1_TAB_A_Deviation_Memo_Part_215.pdf",
+"revision": 1
 },
 {
 "rfo_part": "16",
 "dfars_part": "216",
 "dars": "2026-O0045",
-"effective": "March 16, 2026",
+"effective": "July 15, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-16.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-216/2026-O0045_Rev_1_TAB_A_Deviation_Memo_Part_216.pdf",
+"revision": 1
 },
 {
 "rfo_part": "17",
 "dfars_part": "217",
 "dars": "2026-O0027",
-"effective": "February 1, 2026",
+"effective": "October 7, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-17.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-217/2026-O0027_Rev1_TAB_A_Deviation_Memo.pdf",
+"revision": 1
 },
 {
 "rfo_part": "18",
@@ -139,25 +146,28 @@
 "rfo_part": "19",
 "dfars_part": "219",
 "dars": "2026-O0037",
-"effective": "February 1, 2026",
+"effective": "July 24, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-19.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-219/2026-O0037_Rev1_TAB_A_Class_Deviation_Part_219.pdf",
+"revision": 1
 },
 {
 "rfo_part": "22",
 "dfars_part": "222",
 "dars": "2026-O0040",
-"effective": "February 17, 2026",
+"effective": "April 24, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-22.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-222/Class_Deviation_2026-O0040_Revision_1_DFARS_222.pdf",
+"revision": 1
 },
 {
 "rfo_part": "23",
 "dfars_part": "223",
 "dars": "2026-O0018",
-"effective": "February 1, 2026",
+"effective": "August 5, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-23.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-223/2026-O0018_Rev1_TAB_A_Deviation_Memo.pdf",
+"revision": 1
 },
 {
 "rfo_part": "24",
@@ -171,9 +181,10 @@
 "rfo_part": "25",
 "dfars_part": "225",
 "dars": "2026-O0041",
-"effective": "February 17, 2026",
+"effective": "July 1, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-25.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-225/2026-O0041_Rev_1_TAB_A_Deviation_Memo_Part_225.pdf",
+"revision": 1
 },
 {
 "rfo_part": "26",
@@ -211,17 +222,19 @@
 "rfo_part": "30",
 "dfars_part": "230",
 "dars": "2026-O0006",
-"effective": "February 1, 2026",
+"effective": "July 30, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-30.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-230/2026-O0006_Rev1_TAB_A_Deviation_Memo_DFARS_230.pdf",
+"revision": 1
 },
 {
 "rfo_part": "31",
 "dfars_part": "231",
 "dars": "2026-O0032",
-"effective": "February 1, 2026",
+"effective": "August 4, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-31.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-231/2026-O0032_Rev1_TAB_A_Deviation_Memo_USA002167-26.pdf",
+"revision": 1
 },
 {
 "rfo_part": "32",
@@ -235,17 +248,19 @@
 "rfo_part": "33",
 "dfars_part": "233",
 "dars": "2026-O0026",
-"effective": "February 1, 2026",
+"effective": "August 24, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-33.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-233/2026-O0026_Rev1_TAB_A_Class_Deviation.pdf",
+"revision": 1
 },
 {
 "rfo_part": "34",
 "dfars_part": "234",
 "dars": "2026-O0011",
-"effective": "February 1, 2026",
+"effective": "August 5, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-34.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-234/2026-O0011_Rev1_TAB_A_Deviation_Memo.pdf",
+"revision": 1
 },
 {
 "rfo_part": "35",
@@ -267,9 +282,10 @@
 "rfo_part": "37",
 "dfars_part": "237",
 "dars": "2026-O0023",
-"effective": "February 1, 2026",
+"effective": "July 24, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-37.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-237/2026-O0023_Rev1_TAB_A_Class_Deviation_DFARS_237.pdf",
+"revision": 1
 },
 {
 "rfo_part": "39",
@@ -283,9 +299,10 @@
 "rfo_part": "40",
 "dfars_part": "240",
 "dars": "2026-O0025",
-"effective": "February 1, 2026",
+"effective": "September 3, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-40.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-240/2026-O0025_Rev3_TAB_A_Deviation_Memo.pdf",
+"revision": 3
 },
 {
 "rfo_part": "41",
@@ -307,25 +324,28 @@
 "rfo_part": "43",
 "dfars_part": "243",
 "dars": "2026-O0034",
-"effective": "February 1, 2026",
+"effective": "August 5, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-43.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-243/2026-O0034_Rev1_TAB_A_Class_Deviation.pdf",
+"revision": 1
 },
 {
 "rfo_part": "44",
 "dfars_part": "244",
 "dars": "2026-O0015",
-"effective": "February 1, 2026",
+"effective": "July 29, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-44.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-244/2026-O0015_Rev1_TAB_A_Class%20Deviation_DFARS_244.pdf",
+"revision": 1
 },
 {
 "rfo_part": "45",
 "dfars_part": "245",
 "dars": "2026-O0046",
-"effective": "March 16, 2026",
+"effective": "September 9, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
-"pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-45.pdf"
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-245/2026-O0046_Rev1_TAB_A_Class_Deviation.pdf",
+"revision": 1
 },
 {
 "rfo_part": "46",
@@ -366,5 +386,13 @@
 "effective": "February 1, 2026",
 "subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
 "pdf_url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-50.pdf"
+},
+{
+"rfo_part": "70",
+"dfars_part": "270",
+"subject": "Class Deviation\u2014Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
+"dars": "2026-O0052",
+"effective": "August 4, 2026",
+"pdf_url": "https://www.acq.osd.mil/dpap/dars/classdev/DFARS_RFO/Part-270/2026-O0052_TAB_A_Class_Deviation_USA001836-26.pdf"
 }
 ]

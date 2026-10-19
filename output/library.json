@@ -71,12 +71,12 @@
         {
           "id": "src-r-dfars",
           "title": "R-DFARS",
-          "subtitle": "DoD deviations · Parts 201–252",
+          "subtitle": "DoD deviations · Parts 201–270",
           "desc": "The DoD class deviations implementing the FAR overhaul, compiled into one document.",
           "file": "/pdfs/r-dfars.pdf",
           "download": "AcqVault-R-DFARS.pdf",
           "type": "PDF",
-          "meta": "46 parts covered",
+          "meta": "47 parts covered",
           "origin": "Official source, compiled by AcqVault",
           "updated": "monthly"
         },

@@ -266,7 +266,7 @@
         {
           "q": "Any DoD-specific boundaries on the set-aside rule you'd flag?",
           "h": "The supplement draws dollar lines the baseline doesn't.",
-          "d": "R-DFARS 219.104-1 scopes the FAR 19.104-1(a) and (b) requirements for certain work: construction including maintenance and repair under $3.5 million, dredging under $2 million, A-E services for military construction or family housing under $1 million — and carves out supplies developed under the U.S.-Canadian Defense Development Sharing Program. The point for a board: the set-aside machinery is baseline-plus-supplement, and a DoD CO who has never opened the 219 pages is guessing."
+          "d": "R-DFARS 219.104-70 scopes the FAR 19.104-1(a) and (b) requirements for certain work: construction including maintenance and repair under $3.5 million, dredging under $2 million, A-E services for military construction or family housing under $1 million — and carves out supplies developed under the U.S.-Canadian Defense Development Sharing Program. The point for a board: the set-aside machinery is baseline-plus-supplement, and a DoD CO who has never opened the 219 pages is guessing."
         }
       ],
       "cites": [
@@ -282,8 +282,8 @@
         },
         {
           "src": "r-dfars",
-          "sec": "219.104-1",
-          "quote": "The requirements at FAR 19.104-1(a) and (b) apply to acquisitions for—"
+          "sec": "219.104-70",
+          "quote": "The requirements at FAR 19.104-1(a) and (b) also apply to acquisitions for—"
         }
       ]
     },

@@ -133,7 +133,7 @@
    "topic": "Small Business Programs",
    "scenario": "An Air Force base-operations-support requirement, roughly $40 million, is headed to the 8(a) program, and SBA has identified a participant for a sole-source award. A sharp new specialist objects: \"Anything sole source over $900K needs a J&A through the competition advocate\" — and drafts one for your signature.",
    "ask": "Is your specialist right? What actually governs this award, and what do you do with the draft?",
-   "script": "The instinct is right and the answer is still no — this is the classic DoD deviation. Under 206.104-70, implementing section 823 of the FY20 NDAA, no justification and approval is required for a sole-source 8(a) award up to $100 million. The 8(a) authority is its own statutory lane, not a 6.103 exception riding the approval ladder. What I do owe the file: the acquisition sits far above the 8(a) competitive thresholds — $8.5M manufacturing, $5.5M for everything else — so the real question is why this isn't a competitive 8(a) among eligible participants, and that conversation happens with SBA before acceptance, not in a J&A. I thank the specialist for the reflex, park the draft, and document the offering-and-acceptance trail instead.",
+   "script": "The instinct is right and the answer is still no — this is the classic DoD deviation. Under 206.104-70(b) the DoD justification trigger for a sole-source 8(a) award sits at $100 million, not the FAR line, so no justification and approval is required up to $100 million; above it, section 823 of the FY20 NDAA makes the HCA the approver (206.104-71(d)). The 8(a) authority is its own statutory lane, not a 6.103 exception riding the approval ladder. What I do owe the file: the acquisition sits far above the 8(a) competitive thresholds — $8.5M manufacturing, $5.5M for everything else — so the real question is why this isn't a competitive 8(a) among eligible participants, and that conversation happens with SBA before acceptance, not in a J&A. I thank the specialist for the reflex, park the draft, and document the offering-and-acceptance trail instead.",
    "follow_ups": [
     {
      "q": "Same requirement at $120 million. Now what?",
@@ -155,12 +155,12 @@
     {
      "src": "r-dfars",
      "sec": "206.104-70",
-     "quote": "no justification and approval is required for a sole- source contract under the 8(a) authority (15 U.S.C. 637(a)) for an amount not exceeding $100 million"
+     "quote": "each justification for a sole-source 8(a) contract exceeding $100 million will include the information at FAR 6.104-1(b)"
     },
     {
      "src": "r-dfars",
-     "sec": "206.104-72",
-     "quote": "the head of the procuring activity is the approval authority for a proposed sole-source 8(a) contract exceeding $100 million"
+     "sec": "206.104-71",
+     "quote": "the HCA is the approval authority for a proposed sole-source 8(a) contract exceeding $100 million"
     },
     {
      "src": "rfo",
@@ -278,11 +278,11 @@
     {
      "src": "r-dfars",
      "sec": "216.507-5",
-     "quote": "a written or oral postaward debriefing of successful and unsuccessful awardees is required for task orders and delivery orders valued at $10 million or more"
+     "quote": "a written or oral postaward debriefing of successful and unsuccessful awardees is required for task orders and delivery orders valued at $15 million or more"
     },
     {
      "src": "r-dfars",
-     "sec": "216.507-70",
+     "sec": "208.470",
      "quote": "If only one offer is received in response to an order exceeding the simplified acquisition threshold that is placed on a competitive basis"
     }
    ]
@@ -518,8 +518,8 @@
     },
     {
      "src": "r-dfars",
-     "sec": "217.204-170",
-     "quote": "The contractor has a CMMC certificate at the level required by the contract, and that it is current (i.e., not more than 3 years old)."
+     "sec": "217.204-70",
+     "quote": "The contractor has a Cybersecurity Maturity Model Certification (CMMC) certificate at the level required by the contract, and that it is current"
     },
     {
      "src": "rfo",

@@ -48,7 +48,7 @@
     "ref": "RFO 16.507-2 · RFO Part 19 · Vol. 2, IDIQ"
   },
   "d3ad752c3a10": {
-    "x": "RFO 17.204-1(b) is the list: written notice within the time the contract specifies, funds available, then a determination that the option fulfils an existing requirement, was synopsized or is exempt, the contractor has no active exclusion record in SAM, performance has been acceptable, the option price is fair and reasonable on current market conditions and exercise is in the Government's best interest, and the exercise complies with part 6. “Most advantageous” is the deleted legacy FAR 17.207 test and appears nowhere in RFO part 17. For DoD add R-DFARS 217.204-170 — an active and accurate SAM record, plus SPRS verification of a current NIST SP 800-171 score and a current CMMC certificate.",
+    "x": "RFO 17.204-1(b) is the list: written notice within the time the contract specifies, funds available, then a determination that the option fulfils an existing requirement, was synopsized or is exempt, the contractor has no active exclusion record in SAM, performance has been acceptable, the option price is fair and reasonable on current market conditions and exercise is in the Government's best interest, and the exercise complies with part 6. “Most advantageous” is the deleted legacy FAR 17.207 test and appears nowhere in RFO part 17. For DoD add R-DFARS 217.204-70 — an active and accurate SAM record, plus SPRS verification of a current NIST SP 800-171 score and a current CMMC certificate.",
     "ref": "RFO Part 17 · Vol. 2, Options"
   },
   "6c5a58ff220f": {
@@ -254,7 +254,7 @@
     "ref": "Vol. 2, Clearance"
   },
   "8b9c7e3d137c": {
-    "x": "FAR 33.105-3(b)(1) is the civilian rule, and it is the wrong one to recite at a DoD board. R-DFARS 233.105-370 applies “in lieu of the time periods in FAR 33.105-3(b)(1)” and runs to whichever of four is LATER: (a) 10 days after award; (b) 10 days after a task or delivery order over $25 million is issued; (c) 5 days after the date a debriefing is offered; (d) 5 days after a postaward debriefing is concluded. ‘Concluded’ is itself defined — R-DFARS 215.301-270 makes it the later of delivery or the agency’s written answers to follow-up questions. Apply the civilian two-branch test and you will conclude no stay attached when one did.",
+    "x": "FAR 33.105-3(b)(1) is the civilian rule, and it is the wrong one to recite at a DoD board. R-DFARS 233.105-70 applies “in lieu of the time periods in FAR 33.105-3(b)(1)” and runs to whichever of four is LATER: (a) 10 days after award; (b) 10 days after a task or delivery order over $35 million is issued; (c) 5 days after the date a debriefing is offered; (d) 5 days after a postaward debriefing is concluded. ‘Concluded’ is itself defined — R-DFARS 215.301-71 makes it the later of delivery or the agency’s written answers to follow-up questions. Apply the civilian two-branch test and you will conclude no stay attached when one did.",
     "ref": "CICA · RFO 33.105-3"
   },
   "1780c6714f52": {

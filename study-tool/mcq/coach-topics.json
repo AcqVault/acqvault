@@ -92,8 +92,8 @@
  "Options": {
   "qtype": "an options question — RFO Part 17: the exercise gates, applied to today.",
   "smes": "FM for funds, the COR and PM on performance and continuing need, and Legal if the notice window slipped.",
-  "rule": "Exercise only through the RFO 17.204-1(b) gates: timely written notice, funds available, an existing requirement, synopsized or exempt, no active SAM exclusion, acceptable performance, a fair and reasonable price in the Government's best interest, and part 6 compliance — and for DoD, R-DFARS 217.204-170 adds an active and accurate SAM record plus SPRS verification of the NIST SP 800-171 score and a current CMMC certificate. Miss the notice window and the unilateral right lapses into a bilateral negotiation.",
-  "cite": "RFO 17.204-1 · R-DFARS 217.204-170 · Vol. 2, Options"
+  "rule": "Exercise only through the RFO 17.204-1(b) gates: timely written notice, funds available, an existing requirement, synopsized or exempt, no active SAM exclusion, acceptable performance, a fair and reasonable price in the Government's best interest, and part 6 compliance — and for DoD, R-DFARS 217.204-70 adds an active and accurate SAM record plus SPRS verification of the NIST SP 800-171 score and a current CMMC certificate. Miss the notice window and the unilateral right lapses into a bilateral negotiation.",
+  "cite": "RFO 17.204-1 · R-DFARS 217.204-70 · Vol. 2, Options"
  },
  "Interagency Acquisitions & the Economy Act": {
   "qtype": "an interagency question — RFO Part 17 interagency acquisition and the Economy Act (31 U.S.C. 1535): direct vs. assisted, and whose rules travel with the money.",
@@ -140,8 +140,8 @@
  "Protests": {
   "qtype": "a protest question — RFO Part 33 and CICA: venue, stay math, and the record you built months earlier.",
   "smes": "Legal drives; GAO or COFC counsel through Legal; the HCA owns any override decision.",
-  "rule": "Know the stay machinery cold — RFO 33.105-3(b)(1) is the government-wide 10-day/5-day rule, but for DoD R-DFARS 233.105-370 substitutes a four-part whichever-is-later test in its place, and there are three venues with different powers — and remember the real defense was built earlier: criteria stated, followed, and documented.",
-  "cite": "RFO 33.104-1 · RFO 33.105-3 · R-DFARS 233.105-370 · CICA · Vol. 2, Protests"
+  "rule": "Know the stay machinery cold — RFO 33.105-3(b)(1) is the government-wide 10-day/5-day rule, but for DoD R-DFARS 233.105-70 substitutes a four-part whichever-is-later test in its place, and there are three venues with different powers — and remember the real defense was built earlier: criteria stated, followed, and documented.",
+  "cite": "RFO 33.104-1 · RFO 33.105-3 · R-DFARS 233.105-70 · CICA · Vol. 2, Protests"
  },
  "REAs & Claims": {
   "qtype": "a disputes question — the Contract Disputes Act and RFO Part 33: REA lane or CDA claim, and substance beats the label.",

@@ -57,12 +57,12 @@
    "topic": "Contract Types",
    "scenario": "A program office is standing up a $120 million development effort and wants a cost-plus-award-fee structure. Their draft plan sets base fee at six percent, pays award fee at the end of each six-month evaluation period, and holds nothing back for a final assessment.",
    "ask": "Review that fee structure for me.",
-   "script": "Three problems, all DoD-specific, and none of them visible if you learned CPAF from the FAR alone. R-DFARS 216.402-4 governs the award-fee pool and its distribution. Base fee is capped well below six percent for DoD. A meaningful share of the award fee has to remain available for the final evaluation, and going below that share is a nondelegable HCA decision. And paying award fee at the end of each period with nothing held back removes the leverage the structure exists to create. I would send the plan back before it reaches the SSA.",
+   "script": "Three problems, all DoD-specific, and none of them visible if you learned CPAF from the FAR alone. R-DFARS 216.402-470 governs the award-fee pool and its distribution. Base fee is capped well below six percent for DoD. A meaningful share of the award fee has to remain available for the final evaluation, and going below that share is a nondelegable HCA decision. And paying award fee at the end of each period with nothing held back removes the leverage the structure exists to create. I would send the plan back before it reaches the SSA.",
    "follow_ups": [
     {
      "q": "The program manager says holding fee back will hurt the contractor's cash flow and cost us goodwill. Your response?",
      "h": "What is award fee for?",
-     "d": "Award fee buys performance, not goodwill, and a structure that pays it out in full each period is a fixed fee with extra paperwork. A strong candidate says that plainly — and names the right lever. R-DFARS 216.402-4(2) prohibits award-fee payments other than those resulting from the evaluation at the end of an award-fee period, and expressly exempts base-fee payments. So cash flow is addressed through base fee (capped at three percent of estimated cost) and ordinary cost reimbursement — not by paying award fee early, which is the one thing the rule forbids, and not by negotiating away the final evaluation."
+     "d": "Award fee buys performance, not goodwill, and a structure that pays it out in full each period is a fixed fee with extra paperwork. A strong candidate says that plainly — and names the right lever. R-DFARS 216.402-470(2) prohibits award-fee payments other than those resulting from the evaluation at the end of an award-fee period, and expressly exempts base-fee payments. So cash flow is addressed through base fee (capped at three percent of estimated cost) and ordinary cost reimbursement — not by paying award fee early, which is the one thing the rule forbids, and not by negotiating away the final evaluation."
     },
     {
      "q": "Should you be using weighted guidelines on this action?",
@@ -73,7 +73,7 @@
    "cites": [
     {
      "src": "r-dfars",
-     "sec": "216.402-4",
+     "sec": "216.402-470",
      "quote": "The award-fee pool is the total available award fee for each evaluation period for the life of the contract."
     }
    ]
@@ -228,13 +228,13 @@
     {
      "q": "Does EVMS even apply to all four of those contracts?",
      "h": "DoD has thresholds and one flat exemption.",
-     "d": "Not necessarily. R-DFARS 234.201 sets DoD's applicability by dollar value, makes it optional and risk-based below the lower tier, discourages it on firm-fixed-price at any value, and exempts contracts primarily for software. Knowing which of their contracts is actually in scope is the first thing a senior candidate checks."
+     "d": "Not necessarily. R-DFARS 234.201-70 sets DoD's applicability by dollar value, makes it optional and risk-based below the lower tier, discourages it on firm-fixed-price at any value, and exempts contracts primarily for software. Knowing which of their contracts is actually in scope is the first thing a senior candidate checks."
     }
    ],
    "cites": [
     {
      "src": "r-dfars",
-     "sec": "234.201",
+     "sec": "234.201-70",
      "quote": "DoD applies the earned value management system requirement as follows:"
     }
    ]

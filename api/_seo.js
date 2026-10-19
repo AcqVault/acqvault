@@ -98,7 +98,7 @@ const SOURCES = {
     metaDesc: "Full text of the Revolutionary FAR Overhaul \u2014 the rulebook agencies cite for new awards, implemented for DoD by class deviation under E.O. 14275." },
   'r-dfars':             { name: 'R-DFARS Deviations', short: 'R-DFARS',
     desc: 'DoD class deviations implementing the RFO for the Department of Defense — the deviation set you cite in place of the legacy supplement. Part 252 additionally carries the pre-deviation clause library, kept for reference and labelled as such.',
-    metaDesc: "Full text of the DoD class deviations that implement the FAR Overhaul \u2014 the set you cite in place of the legacy DFARS supplement. All 46, by part." },
+    metaDesc: "Full text of the DoD class deviations that implement the FAR Overhaul \u2014 the set you cite in place of the legacy DFARS supplement. All of them, by part." },
   'far-companion':       { name: 'FAR Companion', short: 'FAR Companion',
     desc: 'Practitioner guidance accompanying the Revolutionary FAR Overhaul.',
     metaDesc: "Full text of the FAR Companion \u2014 the practitioner guidance that accompanies the Revolutionary FAR Overhaul. Free, searchable, no account needed." },
@@ -197,6 +197,9 @@ function loadDocs() {
   docsCache = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'output', 'documents.json'), 'utf8')).filter(Boolean);
   return docsCache;
 }
+
+// R-DFARS/PGI revised by DPCAP link the signed memo on acq.osd.mil, not acquisition.gov.
+function srcHost(url) { return /acq\.osd\.mil/i.test(String(url)) ? 'DPCAP (acq.osd.mil)' : 'acquisition.gov'; }
 
 let devsCache = null;
 function loadDeviations() {
@@ -1362,7 +1365,7 @@ function renderPartPage(source, part) {
     // A bare URL printed under every heading competed with the regulation for
     // attention and wrapped onto two lines; the link is the useful part, the
     // 90-character path is not.
-    : `<p class="srcref">Source: <a href="${esc(url)}" rel="noopener nofollow">acquisition.gov</a></p>`;
+    : `<p class="srcref">Source: <a href="${esc(url)}" rel="noopener nofollow">${srcHost(url)}</a></p>`;
   const urls = new Set(docs.map(d => d.url).filter(Boolean));
   const sharedUrl = (urls.size === 1 && docs.every(d => d.url)) ? [...urls][0] : null;
   const partSrc = sharedUrl ? srcref(sharedUrl) : '';
@@ -1375,7 +1378,7 @@ function renderPartPage(source, part) {
     // own beneath it. Every section deep-linking to its official anchor is worth
     // keeping; spending a full line per section to say so is not.
     const src = (d.url && !sharedUrl && !/dps\.mil/i.test(d.url))
-      ? ` <a class="srclink" href="${esc(d.url)}" rel="noopener nofollow">acquisition.gov</a>`
+      ? ` <a class="srclink" href="${esc(d.url)}" rel="noopener nofollow">${srcHost(d.url)}</a>`
       : '';
     const compassNote = (d.url && !sharedUrl && /dps\.mil/i.test(d.url)) ? srcref(d.url) : '';
     return `<section class="sec" id="${anchor}">
@@ -1480,10 +1483,10 @@ function renderDeviationsPage() {
   const description = esc(`All ${rows.length} DoD R-DFARS class deviations implementing the Revolutionary FAR Overhaul — RFO part, legacy DFARS reference, effective date, DARS tracking number, and full text.`);
 
   const tr = rows.map(r => `<tr>
-<td><a href="/r-dfars/part-${esc(r.rfo_part)}">Part ${esc(r.rfo_part)}</a></td>
+<td><a href="/r-dfars/part-${esc(r.rfo_part)}">${Number(r.rfo_part) > 53 ? 'DFARS only' : 'Part ' + esc(r.rfo_part)}</a></td>
 <td>${r.dfars_part ? 'DFARS ' + esc(r.dfars_part) : '—'}</td>
 <td>${esc(r.effective || '—')}</td>
-<td class="mono">${esc(r.dars || '—')}</td>
+<td class="mono">${esc(r.dars || '—')}${r.revision ? ' Rev.&nbsp;' + esc(r.revision) : ''}</td>
 <td>${r.pdf_url ? `<a href="${esc(r.pdf_url)}" rel="noopener nofollow">Signed memo&nbsp;↗</a> · ` : ''}<a href="/r-dfars/part-${esc(r.rfo_part)}">Full text</a></td>
 </tr>`).join('\n');
 
@@ -4066,9 +4069,9 @@ const RFO_FAQ = [
   ['Is the Revolutionary FAR Overhaul the same as the FAR?',
    'Yes — it is the Federal Acquisition Regulation, overhauled. Under Executive Order 14275, "Restoring Common Sense to Federal Procurement," agencies use the revised FAR text published on the Revolutionary FAR Overhaul web page in lieu of the text codified at 48 CFR.'],
   ['What is R-DFARS?',
-   'R-DFARS refers to the DoD class deviations that implement the FAR overhaul for the Department of Defense — the deviation-based replacement for the legacy DFARS material. There are 46 such deviations; see the R-DFARS Deviations Index for each one’s effective date and DARS tracking number.'],
+   'R-DFARS refers to the DoD class deviations that implement the FAR overhaul for the Department of Defense — the deviation-based replacement for the legacy DFARS material. There is one per deviated part; see the R-DFARS Deviations Index for each one’s effective date and DARS tracking number.'],
   ['When did the FAR overhaul take effect?',
-   'For DoD, the class deviations took effect on February 1, February 17, and March 16, 2026, depending on the FAR part. Each signed deviation lists its own effective date.'],
+   'For DoD, the class deviations took effect on February 1, February 17, and March 16, 2026, depending on the FAR part. DPCAP has since revised many of them, each revision effective on issue. Each signed deviation lists its own effective date.'],
   ['Where is the official Revolutionary FAR Overhaul text?',
    'The authoritative text is published by the government at acquisition.gov/far-overhaul, and the signed DoD class deviations are the controlling implementation for the Department of Defense.'],
   ['Is AcqVault an official source?',
@@ -4095,12 +4098,12 @@ function renderExplainerPage() {
 <div class="eyebrow">AcqVault · Explainer</div>
 <h1>What is the Revolutionary FAR&nbsp;Overhaul?</h1>
 <p class="lede">A plain-English read on the overhaul: the order behind it, how DoD puts it into effect, and when it started binding.</p>
-<div class="stats"><span class="stat">E.O. <b>14275</b></span><span class="stat"><b>46</b> class deviations</span><span class="stat">Effective Feb–Mar 2026</span></div>
+<div class="stats"><span class="stat">E.O. <b>14275</b></span><span class="stat"><b>${loadDeviations().length}</b> class deviations</span><span class="stat">Effective from Feb 2026</span></div>
 ${HUB_SEAL}
 </div></section>`;
   const body = `<p class="lede lede--hub">The <strong>Revolutionary FAR Overhaul (RFO)</strong> is a restructuring of the Federal Acquisition Regulation directed by <strong>Executive Order 14275</strong>, "Restoring Common Sense to Federal Procurement." Agencies use the overhauled FAR text — published on the government’s Revolutionary FAR Overhaul web page — <em>in lieu of</em> the text codified at 48 CFR.</p>
 <section class="sec"><h2>How the Department of Defense implements it</h2>
-<p>DoD puts the overhaul into effect through signed <strong>class deviations</strong> — the materials AcqVault indexes as <strong>R-DFARS</strong>. There are <strong>46 deviations</strong>, each with its own effective date and DARS tracking number. See the <a href="/deviations">R-DFARS Deviations Index</a> for the full list, or <a href="/r-dfars">browse R-DFARS by part</a>.</p></section>
+<p>DoD puts the overhaul into effect through signed <strong>class deviations</strong> — the materials AcqVault indexes as <strong>R-DFARS</strong>. There are <strong>${loadDeviations().length} deviations</strong>, each with its own effective date and DARS tracking number. See the <a href="/deviations">R-DFARS Deviations Index</a> for the full list, or <a href="/r-dfars">browse R-DFARS by part</a>.</p></section>
 <section class="sec"><h2>When it took effect</h2>
 <p>For DoD, the class deviations became effective on <strong>February 1</strong>, <strong>February 17</strong>, and <strong>March 16, 2026</strong>, depending on the FAR part.</p></section>
 <section class="sec"><h2>Where to read it — and search it</h2>

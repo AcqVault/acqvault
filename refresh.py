@@ -13,9 +13,13 @@ What it does
              preserves every existing doc id via its stable #FAR_x_y anchor, and replaces
              ONLY the rfo docs in output/documents.json. Unchanged sections keep their old
              entry byte-for-byte (indexed_at included) so diffs stay minimal and honest.
-  R-DFARS  — HEAD-checks the 46 DoD deviation memos (+ looks for new ones). If anything
-             changed it downloads via fetch_dod_deviations.py and FLAGS the corpus
-             re-extraction for review — it never guesses its way into the r-dfars docs.
+  R-DFARS  — HEAD-checks the DoD deviation memos on acquisition.gov's hub (+ looks for new
+             ones). If anything changed it downloads via fetch_dod_deviations.py and FLAGS
+             the corpus re-extraction for review — it never guesses its way into the
+             r-dfars docs. ALSO compares DPCAP's own class-deviation listing (the
+             authority) against output/deviations.json: the hub never picked up DPCAP's
+             Revision 1/2/3 memos or Part 270, which is how 20 parts went stale unseen.
+             Re-ingest flagged parts with scripts/ingest_dpcap_docx.py --revised --apply.
   Others   — far-companion / category-management PDFs get a freshness probe + report only.
              fmr / compass / dafi are never touched.
 
@@ -244,6 +248,28 @@ def check_rdfars():
     return "; ".join(parts), True
 
 
+def check_dpcap():
+    """DPCAP's listing is the authority for DoD class deviations; acquisition.gov's hub
+    mirrors only the ORIGINAL memos and silently missed every revision. Compare the
+    listing's deviation number + revision per part against output/deviations.json."""
+    sys.path.insert(0, str(BASE_DIR / "scripts"))
+    from ingest_dpcap_docx import LISTING_URL, parse_listing, stale_parts
+    try:
+        listing = parse_listing(get(LISTING_URL).text)
+    except Exception as e:  # noqa: BLE001 — a probe failure is "unknown", not "changed"
+        return "probe FAILED ({}) — unknown, not assumed changed".format(e), False
+    if len(listing) < 40:     # the page shape changed; say so rather than report "current"
+        return "listing parsed only {} parts — parser needs a look".format(len(listing)), True
+    devs = json.loads((BASE_DIR / "output" / "deviations.json").read_text(encoding="utf-8"))
+    stale = stale_parts(listing, devs)
+    if not stale:
+        return "current ({} parts match DPCAP's listing)".format(len(listing)), False
+    return "{} part(s) newer on DPCAP than deviations.json: {} — run " \
+           "python3 scripts/ingest_dpcap_docx.py --revised --apply".format(
+               len(stale), ", ".join("{} {} rev{}".format(p, listing[p]["dars"], listing[p]["revision"])
+                                     for p in stale)), True
+
+
 def check_rdfars_coverage():
     """Every R-DFARS/*.pdf memo must actually have docs in the corpus. The
     freshness check above only proves a memo was DOWNLOADED — it can't see a memo
@@ -269,6 +295,14 @@ def check_rdfars_coverage():
         # corpus so a maintainer can confirm it's substantive before ingesting.
         if part not in have_parts:
             missing.append((part, pdf.name))
+    # Parts sourced from DPCAP (revisions, Part 270) have no hub PDF to glob; their
+    # deviations.json row points at the signed memo on acq.osd.mil instead.
+    devs = json.loads((BASE_DIR / "output" / "deviations.json").read_text(encoding="utf-8"))
+    for row in devs:
+        p = str(row.get("rfo_part"))
+        if "acq.osd.mil" in (row.get("pdf_url") or "") and p not in BENIGN_NO_SECTIONS \
+                and p not in have_parts and all(p != m[0] for m in missing):
+            missing.append((p, row["pdf_url"].rsplit("/", 1)[-1]))
     if missing:
         return "⚠ {} memo(s) DOWNLOADED BUT NOT INGESTED: {}".format(
             len(missing), ", ".join("Part {} ({})".format(p, n) for p, n in missing)), True
@@ -865,6 +899,8 @@ def main():
 
     rd_msg, rd_changed = check_rdfars()
     print("R-DFARS: " + rd_msg)
+    dp_msg, dp_changed = check_dpcap()
+    print("R-DFARS vs DPCAP: " + dp_msg)
     cov_msg, cov_gap = check_rdfars_coverage()
     print("R-DFARS coverage: " + cov_msg)
     fc_msg, fc_changed = check_static_pdf(
@@ -875,7 +911,7 @@ def main():
         "Category Management/*.pdf", download=not args.check)
     print(fc_msg)
     print(cm_msg)
-    if (rd_changed or fc_changed or cm_changed) and not args.check:
+    if (rd_changed or dp_changed or fc_changed or cm_changed) and not args.check:
         print("  → NOTE: new source PDFs are downloaded locally, but re-extracting them into")
         print("    the searchable corpus is a supervised job — tell your assistant AcqVault")
         print("    needs updating and it will extract, parity-validate, and ship them.")
@@ -939,7 +975,7 @@ def main():
             "added": [{"id": d["id"], "part": d["part"], "title": d["title"]} for d in added],
             "removed": [{"id": d["id"], "part": d["part"], "title": d["title"]} for d in removed],
         },
-        "r_dfars": rd_msg, "far_companion": fc_msg, "category_management": cm_msg,
+        "r_dfars": rd_msg, "r_dfars_dpcap": dp_msg, "far_companion": fc_msg, "category_management": cm_msg,
     }
 
     if not (added or modified or removed):

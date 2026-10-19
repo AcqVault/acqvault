@@ -39,7 +39,7 @@ DOCS = os.path.join(ROOT, 'output', 'documents.json')
 SOURCE = 'ssp'
 SOURCE_LABEL = 'DoD Source Selection Procedures'
 FILENAME = 'USA000740-22-DPC'
-URL = 'https://www.acq.osd.mil/asda/dpc/cp/policy/source-selection-procedures.html'
+URL = 'https://www.acq.osd.mil/asda/dpc/cp/policy/competitive-source-selection.html'
 DATED = 'August 20, 2022'
 
 # Body subsection head: "1.1   Purpose." at column 0.

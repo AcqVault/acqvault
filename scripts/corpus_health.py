@@ -134,7 +134,9 @@ def main():
     # PGI attachment, so when strip_pgi_tails.py cut that guidance out the table's rows
     # described text the document no longer holds. It left with its text — the honest
     # follow-up is recovering it onto PGI 225.070, not keeping an orphan here.
-    TABLE_FLOOR = {'afi-63-138': 5, 'far-companion': 7, 'fmr': 130, 'pgi': 9, 'r-dfars': 10, 'rfo': 56}
+    # 2026-10-19: pgi 9 -> 34 and r-dfars 10 -> 11 when 21 parts were rebuilt from DPCAP's
+    # docx attachments, which carry real Word tables (scripts/ingest_dpcap_docx.py).
+    TABLE_FLOOR = {'afi-63-138': 5, 'far-companion': 7, 'fmr': 130, 'pgi': 34, 'r-dfars': 11, 'rfo': 56}
     have = {}
     for d in docs:
         if d.get("tables"):

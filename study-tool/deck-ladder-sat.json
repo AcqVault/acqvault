@@ -36,7 +36,7 @@
       "type": "recall",
       "topic": "Contracting Authority",
       "q": "How is a contracting officer appointed?",
-      "a": "In writing, on a Standard Form 1402, Certificate of Appointment — and the certificate must state any limits on the contracting officer's authority beyond those already in law or regulation. Individuals given micro-purchase authority are also appointed in writing, but an SF 1402 is not required for them. For DoD the certificate rides on statutory qualifications: under 10 U.S.C. 1724 (R-DFARS 201.403-1), serving with authority above the simplified acquisition threshold requires completion of the required contracting courses, at least 2 years of experience in a contracting position, and a baccalaureate degree — with narrow exceptions for incumbents who held the position on or before 30 September 2000, the contingency contracting force, and 3-year developmental positions.",
+      "a": "In writing, on a Standard Form 1402, Certificate of Appointment — and the certificate must state any limits on the contracting officer's authority beyond those already in law or regulation. Individuals given micro-purchase authority are also appointed in writing, but an SF 1402 is not required for them. For DoD the certificate rides on statutory qualifications: under 10 U.S.C. 1724 (R-DFARS 201.403-70), serving with authority above the simplified acquisition threshold requires completion of the required contracting courses, at least 2 years of experience in a contracting position, and a baccalaureate degree — with narrow exceptions for incumbents who held the position on or before 30 September 2000, the contingency contracting force, and 3-year developmental positions.",
       "x": "The civilian answer stops at 'in writing, on an SF 1402.' A DoD board is listening for the 10 U.S.C. 1724 layer: above the SAT the warrant rides on qualifications — the courses, 2 years' experience, and the degree — not just the certificate. Bonus trap: micro-purchase authority is appointed in writing too, but needs no SF 1402.",
       "cite": {
         "src": "rfo",
@@ -45,8 +45,8 @@
       },
       "dod": {
         "src": "r-dfars",
-        "sec": "201.403-1",
-        "quote": "In accordance with 10 U.S.C. 1724, in order to qualify to serve as a contracting officer with authority to award or administer contracts for amounts above the simplified acquisition threshold, a person must— (i) Have completed all contracting courses required for a contracting officer to serve in the grade in which the employee or member of the armed forces will serve; (ii) Have at least 2 years experience in a contracting position; (iii) Have received a baccalaureate degree from an accredited educational institution;"
+        "sec": "201.403-70",
+        "quote": "In accordance with 10 U.S.C. 1724, in order to qualify to serve as a contracting officer with authority to award or administer contracts for amounts above the simplified acquisition threshold, a person must— (1) Have completed all contracting courses required for a contracting officer to serve in the grade in which the employee or member of the armed forces will serve; (2) Have at least 2 years experience in a contracting position; (3) Have received a baccalaureate degree from an accredited educational institution;"
       }
     },
     {
@@ -58,8 +58,8 @@
       "x": "Courses, 2 years, degree — plus whatever the Secretary adds for dollar value and complexity. The trap is overapplying the degree leg: it doesn't reach grandfathered incumbents (in position on or before September 30, 2000), the contingency contracting force, or 3-year developmental appointees. And the gate itself only exists above the SAT.",
       "cite": {
         "src": "r-dfars",
-        "sec": "201.403-1",
-        "quote": "In accordance with 10 U.S.C. 1724, in order to qualify to serve as a contracting officer with authority to award or administer contracts for amounts above the simplified acquisition threshold, a person must— (i) Have completed all contracting courses required for a contracting officer to serve in the grade in which the employee or member of the armed forces will serve; (ii) Have at least 2 years experience in a contracting position; (iii) Have received a baccalaureate degree from an accredited educational institution;"
+        "sec": "201.403-70",
+        "quote": "In accordance with 10 U.S.C. 1724, in order to qualify to serve as a contracting officer with authority to award or administer contracts for amounts above the simplified acquisition threshold, a person must— (1) Have completed all contracting courses required for a contracting officer to serve in the grade in which the employee or member of the armed forces will serve; (2) Have at least 2 years experience in a contracting position; (3) Have received a baccalaureate degree from an accredited educational institution;"
       }
     },
     {
@@ -76,7 +76,7 @@
       },
       "dod": {
         "src": "r-dfars",
-        "sec": "201.404",
+        "sec": "201.404-70",
         "quote": "A COR must be an employee, military or civilian, of the U.S. Government, a foreign government, or a North Atlantic Treaty Organization or coalition partner. Contractor personnel must never serve as CORs."
       }
     },
@@ -377,7 +377,7 @@
       "type": "recall",
       "topic": "Small Business Programs",
       "q": "When must a contract be set aside for small business (the Rule of Two)?",
-      "a": "For contracts above the micro-purchase threshold, when there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery. The test does not apply to purchases at or below the MPT or to purchases from required sources under part 8. Note the separate, categorical rule for noncommercial buys: under 13.102 an acquisition above the MPT but at or below the SAT must be set aside, with no expectation analysis. For DoD, R-DFARS 219.104-1 applies FAR 19.104-1(a) and (b) to construction (including maintenance and repairs) under $3.5 million, dredging under $2 million, and architect-engineer services for military construction or family housing under $1 million, and excepts supplies developed and financed in whole or in part by Canadian sources under the U.S.-Canadian Defense Development Sharing Program.",
+      "a": "For contracts above the micro-purchase threshold, when there is a reasonable expectation of offers from two or more responsible small business concerns that are competitive on fair market prices, quality, and delivery. The test does not apply to purchases at or below the MPT or to purchases from required sources under part 8. Note the separate, categorical rule for noncommercial buys: under 13.102 an acquisition above the MPT but at or below the SAT must be set aside, with no expectation analysis. For DoD, R-DFARS 219.104-70 applies FAR 19.104-1(a) and (b) to construction (including maintenance and repairs) under $3.5 million, dredging under $2 million, and architect-engineer services for military construction or family housing under $1 million, and excepts supplies developed and financed in whole or in part by Canadian sources under the U.S.-Canadian Defense Development Sharing Program.",
       "x": "Keep three regimes straight. Above the MPT, the Rule of Two is an expectation judgment — two responsible small businesses, competitive on price, quality, delivery. In the MPT-to-SAT band under part 13, the set-aside is categorical, no analysis. And DoD applies the rule to construction, dredging, and A-E work only under specific dollar ceilings. 'Always set aside below the SAT' blurs the first two into a wrong answer.",
       "cite": {
         "src": "rfo",
@@ -386,8 +386,8 @@
       },
       "dod": {
         "src": "r-dfars",
-        "sec": "219.104-1",
-        "quote": "The requirements at FAR 19.104-1(a) and (b) apply to acquisitions for— (i) Construction, including maintenance and repairs, under $3.5 million; (ii) Dredging under $2 million; and (iii) Architect-engineer services for military construction or family housing projects under $1 million (10 U.S.C. 2855)."
+        "sec": "219.104-70",
+        "quote": "The requirements at FAR 19.104-1(a) and (b) also apply to acquisitions for— (1) Construction, including maintenance and repairs, under $3.5 million; (2) Dredging under $2 million; and (3) Architect-engineer services for military construction or family housing projects under $1 million (10 U.S.C. 2855)."
       }
     },
     {
@@ -549,8 +549,8 @@
       },
       "dod": {
         "src": "r-dfars",
-        "sec": "216.301-3",
-        "quote": "For contracts in connection with a military construction project or a military family housing project, contracting officers must not use cost-plus-fixed-fee, cost-plus-award- fee, or cost-plus-incentive-fee contract types"
+        "sec": "216.301-370",
+        "quote": "For contracts in connection with a military construction project or a military family housing project, contracting officers must not use cost-plus-fixed-fee, cost-plus-award-fee, or cost-plus-incentive-fee contract types"
       }
     },
     {
@@ -895,7 +895,7 @@
       "type": "recall",
       "topic": "Options",
       "q": "Before exercising an option, what must the contracting officer determine about the price?",
-      "a": "That the option price is fair and reasonable based on current market conditions and that exercising the option is in the Government's best interest — after written notice to the contractor and confirming funds are available. For DoD, R-DFARS 217.204-170 adds pre-exercise gates — an active, accurate SAM record and current SPRS entries (a NIST SP 800-171 assessment score and a CMMC certificate, each not more than 3 years old) — and, for firm-fixed-price contracts containing spare parts, PGI 217.204-170 requires cost or price analysis of the spares before any option is exercised.",
+      "a": "That the option price is fair and reasonable based on current market conditions and that exercising the option is in the Government's best interest — after written notice to the contractor and confirming funds are available. For DoD, R-DFARS 217.204-70 adds pre-exercise gates — an active, accurate SAM record and current SPRS entries (a NIST SP 800-171 assessment score and a CMMC certificate, each not more than 3 years old) — and, for firm-fixed-price contracts containing spare parts, PGI 217.204-70 requires cost or price analysis of the spares before any option is exercised.",
       "x": "The civilian checklist — notice, funds, fair-and-reasonable at current market, best interest — is half the DoD answer. Boards listen for the R-DFARS gates: an active, accurate SAM record and current SPRS entries (NIST 800-171 score, CMMC certificate, each within 3 years), plus spares cost or price analysis on FFP contracts. An option exercise is a new obligation, not a formality.",
       "cite": {
         "src": "rfo",
@@ -904,8 +904,8 @@
       },
       "dod": {
         "src": "r-dfars",
-        "sec": "217.204-170",
-        "quote": "See PGI 217.204-170 for the requirement to perform cost or price analysis of spare parts prior to exercising any option for firm- fixed-price contracts containing spare parts."
+        "sec": "217.204-70",
+        "quote": "See PGI 217.204-70 for the requirement to perform cost or price analysis of spare parts prior to exercising any option for firm-fixed-price contracts containing spare parts;"
       }
     },
     {

@@ -81,7 +81,7 @@
     {
       "q": "SBA issues the CoC — can you appeal it?",
       "h": "Conclusive on responsibility — but DoD has a channel, and it runs on 5-day clocks.",
-      "d": "A Certificate of Competency conclusively establishes responsibility — you award. There is no dollar band: RFO 19.204(i) makes a COC final on all elements of responsibility, and 19.204(j) says award elsewhere if no COC issues within 15 business days of the referral. For DoD, R-DFARS 219.204 sends me to PGI 219.204 — notify the department OSBP director within 5 working days of SBA Headquarters' written position, appeal file 5 working days after, and the OSBP director decides whether the agency appeals. And either way, the Government's protection shifts to administration: a hard QASP, milestone surveillance, early engagement at the first slip."
+      "d": "A Certificate of Competency conclusively establishes responsibility — you award. There is no dollar band: RFO 19.204(i) makes a COC final on all elements of responsibility, and 19.204(j) says award elsewhere if no COC issues within 15 business days of the referral. For DoD, R-DFARS 219.204-70 sends me to PGI 219.204-70 — notify the department OSBP director within 5 working days of SBA Headquarters' written position, appeal file 5 working days after, and the OSBP director decides whether the agency appeals. And either way, the Government's protection shifts to administration: a hard QASP, milestone surveillance, early engagement at the first slip."
     }
   ],
   "0f4c23c21c0d": [
@@ -273,7 +273,7 @@
     {
       "q": "What duration limits cap a services structure?",
       "h": "Five, ten, and six months.",
-      "d": "Service contracts: five years total, base plus all options — the limit is the Service Contract Labor Standards one at RFO 22.1002-2(a)(2) (41 U.S.C. 6707(d)), so it binds SCLS-covered services. DoD ordering periods: ten years unless the head of the agency determines in writing that exceptional circumstances require longer (R-DFARS 217.201-270), SPE approval beyond that. The extension-of-services clause adds at most six months — a transition bridge, not a strategy. And any period bought with the extension clause counts against the honest answer to 'why wasn't the recompete ready?'"
+      "d": "Service contracts: five years total, base plus all options — the limit is the Service Contract Labor Standards one at RFO 22.1002-2(a)(2) (41 U.S.C. 6707(d)), so it binds SCLS-covered services. DoD ordering periods: ten years unless the head of the agency determines in writing that exceptional circumstances require longer (R-DFARS 217.201-71), SPE approval beyond that. The extension-of-services clause adds at most six months — a transition bridge, not a strategy. And any period bought with the extension clause counts against the honest answer to 'why wasn't the recompete ready?'"
     },
     {
       "q": "The contractor flatly refuses to perform at the option price. What are your lawful paths?",

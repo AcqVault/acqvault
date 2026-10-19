@@ -113,7 +113,7 @@
     {
      "q": "Does DoD have anything to say about using LPTA here?",
      "h": "The RFO's limitations open with two words that matter to you.",
-     "d": "Yes — and this is where a civilian-trained answer fails. RFO 15.103-2's limitations open 'Except for DoD,' and DoD's own limitations and outright prohibitions live at R-DFARS 215.103-270, which separates what you must avoid to the maximum extent practicable from what you must not do at all. Knowing that split is the answer."
+     "d": "Yes — and this is where a civilian-trained answer fails. RFO 15.103-2's limitations open 'Except for DoD,' and DoD's own limitations and outright prohibitions live at R-DFARS 215.103-72, which separates what you must avoid to the maximum extent practicable from what you must not do at all. Knowing that split is the answer."
     },
     {
      "q": "If you go LPTA, what must the RFP say?",
@@ -165,7 +165,7 @@
     {
      "q": "For DoD, does the preferred method change when there is no adequate price competition?",
      "h": "There is a DoD-specific instruction on which technique to reach for first.",
-     "d": "Yes. R-DFARS 215.404-170 makes market-price-based pricing the preferred method absent adequate price competition, and cautions that reasonableness must not rest solely on historical prices paid by the Government — which is precisely what the specialist proposed."
+     "d": "Yes. R-DFARS 215.404-71 makes market-price-based pricing the preferred method absent adequate price competition, and cautions that reasonableness must not rest solely on historical prices paid by the Government — which is precisely what the specialist proposed."
     },
     {
      "q": "The contractor says the price is fair because it is the same rate on their GSA schedule. Does that settle it?",
@@ -186,7 +186,7 @@
    "topic": "Protests",
    "scenario": "You awarded a $28 million contract on Tuesday. An unsuccessful offeror requested a debriefing on Thursday, you offered Friday, and they declined the offered date and asked for the following week. On the Monday after award you receive notice from GAO that a protest has been filed.",
    "ask": "Walk me through your obligation on performance right now.",
-   "script": "I need to work the clock before I do anything else, and for a DoD action I do not work it from FAR 33.105-3 alone. R-DFARS 233.105-370 replaces the trigger dates with a latest-of test: ten days after award, ten days after a task or delivery order over $25 million is issued, five days after a debriefing date offered — expressly whether or not the protester accepted it — and five days after a required postaward debriefing is concluded. I take the latest of those that applies, and if the protest landed inside it, performance suspends or the award is terminated.",
+   "script": "I need to work the clock before I do anything else, and for a DoD action I do not work it from FAR 33.105-3 alone. R-DFARS 233.105-70 replaces the trigger dates with a latest-of test: ten days after award, ten days after a task or delivery order over $35 million is issued, five days after a debriefing date offered — expressly whether or not the protester accepted it — and five days after a required postaward debriefing is concluded. I take the latest of those that applies, and if the protest landed inside it, performance suspends or the award is terminated.",
    "follow_ups": [
     {
      "q": "They declined the debriefing date we offered. Does that help us?",
@@ -202,8 +202,8 @@
    "cites": [
     {
      "src": "r-dfars",
-     "sec": "233.105-370",
-     "quote": "contracting officers must immediately suspend performance or terminate the award using the time periods in paragraphs (a) through (d) of this section, whichever is later, in lieu of the time periods in FAR 33.105-3(b)(1) if the agency receives notice of a protest from the GAO."
+     "sec": "233.105-70",
+     "quote": "If the agency receives notice of a protest from the Government Accountability Office (GAO), except as provided in FAR 33.105-3(b)(2) and (c), contracting officers must immediately suspend performance or terminate the award using the time periods in paragraphs (a) through (d) of this section, whichever is later, in lieu of the time periods in FAR 33.105-3(b)(1)."
     }
    ]
   },
@@ -217,7 +217,7 @@
     {
      "q": "They ask for the source selection decision document itself. Is that ever released?",
      "h": "There is a dollar-value answer, and DoD has its own numbers.",
-     "d": "It can be. The RFO provides for redacted SSDD disclosure at defined DoD contract values, and R-DFARS 215.301-170(b) restates those tiers at DoD-specific figures. The honest board answer names both authorities and says which one governs the action in front of you rather than picking a number."
+     "d": "It can be. The RFO provides for redacted SSDD disclosure at defined DoD contract values, and R-DFARS 215.301-70(b) restates those tiers at DoD-specific figures. The honest board answer names both authorities and says which one governs the action in front of you rather than picking a number."
     },
     {
      "q": "Does holding the debriefing affect anything other than good relations?",

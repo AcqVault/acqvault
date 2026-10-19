@@ -323,7 +323,7 @@ const SOURCE_URLS = {
   'category-management': 'https://www.acquisition.gov/far-overhaul',
   'fmr':           'https://comptroller.war.gov/FMR/',
   'afi-63-138':    'https://www.e-publishing.af.mil/',
-  'ssp':           'https://www.acq.osd.mil/asda/dpc/cp/policy/source-selection-procedures.html',
+  'ssp':           'https://www.acq.osd.mil/asda/dpc/cp/policy/competitive-source-selection.html',
   'pgi':           'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide',
 };
 // Two registers, one canonical name in each. The old single map mixed them, so a
@@ -368,6 +368,7 @@ const PARTS_BY_SOURCE = {
     ['41','Utilities'],['42','Admin'],['43','Modifications'],
     ['44','Subcontracting'],['45','GFP'],['46','Quality'],
     ['47','Transport'],['49','Termination'],['50','Extraordinary'],
+    ['70','Defense Programs'],
   ],
   'ssp': [
     ['1','Purpose, Roles, and Responsibilities'],
@@ -424,7 +425,7 @@ const PARTS_BY_SOURCE = {
     [241,'Utilities'],[242,'Admin'],[243,'Modifications'],
     [244,'Subcontracting'],[245,'GFP'],[246,'Quality'],
     [247,'Transport'],[249,'Termination'],[250,'Extraordinary'],
-    [252,'Clauses']
+    [252,'Clauses'],[270,'Defense Programs']
   ],
   'far-companion': [
     [1,'General'],[2,'Definitions'],[3,'Ethics'],
@@ -3230,14 +3231,15 @@ function cleanClauseText(s) {
 // ── DEVIATION AUTHORITY ───────────────────────────────────────────────────────
 // The authority behind an R-DFARS section is a SIGNED DoD class deviation with a DARS
 // tracking number and an effective date — which is what a contracting officer needs on
-// a citation going into a contract file. output/deviations.json holds all 46; fetch it
+// a citation going into a contract file. output/deviations.json holds one row per part
+// (DPCAP revisions carry a `revision` number, which belongs in the cite); fetch it
 // lazily and attach "(DoD Class Deviation 2026-O00NN, eff. <date>)" to the copied cite
 // block. Part 52 is the PRE-deviation clause library, so it gets no deviation line —
 // stamping a deviation number onto undeviated legacy text would claim an authority it
 // does not have. Same for the PGI: guidance carries the memo's number too (it ships as
 // the memo's attachment), so PGI cites get the same line.
 let DEVIATIONS_BY_PART = null;   // { rfoPart: {dars, effective} }
-// Fetched off the boot path — 46 rows, and the first Copy is never worth blocking on.
+// Fetched off the boot path — ~47 rows, and the first Copy is never worth blocking on.
 setTimeout(function(){ try { loadDeviationsIndex(); } catch(e){} }, 2500);
 function loadDeviationsIndex() {
   if (DEVIATIONS_BY_PART) return;
@@ -3252,7 +3254,7 @@ function deviationLineFor(hit) {
   if (String(hit.part) === '52') return '';   // pre-deviation library — no deviation authority
   const e = DEVIATIONS_BY_PART && DEVIATIONS_BY_PART[String(hit.part)];
   if (!e) return '';
-  return ` (DoD Class Deviation ${e.dars}${e.effective ? ', eff. ' + e.effective : ''})`;
+  return ` (DoD Class Deviation ${e.dars}${e.revision ? ', Revision ' + e.revision : ''}${e.effective ? ', eff. ' + e.effective : ''})`;
 }
 
 // Deep link straight to a cited section on this site — opens the reader to that doc.
@@ -3324,7 +3326,7 @@ function copyResultCite(hit, btn) {
   const flash = () => { const o = btn.dataset.label || btn.textContent; btn.dataset.label = o; btn.textContent = '✓ Copied'; btn.classList.add('copied'); srAnnounce('Citation with link copied to clipboard'); setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove('copied'); }, 1800); };
   copyCiteWithLink(ref, body, acqCiteUrl(hit.id), flash);
 }
-(function checkCorpusFreshness() {
+(function loadCorpusMeta() {
   fetch('/output/corpus-meta.json').then(r => r.ok ? r.json() : null).then(meta => {
     if (!meta) return;
     window.__corpusMeta = meta;
@@ -3335,21 +3337,6 @@ function copyResultCite(hit, btn) {
         const ss = document.querySelector('.hero-statstrip-count strong'); if (ss) ss.textContent = n.toLocaleString();
         const fb = document.querySelector('.fcard-sections .fcard-bignum'); if (fb) fb.textContent = n.toLocaleString();
       }
-    }
-    // Clock the bar off the last time we CHECKED upstream, not the last time the text
-    // happened to move. A sweep that re-fetches every part page and finds the copy
-    // identical PROVES it is current — but generated_at only advances when something
-    // changed, so a clean sweep left this bar saying "last re-indexed 23 days ago" the
-    // morning after it ran. checked_at is written by refresh.py on every completed run;
-    // fall back to generated_at for metadata written before it existed.
-    const stamp = meta.checked_at || meta.generated_at;
-    const gen = stamp ? new Date(stamp) : null;
-    if (!gen || isNaN(gen)) return;
-    const days = Math.floor((Date.now() - gen.getTime()) / 86400000);
-    const bar = document.getElementById('stale-bar');
-    if (bar && days > 21) {
-      bar.innerHTML = `<b>Heads up —</b> AcqVault last checked its copy against the official source ${days} days ago (${fmtAsOf(stamp)}). The RFO changes often; confirm any citation against the official source before relying on it.`;
-      bar.hidden = false;
     }
   }).catch(() => {});
 })();
@@ -3915,7 +3902,7 @@ function renderDrawerDeviation(hit) {
   if (!d) { el.hidden = true; el.innerHTML = ''; return; }
   const memo = d.pdf_url ? ` · <a href="${esc(d.pdf_url)}" target="_blank" rel="noopener">signed memo ↗</a>` : '';
   el.innerHTML = `<span class="dev-tag">DoD class deviation</span>` +
-    `<span class="dev-body">DARS ${esc(d.dars)} · effective ${esc(d.effective)} · RFO Part ${esc(d.rfo_part)} ↔ legacy DFARS Part ${esc(d.dfars_part)}${memo}` +
+    `<span class="dev-body">DARS ${esc(d.dars)}${d.revision ? ', Revision ' + esc(d.revision) : ''} · effective ${esc(d.effective)} · ${Number(d.rfo_part) > 53 ? 'no RFO counterpart' : 'RFO Part ' + esc(d.rfo_part)} ↔ legacy DFARS Part ${esc(d.dfars_part)}${memo}` +
     `<span class="dev-verify">Mechanical pointer — confirm against the official source.</span></span>`;
   el.hidden = false;
 }

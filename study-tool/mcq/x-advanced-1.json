@@ -312,8 +312,8 @@
     "ref": "RFO Part 15 · Vol. 2, Source Selection"
   },
   "257067de1eaf": {
-    "x": "$10M for actions entered after 30 June 2026 (FY26 NDAA §1804); $2.5M for earlier contracts AND their mods. The date line matters more than the number — a mod to an old contract stays on the old trigger.",
-    "ref": "FY26 NDAA §1804 · RFO Part 15"
+    "x": "For DoD, $10M for prime contracts awarded after 30 June 2026 (FY26 NDAA §1804, implemented at R-DFARS 215.403-3); $2.5M for earlier contracts AND their mods. The date line matters more than the number — a mod to an old contract stays on the old trigger. Civilian agencies did not move: FAR 15.403-3 stays at $2.5M.",
+    "ref": "FY26 NDAA §1804 · R-DFARS 215.403-3"
   },
   "d097b13b7eac": {
     "x": "CLAWM: Commercial, Law/regulation set the price, Adequate price competition, Waiver (HCA), commercial Mods — at RFO 15.403-2. Run the exceptions BEFORE demanding certified data; most actions never need the certificate.",

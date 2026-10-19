@@ -14,7 +14,7 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "216.402-4",
+    "sec": "216.402-470",
     "quote": "The base fee must not exceed three percent of the estimated cost of the contract exclusive of the fee."
    }
   },
@@ -67,7 +67,7 @@
    "cite": {
     "src": "r-dfars",
     "sec": "217.7404-6",
-    "quote": "the profit allowed on the contract must accurately reflect the cost risk of the contractor as such risk existed on the date the contractor submitted the qualifying proposal"
+    "quote": "the profit allowed must accurately reflect the cost risk of the contractor that existed on the date the contractor submitted the qualifying proposal"
    }
   },
   {
@@ -79,7 +79,7 @@
    "x": "The line tracks consequence. Where LPTA merely buys bad value — IT, cyber, knowledge-based services, most PPE — it is 'avoid to the maximum extent practicable,' a judgment call you must be able to defend. Where failure costs lives or corrupts the program — combat-casualty PPE and aviation critical safety items, MDAP EMD, auditing — it is flatly banned. Know why each item sits on its side and you will never mix the lists.",
    "cite": {
     "src": "r-dfars",
-    "sec": "215.103-270",
+    "sec": "215.103-72",
     "quote": "Avoid using the lowest price technically acceptable source selection approach, to the maximum extent practicable, for acquisitions that are predominately for— (i) Information technology services, cybersecurity services, systems engineering and technical assistance services, advanced electronic testing, or other knowledge-based professional services; (ii) Items designated by the requiring activity as personal protective equipment (except see paragraph (b)(1) of this section); or (iii) Services designated by the requiring activity as knowledge-based training or logistics services in contingency operations or other operations outside the United States. (b) Prohibitions. Do not use the lowest price technically acceptable source selection approach to procure— (1) Items designated by the requiring activity as personal protective equipment or as an aviation critical safety item, for which the level of quality or failure of the equipment or item could result in combat casualties."
    }
   },
@@ -420,7 +420,7 @@
    "cite": {
     "src": "r-dfars",
     "sec": "206.001-70",
-    "quote": "Also excepted from this part are follow-on production contracts for products developed pursuant to the “other transactions” authority of 10 U.S.C. 4022 for prototype projects"
+    "quote": "(b) As authorized by 10 U.S.C. 4022 for prototype projects, follow-on production contracts for products developed pursuant to the “other transactions” authority, when the contracting officer receives sufficient documentation from the agreements officer issuing the other transaction agreement for the prototype project that— (1) The other transaction agreement included provisions for a follow-on production contract (10 U.S.C. 4022(f)(1));"
    }
   },
   {
@@ -437,7 +437,7 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "234.201",
+    "sec": "234.201-70",
     "quote": "For cost or incentive contracts and subcontracts valued at $50 million or more, the clause at 252.234-7999, Earned Value Management System, requires the contractor’s earned value management system to comply with the guidelines in Electronic Industries Alliance Standard 748, Earned Value Management Systems"
    }
   }

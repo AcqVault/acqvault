@@ -1761,9 +1761,6 @@ button.source-status-chip:focus-visible{outline:3px solid var(--accent-glow);out
 .offline-bar{position:fixed;left:0;right:0;bottom:0;z-index:3000;background:var(--navy-900);color:#dbe7f5;font-size:var(--fs-base);font-weight:var(--fw-semibold);letter-spacing:var(--ls-snug);text-align:center;padding:9px 16px;box-shadow:0 -4px 18px rgba(0,0,0,0.2);}
 .offline-bar b{color:var(--cyan);font-weight:var(--fw-heavy);}
 /* Auto-amber staleness tripwire — shows only when the corpus hasn't refreshed in a while */
-.stale-bar{position:fixed;left:0;right:0;bottom:0;z-index:2990;background:#7c4a03;color:#fff7ed;font-size:var(--fs-sm);font-weight:var(--fw-semibold);letter-spacing:var(--ls-snug);text-align:center;padding:9px 16px;box-shadow:0 -4px 18px rgba(0,0,0,0.2);}
-.stale-bar[hidden]{display:none;}
-.stale-bar b{color:#fdba74;font-weight:var(--fw-heavy);}
 .update-toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);z-index:3200;display:flex;align-items:center;gap:14px;background:var(--navy-900);color:#eaf1fb;font-size:var(--fs-base);font-weight:var(--fw-semibold);padding:11px 12px 11px 18px;border-radius:var(--r-pill);box-shadow:0 16px 40px -10px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.06);opacity:0;transition:transform .45s var(--ease-out),opacity .35s ease;max-width:calc(100vw - 32px);}
 .update-toast.show{transform:translate(-50%,0);opacity:1;}
 /* Narrow screens: the pill radius + wrapped text makes an egg — switch to a
@@ -2545,7 +2542,7 @@ button,a,[role="button"],input,select{touch-action:manipulation;}
   .about-bar,nav,.browse-source-bar,.browse-parts-panel,.br-part-search,
   .br-cite-btn,.br-para-cite,.br-back-top,.br-fmr-back,.float-top,
   .reader-topbar,.reader-aside,.reader-actions,#drawer,#drawer-backdrop,
-  footer,.update-toast,.offline-bar,.stale-bar,.feedback-modal{display:none !important;}
+  footer,.update-toast,.offline-bar,.feedback-modal{display:none !important;}
   body{background:var(--bg);color:#000;}
   .browse-reader-inner,.reader-content{max-width:100%;padding:0;}
   .browse-reader{border:none;box-shadow:none;}

@@ -72,9 +72,9 @@ ORDER_KEY_LOCALE_OK = {'far-companion'}
 
 # Documented same-number siblings: two real sections that share a number. Allow-listed by
 # ID PAIR, never by rule — a rule would re-open the hole this check exists to close.
-CITE_DUP_OK = {
-    ('r-dfars-5-205-302', 'r-dfars-5-205-302-2'),   # both "205.302 Public Announcement"
-}
+# Empty since 2026-10-19: the 205.302 / 205.302-2 pair was renumbered by DPCAP's
+# Revision 1 (205.302 + 205.302-70). Add pairs back as tuples.
+CITE_DUP_OK = set()
 
 # Functions carrying a "KEEP IDENTICAL"/"KEEP IN SYNC" comment, and where their copies
 # live. Adding a mirror is one line here.

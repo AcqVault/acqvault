@@ -48,7 +48,7 @@
     "ref": "RFO 6.301 · SAM.gov"
   },
   "0df8e100e849": {
-    "x": "$100M for DoD, $30M civilian — and know WHICH section carries it. The DoD rule is R-DFARS 206.104-70(a): “no justification and approval is required for a sole-source contract under the 8(a) authority”, per section 823 of the FY2020 NDAA. The underlying competition exception is RFO 6.103-5, Authorized or required by statute. ⚠ RFO 19.108-7 is a different rule — it sets the COMPETITIVE 8(a) threshold ($8.5M manufacturing / $5.5M other), not the J&A line, and citing it here is the common misdirect.",
+    "x": "$100M for DoD, $30M civilian — and know WHICH section carries it. The DoD rule is R-DFARS 206.104-70(b), which sets the 8(a) justification trigger at “a sole-source 8(a) contract exceeding $100 million” in lieu of the FAR threshold; above it the HCA approves (206.104-71(d), section 823 of the FY2020 NDAA). The underlying competition exception is RFO 6.103-5, Authorized or required by statute. ⚠ RFO 19.108-7 is a different rule — it sets the COMPETITIVE 8(a) threshold ($8.5M manufacturing / $5.5M other), not the J&A line, and citing it here is the common misdirect.",
     "ref": "R-DFARS 206.104-70 · RFO 6.103-5 · Vol. 2, Small Business"
   },
   "ba6d444cbe87": {
@@ -120,8 +120,8 @@
     "ref": "RFO 1.405 · Vol. 2, Authority"
   },
   "ed23a8e28274": {
-    "x": "The civilian stay is two dates (RFO 33.105-3(b)(1)) — 10 days from award or 5 from the required debrief, whichever is later. DoD replaces it: R-DFARS 233.105-370 runs the LATEST of four — 10 days after award; 10 days after a task or delivery order over $25 million is issued; 5 days after an offered debrief date (even if the protester rejected it); and 5 days after the required postaward debrief is concluded — which, under enhanced debriefing, means timely follow-up questions answered in writing. Running the civilian two-date math on a DoD award is how a live stay gets miscalled.",
-    "ref": "R-DFARS 233.105-370 · RFO 33.105-3"
+    "x": "The civilian stay is two dates (RFO 33.105-3(b)(1)) — 10 days from award or 5 from the required debrief, whichever is later. DoD replaces it: R-DFARS 233.105-70 runs the LATEST of four — 10 days after award; 10 days after a task or delivery order over $35 million is issued; 5 days after an offered debrief date (even if the protester rejected it); and 5 days after the required postaward debrief is concluded — which, under enhanced debriefing, means timely follow-up questions answered in writing. Running the civilian two-date math on a DoD award is how a live stay gets miscalled.",
+    "ref": "R-DFARS 233.105-70 · RFO 33.105-3"
   },
   "d0650ad9021f": {
     "x": "GAO must decide within 100 days by statute; agency protests target roughly 35. The 100-day certainty is why agencies take GAO seriously — the clock never slips.",

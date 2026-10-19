@@ -1905,7 +1905,7 @@
     function loadVehDir() {
       if (vehDir) return Promise.resolve(vehDir);
       if (!vehDirPromise) {
-        vehDirPromise = fetch('/assets/vehicles.json?v=5').then(r => r.ok ? r.json() : null)
+        vehDirPromise = fetch('/assets/vehicles.json?v=6').then(r => r.ok ? r.json() : null)
           .then(d => { vehDir = d; return d; }).catch(() => null);
       }
       return vehDirPromise;

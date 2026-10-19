@@ -1,6 +1,6 @@
 {
-  "verified_as_of": "2026-07-11",
-  "note": "Curated from official sponsor pages only (GSA, NASA SEWP, NITAAC, CHESS, Navy, DISA, DIA, DLA). Fields marked null could not be verified on an official page and are deliberately omitted from display. Confirm every fee and ordering rule against the linked ordering guide before relying on it.",
+  "verified_as_of": "2026-10-19",
+  "note": "Curated from official sponsor pages only (GSA, NASA SEWP, NITAAC, CHESS, Navy, DISA, DIA, DLA). Fields marked null could not be verified on an official page and are deliberately omitted from display. Confirm every fee and ordering rule against the linked ordering guide before relying on it. Oct 2026 re-check: Army CHESS/ACC, NITAAC, SeaPort and DITCO pages block automated access, so ites-3s, ites-sw2, ites-4h, esi-admc, army-rs3, cio-sp3, cio-cs, seaport-nxg and encore-iii carry their July 2026 verification.",
   "vehicles": [
     {
       "id": "gsa-mas",
@@ -12,7 +12,7 @@
       "ordering": "direct",
       "dpa": false,
       "fee": "0.75% Industrial Funding Fee, embedded in Schedule prices",
-      "scope": "Millions of commercial products and services across 10 large categories (IT, professional services, facilities, industrial, security, transportation).",
+      "scope": "Millions of commercial products and services across 12 large categories (IT, professional services, facilities, industrial, security, transportation).",
       "status": "Active, evergreen — continuous open solicitation.",
       "ordering_end": null,
       "url": "https://www.gsa.gov/buy-through-us/purchasing-programs/multiple-award-schedule",
@@ -34,9 +34,9 @@
       "dpa": false,
       "fee": "0.34% surcharge, embedded in prices",
       "scope": "IT/communications/AV products and product-based services for all federal agencies.",
-      "status": "Active — NASA intends to extend through 1/31/2027 to bridge to SEWP VI.",
+      "status": "Active — NASA extended the SEWP V period of performance through 1/31/2027 to bridge to SEWP VI.",
       "ordering_end": "2027-01-31",
-      "url": "https://www.sewp.nasa.gov/ordering.shtml",
+      "url": "https://www.sewp.nasa.gov/sewpv/ordering.shtml",
       "tags": {
         "naics": [
           "5415",
@@ -78,11 +78,11 @@
       "bic": null,
       "ordering": "pending",
       "dpa": false,
-      "fee": null,
+      "fee": "0.34% surcharge, embedded in prices",
       "scope": "Successor to SEWP V with expanded IT-services scope (ICT/AV solutions).",
-      "status": "In transition — awards in process; anticipated period 11/1/2026–10/31/2036; not yet open for ordering.",
-      "ordering_end": null,
-      "url": "https://www.sewp.nasa.gov/",
+      "status": "Awarded — anticipated period 11/1/2026–10/31/2036; not yet open for ordering (opens 11/1/2026).",
+      "ordering_end": "2036-10-31",
+      "url": "https://www.sewp.nasa.gov/sewpvi/",
       "tags": {
         "naics": [
           "5415",
@@ -253,7 +253,7 @@
       "dpa": true,
       "fee": "Contract access fee generally 0.75% (per GSA Small Business GWAC guide)",
       "scope": "Customized IT services from small business pools (SB, WOSB, HUBZone, SDVOSB). No ceiling; on-ramps planned.",
-      "status": "NEWLY OPEN — all four pools open for ordering as of mid-2026; more awards expected through FY2026.",
+      "status": "OPEN — all four pools awarded; HUBZone and SDVOSB base periods run to 12/1/2030, WOSB to 3/8/2031.",
       "ordering_end": null,
       "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/polarisr",
       "tags": {
@@ -331,7 +331,7 @@
       "dpa": null,
       "fee": "0.75% contract access fee (separate CLIN)",
       "scope": "Human capital management and training services.",
-      "status": "SUNSETTING — 8(a) ordering ended 12/21/2025; Unrestricted ends 9/25/2026; SB ends 11/9/2026. Follow-on work → OASIS+ or MAS.",
+      "status": "SUNSETTING — 8(a) ordering ended 12/21/2025; Unrestricted ended 9/25/2026; SB ends 11/9/2026. Follow-on work → OASIS+ or MAS.",
       "ordering_end": "2026-11-09",
       "url": "https://www.gsa.gov/buy-through-us/products-and-services/human-capital/human-capital-and-training-solutions",
       "tags": {
@@ -364,9 +364,9 @@
       "dpa": true,
       "fee": null,
       "scope": "Enterprise telecommunications and networking — voice, data, internet, wireless, managed network, security.",
-      "status": "Active — all task orders must end by 7/30/2032; GSA researching the successor.",
+      "status": "Active — ordering period (option 2) runs to 7/30/2032; EIS is not onboarding new vendors.",
       "ordering_end": "2032-07-30",
-      "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/telecommunications-and-network-services/enterprise-infrastructure-solutions",
+      "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/enterprise-infrastructure-solutions",
       "tags": {
         "naics": [
           "5171",
@@ -389,42 +389,6 @@
       }
     },
     {
-      "id": "2git",
-      "name": "GSA 2GIT BPAs",
-      "sponsor": "GSA (DAF origin)",
-      "type": "BPA",
-      "audience": "gov-wide",
-      "bic": true,
-      "ordering": "direct",
-      "dpa": false,
-      "fee": "MAS 0.75% IFF applies via Schedule pricing",
-      "scope": "IT hardware, COTS software, and related services from 70+ SCRM-vetted BPA holders. MANDATORY for Air Force IT-product buys.",
-      "status": "Active but ENDING — ordering period closes 9/30/2026; follow-on not yet announced.",
-      "ordering_end": "2026-09-30",
-      "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/multiple-award-schedule-it/bpas-2git",
-      "tags": {
-        "naics": [
-          "334",
-          "5415",
-          "4234",
-          "5112"
-        ],
-        "psc": [
-          "70",
-          "7A",
-          "7B",
-          "7C"
-        ],
-        "kw": [
-          "hardware",
-          "software",
-          "laptop",
-          "cots",
-          "air force"
-        ]
-      }
-    },
-    {
       "id": "astro",
       "name": "GSA ASTRO",
       "sponsor": "GSA AAS + DoD",
@@ -433,11 +397,11 @@
       "bic": null,
       "ordering": "assisted",
       "dpa": null,
-      "fee": "No contract access fee — negotiated GSA assisted-acquisition fee per order",
+      "fee": null,
       "scope": "Services for manned/unmanned systems, robotics, and platforms — operations, maintenance, integration, R&D.",
       "status": "Active. Task orders are signed only by GSA AAS contracting officers — requiring activities go through GSA AAS.",
       "ordering_end": null,
-      "url": "https://aas.gsa.gov/astro/",
+      "url": "https://www.gsa.gov/assisted-acquisition-services/acquisition-process/astro",
       "tags": {
         "naics": [
           "3364",
@@ -794,7 +758,7 @@
       "scope": "Firefighting and emergency services equipment, including wildland fire. DLA competes and awards among FESE primes.",
       "status": "Active.",
       "ordering_end": null,
-      "url": "https://www.dla.mil/Portals/104/Documents/TroopSupport/ConstructionandEquipment/FESE/FESE%20CustomerGuidelines%20(February%202022).pdf",
+      "url": "https://www.dla.mil/Troop-Support/Construction-and-Equipment/Fire-and-Emergency-Services-Equipment/",
       "tags": {
         "naics": [
           "4242",
@@ -824,7 +788,7 @@
       "scope": "Facilities MRO supplies by region — DLA competes your requirement among regional primes.",
       "status": "Active.",
       "ordering_end": null,
-      "url": "https://www.dla.mil/Portals/104/Documents/TroopSupport/ConstructionandEquipment/MRO_CustomerGuidance.pdf",
+      "url": "https://www.dla.mil/Troop-Support/Construction-and-Equipment/Maintenance-Repair-and-Operations/",
       "tags": {
         "naics": [
           "2382",
@@ -859,7 +823,7 @@
       "scope": "Full-range IT and health-IT services — $60.7B, 10 years, 33 primes (~17 SDVOSB). Ordering runs through VA TAC; OMB Tier 2 multi-agency designation.",
       "status": "OPEN — cleared for task orders after the final protests were denied (Mar 2026); legacy T4NG winding down.",
       "ordering_end": null,
-      "url": "https://www.va.gov/opal/tac/t4ng.asp",
+      "url": "https://department.va.gov/procurement-acquisition-and-logistics/technology-acquisition-center/",
       "tags": {
         "naics": [
           "5415",
@@ -994,7 +958,7 @@
       "ordering": "restricted",
       "dpa": null,
       "fee": null,
-      "scope": "98 publisher enterprise-software agreements (as of Jul 2026) — Microsoft, Oracle, Cisco, VMware, Red Hat, AWS, ServiceNow, Splunk, Palo Alto, Adobe-class publishers down to niche security tools — for the DoD/DoW, Coast Guard, and Intelligence communities. DFARS 208.74 makes checking ESI MANDATORY before DoD buys commercial software. Each agreement lists its resellers and ordering guide on esi.mil.",
+      "scope": "118 enterprise agreements listed (as of Oct 2026) — Microsoft, Oracle, Cisco, VMware, Red Hat, AWS, ServiceNow, Splunk, Palo Alto, Adobe-class publishers down to niche security tools — for the DoD/DoW, Coast Guard, and Intelligence communities. DFARS 208.74 makes checking ESI MANDATORY before DoD buys commercial software. Each agreement lists its resellers and ordering guide on esi.mil.",
       "status": "Active (program rebranded DOW ESI).",
       "ordering_end": null,
       "url": "https://www.esi.mil/",
@@ -1158,9 +1122,9 @@
       "dpa": false,
       "fee": "0.75% (SIN ordering; legacy custom-solutions IDIQs carried 2.00%)",
       "scope": "Commercial satellite communications — transponded capacity, subscription/managed services, satphones, terminals; any commercial band.",
-      "status": "Active as a MAS SIN (the legacy CS2/CS3 custom IDIQs have wound down).",
+      "status": "Active as MAS SIN 517410 (the legacy CS2/CS3 custom IDIQs have wound down).",
       "ordering_end": null,
-      "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/telecommunications-and-network-services/satellite-communications/comsatcom",
+      "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/multiple-award-schedule-it/comsatcom",
       "tags": {
         "naics": [
           "5174"
@@ -1189,7 +1153,7 @@
       "dpa": null,
       "fee": null,
       "scope": "$9B multi-vendor cloud IDIQ (AWS, Google, Microsoft, Oracle) for DoD — orders flow through DISA DITCO via the DAPPS portal.",
-      "status": "Active — ordering through June 2028; JWCC Next solicitation planned FY26 with awards targeted early 2027.",
+      "status": "Active — ordering through June 2028; follow-on JWCC Next is in procurement, awards targeted early 2027.",
       "ordering_end": "2028-06-30",
       "url": "https://www.disa.mil/",
       "tags": {
@@ -1351,7 +1315,7 @@
       "scope": "250+ NWCG/NFES wildland fire supplies and equipment via FedMall — federal, state, and local fire agencies (state/local pre-pay by card).",
       "status": "Active at DLA since 2014 (transferred from GSA; no GSA wildland fire program remains).",
       "ordering_end": null,
-      "url": "https://www.dla.mil/Troop-Support/",
+      "url": "https://www.dla.mil/Troop-Support/Construction-and-Equipment/Fire-and-Emergency-Services-Equipment/",
       "tags": {
         "naics": [
           "4242",
@@ -1584,7 +1548,7 @@
       "ordering": "restricted",
       "dpa": null,
       "fee": null,
-      "scope": "Air Force enterprise hardware buying programs (note: AF IT-product buys are mandatory via GSA 2GIT). Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
+      "scope": "Air Force enterprise hardware buying programs. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
       "status": "Active per DOW ESI listing.",
       "ordering_end": null,
       "url": "https://www.esi.mil/",
@@ -1720,33 +1684,6 @@
           "veritas",
           "backup",
           "army"
-        ]
-      }
-    },
-    {
-      "id": "esi-educause",
-      "name": "EDUCAUSE (DoW BPA)",
-      "sponsor": "DoD",
-      "type": "BPA",
-      "audience": "dod",
-      "bic": false,
-      "ordering": "restricted",
-      "dpa": null,
-      "fee": null,
-      "scope": "BPA listed by DOW ESI for EDUCAUSE-related services for DoW components. Listed under Other Contracts on esi.mil — the agreement page carries resellers, ordering guide, and POCs.",
-      "status": "Active per DOW ESI listing.",
-      "ordering_end": null,
-      "url": "https://www.esi.mil/",
-      "tags": {
-        "naics": [
-          "6117"
-        ],
-        "psc": [
-          "U0"
-        ],
-        "kw": [
-          "educause",
-          "education"
         ]
       }
     }

@@ -5,7 +5,7 @@
    "type": "recall",
    "topic": "Competition (CICA)",
    "q": "Which acquisitions are exempt from the part 6 competition requirements?",
-   "a": "Simplified acquisitions under part 13; procedures expressly authorized by statute; in-scope modifications (including exercising priced options evaluated in the original competition); orders under requirements and definite-quantity contracts; and orders against task- and delivery-order contracts entered into under part 16. Orders under indefinite-quantity contracts are exempt only conditionally: the contract must have been awarded under 6.101 or 6.102 with all responsible sources realistically permitted to compete for the order's requirements, or under 6.103 with a J&A that adequately covers the order. The IDIQ exemption is earned by the underlying award — it is not automatic. DoD adds one exemption of its own: contracts awarded to individuals under the 10 U.S.C. 1091 personal-services authority for health care (R-DFARS 237.201-170(b)) are exempt from part 6 (R-DFARS 206.001).",
+   "a": "Simplified acquisitions under part 13; procedures expressly authorized by statute; in-scope modifications (including exercising priced options evaluated in the original competition); orders under requirements and definite-quantity contracts; and orders against task- and delivery-order contracts entered into under part 16. Orders under indefinite-quantity contracts are exempt only conditionally: the contract must have been awarded under 6.101 or 6.102 with all responsible sources realistically permitted to compete for the order's requirements, or under 6.103 with a J&A that adequately covers the order. The IDIQ exemption is earned by the underlying award — it is not automatic. DoD adds one exemption of its own: contracts awarded to individuals under the 10 U.S.C. 1091 personal-services authority for health care (R-DFARS 237.201-70(b)(1)) are exempt from part 6 (R-DFARS 206.001-70(a)).",
    "x": "The bait is 'IDIQ orders are exempt' as a flat rule. The exemption is inherited — a clean 6.101/6.102 award where all sources could realistically compete for the order, or a J&A that covers it. An order the J&A doesn't reach has no exemption to inherit. DoD's add: 10 U.S.C. 1091 health-care personal-services awards sit outside part 6.",
    "cite": {
     "src": "rfo",
@@ -14,8 +14,8 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "206.001",
-    "quote": "As authorized by 10 U.S.C. 1091, contracts awarded to individuals using the procedures at 237.201-1(ii) are exempt from the competition requirements of FAR Part 6."
+    "sec": "206.001-70",
+    "quote": "This part does not apply to— (a) As authorized by 10 U.S.C. 1091, personal services contracts awarded for health care to individuals using the procedures at 237.201-70(b)(1);"
    }
   },
   {
@@ -37,7 +37,7 @@
    "type": "recall",
    "topic": "Competition (CICA)",
    "q": "Which competition exceptions do not require a justification and approval?",
-   "a": "Under 6.104(a) there are two: authorized or required by statute (6.103-5) and public interest (6.103-7). But an Air Force reader has a third — 6.103-4(c) provides that contracts awarded by DoD, NASA, and the Coast Guard under the international agreement authority do not require the written justifications and approvals described in 6.104, and R-DFARS 206.103-4(c) adds that the head of the contracting activity instead prepares a document describing the terms of the agreement, treaty, or written directions (such as a Letter of Offer and Acceptance) that require other than competitive procedures. Every other 6.103 authority requires the 6.104 justification and approval. Two carve-backs inside the statute lane: 6.103-5(e) restores the J&A requirement for sole-source 8(a) contracts over $30 million, and for DoD R-DFARS 206.104-70 moves that trigger to $100 million — no J&A up to $100 million, but above it the contracting officer must justify the sole-source award in writing under FAR 6.104-1, obtain approval, and make the justification public after award.",
+   "a": "Under 6.104(a) there are two: authorized or required by statute (6.103-5) and public interest (6.103-7). But an Air Force reader has a third — 6.103-4(c) provides that contracts awarded by DoD, NASA, and the Coast Guard under the international agreement authority do not require the written justifications and approvals described in 6.104, and R-DFARS 206.103-470(c) adds that the head of the contracting activity instead prepares a document describing the terms of the agreement, treaty, or written directions (such as a Letter of Offer and Acceptance) that require other than competitive procedures. Every other 6.103 authority requires the 6.104 justification and approval. Two carve-backs inside the statute lane: 6.103-5(e) restores the J&A requirement for sole-source 8(a) contracts over $30 million, and for DoD R-DFARS 206.104-70(b) moves that trigger to $100 million — no J&A up to $100 million, but above it the contracting officer must justify the sole-source award in writing under FAR 6.104-1, obtain approval, and make the justification public after award.",
    "x": "'Two — statute and public interest' is the civilian half. A DoD reader adds the international-agreement lane, where an HCA document describing the agreement or LOA replaces the J&A. And the 8(a) carve-back splits: the J&A comes back at $30 million civilian-side, $100 million for DoD. Boards ask this to see which set of numbers you reach for.",
    "cite": {
     "src": "rfo",
@@ -47,7 +47,7 @@
    "dod": {
     "src": "r-dfars",
     "sec": "206.104-70",
-    "quote": "In accordance with section 823 of the National Defense Authorization Act for Fiscal Year 2020 (Pub. L. 116-92), no justification and approval is required for a sole- source contract under the 8(a) authority (15 U.S.C. 637(a)) for an amount not exceeding $100 million."
+    "quote": "(b) In lieu of the threshold at FAR 6.104-1(b), each justification for a sole-source 8(a) contract exceeding $100 million will include the information at FAR 6.104-1(b)."
    }
   },
   {
@@ -55,8 +55,8 @@
    "type": "recall",
    "topic": "Competition (CICA)",
    "q": "Under the one-responsible-source exception, when may a follow-on for a major system be sole-sourced?",
-   "a": "When award to another source would result in substantial duplication of cost to the Government not expected to be recovered through competition, or unacceptable delays in fulfilling the agency's requirements. The authority covers follow-ons for the continued development or production of a major system or highly specialized equipment — and, for DoD, NASA, and the Coast Guard, for the continued provision of highly specialized services as well. For DoD, a justification citing this authority must also include the information required by PGI 206.104-71(b) (R-DFARS 206.104-71), and a non-competitive follow-on to a previous award justified under it takes the procedures at PGI 206.104-270 (R-DFARS 206.104-72(b)).",
-   "x": "The trap is treating 'the incumbent knows the program' as the justification. The authority demands evidence of harm from switching: duplicated cost competition won't recover, or delay the requirement can't absorb. And DoD adds teeth to exactly this scenario — the justification carries the PGI 206.104-71(b) content, and a repeat follow-on takes the PGI 206.104-270 procedures.",
+   "a": "When award to another source would result in substantial duplication of cost to the Government not expected to be recovered through competition, or unacceptable delays in fulfilling the agency's requirements. The authority covers follow-ons for the continued development or production of a major system or highly specialized equipment — and, for DoD, NASA, and the Coast Guard, for the continued provision of highly specialized services as well. For DoD, a justification citing this authority must also include the information required by PGI 206.104-70 (R-DFARS 206.104-70(a)(2)), and a non-competitive follow-on to a previous award justified under it takes the procedures at PGI 206.104-71 (R-DFARS 206.104-71(c)).",
+   "x": "The trap is treating 'the incumbent knows the program' as the justification. The authority demands evidence of harm from switching: duplicated cost competition won't recover, or delay the requirement can't absorb. And DoD adds teeth to exactly this scenario — the justification carries the PGI 206.104-70 content, and a repeat follow-on takes the PGI 206.104-71 procedures.",
    "cite": {
     "src": "rfo",
     "sec": "6.103-1",
@@ -64,8 +64,8 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "206.104-71",
-    "quote": "Include the information required by PGI 206.104-71(b) in justifications citing the authority at FAR 6.103-1."
+    "sec": "206.104-70",
+    "quote": "(2) Include the information required by PGI 206.104-70 in justifications citing the authority at 206.103-170 or FAR 6.103-1."
    }
   },
   {
@@ -97,7 +97,7 @@
    "dod": {
     "src": "r-dfars",
     "sec": "206.103-170",
-    "quote": "(c) Application for brand-name descriptions. Notwithstanding FAR 6.103-1(d), in accordance with section 888(a) of the National Defense Authorization Act for Fiscal Year 2017 (Pub. L. 114-328), the justification and approval addressed in FAR 6.104 is required in order to use brand name or equal descriptions."
+    "quote": "(d) Brand-name or equal descriptions. Notwithstanding FAR 6.103-1(d), in accordance with section 888(a) of the National Defense Authorization Act (NDAA) for Fiscal Year (FY) 2017 (Pub. L. 114-328), the justification and approval (J&A) addressed in FAR 6.104 is required to use brand name or equal descriptions."
    }
   },
   {
@@ -118,8 +118,8 @@
    "type": "recall",
    "topic": "Competition (CICA)",
    "q": "Recite the justification approval ladder.",
-   "a": "Up to $900,000 — the contracting officer (the 6.104(a)(12) certification is the approval). Over $900,000 to $20 million — advocate for competition, not delegable. Over $20 million to $90 million ($150 million for DoD, NASA, and the Coast Guard) — head of the procuring activity, who may delegate to a general or flag officer or a civilian above GS-15. Above that — senior procurement executive, not delegable except in the case of USD(A&S) acting as DoD's senior procurement executive, who may send the authority to an Assistant Secretary of Defense or, for a defense agency, an official above brigadier general or rear admiral (lower half) or a civilian at a comparable grade (R-DFARS 206.104-72(a)). Include the estimated dollar value of all options when setting the level, and note that a higher-level official may always approve a lower-dollar justification. One more DoD lane: sole-source 8(a) contracts need no justification and approval at all up to $100 million, and above $100 million the head of the procuring activity — not the senior procurement executive — approves, delegable only to that same flag-or-above level (R-DFARS 206.104-70, 206.104-72(c)).",
-   "x": "Set the level on the value including all options — undervaluing the action is how J&As get approved one level too low and die in review. Keep the ceilings straight: $90 million civilian, $150 million for DoD, NASA, and the Coast Guard. Know the DoD lanes — USD(A&S) may hand the top tier to an ASD, and sole-source 8(a) skips the ladder until $100 million, where the HPA owns it.",
+   "a": "Up to $900,000 — the contracting officer (the 6.104(a)(12) certification is the approval). Over $900,000 to $20 million — advocate for competition, not delegable. Over $20 million to $90 million ($150 million for DoD, NASA, and the Coast Guard) — head of the procuring activity, who may delegate to a general or flag officer or a civilian above GS-15. Above that — senior procurement executive, not delegable except in the case of USD(A&S) acting as DoD's senior procurement executive, who may send the authority to an Assistant Secretary of Defense or, for a defense agency, an official above brigadier general or rear admiral (lower half) or a civilian at a comparable grade (R-DFARS 206.104-71(b)). For DoD, though, R-DFARS 206.104-71 Table 206-1 replaces those tiers under 10 U.S.C. 3204(e)(1)(B): $10 million or below — the contracting officer; over $10 million to $100 million — the competition advocate, not delegable; over $100 million to $500 million — the head of the contracting activity, delegable only to a general or flag officer or a civilian at brigadier general or rear admiral (lower half) grade or higher; above $500 million — the senior procurement executive. Include the estimated dollar value of all options when setting the level, and note that a higher-level official may always approve a lower-dollar justification. One more DoD lane: the sole-source 8(a) justification trigger sits at $100 million, and above it the head of the contracting activity — not the senior procurement executive — approves, delegable to that same flag-or-above level (R-DFARS 206.104-70(b), 206.104-71(d)).",
+   "x": "Set the level on the value including all options — undervaluing the action is how J&As get approved one level too low and die in review. Keep the ladders straight: the RFO's runs $900,000 / $20 million / $90 million ($150 million for DoD, NASA, and the Coast Guard), but a DoD office works R-DFARS Table 206-1 instead — $10 million / $100 million / $500 million. Know the DoD lanes — USD(A&S) may hand the top tier to an ASD, and sole-source 8(a) skips the ladder until $100 million, where the HCA owns it.",
    "cite": {
     "src": "rfo",
     "sec": "6.104-2",
@@ -128,8 +128,8 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "206.104-72",
-    "quote": "In accordance with section 823 of the National Defense Authorization Act for Fiscal Year 2020 (Pub. L. 116-92), the head of the procuring activity is the approval authority for a proposed sole-source 8(a) contract exceeding $100 million."
+    "sec": "206.104-71",
+    "quote": "In lieu of the thresholds at FAR 6.104-2(b) Table 6-1 and in accordance with 10 U.S.C. 3204(e)(1)(B), approval levels are as follows:"
    }
   },
   {
@@ -157,7 +157,8 @@
     "src": "rfo",
     "sec": "6.102",
     "quote": "Acquisitions under this section do not require separate justification and approval or determination and findings."
-   }
+   },
+   "dod": "n/a"
   },
   {
    "rung": "5m",
@@ -317,7 +318,7 @@
    "dod": {
     "src": "r-dfars",
     "sec": "216.507-5",
-    "quote": "(c) Postaward notices and debriefing. In addition to the notice required by FAR part 15 and 16.507-5(c), a written or oral postaward debriefing of successful and unsuccessful awardees is required for task orders and delivery orders valued at $10 million or more (section 818 of the National Defense Authorization Act for Fiscal Year 2018 (Pub. L. 115-91))."
+    "quote": "(c) Postaward notices and debriefing. In addition to the notice required by FAR part 15 and 16.507-5(c), a written or oral postaward debriefing of successful and unsuccessful awardees is required for task orders and delivery orders valued at $15 million or more (section 818 of the National Defense Authorization Act for Fiscal Year 2018 (Pub. L. 115-91))."
    }
   },
   {
@@ -363,7 +364,7 @@
    "dod": {
     "src": "r-dfars",
     "sec": "216.504-3",
-    "quote": "(a)(4)(i) The senior procurement executive has the authority to make the determination authorized in FAR 16.504-3(a)(4)(i). (A) In accordance with 10 U.S.C. 3403(d)(3), when making the determination at FAR 16.504-3(a)(4)(i)(A), the senior procurement executive must determine that the task or delivery orders expected under the contract are so integrally related that only a single source can “efficiently perform the work,” instead of “reasonably perform the work” as required by the FAR. (a)(4)(ii) The congressional notification requirement at FAR 16.504-3(a)(4)(ii) does not apply to DoD. (a)(4)(iii) In accordance with 10 U.S.C. 3403(d)(3), the determination at FAR 16.504-3(a)(4)(iii) is not required if a justification has been executed, in accordance with FAR 6.104 and section 206.104."
+    "quote": "(a)(4)(i) The senior procurement executive has the authority to make the determination authorized in FAR 16.504-3(a)(4)(i). (A) In accordance with 10 U.S.C. 3403(d)(3), when making the determination at FAR 16.504-3(a)(4)(i)(A), the senior procurement executive must determine that the task or delivery orders expected under the contract are so integrally related that only a single source can “efficiently perform the work,” instead of “reasonably perform the work” as required by the FAR. (ii) The congressional notification requirement at FAR 16.504-3(a)(4)(ii) does not apply to DoD. (iii) In accordance with 10 U.S.C. 3403(d)(3), the determination at FAR 16.504-3(a)(4)(iii) is not required if a justification has been executed, in accordance with FAR 6.104 and section 206.104."
    }
   },
   {
@@ -399,7 +400,7 @@
    "type": "recall",
    "topic": "IDIQ Ordering & Fair Opportunity",
    "q": "How long may a DoD task- or delivery-order contract run?",
-   "a": "Up to five years, extendable by option or modification — but the total period as extended may not exceed 10 years unless the head of the agency determines in writing that exceptional circumstances require a longer period (R-DFARS 217.201-270(a) restates the same 5/10-year rule for DoD). One carve-out a board will probe: a task-order contract for advisory and assistance services is capped at a 5-year ordering period including all extensions (16.501-2(c)(2)), unless a longer period is specifically authorized by statute or the A&AS is determined incidental and not a significant component of the contract — plus a sole-source extension of up to 6 months when a follow-on award is delayed by circumstances not reasonably foreseeable and continuity of services requires it. DoD adds one more tripwire: senior procurement executive approval is required before issuing an order expected to extend more than 1 year beyond that 10-year (or extended) limit (R-DFARS 217.201-270(c)).",
+   "a": "Up to five years, extendable by option or modification — but the total period as extended may not exceed 10 years unless the head of the agency determines in writing that exceptional circumstances require a longer period (R-DFARS 217.201-71(a) restates the same 5/10-year rule for DoD). One carve-out a board will probe: a task-order contract for advisory and assistance services is capped at a 5-year ordering period including all extensions (16.501-2(c)(2)), unless a longer period is specifically authorized by statute or the A&AS is determined incidental and not a significant component of the contract — plus a sole-source extension of up to 6 months when a follow-on award is delayed by circumstances not reasonably foreseeable and continuity of services requires it. DoD adds one more tripwire: senior procurement executive approval is required before issuing an order expected to extend more than 1 year beyond that 10-year (or extended) limit (R-DFARS 217.201-71(c)).",
    "x": "Five years by design, ten by determination — but A&AS task-order contracts stop at 5 years including extensions unless a statute says otherwise, plus a 6-month sole-source continuity bridge when the follow-on slips unforeseeably. DoD's tripwire: an order reaching more than a year past the limit needs SPE approval before it issues.",
    "cite": {
     "src": "rfo",
@@ -408,7 +409,7 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "217.201-270",
+    "sec": "217.201-71",
     "quote": "(1) May be for any period up to 5 years; (2) May be subsequently extended for one or more successive periods in accordance with an option provided in the contract or a modification of the contract; and (3) Must not exceed 10 years unless the head of the agency determines in writing that exceptional circumstances require a longer ordering period."
    }
   },
@@ -417,7 +418,7 @@
    "type": "recall",
    "topic": "Options",
    "q": "List the determinations required before exercising an option.",
-   "a": "Written notice within the contract's specified time; funds available; the option fulfills an existing Government requirement; it was synopsized unless exempt; no active SAM exclusion; acceptable performance on the current contract; the price is fair and reasonable under current market conditions and exercise is in the Government's best interest; and the exercise complies with part 6. DoD adds two more gates before exercise: the contractor's SAM record is active with the UEI, CAGE code, name, and physical address accurate in the contract document; and SPRS shows both a current NIST SP 800-171 DoD Assessment summary score (not more than 3 years old) for each covered contractor information system and a current CMMC certificate at the level the contract requires (R-DFARS 217.204-170).",
+   "a": "Written notice within the contract's specified time; funds available; the option fulfills an existing Government requirement; it was synopsized unless exempt; no active SAM exclusion; acceptable performance on the current contract; the price is fair and reasonable under current market conditions and exercise is in the Government's best interest; and the exercise complies with part 6. DoD adds two more gates before exercise: the contractor's SAM record is active with the UEI, CAGE code, name, and physical address accurate in the contract document; and SPRS shows both a current NIST SP 800-171 DoD Assessment summary score (not more than 3 years old) for each covered contractor information system and a current CMMC certificate at the level the contract requires (R-DFARS 217.204-70).",
    "x": "Recite the RFO checklist and a DoD board hears half the answer. A DoD option isn't ripe until you also verify SAM active with UEI, CAGE, name, and address matching the contract, a NIST SP 800-171 score in SPRS under 3 years old, and a current CMMC certificate at the contract's level. The cyber gates are where real option exercises stall.",
    "cite": {
     "src": "rfo",
@@ -426,8 +427,8 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "217.204-170",
-    "quote": "In addition to the requirements at FAR 17.204-1(b), exercise an option only after: (a) Determining that the contractor’s record in the System for Award Management database is active and the contractor’s unique entity identifier, Commercial and Government Entity (CAGE) code, name, and physical address are accurately reflected in the contract document. See PGI 217.204-170 for the requirement to perform cost or price analysis of spare parts prior to exercising any option for firm- fixed-price contracts containing spare parts. (b) Verifying in the Supplier Performance Risk System (SPRS) (https://www.sprs.csd.disa.mil/) that— (1) The summary level score of a current NIST SP 800-171 DoD Assessment (i.e., not more than 3 years old, unless a lesser time is specified in the solicitation) for each covered contractor information system that is relevant to an offer, contract, task order, or delivery order are posted. (2) The contractor has a CMMC certificate at the level required by the contract, and that it is current (i.e., not more than 3 years old)."
+    "sec": "217.204-70",
+    "quote": "In addition to the requirements at FAR 17.204-1(b), exercise an option only after— (a) Determining that the contractor’s record in the System for Award Management database is active and the contractor’s unique entity identifier, Commercial and Government Entity (CAGE) code, name, and physical address are accurately reflected in the contract document. See PGI 217.204-70 for the requirement to perform cost or price analysis of spare parts prior to exercising any option for firm-fixed-price contracts containing spare parts; and (b) Verifying in the Supplier Performance Risk System (SPRS) (https://www.sprs.csd.disa.mil/) that— (1) The summary level score of a current NIST SP 800-171 DoD Assessment (i.e., not more than 3 years old, unless a lesser time is specified in the solicitation) for each covered contractor information system that is relevant to an offer, contract, task order, or delivery order are posted; and (2) The contractor has a Cybersecurity Maturity Model Certification (CMMC) certificate at the level required by the contract, and that it is current (see"
    }
   },
   {
@@ -614,7 +615,7 @@
    "type": "recall",
    "topic": "Contract Types",
    "q": "What gates must a cost-reimbursement contract clear before award?",
-   "a": "A written acquisition plan approved at least one level above the contracting officer; the agency-head justification for other than fixed-price if 16.104 requires it; a contractor accounting system that can segregate, accumulate, and allocate contract costs; and sufficient Government resources — including a designated COR — to manage it. And one absolute bar: cost-reimbursement is not allowed for the purchase of commercial products and commercial services (16.301-3(b)). DoD adds a statutory bar of its own: no cost-plus-fixed-fee, cost-plus-award-fee, or cost-plus-incentive-fee contracts in connection with military construction or military family housing — even under a declaration of war or national emergency (10 U.S.C. 3323; R-DFARS 216.301-3).",
+   "a": "A written acquisition plan approved at least one level above the contracting officer; the agency-head justification for other than fixed-price if 16.104 requires it; a contractor accounting system that can segregate, accumulate, and allocate contract costs; and sufficient Government resources — including a designated COR — to manage it. And one absolute bar: cost-reimbursement is not allowed for the purchase of commercial products and commercial services (16.301-3(b)). DoD adds a statutory bar of its own: no cost-plus-fixed-fee, cost-plus-award-fee, or cost-plus-incentive-fee contracts in connection with military construction or military family housing — even under a declaration of war or national emergency (10 U.S.C. 3323; R-DFARS 216.301-370).",
    "x": "All four gates answer one question: can both sides manage a contract where the Government holds the cost risk? Two absolutes sit on top: never cost-reimbursement for commercial buys, and in DoD never cost-plus for military construction or family housing — 'notwithstanding a declaration of war,' a phrase boards quote because it means exactly what it says.",
    "cite": {
     "src": "rfo",
@@ -623,8 +624,8 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "216.301-3",
-    "quote": "For contracts in connection with a military construction project or a military family housing project, contracting officers must not use cost-plus-fixed-fee, cost-plus-award- fee, or cost-plus-incentive-fee contract types (10 U.S.C 3323). This applies notwithstanding a declaration of war or the declaration by the President of a national emergency under section 201 of the National Emergencies Act (50 U.S.C. 1621) that includes the use of the Armed Forces."
+    "sec": "216.301-370",
+    "quote": "For contracts in connection with a military construction project or a military family housing project, contracting officers must not use cost-plus-fixed-fee, cost-plus-award-fee, or cost-plus-incentive-fee contract types (10 U.S.C 3323). This applies notwithstanding a declaration of war or the declaration by the President of a national emergency under section 201 of the National Emergencies Act (50 U.S.C. 1621) that includes the use of the Armed Forces."
    }
   },
   {
@@ -632,13 +633,18 @@
    "type": "recall",
    "topic": "Contract Types",
    "q": "At what values does the Executive Order 14402 other-than-fixed-price justification apply?",
-   "a": "$100 million for DoD, $35 million for NASA, $25 million for DHS, and $10 million for all other Federal agencies — approved by the head of the agency before using a covered contract or order. Know the exceptions: multiple-award contracts are exempt — but task orders, delivery orders, and BPAs under them are not — along with contracts supporting an emergency, major disaster, or contingency operation; R&D contracts or orders; and pre-production development for a major system acquisition (16.104(e)).",
+   "a": "$100 million for DoD, $35 million for NASA, $25 million for DHS, and $10 million for all other Federal agencies — approved by the head of the agency before using a covered contract or order. Know the exceptions: multiple-award contracts are exempt — but task orders, delivery orders, and BPAs under them are not — along with contracts supporting an emergency, major disaster, or contingency operation; R&D contracts or orders; and pre-production development for a major system acquisition (16.104(e)). For DoD, R-DFARS 216.104-70 sends implementation and the justification submission through the procedures at PGI 216.104-70.",
    "x": "Four tiers, one rule: head-of-agency justification before going other-than-fixed-price at $100M DoD, $35M NASA, $25M DHS, $10M elsewhere. The exemption structure is the trap — the multiple-award contract is exempt but its orders and BPAs are not, so the question resurfaces at every order. R&D, emergencies, and pre-production major-system development stay out.",
    "cite": {
     "src": "rfo",
     "sec": "16.104",
     "quote": "a justification is required for covered contracts and orders valued at or above— (i) $100 million, for DoD; (ii) $35 million, for NASA; (iii) $25 million, for Department of Homeland Security; or (iv) $10 million, for all other Federal agencies.",
     "amount": "$100 million"
+   },
+   "dod": {
+    "src": "r-dfars",
+    "sec": "216.104-70",
+    "quote": "Follow the procedures at PGI 216.104-70 for implementation and justification submission."
    }
   },
   {
@@ -692,7 +698,7 @@
    "type": "recall",
    "topic": "Small Business Programs",
    "q": "When must an 8(a) acquisition be competed among 8(a) participants?",
-   "a": "When there is a reasonable expectation that at least two eligible, responsible 8(a) participants will offer at a fair market price, and the anticipated total value including options exceeds $8.5 million for manufacturing NAICS codes or $5.5 million for all other acquisitions. Do not read that as license to go sole-source below the threshold: under 19.108-7(d)(1) a contracting officer below the competitive threshold must first try the acquisition as a competitive 8(a) order using the governmentwide contracts SBA has approved for competition among 8(a) contract-holders before proceeding to a sole-source 8(a) award. Splitting a requirement that exceeds the threshold into lesser amounts to reach 8(a) sole-source procedures is prohibited (19.108-7(c)). One DoD wrinkle: above the competitive threshold, SBA may still accept the requirement for a sole-source 8(a) award on behalf of a concern owned by a Native Hawaiian Organization (R-DFARS 219.108-7).",
+   "a": "When there is a reasonable expectation that at least two eligible, responsible 8(a) participants will offer at a fair market price, and the anticipated total value including options exceeds $8.5 million for manufacturing NAICS codes or $5.5 million for all other acquisitions. Do not read that as license to go sole-source below the threshold: under 19.108-7(d)(1) a contracting officer below the competitive threshold must first try the acquisition as a competitive 8(a) order using the governmentwide contracts SBA has approved for competition among 8(a) contract-holders before proceeding to a sole-source 8(a) award. Splitting a requirement that exceeds the threshold into lesser amounts to reach 8(a) sole-source procedures is prohibited (19.108-7(c)). One DoD wrinkle: above the competitive threshold, SBA may still accept the requirement for a sole-source 8(a) award on behalf of a concern owned by a Native Hawaiian Organization (R-DFARS 219.108-71).",
    "x": "Above the competitive threshold you compete among 8(a) firms; below it sole-source is not automatic — 19.108-7(d)(1) sends you to the SBA-approved governmentwide vehicles for a competitive 8(a) order first. Splitting to duck the threshold is prohibited. DoD's wrinkle runs the other direction: SBA may accept sole-source awards above the threshold for NHO-owned concerns.",
    "cite": {
     "src": "rfo",
@@ -702,8 +708,8 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "219.108-7",
-    "quote": "(b)(i) For acquisitions exceeding the competitive threshold (see FAR 19.108-7(a)(2)), the SBA may accept the requirement for a sole source 8(a) award on behalf of a small business concern owned by a Native Hawaiian Organization (Section 8020 of Pub. L. 109-148)."
+    "sec": "219.108-71",
+    "quote": "(a) For acquisitions exceeding the competitive threshold (see FAR 19.108-7(a)(2)), the SBA may accept the requirement for a sole source 8(a) award on behalf of a small business concern owned by a Native Hawaiian Organization"
    }
   },
   {
@@ -764,7 +770,7 @@
    "type": "recall",
    "topic": "Small Business Programs",
    "q": "When does a subcontracting plan become a condition of award?",
-   "a": "In acquisitions expected to exceed $900,000 ($2 million for construction of a public facility) with subcontracting possibilities, the apparently successful other-than-small offeror must submit an acceptable subcontracting plan or be ineligible for award. Plans are never required from small business concerns, for personal services contracts, or for contracts performed entirely outside the United States and its outlying areas (19.109(b)). DoD contracts pair the 52.219-9 plan clause with the DoD-unique clause at 252.219-7996 — or 252.219-7997 for contractors with comprehensive subcontracting plans approved under the Test Program (R-DFARS 219.109).",
+   "a": "In acquisitions expected to exceed $900,000 ($2 million for construction of a public facility) with subcontracting possibilities, the apparently successful other-than-small offeror must submit an acceptable subcontracting plan or be ineligible for award. Plans are never required from small business concerns, for personal services contracts, or for contracts performed entirely outside the United States and its outlying areas (19.109(b)). DoD contracts pair the 52.219-9 plan clause with the DoD-unique clause at 252.219-7996 — or 252.219-7997 for contractors with comprehensive subcontracting plans approved under the Test Program (R-DFARS 219.109-70).",
    "x": "Condition of award means what it says: an other-than-small offeror without an acceptable plan is ineligible, not merely marked down. Small businesses never submit plans; neither do personal-services contracts or wholly-overseas performance. DoD pairs 52.219-9 with 252.219-7996 — or -7997 for Test Program comprehensive-plan contractors — a pairing worth naming to a board.",
    "cite": {
     "src": "rfo",
@@ -774,8 +780,8 @@
    },
    "dod": {
     "src": "r-dfars",
-    "sec": "219.109",
-    "quote": "(e)(2)(A) Insert the clause at 252.219-7996 , Small Business Subcontracting Plan (DoD Contracts), in solicitations and contracts, including those using FAR part 12 procedures for the acquisition of commercial products and commercial services, that contain the clause at FAR 52.219-9, Small Business Subcontracting Plan."
+    "sec": "219.109-70",
+    "quote": "(a) Insert the clause at 252.219-7996, Small Business Subcontracting Plan (DoD Contracts), in solicitations and contracts, including solicitations and contracts using FAR part 12 procedures for the acquisition of commercial products and commercial services, that contain the clause at FAR 52.219-9, Small Business Subcontracting Plan."
    }
   }
  ]

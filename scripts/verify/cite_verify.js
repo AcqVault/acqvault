@@ -63,11 +63,11 @@ console.log(`\n  citation collisions within a part: ${collisions} doc(s)` +
 // This printed the P0 invariant and passed regardless, so "ALL CITATION CHECKS
 // PASSED" was printed over a live count of 2 — the signature bug this suite
 // exists to catch. render_health.py owns the invariant FATALLY and holds the
-// allow-list (CITE_DUP_OK: the 205.302 / 205.302-2 pair, both genuinely titled
-// "205.302 Public Announcement"). Duplicating that list here would create the
+// allow-list (CITE_DUP_OK — empty since DPCAP's 2026 revision renumbered the old
+// 205.302 / 205.302-2 pair). Duplicating that list here would create the
 // second source of truth this repo keeps getting caught by, so this is a
 // REGRESSION guard: the count may not grow past what render_health sanctions.
-const ALLOWED_COLLISIONS = 2;  // one allow-listed pair = 2 docs
+const ALLOWED_COLLISIONS = 0;  // CITE_DUP_OK is empty
 ok(collisions <= ALLOWED_COLLISIONS,
    `citation collisions within a part: ${collisions} (allowed ${ALLOWED_COLLISIONS}, ` +
    `see CITE_DUP_OK in scripts/render_health.py) — a new one means a parse fell through`);
