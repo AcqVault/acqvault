@@ -199,7 +199,10 @@ function loadDocs() {
 }
 
 // R-DFARS/PGI revised by DPCAP link the signed memo on acq.osd.mil, not acquisition.gov.
-function srcHost(url) { return /acq\.osd\.mil/i.test(String(url)) ? 'DPCAP (acq.osd.mil)' : 'acquisition.gov'; }
+function srcHost(url) {
+  if (/acq\.osd\.mil/i.test(String(url))) return 'DPCAP (acq.osd.mil)';
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return 'acquisition.gov'; }
+}
 
 let devsCache = null;
 function loadDeviations() {
