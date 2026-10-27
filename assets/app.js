@@ -3488,6 +3488,22 @@ function renderResults(data, query) {
   renderMoreButton(hits.length, total);
 }
 
+// Many sections' text opens with their own heading, so the snippet repeated the title
+// line under it. Drop that lead (counting only text, not the <mark> highlight tags).
+function stripLeadTitle(html, title) {
+  title = String(title || '').trim();
+  const s = String(html || '').replace(/^\s+/, '');
+  if (!title || s.replace(/<\/?mark>/g, '').indexOf(title) !== 0) return html;
+  let i = 0, n = 0;
+  while (i < s.length && n < title.length) {
+    if (s[i] === '<') { const j = s.indexOf('>', i); if (j < 0) break; i = j + 1; continue; }
+    i++; n++;
+  }
+  if (s.slice(i, i + 7) === '</mark>') i += 7;
+  const rest = s.slice(i).replace(/^[\s.:;,\u2014\u2013-]+/, '');
+  return rest || html;   // never leave an empty snippet
+}
+
 // One result card's HTML — shared by the initial render and the "Show more" append.
 function resultCardHTML(hit) {
   const hl = hit._formatted || hit;
@@ -3502,7 +3518,7 @@ function resultCardHTML(hit) {
       <a class="rc-open" href="${esc(href)}" aria-label="Open: ${esc(hit.title || 'document')}">
         <div class="rc-meta">${sourceTag(hit.source)}${badgeTag(hit.status)}${updatedTag(hit.id)}${hit.part ? `<span class="rc-part">${partWord(hit.source)} ${esc(displayPartForSource(hit.source, hit.part))}</span>` : ''}</div>
         <div class="rc-title">${markOnly(hl.title || hit.title || 'Untitled')}</div>
-        <div class="rc-snippet">${markOnly(hl.content || '')}</div>
+        <div class="rc-snippet">${markOnly(stripLeadTitle(hl.content || '', hit.title))}</div>
       </a>
       <div class="rc-foot">
         <span class="rc-asof" title="When AcqVault captured this copy — not the regulation's effective date">${hit.indexed_at ? `AcqVault copy · ${esc(fmtAsOf(hit.indexed_at))}` : ''}</span>

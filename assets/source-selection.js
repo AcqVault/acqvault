@@ -83,7 +83,7 @@
         (o.priceFinal !== '\u2014' ? '<small>from ' + esc(o.priceInitial) + '</small>'
                                    : '<small>eliminated</small>') + '</td></tr>';
     }).join('');
-    return '<div class="ss-off-wrap"><table class="ss-off"><thead><tr><th>Offeror</th>' +
+    return '<div class="ss-off-wrap" tabindex="0" role="region" aria-label="Offerors (scrolls sideways)"><table class="ss-off"><thead><tr><th>Offeror</th>' +
       '<th>Technical</th><th>Risk</th><th>Past perf.</th><th>Evaluated price</th></tr></thead>' +
       '<tbody>' + rows + '</tbody></table></div>';
   }
@@ -176,8 +176,9 @@
       '<div class="ss-sim-main">' +
       '<div class="ss-card"><div class="ss-eyebrow">' + esc(phase.hat) + '</div><h2 class="ss-prog-title" tabindex="-1" id="ss-ptitle">' + esc(phase.title) + '</h2>' +
       docChips +
-      '<p class="ss-prompt">' + esc(phase.prompt) + '</p>' + opts + tail + '</div>' +
-      '<div class="ss-actions" style="margin-top:14px"><button class="ss-btn ss-btn-ghost" id="ss-reset" type="button" style="font-size:13px;padding:8px 14px;min-height:38px">Start over</button></div>' +
+      '<p class="ss-prompt">' + esc(phase.prompt) + '</p>' + opts + tail +
+      '<div class="ss-actions" style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line2)"><button class="ss-btn ss-btn-ghost" id="ss-reset" type="button" style="font-size:13px;padding:8px 14px;min-height:38px">Start over</button></div>' +
+      '</div>' +
       '</div>' +
       '<aside class="ss-side" aria-label="The record">' +
       '<div class="ss-side-h">The requirement</div>' +

@@ -452,7 +452,7 @@ function parseRatingTable(lines, i, escFn) {
   const th = cols.map(c => `<th scope="col">${escFn(c)}</th>`).join('');
   const body = rows.map(r => '<tr>' + r.map((c, ci) =>
     ci === 0 ? `<th scope="row">${escFn(c)}</th>` : `<td>${escFn(c)}</td>`).join('') + '</tr>').join('');
-  return { html: `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`, endIdx: last };
+  return { html: `<div class="ratetable-wrap" tabindex="0" role="region" aria-label="Rate table (scrolls sideways)"><table class="ratetable"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`, endIdx: last };
 }
 
 // Tables recovered by scripts/extract_tables.py arrive alongside the text with the
@@ -486,7 +486,7 @@ function tableHtml(rows, escFn) {
   const head = rows[0].map(c => String(c || '').trim() ? `<th scope="col">${escFn(c)}</th>` : '<td></td>').join('');
   const body = rows.slice(1).map(r => '<tr>' + r.map((c, ci) =>
     ci === 0 ? (String(c || '').trim() ? `<th scope="row">${escFn(c)}</th>` : '<td></td>') : `<td>${escFn(c)}</td>`).join('') + '</tr>').join('');
-  return `<div class="ratetable-wrap"><table class="ratetable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  return `<div class="ratetable-wrap" tabindex="0" role="region" aria-label="Rate table (scrolls sideways)"><table class="ratetable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
 // Paragraph depth from the token a line opens with — see assets/app.js tokenLevel().
 // The RFO's HTML publishes an explicit level per paragraph and confirms the fixed

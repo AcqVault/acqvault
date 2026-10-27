@@ -261,6 +261,24 @@
       entries.forEach(function (e) { if (e.isIntersecting && e.target.id) setActive(e.target.id); });
     }, { rootMargin: '-72px 0px -70% 0px', threshold: 0 });
     sections.forEach(function (s) { if (s.id) io.observe(s); });
+
+    // A focused Contents link must be visible inside the rail's own scroller
+    // (Tab landed on "15.000 Scope" while the list showed 15.408). Scroll the
+    // list only, never the page.
+    toc.addEventListener('focusin', function (e) {
+      var a = e.target.closest && e.target.closest('.ptoc-list a');
+      if (!a || !tocList || tocList.scrollHeight <= tocList.clientHeight + 4) return;
+      var lr = tocList.getBoundingClientRect(), ar = a.getBoundingClientRect();
+      if (ar.top < lr.top) tocList.scrollTop += ar.top - lr.top - 8;
+      else if (ar.bottom > lr.bottom) tocList.scrollTop += ar.bottom - lr.bottom + 8;
+    });
+    // Back at the top of the page the rail starts at the top too, with nothing marked.
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 200 || activeId === null) return;
+      activeId = null;
+      tocLinks.forEach(function (a) { a.classList.remove('ptoc-active'); a.removeAttribute('aria-current'); });
+      if (tocList) tocList.scrollTop = 0;
+    }, { passive: true });
   }
 })();
 

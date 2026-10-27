@@ -25,7 +25,8 @@
   --rim:        rgba(255,255,255,.7);
   --band-gap:   clamp(10px,2.4vw,36px);
   --band-r:     clamp(20px,2.4vw,32px);
-  --wrap-pad:   clamp(16px,3vw,40px);
+  --wrap-pad:   24px;
+  --grid-max:   1052px;                  /* one content column: the nav pill (1100) less its 24px insets */
   --lift:       inset 0 1px 0 rgba(255,255,255,.85),0 1px 2px rgba(var(--shadow-rgb),.05),0 22px 48px -26px rgba(var(--shadow-rgb),.4);
   --lift-hi:    inset 0 1px 0 rgba(255,255,255,.9),0 2px 4px rgba(var(--shadow-rgb),.06),0 28px 56px -26px rgba(var(--shadow-rgb),.48);
   --brass-rim:  inset 0 2px 0 rgba(var(--brass-rgb),.75);  /* the brass top edge, drawn so it follows the corner */
@@ -99,17 +100,29 @@ html .hero:is(.search-active,.browse-active,.fulltext-active):not(.wrap *){paddi
 html .wrap{
   margin:var(--band-gap) auto;
   padding-left:var(--wrap-pad);padding-right:var(--wrap-pad);
-  max-width:calc(820px + 2 * (var(--wrap-pad) - 20px));
+  max-width:calc(var(--grid-max) + 2 * var(--wrap-pad));
   background:var(--sheet-read);border:1px solid var(--rim);border-radius:var(--band-r);
   box-shadow:var(--lift);
   -webkit-backdrop-filter:var(--sheet-blur);backdrop-filter:var(--sheet-blur);
 }
-html .wrap.wrap--wide{max-width:calc(1060px + 2 * (var(--wrap-pad) - 20px));}
+html .wrap.wrap--wide{max-width:calc(var(--grid-max) + 2 * var(--wrap-pad));}
+/* the column is wide now; running prose keeps a reading measure */
+html .wrap main :is(p,li,dd,blockquote){max-width:72ch;}
 @media (max-width:860px){ html .wrap{margin-left:var(--band-gap);margin-right:var(--band-gap);} }
 /* A hero's copy starts on the same vertical as the column under it: hub pages
    (.wrap column) and /study (.st-wrap) are narrower or wider than the 1060px band. */
-html body:has(> .lhero + .wrap) .lhero .lband-inner{max-width:calc(820px + 2 * (var(--wrap-pad) - 20px));padding-left:var(--wrap-pad);}
-html body:has(.st-wrap) .lhero .lband-inner{max-width:1180px;}
+/* One left edge per breakpoint: hero copy, band content and the reading column all
+   start on the same vertical as the nav brand (x=185 at 1440). */
+html .lband-inner{max-width:calc(var(--grid-max) + 48px);}
+html body:not(:has(.rz-bar)) .lband--room > .st-wrap{max-width:calc(var(--grid-max) + 48px)!important;}
+html :is(.sec-inner,.hero-inner,.daily-strip-inner,.ss-wrap){max-width:var(--grid-max)!important;margin-left:auto;margin-right:auto;padding-left:0!important;padding-right:0!important;}
+@media (min-width:861px){
+  html :is(.sec,.hero,.daily-strip):not(.wrap *){padding-left:24px!important;padding-right:24px!important;}
+  html .lband--room > .ss-wrap{padding-left:24px!important;padding-right:24px!important;max-width:calc(var(--grid-max) + 48px)!important;}
+  html .lnav-inner,html .nav-inner{padding-left:24px!important;}
+}
+html .wrap{width:calc(100% - 2 * var(--band-gap));}
+@media (max-width:600px){ html:root{--wrap-pad:16px;} }
 
 /* ── Navigation: only the pill floats ─────────────────────────── */
 html #main-nav,html #main-nav.scrolled{background:transparent;border-bottom-color:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;}
@@ -393,7 +406,7 @@ html .hero-headline .hl-ink{display:block;text-wrap:balance;}
 /* the typewriter placeholder ellipsizes instead of cutting mid-word */
 html .search-bar input{text-overflow:ellipsis;}
 /* 1024–1240: the awards card hung 58px left of the vault panel, onto the search pill */
-@media (min-width:861px) and (max-width:1240px){ html .fcard-awards{left:14px;} }
+@media (min-width:861px){ html .fcard-awards{left:14px;} }
 /* "Today's board" label with no board under it (nobody has played yet) */
 html .daily-board:has(.daily-board-list:empty){display:none;}
 
@@ -472,6 +485,122 @@ html .ss-cite{border-left:0;border:1px solid rgba(var(--brass-rgb),.2);backgroun
 html :is(.st-scenario,.st-fact,.st-script){border-left-width:0!important;border:1px solid rgba(var(--brass-bright-rgb),.3)!important;border-radius:12px!important;background-color:rgba(255,255,255,.04);}
 html :is(.st-fact,.st-script){padding:12px 14px;}
 
+/* ══ ROUND 4 ════════════════════════════════════════════════════ */
+
+/* Bands that lost their gap to an id rule (#library had margin-top:0). */
+html #library:not(.wrap *){margin-top:var(--band-gap)!important;}
+
+/* Part page, desktop: the in-part search sits above the text, not after all 96
+   sections (it is first in the DOM; the grid had auto-placed it into row 2). */
+@media (min-width:1000px){
+  html .part-cols > .pn-search{grid-column:1;grid-row:1;}
+  html .part-cols > .part-main{grid-row:2;}
+  html .part-cols > .ptoc{grid-row:1 / span 2;}
+}
+/* Display serif titles keep tight leading at every width. */
+html :is(.wrap main,.lhero) h1{line-height:1.1;}
+
+/* ── Home nav shell = server nav shell: mark + wordmark, no separate "Home". ── */
+html .nav-logo{gap:8px;color:var(--ink);}
+html .nav-logo svg{width:24px;height:24px;}
+html .nav-logo::after{content:"AcqVault";font-size:16px;font-weight:800;letter-spacing:-.03em;color:var(--ink);}
+html .nav-home{display:none;}
+/* Back in the hero nothing is "current": the section highlight clears. */
+html #main-nav.over-hero .nav-pill{opacity:0!important;}
+html #main-nav.over-hero .nav-center a.pilled{color:var(--ink2)!important;}
+/* In search / browse / full-text mode the field has its own Search button. */
+html body:has(.hero:is(.search-active,.browse-active,.fulltext-active)) .nav-cta{display:none;}
+
+/* ── On-navy controls read as smoked glass, not grey plastic ── */
+html .hero .search-bar{
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.07));
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 14px 36px rgba(4,12,26,.32);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);
+}
+html .hero #search-input{color:#fff;}
+html .hero #search-input::placeholder{color:rgba(236,242,250,.74);}
+html .hero .search-icon{background:rgba(255,255,255,.1);color:var(--brass-bright);}
+html .hero .search-kbd{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);color:rgba(236,242,250,.85);}
+html .hero .search-go{background:var(--brass-bright);color:var(--ink-mid);border-color:transparent;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 14px rgba(4,12,26,.3);}
+html .hero .search-clear{color:rgba(236,242,250,.8);}
+html .hero-command-dock-b .mode-toggle{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+}
+html .hero .mode-btn{color:rgba(240,245,252,.92);}
+html .hero .mode-btn:hover:not(.active){color:#fff;background:rgba(255,255,255,.08);border-color:transparent;}
+html .hero .seg-glider{background:rgba(255,255,255,.94);box-shadow:0 2px 10px rgba(4,12,26,.3);}
+html .hero .mode-btn.on-glider,html .hero .mode-btn.active.on-glider{color:var(--ink-mid)!important;}
+html .hero .trychip{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#f1e3bd;}
+html .hero .trychip:hover{background:rgba(255,255,255,.14);border-color:rgba(var(--brass-bright-rgb),.6);}
+html .hero .trychip-k{color:rgba(236,242,250,.78);}
+html .hero .trychip{text-wrap:balance;}
+/* "8 live" is a count, not a ninth source chip */
+html .hero-live-count{background:none;border:0;padding:0 0 0 4px;color:var(--brass-bright);}
+html .hero-newhere-link:focus-visible{border-radius:6px;}
+/* Recent DAF awards: whole rows only; the list fades out instead of slicing a line. */
+html .fcard-awards .st-body-awards{-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent);}
+
+/* ── Warm paper-white for the drawer and menus (still near-opaque) ── */
+html:root{--modal:rgba(251,248,242,.97);}
+html #drawer .saved-sec :is(.saved-empty,[class*="empty"]){background:#fffdf8;}
+html .mobile-menu{background:#f4efe5;}
+html .mobile-menu .mm-link{background:#fffdf8;}
+html .lnav-sheet{background:#f4efe5;}
+html .lnav-sheet .hlink{background:#fffdf8;}
+
+/* ── Full Text heading matches every band: serif display + brass eyebrow ── */
+html .fulltext-title{font-family:var(--font-serif,'Source Serif 4',Georgia,serif);}
+html .fulltext-eyebrow{font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+html .fulltext-eyebrow::before{content:"";width:6px;height:6px;background:var(--brass);transform:rotate(45deg);}
+
+/* ── Toolkit ── */
+html #thr-amount{font-size:17px;}
+html #thr-amount::placeholder{font-size:15px;font-weight:400;}
+/* CASPER on a phone: each review authority becomes a small record; values never wrap or clip */
+@media (max-width:600px){
+  html .cra-wrap{background:none;overflow:visible;}
+  html .cra-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  html .cra-table,html .cra-table tbody,html .cra-table tr{display:block;}
+  html .cra-table tr{padding:10px 2px;border-bottom:1px solid var(--line2);}
+  html .cra-table tbody tr:last-child{border-bottom:0;}
+  html .cra-table td{display:flex;justify-content:space-between;gap:12px;padding:3px 0!important;border:0!important;white-space:nowrap!important;font-size:13px!important;}
+  html .cra-table td:first-child{font-size:14px!important;font-weight:750;color:var(--ink);padding-bottom:6px!important;}
+  html .cra-table td:nth-child(2)::before{content:"Operational";}
+  html .cra-table td:nth-child(3)::before{content:"Enterprise";}
+  html .cra-table td:nth-child(4)::before{content:"PEO";}
+  html .cra-table td:nth-child(5)::before{content:"PAE";}
+  html .cra-table td:not(:first-child)::before{color:var(--muted);font-weight:500;}
+  html .cra-table td[colspan]{white-space:normal!important;display:block;}
+  html .cra-table td[colspan]::before{content:none;}
+}
+
+/* ── Spending ── */
+html .osr-input{font-family:inherit;text-transform:none;font-size:16px;letter-spacing:0;padding-right:52px;text-overflow:ellipsis;}
+html .osr-input::placeholder{letter-spacing:0;font-weight:400;}
+html .osr-tablewrap{
+  background:
+    linear-gradient(90deg,#fff 30%,rgba(255,255,255,0)) left/36px 100% no-repeat local,
+    linear-gradient(270deg,#fff 30%,rgba(255,255,255,0)) right/36px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%,rgba(var(--shadow-rgb),.2),transparent) left/12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%,rgba(var(--shadow-rgb),.2),transparent) right/12px 100% no-repeat scroll,
+    #fff;
+}
+
+/* ── Quick Links: no redrawn logos. The site name already heads each card. ── */
+html .ql-brand{display:none;}
+@media (min-width:1100px){
+  html .quick-links-grid{display:flex;flex-wrap:wrap;justify-content:center;}
+  html .quick-links-grid > .ql-card{flex:0 1 calc((100% - 3 * 16px) / 4);grid-column:auto!important;}
+}
+html .quick-links-grid{gap:16px;}
+
+/* ── Library ── */
+@media (max-width:600px){ html .lib-src-grid{grid-template-columns:1fr;} }
+html :is(.libsrc .nm,.lib-src-name){overflow-wrap:normal;hyphens:manual;}
+html .libcat .libfeat:only-of-type{max-width:520px;}
+
 /* ── Lift on hover (the reference's whileHover y:-5, toned to -3px).
    opacity/transform stay in the list so .fade-up still fades in. */
 @media (hover:hover) and (prefers-reduced-motion:no-preference){
@@ -491,6 +620,7 @@ html :is(.st-fact,.st-script){padding:12px 14px;}
   :root{--sheet:#fff;--sheet-read:#fff;--card:#fff;--card-hi:#fff;--nav-glass:#fff;--nav-pill:#fff;--modal:#fff;--smoke:var(--ink-mid);--rim:var(--line2);--sheet-blur:none;}
   html body::before{display:none;}
   html body{background:var(--off);}
+  html .hero :is(.search-bar,.mode-toggle,.trychip){background:#1f3a5c;-webkit-backdrop-filter:none;backdrop-filter:none;}
   html :is(.nav-inner,#main-nav .nav-inner,#main-nav.over-hero .nav-inner,.browse-source-menu,table.devtable th){background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
 }
 @media print{
