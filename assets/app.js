@@ -4757,9 +4757,60 @@ async function stFetchObligations() {
   var now = new Date();
   var fyStartYear = now.getMonth() >= 9 ? now.getFullYear() : now.getFullYear() - 1;
   var fy = fyStartYear + 1;
-  var startDate = fyStartYear + '-10-01';
-  var endDate = now.toISOString().slice(0, 10);
+  var labelEl = document.getElementById('st-fy-label');
+  if (labelEl) labelEl.textContent = 'FY' + String(fy).slice(2);
   try {
+    var rows = await stObligationRows(fy, fyStartYear + '-10-01', now.toISOString().slice(0, 10));
+    // USASpending lags ~2–3 months, so from Oct to ~Dec the new FY has no rows yet.
+    // Show the year that just closed, labelled as such, rather than "Data delayed".
+    var closed = !rows.length;
+    if (closed) {
+      fy -= 1;
+      rows = await stObligationRows(fy, (fyStartYear - 1) + '-10-01', fyStartYear + '-09-30');
+      if (labelEl) labelEl.textContent = 'FY' + String(fy).slice(2);
+    }
+    if (!rows.length) throw new Error('No obligations returned');
+    // Cumulative running total → a clean rising line; last point = FY-to-date total.
+    var cumulative = [], running = 0;
+    rows.forEach(function(r) { running += r._amt; cumulative.push(running); });
+    var val = running;
+    if (!Number.isFinite(val) || val <= 0) throw new Error('No obligations returned');
+    stAnimateNum(el, val, '$', '', 0, 1600, stFmtAmt);
+    var mini = document.getElementById('st-fy-spend-mini');
+    if (mini) mini.textContent = stFmtAmt(val);
+    stRenderSpark(cumulative);
+    if (closed) {
+      // The pace bar and countdown describe the year shown, which has ended.
+      var fillEl = document.getElementById('st-fy-fill');
+      if (fillEl) fillEl.style.width = '100%';
+      var paceEl = document.getElementById('st-fy-pace-mini');
+      if (paceEl) paceEl.textContent = 'year closed';
+      var daysEl = document.getElementById('st-fy-days');
+      if (daysEl) daysEl.textContent = 'FY' + String(fy + 1).slice(2) + ' data ~Jan';
+      var pctEl = document.getElementById('st-fy-pct');
+      if (pctEl) pctEl.textContent = 'final';
+    }
+    // "As of" the latest month with data — the trust signal (fiscal period → calendar month).
+    var fm = rows[rows.length - 1]._fm;
+    var calMonth = ((fm + 8) % 12) + 1;
+    var calYear = (fm <= 3) ? (fy - 1) : fy;
+    var asof = new Date(calYear, calMonth - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    var asofEl = document.getElementById('st-asof');
+    if (asofEl) asofEl.textContent = ' · as of ' + asof;
+    var heroAsof = document.getElementById('hero-asof');
+    if (heroAsof) heroAsof.textContent = 'as of ' + asof;
+  } catch(e) {
+    el.innerHTML = '<span class="st-error-num">Data delayed</span>';
+    el.classList.remove('live');
+    var card = el.closest('.side-ticker');
+    if (card) card.classList.add('st-fallback');
+    var mini2 = document.getElementById('st-fy-spend-mini');
+    if (mini2) mini2.textContent = 'Delayed';
+  }
+}
+
+// Monthly DAF contract obligations for one fiscal year, chronological, trailing empty months dropped.
+async function stObligationRows(fy, startDate, endDate) {
     var res = await fetch('https://api.usaspending.gov/api/v2/search/spending_over_time/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -4784,33 +4835,7 @@ async function stFetchObligations() {
     rows.sort(function(a, b) { return a._fm - b._fm; });
     // Drop trailing empty months — USASpending transaction data lags ~2–3 months.
     while (rows.length && rows[rows.length - 1]._amt <= 0) rows.pop();
-    if (!rows.length) throw new Error('No obligations returned');
-    // Cumulative running total → a clean rising line; last point = FY-to-date total.
-    var cumulative = [], running = 0;
-    rows.forEach(function(r) { running += r._amt; cumulative.push(running); });
-    var val = running;
-    if (!Number.isFinite(val) || val <= 0) throw new Error('No obligations returned');
-    stAnimateNum(el, val, '$', '', 0, 1600, stFmtAmt);
-    var mini = document.getElementById('st-fy-spend-mini');
-    if (mini) mini.textContent = stFmtAmt(val);
-    stRenderSpark(cumulative);
-    // "As of" the latest month with data — the trust signal (fiscal period → calendar month).
-    var fm = rows[rows.length - 1]._fm;
-    var calMonth = ((fm + 8) % 12) + 1;
-    var calYear = (fm <= 3) ? (fy - 1) : fy;
-    var asof = new Date(calYear, calMonth - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    var asofEl = document.getElementById('st-asof');
-    if (asofEl) asofEl.textContent = ' · as of ' + asof;
-    var heroAsof = document.getElementById('hero-asof');
-    if (heroAsof) heroAsof.textContent = 'as of ' + asof;
-  } catch(e) {
-    el.innerHTML = '<span class="st-error-num">Data delayed</span>';
-    el.classList.remove('live');
-    var card = el.closest('.side-ticker');
-    if (card) card.classList.add('st-fallback');
-    var mini = document.getElementById('st-fy-spend-mini');
-    if (mini) mini.textContent = 'Delayed';
-  }
+    return rows;
 }
 
 async function stFetchDAFAwards() {
