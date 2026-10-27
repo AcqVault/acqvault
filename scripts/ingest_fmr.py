@@ -32,6 +32,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE / 'scripts'))
+from repair_punct_spacing import tidy  # noqa: E402  "records .", "Supplemental )"
 
 # Titles as listed in the edition's own Introduction ("VOLUMES" table).
 VOLUME_TITLES = {
@@ -121,6 +123,8 @@ _HEAD = re.compile(r'^\s*\*?\s*\d+\.0\s+\S')
 _SUBHEAD = re.compile(r'^\s*\*?\s*\d+\.\d+\s+\S')
 _NEWPARA = re.compile(r'^\s*\*?\s*(?:(?:\d+\.)+\d+\.?|\(?[A-Za-z]\)|\(?\d+\)|[-•])\s+\S')
 _CAP = re.compile(r'^\s*\*?\s*(Table|Figure|Annex|Exhibit|Section)\b', re.I)
+_CAPTION = re.compile(r'^\s*\*?\s*(Table|Figure|Annex|Exhibit)\s+[\w.-]+\s*[.:–—]')
+_TERMINAL = re.compile(r'[.:;!?”")]$')
 
 
 def _gaps(s):
@@ -162,14 +166,24 @@ def reflow(lines):
         if not st:
             flush(); out.append(''); continue
         tabular = tabular and not _NEWPARA.match(s)
+        # A sentence still open on the previous line owns this one: "…categorized in" /
+        # "Table 1-2 before…", "…authorized under" / "10 U.S.C. § 2353." (isupper() is
+        # True for a bare citation). Only a real caption ("Table 1-2. Title") breaks it.
+        # "Open" means it ends on a lowercase word: "…May 16, 1908" closes a list entry.
+        mid = bool(para) and not _TERMINAL.search(para[-1].rstrip()) \
+            and (bool(re.search(r'\b[a-z]+$', para[-1].rstrip())) or st[:1].islower())
+        # an all-caps line is a sentence tail only when it ends the sentence after a full
+        # prose line; "CONUS," / "*REFERENCES" / a reference list stay their own lines
+        tail = mid and len(para[-1].strip()) >= 60 and bool(_TERMINAL.search(st)) \
+            and not st.startswith('*')
         is_head = bool(_HEAD.match(s)) or (bool(_SUBHEAD.match(s)) and len(st) < 70) \
-            or (st.isupper() and len(st) < 70 and not _CAP.match(s))
+            or (st.isupper() and len(st) < 70 and not _CAP.match(s) and not tail)
         if tabular:
             flush(); out.append(s)
         elif is_head:
             st = re.sub(r' {2,}', ' ', st)
             flush(); out.append(re.sub(r'^(\*?\s*[\d.]+) ', r'\1    ', st) if _HEAD.match(s) or _SUBHEAD.match(s) else st)
-        elif _NEWPARA.match(s) or _CAP.match(s):
+        elif _NEWPARA.match(s) or (_CAP.match(s) and not (mid and not _CAPTION.match(s))):
             flush(); para.append(s)
         else:
             para.append(s)
@@ -263,7 +277,7 @@ def doc(vid, vol, title, content, pages):
         "source_label": SOURCE_LABEL,
         "part": vol,
         "title": title,
-        "content": content,
+        "content": tidy(content),
         "filename": FILENAME,
         "status": "Current",
         "date": EDITION,

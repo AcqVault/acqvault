@@ -184,6 +184,32 @@ def main():
           f"{', '.join(wrap_bad)} of long lines end mid-sentence (baseline ~26%)",
           "python3 scripts/rewrap_pdf_lines.py --apply  (REWRAP BEFORE ATTACHING TABLES)")
 
+    # Stray space at a formatting-run boundary: "(a) General . Exchanges", "e.g. ,".
+    # Every ingest path flattened italic/link runs with a space; 1,126 docs read that
+    # way live until 2026-10-27. parse_rfo_html.py and ingest_fmr.py tidy at parse time.
+    sys.path.insert(0, str(REPO / "scripts"))
+    from repair_punct_spacing import found as punct_found
+    punct = [(d["id"], punct_found(d.get("content") or "")[0])
+             for d in docs if punct_found(d.get("content") or "")]
+    check("no space before punctuation", not punct,
+          f"{len(punct)} doc(s), e.g. {punct[:3]}",
+          "python3 scripts/repair_punct_spacing.py --apply")
+
+    # LAYOUT CONTRACT rule 1, for the FMR (exempt from the ratio above): a sentence left
+    # open on one stored line and finished on the next ("…categorized in" / "Table 1-2
+    # before…", "…authorized under" / "10 U.S.C. § 2353.") renders as two paragraphs.
+    # The FMR reflow broke at every line opening with Table/Section or an all-caps
+    # token; 78 such splits shipped. A caption ("Table 1-2. Title") is a real break.
+    FMR_TAIL = re.compile(r"^(?:(?:Table|Section|Figure|Exhibit)\b(?!\s+[\w.-]+\s*[.:–—])"
+                          r"|\d+ (?:U\.S\.C\.|CFR)\b|[A-Z][A-Z&.()\-]+[.;]$)", re.I)
+    split = [d["id"] for d in docs if d.get("source") == "fmr"
+             for a, b in zip(d["content"].split("\n"), d["content"].split("\n")[1:])
+             if len(a) >= 60 and "  " not in a.strip() and re.search(r"\b[a-z]+$", a)
+             and FMR_TAIL.match(b.strip())]
+    check("fmr sentences are not split across lines", not split,
+          f"{len(split)} split(s), e.g. in {split[:3]}",
+          "reflow() in scripts/ingest_fmr.py, then re-run it with --write")
+
     empty = [d["id"] for d in docs if not (d.get("content") or "").strip()]
     check("no empty docs", not empty, f"{len(empty)} empty: {empty[:3]}")
 

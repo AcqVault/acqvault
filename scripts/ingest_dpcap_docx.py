@@ -51,6 +51,8 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+from repair_punct_spacing import tidy   # "Tungsten , in solicitations"
+
 import requests
 
 REPO = Path(__file__).resolve().parent.parent
@@ -172,7 +174,7 @@ def token_level(text):
 
 
 def clean(s):
-    return re.sub(r"\s+", " ", s).strip()      # \s covers nbsp, en/em spaces, soft breaks
+    return tidy(re.sub(r"\s+", " ", s).strip())      # \s covers nbsp, en/em spaces, soft breaks
 
 
 def body_items(path):

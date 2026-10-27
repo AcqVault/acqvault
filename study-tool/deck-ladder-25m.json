@@ -342,7 +342,7 @@
    "cite": {
     "src": "rfo",
     "sec": "15.403-3",
-    "quote": "Price adjustment amounts must consider both increases and decreases ( e.g. , a $500,000 modification resulting from a reduction of $1,500,000 and an increase of $1,000,000 is a $2,500,000 pricing adjustment exceeding the $2,500,000 threshold).",
+    "quote": "Price adjustment amounts must consider both increases and decreases (e.g., a $500,000 modification resulting from a reduction of $1,500,000 and an increase of $1,000,000 is a $2,500,000 pricing adjustment exceeding the $2,500,000 threshold).",
     "amount": "$2,500,000"
    },
    "dod": {
@@ -556,7 +556,7 @@
    "cite": {
     "src": "rfo",
     "sec": "15.408-2",
-    "quote": "Contracting officers must document in the contract file the principal elements of the negotiated agreement. The documentation ( e.g. , price negotiation memorandum) must include the following: (1) The purpose of the negotiation. (2) A description of the acquisition, including appropriate identifying numbers ( e.g. , RFP No.)."
+    "quote": "Contracting officers must document in the contract file the principal elements of the negotiated agreement. The documentation (e.g., price negotiation memorandum) must include the following: (1) The purpose of the negotiation. (2) A description of the acquisition, including appropriate identifying numbers (e.g., RFP No.)."
    },
    "x": "The PNM is the file's memory of why the price is fair. The elements that get dropped: which exception applied if certified data weren't required, how far you relied on the data if they were — including any inaccurate, incomplete, or noncurrent data you recognized — and the proposal-to-objective-to-agreement trail with significant differences explained. A PNM that records the outcome without the movement documents a number, not a negotiation."
   },

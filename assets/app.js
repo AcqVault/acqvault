@@ -1217,8 +1217,18 @@ function decimalLevel(text, source, baseDepth) {
   const m = DECIMAL_TOKEN.exec(String(text || '').trim());
   if (!m) return null;
   const depth = m[1].split('.').length;
-  const lvl = baseDepth ? depth - baseDepth : depth - 1;
+  // An FMR unit ("Section 2.0: …" / "Chapter 3: …") heads itself "2.0 TITLE" and its
+  // parts "2.1 Purpose": two components is the unit's own level, flush with its body.
+  // Counting from 1 indented every heading while the prose under it sat flush.
+  const lvl = source === 'fmr' ? depth - 2 : baseDepth ? depth - baseDepth : depth - 1;
   return lvl > 0 ? Math.min(lvl, 4) : null;
+}
+// "1.0    GENERAL" / "1.1    Purpose": the FMR ingest's heading shape. Citations and
+// table fragments share the number-and-gap ("2.2    37 U.S.C. § 1006"), so digits or
+// sentence punctuation in the text mean it is not a heading. KEEP IDENTICAL in both
+// renderers (scripts/render_health.py MIRRORS).
+function fmrHeadingLine(text, source) {
+  return source === 'fmr' && /^\d+\.\d+ {2,}(?:– )?[A-Z][^\d.,;:]*$/.test(String(text || '').trim());
 }
 function sectionDepth(title) {
   const m = /^(\d+(?:\.\d+)*)/.exec(String(title || '').trim());
@@ -1360,6 +1370,8 @@ function renderContentLine(line, baseCitation, source, paraPath, altCtx, tables)
   if (isBrowseHeadingLine(t, source)) {
     return `<div class="br-note-heading">${esc(t)}</div>`;
   }
+
+  if (fmrHeadingLine(t, source)) return `<p class="br-p"><strong>${esc(t)}</strong></p>`;
 
   let lvl = tokenLevel(t, brLastLower);
   if (paraTokenLetter(t)) brLastLower = paraTokenLetter(t);

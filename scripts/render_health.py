@@ -90,6 +90,8 @@ MIRRORS = [
     ('displayPartForSource', ['api/_seo.js', 'assets/app.js']),
     ('partWord',             ['api/_seo.js', 'assets/app.js']),
     ('tokenLevel',           ['api/_seo.js', 'assets/app.js']),
+    ('decimalLevel',         ['api/_seo.js', 'assets/app.js']),
+    ('fmrHeadingLine',       ['api/_seo.js', 'assets/app.js']),
 ]
 
 # Same idea for data. Two mirrors are deliberately NOT here: parseRatingTable takes an
@@ -533,6 +535,31 @@ def main():
              'error - give it a literal, or point it at a different token')
     else:
         print('  PASS  no custom property resolves to itself')
+
+    # 14. FMR headings sit above their text, not inside it
+    #
+    # decimalLevel() counted an FMR line's depth from 1, so "1.0 GENERAL" and
+    # "1.1 Purpose" drew one level IN while the prose under them sat flush - the outline
+    # read upside down on every /fmr page. Render each volume for real and look.
+    fmr_vols = sorted({d['part'] for d in docs if d['source'] == 'fmr'})
+    js = ("const s=require(%r);const r={};for(const v of %s){const h=s.renderPartPage('fmr',v)||'';"
+          "r[v]=[(h.match(/<p class=\"lvl lvl-\\d\">(?:<strong>)?\\d+\\.\\d+\\s/g)||[]).length,"
+          "(h.match(/<p><strong>\\d+\\.\\d+\\s/g)||[]).length]}"
+          "process.stdout.write(JSON.stringify(r))") % (str(BASE / 'api' / '_seo.js'), json.dumps(fmr_vols))
+    got = _sp.run(['node', '-e', js], capture_output=True, text=True, cwd=str(BASE))
+    if got.returncode != 0:
+        fail('FMR heading probe failed to run: ' + (got.stderr or '').strip()[:300],
+             'renderPartPage() threw for an FMR volume')
+    else:
+        r = json.loads(got.stdout)
+        indented = {v: n for v, (n, _) in r.items() if n}
+        bare = [v for v, (_, h) in r.items() if not h]
+        if indented or bare:
+            fail(f'FMR outline: headings indented in volume(s) {sorted(indented)}, '
+                 f'no bold headings in volume(s) {bare}',
+                 'decimalLevel() / fmrHeadingLine() in api/_seo.js and assets/app.js')
+        else:
+            print(f'  PASS  FMR headings render flush and bold in all {len(r)} volumes')
 
     print()
     if failures:

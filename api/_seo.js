@@ -523,8 +523,18 @@ function decimalLevel(text, source, baseDepth) {
   const m = DECIMAL_TOKEN.exec(String(text || '').trim());
   if (!m) return null;
   const depth = m[1].split('.').length;
-  const lvl = baseDepth ? depth - baseDepth : depth - 1;
+  // An FMR unit ("Section 2.0: …" / "Chapter 3: …") heads itself "2.0 TITLE" and its
+  // parts "2.1 Purpose": two components is the unit's own level, flush with its body.
+  // Counting from 1 indented every heading while the prose under it sat flush.
+  const lvl = source === 'fmr' ? depth - 2 : baseDepth ? depth - baseDepth : depth - 1;
   return lvl > 0 ? Math.min(lvl, 4) : null;
+}
+// "1.0    GENERAL" / "1.1    Purpose": the FMR ingest's heading shape. Citations and
+// table fragments share the number-and-gap ("2.2    37 U.S.C. § 1006"), so digits or
+// sentence punctuation in the text mean it is not a heading. KEEP IDENTICAL in both
+// renderers (scripts/render_health.py MIRRORS).
+function fmrHeadingLine(text, source) {
+  return source === 'fmr' && /^\d+\.\d+ {2,}(?:– )?[A-Z][^\d.,;:]*$/.test(String(text || '').trim());
 }
 function sectionDepth(title) {
   const m = /^(\d+(?:\.\d+)*)/.exec(String(title || '').trim());
@@ -844,7 +854,8 @@ function renderContent(content, title, anchorBase, tables, source, partNum) {
         const rest = t.slice(m[0].length).trim();
         if (rest) out.push(`<p${pcls}>` + srvLinkify(esc(rest), source, anchorBase) + '</p>');
       } else if (!cmSkipLine(source, partNum, t, cmSkip)) {
-        out.push(`<p${pcls}>` + srvLinkify(esc(t), source, anchorBase) + '</p>');
+        const body = srvLinkify(esc(t), source, anchorBase);
+        out.push(`<p${pcls}>` + (fmrHeadingLine(t, source) ? `<strong>${body}</strong>` : body) + '</p>');
         const vis = cmVisualAfterLine(source, partNum, t, cmFlags);
         if (vis) out.push(vis);
       }

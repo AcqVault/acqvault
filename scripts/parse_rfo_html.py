@@ -37,6 +37,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup, NavigableString, Tag
 
 from scrub_pua_glyphs import scrub  # acquisition.gov emits PUA glyphs (e.g. U+F8FD for ×)
+from repair_punct_spacing import tidy  # upstream also types "( 2 CFR part 200 )" by hand
 
 BASE = Path(__file__).resolve().parent.parent
 CACHE = BASE / "_local_archive" / "rfo-html"
@@ -49,6 +50,15 @@ PART_URL = f"{SITE}/far-overhaul/far-part-deviation-guide/far-overhaul-part-%s"
 MAX_LEVEL = 4
 
 
+# Spaces the publisher's HTML genuinely omits at a run boundary (e.g. "at<a href>").
+# The old space-at-every-run flattening hid these; it also split "Subcontract<x>s",
+# so no generic letter-letter rule is safe. shortcut: exact strings, extend when
+# render_health's unspaced-run check names a new one.
+UPSTREAM_WELDS = {"available athttps://": "available at https://",
+                  "Postconsumer materialmeans": "Postconsumer material means",
+                  "theFederal Register": "the Federal Register"}
+
+
 def clean(text):
     """Collapse whitespace; map upstream's private-use glyphs to real characters.
 
@@ -58,7 +68,22 @@ def clean(text):
     (no tofu) true for every future ingest instead of relying on a manual pass.
     """
     text = scrub(str(text or ""))[0]
-    return re.sub(r"\s+", " ", text).replace(" ", " ").strip()
+    for bad, good in UPSTREAM_WELDS.items():
+        text = text.replace(bad, good)
+    return tidy(re.sub(r"\s+", " ", text).replace(" ", " ").strip())
+
+
+# Elements that break text visually. Only these get a separator when flattening: a
+# space at every inline run boundary is what produced "(a) General ." and "e.g. ,"
+# wherever upstream italicised a word just before punctuation.
+BREAKS = ("br", "p", "li", "div", "td", "th", "tr", "dt", "dd", "h1", "h2", "h3",
+          "h4", "h5", "h6", "section", "table", "ul", "ol", "dl", "blockquote")
+
+
+def mark_breaks(soup):
+    for t in soup.find_all(BREAKS):
+        t.insert_before(" ")
+        t.insert_after(" ")
 
 
 def level_of(tag):
@@ -74,7 +99,7 @@ def table_rows(table):
     """Rows of cell text. Keeps every cell, including empties, so columns line up."""
     rows = []
     for tr in table.find_all("tr"):
-        cells = [clean(td.get_text(" ")) for td in tr.find_all(["th", "td"])]
+        cells = [clean(td.get_text()) for td in tr.find_all(["th", "td"])]
         if cells:
             rows.append(cells)
     if not rows:
@@ -113,7 +138,7 @@ def walk_blocks(node, lines, tables):
                 # fill-in block at the end of 52.232-35. Never drop it: emit the text
                 # so nothing the publisher shows goes missing from the corpus.
                 for tr in el.find_all("tr"):
-                    txt = clean(tr.get_text(" "))
+                    txt = clean(tr.get_text())
                     if txt:
                         lines.append("L0:" + txt)
                 continue
@@ -131,7 +156,7 @@ def walk_blocks(node, lines, tables):
             if el.find("table") is not None:
                 walk_blocks(el, lines, tables)
                 continue
-            txt = clean(el.get_text(" "))
+            txt = clean(el.get_text())
             if txt:
                 lvl = level_of(el)
                 if el.name in ("li", "dd") and lvl == 0:
@@ -156,6 +181,7 @@ def own_body(article):
 def parse_part(html, part):
     """Yield one document dict per <article> section on the page."""
     soup = BeautifulSoup(html, "lxml")
+    mark_breaks(soup)
     out = []
     for article in soup.find_all("article", id=re.compile(r"^FAR_")):
         anchor = article.get("id")
@@ -172,7 +198,7 @@ def parse_part(html, part):
                 break
         if head is None:
             continue
-        title = clean(head.get_text(" ")).rstrip(".")
+        title = clean(head.get_text()).rstrip(".")
         body = own_body(article)
 
         lines = []

@@ -99,6 +99,20 @@ Part 48 is allow-listed: its memo is a 2,479-char cover letter with no sections.
 ### 8. Structural basics
 Unique ids, no empty content.
 
+### 7a. No space before punctuation
+"(a) General . Exchanges", "e.g. , incentives", "( RFO 1.102 )": every ingest flattened
+italic/link runs with a space separator, and 1,126 docs across six sources read that way
+live (fixed 2026-10-27). `parse_rfo_html.py`, `ingest_fmr.py` and `ingest_dpcap_docx.py` now call
+`repair_punct_spacing.tidy()` at parse time; the others (Compass, PGI, FAR Companion)
+do not yet, so a re-ingest of them fails this gate until you run
+→ `scripts/repair_punct_spacing.py --apply` (whitespace-only, line count preserved)
+
+### 7b. FMR sentences are not split across stored lines
+The FMR is exempt from invariant 6's ratio, so its own reflow bug went unseen: any line
+opening with Table/Section or an all-caps token ("10 U.S.C. § 2353.", "DFAS.MIL.") started
+a new paragraph mid-sentence — 78 splits. → fix `reflow()` in `scripts/ingest_fmr.py`,
+re-run it with `--write`.
+
 ### 8a. A retired id never dead-ends
 Ids live on in shared `?doc=` links, saved pins and `#anchors` on part pages. When an
 update removes ids (DPCAP renumbering, the Sept 2026 FMR restructure), map each to its
@@ -223,6 +237,11 @@ enforced by nothing. Compared with comments and whitespace stripped.
 
 ### 15. The in-app part label equals the server-rendered one
 The reader said "Part 204" while the crawlable page at the same URL said "Part 4".
+
+### 16. FMR headings render flush and bold
+`decimalLevel()` counted FMR depth from 1, so "1.0 GENERAL" / "1.1 Purpose" drew one level
+in while the prose under them sat flush — every /fmr page read upside down. An FMR unit's
+own level is two components. Checked by rendering every volume with `renderPartPage()`.
 
 ## Things that are NOT bugs (render side)
 
