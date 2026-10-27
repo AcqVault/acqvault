@@ -3027,8 +3027,19 @@ body.work-mode #capdir,body.reader-mode #capdir{display:none;}
 .mm-link:hover, .mm-link:active{ background:var(--off); color:var(--accent); }
 .mm-link + .mm-link{ border-top:1px solid var(--line2); }
 .mm-arrow{ color:var(--muted2); font-size:var(--fs-sm); flex-shrink:0; }
-@media (max-width:768px){ .nav-hamburger{ display:inline-flex; } }
-@media (min-width:769px){ .mobile-menu, .mobile-menu-backdrop, .nav-hamburger{ display:none !important; } }
+@media (max-width:1023px){ .nav-hamburger{ display:inline-flex; } }
+@media (min-width:1024px){ .mobile-menu, .mobile-menu-backdrop, .nav-hamburger{ display:none !important; } }
+/* The full link row needs ~940px. Under 1024 it cannot fit, so tablets and narrow
+   windows take the hamburger like phones; 1024-1179 fits only once the side
+   columns stop reserving 150px each, which is what pushed Coverage into Saved. */
+@media (min-width:769px) and (max-width:1023px){
+  .nav-inner{grid-template-columns:1fr auto;}
+  .nav-center,.nav-home{display:none;}
+}
+@media (min-width:1024px) and (max-width:1179px){
+  .nav-inner{grid-template-columns:auto 1fr auto;gap:10px;}
+  .nav-center{justify-self:center;}
+}
 @media (prefers-reduced-motion:reduce){ .mobile-menu, .mobile-menu-backdrop, .nav-hamburger-bars span{ transition:none !important; } }
 
 /* ══ PREMIUM POLISH — coherent elevation, editorial eyebrows, vault light ══════ */
