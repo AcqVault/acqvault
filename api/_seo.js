@@ -26,6 +26,7 @@ function assetV(name, fallback) {
   }
 }
 const PART_NAV_V = assetV('part-nav.js', 4);
+const GLASS_V = assetV('glass.css', 1);
 // The analytics beacon rides EVERY server-rendered page — the part pages, the hubs,
 // /study and /48cons — not just the SPA home.
 const ANALYTICS_V = assetV('analytics.js', 2);
@@ -1286,6 +1287,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<link rel=
 <meta name="twitter:image" content="${SITE}/assets/${og}">
 <link rel="icon" href="/assets/favicon-vault.svg" type="image/svg+xml">
 ${preload || ''}<style>${STYLE}</style>
+<link rel="stylesheet" href="/assets/glass.css?v=${GLASS_V}">
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>

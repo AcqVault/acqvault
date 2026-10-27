@@ -1,0 +1,112 @@
+/* ═══════════════════════════════════════════════════════════════
+   ACQVAULT — GLASS LAYER
+   Frosted surfaces over a warm, out-of-focus "reading room" backdrop.
+   Loaded LAST on every page (index.html and shell() in api/_seo.js), so it
+   restyles material only: no layout, no type, no colour of text.
+   Selectors carry an `html` prefix so they also beat STUDY_CSS, which
+   /study and /48cons inject in <body>, after this sheet.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --glass:        rgba(255,255,255,.58);
+  --glass-strong: rgba(255,255,255,.78);   /* reading + form surfaces: text sits here */
+  --glass-rim:    rgba(255,255,255,.72);
+  --glass-edge:   rgba(var(--shadow-rgb),.08);
+  --glass-blur:   blur(18px) saturate(165%);
+  --glass-shadow: inset 0 1px 0 rgba(255,255,255,.85),
+                  0 1px 2px rgba(var(--shadow-rgb),.05),
+                  0 18px 40px -22px rgba(var(--shadow-rgb),.28);
+  --glass-shadow-hi: inset 0 1px 0 rgba(255,255,255,.9),
+                  0 2px 4px rgba(var(--shadow-rgb),.06),
+                  0 26px 50px -24px rgba(var(--shadow-rgb),.36);
+}
+/* The backdrop's darkest tint is L≈0.66, not white, so the three mid-tone text
+   tokens step one shade darker to hold 4.5:1 on it (were 4.25, 3.37, 3.52).
+   html:root outranks the :root that STUDY_CSS re-declares later in <body>. */
+html:root{
+  --muted:  #4f4e57;
+  --muted2: #57545c;
+  --accent: #6f521a;
+  --accent-h: #5e4715;
+}
+
+/* ── Backdrop: soft warm light, like a room photographed out of focus.
+   Light end to end so every text token keeps its contrast on bare backdrop. */
+html body{background:#f1ebe1;}
+html body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(42% 38% at 8% 6%,  rgba(var(--brass-bright-rgb),.34), transparent 70%),
+    radial-gradient(38% 46% at 96% 18%, rgba(176,196,214,.42), transparent 72%),
+    radial-gradient(50% 40% at 70% 96%, rgba(214,170,120,.30), transparent 70%),
+    radial-gradient(36% 34% at 18% 82%, rgba(var(--navy-rgb),.06), transparent 70%),
+    linear-gradient(180deg,#f6f1e9 0%,#efe7db 55%,#ece3d5 100%);
+}
+
+/* ── Light sections step aside so the backdrop shows through. */
+html .sec-white,html .sec-off,html #sources.sec-dark,html #market-research,
+html footer,html .lband--room,html .lband--foot,html .market-board-tray{background:transparent;}
+
+/* ── Frosted cards: the core material. */
+html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,
+         .st-trackcard,.source-status-panel,.market-panel){
+  background:var(--glass);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-rim);
+  box-shadow:var(--glass-shadow);
+  border-radius:var(--r-xl,20px);
+}
+/* Surfaces that hold forms or long reading get the denser glass. */
+html :is(.market-query,.thr-calc-field,.modal-box,#drawer,.ptoc){
+  background:var(--glass-strong);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border-color:var(--glass-rim);
+}
+html .thr-scope{background:rgba(255,255,255,.4);border-color:var(--glass-rim);}
+html .thr-scope button.active{background:rgba(255,255,255,.92);}
+html .market-field{background:rgba(255,255,255,.5);}
+
+/* ── Navigation: one floating glass bar, as in the reference. */
+html .lnav{
+  background:rgba(255,255,255,.62);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border-bottom:1px solid var(--glass-rim);
+  box-shadow:0 10px 30px -22px rgba(var(--shadow-rgb),.4);
+}
+
+/* ── Lift on hover, the reference's whileHover y:-5, toned to -3px. */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  html :is(.ql-card,.lib-feature,.lib-src,.st-trackcard,.tk-card){
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s cubic-bezier(.2,.8,.2,1),background-color .2s;
+  }
+  html :is(.ql-card,.lib-feature,.lib-src,.st-trackcard):hover{
+    transform:translateY(-3px);box-shadow:var(--glass-shadow-hi);background:rgba(255,255,255,.7);
+  }
+}
+
+/* ── Dark navy bands read as smoked glass over the same light. */
+html :is(#study.sec-dark,#spending-dashboard.sec-dark){box-shadow:inset 0 1px 0 rgba(255,255,255,.08);}
+html .hero-newhere{
+  background:rgba(255,255,255,.08);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.16);
+}
+
+/* ── Opt-outs: same rule the rest of the site follows. Solid, warm, no blur. */
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){
+  html body::before{display:none;}
+  html body{background:var(--white);}
+  html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,.st-trackcard,
+           .source-status-panel,.market-panel,.market-query,.thr-calc-field,.modal-box,
+           #drawer,.ptoc,.lnav,.hero-newhere){
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+  html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,.st-trackcard,
+           .source-status-panel,.market-panel,.market-query,.thr-calc-field,.modal-box,#drawer,.lnav){
+    background:var(--white);border-color:var(--line2);
+  }
+}
+@media print{
+  html body::before{display:none;}
+  html body{background:#fff;}
+  html *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;}
+}
