@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    ACQVAULT — GLASS LAYER
-   Every page band floats as a rounded glass panel over an out-of-focus
-   reading room (assets/glass-scene.svg): light bands are frosted, the navy
+   Every page band floats as a rounded glass panel over a soft brand
+   aurora (assets/glass-aurora.svg): light bands are frosted, the navy
    bands are smoked. Loaded LAST on index.html and by shell() in api/_seo.js
    (not on /slip, which keeps its own look). Material and band geometry only;
    no type or text colour changes beyond the three tokens below.
@@ -12,13 +12,22 @@
   --sheet:      rgba(255,255,255,.68);    /* a band: the only element that blurs */
   --sheet-blur: blur(14px) saturate(160%);
   --sheet-read: rgba(255,255,255,.82);   /* long reading: heavier material over busy text */
-  --smoke:      rgba(12,30,56,.84);       /* the navy bands, as dark glass */
+  /* the navy bands, as dark glass: the brand's own ink gradient at ~95%, so cream
+     behind never greys it toward slate and the hero still matches the solid navy strip */
+  --smoke:      linear-gradient(160deg,rgba(23,58,96,.94) 0%,rgba(15,37,64,.95) 52%,rgba(10,28,51,.96) 100%);
   --card:       rgba(255,255,255,.9);    /* a thick, near-solid layer: never light glass on light glass */
+  --card-hi:    rgba(255,255,255,.97);   /* a lifted card gets denser, not thinner */
+  --card-r:     16px;                    /* one card radius on every page, inside the 20–32px bands */
+  --tile-r:     12px;                    /* study tiles and answer rows: smaller controls, one step tighter */
+  --nav-glass:  rgba(255,255,255,.62);
+  --modal:      rgba(252,251,248,.95);   /* over a dark scrim a thin sheet reads grey: modals are thick */
   --rim:        rgba(255,255,255,.7);
   --band-gap:   clamp(10px,2.4vw,36px);
   --band-r:     clamp(20px,2.4vw,32px);
+  --wrap-pad:   clamp(16px,3vw,40px);
   --lift:       inset 0 1px 0 rgba(255,255,255,.85),0 1px 2px rgba(var(--shadow-rgb),.05),0 22px 48px -26px rgba(var(--shadow-rgb),.4);
   --lift-hi:    inset 0 1px 0 rgba(255,255,255,.9),0 2px 4px rgba(var(--shadow-rgb),.06),0 28px 56px -26px rgba(var(--shadow-rgb),.48);
+  --brass-rim:  inset 0 2px 0 rgba(var(--brass-rgb),.75);  /* the brass top edge, drawn so it follows the corner */
 }
 /* Text over glass is over a moving average of the scene, not white, so the
    three mid-tone text tokens step one shade darker to keep 4.5:1. Skipped under
@@ -29,14 +38,14 @@
 }
 
 /* ── Backdrop ─────────────────────────────────────────────────── */
-html body{background:#e9dfcf;}
+html body{background:#ebe2d3;}
 html body::before{
   content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:url(/assets/glass-scene.svg?v=3) center/cover no-repeat;
+  background:url(/assets/glass-aurora.svg?v=1) center/cover no-repeat;
 }
 
 /* ── Bands become floating panels ─────────────────────────────── */
-html :is(.sec,footer,.lband,.hero):not(.wrap *){
+html :is(.sec,footer,.lband,.hero,.daily-strip,#results-section,#fulltext-section,#browse-section):not(.wrap *){
   margin:var(--band-gap) var(--band-gap) 0;width:auto;  /* .lband is width:100%, which margins would overflow */
   border-radius:var(--band-r);
   border:1px solid var(--rim);
@@ -44,24 +53,42 @@ html :is(.sec,footer,.lband,.hero):not(.wrap *){
   box-shadow:var(--lift);
   -webkit-backdrop-filter:var(--sheet-blur);backdrop-filter:var(--sheet-blur);
 }
-html :is(.sec:not(.sec-dark),#sources.sec-dark,footer,.lband:not(.lhero)):not(.wrap *){background:var(--sheet);}
-html :is(.hero,.sec-dark:not(#sources),.lhero):not(.wrap *){
+html :is(.sec:not(.sec-dark),#sources.sec-dark,footer,.lband:not(.lhero),#results-section,#fulltext-section,#browse-section):not(.wrap *){background:var(--sheet);}
+html :is(.hero,.daily-strip,.sec-dark:not(#sources),.lhero):not(.wrap *){
   background:var(--smoke);
   border-color:rgba(255,255,255,.14);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 24px 60px -30px rgba(var(--navy-rgb),.7);
 }
-html footer:last-of-type,html .lband--foot{margin-bottom:var(--band-gap);}
-html .hero:not(.wrap *){min-height:calc(100vh - var(--band-gap));}
+/* The band rule above carries id weight (its :is lists ids), so the last
+   band's bottom gap needs the same weight; #_ matches nothing, it only adds it. */
+html :is(footer:last-of-type,.lband--foot,#_):not(.wrap *){margin-bottom:var(--band-gap);}
+
+/* Home hero starts below the fixed chrome (greeting bar + nav pill) instead of
+   sliding under it, so its top corners show and the pill never straddles its
+   edge. --top-chrome is kept live by app.js (greeting bar + nav; the bar is 0
+   once dismissed or in work mode); -8px is the nav's own bottom padding under
+   the pill. The padding drops the chrome allowance it no longer needs. */
+html :is(.hero,#_):not(.wrap *){margin-top:calc(var(--top-chrome,94px) + var(--band-gap) - 8px);}
+html .hero:not(.wrap *){padding-top:56px;}
+html .hero:is(.search-active,.browse-active,.fulltext-active):not(.wrap *){padding-top:24px;}
+@media (max-width:768px){
+  html .hero:not(.wrap *){padding-top:24px;}
+  html .hero:is(.search-active,.browse-active,.fulltext-active):not(.wrap *){padding-top:16px;}
+}
 
 /* Server-rendered reading pages are one column: the column is the panel, and
-   what sits inside it (part pages reuse .sec for each section) stays flat. */
+   what sits inside it (part pages reuse .sec for each section) stays flat.
+   max-width grows by the extra padding so the text measure (and the one-line
+   header on hub pages) stays what STYLE laid out at 20px padding. */
 html .wrap{
   margin:var(--band-gap) auto;
-  padding-left:clamp(16px,3vw,40px);padding-right:clamp(16px,3vw,40px);
+  padding-left:var(--wrap-pad);padding-right:var(--wrap-pad);
+  max-width:calc(820px + 2 * (var(--wrap-pad) - 20px));
   background:var(--sheet-read);border:1px solid var(--rim);border-radius:var(--band-r);
   box-shadow:var(--lift);
   -webkit-backdrop-filter:var(--sheet-blur);backdrop-filter:var(--sheet-blur);
 }
+html .wrap.wrap--wide{max-width:calc(1060px + 2 * (var(--wrap-pad) - 20px));}
 @media (max-width:860px){ html .wrap{margin-left:var(--band-gap);margin-right:var(--band-gap);} }
 
 /* ── Navigation: only the pill floats ─────────────────────────── */
@@ -69,8 +96,16 @@ html #main-nav,html #main-nav.scrolled{background:transparent;border-bottom-colo
 html .lnav{
   position:sticky;top:var(--band-gap);z-index:50;
   margin:var(--band-gap) var(--band-gap) 0;border-radius:var(--r-pill);
-  background:rgba(255,255,255,.62);border:1px solid var(--rim);box-shadow:var(--lift);
+  background:var(--nav-glass);border:1px solid var(--rim);box-shadow:var(--lift);
   -webkit-backdrop-filter:var(--sheet-blur);backdrop-filter:var(--sheet-blur);
+}
+/* Inside a course or simulator the task bar (.rz-bar, sticky at top:0) owns the
+   top edge: the site nav scrolls away instead of covering progress and Back. */
+html body:has(.rz-bar) .lnav{position:relative;top:auto;}
+/* On a phone the nav wraps to two rows: a pill radius would clip the scrolling
+   link row, and a ~100px pinned bar is an eighth of the screen. */
+@media (max-width:860px){
+  html .lnav{position:relative;top:auto;border-radius:var(--band-r);}
 }
 
 /* Vibrancy: over glass, small type gets a deeper shade instead of flat mid-tones. */
@@ -80,15 +115,38 @@ html .study-mode-sub{color:rgba(255,255,255,.76);}
 html .nav-inner{background:rgba(255,255,255,.8);}
 
 /* ── Cards on a sheet: translucent, no second blur ────────────── */
-html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,
+html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,.result-card,
          .st-trackcard,.source-status-panel,.market-panel,.market-query,.thr-calc-field,.ptoc){
   background:var(--card);
   -webkit-backdrop-filter:none;backdrop-filter:none;
   border:1px solid var(--rim);
   box-shadow:var(--lift);
 }
-html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,.st-trackcard,.source-status-panel,.market-panel){border-radius:var(--r-xl,20px);}
-html :is(.modal-box,#drawer){background:rgba(255,255,255,.86);-webkit-backdrop-filter:var(--sheet-blur);backdrop-filter:var(--sheet-blur);}
+/* One card radius site-wide: home cards were 20px, server cards 4px. */
+html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,.st-trackcard,.source-status-panel,.market-panel,
+         .st-card,.st-daily,.st-lad-sim,.libfeat,.libsrc,.ptoc,.pn-search,
+         .rz-card,.rz-lessons,.rz-extra-card,.rz-cover,.ss-card){border-radius:var(--card-r);}
+/* The brass top stripe is a straight 3px bar; on a rounded shape it is cut off
+   by the corner curve. An inset shadow draws the same edge along the curve. */
+html :is(.lhero,.ql-card,.st-daily,.st-card,.st-lad-sim,.st-sim-feature,.st-plate,.rz-cover,.ss-card)::before,
+html :is(.lib-cover,.libcover)::after{display:none;}
+html :is(.st-daily,.st-card,.st-lad-sim,.st-plate,.rz-cover,.ss-card){box-shadow:var(--brass-rim),var(--lift);}
+html .ql-card{box-shadow:var(--brass-rim),var(--lift);}
+/* STUDY_CSS pins its tiles to "one radius, hairlines, no lift" with !important.
+   Keep that rule (one radius, no lift), only at a radius that sits inside the
+   rounded bands; the brass edge comes back as a flat inset, not a lift. */
+html :is(.st-topic,.st-mode,.st-trackcard,.st-plate,.st-sim-feature,.st-rung,.st-opt){border-radius:var(--tile-r)!important;}
+html :is(.st-sim-feature,.st-plate,.st-lad-sim){box-shadow:var(--brass-rim)!important;}
+html #study-app[data-mode="48cons"] .st-sim-feature{box-shadow:none!important;}
+/* id weight (#_ matches nothing) so this beats the smoked-band rule, which carries #sources */
+html .lhero:is(.lhero,#_):not(.wrap *){box-shadow:inset 0 2px 0 rgba(var(--brass-bright-rgb),.55),0 24px 60px -30px rgba(var(--navy-rgb),.7);}
+html :is(.lib-feature,.libfeat){box-shadow:inset 0 2px 0 rgba(var(--brass-bright-rgb),.6),var(--lift);}
+
+/* Pinned bars inside a band read as part of the material, not a white slab. */
+html #results-section .filter-bar{border-radius:var(--card-r);border:1px solid var(--rim);background:var(--card);box-shadow:var(--lift);}
+html .rz-bar{border-radius:0 0 var(--card-r) var(--card-r);}
+
+html :is(.modal-box,#drawer){background:var(--modal);-webkit-backdrop-filter:var(--sheet-blur);backdrop-filter:var(--sheet-blur);}
 html .thr-scope{background:rgba(255,255,255,.4);border-color:var(--rim);}
 html .thr-scope button.active{background:rgba(255,255,255,.92);}
 html .market-field{background:rgba(255,255,255,.5);}
@@ -101,20 +159,23 @@ html .hero-newhere{background:rgba(255,255,255,.08);border:1px solid rgba(255,25
     transition:opacity var(--dur-3,.5s) var(--ease-out,ease-out),transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s cubic-bezier(.2,.8,.2,1),background-color .2s;
   }
   html :is(.ql-card,.lib-feature,.lib-src,.st-trackcard):hover{
-    transform:translateY(-3px);box-shadow:var(--lift-hi);background:rgba(255,255,255,.72);
+    transform:translateY(-3px);box-shadow:var(--lift-hi);background:var(--card-hi);
   }
+  html .ql-card:hover{box-shadow:var(--brass-rim),var(--lift-hi);}
+  html .lib-feature:hover{box-shadow:inset 0 2px 0 rgba(var(--brass-bright-rgb),.6),var(--lift-hi);}
 }
 
 /* ── Opt-outs: no backdrop, no blur, solid surfaces. Redefining the
    material tokens covers every rule above in one place. ───────── */
 @media (prefers-reduced-transparency:reduce),(prefers-contrast:more){
-  :root{--sheet:#fff;--sheet-read:#fff;--card:#fff;--smoke:var(--ink-mid);--rim:var(--line2);--sheet-blur:none;}
+  :root{--sheet:#fff;--sheet-read:#fff;--card:#fff;--card-hi:#fff;--nav-glass:#fff;--modal:#fff;--smoke:var(--ink-mid);--rim:var(--line2);--sheet-blur:none;}
   html body::before{display:none;}
   html body{background:var(--off);}
+  html .nav-inner{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
 }
 @media print{
   html body::before{display:none;}
   html body{background:#fff;}
   html *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;}
-  html :is(.sec,footer,.lband,.hero,.wrap){margin:0;border:0;border-radius:0;}
+  html :is(.sec,footer,.lband,.hero,.daily-strip,.wrap){margin:0;border:0;border-radius:0;}
 }
