@@ -193,6 +193,77 @@ html .thr-scope button.active{background:rgba(255,255,255,.92);}
 html .market-field{background:rgba(255,255,255,.5);}
 html .hero-newhere{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);}
 
+/* ── Home hero details ─────────────────────────────────────────── */
+/* Every band blurs, so every band is its own stacking context: a popover in the
+   hero painted under the next band (the Browse menu slid behind the Combination
+   strip). The hero, and any band with an open menu, sits above its neighbours. */
+html .hero:not(.wrap *){z-index:2;}
+html .sec:has(:is(.open,[aria-expanded="true"])):not(.wrap *){position:relative;z-index:3;}
+/* Browse menu: a popover material over navy — thicker sheet, a hairline edge and
+   a two-layer shadow so it reads as lifted off the dark panel, not pasted on it. */
+html .browse-source-menu{
+  background:rgba(255,255,255,.985);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);  /* near-solid: a menu over busy text must not show it through */
+  border:1px solid rgba(255,255,255,.8);
+  box-shadow:0 0 0 .5px rgba(var(--navy-rgb),.18),0 4px 12px rgba(var(--navy-rgb),.18),0 28px 64px -16px rgba(9,21,40,.6);
+}
+/* Phone: the 286px menu hung 36px off the right edge from its 140px anchor.
+   Centre it under the Browse tab and cap it to the screen. */
+@media (max-width:600px){
+  html .browse-source-menu{min-width:0;width:min(286px,calc(100vw - 32px));left:50%;transform:translateX(-50%);}
+}
+/* Search focus on navy: the .18 brass halo vanished against the dark panel. */
+html .hero .search-bar:focus-within{box-shadow:0 0 0 4px rgba(var(--brass-bright-rgb),.42),0 10px 34px rgba(9,21,40,.32);}
+/* "Live sources": one rounded tray sized to its chips, not a half-rounded rail
+   running past them. */
+html .hero-source-strip{
+  display:inline-flex;align-self:flex-start;width:fit-content;max-width:100%;
+  padding:6px 8px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.06);
+}
+
+/* ── Phone menu: one inset-grouped list, iOS settings style ───────── */
+html .mobile-menu{padding:8px;background:var(--off,#f7f6f2);}
+html .mobile-menu .mm-link{background:#fff;border-radius:0;padding:13px 16px;min-height:46px;position:relative;}
+html .mobile-menu .mm-link + .mm-link{border-top:none;}
+/* hairline separators inset to the text, like a grouped table */
+html .mobile-menu .mm-link + .mm-link::before{content:"";position:absolute;top:0;left:16px;right:0;height:1px;background:var(--line2);}
+/* two groups: places, then actions */
+html .mobile-menu .mm-link:first-child,html .mobile-menu .mm-action:first-of-type,
+html .mobile-menu .mm-link:not(.mm-action) + .mm-action{border-top-left-radius:12px;border-top-right-radius:12px;}
+html .mobile-menu .mm-link:not(.mm-action):has(+ .mm-action),html .mobile-menu .mm-link:last-child{border-bottom-left-radius:12px;border-bottom-right-radius:12px;}
+html .mobile-menu .mm-link:not(.mm-action) + .mm-action{margin-top:12px;}
+html .mobile-menu .mm-link:not(.mm-action) + .mm-action::before{display:none;}
+html .mobile-menu .mm-link:is(:hover,:active){background:rgba(var(--brass-rgb),.07);}
+
+/* ── Source Selection: the record label is a section label, not a subtitle ── */
+html .ss-prog-title{margin-bottom:14px;}
+html .ss-doc-lab{margin-bottom:4px;}
+
+/* ── Deviations table ─────────────────────────────────────────────── */
+/* Header stays while 47 rows scroll; light striping keeps a row's date and memo
+   on one line for the eye. Hub pages have no sticky nav, so it pins at the top. */
+html table.devtable th{
+  position:sticky;top:0;z-index:2;background:rgba(255,255,255,.96);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:0;box-shadow:inset 0 -2px 0 var(--line);
+}
+html:has(table.devtable){scroll-padding-top:48px;}  /* keyboard focus never lands under the pinned header */
+html table.devtable tbody tr:nth-child(even) td{background:rgba(var(--brass-rgb),.04);}
+html table.devtable tbody tr:hover td{background:rgba(var(--brass-rgb),.09);}
+/* Phone: five columns forced a sideways page scroll; each row becomes a stacked
+   record (part + DFARS ref, then date + tracking, then the two links). */
+@media (max-width:600px){
+  html table.devtable thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  html table.devtable,html table.devtable tbody{display:block;}
+  html table.devtable tr{display:grid;grid-template-columns:9.5rem minmax(0,1fr);column-gap:12px;row-gap:2px;padding:10px 6px;border-bottom:1px solid var(--line2);}
+  html table.devtable td{display:block;padding:0;border:0;background:none!important;}
+  html table.devtable td:nth-child(1){font-weight:700;}
+  html table.devtable td:nth-child(2){color:var(--muted);}
+  html table.devtable td:nth-child(3){grid-column:1;}
+  html table.devtable td:nth-child(4){grid-column:2;}
+  html table.devtable td:nth-child(5){grid-column:1 / -1;}
+  html table.devtable tbody tr:nth-child(even){background:rgba(var(--brass-rgb),.04);}
+}
+
 /* ── Lift on hover (the reference's whileHover y:-5, toned to -3px).
    opacity/transform stay in the list so .fade-up still fades in. */
 @media (hover:hover) and (prefers-reduced-motion:no-preference){
@@ -212,7 +283,7 @@ html .hero-newhere{background:rgba(255,255,255,.08);border:1px solid rgba(255,25
   :root{--sheet:#fff;--sheet-read:#fff;--card:#fff;--card-hi:#fff;--nav-glass:#fff;--modal:#fff;--smoke:var(--ink-mid);--rim:var(--line2);--sheet-blur:none;}
   html body::before{display:none;}
   html body{background:var(--off);}
-  html :is(.nav-inner,#main-nav .nav-inner){background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html :is(.nav-inner,#main-nav .nav-inner,#main-nav.over-hero .nav-inner,.browse-source-menu,table.devtable th){background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
 }
 @media print{
   html body::before{display:none;}
