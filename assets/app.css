@@ -851,7 +851,9 @@ html{scroll-padding-top:calc(var(--top-chrome) + 24px);overflow-x:clip;}
 body{font-family:var(--font-sans);background:var(--white);color:var(--ink);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-optical-sizing:auto;}
 a{color:inherit;text-decoration:none;}
 button,input,textarea{font-family:inherit;}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--r-sm);}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+/* the ring follows the control's own shape; only bare text links get a soft corner */
+a:not([class]):focus-visible{border-radius:var(--r-sm);}
 /* Available to screen readers, absent from the page — for labels on controls
    whose purpose a sighted user already reads from context. */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}

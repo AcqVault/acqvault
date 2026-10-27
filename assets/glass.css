@@ -20,6 +20,7 @@
   --card-r:     16px;                    /* one card radius on every page, inside the 20–32px bands */
   --tile-r:     12px;                    /* study tiles and answer rows: smaller controls, one step tighter */
   --nav-glass:  rgba(255,255,255,.62);
+  --nav-pill:   rgba(255,255,255,.8);     /* the one nav pill, home and server pages */
   --modal:      rgba(252,251,248,.95);   /* over a dark scrim a thin sheet reads grey: modals are thick */
   --rim:        rgba(255,255,255,.7);
   --band-gap:   clamp(10px,2.4vw,36px);
@@ -41,7 +42,7 @@
 html body{background:#ebe2d3;}
 html body::before{
   content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:url(/assets/glass-aurora.svg?v=2) center/cover no-repeat;
+  background:url(/assets/glass-aurora.svg?v=3) center/cover no-repeat;
 }
 
 /* ── Bands become floating panels ─────────────────────────────── */
@@ -63,12 +64,27 @@ html :is(.hero,.daily-strip,.sec-dark:not(#sources),.lhero):not(.wrap *){
    band's bottom gap needs the same weight; #_ matches nothing, it only adds it. */
 html :is(footer:last-of-type,.lband--foot,#_):not(.wrap *){margin-bottom:var(--band-gap);}
 
-/* Home hero starts below the fixed chrome (greeting bar + nav pill) instead of
-   sliding under it, so its top corners show and the pill never straddles its
-   edge. --top-chrome is kept live by app.js (greeting bar + nav; the bar is 0
-   once dismissed or in work mode); -8px is the nav's own bottom padding under
-   the pill. The padding drops the chrome allowance it no longer needs. */
-html :is(.hero,#_):not(.wrap *){margin-top:calc(var(--top-chrome,94px) + var(--band-gap) - 8px);}
+/* ── Home chrome: the founder note scrolls away, the nav pill sticks ──
+   The greeting bar was fixed at every width (~135px of chrome with the nav on a
+   phone). It now sits in the page and leaves with the first scroll; the nav is
+   sticky right under it and then pins at the top. app.js writes the bar's height
+   into the nav's inline top and into --top-chrome; both are overridden here
+   (author !important beats an inline style), so every sticky offset and anchor
+   scroll in app.js (getStickyOffset reads --top-chrome) now means "the nav". */
+html .about-bar{position:relative;}
+html #main-nav{position:sticky!important;top:0!important;}
+html:root{--top-chrome:var(--nav-height,56px)!important;}
+/* -8px: the nav's own bottom padding under the pill. */
+html :is(.hero,#_):not(.wrap *){margin-top:calc(var(--band-gap) - 8px);}
+/* Scroll edge: content that slides under the floating pill fades into the paper
+   instead of showing a hard cut between pill and screen edge. Only once scrolled
+   off the hero, and only where the chrome actually is. */
+html body:has(#main-nav.scrolled)::after,
+html body:has(.lnav):not(:has(.rz-bar))::after{
+  content:"";position:fixed;left:0;right:0;top:0;height:calc(var(--nav-height,56px) + 10px);z-index:299;pointer-events:none;
+  background:linear-gradient(180deg,rgba(240,233,222,.92) 0%,rgba(240,233,222,.72) 55%,rgba(240,233,222,0) 100%);
+}
+html body:has(.lnav):not(:has(.rz-bar))::after{z-index:49;height:calc(var(--lnav-stick) + 6px);}
 html .hero:not(.wrap *){padding-top:56px;}
 html .hero:is(.search-active,.browse-active,.fulltext-active):not(.wrap *){padding-top:24px;}
 @media (max-width:768px){
@@ -92,28 +108,93 @@ html .wrap.wrap--wide{max-width:calc(1060px + 2 * (var(--wrap-pad) - 20px));}
 @media (max-width:860px){ html .wrap{margin-left:var(--band-gap);margin-right:var(--band-gap);} }
 /* A hero's copy starts on the same vertical as the column under it: hub pages
    (.wrap column) and /study (.st-wrap) are narrower or wider than the 1060px band. */
-html body:has(.wrap--hdr) .lhero .lband-inner{max-width:calc(820px + 2 * (var(--wrap-pad) - 20px));padding-left:var(--wrap-pad);}
+html body:has(> .lhero + .wrap) .lhero .lband-inner{max-width:calc(820px + 2 * (var(--wrap-pad) - 20px));padding-left:var(--wrap-pad);}
 html body:has(.st-wrap) .lhero .lband-inner{max-width:1180px;}
 
 /* ── Navigation: only the pill floats ─────────────────────────── */
 html #main-nav,html #main-nav.scrolled{background:transparent;border-bottom-color:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;}
+/* One server nav, the same pill as home: 1100px max, 40px tall, brand left, the
+   links in a recessed tray in the middle, the navy CTA right; the current page is
+   the navy segment (home's .pilled) instead of an underline. Sticky 8px from the
+   top on desktop, exactly where home's pill rests. */
+html:root{--lnav-stick:66px;}   /* 8px rest + 50px pill + 8px air: what sticky things below must clear */
 html .lnav{
-  position:sticky;top:var(--band-gap);z-index:50;
-  margin:var(--band-gap) var(--band-gap) 0;border-radius:var(--r-pill);
-  background:var(--nav-glass);border:1px solid var(--rim);box-shadow:var(--lift);
+  position:sticky;top:8px;z-index:50;
+  margin:var(--band-gap) max(var(--band-gap),calc((100% - 1100px) / 2)) 0;
+  border-radius:var(--r-pill);
+  background:var(--nav-pill);border:1px solid var(--rim);box-shadow:var(--lift);
   -webkit-backdrop-filter:var(--sheet-blur);backdrop-filter:var(--sheet-blur);
 }
+html .lnav-inner{
+  max-width:none;margin:0;padding:4px 5px 4px 14px;min-height:48px;
+  display:grid;grid-template-columns:minmax(150px,1fr) auto minmax(150px,1fr);align-items:center;gap:14px;
+}
+html .lnav .brand{font-size:16px;gap:8px;}
+html .lnav .brand svg{width:24px;height:24px;}
+html .lnav .hdr-links{
+  justify-self:center;display:flex;gap:2px;padding:3px;border-radius:var(--r-pill);
+  background:rgba(247,246,242,.72);border:1px solid rgba(var(--brass-rgb),.1);
+}
+html .lnav .hlink{min-height:0;padding:6px 12px;border-radius:var(--r-pill);font-size:13px;font-weight:650;color:var(--ink2);white-space:nowrap;}
+html .lnav .hlink:hover{color:var(--ink);background:rgba(255,255,255,.7);}
+html .lnav .hlink--on{color:#fff;background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));}
+html .lnav .hlink--on::after{display:none;}
+html .lnav .cta{justify-self:end;padding:9px 16px;font-size:13px;font-weight:700;white-space:nowrap;}
+html .lnav-menu{display:none;}
 /* Inside a course or simulator the task bar (.rz-bar, sticky at top:0) owns the
    top edge: the site nav scrolls away instead of covering progress and Back. */
 html body:has(.rz-bar) .lnav{position:relative;top:auto;}
-/* On a phone the nav wraps to two rows: a pill radius would clip the scrolling
-   link row, and a ~100px pinned bar is an eighth of the screen. */
-@media (max-width:860px){
-  html .lnav{position:relative;top:auto;border-radius:var(--band-r);}
+/* Under 1024 the six links no longer fit: they move into a menu, like home. */
+@media (max-width:1023px){
+  html .lnav-inner{grid-template-columns:1fr auto auto;gap:8px;}
+  html .lnav .hdr-links{display:none;}
+  html .lnav-menu{display:block;position:static;order:3;}
+  html .lnav .cta{order:2;}
+  html .lnav-menu > summary{
+    list-style:none;cursor:pointer;width:40px;height:40px;border-radius:var(--r-pill);
+    display:grid;place-items:center;background:rgba(247,246,242,.82);border:1px solid rgba(var(--brass-rgb),.12);
+  }
+  html .lnav-menu > summary::-webkit-details-marker{display:none;}
+  html .lnav-menu-bars{display:grid;gap:5px;width:16px;}
+  html .lnav-menu-bars i{display:block;height:2px;border-radius:2px;background:var(--ink2);transition:transform .2s;}
+  html .lnav-menu[open] .lnav-menu-bars i:first-child{transform:translateY(3.5px) rotate(45deg);}
+  html .lnav-menu[open] .lnav-menu-bars i:last-child{transform:translateY(-3.5px) rotate(-45deg);}
+  /* The scrim is part of the summary, so tapping it closes the menu. It cannot be
+     position:fixed (the blurred pill is the containing block for fixed children),
+     so it is a very large absolute layer around the pill. */
+  html .lnav-menu[open] > summary::before{content:"";position:absolute;inset:-300vmax;background:rgba(var(--navy-rgb),.36);cursor:default;}
+  html .lnav-menu-bars{position:relative;z-index:1;}
+  html .lnav-sheet{
+    position:absolute;right:0;top:calc(100% + 10px);width:min(320px,calc(100vw - 2 * var(--band-gap)));
+    display:flex;flex-direction:column;padding:8px;border-radius:18px;z-index:2;
+    background:var(--off,#f7f6f2);border:1px solid var(--rim);
+    box-shadow:0 0 0 .5px rgba(var(--navy-rgb),.14),0 4px 12px rgba(var(--navy-rgb),.14),0 28px 64px -16px rgba(9,21,40,.5);
+  }
+  html .lnav-sheet .hlink{
+    display:flex;align-items:center;min-height:46px;padding:0 16px;background:#fff;font-size:15px;font-weight:650;color:var(--ink2);position:relative;justify-content:space-between;
+  }
+  html .lnav-sheet .hlink::after{content:"›";position:static;height:auto;background:none;color:var(--muted2);font-size:20px;font-weight:400;display:block;}
+  html .lnav-sheet .hlink + .hlink::before{content:"";position:absolute;top:0;left:16px;right:0;height:1px;background:var(--line2);}
+  html .lnav-sheet .hlink:first-child{border-radius:12px 12px 0 0;}
+  html .lnav-sheet .hlink:last-child{border-radius:0 0 12px 12px;}
+  html .lnav-sheet .hlink--on{color:var(--brass-ink);font-weight:750;}
 }
+/* Phone: the pill is not pinned (it scrolls away with the page). */
+@media (max-width:860px){
+  html:root{--lnav-stick:0px;}
+  html .lnav{position:relative;top:auto;margin:var(--band-gap) var(--band-gap) 0;}
+  html .lnav .cta{padding:9px 13px;}
+}
+@media (max-width:380px){ html .lnav .cta{font-size:12px;padding:8px 11px;} }
+/* Sticky things inside the part sheet clear the pinned pill. */
+html .pn-search{top:var(--lnav-stick);}
+@media (min-width:1001px){ html .ptoc{top:calc(var(--lnav-stick) + 8px);max-height:calc(100vh - var(--lnav-stick) - 24px);} }
+html table.devtable th{top:var(--lnav-stick);}
+html:has(.lnav){scroll-padding-top:calc(var(--lnav-stick) + 16px);}
 
 /* Rings follow the shape they surround: part-page header links had square rings in a pill. */
-html :is(.hlink,header.site a.brand,.lnav .brand,.pn-skip):focus-visible{border-radius:8px;}
+html :is(.lnav .brand,.pn-skip):focus-visible{border-radius:8px;}
+html .lnav-menu > summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 /* Script moves focus to each phase heading so screen readers announce it; a
    heading is not a control, so it takes focus without drawing a ring. */
 html :is(h1,h2,h3)[tabindex="-1"]:focus{outline:none;}
@@ -202,7 +283,7 @@ html .sec:has(:is(.open,[aria-expanded="true"])):not(.wrap *){position:relative;
 /* Browse menu: a popover material over navy — thicker sheet, a hairline edge and
    a two-layer shadow so it reads as lifted off the dark panel, not pasted on it. */
 html .browse-source-menu{
-  background:rgba(255,255,255,.985);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);  /* near-solid: a menu over busy text must not show it through */
+  background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;  /* solid: Chrome composites a backdrop-filter nested in another backdrop-filter (.mode-toggle) with the page behind showing through */
   border:1px solid rgba(255,255,255,.8);
   box-shadow:0 0 0 .5px rgba(var(--navy-rgb),.18),0 4px 12px rgba(var(--navy-rgb),.18),0 28px 64px -16px rgba(9,21,40,.6);
 }
@@ -221,6 +302,8 @@ html .hero-source-strip{
 }
 
 /* ── Phone menu: one inset-grouped list, iOS settings style ───────── */
+/* its scrim was .37 navy over a navy hero: barely a change. Dim like a sheet. */
+html .mobile-menu-backdrop{background:rgba(9,21,40,.52);}
 html .mobile-menu{padding:8px;background:var(--off,#f7f6f2);}
 html .mobile-menu .mm-link{background:#fff;border-radius:0;padding:13px 16px;min-height:46px;position:relative;}
 html .mobile-menu .mm-link + .mm-link{border-top:none;}
@@ -240,13 +323,13 @@ html .ss-doc-lab{margin-bottom:4px;}
 
 /* ── Deviations table ─────────────────────────────────────────────── */
 /* Header stays while 47 rows scroll; light striping keeps a row's date and memo
-   on one line for the eye. Hub pages have no sticky nav, so it pins at the top. */
+   on one line for the eye. It pins right under the nav pill (0 on phones, where the pill scrolls away). */
 html table.devtable th{
-  position:sticky;top:0;z-index:2;background:rgba(255,255,255,.96);
+  position:sticky;top:var(--lnav-stick);z-index:2;background:rgba(255,255,255,.96);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   border-bottom:0;box-shadow:inset 0 -2px 0 var(--line);
 }
-html:has(table.devtable){scroll-padding-top:48px;}  /* keyboard focus never lands under the pinned header */
+html:has(table.devtable){scroll-padding-top:calc(var(--lnav-stick) + 48px);}  /* keyboard focus never lands under the pinned header */
 html table.devtable tbody tr:nth-child(even) td{background:rgba(var(--brass-rgb),.04);}
 html table.devtable tbody tr:hover td{background:rgba(var(--brass-rgb),.09);}
 /* Phone: five columns forced a sideways page scroll; each row becomes a stacked
@@ -264,6 +347,131 @@ html table.devtable tbody tr:hover td{background:rgba(var(--brass-rgb),.09);}
   html table.devtable tbody tr:nth-child(even){background:rgba(var(--brass-rgb),.04);}
 }
 
+/* ══ ROUND 3: one system ═════════════════════════════════════════ */
+
+/* Search results: the nav pill and a pinned "Live sources" bar were two light
+   glass layers stacked at the top edge with titles sliding between them. The
+   filter bar now stays with the results header instead of pinning. */
+html #results-section .filter-bar{position:relative;top:auto;}
+/* First-run pin tip renders inline above the first result (saved.js patch);
+   it reads as a calm brass note, not a dark toast. */
+html .pin-coach.pin-coach--inline{
+  position:static;animation:none;width:auto;margin:0 0 10px;
+  background:rgba(var(--brass-rgb),.06);color:var(--ink2);border:1px solid rgba(var(--brass-rgb),.22);box-shadow:none;border-radius:12px;
+}
+html .pin-coach--inline .pin-coach-star{color:var(--brass);}
+html .pin-coach--inline .pin-coach-text b{color:var(--ink);}
+html .pin-coach--inline .pin-coach-x{background:rgba(var(--brass-rgb),.1);color:var(--ink2);}
+
+/* Browse: PGI is guidance, not a live regulation; it gets the neutral brass
+   badge, not the same green as LIVE. */
+html .browse-source-menu button[data-arg="pgi"] small{color:var(--brass-ink);background:rgba(var(--brass-rgb),.08);border-color:rgba(var(--brass-rgb),.28);}
+html .browse-source-menu button[data-arg="pgi"] small::before{background:var(--brass);box-shadow:0 0 0 3px rgba(var(--brass-rgb),.14);}
+
+/* Results: a class deviation is the normal state of the RFO, not an error. */
+html .rc-badge-class{color:#24486f;background:rgba(36,72,111,.08);border-color:rgba(36,72,111,.3);}
+
+/* ── Buttons: one primary (brand navy), one secondary (white + hairline),
+   one radius family (10px controls, pills for chips/filters). No #13151b fills. */
+html :is(.fulltext-dl-btn,.market-action.primary,.fpill.active,.cite-copy-btn,.drawer-orig-btn){
+  background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));color:#fff;border-color:rgba(var(--brass-bright-rgb),.3);
+}
+html :is(.st-btn,.market-btn,.osr-go,.rz-side-lesson){border-radius:var(--r-md,10px)!important;}
+html .cite-copy-btn{border-radius:var(--r-pill);}
+
+/* ── Type: section headings are the serif display style everywhere ── */
+html .libcat > h2{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.01em;line-height:1.15;}
+html .fulltext-title{font-family:var(--serif);font-weight:700;letter-spacing:-.012em;}
+html .ss-off-name{font-family:inherit;font-weight:700;color:var(--ink);}
+html .ss-prompt{font-weight:600;color:var(--ink);}
+
+/* ── Hero ─────────────────────────────────────────────────────── */
+/* the second sentence balances on its own, so "of it." never sits alone on a line */
+html .hero-headline{text-wrap:balance;}
+html .hero-headline br{display:none;}
+html .hero-headline .hl-ink{display:block;text-wrap:balance;}
+/* the typewriter placeholder ellipsizes instead of cutting mid-word */
+html .search-bar input{text-overflow:ellipsis;}
+/* 1024–1240: the awards card hung 58px left of the vault panel, onto the search pill */
+@media (min-width:861px) and (max-width:1240px){ html .fcard-awards{left:14px;} }
+/* "Today's board" label with no board under it (nobody has played yet) */
+html .daily-board:has(.daily-board-list:empty){display:none;}
+
+/* ── Toolkit ──────────────────────────────────────────────────── */
+/* The threshold card runs ~1,000px longer than the two beside it: the short
+   column follows the reader down instead of leaving an empty glass well. */
+@media (min-width:1024px){
+  html #toolkit .tk-col:last-child{position:sticky;top:calc(var(--top-chrome,56px) + 16px);align-self:start;}
+}
+html .thr-calc-field input{font-size:17px;text-overflow:ellipsis;min-width:0;}
+html .thr-calc-field input::placeholder{font-size:15px;}
+/* CASPER table: when it scrolls sideways, an edge shadow says so (no JS:
+   local-attachment covers hide the shadows at each end of the scroll). */
+html .cra-wrap{
+  background:
+    linear-gradient(90deg,#fff 30%,rgba(255,255,255,0)) left/36px 100% no-repeat local,
+    linear-gradient(270deg,#fff 30%,rgba(255,255,255,0)) right/36px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%,rgba(var(--shadow-rgb),.18),transparent) left/12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%,rgba(var(--shadow-rgb),.18),transparent) right/12px 100% no-repeat scroll;
+}
+
+/* ── Grids that ended on a lone item ─────────────────────────── */
+/* Full Text: five sources in a 3-up grid; the last row centres. */
+@media (min-width:861px){
+  html .fulltext-cards{display:flex;flex-wrap:wrap;justify-content:center;}
+  html .fulltext-cards > *{flex:0 1 calc((100% - 2 * 16px) / 3);}
+}
+html .fulltext-cards{gap:16px;}
+/* Practice Range: two plates in a three-track grid left an empty slot. */
+html .st-plates:not(:has(> :nth-child(3))){grid-template-columns:repeat(2,minmax(0,1fr));}
+
+/* ── Third-party tiles: one plate. All wordmarks sit on the brand navy plate the
+   three dark ones already used; the light-plate marks are re-inked for it. ── */
+html .ql-brand{background:linear-gradient(135deg,#0f253d 0%,#142f4d 100%);border-color:rgba(var(--brass-bright-rgb),.2);color:#eaf5ff;}
+html .ql-brand-sam .ql-wordmark{color:#f4f8fc;}
+html .ql-brand-sam .ql-wordmark b,html .ql-brand-sam .bars span{color:#ff6b70;background-color:#ff6b70;}
+html .ql-brand-sam .ql-wordmark b{background:none;}
+html .ql-brand-piee .ql-wordmark{color:#6cc3f2;}
+html .ql-brand-wau .ql-wordmark{color:#f4f8fc;}
+html .ql-brand-wau .ql-wordmark b{color:#ff7a8a;}
+html .ql-brand-wau .ql-wau-mark{background:#ff7a8a;}
+
+/* ── Library at phone width: the ↓ glyph sat on the long names ── */
+html .libsrc .nm,html .lib-src-name{padding-right:26px;}
+
+/* ── Part reader ─────────────────────────────────────────────── */
+/* 96 identical "acquisition.gov" links beside every heading: quieter, still there. */
+/* quieter by size and tone, not opacity: opacity took it under 4.5:1 */
+html .sec-hd .srclink{font-size:11px;color:var(--muted2);}
+html .sec-hd .srclink:is(:hover,:focus-visible){color:var(--accent);}
+/* reading measure ~72ch */
+html main section.sec :is(p,li,dd){max-width:72ch;}
+/* Subparts in Contents are group headings, not peers of the sections. */
+html .ptoc-list a[href*="Subpart"]{font-weight:700;color:var(--ink);font-size:11px;letter-spacing:var(--ls-wide,.04em);text-transform:uppercase;margin-top:6px;}
+
+/* ── Small things ─────────────────────────────────────────────── */
+/* In a course or simulator the 54px task bar pins at the top: jumps and focus land below it. */
+html:has(.rz-bar){scroll-padding-top:72px;}
+html :is(.ss-card,.rz-main,#ss-ptitle){scroll-margin-top:72px;}
+/* the 1px divider after "6,417 indexed sections" read as a stray caret once the tray wraps below it */
+html .hero-statstrip-div{display:none;}
+/* Saved drawer: an empty count is not a grey dot */
+html .saved-n:empty{display:none;}
+/* /changes: disclosure chevrons, not the browser's default triangle */
+html details:not(.lnav-menu) > summary{list-style:none;}
+html details:not(.lnav-menu) > summary::-webkit-details-marker{display:none;}
+html details:not(.lnav-menu) > summary::before{
+  content:"";display:inline-block;width:7px;height:7px;margin:0 10px 2px 2px;vertical-align:middle;
+  border-right:2px solid var(--brass);border-bottom:2px solid var(--brass);transform:rotate(-45deg);transition:transform .2s;
+}
+html details[open]:not(.lnav-menu) > summary::before{transform:rotate(45deg);}
+/* Board sim / simulator: callouts lose the side stripe; they are tinted cards
+   on light surfaces, hairline cards on the navy debrief. */
+html .st-panel-ask{border-left-width:0!important;border:1px solid rgba(var(--brass-rgb),.25)!important;border-radius:12px!important;}
+html .ss-cite{border-left:0;border:1px solid rgba(var(--brass-rgb),.2);background:rgba(var(--brass-rgb),.05);border-radius:10px;padding:12px 14px;}
+html :is(.st-scenario,.st-fact,.st-script){border-left-width:0!important;border:1px solid rgba(var(--brass-bright-rgb),.3)!important;border-radius:12px!important;background-color:rgba(255,255,255,.04);}
+html :is(.st-fact,.st-script){padding:12px 14px;}
+
 /* ── Lift on hover (the reference's whileHover y:-5, toned to -3px).
    opacity/transform stay in the list so .fade-up still fades in. */
 @media (hover:hover) and (prefers-reduced-motion:no-preference){
@@ -280,7 +488,7 @@ html table.devtable tbody tr:hover td{background:rgba(var(--brass-rgb),.09);}
 /* ── Opt-outs: no backdrop, no blur, solid surfaces. Redefining the
    material tokens covers every rule above in one place. ───────── */
 @media (prefers-reduced-transparency:reduce),(prefers-contrast:more){
-  :root{--sheet:#fff;--sheet-read:#fff;--card:#fff;--card-hi:#fff;--nav-glass:#fff;--modal:#fff;--smoke:var(--ink-mid);--rim:var(--line2);--sheet-blur:none;}
+  :root{--sheet:#fff;--sheet-read:#fff;--card:#fff;--card-hi:#fff;--nav-glass:#fff;--nav-pill:#fff;--modal:#fff;--smoke:var(--ink-mid);--rim:var(--line2);--sheet-blur:none;}
   html body::before{display:none;}
   html body{background:var(--off);}
   html :is(.nav-inner,#main-nav .nav-inner,#main-nav.over-hero .nav-inner,.browse-source-menu,table.devtable th){background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}

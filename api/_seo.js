@@ -1273,7 +1273,9 @@ const BRAND_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="6" y="
 function lnavHtml(canonical) {
   return `<header class="lnav"><div class="lnav-inner"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a>` +
          `<nav class="hdr-links" aria-label="Sections">${navLinks(canonical)}</nav>` +
-         `<a class="cta" href="/?q=">Search all sources →</a></div></header>`;
+         `<a class="cta" href="/?q=">Search all sources →</a>` +
+         `<details class="lnav-menu"><summary aria-label="Menu"><span class="lnav-menu-bars" aria-hidden="true"><i></i><i></i></span></summary>` +
+         `<nav class="lnav-sheet" aria-label="Menu">${navLinks(canonical)}</nav></details></div></header>`;
 }
 
 function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero, ogType, glass = true }) {
@@ -1301,12 +1303,10 @@ ${preload || ''}<style>${STYLE}</style>
 ${glass ? `<link rel="stylesheet" href="/assets/glass.css?v=${GLASS_V}">\n` : ''}<script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>
-${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}${hero ? ' wrap--hdr' : ''}">
-<a class="pn-skip" href="#main">Skip to content</a>
-<header class="site"><a class="brand" href="/?home=1">${BRAND_SVG}AcqVault</a><nav class="hdr-links" aria-label="Sections">${navLinks(canonical)}</nav><a class="cta" href="/?q=">Search all sources →</a></header>${hero ? `
-</div>
-${hero}
-<div class="wrap${wide ? ' wrap--wide' : ''}">` : ''}
+${bleed ? body : `<a class="pn-skip" href="#main">Skip to content</a>
+${lnavHtml(canonical)}${hero ? `
+${hero}` : ''}
+<div class="wrap${wide ? ' wrap--wide' : ''}">
 <main id="main" tabindex="-1">${body}</main>
 <footer>AcqVault is an <strong>unofficial research aid</strong> — not legal advice and not an official source. ${authorityLine(source)} Always verify before relying on any result in a contract file.</footer>
 </div>`}

@@ -511,11 +511,11 @@
     tip.innerHTML = '<span class="pin-coach-star" aria-hidden="true">★</span>' +
       '<span class="pin-coach-text"><b>Save the clauses you rely on.</b> AcqVault flags you when its indexed copy of the text changes — and shows you exactly what.</span>' +
       '<button type="button" class="pin-coach-x" aria-label="Dismiss">✕</button>';
-    document.body.appendChild(tip);
-    positionPinCoach(tip, firstPin, false);
-    coachReposition = function () { var t = document.getElementById('pin-coach'); if (t) positionPinCoach(t, firstPin, true); };
-    window.addEventListener('resize', coachReposition);
-    window.addEventListener('scroll', coachReposition, true);
+    // Inline above the first result, never floating over one (it covered result #1).
+    var list = document.getElementById('results-list');
+    if (!list) return;
+    tip.classList.add('pin-coach--inline');
+    list.parentNode.insertBefore(tip, list);
     tip.querySelector('.pin-coach-x').addEventListener('click', dismissPinCoach);
   }
 
