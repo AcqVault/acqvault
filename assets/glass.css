@@ -41,7 +41,7 @@
 html body{background:#ebe2d3;}
 html body::before{
   content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:url(/assets/glass-aurora.svg?v=1) center/cover no-repeat;
+  background:url(/assets/glass-aurora.svg?v=2) center/cover no-repeat;
 }
 
 /* ── Bands become floating panels ─────────────────────────────── */
@@ -90,6 +90,10 @@ html .wrap{
 }
 html .wrap.wrap--wide{max-width:calc(1060px + 2 * (var(--wrap-pad) - 20px));}
 @media (max-width:860px){ html .wrap{margin-left:var(--band-gap);margin-right:var(--band-gap);} }
+/* A hero's copy starts on the same vertical as the column under it: hub pages
+   (.wrap column) and /study (.st-wrap) are narrower or wider than the 1060px band. */
+html body:has(.wrap--hdr) .lhero .lband-inner{max-width:calc(820px + 2 * (var(--wrap-pad) - 20px));padding-left:var(--wrap-pad);}
+html body:has(.st-wrap) .lhero .lband-inner{max-width:1180px;}
 
 /* ── Navigation: only the pill floats ─────────────────────────── */
 html #main-nav,html #main-nav.scrolled{background:transparent;border-bottom-color:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;}
@@ -108,15 +112,28 @@ html body:has(.rz-bar) .lnav{position:relative;top:auto;}
   html .lnav{position:relative;top:auto;border-radius:var(--band-r);}
 }
 
+/* Rings follow the shape they surround: part-page header links had square rings in a pill. */
+html :is(.hlink,header.site a.brand,.lnav .brand,.pn-skip):focus-visible{border-radius:8px;}
+/* Script moves focus to each phase heading so screen readers announce it; a
+   heading is not a control, so it takes focus without drawing a ring. */
+html :is(h1,h2,h3)[tabindex="-1"]:focus{outline:none;}
+/* The in-part search halo was .16 alpha: on glass it barely registered as focus. */
+html .pn-search:focus-within{box-shadow:0 0 0 3px rgba(var(--brass-rgb),.38);}
+
 /* Vibrancy: over glass, small type gets a deeper shade instead of flat mid-tones. */
 html :is(.eyebrow-dark,.wrap .eyebrow,.lband:not(.lhero) .eyebrow){color:var(--brass-deep);}
 html .hlink{color:var(--ink3);}
 html .study-mode-sub{color:rgba(255,255,255,.76);}
-html .nav-inner{background:rgba(255,255,255,.8);}
+html .nav-inner{background:rgba(255,255,255,.8);align-content:center;}
+html .nav-center{padding:2px;}   /* 35px segment in a 30px row sat on the bottom rim; now 33px, centred */
+@media (max-width:860px){
+  /* the link row scrolls sideways: fade its trailing edge instead of a hard cut */
+  html .hdr-links{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:28px;}
+}
 
 /* ── Cards on a sheet: translucent, no second blur ────────────── */
 html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,.result-card,
-         .st-trackcard,.source-status-panel,.market-panel,.market-query,.thr-calc-field,.ptoc){
+         .st-trackcard,.source-status-panel,.market-panel,.market-query,.thr-calc-field,.ptoc,.fulltext-card,.libsrc,.libfeat){
   background:var(--card);
   -webkit-backdrop-filter:none;backdrop-filter:none;
   border:1px solid var(--rim);
@@ -125,7 +142,10 @@ html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callo
 /* One card radius site-wide: home cards were 20px, server cards 4px. */
 html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.market-flow-step,.callout,.st-trackcard,.source-status-panel,.market-panel,
          .st-card,.st-daily,.st-lad-sim,.libfeat,.libsrc,.ptoc,.pn-search,
-         .rz-card,.rz-lessons,.rz-extra-card,.rz-cover,.ss-card){border-radius:var(--card-r);}
+         .rz-card,.rz-lessons,.rz-extra-card,.rz-cover,.ss-card,.rz-secnav,.fulltext-card,
+         .rz-main,.rz-side,.ss-side,.ss-log,.ss-fb,.ss-resume,.ss-startnote,.ss-verdict,.ss-fail,.ss-modal-card,.partpair,.alt-nav){border-radius:var(--card-r);}
+/* Buttons inside a session match the one button radius the session already uses (.rz-nav-b, .ss-opt). */
+html :is(.rz-btn,.ss-btn,.rz-rail-kc){border-radius:var(--r-md,10px);}
 /* The brass top stripe is a straight 3px bar; on a rounded shape it is cut off
    by the corner curve. An inset shadow draws the same edge along the curve. */
 html :is(.lhero,.ql-card,.st-daily,.st-card,.st-lad-sim,.st-sim-feature,.st-plate,.rz-cover,.ss-card)::before,
@@ -137,15 +157,36 @@ html .ql-card{box-shadow:var(--brass-rim),var(--lift);}
    rounded bands; the brass edge comes back as a flat inset, not a lift. */
 html :is(.st-topic,.st-mode,.st-trackcard,.st-plate,.st-sim-feature,.st-rung,.st-opt){border-radius:var(--tile-r)!important;}
 html :is(.st-sim-feature,.st-plate,.st-lad-sim){box-shadow:var(--brass-rim)!important;}
-html #study-app[data-mode="48cons"] .st-sim-feature{box-shadow:none!important;}
 /* id weight (#_ matches nothing) so this beats the smoked-band rule, which carries #sources */
 html .lhero:is(.lhero,#_):not(.wrap *){box-shadow:inset 0 2px 0 rgba(var(--brass-bright-rgb),.55),0 24px 60px -30px rgba(var(--navy-rgb),.7);}
 html :is(.lib-feature,.libfeat){box-shadow:inset 0 2px 0 rgba(var(--brass-bright-rgb),.6),var(--lift);}
+
+/* Coloured left stripes on rounded cards are gone. Identity now lives in the
+   colour the card already carries: the source chip on results, a colour dot
+   plus the tinted download glyph on source tiles. Decorative brass stripes go. */
+html :is(.result-card,.result-card[data-source],.result-card.active){border-left-width:1px;border-left-color:var(--rim);}
+html .result-card.active{border-color:rgba(var(--brass-rgb),.35);}
+html :is(.libsrc,.lib-src){border:1px solid var(--rim);}
+html .libsrc .nm::before,html .lib-src-name::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--src);margin-right:8px;vertical-align:.08em;}
+html .parts a{border-left:1px solid var(--line2);}
+html .st-daily,html #study-app[data-mode="48cons"] .st-sim-feature{border-left-width:1px!important;border-left-color:var(--line-ctl)!important;}
+/* The current lesson / section is marked by its tint and weight; the 2–3px inset
+   bar on a rounded row was the same side-stripe cue removed above. */
+html :is(.rz-side-now,.ptoc-list a.ptoc-active){box-shadow:none;}
+/* Results: a list, not a stack of lifted slabs. */
+html #results-section .results-list{gap:8px;}
+html .result-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 2px rgba(var(--shadow-rgb),.06);}
+/* Full Text eyebrow matches every other band's eyebrow. */
+html .fulltext-eyebrow{color:var(--brass-deep);}
+/* Phone: three nested frames (band, panel, field) leave a 290px column. */
+@media (max-width:480px){ html .market-panel{padding-left:14px;padding-right:14px;} }
 
 /* Pinned bars inside a band read as part of the material, not a white slab. */
 html #results-section .filter-bar{border-radius:var(--card-r);border:1px solid var(--rim);background:var(--card);box-shadow:var(--lift);}
 html .rz-bar{border-radius:0 0 var(--card-r) var(--card-r);}
 
+html #drawer-backdrop{z-index:401;}  /* dim the greeting bar (z 400) with the page */
+html #drawer{z-index:402;}
 html :is(.modal-box,#drawer){background:var(--modal);-webkit-backdrop-filter:var(--sheet-blur);backdrop-filter:var(--sheet-blur);}
 html .thr-scope{background:rgba(255,255,255,.4);border-color:var(--rim);}
 html .thr-scope button.active{background:rgba(255,255,255,.92);}
@@ -171,7 +212,7 @@ html .hero-newhere{background:rgba(255,255,255,.08);border:1px solid rgba(255,25
   :root{--sheet:#fff;--sheet-read:#fff;--card:#fff;--card-hi:#fff;--nav-glass:#fff;--modal:#fff;--smoke:var(--ink-mid);--rim:var(--line2);--sheet-blur:none;}
   html body::before{display:none;}
   html body{background:var(--off);}
-  html .nav-inner{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html :is(.nav-inner,#main-nav .nav-inner){background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;}
 }
 @media print{
   html body::before{display:none;}
