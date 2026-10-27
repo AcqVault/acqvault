@@ -1265,7 +1265,7 @@ function lnavHtml(canonical) {
          `<a class="cta" href="/?q=">Search all sources →</a></div></header>`;
 }
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero, ogType }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero, ogType, glass = true }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1287,8 +1287,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<link rel=
 <meta name="twitter:image" content="${SITE}/assets/${og}">
 <link rel="icon" href="/assets/favicon-vault.svg" type="image/svg+xml">
 ${preload || ''}<style>${STYLE}</style>
-<link rel="stylesheet" href="/assets/glass.css?v=${GLASS_V}">
-<script type="application/ld+json">${JSON.stringify(jsonld)}</script>
+${glass ? `<link rel="stylesheet" href="/assets/glass.css?v=${GLASS_V}">\n` : ''}<script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>
 ${bleed ? body : `<div class="wrap${wide ? ' wrap--wide' : ''}${hero ? ' wrap--hdr' : ''}">
@@ -3858,7 +3857,7 @@ footer .note{max-width:50ch}
 </div>
 <script defer src="/assets/slip.js?v=${SLIP_V}"></script>`;
 
-  return shell({ title, description, canonical, jsonld, body, bleed: true, noindex: true });
+  return shell({ title, description, canonical, jsonld, body, bleed: true, noindex: true, glass: false });  // /slip keeps its own look
 }
 
 function renderSourceSelectionPage() {
