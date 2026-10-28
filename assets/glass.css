@@ -1061,3 +1061,69 @@ html .osr-empty b{font-family:inherit;font-weight:700;}
   html :is(.st-scenario,.st-script){background:#232b35!important;}
   html :is(.source-status-chip.live,.market-pill.active){background:#2f2b26;}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME POLISH FRAGMENT — additive, appended after glass.css.
+   Every state below was reached with live data; each rule names the flaw.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Both modes › nav pill: once a clause is saved the count badge widens "★ Saved" and
+   the right group (Saved · Feedback · Search ≈ 276px) outgrows its 1fr column
+   (≈245px); it slid left under the centre segment and "Coverage" collided with the
+   star. The right column now never shrinks below its content; the centre yields
+   ~15px instead of overlapping. Link padding steps 11→10px to halve that shift. */
+html .nav-inner{grid-template-columns:minmax(150px,1fr) auto minmax(max-content,1fr);}
+html .nav-center a{padding:6px 10px;}
+
+@media (prefers-color-scheme:dark){
+  /* Spending › "Download Excel": brass fill kept color:var(--ink), which flips to
+     near-white in dark (1.47:1). Brass is the one filled primary → dark ink. */
+  html .osr-dl{color:#1c1710;}
+  html .osr-dl:hover{color:#1c1710;background:var(--accent-h);border-color:var(--accent-h);}
+
+  /* Spending › expanded row (appropriation / colour of money): app.css paints the
+     cell #fbfaf7 — a white slab across the dark table with 1.9:1 muted text. */
+  html .osr-fund td{background:rgba(255,255,255,.04);}
+  html .osr-fund-load,html .osr-fund-none{color:var(--muted);}
+  html .osr-tag-rdte{background:var(--rfo-bg);color:var(--rfo-txt);border-color:rgba(127,166,214,.35);}
+
+  /* Spending › Choose fields footnote sat at 4.47:1. */
+  html .osr-cols-foot{color:rgba(255,255,255,.58);}
+
+  /* Market Research › every result card faded to #faf8f3 at its foot: the bottom
+     third of each card was a cream slab with muted text washed out over it. The
+     card is a thick layer on glass, not a gradient to paper. */
+  html .market-opp-card{background:var(--card);border-color:var(--rim);}
+  html .market-opp-card:hover{background:var(--card-hi);border-color:var(--accent-bdr);box-shadow:var(--lift-hi);}
+
+  /* Browse by Source › the sticky source bar stayed cream (rgba(247,246,242,.98))
+     across the top of the dark band, and the active pill took --ink (near-white)
+     with white type: the chosen regulation's name was invisible. Mirror the
+     search filter bar: smoked glass bar, lifted-glass active pill. */
+  html .browse-source-bar{background:rgba(30,27,24,.86);border-color:var(--rim);box-shadow:0 8px 24px rgba(0,0,0,.35);}
+  html .browse-src-pill{background:rgba(255,255,255,.06);border-color:var(--rim);color:var(--ink2);box-shadow:none;}
+  html .browse-src-pill:hover{background:var(--accent-soft);border-color:var(--accent-bdr);color:var(--accent);}
+  html .browse-src-pill.active{background:rgba(255,255,255,.14);border-color:var(--accent-bdr);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
+  html .browse-src-pill.disabled,html .browse-src-pill.disabled:hover{background:transparent;color:var(--muted2);border-color:var(--line2);}
+  /* Browse reader › "Search within Part…" field was rgba(255,255,255,.96): a white
+     bar pinned under the dark chrome. Same material as the other inputs. */
+  html .br-part-search{background:rgba(40,36,32,.96);border-color:var(--rim);}
+  html .br-part-search:focus-within{border-color:var(--accent);}
+
+  /* Nav › Saved count badge: white 9px digits on brass (1.7:1). */
+  html .nav-saved-count{color:#1c1710;}
+
+  /* Saved › "Copy all with citations": white type on the brass gradient. */
+  html .saved-copyall{color:#1c1710;}
+  html .saved-copyall.copied{color:#0f2a1c;}
+  /* Saved › remove-button hover was a light pink slab (#fef2f2). */
+  html .saved-item-del{color:var(--muted2);}   /* resting ✕ was --line (2.4:1) */
+  html .saved-item-del:hover{background:var(--bad-bg);color:var(--bad);}
+}
+@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
+  html .market-opp-card{background:#2f2b26;}
+  html .market-opp-card:hover{background:#363129;}
+  html .osr-fund td{background:#26221e;}
+  html .browse-source-bar{background:#24211d;-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html .browse-src-pill.active{background:#3d3832;}
+}
