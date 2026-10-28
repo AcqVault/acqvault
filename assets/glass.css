@@ -629,3 +629,338 @@ html .libcat .libfeat:only-of-type{max-width:520px;}
   html *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;}
   html :is(.sec,footer,.lband,.hero,.daily-strip,.wrap){margin:0;border:0;border-radius:0;}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK — follows the visitor's system setting. A room at dusk:
+   smoked charcoal glass over warm lamp light and cool window light
+   (assets/glass-lamp.svg). Tokens flip here; light stays the default.
+   html:root outranks the light token blocks above and STUDY_CSS's :root.
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-color-scheme:dark){
+  html:root{
+    color-scheme:dark;
+    /* text */
+    --ink:#f3efe8;--ink2:#e6e1d8;--ink3:#cdc7bd;--muted:#bdb6ab;--muted2:#aaa398;
+    /* surfaces that were paper */
+    --bg:#1c1915;--white:#24211d;--off:#1d1a17;--off2:#2b2722;
+    --line:rgba(255,255,255,.26);--line2:rgba(255,255,255,.11);--line-ctl:rgba(255,255,255,.26);
+    /* brass becomes the light: links and accents read bright on charcoal */
+    --accent:#e4c477;--accent-h:#f0d79a;--accent-d:#f6e3b4;
+    --accent-soft:rgba(228,196,119,.10);--accent-bdr:rgba(228,196,119,.26);--accent-glow:rgba(228,196,119,.22);
+    --brass:#d6b468;--brass-rgb:214,180,104;
+    --brass-ink:#e4c477;--brass-deep:#e4c477;--brass-bg:rgba(228,196,119,.10);--brass-line:rgba(228,196,119,.32);
+    --shadow-rgb:0,0,0;
+    /* status */
+    --ok:#7fd6a4;--ok-ink:#9be3b9;--ok-bg:rgba(127,214,164,.12);--ok-line:rgba(127,214,164,.4);
+    --bad:#ff9a90;--bad-ink:#ffb8b1;--bad-bg:rgba(255,154,144,.12);--bad-line:rgba(255,154,144,.4);
+    --warn:#f2b866;--warn-bg:rgba(242,184,102,.12);--warn-line:rgba(242,184,102,.4);
+    /* source identity: tinted glass chips, light text */
+    --rfo-bg:rgba(127,166,214,.16);--rfo-txt:#b3cdee;--rfo-solid:#8fb2df;
+    --dfars-bg:rgba(127,190,150,.15);--dfars-txt:#b2dcc0;--dfars-solid:#8cc5a0;
+    --fc-bg:rgba(196,150,186,.15);--fc-txt:#e2c4da;--fc-solid:#cfa3c4;
+    --cm-bg:rgba(160,176,190,.15);--cm-txt:#cdd7df;--cm-solid:#adbcc8;
+    --cmp-bg:rgba(230,140,100,.15);--cmp-txt:#f2c2a8;--cmp-solid:#e8a07c;
+    --fmr-bg:rgba(200,186,120,.15);--fmr-txt:#e2d6a6;--fmr-solid:#cdbd7e;
+    --dafi-bg:rgba(220,130,145,.15);--dafi-txt:#f0bcc4;--dafi-solid:#e090a0;
+    --ssp-bg:rgba(228,196,119,.14);--ssp-txt:#ecd49c;--ssp-solid:#e4c477;
+    --pgi-bg:rgba(200,160,140,.15);--pgi-txt:#e6cbbd;--pgi-solid:#d3ab96;
+    /* materials: the reference's smoked glass */
+    --sheet:rgba(30,27,24,.58);--sheet-read:rgba(24,22,19,.84);--sheet-blur:blur(22px) saturate(140%);
+    --smoke:linear-gradient(160deg,rgba(16,30,50,.82),rgba(11,22,38,.86));
+    --card:rgba(58,53,47,.5);--card-hi:rgba(70,64,57,.62);
+    --nav-glass:rgba(36,33,29,.62);--nav-pill:rgba(40,36,32,.72);
+    --modal:rgba(32,29,26,.99);   /* at .96 busy content showed through floating menus */
+    --rim:rgba(255,255,255,.12);
+    --lift:inset 0 1px 0 rgba(255,255,255,.07),0 1px 2px rgba(0,0,0,.3),0 26px 60px -28px rgba(0,0,0,.75);
+    --lift-hi:inset 0 1px 0 rgba(255,255,255,.1),0 2px 4px rgba(0,0,0,.35),0 30px 64px -26px rgba(0,0,0,.8);
+    --brass-rim:inset 0 2px 0 rgba(228,196,119,.6);
+  }
+  html body{background:#100e0c;color:var(--ink);}
+  html body::before{background:url(/assets/glass-lamp.svg?v=1) center/cover no-repeat;}
+}
+/* Dark + reduced transparency / more contrast: solid charcoal, no blur, no backdrop. */
+@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
+  html:root{--sheet:#1f1c19;--sheet-read:#1f1c19;--card:#2a2622;--card-hi:#2f2b26;--nav-glass:#24211d;--nav-pill:#24211d;--modal:#24211d;--smoke:#0f1f35;--rim:rgba(255,255,255,.22);--sheet-blur:none;}
+  html body{background:#141210;}
+}
+@media (prefers-color-scheme:dark) and (prefers-contrast:more){
+  html:root{--ink:#fff;--muted:#e2ddd5;--muted2:#e2ddd5;--line2:rgba(255,255,255,.4);}
+}
+
+@media (prefers-color-scheme:dark){ html .rz-bar-sep{color:var(--muted2);} }
+/* Phone menu rows sit between hairlines: only the pill nav's links are pills. */
+html .lnav-sheet .hlink{border-radius:0;}
+
+/* ═══ DARK — server pages + shared .lnav: light literals left in glass.css / _seo.js STYLE ═══ */
+@media (prefers-color-scheme:dark){
+  /* Scroll edge under the pinned pill: fades into the dusk, not a paper haze. */
+  html body:has(.lnav):not(:has(.rz-bar))::after{
+    background:linear-gradient(180deg,rgba(16,14,12,.9) 0%,rgba(16,14,12,.62) 55%,rgba(16,14,12,0) 100%);
+  }
+  html ::selection{background:rgba(228,196,119,.3);color:var(--ink);}
+
+  /* ── Nav pill: the link tray is recessed smoked glass, the current page a lit segment ── */
+  html .lnav .hdr-links{background:rgba(0,0,0,.24);border-color:rgba(255,255,255,.06);box-shadow:inset 0 1px 2px rgba(0,0,0,.28);}
+  html .lnav .hlink{color:var(--ink3);}
+  html .lnav .hlink:hover{color:var(--ink);background:rgba(255,255,255,.08);}
+  html .lnav .hlink--on{color:var(--ink);background:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 1px 2px rgba(0,0,0,.3);}
+  html .lnav .cta{border-color:rgba(228,196,119,.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
+  /* phone / tablet menu */
+  html .lnav-menu > summary{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);}
+  html .lnav-menu[open] > summary::before{background:rgba(0,0,0,.5);}
+  html .lnav-sheet{background:#1f1c19;border-color:var(--rim);box-shadow:0 0 0 .5px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.35),0 28px 64px -16px rgba(0,0,0,.75);}
+  /* grouped rows, square between hairlines: .lnav .hlink's pill radius left round gaps on the dark sheet */
+  html .lnav-sheet .hlink{background:rgba(255,255,255,.06);color:var(--ink2);border-radius:0;}
+  html .lnav-sheet .hlink:hover{background:rgba(255,255,255,.1);}
+  html .lnav-sheet .hlink--on{color:var(--accent);background:rgba(228,196,119,.1);}
+
+  /* ── Reading: brass washes use the bright brass (the dark brass vanishes on charcoal) ── */
+  html section.sec:target{background:linear-gradient(90deg,rgba(228,196,119,.09),rgba(228,196,119,.03) 62%,transparent);}
+  html mark{background:rgba(228,196,119,.26);color:var(--ink);}
+  html mark.pn-mark.active{background:var(--accent);color:#1c1915;box-shadow:0 0 0 2px rgba(228,196,119,.4);}
+  html .ptoc-list a:hover{background:rgba(228,196,119,.08);}
+  html .ptoc-list a.ptoc-active{background:rgba(228,196,119,.12);}
+  html .alt-nav{background:rgba(228,196,119,.05);}
+  html .alt-nav a:hover{background:rgba(228,196,119,.12);}
+  html table.ratetable tbody td{color:var(--ink2);}
+  html table.ratetable tbody tr:hover :is(th,td){background:rgba(255,255,255,.04);}
+  /* rule ⇄ procedure pairing: clay and brass as tinted glass */
+  html :is(.pair-pgi,.partpair-pgi){background:var(--pgi-bg);border-left-color:var(--pgi-solid);color:var(--pgi-txt);}
+  html :is(.pair-pgi .lead,.pair-pgi a){color:var(--pgi-txt);}
+  html :is(.pair-rule,.partpair-rule){background:rgba(228,196,119,.07);}
+  html .partpair-pgi .tag{background:var(--pgi-solid);color:#1c1915;}
+  html .partpair-rule .tag{color:#1c1915;}
+
+  /* hub part tiles: charcoal glass, faint white rim */
+  html .parts a{background:rgba(255,255,255,.035);}
+  html .parts a:hover{background:rgba(255,255,255,.07);}
+
+  /* ── Library ── */
+  html .libfeat-body .desc{color:var(--ink3);}
+  html .libcover .vol small{color:rgba(214,226,240,.8);}  /* .62 measured 3.9:1 on the smoked cover */
+  html .libfeat-foot .dl{background:rgba(228,196,119,.1);border-color:rgba(228,196,119,.26);}
+  html .libfeat:hover .libfeat-foot .dl{color:#1c1915;}
+  html .libsrc[data-src="rfo"]{--src:var(--rfo-solid);}
+  html .libsrc[data-src="r-dfars"]{--src:var(--dfars-solid);}
+  html .libsrc[data-src="far-companion"]{--src:var(--fc-solid);}
+  html .libsrc[data-src="category-management"]{--src:var(--cm-solid);}
+  html .libsrc[data-src="dafi-63-138"]{--src:var(--dafi-solid);}
+  html .libsrc[data-src="fmr"]{--src:var(--fmr-solid);}
+  html .libsrc[data-src="pgi"]{--src:var(--pgi-solid);}
+
+  /* ── Deviations: the pinned header is the column's own material, solid enough to read over rows ── */
+  html table.devtable th{background:rgba(31,28,25,.98);box-shadow:inset 0 -1px 0 var(--line);}
+  html table.devtable tbody tr:nth-child(even) td{background:rgba(255,255,255,.03);}
+  html table.devtable tbody tr:hover td{background:rgba(228,196,119,.07);}
+  html table.devtable :is(th,td){border-bottom-color:var(--line2);}
+
+  /* ── Changes ── */
+  html .chg-stat{background:rgba(255,255,255,.06);border-color:var(--line2);}
+  html .chg-kind-added{background:var(--ok-bg);color:var(--ok-ink);}
+  html .chg-kind-removed{background:var(--bad-bg);color:var(--bad-ink);}
+  html details.chg-part{background:rgba(255,255,255,.03);}
+}
+@media (max-width:600px) and (prefers-color-scheme:dark){
+  html table.devtable tbody tr:nth-child(even){background:rgba(255,255,255,.03);}
+}
+/* Reduced transparency / more contrast: the few translucent fills above go solid. */
+@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
+  html .lnav .hdr-links{background:#171512;box-shadow:none;}
+  html .lnav .hlink--on{background:#3a3530;}
+  html :is(.lnav-menu > summary,.lnav-sheet .hlink){background:#2a2622;}
+  /* :is(th,#_._) out-weighs glass.css's light opt-out list (its #main-nav.over-hero .nav-inner arm), which paints this #fff */
+  html table.devtable th:is(th,#_._){background:#1f1c19;-webkit-backdrop-filter:none;backdrop-filter:none;}
+}
+
+/* ═══ DARK — home page (/) literal light surfaces → smoked glass ═══ */
+@media (prefers-color-scheme:dark){
+  /* ── Nav pill: charcoal glass, faint white rim ── */
+  html .nav-inner,html nav#main-nav.over-hero .nav-inner{
+    background:var(--nav-pill);border-color:var(--rim);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 34px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.3);
+  }
+  html .nav-center,html nav#main-nav.over-hero .nav-center{background:rgba(255,255,255,.05);border-color:var(--line2);}
+  html .nav-center a{color:var(--ink3);}
+  html .nav-center a:hover{color:var(--ink);}
+  html .nav-pill{background:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px var(--rim);}
+  html .nav-center a.pilled{color:var(--ink);}
+  html :is(.nav-saved-btn,.nav-feedback-btn),
+  html nav#main-nav.over-hero :is(.nav-saved-btn,.nav-feedback-btn){background:rgba(255,255,255,.05);border-color:var(--line2);color:var(--ink3);}
+  html :is(.nav-saved-btn,.nav-feedback-btn):hover{background:rgba(255,255,255,.1);color:var(--ink);}
+  html .nav-saved-btn.has-changes::after{box-shadow:0 0 0 2px var(--white);}
+
+  /* ── Primary buttons: brass fill, dark ink (Apple dark accent buttons) ── */
+  html :is(.nav-cta,.market-btn,.osr-go,.lib-open-btn,.market-action.primary,.feedback-submit){
+    background:linear-gradient(160deg,var(--accent-h),var(--accent));color:#1c1710;border-color:transparent;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 18px -6px rgba(0,0,0,.6);
+  }
+  html :is(.nav-cta,.market-btn,.osr-go,.lib-open-btn,.market-action.primary,.feedback-submit):hover{border-color:transparent;background:linear-gradient(160deg,var(--accent-d),var(--accent-h));color:#1c1710;}
+  html .study-open-btn:hover{border-color:var(--accent-d);}
+
+  /* ── Hero: mode tabs — selected segment is lifted glass, not a white slab ── */
+  html .hero .seg-glider{background:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 2px 10px rgba(0,0,0,.35);}
+  html .hero .mode-btn.on-glider,html .hero .mode-btn.active.on-glider{color:#fff!important;}
+  html .fcard-foot .st-fy-dot{color:var(--muted2);}
+
+  /* ── Scroll edge under the nav: fade into the dusk room, not into paper ── */
+  html body:has(#main-nav.scrolled)::after{background:linear-gradient(180deg,rgba(16,14,12,.9) 0%,rgba(16,14,12,.66) 55%,rgba(16,14,12,0) 100%);}
+
+  /* ── Market Research ── */
+  html .market-field{background:rgba(255,255,255,.045);border-color:var(--line2);border-bottom-color:var(--rim);box-shadow:none;}
+  html .market-field:focus-within{border-color:var(--accent-bdr);}
+  html .market-selectable{background:rgba(255,255,255,.04);border-color:var(--line2);box-shadow:none;}
+  html .market-actions{background:rgba(255,255,255,.03);border-top-color:var(--line2);}
+  html .market-action:not(.primary){background:rgba(255,255,255,.06);border-color:var(--line2);color:var(--ink2);}
+  html :is(.market-chip,.market-pill,.market-board-btn,.market-example){background:rgba(255,255,255,.06);border-color:var(--line2);}
+  html :is(.market-pill,.market-board-btn,.market-example):hover{background:rgba(255,255,255,.11);}
+  html .market-flow-sep{color:var(--accent);}
+  html .market-board-badge{color:#1c1710;}
+
+  html .market-label{color:var(--muted);}
+  html .osr-ex-lbl{color:var(--muted);}
+  html .lib-cover-vol small{color:rgba(214,226,240,.82);}
+
+  /* ── Toolkit: Standard/Contingency segmented control ── */
+  html .thr-scope{background:rgba(255,255,255,.05);border-color:var(--line2);}
+  html .thr-scope button{color:var(--muted);}
+  html .thr-scope button.active{background:rgba(255,255,255,.14);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 1px 4px rgba(0,0,0,.35);}
+  /* CASPER table: scroll-shadow covers take the card colour, not paper white */
+  html .cra-wrap{
+    background:
+      linear-gradient(90deg,rgb(44,42,38) 30%,rgba(44,42,38,0)) left/36px 100% no-repeat local,
+      linear-gradient(270deg,rgb(44,42,38) 30%,rgba(44,42,38,0)) right/36px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%,rgba(0,0,0,.4),transparent) left/12px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%,rgba(0,0,0,.4),transparent) right/12px 100% no-repeat scroll;
+  }
+  html #acro-tip{background:var(--modal);color:var(--ink);border:1px solid var(--rim);box-shadow:0 12px 32px rgba(0,0,0,.55);}
+  html #acro-tip .at-term{color:var(--accent);}
+
+  /* ── Coverage & trust ── */
+  html #sources .source-status-panel{background:var(--card);border-color:var(--rim);box-shadow:var(--lift);}
+  html #sources .callout{background:var(--card);border-color:var(--rim);box-shadow:var(--lift);}
+
+  /* ── Search results ── */
+  html .result-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 1px 2px rgba(0,0,0,.3);}
+  html #source-filters .fpill.active{background:rgba(255,255,255,.14);border-color:var(--accent-bdr);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
+  html .rc-badge-final{background:var(--ok-bg);color:var(--ok-ink);}
+  html .rc-badge-open{background:var(--warn-bg);color:var(--warn);}
+  html :is(.rc-badge-interim,.rc-badge-class){background:var(--bad-bg);color:var(--bad-ink);border-color:var(--bad-line);}
+  html .rc-badge-updated{background:var(--brass-bg);color:var(--accent);border-color:var(--brass-line);}
+  html .rc-pin:not(.is-pinned):not(:hover){color:var(--muted2);}  /* --line is a hairline tint, too faint for an icon */
+  html .pin-coach-star,html .pin-coach--inline .pin-coach-star{color:var(--accent);}
+
+  /* ── Browse menu ── */
+  /* opaque: at --modal's .96 the chips/headline underneath ghost through the list */
+  html .browse-source-menu{background:#201d1a;border-color:var(--rim);box-shadow:0 18px 45px rgba(0,0,0,.55);}
+  html .browse-source-menu small{border-color:var(--ok-line);}
+
+  /* ── Hamburger + mobile menu: grouped charcoal list, iOS inset style ── */
+  html .nav-hamburger{background:rgba(255,255,255,.06);border-color:var(--line2);}
+  html .nav-hamburger:hover{background:rgba(255,255,255,.11);}
+  html .nav-hamburger-bars span{background:var(--ink2);}
+  html .mobile-menu-backdrop{background:rgba(0,0,0,.5);}
+  html .mobile-menu{background:#201d1a;border-color:var(--rim);box-shadow:0 24px 60px rgba(0,0,0,.6);}
+  html .mobile-menu .mm-link{background:rgba(255,255,255,.06);color:var(--ink2);}
+  html .mobile-menu .mm-link:is(:hover,:active){background:rgba(255,255,255,.1);color:var(--accent);}
+
+  /* ── Saved drawer empty states ── */
+  html #drawer .saved-sec :is(.saved-empty,[class*="empty"]){background:rgba(255,255,255,.04);}
+}
+
+/* Dark + reduced transparency / more contrast: the light opt-out block paints nav and menus #fff — keep them solid charcoal. */
+@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
+  html :is(.nav-inner,#main-nav .nav-inner,#main-nav.over-hero .nav-inner,.browse-source-menu){background:var(--nav-pill);}
+  html .mobile-menu .mm-link{background:#2f2b26;}
+  html :is(.nav-center,.nav-saved-btn,.nav-feedback-btn,.nav-hamburger,.market-field,.market-selectable,.market-chip,.market-pill,.market-board-btn,.market-example,.thr-scope){background:#2a2622;}
+  html :is(.nav-pill,.thr-scope button.active,.hero .seg-glider,#source-filters .fpill.active){background:#3d3832;}
+  html body:has(#main-nav.scrolled)::after{background:linear-gradient(180deg,#141210 0%,#141210 55%,rgba(20,18,16,0) 100%);}
+}
+
+/* ═══ DARK — /study, /48cons, /source-selection interiors ═══════════════
+   Only the literals STUDY_CSS / SRCSEL_CSS hard-code for paper. Tokens do the rest. */
+@media (prefers-color-scheme:dark){
+
+  /* ── the pinned task bar: smoked glass, not a white strip ── */
+  html .rz-bar{background:var(--modal);border-bottom-color:var(--rim);box-shadow:inset 0 -1px 0 rgba(255,255,255,.04),0 14px 30px -22px rgba(0,0,0,.8);}
+
+  /* ── brass-tint paper (#f6efdd / #faf3e0) → a lamp-lit tint on glass ── */
+  html :is(.st-mode-ic,.st-capped,.st-g2,.st-my-tag,.st-my-warn,.st-lad-notes,.st-bd-chk-on,.st-tc-continue,
+           .st-cb-hint,.st-cb-key-back,.ss-tag,.ss-resume,.ss-train,.cui-banner,.ss-fb-warn,.ss-verdict-warn,.ss-pill-y){
+    background:var(--brass-bg);border-color:var(--brass-line);color:var(--brass-ink);}
+  html #study-app[data-mode="48cons"] .st-sim-chip{background:var(--brass-bg);border-color:var(--brass-line);}
+  html .st-link:hover{background:var(--brass-bg);}
+  html .st-cite:hover{background:var(--brass-bg);}
+  html .st-lb-list li.st-lb-me{background:var(--brass-bg);}
+  html .ss-verdict-warn h2{color:var(--brass-ink);}
+  html .st-hint-n{background:var(--brass-bright);color:#1a1408;}
+  /* the two "panel speaks" quotes: a warm card, white type */
+  html :is(.st-panel-ask,.st-bd-echo){background:var(--brass-bg)!important;color:var(--ink);border-color:var(--brass-line)!important;}
+
+  /* ── paper and off-white panels → the card material ── */
+  html :is(.st-my-item,.st-rec){background:var(--off2);}
+  html .st-my-err{background:var(--bad-bg);border-color:var(--bad-line);}
+  html .st-gv-card{background:var(--card-hi);border-color:var(--brass-line);}
+  html .ss-startnote{background:var(--brass-bg);border-color:var(--brass-line);color:var(--ink2);}
+  html .ss-startnote-ic{background:var(--brass-bright);color:#1a1408;}
+
+  /* ── progress tracks and pips (#ece8dd) ── */
+  html :is(.st-cb-hbar,.st-gv-pip,.ss-prog){background:var(--line2);}
+  html .st-gv-pip-on{background:var(--brass-bright);}
+  html .st-cb-hbar span{background:#5d5850;color:var(--ink);}
+
+  /* ── ink literals (#2a3140 / #3d444d / #33404f) on what is now charcoal ── */
+  html :is(.st-a,.st-my-a,.st-bd-chk,.st-opt,.rz-opt,.st-lad-sink-item,.st-lb-list li,.ss-log-txt,.ss-doc p,.ss-doc li){color:var(--ink2);}
+  html :is(.st-fu-debrief p,.st-fact>div,.st-bd-cite,.st-bd-source-q,.st-explain p,.st-walk ol>li,.st-walk .bs-applies,
+           .st-walk ul li,.st-hint,.st-cb-def,.st-cb-help p,.st-cb-help-row>span:last-child,.st-gv-rules span,.st-gv-miss,.st-lad-q-body,.ss-cite-q){color:var(--ink3);}
+  html :is(.st-scenario,.st-script p){color:var(--ink2);}
+  html :is(.ss-m-mod,.ss-opt-mark.warn,.ss-log-warn .ss-log-mark,.ss-log-warn .ss-log-risk){color:var(--warn);}
+  html .ss-cite-src:hover{color:var(--accent-h);}
+
+  /* ── white glyphs on fills that are now bright: dark ink instead ── */
+  html :is(.rz-lesson-done .rz-lesson-mark,.rz-side-done .rz-side-mark,.rz-step-done .rz-step-m,.ss-step-done .ss-step-m,.rz-done-tick){color:#1a1408;}
+  html .rz-item-done .rz-item-ic svg{stroke:#1a1408;}
+  html :is(.st-opt-right kbd,.st-opt-wrong kbd,.st-hub-done-mark,.st-rec-stop){color:#121410;}
+  /* the radio's hole is the card, not paper */
+  html .rz-opt-on .rz-opt-dot{box-shadow:inset 0 0 0 3.5px var(--bg),inset 0 0 0 9px var(--brass);}
+  html .rz-opt-right .rz-opt-dot{box-shadow:inset 0 0 0 3.5px var(--bg),inset 0 0 0 9px var(--ok);}
+  html .rz-opt-wrong .rz-opt-dot{box-shadow:inset 0 0 0 3.5px var(--bg),inset 0 0 0 9px var(--bad);}
+
+  /* ── navy primaries: keep the brand button, give it a rim so it lifts off charcoal ── */
+  html :is(.rz-btn-go,.ss-btn-primary):not(.rz-cover>.rz-btn-go){background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));border-color:rgba(var(--brass-bright-rgb),.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);}
+  html .st-btn-reveal{background:linear-gradient(160deg,var(--ink-from),var(--ink-mid))!important;border-color:rgba(var(--brass-bright-rgb),.34)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)!important;}
+
+  /* ── source-selection: rating pills, picked options, verdicts ── */
+  html .ss-pill-o{background:var(--rfo-bg);color:var(--rfo-txt);}
+  html .ss-pill-p{background:var(--fc-bg);color:var(--fc-txt);}
+  html .ss-opt.picked-right{background:var(--ok-bg);border-color:var(--ok-line);box-shadow:0 0 0 1px var(--ok-line);}
+  html .ss-opt.picked-wrong{background:var(--bad-bg);border-color:var(--bad-line);box-shadow:0 0 0 1px var(--bad-line);}
+  html .ss-opt.picked-warn{background:var(--warn-bg);border-color:var(--warn-line);box-shadow:0 0 0 1px var(--warn-line);}
+  html .ss-fb-good{color:var(--ok-ink);border-color:var(--ok-line);}
+  html .ss-fb-bad{color:var(--bad-ink);border-color:var(--bad-line);}
+  html .ss-fb-warn{color:var(--ink2);}
+  /* the document viewer: a dark sheet, not a sheet of paper */
+  html .ss-modal-card{background:var(--modal);box-shadow:inset 0 0 0 1px var(--rim),0 34px 80px -20px rgba(0,0,0,.8);}
+  html .ss-modal-head{background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));}
+  html .dod-header{border-bottom-color:var(--line);}
+  html .dod-header h3{color:var(--ink);}
+  html .ss-doc hr{border-top-color:var(--line2);}
+  html :is(.dod-table th,.dod-table td,.dod-sig){border-color:var(--line);}
+  html .dod-table th{background:var(--off2);color:var(--ink);}
+
+  /* ── The Combination: the game's own colours, legible on charcoal ── */
+  html :is(.st-cb-c,.st-cb-p,.st-cb-key-c,.st-cb-key-p){color:#14120e;}
+  /* absent recedes (darker, dimmer); untried keys stay raised, Wordle's own dark logic */
+  html .st-cb-a{background:#3a3733;border-color:#3a3733;color:var(--ink2);}
+  html .st-cb-key-a{background:#262320;border-color:#262320;color:var(--muted2);}
+  html .st-cb-key:not(.st-cb-key-c):not(.st-cb-key-p):not(.st-cb-key-a):not(.st-cb-key-back){background:#5c5750;border-color:transparent;}
+
+  /* self-grade buttons: the token hairlines, not the light-mode literals */
+  html .st-g1{border-color:var(--bad-line);}
+  html .st-g3{border-color:var(--ok-line);}
+}
+
+/* Dark + reduced transparency: the task bar and tinted panels were the only new translucency;
+   --modal is already solid there, the brass tints sit on solid cards. */
+@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce){
+  html .rz-bar{-webkit-backdrop-filter:none;backdrop-filter:none;}
+}

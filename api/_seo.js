@@ -1260,7 +1260,7 @@ function navLinks(canonical) {
     const cur = here === href || (href !== '/' && here.startsWith(href + '/'));
     return `<a class="hlink${cur ? ' hlink--on' : ''}"${cur ? ' aria-current="page"' : ''} href="${href}">${label}</a>`;
   };
-  return link('/?home=1', 'Home') + NAV.map(([h, l]) => link(h, l)).join('');
+  return link('/?home=1', 'Home') + NAV.map(([h, l]) => link(h, l)).join('') + link('/?feedback=1', 'Feedback');
 }
 
 // One copy of the mark: it was a function-local const in four renderers and
@@ -1285,6 +1285,7 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed, ogIma
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
 <title>${esc(title)}</title>
 <meta name="description" content="${description}">
 ${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<link rel="canonical" href="${canonical}">

@@ -4267,6 +4267,12 @@ window.acqExitToLanding = exitToLanding;
   // on the server-rendered pages). It must beat every restore — a plain "/" boot
   // re-enters whatever view this tab last had open, so without the signal clicking
   // the logo from Browse would land right back in Browse.
+  // ?feedback=1 is the Feedback link on the server-rendered pages: land home with the form open.
+  if (params.has('feedback')) {
+    try { history.replaceState(null, '', '/'); } catch (e) {}
+    openFeedback();
+    return;
+  }
   if (params.has('home')) {
     try { sessionStorage.setItem('acq-view-v1', 'search'); } catch (e) {}
     try { history.replaceState(null, '', '/'); } catch (e) {}

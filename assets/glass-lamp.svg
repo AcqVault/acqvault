@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<!-- AcqVault dark backdrop: a room at dusk, out of focus. Warm lamp light left, cool window light right, grain against banding. -->
+<defs>
+<linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#16120e"/><stop offset=".6" stop-color="#110e0b"/><stop offset="1" stop-color="#0b0908"/>
+</linearGradient>
+<radialGradient id="lamp"><stop offset="0" stop-color="#ffb46a" stop-opacity=".55"/><stop offset=".35" stop-color="#c9773a" stop-opacity=".28"/><stop offset="1" stop-color="#7a4520" stop-opacity="0"/></radialGradient>
+<radialGradient id="ember"><stop offset="0" stop-color="#b8743a" stop-opacity=".32"/><stop offset="1" stop-color="#b8743a" stop-opacity="0"/></radialGradient>
+<radialGradient id="window"><stop offset="0" stop-color="#7f9cc4" stop-opacity=".34"/><stop offset=".5" stop-color="#4c6688" stop-opacity=".16"/><stop offset="1" stop-color="#4c6688" stop-opacity="0"/></radialGradient>
+<radialGradient id="dusk"><stop offset="0" stop-color="#2a3a52" stop-opacity=".4"/><stop offset="1" stop-color="#2a3a52" stop-opacity="0"/></radialGradient>
+<filter id="grain" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/>
+<feColorMatrix values="0 0 0 0 1  0 0 0 0 .95  0 0 0 0 .9  0 0 0 .05 0"/>
+</filter>
+</defs>
+<rect width="1600" height="1000" fill="url(#base)"/>
+<ellipse cx="1340" cy="300" rx="620" ry="520" fill="url(#dusk)"/>
+<ellipse cx="1380" cy="260" rx="420" ry="380" fill="url(#window)"/>
+<ellipse cx="330" cy="330" rx="640" ry="480" fill="url(#lamp)"/>
+<ellipse cx="620" cy="820" rx="760" ry="300" fill="url(#ember)"/>
+<rect width="1600" height="1000" filter="url(#grain)"/>
+</svg>
