@@ -1183,3 +1183,53 @@ html .hero-inner-b:has(.hi-oblig.st-fallback):has(.hi-awards.st-fallback) .hero-
 @media (max-width:1180px){ html .hi-sec{padding:18px 20px 16px;} }
 @media (prefers-reduced-motion:reduce){ html .hero-instrument,html .hi-row{animation:none;} }
 @media (prefers-reduced-transparency:reduce),(prefers-contrast:more){ html .hero-instrument{-webkit-backdrop-filter:none;backdrop-filter:none;background:#fff;} }
+
+/* ===== Fit-and-finish sweep: pages other than home (appended after glass.css) ===== */
+
+/* Phone menu: the scrim is an absolute ::before at inset:-300vmax on <summary>, and
+   nothing above it clips, so the document's scrollable width grew to ~3000px and the
+   page could be dragged sideways while the sheet was open (and 350px taller at 900).
+   position:fixed is trapped by the header's backdrop-filter, so size the absolute
+   scrim to the viewport instead: the header is centred, so 50% - 50vw is the
+   viewport's left edge; one viewport above and below covers every scroll position the
+   sheet can open at (it opens at scroll 0 on phones; the header is sticky above 860).
+   overflow-x:clip on <html> swallows the scrollbar-width remainder of 100vw. */
+html .lnav-menu[open] > summary::before{inset:-100vh calc(50% - 50vw);}
+html:has(.lnav-menu[open]){overflow-x:clip;}
+
+/* Phone menu: the current page's row inherited the pill nav's dark active fill
+   (html .lnav .hlink--on{background:var(--char)}) under the sheet's brass-ink text —
+   rgb(70,53,15) on rgb(43,38,32), about 1.5:1. The sheet rows are light; keep the
+   current row light and tinted, brass-ink on it is ~10:1. */
+html .lnav .lnav-sheet .hlink--on{background:rgba(var(--brass-rgb),.13)!important;color:var(--brass-ink)!important;}
+html .lnav .lnav-sheet .hlink--on::after{color:var(--brass-ink);}
+
+/* /source-selection: glass.css zeroes .ss-wrap's side padding and only restores it at
+   ≥861px, so on a phone the stepper, the question card and the verdict buttons sat
+   flush against the band's rounded edge. Same 24px inset /study's .st-wrap keeps. */
+@media (max-width:860px){
+  html .lband--room > .ss-wrap{padding-left:24px!important;padding-right:24px!important;}
+}
+
+/* Part reader, in-part search with hits on a phone: icon + "135 matches" + ↑ ↓ + ✕ left
+   the input 51px wide, so the query was cut after six letters. Tighten the chrome and
+   drop the decorative magnifier once results are showing; the input gets ~150px. */
+@media (max-width:480px){
+  html .pn-search:has(.pn-search-nav.visible){gap:6px;}
+  html .pn-search:has(.pn-search-nav.visible) .pn-search-icon{display:none;}
+  html .pn-search-count{font-size:11px;}
+  html .pn-step,html .pn-clear{min-width:38px;}
+}
+
+/* Study session header (The Combination, board sim, ladder): a two-span flex row with
+   no wrap, so at 390px the first span's last word dropped to a second line under the
+   second span — "THE COMBINATION · NO. 6 TRIES LEFT · 109". Let the row wrap whole
+   spans instead. */
+html .st-session-head{flex-wrap:wrap;row-gap:2px;column-gap:14px;}
+
+/* Rate tables (e.g. 12.201 in the RFO): every tbody <th> was nowrap, so the 70-char
+   procedure name forced the table past its scroller and the third column was cut
+   mid-word ("STATUTORY AUTHOR…", "as appropria") at 1440 and 390 alike. Let the
+   headings wrap; the scroller stays for genuinely wide tables. */
+html table.ratetable tbody th,html table.ratetable thead th{white-space:normal;}
+html table.ratetable th:first-child{min-width:12ch;}
