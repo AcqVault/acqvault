@@ -1127,3 +1127,71 @@ html .nav-center a{padding:6px 10px;}
   html .browse-source-bar{background:#24211d;-webkit-backdrop-filter:none;backdrop-filter:none;}
   html .browse-src-pill.active{background:#3d3832;}
 }
+
+/* ═══ POLISH SWEEP — interactive states on every non-home page (additive, appended after glass.css) ═══ */
+
+/* ── /study · Daily Review card on a phone: the brass "→" (absolute, right:22px, vertically centred)
+   sat on top of the description's third line. Reserve its column so the text wraps before it. ── */
+@media (max-width:600px){
+  html .st-daily:not(.st-daily-dead){padding-right:54px!important;}
+}
+
+/* ── /source-selection · a locked option on a phone: "✓ Your call — sound" (nowrap, margin-left:auto)
+   squeezed the option text into a 90px column. Below 600px the verdict drops to its own line,
+   aligned with the text, and the text keeps the full width. ── */
+@media (max-width:600px){
+  html .ss-opt{flex-wrap:wrap;}
+  html .ss-opt .ss-opt-txt{flex:1 1 0;min-width:0;}
+  html .ss-opt .ss-opt-mark{flex:0 0 100%;margin-left:0;padding-left:29px;align-self:auto;margin-top:2px;}
+}
+
+/* ── /category-management/part-1 · the pathway continuum table is min-width:680px inside an
+   overflow-x:auto box: on a phone it was cut at the sheet's edge with no scrollbar in sight. Below
+   600px the grid stacks — label, then each pathway cell carrying its own column name. ── */
+@media (max-width:600px){
+  html .cm-continuum-head,html .cm-continuum-grid{min-width:0;}
+  html .cm-continuum-head{grid-template-columns:1fr;}
+  html .cm-continuum-head div + div{border-top:1px solid rgba(255,255,255,.14);}
+  html .cm-continuum-grid{grid-template-columns:1fr;}
+  html .cm-cont-cell:empty{display:none;}
+  html .cm-cont-cell + .cm-cont-cell{border-top:0;padding-top:0;}
+  html .cm-cont-cell:has(+ .cm-cont-cell:not(:empty))::before,
+  html .cm-cont-cell + .cm-cont-cell:not(:empty)::before{
+    display:block;font-size:var(--fs-xs,11px);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;
+  }
+  html .cm-cont-cell:has(+ .cm-cont-cell:not(:empty))::before{content:"Simple pathway";}
+  html .cm-cont-cell + .cm-cont-cell:not(:empty)::before{content:"Other-than-simple pathway";}
+}
+
+/* ── /study · The Combination result: the histogram bar for your own score is brass, and its count
+   inherited white type (1.9:1 in dark, 4.4:1 in light). Dark ink on the brass bar, like every other
+   brass fill — both modes (rule is in the light block below). ── */
+
+/* ── /study · Which Part Governs, end screen on a phone: each miss was a flex row, so the situation
+   text was squeezed into a ~90px column beside the part chip. Stack them below 600px. ── */
+@media (max-width:600px){
+  html .st-gv-miss{flex-direction:column;align-items:flex-start;gap:6px;}
+}
+
+/* ── Light mode · small type that measured under 4.5:1 (both-mode bugs) ── */
+/* grade key caps: .st-btn kbd is opacity:.65, which drops the tinted buttons' ink to 3.3–3.5:1 */
+html :is(.st-g1,.st-g2,.st-g3) kbd{opacity:.92;}
+/* lesson task bar: "/" between crumbs sat at 3.35:1 */
+html .rz-bar-sep{color:var(--muted2);}
+html .st-cb-hbar span.st-cb-hbar-me{color:#1a1408;}
+/* light only (dark restyles these in glass.css): The Combination's white-on-Wordle-grey is 4.2:1,
+   one step darker keeps the read; the simulator document's training / CUI ribbons on paper are 4.3:1 */
+@media not all and (prefers-color-scheme:dark){
+  html .st-cb-key-a,html .st-cb-tile.st-cb-a{background:#6b6f71;border-color:#6b6f71;}
+  html :is(.ss-train,.cui-banner){color:#6f5416;}
+}
+/* 48 CONS ladder card: the "DoD deviation" tag was a flat #787878 (3.9:1 on paper) */
+html .st-lad-q-dodtag{color:var(--muted);opacity:1;}
+
+/* Nav, 1024–1179: the right group keeps its full width (Saved count included), so the
+   middle column flexes and the section links tighten instead of the pill overflowing
+   the viewport by ~6px. */
+@media (min-width:1024px) and (max-width:1179px){
+  html .nav-inner{grid-template-columns:auto minmax(0,1fr) max-content;}
+  html .nav-center a{padding:6px 8px;}
+}
