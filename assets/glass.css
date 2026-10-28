@@ -1131,3 +1131,55 @@ html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.result-card,.st-trackca
   html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.result-card,.st-trackcard,.market-panel,.callout,.study-mode,.osr-summary,.dash-stat,.dash-panel){-webkit-backdrop-filter:none;backdrop-filter:none;}
 }
 html .rz-sec-count{color:var(--ink3);}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO INSTRUMENT — the right-hand pane is one piece of glass.
+   The decorative vault dial and the two mismatched data cards are gone;
+   what remains is the information: the FY Air Force obligations figure
+   with a monthly bar chart on a fiscal-month axis, and the five most
+   recent awards as a plain list. Site sans with tabular figures, no
+   mono, no gradients, no ticker. A failed fetch hides its own section
+   (app.js marks it .st-fallback); if both fail the hero goes one-column.
+   ═══════════════════════════════════════════════════════════════ */
+html .hero-right{display:flex;align-items:center;justify-content:center;min-height:0;}
+html .hero-instrument{
+  width:100%;max-width:470px;
+  background:var(--card);
+  border:1px solid var(--rim);border-radius:var(--card-r);
+  box-shadow:var(--lift);
+  -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(1.05);backdrop-filter:blur(12px) saturate(160%) brightness(1.05);
+  animation:hero-rise .85s .3s cubic-bezier(.16,1,.3,1) both;
+}
+html .hi-sec{padding:22px 24px 20px;}
+html .hi-sec + .hi-sec{border-top:1px solid rgba(255,255,255,.7);box-shadow:inset 0 1px 0 rgba(43,38,32,.08);}  /* one tone step between the two halves */
+html .hi-title{margin:0;font-family:var(--font-sans);font-size:13px;line-height:1.3;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink2);}
+html .hi-figure{margin:6px 0 0;font-family:var(--font-sans);font-size:clamp(40px,3.6vw,50px);line-height:1;font-weight:700;letter-spacing:-.035em;color:var(--ink);font-variant-numeric:tabular-nums lining-nums;}
+html .hi-sub,html .hi-foot{margin:8px 0 0;font-size:13px;line-height:1.4;color:var(--muted);font-variant-numeric:tabular-nums;}
+html .hi-foot{margin-top:6px;}
+html :is(.hi-sub,.hi-foot) span:empty{display:none;}
+html :is(.hi-sub,.hi-foot) span + span:not(:empty)::before{content:"\00b7";margin:0 7px;color:var(--muted2);}
+/* the chart: thin charcoal bars, the latest month brass, a hairline baseline, four axis labels */
+html .hi-chart{display:none;margin-top:14px;line-height:0;}
+html .hi-chart svg{display:block;width:100%;height:68px;overflow:visible;}
+html .hi-bar{fill:var(--char);opacity:.6;}
+html .hi-bar-last{fill:var(--brass);opacity:1;}
+html .hi-baseline{stroke:rgba(43,38,32,.28);stroke-width:1;}
+html .hi-axis{display:grid;grid-template-columns:repeat(4,1fr);margin-top:5px;line-height:1.2;font-size:11px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;}
+/* the awards list: amount, vendor, date on one line; award id and office on the next */
+html .hi-list{list-style:none;margin:10px 0 0;padding:0;}
+html .hi-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"amt vendor when" "meta meta meta";column-gap:10px;align-items:baseline;padding:9px 0;animation:hero-rise .5s cubic-bezier(.16,1,.3,1) both;}
+html .hi-row + .hi-row{box-shadow:inset 0 1px 0 rgba(43,38,32,.1);}
+html .hi-amt{grid-area:amt;font-size:15px;font-weight:650;letter-spacing:-.01em;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;}
+html .hi-vendor{grid-area:vendor;font-size:13px;font-weight:500;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+html .hi-when{grid-area:when;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;}
+html .hi-meta{grid-area:meta;margin-top:1px;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums;}
+html .hi-source{margin:10px 0 0;font-size:12px;color:var(--muted);}
+html .hi-loading{font-size:13px;color:var(--muted);padding:8px 0;}
+/* failure states */
+html .hi-sec.st-fallback{display:none;}
+html .hero-inner-b:has(.hi-oblig.st-fallback):has(.hi-awards.st-fallback){grid-template-columns:1fr;grid-template-areas:"left" "quote";}
+html .hero-inner-b:has(.hi-oblig.st-fallback):has(.hi-awards.st-fallback) .hero-right{display:none;}
+html .hero-inner-b:has(.hi-oblig.st-fallback):has(.hi-awards.st-fallback) .hero-left{max-width:720px;}  /* one column, but the copy keeps its measure */
+@media (max-width:1180px){ html .hi-sec{padding:18px 20px 16px;} }
+@media (prefers-reduced-motion:reduce){ html .hero-instrument,html .hi-row{animation:none;} }
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){ html .hero-instrument{-webkit-backdrop-filter:none;backdrop-filter:none;background:#fff;} }

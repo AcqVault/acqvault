@@ -4738,35 +4738,25 @@ function stFmtAmt(n) {
   return '$' + n.toFixed(0);
 }
 
-// Compact micro-SVG sparkline of cumulative FY obligations (the "it's tracking live" signal)
-function stRenderSpark(values) {
+// Monthly obligations as thin bars on a 12-slot fiscal-month axis (Oct–Sep); the latest month is brass.
+function stRenderSpark(rows) {
   var el = document.getElementById('st-spark');
   if (!el) return;
-  if (!values || values.length < 3) { el.style.display = 'none'; return; }
-  var w = 132, h = 32, pad = 2.5;
-  var max = Math.max.apply(null, values), min = Math.min.apply(null, values);
-  var range = (max - min) || 1;
-  var xy = values.map(function(v, i) {
-    var x = pad + (i / (values.length - 1)) * (w - 2 * pad);
-    var y = h - pad - ((v - min) / range) * (h - 2 * pad);
-    return x.toFixed(1) + ',' + y.toFixed(1);
-  });
-  var line = xy.join(' ');
-  var lastX = (pad + (w - 2 * pad)).toFixed(1);
-  var lastY = (h - pad - ((values[values.length - 1] - min) / range) * (h - 2 * pad)).toFixed(1);
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var pulse = reduce ? '' : '<animate attributeName="r" values="2.4;3.4;2.4" dur="1.8s" repeatCount="indefinite"/>';
-  el.innerHTML =
-    '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" preserveAspectRatio="none" aria-hidden="true">' +
-    '<defs><linearGradient id="st-spark-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>' +
-    '<polygon fill="url(#st-spark-fill)" points="' + pad + ',' + (h - pad) + ' ' + line + ' ' + (w - pad) + ',' + (h - pad) + '"/>' +
-    '<polyline fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" points="' + line + '"/>' +
-    '<circle cx="' + lastX + '" cy="' + lastY + '" r="2.6" fill="var(--accent)">' + pulse + '</circle>' +
-    '</svg>';
+  if (!rows || rows.length < 2) { el.style.display = 'none'; return; }
+  var w = 360, h = 68, top = 4, base = 67, slot = w / 12, gap = 6;
+  var max = Math.max.apply(null, rows.map(function(r) { return r._amt; })) || 1;
+  var bars = rows.map(function(r, i) {
+    var bh = Math.max(2, (r._amt / max) * (base - top));
+    var x = (r._fm - 1) * slot + gap / 2;
+    var last = i === rows.length - 1;
+    return '<rect x="' + x.toFixed(1) + '" y="' + (base - bh).toFixed(1) + '" width="' + (slot - gap).toFixed(1) + '" height="' + bh.toFixed(1) + '" rx="1.5" class="' + (last ? 'hi-bar hi-bar-last' : 'hi-bar') + '"/>';
+  }).join('');
+  // Axis labels live in HTML so the stretched SVG never distorts the type.
+  el.innerHTML = '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" preserveAspectRatio="none" aria-hidden="true">' +
+    bars + '<line x1="0" x2="' + w + '" y1="' + (base + 0.5) + '" y2="' + (base + 0.5) + '" class="hi-baseline"/></svg>' +
+    '<div class="hi-axis" aria-hidden="true"><span>Oct</span><span>Jan</span><span>Apr</span><span>Jul</span></div>';
   el.style.display = 'block';
 }
-
-
 
 function stFyStats() {
   // FY runs Oct 1 – Sep 30
@@ -4814,7 +4804,7 @@ async function stFetchObligations() {
     stAnimateNum(el, val, '$', '', 0, 1600, stFmtAmt);
     var mini = document.getElementById('st-fy-spend-mini');
     if (mini) mini.textContent = stFmtAmt(val);
-    stRenderSpark(cumulative);
+    stRenderSpark(rows);
     if (closed) {
       // The pace bar and countdown describe the year shown, which has ended.
       var fillEl = document.getElementById('st-fy-fill');
@@ -4822,9 +4812,9 @@ async function stFetchObligations() {
       var paceEl = document.getElementById('st-fy-pace-mini');
       if (paceEl) paceEl.textContent = 'year closed';
       var daysEl = document.getElementById('st-fy-days');
-      if (daysEl) daysEl.textContent = 'FY' + String(fy + 1).slice(2) + ' data ~Jan';
+      if (daysEl) daysEl.textContent = 'FY' + String(fy + 1).slice(2) + ' figures start posting in January';
       var pctEl = document.getElementById('st-fy-pct');
-      if (pctEl) pctEl.textContent = 'final';
+      if (pctEl) pctEl.hidden = true;
     }
     // "As of" the latest month with data — the trust signal (fiscal period → calendar month).
     var fm = rows[rows.length - 1]._fm;
@@ -4832,16 +4822,14 @@ async function stFetchObligations() {
     var calYear = (fm <= 3) ? (fy - 1) : fy;
     var asof = new Date(calYear, calMonth - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
     var asofEl = document.getElementById('st-asof');
-    if (asofEl) asofEl.textContent = ' · as of ' + asof;
+    if (asofEl) asofEl.textContent = 'as of ' + asof;
     var heroAsof = document.getElementById('hero-asof');
     if (heroAsof) heroAsof.textContent = 'as of ' + asof;
   } catch(e) {
-    el.innerHTML = '<span class="st-error-num">Data delayed</span>';
+    // The section hides itself (glass.css .st-fallback); no "Data delayed" copy.
     el.classList.remove('live');
-    var card = el.closest('.side-ticker');
+    var card = el.closest('.hi-sec');
     if (card) card.classList.add('st-fallback');
-    var mini2 = document.getElementById('st-fy-spend-mini');
-    if (mini2) mini2.textContent = 'Delayed';
   }
 }
 
@@ -4891,8 +4879,8 @@ async function stFetchDAFAwards() {
     var positiveAwards = awards.filter(function(a) { return Number(a['Transaction Amount']) > 0; });
     if (positiveAwards.length >= 6) awards = positiveAwards;
     if (footer) footer.textContent = 'USASpending.gov · ' + (usedDays === 30 ? 'last 30 days' : 'latest ' + usedDays + ' days');
-    stRenderAwards(awards.slice(0, 12).map(function(a) {
-      var vendor = stCleanAwardText(a['Recipient Name'] || '', 30);
+    stRenderAwards(awards.slice(0, 5).map(function(a) {
+      var vendor = stTitleCase(stCleanAwardText(a['Recipient Name'] || '', 34));
       var org = stAwardOrgFromTransaction(a);
       var date = (a['Action Date'] || '').slice(0,10);
       var id = a['Award ID'] || '';
@@ -4900,8 +4888,8 @@ async function stFetchDAFAwards() {
       return { amt: stFmtAmt(a['Transaction Amount'] || 0), vendor: vendor, id: id + mod, date: date, org: org };
     }));
   } catch(e) {
-    body.closest('.side-ticker')?.classList.add('st-fallback');
-    body.innerHTML = '<div class="st-loading"><strong>Recent awards delayed</strong><br>Retrying from USASpending.</div>';
+    body.closest('.hi-sec')?.classList.add('st-fallback');
+    body.innerHTML = '';
   }
 }
 
@@ -4952,35 +4940,30 @@ function stCleanAwardText(text, max) {
   return clean;
 }
 
+// USAspending shouts recipient names ("GILL GROUP."): sentence them, keep short acronyms.
+function stTitleCase(text) {
+  return String(text || '').replace(/[.,]+$/, '').toLowerCase().replace(/\b[a-z][a-z0-9'&-]*/g, function(w) {
+    return w.length <= 3 ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1);
+  });
+}
+
 function stRenderAwards(awards) {
   var body = document.getElementById('st-awards-body');
   if (!body) return;
   body.innerHTML = '';
   awards.forEach(function(a, i) {
-    var el = document.createElement('div');
-    el.className = 'st-award-item';
-    el.style.animationDelay = (i * 0.06) + 's';
-    el.innerHTML =
-      '<div class="st-award-dot"></div>' +
-      '<div class="st-award-info">' +
-        '<div class="st-award-top"><div class="st-award-amt">' + a.amt + '</div><div class="st-award-date">' + (a.date || '') + '</div></div>' +
-        '<div class="st-award-vendor">' + a.vendor + '</div>' +
-        '<div class="st-award-contract">' + (a.id || 'Award ID pending') + '</div>' +
-        '<div class="st-award-org">' + (a.org || '') + '</div>' +
-      '</div>';
-    body.appendChild(el);
+    var li = document.createElement('li');
+    li.className = 'hi-row';
+    li.style.animationDelay = (i * 0.05) + 's';
+    var d = a.date ? new Date(a.date + 'T00:00:00') : null;
+    var when = d && !isNaN(d) ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+    li.innerHTML =
+      '<span class="hi-amt">' + a.amt + '</span> ' +
+      '<span class="hi-vendor">' + a.vendor + '</span> ' +
+      '<span class="hi-when">' + when + '</span> ' +
+      '<span class="hi-meta">' + (a.id || 'Award ID pending') + (a.org ? ' · ' + a.org : '') + '</span>';
+    body.appendChild(li);
   });
-
-  // Auto-scroll only inside the awards panel. Never call scrollIntoView here;
-  // it can pull the whole page back to the hero while someone is reading below.
-  var idx = 0;
-  var items = body.querySelectorAll('.st-award-item');
-  if (items.length < 2) return;
-  setInterval(function() {
-    idx = (idx + 1) % items.length;
-    var target = items[idx];
-    if (target) body.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
-  }, 2500);
 }
 
 // Init side tickers

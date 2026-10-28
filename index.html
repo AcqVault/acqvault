@@ -36,7 +36,7 @@
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
 <link rel="stylesheet" href="/assets/app.css?v=08ce6d839146">
-<link rel="stylesheet" href="/assets/glass.css?v=8f7c6d67b723">
+<link rel="stylesheet" href="/assets/glass.css?v=523214d15d87">
 </head>
 <body data-xlsx="/assets/xlsxgen.js?v=2389f2dc3cfa">
 
@@ -164,38 +164,22 @@
 
     <!-- ░░ RIGHT COLUMN — navy vault panel + floating glassy data cards ░░ -->
     <div class="hero-right">
-      <div class="vault-panel">
-        <div class="vault-guilloche" aria-hidden="true"></div>
-        <div class="vault-dial-big" aria-hidden="true">
-          <span class="vd-ring"></span>
-          <span class="vd-ticks"></span>
-          <span class="vd-core"><span class="vd-spoke"></span><span class="vd-hub"></span></span>
-        </div>
-        <div class="vault-panel-tag">FULL-TEXT · SECURED INDEX</div>
-      </div>
-
-      <!-- Floating glassy card: FY obligations (real data) -->
-      <aside class="fcard fcard-oblig side-ticker" aria-label="Federal spending data">
-        <div class="fcard-lbl"><span class="fcard-trend" aria-hidden="true">▲</span><span id="st-fy-label">FY</span> DAF obligations</div>
-        <div class="st-big-num" id="st-obligations-num">—</div>
-        <div class="st-num-label">DAF contract obligations<span class="st-asof" id="st-asof"></span></div>
-        <div class="st-spark" id="st-spark" aria-hidden="true"></div>
-        <div class="st-fy-graphic" aria-label="Fiscal year spend progress">
-          <div class="st-fy-track"><div class="st-fy-fill" id="st-fy-fill"></div></div>
-          <div class="st-fy-caption"><span><strong id="st-fy-spend-mini">—</strong> obligated</span><span id="st-fy-pace-mini">— elapsed</span></div>
-        </div>
-        <div class="fcard-foot"><span id="st-fy-days">—</span><span class="st-fy-dot">·</span><span id="st-fy-pct">—</span></div>
+      <!-- One glass instrument: live DAF contract obligations (USAspending) over the recent awards.
+           A failed fetch hides its own half; if both fail the pane steps aside (glass.css). -->
+      <aside class="hero-instrument" aria-label="Department of the Air Force contract spending, live from USAspending.gov">
+        <section class="hi-sec hi-oblig" aria-labelledby="hi-oblig-h">
+          <h2 class="hi-title" id="hi-oblig-h"><span id="st-fy-label">FY</span> Air Force contract obligations</h2>
+          <p class="hi-figure" id="st-obligations-num" aria-live="polite">—</p>
+          <p class="hi-sub"><span id="st-asof"></span><span id="st-fy-pace-mini"></span></p>
+          <div class="hi-chart" id="st-spark" role="img" aria-label="Monthly obligations by fiscal month"></div>
+          <p class="hi-foot"><span id="st-fy-days"></span><span id="st-fy-pct"></span></p>
+        </section>
+        <section class="hi-sec hi-awards" aria-labelledby="hi-awards-h">
+          <h2 class="hi-title" id="hi-awards-h">Recent awards</h2>
+          <ol class="hi-list" id="st-awards-body"><li class="hi-loading">Loading awards…</li></ol>
+          <p class="hi-source" id="st-awards-footer">USAspending.gov · recent actions</p>
+        </section>
       </aside>
-
-      <!-- Floating glassy card: recent DAF awards (real data, scrolls Boeing/Lockheed/…) -->
-      <aside class="fcard fcard-awards side-ticker" aria-label="Top DAF contract awards">
-        <div class="fcard-lbl"><span class="st-live-dot"></span>Recent DAF awards</div>
-        <div class="st-body-awards" id="st-awards-body">
-          <div class="st-loading">Loading awards…</div>
-        </div>
-        <div class="st-footer" id="st-awards-footer">USASpending.gov · recent actions</div>
-      </aside>
-
     </div>
 
   </div>
@@ -632,7 +616,7 @@
 
 
 <script defer src="/assets/analytics.js?v=174b6d5d3dd2"></script>
-<script defer src="/assets/app.js?v=b5d13ba0d893"></script>
+<script defer src="/assets/app.js?v=49e8342a57c0"></script>
 <script defer src="/assets/saved.js?v=36e416a3f758"></script>
 <script defer src="/assets/widgets.js?v=f41c04c086a9"></script>
 <script defer src="/assets/polish.js?v=8afd617d63bc"></script>
