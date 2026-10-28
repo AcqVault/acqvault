@@ -579,13 +579,22 @@ html #thr-amount::placeholder{font-size:15px;font-weight:400;}
 /* ── Spending ── */
 html .osr-input{font-family:inherit;text-transform:none;font-size:16px;letter-spacing:0;padding-right:52px;text-overflow:ellipsis;}
 html .osr-input::placeholder{letter-spacing:0;font-weight:400;}
+/* --table-bg is the table's own paper: white in light, charcoal in dark. The scroll
+   shadows fade from it, so it must be a real colour, not a translucent token. */
+html:root{--table-bg:#fff;}
 html .osr-tablewrap{
   background:
-    linear-gradient(90deg,#fff 30%,rgba(255,255,255,0)) left/36px 100% no-repeat local,
-    linear-gradient(270deg,#fff 30%,rgba(255,255,255,0)) right/36px 100% no-repeat local,
+    linear-gradient(90deg,var(--table-bg) 30%,transparent) left/36px 100% no-repeat local,
+    linear-gradient(270deg,var(--table-bg) 30%,transparent) right/36px 100% no-repeat local,
     radial-gradient(farthest-side at 0 50%,rgba(var(--shadow-rgb),.2),transparent) left/12px 100% no-repeat scroll,
     radial-gradient(farthest-side at 100% 50%,rgba(var(--shadow-rgb),.2),transparent) right/12px 100% no-repeat scroll,
-    #fff;
+    var(--table-bg);
+}
+html .osr-table th{background:var(--table-bg);}
+@media (prefers-color-scheme:dark){
+  html:root{--table-bg:#1f1c19;}
+  html .osr-tablewrap{border-color:var(--rim);}
+  html .osr-table tbody tr:hover td{background:rgba(255,255,255,.04);}
 }
 
 /* ── Quick Links: no redrawn logos. The site name already heads each card. ── */
