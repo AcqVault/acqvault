@@ -9,18 +9,18 @@
    /study and /48cons inject in <body>, after this sheet.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  --sheet:      rgba(255,252,246,.28);    /* a band: near-clear glass, the room shows through; the only element that blurs */
-  --sheet-blur: blur(30px) saturate(160%);
-  --sheet-read: rgba(253,250,244,.72);   /* long reading: still heavier, so regulation text never sits on a busy patch */
+  --sheet:      rgba(255,255,255,.26);    /* a band: near-clear glass, the room shows through; the only element that blurs */
+  --sheet-blur: blur(22px) saturate(140%);   /* less blur than before: shapes behind stay legible as shapes */
+  --sheet-read: rgba(255,255,255,.72);   /* long reading: still heavier, so regulation text never sits on a busy patch */
   /* the navy bands, as dark glass: the brand's own ink gradient at ~95%, so cream
      behind never greys it toward slate and the hero still matches the solid navy strip */
   --smoke:      linear-gradient(160deg,rgba(23,58,96,.94) 0%,rgba(15,37,64,.95) 52%,rgba(10,28,51,.96) 100%);
-  --card:       rgba(255,253,249,.42);   /* a second clear pane on the band, a touch frostier so it reads as a layer */
-  --card-hi:    rgba(255,253,249,.62);   /* a lifted card gets denser, not thinner */
+  --card:       rgba(255,255,255,.4);   /* a second clear pane on the band, a touch frostier so it reads as a layer */
+  --card-hi:    rgba(255,255,255,.6);   /* a lifted card gets denser, not thinner */
   --card-r:     16px;                    /* one card radius on every page, inside the 20–32px bands */
   --tile-r:     12px;                    /* study tiles and answer rows: smaller controls, one step tighter */
-  --nav-glass:  rgba(255,252,246,.4);
-  --nav-pill:   rgba(255,252,246,.5);     /* the one nav pill, home and server pages */
+  --nav-glass:  rgba(255,255,255,.4);
+  --nav-pill:   rgba(255,255,255,.5);     /* the one nav pill, home and server pages */
   --modal:      rgba(252,251,248,.95);   /* over a dark scrim a thin sheet reads grey: modals are thick */
   --rim:        rgba(255,255,255,.6);
   --band-gap:   clamp(10px,2.4vw,36px);
@@ -40,10 +40,10 @@
 }
 
 /* ── Backdrop ─────────────────────────────────────────────────── */
-html body{background:#d9cbb5;}
+html body{background:#e4dfd6;}
 html body::before{
   content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:url(/assets/glass-sand.svg?v=1) center/cover no-repeat;
+  background:url(/assets/glass-sand.svg?v=2) center/cover no-repeat;
 }
 
 /* ── Bands become floating panels ─────────────────────────────── */
@@ -83,7 +83,7 @@ html :is(.hero,#_):not(.wrap *){margin-top:calc(var(--band-gap) - 8px);}
 html body:has(#main-nav.scrolled)::after,
 html body:has(.lnav):not(:has(.rz-bar))::after{
   content:"";position:fixed;left:0;right:0;top:0;height:calc(var(--nav-height,56px) + 10px);z-index:299;pointer-events:none;
-  background:linear-gradient(180deg,rgba(240,233,222,.92) 0%,rgba(240,233,222,.72) 55%,rgba(240,233,222,0) 100%);
+  background:linear-gradient(180deg,rgba(240,238,233,.92) 0%,rgba(240,238,233,.72) 55%,rgba(240,238,233,0) 100%);
 }
 html body:has(.lnav):not(:has(.rz-bar))::after{z-index:49;height:calc(var(--lnav-stick) + 6px);}
 html .hero:not(.wrap *){padding-top:56px;}
@@ -647,7 +647,7 @@ html .lnav-sheet .hlink{border-radius:0;}
    own surface (solid to the pill's bottom, a short fade to the sticky element), and
    it only fades in once the page has scrolled. Without scroll-timeline support the
    round-3 gradient stays. */
-:root{--edge:rgba(246,241,233,.97);--edge-solid:#f6f1e9;}
+:root{--edge:rgba(244,242,238,.97);--edge-solid:#f4f2ee;}
 
 @media (prefers-reduced-transparency:reduce),(prefers-contrast:more){ :root{--edge:#fff;--edge-solid:#fff;} }
 
@@ -1070,12 +1070,12 @@ html .osr-token-x{color:var(--ink2);}
 html .osr-token b{color:var(--ink);}
 /* Footer sits over the darkest backdrop zone (the wood at the bottom): its small links
    measured 4.3–4.5 at .28; this one band carries a heavier tint, nothing else changes. */
-html :is(footer,#_#_):not(.wrap *){background:rgba(255,252,246,.66);}  /* two ids: the band rule already carries one */
+html :is(footer,#_#_):not(.wrap *){background:rgba(255,255,255,.62);}  /* two ids: the band rule already carries one */
 
 /* Clear glass shows more of the room behind small type, so the few mid-tone labels
    that sat at 3.9–4.4:1 take the next shade down. */
 html :is(.cra-table th,.market-flow-sep,.rz-outline-head,.rz-sec-note){color:var(--ink3);}
-html .lib-cover-vol small{color:rgba(214,226,240,.86);}   /* on the navy cover art: lighter, not darker */
+html :is(.lib-cover-vol,.libcover .vol) small{color:rgba(226,234,244,.92);}   /* on the navy cover art: lighter, not darker */
 html .pin-coach-star{color:var(--brass-ink);}
 html .rc-pin:not(.pinned){color:var(--muted2);}   /* unpinned star: an icon control needs 3:1 on clear glass */
 

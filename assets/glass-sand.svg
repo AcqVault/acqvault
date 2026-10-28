@@ -1,27 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
-<!-- AcqVault backdrop: a warm, sunlit room seen out of focus, with no objects. Greige walls,
-     window light upper right, sage where plants would be, warm wood low down, grain against banding. -->
+<!-- AcqVault backdrop: a bright room seen through frosted glass, no photo. Shapes are soft
+     but distinct (tall window light, plant greens, a round wall light, a pale sofa line) so the
+     glass above them reads as clear glass, not a tinted wash. -->
 <defs>
-<linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0" stop-color="#e7dccb"/><stop offset=".55" stop-color="#d9cbb5"/><stop offset="1" stop-color="#c9b597"/>
+<linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#eeebe5"/><stop offset=".62" stop-color="#e4dfd6"/><stop offset="1" stop-color="#d3c8b8"/>
 </linearGradient>
-<radialGradient id="window"><stop offset="0" stop-color="#fbf6ec" stop-opacity=".95"/><stop offset=".45" stop-color="#f4ecdd" stop-opacity=".55"/><stop offset="1" stop-color="#f4ecdd" stop-opacity="0"/></radialGradient>
-<radialGradient id="sage"><stop offset="0" stop-color="#9ea47e" stop-opacity=".5"/><stop offset="1" stop-color="#9ea47e" stop-opacity="0"/></radialGradient>
-<radialGradient id="sage2"><stop offset="0" stop-color="#8f9a72" stop-opacity=".38"/><stop offset="1" stop-color="#8f9a72" stop-opacity="0"/></radialGradient>
-<radialGradient id="wood"><stop offset="0" stop-color="#b48a60" stop-opacity=".5"/><stop offset="1" stop-color="#b48a60" stop-opacity="0"/></radialGradient>
-<radialGradient id="shade"><stop offset="0" stop-color="#a99a84" stop-opacity=".42"/><stop offset="1" stop-color="#a99a84" stop-opacity="0"/></radialGradient>
-<radialGradient id="glow"><stop offset="0" stop-color="#f3d9a4" stop-opacity=".45"/><stop offset="1" stop-color="#f3d9a4" stop-opacity="0"/></radialGradient>
+<linearGradient id="win" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f6f4ee"/>
+</linearGradient>
+<radialGradient id="lamp"><stop offset="0" stop-color="#fff6e4" stop-opacity=".95"/><stop offset=".6" stop-color="#f2e2c0" stop-opacity=".45"/><stop offset="1" stop-color="#f2e2c0" stop-opacity="0"/></radialGradient>
+<radialGradient id="leaf"><stop offset="0" stop-color="#8e9f74" stop-opacity=".75"/><stop offset="1" stop-color="#8e9f74" stop-opacity="0"/></radialGradient>
+<radialGradient id="leaf2"><stop offset="0" stop-color="#7d9168" stop-opacity=".6"/><stop offset="1" stop-color="#7d9168" stop-opacity="0"/></radialGradient>
+<radialGradient id="floor"><stop offset="0" stop-color="#bfa27c" stop-opacity=".55"/><stop offset="1" stop-color="#bfa27c" stop-opacity="0"/></radialGradient>
+<filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="14"/></filter>
 <filter id="grain" x="0" y="0" width="100%" height="100%">
 <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/>
-<feColorMatrix values="0 0 0 0 .2  0 0 0 0 .16  0 0 0 0 .1  0 0 0 .06 0"/>
+<feColorMatrix values="0 0 0 0 .2  0 0 0 0 .18  0 0 0 0 .14  0 0 0 .05 0"/>
 </filter>
 </defs>
-<rect width="1600" height="1000" fill="url(#base)"/>
-<ellipse cx="140" cy="380" rx="420" ry="520" fill="url(#shade)"/>
-<ellipse cx="1360" cy="220" rx="560" ry="460" fill="url(#window)"/>
-<ellipse cx="760" cy="300" rx="420" ry="260" fill="url(#glow)"/>
-<ellipse cx="110" cy="560" rx="260" ry="360" fill="url(#sage)"/>
-<ellipse cx="1290" cy="640" rx="230" ry="300" fill="url(#sage2)"/>
-<ellipse cx="780" cy="960" rx="900" ry="260" fill="url(#wood)"/>
+<rect width="1600" height="1000" fill="url(#wall)"/>
+<g filter="url(#soft)">
+  <!-- tall window, right: bright panes with mullions -->
+  <rect x="1150" y="40" width="360" height="680" rx="6" fill="#d9d2c6"/>
+  <rect x="1168" y="58" width="154" height="644" fill="url(#win)"/>
+  <rect x="1338" y="58" width="154" height="644" fill="url(#win)"/>
+  <rect x="1168" y="372" width="324" height="10" fill="#d9d2c6"/>
+  <!-- curtain -->
+  <rect x="1520" y="20" width="80" height="760" fill="#e8e1d5"/>
+  <!-- round wall light, centre -->
+  <circle cx="760" cy="300" r="150" fill="url(#lamp)"/>
+  <circle cx="760" cy="300" r="70" fill="#f4e7cb" opacity=".8"/>
+  <!-- plants: left and by the window -->
+  <ellipse cx="110" cy="460" rx="150" ry="300" fill="url(#leaf)"/>
+  <ellipse cx="200" cy="560" rx="110" ry="220" fill="url(#leaf2)"/>
+  <ellipse cx="1080" cy="560" rx="120" ry="230" fill="url(#leaf)"/>
+  <!-- pale sofa and wood low down -->
+  <rect x="380" y="690" width="840" height="190" rx="70" fill="#efebe3"/>
+  <rect x="420" y="650" width="760" height="90" rx="40" fill="#e9e3d8"/>
+  <ellipse cx="800" cy="980" rx="900" ry="170" fill="url(#floor)"/>
+</g>
 <rect width="1600" height="1000" filter="url(#grain)"/>
 </svg>
