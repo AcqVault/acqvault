@@ -1398,7 +1398,8 @@ function scrollBrowseReaderToTop() {
   if (browseRestoring || document.hidden) return; // don't scroll during a restore, or in a backgrounded tab (a smooth scroll issued while hidden is deferred by the browser and fires — jumping the user — when they return)
   const reader = document.getElementById('browse-reader');
   if (!reader) return;
-  const y = reader.getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+  const bar = document.querySelector('.browse-source-bar'); // sticky under the nav; two rows at ≥901px
+  const y = reader.getBoundingClientRect().top + window.scrollY - getStickyOffset() - (bar ? bar.offsetHeight : 0) - 8;
   window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
 }
 
@@ -2165,7 +2166,8 @@ async function selectPart(tile, partNum, partLabel) {
   const reader = document.getElementById('browse-reader-inner');
   reader.innerHTML = '<div class="browse-empty"><div class="spinner" style="margin:0 auto 16px;"></div><div class="browse-empty-sub">Loading ' + partWord(browseSrc) + ' ' + esc(displayPartForSource(browseSrc, partNum)) + '…</div></div>';
   if (window.matchMedia('(max-width: 768px)').matches) {
-    const readerTop = document.getElementById('browse-reader').getBoundingClientRect().top + window.scrollY - getStickyOffset() - 8;
+    const bar = document.querySelector('.browse-source-bar');
+    const readerTop = document.getElementById('browse-reader').getBoundingClientRect().top + window.scrollY - getStickyOffset() - (bar ? bar.offsetHeight : 0) - 8;
     window.scrollTo({ top: Math.max(0, readerTop), behavior: 'smooth' });
   }
 

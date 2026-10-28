@@ -1233,3 +1233,251 @@ html .st-session-head{flex-wrap:wrap;row-gap:2px;column-gap:14px;}
    headings wrap; the scroller stays for genuinely wide tables. */
 html table.ratetable tbody th,html table.ratetable thead th{white-space:normal;}
 html table.ratetable th:first-child{min-width:12ch;}
+
+/* ═══════════════════════════════════════════════════════════════
+   APPLE SYSTEM — layout, colour-on-glass, clarity. Appended LAST to glass.css.
+   1. Horizontal system: panes cap at 1600 and centre; inside them one content
+      column (1280, or 1120 on reading pages) sits behind a proportional gutter
+      (--pane-pad, 4.4vw: 60px at 1440, 64 at ≥1455, 20 on a phone). The nav pill
+      and every band's content share one left edge.
+   2. Colour on the glass: brass stays the one accent (text #5a4310, fills
+      #e3bd5f); data marks are a federal blue; positive green / caution orange /
+      informative blue carry meaning. Charcoal is the active state.
+   3. Clarity: every pane alpha ×0.75; small text one shade darker and weight 500;
+      denser glass only under dense small type (tables, the Contents rail,
+      the hero instrument).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Horizontal system ─────────────────────────────────────── */
+html:root{
+  --band-gap: clamp(12px,2.4vw,36px);
+  --band-max: 1600px;
+  --pane-pad: clamp(20px,4.4vw,64px);
+  --grid-max: 1280px;
+  --read-max: 1120px;
+  --band-w: min(100% - 2 * var(--band-gap),var(--band-max));
+  /* the x where content starts inside a band: band edge + the larger of the gutter and the centring slack */
+  --content-x: calc((100% - var(--band-w)) / 2 + max(var(--pane-pad),(var(--band-w) - var(--grid-max)) / 2));
+  --wrap-pad: max(var(--pane-pad),calc((var(--band-w) - var(--col,var(--grid-max))) / 2));
+}
+@media (max-width:600px){ html:root{--wrap-pad:var(--pane-pad);} }
+
+/* bands: capped and centred */
+html :is(.sec,footer,.lband,.hero,.daily-strip,#results-section,#fulltext-section,#browse-section):not(.wrap *){
+  width:var(--band-w);margin-left:auto;margin-right:auto;
+}
+@media (min-width:861px){
+  html :is(.sec,.hero,.daily-strip):not(.wrap *){padding-left:var(--pane-pad)!important;padding-right:var(--pane-pad)!important;}
+  html .lband--room > .ss-wrap{padding-left:var(--pane-pad)!important;padding-right:var(--pane-pad)!important;max-width:calc(var(--grid-max) + 2 * var(--pane-pad))!important;}
+}
+html .lband-inner,html .lhero .lband-inner{max-width:calc(var(--grid-max) + 2 * var(--pane-pad));padding-left:var(--pane-pad);padding-right:var(--pane-pad);}
+html body:not(:has(.rz-bar)) .lband--room > .st-wrap{max-width:calc(var(--grid-max) + 2 * var(--pane-pad))!important;padding-left:var(--pane-pad);padding-right:var(--pane-pad);}
+html .foot-inner{max-width:var(--grid-max);padding-left:0;padding-right:0;}
+html .about-bar-inner{max-width:var(--grid-max);}
+
+/* reading pages: the column is the pane (same width as the hero band above it);
+   the gutter grows to centre a 1280 column, or 1120 beside a Contents rail */
+html .wrap,html .wrap.wrap--wide{width:var(--band-w);max-width:none;margin-left:auto;margin-right:auto;}
+html .wrap:has(.part-cols){--col:var(--read-max);}
+html .wrap main :is(p,li,dd,blockquote){max-width:74ch;}
+html main section.sec :is(p,li,dd){max-width:74ch;}
+@media (min-width:1000px){
+  html .part-cols{grid-template-columns:minmax(0,1fr) 272px;gap:56px;}
+}
+@media (min-width:1000px) and (max-width:1180px){
+  html .part-cols{grid-template-columns:minmax(0,1fr) 240px;gap:40px;}
+}
+/* the scroll-edge strip under the pill follows the pane's edges */
+html body:has(.lnav):not(:has(.rz-bar))::after,
+html body:has(.lnav):has(.pn-search,table.devtable):not(:has(.rz-bar))::after{
+  left:max(var(--band-gap),calc((100% - var(--band-max)) / 2));right:max(var(--band-gap),calc((100% - var(--band-max)) / 2));
+}
+
+/* the nav pill spans the content column: its brand sits on the same x as the band content */
+html .lnav{margin-left:calc(var(--content-x) - 14px);margin-right:calc(var(--content-x) - 14px);}
+@media (max-width:860px){ html .lnav{margin-left:var(--band-gap);margin-right:var(--band-gap);} }
+@media (min-width:1024px){
+  html #main-nav{padding-left:0;padding-right:0;}
+  html #main-nav .nav-inner{max-width:none;width:auto;flex:1;margin-left:calc(var(--content-x) - 14px);margin-right:calc(var(--content-x) - 14px);}
+}
+
+/* home: the grids breathe into the wider column */
+html .hero-inner-b{gap:32px clamp(48px,5vw,80px);}
+html .hero-instrument{max-width:520px;}
+html .hero-content{max-width:640px;}
+html .hero-sub{max-width:560px;}
+@media (min-width:921px){ html .tk-grid{gap:24px;} }
+html #library .lib-feature-grid{gap:24px;}
+html .lib-src-grid{gap:14px;}
+html .quick-links-grid{gap:20px;}
+@media (min-width:1100px){ html .quick-links-grid > .ql-card{flex:0 1 calc((100% - 3 * 20px) / 4);} }
+@media (min-width:881px){ html .study-inner{gap:clamp(48px,6vw,96px);} }
+html .fulltext-cards{gap:20px;}
+@media (min-width:861px){ html .fulltext-cards > *{flex:0 1 calc((100% - 2 * 20px) / 3);} }
+html p.sec-sub{max-width:62ch;}
+/* server hubs and study: lists use the column, prose keeps a measure */
+html .lhero .lede{max-width:66ch;}
+html .libcat .catblurb{max-width:66ch;}
+@media (min-width:1000px){
+  html .libgrid{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+  html .libsrc-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+  html .parts{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+  html .st-tracks{gap:20px;}
+}
+
+/* ── 2. Colour on the glass ───────────────────────────────────── */
+html:root{
+  --pos:#1f7a4d;      --pos-ink:#176340;   --pos-bg:rgba(31,122,77,.1);   --pos-line:rgba(31,122,77,.4);
+  --warn:#c2410c;     --warn-ink:#9a3412;  --warn-bg:rgba(194,65,12,.08); --warn-line:rgba(194,65,12,.38);
+  --info:#2f62b8;     --info-ink:#24509a;  --info-bg:rgba(47,98,184,.09); --info-line:rgba(47,98,184,.36);
+  --data:#2f62b8;     --data-2:rgba(47,98,184,.55);   /* chart marks: blue series, brass highlight */
+  --brass:#9a7420;    --brass-mid:#c49a3a; --brass-bright:#e3bd5f;  --brass-bright-rgb:227,189,95;
+  --live:#1f7a4d;     --live-rgb:31,122,77;
+  --ok:var(--pos);    --ok-ink:var(--pos-ink); --ok-bg:#eaf4ee; --ok-line:var(--pos-line);
+}
+@media not (prefers-contrast:more){
+  html:root{
+    --ink:#15130f;--ink2:#24211c;--ink3:#2f2c27;   /* warm ink: headings carry the richest shade */
+    --accent:#4a380f;--accent-h:#3d2e0c;--brass-ink:#46350f;--brass-deep:#4a380f;   /* 11–13px brass over the room's dark patches needs this depth for 4.5 */
+    --muted:#36353c;--muted2:#3b3a41;
+  }
+}
+/* chart marks: the hero instrument and the spending dashboard */
+html .hi-bar{fill:var(--data);opacity:.78;}
+html .hi-bar-last{fill:var(--brass-mid);opacity:1;}
+html .hi-baseline{stroke:rgba(21,19,15,.22);}
+html #spending-dashboard .dash-bar-fill{background:var(--data);}
+html #spending-dashboard :is(.dash-bar-track,.dash-mix-bar){background:rgba(47,98,184,.12);}
+html #spending-dashboard .dash-stat-num.accent{color:var(--info-ink);}
+/* progress: positive green on every study / lesson bar */
+html .st-prog span,html .rz-prog > span,html .ss-prog span{background:var(--pos)!important;}
+html .st-prog,html .rz-prog{background:rgba(21,19,15,.1)!important;}
+/* chips and badges: one family, tinted, with their own ink */
+html .hero-live-dot{background:var(--live);box-shadow:0 0 0 3px rgba(var(--live-rgb),.18);}
+html .browse-source-menu small{color:var(--pos-ink);background:var(--pos-bg);border-color:var(--pos-line);}
+html .rc-badge-class{color:var(--info-ink);background:var(--info-bg);border-color:var(--info-line);}
+html .veh-badge.veh-closing{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn-ink);}
+html .sec-hd .sec-upd{background:var(--info-bg);color:var(--info-ink);border-color:var(--info-line);}
+html .thr-band-mp .thr-band-tag{color:var(--pos-ink);border-color:var(--pos-line);background:var(--pos-bg);}
+/* active states: charcoal for the selected thing, a brass tint for the current place */
+html .ptoc-list a.ptoc-active{background:rgba(var(--brass-rgb),.14);color:var(--brass-ink);}
+html .ptoc-list a:hover{background:rgba(var(--brass-rgb),.1);}
+html mark.pn-mark{background:rgba(227,189,95,.45);}
+html mark.pn-mark.active{background:var(--brass-bright);box-shadow:0 0 0 2px rgba(var(--brass-rgb),.5);}
+/* primary buttons: a crisper gold, dark ink */
+html :is(.hero .search-go,.osr-go){background:var(--brass-bright);color:var(--ink-brass);}
+html .study-open-btn{border-color:rgba(var(--brass-rgb),.5);}
+/* headings in the richest ink */
+html :is(h1,h2,h3,.sec-head,.hi-figure,.hi-amt,.libcat > h2,.fulltext-title){color:var(--ink);}
+html .hero .hero-headline em{color:#6d5214;-webkit-text-fill-color:#6d5214;}
+/* links in running text: brass, underlined, the underline brass-tinted */
+html .wrap main :is(p,li,dd) a:not([class]){color:var(--accent);text-decoration-color:rgba(var(--brass-rgb),.45);text-underline-offset:2px;}
+html .wrap main :is(p,li,dd) a:not([class]):hover{text-decoration-color:var(--accent);}
+
+/* ── 3. Clarity: ×0.75 on every pane ──────────────────────────── */
+html:root{
+  --sheet:linear-gradient(135deg,rgba(255,255,255,.135),rgba(255,255,255,.045) 42%,rgba(255,255,255,.03) 70%,rgba(255,255,255,.08));
+  --sheet-read:rgba(255,251,244,.555);
+  --card:linear-gradient(150deg,rgba(255,255,255,.225),rgba(255,255,255,.12));
+  --card-hi:linear-gradient(150deg,rgba(255,255,255,.32),rgba(255,255,255,.21));
+  --card-dense:linear-gradient(150deg,rgba(255,255,255,.5),rgba(255,255,255,.4));   /* under small dense type only */
+  --ctl:rgba(255,255,255,.42);--ctl-hi:rgba(255,255,255,.62);
+}
+html :is(footer,#_#_):not(.wrap *){background:rgba(255,255,255,.47);}
+/* denser glass where the type is small and dense: tables, the Contents rail, the instrument, data cards */
+html :is(.ptoc,.hero-instrument,.tk-card,.fcard,.result-card,.dash-stat,.dash-panel,.osr-summary,.market-panel,.source-status-panel,.st-trackcard){background:var(--card-dense);}
+html .osr-tablewrap,html .osr-table th{--table-bg:#fbf8f2;}
+html table.devtable th{background:rgba(255,255,255,.97);}
+html :is(table.devtable,table.cra-table) td{background:rgba(255,255,255,.28);}
+html table.devtable tbody tr:nth-child(even) td{background:rgba(255,255,255,.42);}
+html table.devtable tbody tr:hover td{background:rgba(255,255,255,.6);}
+/* vibrancy: small type one shade darker and a weight up, not a cloudier pane */
+html :is(.hi-sub,.hi-foot,.hi-when,.hi-meta,.hi-source,.hi-axis,.hi-loading,.hi-vendor,
+         .crumbs,.lhero .crumbs,.lfoot-note,.lfoot-legal,.ptoc-count,.sec-hd .srclink,.st-sub,.st-intro-note,
+         .dash-stat-label,.dash-stat-foot,.dash-bar-sub,.dash-foot,.dash-mix-key,.osr-label,.osr-tnote,.osr-cols-foot,
+         .hero-statstrip,.hero-source-strip,.study-cta-note,.foot-links,.foot-legal,.pxref-note,.st-daily-sub,
+         .tk-card-sub,.thr-note,.cra-table td,.market-resource-note,.libcat .catblurb,.lib-src-meta,.libsrc .meta,.ql-sub,.ql-card p){
+  font-weight:500;color:var(--muted);
+}
+html :is(.hi-sub,.hi-foot,.hi-meta,.hi-when,.hi-source){color:var(--muted);}
+html .hi-vendor{color:var(--ink2);}
+html .hi-title{color:var(--ink);font-weight:650;}
+html :is(.lhero .lede,.hero-sub,.sec-sub,p.sec-sub,.st-intro,.lede){color:var(--ink2);font-weight:450;}
+html :is(.lhero .crumbs a,.crumbs a){color:var(--accent);font-weight:600;}
+html .hlink{color:var(--ink2);}
+html .hi-sec + .hi-sec{border-top-color:rgba(255,255,255,.75);box-shadow:inset 0 1px 0 rgba(21,19,15,.1);}
+html .hi-row + .hi-row{box-shadow:inset 0 1px 0 rgba(21,19,15,.12);}
+/* dividers on clearer glass: an ink hairline at a steady alpha */
+html section.sec{border-top-color:rgba(21,19,15,.14);}
+html :is(.ptoc-head,.pxref-foot){border-bottom-color:rgba(21,19,15,.12);}
+
+/* ── Opt-outs: solid surfaces keep every rule above honest ───────── */
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){
+  html:root{--card-dense:#fff;--sheet:#fff;--sheet-read:#fff;--card:#fff;--card-hi:#fff;--ctl:#fff;--ctl-hi:#fff;}
+  html :is(footer,#_#_):not(.wrap *){background:#fff;}
+  html :is(table.devtable,table.cra-table) td,html table.devtable tbody tr:nth-child(even) td{background:#fff;}
+}
+/* /changes: a part's section list is dense 14px links; it sits on a denser pane */
+html details.chg-part{background:var(--card-dense);border-color:var(--rim);}
+html .ss-eyebrow{color:var(--brass-ink);}
+/* The /48cons cover is navy art: its title stays light even though headings now take --ink. */
+html .rz-cover .rz-cover-h,html .rz-cover-h{color:#fff!important;}
+html .rz-lesson-go{color:var(--ink3);}
+
+/* ── Fit & finish: HOME (/) — insets, collisions, clipping, rhythm ────────────
+   Appended to glass.css. html-prefixed so these win over app.css without !important. */
+
+/* Hero "Live sources" tray: app.css `.hero-inner-b .hero-source-strip{padding:0}` (0,2,0)
+   out-specified glass.css's `html .hero-source-strip` (0,1,1), so the chips sat flush
+   against the 16px rounded edge and the label's dot touched the corner. Give the tray
+   a real inset (≥ .3 × radius), a row/column gap, and keep "8 live" on the chips' line. */
+html .hero-inner-b .hero-source-strip{padding:7px 12px 7px 10px;gap:6px 7px;}
+html .hero-inner-b .hero-live-label{margin-right:3px;}
+html .hero-inner-b .hero-live-count{padding:0 2px 0 5px;}
+html .hero-source-strip b{line-height:1.25;}
+@media (max-width:600px){
+  html .hero-inner-b .hero-source-strip{padding:7px 10px;gap:6px;}
+}
+
+/* Spending footer on a phone: the live dot was centred on three lines of text and the
+   link orphaned a mid-dot. Pin the dot to the first line. */
+html #spending-dashboard .dash-foot{align-items:flex-start;}
+html #spending-dashboard .dash-live-dot{flex:0 0 auto;margin-top:.45em;}
+html #spending-dashboard .dash-foot span{text-wrap:pretty;}
+
+/* Library cards at tablet widths: "Interactive PDF · 5 pp" wrapped to an orphan "pp"
+   beside the Download button; the tile metas left a lone "RULE" / "APPENDICES". */
+html .lib-feature-foot{flex-wrap:wrap;}
+html .lib-feature-foot .lib-dl-btn{margin-left:auto;} /* keeps right-aligned when it wraps to its own row */
+html .lib-feature-meta{white-space:nowrap;}
+html .lib-src-meta{text-wrap:balance;}
+
+/* Market research "Notice type" row: the uppercase label and its hint sat 3px off
+   each other's baseline. */
+html .market-selectable-head{align-items:baseline;}
+
+/* Browse-by-source bar wraps to two rows at ≥901px (90px tall); the part-open scroll only
+   clears the nav, so the "Part N" kicker lands under the bar. That offset is JS —
+   see home-patches.md. No CSS here: a nowrap bar would hide the last chips instead. */
+
+/* Reader paragraphs: no single-word last lines where the engine can help (Chromium). */
+html .br-para-text,html .br-p{text-wrap:pretty;}
+
+/* Market research "Notice type" on a phone: the label broke into "NOTICE / TYPE" beside its
+   hint. Let the hint drop under the label instead. */
+@media (max-width:600px){
+  html .market-selectable-head{flex-wrap:wrap;gap:4px 12px;}
+  html .market-selectable-head .market-label{white-space:nowrap;}
+}
+
+/* Spending summary on a phone: "Download Excel" wrapped to two lines beside one-line CSV / Copy. */
+html .osr-export .osr-dl{white-space:nowrap;}
+@media (max-width:600px){
+  html .osr-export{display:grid;grid-template-columns:1fr 1fr;}
+  html .osr-export .osr-dl{grid-column:1 / -1;}
+}
+
+/* Opportunity cards on a phone: the "SOURCES SOUGHT" type pill broke into two lines beside the date. */
+@media (max-width:600px){
+  html .market-opp-type{white-space:nowrap;}
+}
