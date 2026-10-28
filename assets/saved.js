@@ -196,9 +196,11 @@
   function toggleDiff(id) {
     var sel = (window.CSS && CSS.escape) ? CSS.escape(id) : id;
     var box = document.querySelector('.saved-clause[data-id="' + sel + '"] .saved-diff');
-    if (!box) return;
-    if (box.dataset.open === '1') { box.style.display = 'none'; box.dataset.open = '0'; return; }
-    box.style.display = 'block'; box.dataset.open = '1';
+    var wrap = box && box.closest('.saved-diff-wrap');
+    if (!box || !wrap) return;
+    // grid-template-rows 0fr→1fr expand/collapse lives in CSS (keyed on data-open); reduced motion → instant.
+    if (wrap.dataset.open === '1') { wrap.dataset.open = '0'; return; }
+    wrap.dataset.open = '1';
     var c = state.clauses.find(function (x) { return x.id === id; });
     if (!c) return;
     if (c.text == null) { box.innerHTML = '<div class="saved-diff-note">We didn’t capture the earlier wording for this one, so a side-by-side isn’t available — open it to read the current text.</div>'; return; }
@@ -351,6 +353,12 @@
     if (badge) { badge.textContent = n ? String(n) : ''; badge.style.display = n ? '' : 'none'; }
     var btn = document.getElementById('nav-saved');
     if (btn) {
+      // One quiet 160ms pop on the count, only when has-changes newly turns on (not on every render).
+      if (changed > 0 && !btn.classList.contains('has-changes') && badge && badge.animate &&
+          !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+        badge.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }],
+          { duration: 160, easing: 'ease-out' });
+      }
       btn.classList.toggle('has-saved', n > 0);
       btn.classList.toggle('has-changes', changed > 0);
       btn.setAttribute('aria-label', changed > 0
@@ -421,7 +429,7 @@
             '<button class="saved-item-del" data-act="del-clause" data-id="' + esc(c.id) + '" aria-label="Remove pinned clause">✕</button>' +
           '</div>' +
           (chg ? '<button class="saved-diff-toggle" type="button" data-act="show-diff" data-id="' + esc(c.id) + '" aria-expanded="false">See what changed</button>' +
-                 '<div class="saved-diff" style="display:none"></div>' : '') +
+                 '<div class="saved-diff-wrap" data-open="0"><div class="saved-diff-clip"><div class="saved-diff"></div></div></div>' : '') +
         '</div>';
       }).join('');
     }

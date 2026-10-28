@@ -3378,8 +3378,10 @@ function copyResultCite(hit, btn) {
 // startup; cards rendered before it resolves simply omit the badge (next render has it).
 const UPDATED_WINDOW_DAYS = 45;
 let updatedDocs = new Map();
+// One fetch, shared: polish.js reads the same promise for the since-last-visit marker.
+const changeLedgerRuns = fetch('/output/changes-log.json').then(r => r.ok ? r.json() : null).catch(() => null);
 (function loadChangeLedger() {
-  fetch('/output/changes-log.json').then(r => r.ok ? r.json() : null).then(runs => {
+  changeLedgerRuns.then(runs => {
     if (!Array.isArray(runs)) return;
     const cutoff = Date.now() - UPDATED_WINDOW_DAYS * 86400000;
     for (const run of runs) {

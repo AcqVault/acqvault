@@ -520,6 +520,28 @@
     const digits = String(raw == null ? '' : raw).replace(/[^0-9]/g, '');
     return digits ? parseInt(digits, 10) : null;
   }
+  /* selftest:thr-hash — pure; features/widgets-selftest.mjs extracts and asserts this block */
+  // The hash is '&'-joined segments. We own only thr= and scope=; every other segment is kept verbatim.
+  function thrHashParse(hash) {
+    const out = { amt: null, scope: null };
+    String(hash || '').replace(/^#/, '').split('&').forEach((seg) => {
+      const m = /^(thr|scope)=(.*)$/.exec(seg); if (!m) return;
+      if (m[1] === 'thr' && /^\d{1,13}$/.test(m[2]) && +m[2] > 0) out.amt = +m[2];
+      if (m[1] === 'scope' && (m[2] === 'contingency' || m[2] === 'standard')) out.scope = m[2] === 'contingency' ? 'con' : 'std';
+    });
+    return out;
+  }
+  function thrHashSerialize(hash, amt, scope) {
+    const keep = String(hash || '').replace(/^#/, '').split('&').filter((s) => s && !/^(thr|scope)=/.test(s));
+    if (amt != null && amt > 0) { keep.push('thr=' + amt); if (scope === 'con') keep.push('scope=contingency'); }
+    return keep.length ? '#' + keep.join('&') : '';
+  }
+  /* /selftest:thr-hash */
+  function thrSyncHash(amt) {
+    const next = thrHashSerialize(location.hash, amt, thrScope);
+    if (next === location.hash) return;
+    try { history.replaceState(history.state, '', location.pathname + location.search + next); } catch (e) {}
+  }
   function fmtAmountInput(raw) {
     const digits = String(raw == null ? '' : raw).replace(/[^0-9]/g, '');
     return digits ? parseInt(digits, 10).toLocaleString() : '';
@@ -559,6 +581,7 @@
     if (!out) return;
     if (clr) clr.hidden = !raw;
     if (field) field.classList.add('thr-searching');   // hide the $ affordance
+    thrSyncHash(null); // term lookups aren't shareable amounts
     const q = raw.trim().toLowerCase();
     const words = q.split(/\s+/).filter(Boolean);
     const matches = q ? THRESHOLDS.filter((t) => { const s = thrSearchStr(t); return words.every((w) => s.includes(w)); }) : [];
@@ -591,6 +614,7 @@
     if (field) field.classList.remove('thr-searching');
     const amt = parseAmount(input.value);
     if (clr) clr.hidden = !input.value;
+    thrSyncHash(amt);
     if (amt == null) {
       out.classList.remove('on');
       out.innerHTML = `<div class="thr-calc-hint">Type a <b>dollar amount</b> to see which regime applies and which thresholds it crosses — or a <b>term</b> like &ldquo;commercial&rdquo; or &ldquo;bonds&rdquo; to look one up. Each links to its RFO citation.</div>`;
@@ -622,26 +646,44 @@
       return { label: d.label, cite: d.row.cite, on: amt > v, value: v, cond: d.cond };
     });
     thrLast = { amt: amt, scope: thrScope, band: band, triggers: triggers };
-    const trigRows = triggers.map((t) => `<div class="thr-trig ${t.on ? 'on' : 'off'}">
-        <span class="thr-trig-mark" aria-hidden="true">${t.on ? '●' : '○'}</span>
-        <span class="thr-trig-body">
-          <span class="thr-trig-label">${esc(t.label)} <button type="button" class="thr-trig-cite" data-cite="${esc(t.cite)}">${esc(t.cite)}</button></span>
-          <span class="thr-trig-detail">${t.on ? 'Generally required above' : 'Not required at or below'} ${fmtExact(t.value)}${t.on ? ` — ${esc(t.cond)}` : ''}.</span>
-        </span>
-      </div>`).join('');
+    // Keyed, persistent rows: build the skeleton once, then only toggle state classes and
+    // text so a threshold crossing reads as a calm 150ms color/opacity change, not a re-layout.
     out.classList.add('on');
-    out.innerHTML = `
-      <div class="thr-band thr-band-${band.cls}">
-        <div class="thr-band-top"><span class="thr-band-amt">${fmtExact(amt)}</span><span class="thr-band-tag">${esc(band.tag)}</span></div>
-        <div class="thr-band-desc">${band.desc}</div>
-        <button type="button" class="thr-band-cite" data-cite="${esc(band.cite)}">Read ${esc(band.cite)} →</button>
+    if (!out.querySelector('.thr-trig-list')) {
+      out.innerHTML = `
+      <div class="thr-band">
+        <div class="thr-band-top"><span class="thr-band-amt"></span><span class="thr-band-tag"></span></div>
+        <div class="thr-band-desc"></div>
+        <button type="button" class="thr-band-cite"></button>
       </div>
-      <div class="thr-trig-head">At ${fmtExact(amt)}, these thresholds are crossed${thrScope === 'con' ? ' (contingency ceilings)' : ''}:</div>
-      <div class="thr-trig-list">${trigRows}</div>
+      <div class="thr-trig-head"></div>
+      <div class="thr-trig-list">${triggers.map((t) => `<div class="thr-trig">
+        <span class="thr-trig-mark" aria-hidden="true"><span class="thr-m-on">●</span><span class="thr-m-off">○</span></span>
+        <span class="thr-trig-body">
+          <span class="thr-trig-label">${esc(t.label)} <button type="button" class="thr-trig-cite"></button></span>
+          <span class="thr-trig-detail"></span>
+        </span>
+      </div>`).join('')}</div>
       <div class="thr-calc-foot-row">
         <span class="thr-calc-verify">A mechanical comparison to the cited thresholds below — always verify against the live RFO and any class deviations before acting.</span>
         <button type="button" class="thr-note-btn">⧉ Copy as file note</button>
       </div>`;
+    }
+    const bandEl = out.querySelector('.thr-band');
+    bandEl.className = 'thr-band thr-band-' + band.cls;
+    bandEl.querySelector('.thr-band-amt').textContent = fmtExact(amt);
+    bandEl.querySelector('.thr-band-tag').textContent = band.tag;
+    bandEl.querySelector('.thr-band-desc').textContent = band.desc;
+    const bandCite = bandEl.querySelector('.thr-band-cite');
+    bandCite.dataset.cite = band.cite; bandCite.textContent = `Read ${band.cite} →`;
+    out.querySelector('.thr-trig-head').textContent = `At ${fmtExact(amt)}, these thresholds are crossed${thrScope === 'con' ? ' (contingency ceilings)' : ''}:`;
+    out.querySelectorAll('.thr-trig').forEach((row, i) => {
+      const t = triggers[i]; if (!t) return;
+      row.classList.toggle('on', t.on); row.classList.toggle('off', !t.on);
+      const cite = row.querySelector('.thr-trig-cite');
+      cite.dataset.cite = t.cite; cite.textContent = t.cite;
+      row.querySelector('.thr-trig-detail').textContent = `${t.on ? 'Generally required above' : 'Not required at or below'} ${fmtExact(t.value)}${t.on ? ` — ${t.cond}` : ''}.`;
+    });
   }
   function buildThrNote(t) {
     if (!t) return '';
@@ -666,12 +708,26 @@
   }
   function initThresholds() {
     const scope = $('#thr-scope'); if (!scope) return;
+    function setThrScopeButtons(sc) {
+      thrScope = sc;
+      scope.querySelectorAll('button[data-scope]').forEach((x) => {
+        const on = x.dataset.scope === sc; x.classList.toggle('active', on); x.setAttribute('aria-selected', on);
+      });
+    }
+    // Shared link (#thr=250000&scope=contingency): restore before the first render, which re-syncs the hash.
+    const shared = thrHashParse(location.hash);
+    if (shared.amt) {
+      if (shared.scope) setThrScopeButtons(shared.scope);
+      const inp = $('#thr-amount'); if (inp) inp.value = fmtAmountInput(String(shared.amt));
+      setTimeout(() => {
+        const card = $('#thr-card'); if (!card) return;
+        const off = typeof getStickyOffset === 'function' ? getStickyOffset() : 70;
+        window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - off - 26), behavior: 'auto' });
+      }, 120);
+    }
     scope.addEventListener('click', (e) => {
       const b = e.target.closest('button[data-scope]'); if (!b) return;
-      thrScope = b.dataset.scope;
-      scope.querySelectorAll('button').forEach((x) => {
-        const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-selected', on);
-      });
+      setThrScopeButtons(b.dataset.scope);
       renderThresholds(true);
       const cur = $('#thr-amount');
       if (cur && /[a-z]/i.test(cur.value)) renderThrSearch(cur.value); else renderThrCalc();
@@ -1572,7 +1628,7 @@
     } catch (e) {
       if (token !== osrToken) return;
       box.innerHTML = '<div class="dash-loading dash-skeleton">Spend lookup is briefly unavailable \u2014 try again shortly.</div>';
-      say('Spend lookup is briefly unavailable. Try again shortly.');
+      osrSay('Spend lookup is briefly unavailable. Try again shortly.');
     }
   }
   const OSR_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -1955,6 +2011,39 @@
       if (days <= 180) return { cls: 'veh-sunsetting', txt: 'ordering ends ' + iso };
       return { cls: '', txt: 'ordering to ' + iso };
     }
+    /* selftest:veh-closing — pure; features/widgets-selftest.mjs extracts and asserts this block */
+    // Whole calendar days from the viewer's local today to an ISO ordering_end (YYYY-MM-DD).
+    // Both sides become UTC midnights of their calendar dates, so DST and timezone never shift the count.
+    // The end date is inclusive (orderable that day): today → 0, tomorrow → 1, yesterday → -1.
+    function vehDaysLeft(iso, now) {
+      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''));
+      if (!m) return null;
+      const d = now || new Date();
+      return Math.round((Date.UTC(+m[1], +m[2] - 1, +m[3]) - Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())) / 86400000);
+    }
+    // 90 days ≈ one quarter: about the lead time to compete and award an order under
+    // fair opportunity (RFO 16.505) before the window shuts. Beyond that the existing
+    // "ordering ends" date badge (≤180 days) already carries the signal.
+    const VEH_CLOSING_DAYS = 90;
+    function vehClosingSoon(iso, now) {
+      const n = vehDaysLeft(iso, now);
+      return n != null && n >= 0 && n <= VEH_CLOSING_DAYS ? n : null;
+    }
+    // Comparator: closing-soon first (soonest first); 0 otherwise, so a stable sort keeps the existing order.
+    function vehClosingCmp(a, b, now) {
+      const x = vehClosingSoon(a.ordering_end, now), y = vehClosingSoon(b.ordering_end, now);
+      if (x == null && y == null) return 0;
+      if (x == null) return 1;
+      if (y == null) return -1;
+      return x - y;
+    }
+    /* /selftest:veh-closing */
+    function vehDirBadge(v) {
+      const n = vehClosingSoon(v.ordering_end);
+      if (n != null) return `<span class="veh-badge veh-closing" title="Ordering ends ${escAttr(v.ordering_end)}">${n === 0 ? 'Closes today' : `Closing in ${n} day${n === 1 ? '' : 's'}`}</span>`;
+      const sun = vehSunset(v.ordering_end);
+      return sun && sun.cls ? `<span class="veh-badge ${sun.cls}">${esc(sun.txt)}</span>` : '';
+    }
     function paintVeh() { const el = document.getElementById('market-veh'); if (el) el.innerHTML = vehInnerHTML(); }
     async function loadVeh() {
       const c = vehCodes();
@@ -1989,22 +2078,20 @@
     }
     function vehDirRow(v) {
       const model = VEH_MODEL[v.ordering] || ['', ''];
-      const sun = vehSunset(v.ordering_end);
       return `<a class="veh-row veh-dirrow" href="${escAttr(v.url)}" target="_blank" rel="noopener">
         <span class="veh-row-top"><span class="veh-name">${esc(v.name)}</span>${v.bic === true ? '<span class="veh-badge veh-bic">BIC</span>' : ''}</span>
         <span class="veh-row-sub">${esc(v.sponsor)} · ${esc(v.type)}${v.fee ? ' · ' + esc(v.fee) : ''}</span>
-        <span class="veh-row-foot"><span class="veh-badge ${model[1]}">${esc(model[0])}</span>${sun && sun.cls ? `<span class="veh-badge ${sun.cls}">${esc(sun.txt)}</span>` : ''}</span></a>`;
+        <span class="veh-row-foot"><span class="veh-badge ${model[1]}">${esc(model[0])}</span>${vehDirBadge(v)}</span></a>`;
     }
     // Full-detail row for the browse-all view: adds the scope + status lines.
     function vehDirRowFull(v) {
       const model = VEH_MODEL[v.ordering] || ['', ''];
-      const sun = vehSunset(v.ordering_end);
       return `<a class="veh-row veh-dirrow" href="${escAttr(v.url)}" target="_blank" rel="noopener">
         <span class="veh-row-top"><span class="veh-name">${esc(v.name)}</span>${v.bic === true ? '<span class="veh-badge veh-bic">BIC</span>' : ''}</span>
         <span class="veh-row-sub">${esc(v.sponsor)} · ${esc(v.type)}${v.fee ? ' · ' + esc(v.fee) : ''}</span>
         <span class="veh-row-scope">${esc(v.scope || '')}</span>
         ${v.status ? `<span class="veh-row-scope veh-row-status">${esc(v.status)}</span>` : ''}
-        <span class="veh-row-foot"><span class="veh-badge ${model[1]}">${esc(model[0])}</span>${sun && sun.cls ? `<span class="veh-badge ${sun.cls}">${esc(sun.txt)}</span>` : ''}</span></a>`;
+        <span class="veh-row-foot"><span class="veh-badge ${model[1]}">${esc(model[0])}</span>${vehDirBadge(v)}</span></a>`;
     }
     // "Browse all vehicles" — the whole directory, in the tray, grouped and filterable.
     function vehAllListHTML() {
@@ -2021,7 +2108,7 @@
       ];
       const blocks = groups.filter(([, list]) => list.length).map(([label, list]) =>
         `<div class="market-usa-lbl">${esc(label)} (${list.length})</div>` +
-        list.slice().sort((a, b) => a.name.localeCompare(b.name)).map(vehDirRowFull).join('')
+        list.slice().sort((a, b) => vehClosingCmp(a, b) || a.name.localeCompare(b.name)).map(vehDirRowFull).join('')
       ).join('');
       return blocks || '<div class="market-usa-msg">No vehicles match that filter.</div>';
     }
@@ -2051,8 +2138,9 @@
       let dir = '';
       if (vehDir) {
         const m = vehDirMatches(c);
-        const rows = m.matched.map(vehDirRow).join('');
-        const always = m.always.map(vehDirRow).join('');
+        // Relevance picks the top matches; within them, closing-soon floats up (stable sort keeps rank otherwise).
+        const rows = m.matched.slice().sort((a, b) => vehClosingCmp(a, b)).map(vehDirRow).join('');
+        const always = m.always.slice().sort((a, b) => vehClosingCmp(a, b)).map(vehDirRow).join('');
         if (rows || always) {
           dir = `<div class="market-usa-lbl">Named vehicles that may fit</div>${rows}${always ? `<div class="market-usa-lbl">Always available</div>${always}` : ''}${allLink}
             <div class="veh-note">Ordering rules and fees from official sponsor pages, verified ${esc(vehDir.verified_as_of || '')} — confirm against the linked ordering guide before relying on them. See RFO Part 8 for required sources and RFO 16.505 for fair opportunity on orders.</div>`;

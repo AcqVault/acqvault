@@ -27,6 +27,7 @@ function assetV(name, fallback) {
 }
 const PART_NAV_V = assetV('part-nav.js', 4);
 const GLASS_V = assetV('glass.css', 1);
+const SEEN_V = assetV('seen.js', 1);
 // The analytics beacon rides EVERY server-rendered page — the part pages, the hubs,
 // /study and /48cons — not just the SPA home.
 const ANALYTICS_V = assetV('analytics.js', 2);
@@ -802,7 +803,7 @@ function srvLinkify(escaped, source, selfAnchor) {
     if (!doc) return full;
     if (String(doc.anchor || doc.id) === String(selfAnchor)) return full;
     const href = `/${doc.source}/part-${encodeURIComponent(String(doc.part))}#${encodeURIComponent(String(doc.anchor || doc.id))}`;
-    return `<a class="xref" href="${href}">${full}</a>`;
+    return `<a class="xref" href="${href}" data-doc="${esc(doc.id)}">${full}</a>`;
   });
 }
 
@@ -1332,6 +1333,32 @@ function partModified(source, part) {
   return latest;
 }
 
+// Doc id → the run that last changed its text, inside the same 45-day window the in-app
+// reader uses for its "Updated" badge (app.js loadChangeLedger). Section-level detail
+// exists only for the RFO, so other sources simply get no chip.
+const UPDATED_WINDOW_DAYS = 45;
+function recentlyUpdated() {
+  const runs = loadChangesLog() || [];
+  const cutoff = Date.now() - UPDATED_WINDOW_DAYS * 86400000;
+  const out = new Map();
+  for (const run of runs) {
+    const at = new Date(run.run_at).getTime();
+    if (isNaN(at) || at < cutoff) continue;
+    const rfo = run.rfo || {};
+    for (const s of [].concat(rfo.modified || [], rfo.added || [])) {
+      if (s && s.id) out.set(String(s.id), run.run_at);
+    }
+  }
+  return { map: out, dayCount: runDayCount(runs) };
+}
+function updatedChip(id, upd) {
+  const at = upd.map.get(String(id));
+  if (!at) return '';
+  const d = new Date(at);
+  const short = `${MONTHS[d.getUTCMonth()].slice(0, 3)} ${d.getUTCDate()}`;
+  return ` <a class="sec-upd" href="/changes#run-${esc(changesRunSlug(at, upd.dayCount))}" title="Text changed in AcqVault's ${fmtRunDate(at)} re-index">Updated ${short}</a>`;
+}
+
 function renderPartPage(source, part) {
   const meta = SOURCES[source];
   const { groups } = partsForSource(source);
@@ -1388,6 +1415,7 @@ function renderPartPage(source, part) {
 
   const pairIdx = pairIndexFor(source, part);
   const ownCounts = ownKeyCounts(docs);
+  const upd = recentlyUpdated();
   const sections = docs.map(d => {
     const anchor = esc(d.anchor || d.id);
     // Per-section provenance rides ON the heading rather than taking a line of its
@@ -1398,7 +1426,7 @@ function renderPartPage(source, part) {
       : '';
     const compassNote = (d.url && !sharedUrl && /dps\.mil/i.test(d.url)) ? srcref(d.url) : '';
     return `<section class="sec" id="${anchor}">
-<div class="sec-hd"><h2><a href="#${anchor}">${esc(d.title)}</a></h2>${src}</div>
+<div class="sec-hd"><h2><a href="#${anchor}">${esc(d.title)}</a></h2>${updatedChip(d.id, upd)}${src}</div>
 ${compassNote}
 ${pairChip(source, d, pairIdx, ownCounts)}
 ${supersededChip(d)}
@@ -1649,6 +1677,17 @@ function fmtRunDate(iso) {
   return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
 }
 
+function runDayCount(runs) {
+  const dayCount = {};
+  for (const r of runs) { const d = String(r.run_at || '').slice(0, 10); dayCount[d] = (dayCount[d] || 0) + 1; }
+  return dayCount;
+}
+// The /changes anchor for a run (run-<slug>); part pages link their "Updated" chips to it.
+function changesRunSlug(iso, dayCount) {
+  const d = String(iso || '').slice(0, 10);
+  return dayCount[d] > 1 ? `${d}-${String(iso).slice(11, 16).replace(':', '')}` : d;
+}
+
 function renderChangesPage() {
   const runs = loadChangesLog();
   if (!Array.isArray(runs) || !runs.length) return null;
@@ -1661,12 +1700,8 @@ function renderChangesPage() {
   // Two re-indexes can land on the same day (2026-09-10 ran twice). Both headings
   // then read identically AND shared an id, so the anchor only ever reached the
   // first one. Same-day runs carry their UTC time in both.
-  const dayCount = {};
-  for (const r of runs) { const d = String(r.run_at || '').slice(0, 10); dayCount[d] = (dayCount[d] || 0) + 1; }
-  const runSlug = (iso) => {
-    const d = String(iso || '').slice(0, 10);
-    return dayCount[d] > 1 ? `${d}-${String(iso).slice(11, 16).replace(':', '')}` : d;
-  };
+  const dayCount = runDayCount(runs);
+  const runSlug = (iso) => changesRunSlug(iso, dayCount);
   const runHtml = [...runs].reverse().map(run => {
     const rfo = run.rfo || {};
     const added = rfo.added || [];
@@ -1780,7 +1815,7 @@ ul.chg-other{font-size:var(--fs-md);color:var(--muted);margin:4px 0 0;padding-le
 <div class="stats"><span class="stat"><b>${runs.length}</b> refreshes logged</span><span class="stat">Latest ${fmtRunDate(latest.run_at)}</span><span class="stat">Links to current text</span></div>
 ${HUB_SEAL}
 </div></section>`;
-  const body = `${CHG_STYLE}<p class="lede lede--hub">Each time AcqVault re-fetches a source it diffs the new text against the last copy and records the sections whose wording moved. This is that log — cite it when you need to show a regulation changed under you. It records CHANGES to text already indexed, so a source&rsquo;s first ingest does not appear here, and a source is listed only for the runs in which it was re-fetched. Section links open the current full text; always verify against the signed deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on a result in a contract file.</p>
+  const body = `${CHG_STYLE}<span id="chg-latest" data-run="${esc(latest.run_at)}" hidden></span><script src="/assets/seen.js?v=${SEEN_V}" defer></script><p class="lede lede--hub">Each time AcqVault re-fetches a source it diffs the new text against the last copy and records the sections whose wording moved. This is that log — cite it when you need to show a regulation changed under you. It records CHANGES to text already indexed, so a source&rsquo;s first ingest does not appear here, and a source is listed only for the runs in which it was re-fetched. Section links open the current full text; always verify against the signed deviations and <a href="https://www.acquisition.gov/far-overhaul" rel="noopener">acquisition.gov</a> before relying on a result in a contract file.</p>
 ${runHtml}`;
 
   return shell({ title, description, canonical, jsonld, body, hero });

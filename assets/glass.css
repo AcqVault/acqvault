@@ -1220,3 +1220,100 @@ html .hero-right .fcard.st-fallback{display:none;}
 html .hero-right:has(.fcard-oblig.st-fallback) .fcard-awards,
 html .hero-right:has(.fcard-awards.st-fallback) .fcard-oblig{grid-column:1 / -1;}
 html .hero-right:has(.fcard-oblig.st-fallback):has(.fcard-awards.st-fallback){grid-template-areas:"vault vault";row-gap:0;}
+
+/* ── Home · returning visitor: since-last-visit marker on the footer "What Changed" link and the
+   personal line under Study. Quiet by design: no banner, no badge pill — a dot and a count. ── */
+html #foot-changes .chg-since{display:inline-flex;align-items:baseline;gap:6px;margin-left:6px;color:var(--ink2);font-weight:500;white-space:normal;animation:acq-since-in .2s ease-out both;}
+html #foot-changes .chg-since-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);align-self:center;flex:none;}
+html #foot-changes:hover .chg-since{color:var(--accent);}
+@keyframes acq-since-in{from{opacity:0}to{opacity:1}}
+html .study-me{margin:14px 0 0;font-size:var(--fs-sm);font-weight:600;color:rgba(255,255,255,.86);font-variant-numeric:tabular-nums;}
+html .study-me[hidden]{display:none;}
+html .study-me-resume{color:var(--brass-bright,#e4c477);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;border-radius:4px;}
+html .study-me-resume:hover{text-decoration-thickness:2px;}
+html .study-me-resume:focus-visible{outline:2px solid var(--brass-bright,#e4c477);outline-offset:3px;}
+html .daily-cta.daily-cta-me{font-variant-numeric:tabular-nums;}
+@media (max-width:600px){
+  html .foot-links a#foot-changes{white-space:normal;text-align:center;}
+  html #foot-changes .chg-since{display:flex;justify-content:center;margin:4px 0 0;}
+}
+@media (prefers-reduced-motion:reduce){ html #foot-changes .chg-since{animation:none;} }
+@media (prefers-color-scheme:dark){
+  html #foot-changes .chg-since{color:var(--ink2);}
+}
+
+/* ── widgets agent: threshold calm crossings · saved diff expand · vehicles closing-soon chip ── */
+
+/* 1) Threshold calculator — rows persist; a crossing is a 150ms color/opacity change, no movement. */
+html .thr-trig-mark{display:inline-grid;transition:color 150ms var(--ease-out);}
+html .thr-trig-mark > span{grid-area:1/1;transition:opacity 150ms var(--ease-out);}
+html .thr-trig.on .thr-m-off,
+html .thr-trig.off .thr-m-on{opacity:0;}
+html .thr-trig-label{transition:color 150ms var(--ease-out);}
+html .thr-band,
+html .thr-band-tag{transition:border-color 150ms var(--ease-out),color 150ms var(--ease-out);}
+
+/* 2) Saved panel — "See what changed" expands with grid rows 0fr→1fr (220ms ease-out), collapses the same way. */
+html .saved-diff-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows 220ms var(--ease-out);}
+html .saved-diff-wrap[data-open="1"]{grid-template-rows:1fr;}
+html .saved-diff-clip{min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s linear 220ms;}
+html .saved-diff-wrap[data-open="1"] > .saved-diff-clip{visibility:visible;transition-delay:0s;}
+
+/* 3) Contract vehicles — quiet warn-tone "Closing in N days" chip (≤90 days). */
+html .veh-badge.veh-closing{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn);}
+
+@media (prefers-color-scheme:dark){
+  html .veh-badge.veh-closing{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html .thr-trig-mark,
+  html .thr-trig-mark > span,
+  html .thr-trig-label,
+  html .thr-band,
+  html .thr-band-tag,
+  html .saved-diff-wrap,
+  html .saved-diff-clip{transition:none;}
+}
+
+/* ═══ Regulation pages: "Updated" chip per section + cross-reference preview card ═══
+   Server part pages (/rfo/part-N …) don't load app.css, so the in-app reader's
+   .rc-badge-updated and #xref-pop looks are ported here under their own names
+   (.sec-upd, .pxref) — glass.css also loads in the app, and must not restyle those. */
+
+/* ── "Updated <date>" — quiet marker on a section whose text moved in the last 45 days ── */
+html .sec-hd .sec-upd{flex:0 0 auto;align-self:center;white-space:nowrap;font-size:11px;font-weight:600;line-height:1.4;
+  padding:1px 7px;border-radius:4px;background:#f6efdd;color:var(--brass-ink);border:1px solid rgba(var(--brass-rgb),.28);
+  text-decoration:none;transition:border-color .15s ease-out,background-color .15s ease-out;}
+html .sec-hd .sec-upd:hover{border-color:rgba(var(--brass-rgb),.55);text-decoration:underline;text-underline-offset:2px;}
+html .sec-hd .sec-upd:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+/* ── Cross-reference preview (assets/part-nav.js) ── */
+html .pxref{position:fixed;z-index:1200;top:0;left:0;width:max-content;max-width:380px;box-sizing:border-box;
+  background:var(--white,#fff);border:1px solid var(--line2);border-radius:var(--r-md,10px);
+  box-shadow:0 12px 32px -8px rgba(var(--navy-rgb),.3),0 0 0 1px rgba(var(--shadow-rgb),.02);
+  padding:12px 14px;text-align:left;
+  opacity:0;visibility:hidden;transform:scale(.97);pointer-events:none;
+  transition:opacity .15s ease-out,transform .15s ease-out,visibility 0s linear .15s;}
+html .pxref.show{opacity:1;visibility:visible;transform:none;pointer-events:auto;
+  transition:opacity .15s ease-out,transform .15s ease-out,visibility 0s;}
+html .pxref-title{font-size:13px;font-weight:700;line-height:1.3;color:var(--ink);letter-spacing:-0.01em;margin-bottom:6px;}
+html .pxref-body{font-size:12.5px;line-height:1.55;color:var(--ink2);}
+html .pxref-foot{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:9px;padding-top:8px;border-top:1px solid var(--line2);}
+html .pxref-more{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;}
+html .pxref-more:hover{text-decoration:underline;text-underline-offset:2px;}
+html .pxref-more[hidden]{display:none;}
+html .pxref-note{font-size:11px;font-style:italic;color:var(--muted);margin-left:auto;text-align:right;}
+@media (prefers-reduced-motion:reduce){
+  html .pxref,html .pxref.show{transform:none;}
+}
+
+@media (prefers-color-scheme:dark){
+  html .sec-hd .sec-upd{background:rgba(228,196,119,.10);color:var(--accent);border-color:rgba(228,196,119,.28);}
+  html .sec-hd .sec-upd:hover{border-color:rgba(228,196,119,.55);}
+  html .pxref{background:#24211d;border-color:rgba(255,255,255,.12);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 6px rgba(0,0,0,.35),0 24px 48px -16px rgba(0,0,0,.75);}
+}
+@media (prefers-contrast:more){
+  html .pxref{border-color:var(--line);}
+}

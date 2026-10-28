@@ -357,3 +357,130 @@
   resolve();
   window.addEventListener('hashchange', resolve);
 })();
+
+/* ── Cross-reference previews: hover or focus an a.xref, see the cited section ──
+ * Parity with the in-app reader's showXrefPop (app.js): 120ms intent delay, a card
+ * that grows out of the citation, clamped to the viewport. A target on THIS page is
+ * read straight from the DOM (free, works offline); a target on another part is
+ * fetched once from /api/search {action:'document'} and cached. No network, no card —
+ * the link itself still navigates. Pointer-precise devices only: on touch a tap is
+ * a navigation, and a card that opened on tap would steal it. */
+(function () {
+  'use strict';
+
+  // Pure helpers — exercised by features/rules-selftest.js.
+  function cleanText(content) {
+    return String(content || '').split('\n').map(function (s) { return s.replace(/^L\d+:\s*/, '').trim(); })
+      .filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+  }
+  // The corpus often opens a section's content with its own title; the card already shows it.
+  function snippet(text, max, title) {
+    var t = cleanText(text), h = cleanText(title);
+    if (h && t.indexOf(h) === 0) t = t.slice(h.length).trim();
+    if (t.length <= max) return { text: t, cut: false };
+    return { text: t.slice(0, max).replace(/\s+\S*$/, '') + '…', cut: true };
+  }
+  // href → { path, anchor } relative to the page origin.
+  function parseXref(href, base) {
+    var u = new URL(href, base), a = '';
+    try { a = decodeURIComponent(u.hash.slice(1)); } catch (e) { a = u.hash.slice(1); }
+    return { path: u.pathname, anchor: a };
+  }
+  // Card below the link, flipped above when it would run off the bottom, clamped on
+  // both axes; transform-origin on the link so the scale grows out of the citation.
+  function place(r, w, h, vw, vh) {
+    var gap = 8, pad = 12, top = r.bottom + gap, flip = false;
+    if (top + h > vh - pad && r.top - gap - h >= pad) { top = r.top - gap - h; flip = true; }
+    top = Math.max(pad, Math.min(top, vh - pad - h));
+    var left = Math.max(pad, Math.min(r.left, vw - pad - w));
+    var ox = Math.round(Math.max(0, Math.min(w, r.left + r.width / 2 - left)));
+    return { top: Math.round(top), left: Math.round(left), flip: flip, origin: ox + 'px ' + (flip ? '100%' : '0') };
+  }
+  if (typeof module === 'object' && module.exports) module.exports.xref = { cleanText: cleanText, snippet: snippet, parseXref: parseXref, place: place };
+
+  if (typeof document === 'undefined' || !window.matchMedia) return;
+  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  if (!document.querySelector('main a.xref')) return;
+
+  var MAX = 320, card = null, cur = null, showT = 0, hideT = 0, docs = {};
+
+  function el() {
+    if (card) return card;
+    card = document.createElement('div');
+    card.id = 'pxref';
+    card.className = 'pxref';
+    card.setAttribute('role', 'tooltip');
+    card.innerHTML = '<div class="pxref-title"></div><div class="pxref-body"></div>' +
+      '<div class="pxref-foot"><a class="pxref-more" tabindex="-1">Read full section →</a>' +
+      '<span class="pxref-note">AcqVault copy — verify at source</span></div>';
+    card.addEventListener('mouseenter', function () { clearTimeout(hideT); });
+    card.addEventListener('mouseleave', hideSoon);
+    document.body.appendChild(card);
+    return card;
+  }
+
+  function sameSection(anchor) {
+    var sec = document.getElementById(anchor);
+    if (!sec) return null;
+    var h = sec.querySelector('.sec-hd h2') || sec.querySelector('h2');
+    var ps = sec.querySelectorAll(':scope > p:not(.srcref)');
+    var text = Array.prototype.map.call(ps, function (p) { return p.textContent; }).join('\n');
+    return { title: h ? h.textContent.trim() : '', content: text };
+  }
+
+  function render(a, d) {
+    if (a !== cur || !d) return;
+    var c = el(), s = snippet(d.content, MAX, d.title);
+    if (!d.title && !s.text) return;
+    c.querySelector('.pxref-title').textContent = d.title || '';
+    c.querySelector('.pxref-body').textContent = s.text;
+    var more = c.querySelector('.pxref-more');
+    more.href = a.getAttribute('href');
+    more.hidden = !s.cut;
+    c.style.maxWidth = Math.min(380, window.innerWidth - 24) + 'px';
+    c.classList.remove('show');
+    // offsetWidth/Height are layout size — unaffected by the .97 scale, so the clamp is exact.
+    var p = place(a.getBoundingClientRect(), c.offsetWidth, c.offsetHeight, window.innerWidth, window.innerHeight);
+    c.style.top = p.top + 'px';
+    c.style.left = p.left + 'px';
+    c.style.transformOrigin = p.origin;
+    void c.offsetWidth;   // commit the hidden state so the entry transitions from it
+    c.classList.add('show');
+    a.setAttribute('aria-describedby', 'pxref');
+  }
+
+  function show(a) {
+    cur = a;
+    var t = parseXref(a.getAttribute('href'), location.href);
+    if (t.path === location.pathname) return render(a, sameSection(t.anchor));
+    var id = a.getAttribute('data-doc');
+    if (!id) return;
+    if (docs[id]) return render(a, docs[id]);
+    if (navigator.onLine === false) return;
+    fetch('/api/search', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'document', id: id }) })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) { docs[id] = d; render(a, d); } })
+      .catch(function () {});
+  }
+
+  function dismiss() {
+    if (cur) cur.removeAttribute('aria-describedby');
+    cur = null;
+    if (card) card.classList.remove('show');
+  }
+  function hide() { clearTimeout(showT); clearTimeout(hideT); dismiss(); }
+  function hideSoon() { clearTimeout(showT); clearTimeout(hideT); hideT = setTimeout(hide, 150); }
+  function arm(a) { clearTimeout(hideT); clearTimeout(showT); showT = setTimeout(function () { show(a); }, 120); }
+  function xrefOf(e) { return e.target.closest && e.target.closest('main a.xref'); }
+
+  document.addEventListener('mouseover', function (e) { var a = xrefOf(e); if (a && a !== cur) arm(a); else if (a) clearTimeout(hideT); });
+  document.addEventListener('mouseout', function (e) { if (xrefOf(e)) hideSoon(); });
+  document.addEventListener('focusin', function (e) { var a = xrefOf(e); if (a) arm(a); });
+  document.addEventListener('focusout', function (e) { if (xrefOf(e)) hideSoon(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && cur) hide(); });
+  // Scrolling detaches the card from its link. Timers survive: Tab scrolls the next link
+  // into view right after focusin armed it, and that preview should still arrive.
+  window.addEventListener('scroll', function () { if (card && card.classList.contains('show')) dismiss(); }, { passive: true });
+  window.addEventListener('resize', function () { if (cur) hide(); });
+})();
