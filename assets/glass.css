@@ -1120,9 +1120,9 @@ html .rc-badge-class{color:#24334a;}
 /* Glass-forward: clearer panes with a light sweep and crisp bright rims, so the material
    reads as glass over the photograph. */
 html:root{--sheet-blur:blur(18px) saturate(160%) brightness(1.07);
- --sheet:linear-gradient(135deg,rgba(255,255,255,.24),rgba(255,255,255,.08) 42%,rgba(255,255,255,.05) 70%,rgba(255,255,255,.15));
- --card:linear-gradient(150deg,rgba(255,255,255,.4),rgba(255,255,255,.22));
- --card-hi:linear-gradient(150deg,rgba(255,255,255,.56),rgba(255,255,255,.38));
+ --sheet:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.06) 42%,rgba(255,255,255,.04) 70%,rgba(255,255,255,.11));
+ --card:linear-gradient(150deg,rgba(255,255,255,.3),rgba(255,255,255,.16));
+ --card-hi:linear-gradient(150deg,rgba(255,255,255,.42),rgba(255,255,255,.28));
  --rim:rgba(255,255,255,.9);
  --lift:inset 0 1px 0 #fff,inset 1px 0 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.28),0 22px 50px -26px rgba(30,25,15,.42);}
 html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.result-card,.st-trackcard,.market-panel,.callout,.study-mode,.osr-summary,.dash-stat,.dash-panel){-webkit-backdrop-filter:blur(12px) saturate(160%) brightness(1.05);backdrop-filter:blur(12px) saturate(160%) brightness(1.05);}
