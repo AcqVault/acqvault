@@ -1078,3 +1078,21 @@ html :is(.cra-table th,.market-flow-sep,.rz-outline-head,.rz-sec-note){color:var
 html .lib-cover-vol small{color:rgba(214,226,240,.86);}   /* on the navy cover art: lighter, not darker */
 html .pin-coach-star{color:var(--brass-ink);}
 html .rc-pin:not(.pinned){color:var(--muted2);}   /* unpinned star: an icon control needs 3:1 on clear glass */
+
+/* ── Browsers without scroll-driven animation (Firefox today) ──────────────
+   Same result, no animation: the effects that fade in with scroll are simply on. */
+@supports not (animation-timeline: scroll()){
+  /* Pages with a sticky in-part search or table header: the strip under the pill is
+     solid down to it, over the reading column only, so no text shows in the gap. */
+  html body:has(.lnav):has(.pn-search,table.devtable):not(:has(.rz-bar))::after{
+    background:var(--edge-solid)!important;
+    left:max(var(--band-gap),calc((100% - var(--grid-max) - 2 * var(--wrap-pad)) / 2));
+    right:max(var(--band-gap),calc((100% - var(--grid-max) - 2 * var(--wrap-pad)) / 2));
+  }
+  /* CASPER: a fixed fade on the right edge says "more this way"; the last column
+     carries matching padding so at the end of the scroll nothing sits in the fade. */
+  @media (min-width:601px){
+    html .cra-wrap{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);}
+    html .cra-table :is(th,td):last-child{padding-right:36px;}
+  }
+}
