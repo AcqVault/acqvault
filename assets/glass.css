@@ -790,11 +790,11 @@ html .lnav-sheet .hlink{border-radius:0;}
   html .nav-saved-btn.has-changes::after{box-shadow:0 0 0 2px var(--white);}
 
   /* ── Primary buttons: brass fill, dark ink (Apple dark accent buttons) ── */
-  html :is(.nav-cta,.market-btn,.osr-go,.lib-open-btn,.market-action.primary,.feedback-submit){
+  html :is(.nav-cta,.market-btn,.osr-go,.lib-open-btn,.market-action.primary,.feedback-submit,.drawer-newtab-btn,.drawer-orig-btn){
     background:linear-gradient(160deg,var(--accent-h),var(--accent));color:#1c1710;border-color:transparent;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 18px -6px rgba(0,0,0,.6);
   }
-  html :is(.nav-cta,.market-btn,.osr-go,.lib-open-btn,.market-action.primary,.feedback-submit):hover{border-color:transparent;background:linear-gradient(160deg,var(--accent-d),var(--accent-h));color:#1c1710;}
+  html :is(.nav-cta,.market-btn,.osr-go,.lib-open-btn,.market-action.primary,.feedback-submit,.drawer-newtab-btn,.drawer-orig-btn):hover{border-color:transparent;background:linear-gradient(160deg,var(--accent-d),var(--accent-h));color:#1c1710;}
   html .study-open-btn:hover{border-color:var(--accent-d);}
 
   /* ── Hero: mode tabs — selected segment is lifted glass, not a white slab ── */
@@ -925,9 +925,7 @@ html .lnav-sheet .hlink{border-radius:0;}
   html .rz-opt-right .rz-opt-dot{box-shadow:inset 0 0 0 3.5px var(--bg),inset 0 0 0 9px var(--ok);}
   html .rz-opt-wrong .rz-opt-dot{box-shadow:inset 0 0 0 3.5px var(--bg),inset 0 0 0 9px var(--bad);}
 
-  /* ── navy primaries: keep the brand button, give it a rim so it lifts off charcoal ── */
-  html :is(.rz-btn-go,.ss-btn-primary):not(.rz-cover>.rz-btn-go){background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));border-color:rgba(var(--brass-bright-rgb),.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);}
-  html .st-btn-reveal{background:linear-gradient(160deg,var(--ink-from),var(--ink-mid))!important;border-color:rgba(var(--brass-bright-rgb),.34)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)!important;}
+  /* primaries are brass in dark: see "ONE BUTTON SYSTEM" at the end of this file */
 
   /* ── source-selection: rating pills, picked options, verdicts ── */
   html .ss-pill-o{background:var(--rfo-bg);color:var(--rfo-txt);}
@@ -963,4 +961,94 @@ html .lnav-sheet .hlink{border-radius:0;}
    --modal is already solid there, the brass tints sit on solid cards. */
 @media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce){
   html .rz-bar{-webkit-backdrop-filter:none;backdrop-filter:none;}
+}
+
+/* ═══ ROUND 5 ═══════════════════════════════════════════════════════ */
+/* Scroll-edge material for the pinned pill on server pages: what scrolls under the
+   pill and above the pinned in-part search / table header is covered by the page's
+   own surface (solid to the pill's bottom, a short fade to the sticky element), and
+   it only fades in once the page has scrolled. Without scroll-timeline support the
+   round-3 gradient stays. */
+:root{--edge:rgba(246,241,233,.97);--edge-solid:#f6f1e9;}
+@media (prefers-color-scheme:dark){ html:root{--edge:rgba(22,20,18,.97);--edge-solid:#171513;} }
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){ :root{--edge:#fff;--edge-solid:#fff;} }
+@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){ html:root{--edge:#1f1c19;--edge-solid:#1f1c19;} }
+@supports (animation-timeline: scroll()){
+  html body:has(.lnav):not(:has(.rz-bar))::after{
+    height:var(--lnav-stick);
+    background:linear-gradient(180deg,var(--edge) 0,var(--edge) calc(100% - 8px),transparent)!important;
+    animation:av-edge-in linear both;animation-timeline:scroll(root);animation-range:0 80px;
+    /* only over the reading column, not as a slab across the backdrop */
+    left:max(var(--band-gap),calc((100% - var(--grid-max) - 2 * var(--wrap-pad)) / 2));right:max(var(--band-gap),calc((100% - var(--grid-max) - 2 * var(--wrap-pad)) / 2));
+  }
+  /* where a sticky search / header sits right below the strip, the strip is solid
+     all the way down to it: a fade there was exactly the band text bled through */
+  html body:has(.lnav):has(.pn-search,table.devtable):not(:has(.rz-bar))::after{background:var(--edge-solid)!important;}
+  @keyframes av-edge-in{from{opacity:0}to{opacity:1}}
+}
+
+/* Reader drawer: an empty deviation note is not a 21px tinted band. */
+html #drawer-deviation:empty{display:none;}
+
+/* The Combination strip on phones/tablets: same inset as every other band. */
+@media (max-width:860px){ html .daily-strip-inner{padding-left:18px!important;padding-right:18px!important;} }
+
+/* Study task bar: a floating glass pill inside the sheet, concentric with the
+   sheet's corner (transparent border = the 12px inset; rim drawn inside it). */
+html .rz-bar{
+  border:12px solid transparent!important;background-clip:padding-box!important;box-sizing:border-box;
+  height:78px;border-radius:30px!important;
+  box-shadow:inset 0 0 0 1px var(--rim),inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+@media (max-width:600px){ html .rz-bar{border-width:8px!important;height:70px;border-radius:26px!important;} }
+
+/* /deviations: the mono tracking number sat 2px high; cells align on the text baseline. */
+html table.devtable td{vertical-align:baseline;}
+/* 900: CASPER MFR "Download ↓" and the long Full Text tag stay on one line. */
+html .lib-dl-btn{white-space:nowrap;}
+html .fulltext-card-tag{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:inline-block;}
+/* Coverage chips: one line each on a phone. */
+html .source-status-chip{white-space:nowrap;}
+/* Spending: the period list in a notice reads as text, not code. */
+html .osr-empty b{font-family:inherit;font-weight:700;}
+
+@media (prefers-color-scheme:dark){
+  /* ── ONE BUTTON SYSTEM: brass fill + dark ink is the only filled primary ── */
+  html :is(.lnav .cta,.rz-btn-go,.ss-btn-primary,.st-btn-reveal,.drawer-orig-btn,.drawer-newtab-btn,.skip-link,.pn-skip){
+    background:linear-gradient(160deg,var(--accent-h),var(--accent))!important;color:#1c1710!important;border-color:transparent!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 18px -6px rgba(0,0,0,.6)!important;
+  }
+  html :is(.lnav .cta,.rz-btn-go,.ss-btn-primary,.st-btn-reveal,.drawer-orig-btn,.drawer-newtab-btn):hover{background:linear-gradient(160deg,var(--accent-d),var(--accent-h))!important;color:#1c1710!important;}
+  html .st-btn-reveal :is(kbd,.st-kbd,small){color:#1c1710;border-color:rgba(28,23,16,.35);background:transparent;}
+  /* secondary: neutral glass */
+  html :is(.fulltext-dl-btn,.cite-copy-btn,.float-top,.pn-top){
+    background:rgba(255,255,255,.08)!important;border:1px solid var(--rim)!important;color:var(--ink)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 22px -10px rgba(0,0,0,.7)!important;
+  }
+  html :is(.float-top,.pn-top){background:rgba(40,36,32,.78)!important;-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);}
+  html :is(.fulltext-dl-btn,.cite-copy-btn,.float-top,.pn-top):hover{background:rgba(255,255,255,.13)!important;}
+  html :is(.float-top,.pn-top) svg{stroke:currentColor;}
+
+  /* ── navy panels inside charcoal cards → a soft blue tint ── */
+  html :is(.st-scenario,.st-script){background:rgba(127,166,214,.10)!important;border-color:rgba(127,166,214,.22)!important;}
+  html .st-walk ol>li::before{background:rgba(127,166,214,.14);box-shadow:inset 0 0 0 1px rgba(127,166,214,.3);color:var(--ink);}
+
+  /* server hero coin: a touch less saturated on charcoal */
+  html .lhero .lib-seal{filter:saturate(.7) brightness(.92);}
+
+  /* Coverage: neutral glass chips, the green dot carries "live" */
+  html .source-status-chip.live{background:rgba(255,255,255,.06);border-color:var(--rim);color:var(--ink2);}
+
+  /* Market Research selected chip: lifted glass, not navy */
+  html .market-pill.active{background:rgba(255,255,255,.1);border-color:var(--accent-bdr);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
+  html .market-pill.active::before{background:transparent;box-shadow:inset 0 0 0 1px var(--accent-bdr);color:var(--accent);}
+
+  /* Spending failure notice: a warn-tinted card (osr-fail is set by the widgets.js patch) */
+  html .osr-empty:has(.osr-fail){background:var(--warn-bg);border-color:var(--warn-line);color:var(--ink2);}
+  html .osr-empty:has(.osr-fail) b{color:var(--warn);}
+}
+@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
+  html :is(.fulltext-dl-btn,.cite-copy-btn,.float-top,.pn-top){background:#2f2b26!important;-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html :is(.st-scenario,.st-script){background:#232b35!important;}
+  html :is(.source-status-chip.live,.market-pill.active){background:#2f2b26;}
 }

@@ -1444,10 +1444,12 @@
       const gotOffices = offices.filter((o) => okSlots.some((x) => x.sl.office === o));
       const lostOffices = offices.filter((o) => !slots.some((sl, i) => sl.office === o && !osrSlotFailed(results[i])));
       const gotFys = range ? [] : fys.filter((fy) => okSlots.some((x) => x.sl.fy === fy));
+      // The note is a sentence, so it ends with a full stop before "Nothing below…".
+      const failNote = failed.map((x) => x.d && x.d.note).find(Boolean) || 'the lookup was rate-limited or unavailable';
       const failLine = failed.length
-        ? ('<b>' + esc(osrList([...new Set(failed.map((x) => (offices.length > 1 ? x.sl.office + ' \u00b7 ' : '') + x.sl.period))])) + '</b> did not come back'
-            + ' \u2014 ' + esc(failed.map((x) => x.d && x.d.note).find(Boolean) || 'the lookup was rate-limited or unavailable') + ' Nothing below includes '
-            + (failed.length > 1 ? 'them' : 'it') + '.')
+        ? ('<span class="osr-fail"><b>' + esc(osrList([...new Set(failed.map((x) => (offices.length > 1 ? x.sl.office + ' \u00b7 ' : '') + x.sl.period))])) + '</b> did not come back'
+            + ' \u2014 ' + esc(/[.!?]$/.test(failNote) ? failNote : failNote + '.') + ' Nothing below includes '
+            + (failed.length > 1 ? 'them' : 'it') + '.</span>')
         : '';
 
       if (!okSlots.length) {
