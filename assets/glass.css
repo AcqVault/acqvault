@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    ACQVAULT — GLASS LAYER
    Every page band floats as a rounded glass panel over a soft brand
-   sunlit room (assets/glass-sand.svg): light bands are warm sand glass, the navy
+   blurred photograph of a law library (assets/glass-law-library.jpg): clear glass panes, the navy
    bands are smoked. Loaded LAST on index.html and by shell() in api/_seo.js
    (not on /slip, which keeps its own look). Material and band geometry only;
    no type or text colour changes beyond the three tokens below.
@@ -9,20 +9,20 @@
    /study and /48cons inject in <body>, after this sheet.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  --sheet:      rgba(255,255,255,.26);    /* a band: near-clear glass, the room shows through; the only element that blurs */
-  --sheet-blur: blur(22px) saturate(140%);   /* less blur than before: shapes behind stay legible as shapes */
-  --sheet-read: rgba(255,255,255,.72);   /* long reading: still heavier, so regulation text never sits on a busy patch */
+  --sheet:      linear-gradient(135deg,rgba(255,240,212,.11),rgba(252,234,200,.06) 50%,rgba(255,244,224,.1));   /* almost-clear glass with a hint of honey */    /* a band: near-clear glass, the room shows through; the only element that blurs */
+  --sheet-blur: blur(10px) saturate(165%) brightness(1.03);   /* light blur: the room stays recognisable through the glass */
+  --sheet-read: rgba(255,251,244,.74);   /* long reading: still heavier, so regulation text never sits on a busy patch */
   /* the navy bands, as dark glass: the brand's own ink gradient at ~95%, so cream
      behind never greys it toward slate and the hero still matches the solid navy strip */
   --smoke:      linear-gradient(160deg,rgba(23,58,96,.94) 0%,rgba(15,37,64,.95) 52%,rgba(10,28,51,.96) 100%);
-  --card:       rgba(255,255,255,.4);   /* a second clear pane on the band, a touch frostier so it reads as a layer */
-  --card-hi:    rgba(255,255,255,.6);   /* a lifted card gets denser, not thinner */
+  --card:       linear-gradient(150deg,rgba(255,248,232,.24),rgba(255,242,216,.14));   /* a second clear pane on the band, a touch frostier so it reads as a layer */
+  --card-hi:    linear-gradient(150deg,rgba(255,250,238,.44),rgba(255,244,222,.3));   /* a lifted card gets denser, not thinner */
   --card-r:     16px;                    /* one card radius on every page, inside the 20–32px bands */
   --tile-r:     12px;                    /* study tiles and answer rows: smaller controls, one step tighter */
   --nav-glass:  rgba(255,255,255,.4);
-  --nav-pill:   rgba(255,255,255,.5);     /* the one nav pill, home and server pages */
+  --nav-pill:   rgba(255,250,240,.44);     /* the one nav pill, home and server pages */
   --modal:      rgba(252,251,248,.95);   /* over a dark scrim a thin sheet reads grey: modals are thick */
-  --rim:        rgba(255,255,255,.6);
+  --rim:        rgba(255,255,255,.85);
   --band-gap:   clamp(10px,2.4vw,36px);
   --band-r:     clamp(20px,2.4vw,32px);
   --wrap-pad:   24px;
@@ -43,7 +43,9 @@
 html body{background:#e4dfd6;}
 html body::before{
   content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:url(/assets/glass-sand.svg?v=2) center/cover no-repeat;
+  /* A real room, blurred: the Supreme Court law library stacks (Indiana Supreme Court
+     Law Library, CC0, Wikimedia Commons). A light veil keeps it calm behind type. */
+  background:linear-gradient(rgba(248,245,239,.58),rgba(248,245,239,.58)),url(/assets/glass-law-library.jpg?v=1) center/cover no-repeat;
 }
 
 /* ── Bands become floating panels ─────────────────────────────── */
@@ -1095,4 +1097,36 @@ html .rc-pin:not(.pinned){color:var(--muted2);}   /* unpinned star: an icon cont
     html .cra-wrap{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);}
     html .cra-table :is(th,td):last-child{padding-right:36px;}
   }
+}
+
+/* Glass material on every pane: --card on cards gets a light blur of its own so the
+   room shows through crisply rather than as a smear. */
+html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.result-card,.st-trackcard,.market-panel,.callout,.study-mode,.osr-summary,.dash-stat,.dash-panel){-webkit-backdrop-filter:blur(8px) saturate(165%);backdrop-filter:blur(8px) saturate(165%);}
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){
+  html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.result-card,.st-trackcard,.market-panel,.callout,.study-mode,.osr-summary,.dash-stat,.dash-panel){-webkit-backdrop-filter:none;backdrop-filter:none;}
+}
+
+/* Almost-clear glass lets the room's darker shapes (window frame, plants, floor) sit behind
+   small type, so the mid-tone text tokens step one shade deeper to hold 4.5:1 anywhere.
+   Skipped under prefers-contrast:more, whose own values are darker still. */
+@media not (prefers-contrast:more){
+  html:root{--muted:#3d3c44;--muted2:#424048;--ink3:#2f3238;--ink2:#1f2227;
+    --accent:#4a380f;--accent-h:#3d2e0c;--brass-ink:#46350f;--brass-deep:#4a380f;}
+}
+html :is(.rc-pin:not(.pinned),.pin-coach-star,.lib-src .dl,.libsrc .dl,.dl){color:var(--muted2);}
+html :is(.st-link,.st-foot-tools){color:var(--ink2);}   /* footer tools sit over the room's darkest patch, the floor */
+html .rc-badge-class{color:#24334a;}
+
+/* Glass-forward: clearer panes with a light sweep and crisp bright rims, so the material
+   reads as glass over the photograph. */
+html:root{--sheet-blur:blur(18px) saturate(160%) brightness(1.07);
+ --sheet:linear-gradient(135deg,rgba(255,255,255,.3),rgba(255,255,255,.12) 42%,rgba(255,255,255,.08) 70%,rgba(255,255,255,.2));
+ --card:linear-gradient(150deg,rgba(255,255,255,.5),rgba(255,255,255,.3));
+ --card-hi:linear-gradient(150deg,rgba(255,255,255,.66),rgba(255,255,255,.46));
+ --rim:rgba(255,255,255,.9);
+ --lift:inset 0 1px 0 #fff,inset 1px 0 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.28),0 22px 50px -26px rgba(30,25,15,.42);}
+html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.result-card,.st-trackcard,.market-panel,.callout,.study-mode,.osr-summary,.dash-stat,.dash-panel){-webkit-backdrop-filter:blur(12px) saturate(160%) brightness(1.05);backdrop-filter:blur(12px) saturate(160%) brightness(1.05);}
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){
+  html:root{--sheet:#fff;--sheet-read:#fff;--card:#fff;--card-hi:#fff;--rim:var(--line2);--sheet-blur:none;}
+  html :is(.tk-card,.ql-card,.lib-feature,.lib-src,.fcard,.result-card,.st-trackcard,.market-panel,.callout,.study-mode,.osr-summary,.dash-stat,.dash-panel){-webkit-backdrop-filter:none;backdrop-filter:none;}
 }
