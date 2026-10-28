@@ -1211,3 +1211,12 @@ html .st-lad-q-dodtag{color:var(--muted);opacity:1;}
    table pushed its column past the viewport. Let both columns shrink; the table scrolls. */
 @media (min-width:921px){ html .tk-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);} }
 html .tk-col{min-width:0;}
+
+/* Hero live data, failure state: when USAspending doesn't answer, a card used to show
+   "Data delayed" in a mono face over a meaningless pace bar, or "Retrying…" with no retry
+   behind it. A failed card now steps aside: the other widens to fill the row, and if both
+   fail the vault stands alone. app.js already marks a failed card .st-fallback. */
+html .hero-right .fcard.st-fallback{display:none;}
+html .hero-right:has(.fcard-oblig.st-fallback) .fcard-awards,
+html .hero-right:has(.fcard-awards.st-fallback) .fcard-oblig{grid-column:1 / -1;}
+html .hero-right:has(.fcard-oblig.st-fallback):has(.fcard-awards.st-fallback){grid-template-areas:"vault vault";row-gap:0;}
