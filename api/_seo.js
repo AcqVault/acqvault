@@ -1286,7 +1286,7 @@ function shell({ title, description, canonical, jsonld, body, wide, bleed, ogIma
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <title>${esc(title)}</title>
 <meta name="description" content="${description}">
 ${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<link rel="canonical" href="${canonical}">

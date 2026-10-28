@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    ACQVAULT — GLASS LAYER
    Every page band floats as a rounded glass panel over a soft brand
-   aurora (assets/glass-aurora.svg): light bands are frosted, the navy
+   sunlit room (assets/glass-sand.svg): light bands are warm sand glass, the navy
    bands are smoked. Loaded LAST on index.html and by shell() in api/_seo.js
    (not on /slip, which keeps its own look). Material and band geometry only;
    no type or text colour changes beyond the three tokens below.
@@ -9,20 +9,20 @@
    /study and /48cons inject in <body>, after this sheet.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  --sheet:      rgba(255,255,255,.68);    /* a band: the only element that blurs */
-  --sheet-blur: blur(14px) saturate(160%);
-  --sheet-read: rgba(255,255,255,.82);   /* long reading: heavier material over busy text */
+  --sheet:      rgba(255,252,246,.28);    /* a band: near-clear glass, the room shows through; the only element that blurs */
+  --sheet-blur: blur(30px) saturate(160%);
+  --sheet-read: rgba(253,250,244,.72);   /* long reading: still heavier, so regulation text never sits on a busy patch */
   /* the navy bands, as dark glass: the brand's own ink gradient at ~95%, so cream
      behind never greys it toward slate and the hero still matches the solid navy strip */
   --smoke:      linear-gradient(160deg,rgba(23,58,96,.94) 0%,rgba(15,37,64,.95) 52%,rgba(10,28,51,.96) 100%);
-  --card:       rgba(255,255,255,.9);    /* a thick, near-solid layer: never light glass on light glass */
-  --card-hi:    rgba(255,255,255,.97);   /* a lifted card gets denser, not thinner */
+  --card:       rgba(255,253,249,.42);   /* a second clear pane on the band, a touch frostier so it reads as a layer */
+  --card-hi:    rgba(255,253,249,.62);   /* a lifted card gets denser, not thinner */
   --card-r:     16px;                    /* one card radius on every page, inside the 20–32px bands */
   --tile-r:     12px;                    /* study tiles and answer rows: smaller controls, one step tighter */
-  --nav-glass:  rgba(255,255,255,.62);
-  --nav-pill:   rgba(255,255,255,.8);     /* the one nav pill, home and server pages */
+  --nav-glass:  rgba(255,252,246,.4);
+  --nav-pill:   rgba(255,252,246,.5);     /* the one nav pill, home and server pages */
   --modal:      rgba(252,251,248,.95);   /* over a dark scrim a thin sheet reads grey: modals are thick */
-  --rim:        rgba(255,255,255,.7);
+  --rim:        rgba(255,255,255,.6);
   --band-gap:   clamp(10px,2.4vw,36px);
   --band-r:     clamp(20px,2.4vw,32px);
   --wrap-pad:   24px;
@@ -40,10 +40,10 @@
 }
 
 /* ── Backdrop ─────────────────────────────────────────────────── */
-html body{background:#ebe2d3;}
+html body{background:#d9cbb5;}
 html body::before{
   content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:url(/assets/glass-aurora.svg?v=3) center/cover no-repeat;
+  background:url(/assets/glass-sand.svg?v=1) center/cover no-repeat;
 }
 
 /* ── Bands become floating panels ─────────────────────────────── */
@@ -418,14 +418,18 @@ html .daily-board:has(.daily-board-list:empty){display:none;}
 }
 html .thr-calc-field input{font-size:17px;text-overflow:ellipsis;min-width:0;}
 html .thr-calc-field input::placeholder{font-size:15px;}
-/* CASPER table: when it scrolls sideways, an edge shadow says so (no JS:
-   local-attachment covers hide the shadows at each end of the scroll). */
-html .cra-wrap{
-  background:
-    linear-gradient(90deg,#fff 30%,rgba(255,255,255,0)) left/36px 100% no-repeat local,
-    linear-gradient(270deg,#fff 30%,rgba(255,255,255,0)) right/36px 100% no-repeat local,
-    radial-gradient(farthest-side at 0 50%,rgba(var(--shadow-rgb),.18),transparent) left/12px 100% no-repeat scroll,
-    radial-gradient(farthest-side at 100% 50%,rgba(var(--shadow-rgb),.18),transparent) right/12px 100% no-repeat scroll;
+/* CASPER table: when it scrolls sideways, its edges fade where there is more to see.
+   A mask, not colour-matched covers: the cards are clear glass now, so no fixed colour
+   could blend. Scroll-driven, so each edge fades only while content lies past it. */
+@property --cra-l{syntax:'<length>';inherits:false;initial-value:0px;}
+@property --cra-r{syntax:'<length>';inherits:false;initial-value:28px;}
+@supports (animation-timeline: scroll()){
+  html .cra-wrap{
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--cra-l),#000 calc(100% - var(--cra-r)),transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 var(--cra-l),#000 calc(100% - var(--cra-r)),transparent);
+    animation:cra-edges linear both;animation-timeline:scroll(self inline);
+  }
+  @keyframes cra-edges{0%{--cra-l:0px;--cra-r:28px}6%{--cra-l:28px}94%{--cra-r:28px}100%{--cra-l:28px;--cra-r:0px}}
 }
 
 /* ── Grids that ended on a lone item ─────────────────────────── */
@@ -560,7 +564,7 @@ html #thr-amount{font-size:17px;}
 html #thr-amount::placeholder{font-size:15px;font-weight:400;}
 /* CASPER on a phone: each review authority becomes a small record; values never wrap or clip */
 @media (max-width:600px){
-  html .cra-wrap{background:none;overflow:visible;}
+  html .cra-wrap{background:none;overflow:visible;-webkit-mask-image:none;mask-image:none;animation:none;}
   html .cra-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
   html .cra-table,html .cra-table tbody,html .cra-table tr{display:block;}
   html .cra-table tr{padding:10px 2px;border-bottom:1px solid var(--line2);}
@@ -579,9 +583,9 @@ html #thr-amount::placeholder{font-size:15px;font-weight:400;}
 /* ── Spending ── */
 html .osr-input{font-family:inherit;text-transform:none;font-size:16px;letter-spacing:0;padding-right:52px;text-overflow:ellipsis;}
 html .osr-input::placeholder{letter-spacing:0;font-weight:400;}
-/* --table-bg is the table's own paper: white in light, charcoal in dark. The scroll
+/* --table-bg is the table's own paper. The scroll
    shadows fade from it, so it must be a real colour, not a translucent token. */
-html:root{--table-bg:#fff;}
+html:root{--table-bg:#faf6ef;}   /* warm paper, not stark white, on the sand glass */
 html .osr-tablewrap{
   background:
     linear-gradient(90deg,var(--table-bg) 30%,transparent) left/36px 100% no-repeat local,
@@ -591,11 +595,6 @@ html .osr-tablewrap{
     var(--table-bg);
 }
 html .osr-table th{background:var(--table-bg);}
-@media (prefers-color-scheme:dark){
-  html:root{--table-bg:#1f1c19;}
-  html .osr-tablewrap{border-color:var(--rim);}
-  html .osr-table tbody tr:hover td{background:rgba(255,255,255,.04);}
-}
 
 /* ── Quick Links: no redrawn logos. The site name already heads each card. ── */
 html .ql-brand{display:none;}
@@ -639,338 +638,8 @@ html .libcat .libfeat:only-of-type{max-width:520px;}
   html :is(.sec,footer,.lband,.hero,.daily-strip,.wrap){margin:0;border:0;border-radius:0;}
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   DARK — follows the visitor's system setting. A room at dusk:
-   smoked charcoal glass over warm lamp light and cool window light
-   (assets/glass-lamp.svg). Tokens flip here; light stays the default.
-   html:root outranks the light token blocks above and STUDY_CSS's :root.
-   ═══════════════════════════════════════════════════════════════ */
-@media (prefers-color-scheme:dark){
-  html:root{
-    color-scheme:dark;
-    /* text */
-    --ink:#f3efe8;--ink2:#e6e1d8;--ink3:#cdc7bd;--muted:#bdb6ab;--muted2:#aaa398;
-    /* surfaces that were paper */
-    --bg:#1c1915;--white:#24211d;--off:#1d1a17;--off2:#2b2722;
-    --line:rgba(255,255,255,.26);--line2:rgba(255,255,255,.11);--line-ctl:rgba(255,255,255,.26);
-    /* brass becomes the light: links and accents read bright on charcoal */
-    --accent:#e4c477;--accent-h:#f0d79a;--accent-d:#f6e3b4;
-    --accent-soft:rgba(228,196,119,.10);--accent-bdr:rgba(228,196,119,.26);--accent-glow:rgba(228,196,119,.22);
-    --brass:#d6b468;--brass-rgb:214,180,104;
-    --brass-ink:#e4c477;--brass-deep:#e4c477;--brass-bg:rgba(228,196,119,.10);--brass-line:rgba(228,196,119,.32);
-    --shadow-rgb:0,0,0;
-    /* status */
-    --ok:#7fd6a4;--ok-ink:#9be3b9;--ok-bg:rgba(127,214,164,.12);--ok-line:rgba(127,214,164,.4);
-    --bad:#ff9a90;--bad-ink:#ffb8b1;--bad-bg:rgba(255,154,144,.12);--bad-line:rgba(255,154,144,.4);
-    --warn:#f2b866;--warn-bg:rgba(242,184,102,.12);--warn-line:rgba(242,184,102,.4);
-    /* source identity: tinted glass chips, light text */
-    --rfo-bg:rgba(127,166,214,.16);--rfo-txt:#b3cdee;--rfo-solid:#8fb2df;
-    --dfars-bg:rgba(127,190,150,.15);--dfars-txt:#b2dcc0;--dfars-solid:#8cc5a0;
-    --fc-bg:rgba(196,150,186,.15);--fc-txt:#e2c4da;--fc-solid:#cfa3c4;
-    --cm-bg:rgba(160,176,190,.15);--cm-txt:#cdd7df;--cm-solid:#adbcc8;
-    --cmp-bg:rgba(230,140,100,.15);--cmp-txt:#f2c2a8;--cmp-solid:#e8a07c;
-    --fmr-bg:rgba(200,186,120,.15);--fmr-txt:#e2d6a6;--fmr-solid:#cdbd7e;
-    --dafi-bg:rgba(220,130,145,.15);--dafi-txt:#f0bcc4;--dafi-solid:#e090a0;
-    --ssp-bg:rgba(228,196,119,.14);--ssp-txt:#ecd49c;--ssp-solid:#e4c477;
-    --pgi-bg:rgba(200,160,140,.15);--pgi-txt:#e6cbbd;--pgi-solid:#d3ab96;
-    /* materials: the reference's smoked glass */
-    --sheet:rgba(30,27,24,.58);--sheet-read:rgba(24,22,19,.84);--sheet-blur:blur(22px) saturate(140%);
-    --smoke:linear-gradient(160deg,rgba(16,30,50,.82),rgba(11,22,38,.86));
-    --card:rgba(58,53,47,.5);--card-hi:rgba(70,64,57,.62);
-    --nav-glass:rgba(36,33,29,.62);--nav-pill:rgba(40,36,32,.72);
-    --modal:rgba(32,29,26,.99);   /* at .96 busy content showed through floating menus */
-    --rim:rgba(255,255,255,.12);
-    --lift:inset 0 1px 0 rgba(255,255,255,.07),0 1px 2px rgba(0,0,0,.3),0 26px 60px -28px rgba(0,0,0,.75);
-    --lift-hi:inset 0 1px 0 rgba(255,255,255,.1),0 2px 4px rgba(0,0,0,.35),0 30px 64px -26px rgba(0,0,0,.8);
-    --brass-rim:inset 0 2px 0 rgba(228,196,119,.6);
-  }
-  html body{background:#100e0c;color:var(--ink);}
-  html body::before{background:url(/assets/glass-lamp.svg?v=1) center/cover no-repeat;}
-}
-/* Dark + reduced transparency / more contrast: solid charcoal, no blur, no backdrop. */
-@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
-  html:root{--sheet:#1f1c19;--sheet-read:#1f1c19;--card:#2a2622;--card-hi:#2f2b26;--nav-glass:#24211d;--nav-pill:#24211d;--modal:#24211d;--smoke:#0f1f35;--rim:rgba(255,255,255,.22);--sheet-blur:none;}
-  html body{background:#141210;}
-}
-@media (prefers-color-scheme:dark) and (prefers-contrast:more){
-  html:root{--ink:#fff;--muted:#e2ddd5;--muted2:#e2ddd5;--line2:rgba(255,255,255,.4);}
-}
-
-@media (prefers-color-scheme:dark){ html .rz-bar-sep{color:var(--muted2);} }
 /* Phone menu rows sit between hairlines: only the pill nav's links are pills. */
 html .lnav-sheet .hlink{border-radius:0;}
-
-/* ═══ DARK — server pages + shared .lnav: light literals left in glass.css / _seo.js STYLE ═══ */
-@media (prefers-color-scheme:dark){
-  /* Scroll edge under the pinned pill: fades into the dusk, not a paper haze. */
-  html body:has(.lnav):not(:has(.rz-bar))::after{
-    background:linear-gradient(180deg,rgba(16,14,12,.9) 0%,rgba(16,14,12,.62) 55%,rgba(16,14,12,0) 100%);
-  }
-  html ::selection{background:rgba(228,196,119,.3);color:var(--ink);}
-
-  /* ── Nav pill: the link tray is recessed smoked glass, the current page a lit segment ── */
-  html .lnav .hdr-links{background:rgba(0,0,0,.24);border-color:rgba(255,255,255,.06);box-shadow:inset 0 1px 2px rgba(0,0,0,.28);}
-  html .lnav .hlink{color:var(--ink3);}
-  html .lnav .hlink:hover{color:var(--ink);background:rgba(255,255,255,.08);}
-  html .lnav .hlink--on{color:var(--ink);background:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 1px 2px rgba(0,0,0,.3);}
-  html .lnav .cta{border-color:rgba(228,196,119,.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
-  /* phone / tablet menu */
-  html .lnav-menu > summary{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);}
-  html .lnav-menu[open] > summary::before{background:rgba(0,0,0,.5);}
-  html .lnav-sheet{background:#1f1c19;border-color:var(--rim);box-shadow:0 0 0 .5px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.35),0 28px 64px -16px rgba(0,0,0,.75);}
-  /* grouped rows, square between hairlines: .lnav .hlink's pill radius left round gaps on the dark sheet */
-  html .lnav-sheet .hlink{background:rgba(255,255,255,.06);color:var(--ink2);border-radius:0;}
-  html .lnav-sheet .hlink:hover{background:rgba(255,255,255,.1);}
-  html .lnav-sheet .hlink--on{color:var(--accent);background:rgba(228,196,119,.1);}
-
-  /* ── Reading: brass washes use the bright brass (the dark brass vanishes on charcoal) ── */
-  html section.sec:target{background:linear-gradient(90deg,rgba(228,196,119,.09),rgba(228,196,119,.03) 62%,transparent);}
-  html mark{background:rgba(228,196,119,.26);color:var(--ink);}
-  html mark.pn-mark.active{background:var(--accent);color:#1c1915;box-shadow:0 0 0 2px rgba(228,196,119,.4);}
-  html .ptoc-list a:hover{background:rgba(228,196,119,.08);}
-  html .ptoc-list a.ptoc-active{background:rgba(228,196,119,.12);}
-  html .alt-nav{background:rgba(228,196,119,.05);}
-  html .alt-nav a:hover{background:rgba(228,196,119,.12);}
-  html table.ratetable tbody td{color:var(--ink2);}
-  html table.ratetable tbody tr:hover :is(th,td){background:rgba(255,255,255,.04);}
-  /* rule ⇄ procedure pairing: clay and brass as tinted glass */
-  html :is(.pair-pgi,.partpair-pgi){background:var(--pgi-bg);border-left-color:var(--pgi-solid);color:var(--pgi-txt);}
-  html :is(.pair-pgi .lead,.pair-pgi a){color:var(--pgi-txt);}
-  html :is(.pair-rule,.partpair-rule){background:rgba(228,196,119,.07);}
-  html .partpair-pgi .tag{background:var(--pgi-solid);color:#1c1915;}
-  html .partpair-rule .tag{color:#1c1915;}
-
-  /* hub part tiles: charcoal glass, faint white rim */
-  html .parts a{background:rgba(255,255,255,.035);}
-  html .parts a:hover{background:rgba(255,255,255,.07);}
-
-  /* ── Library ── */
-  html .libfeat-body .desc{color:var(--ink3);}
-  html .libcover .vol small{color:rgba(214,226,240,.8);}  /* .62 measured 3.9:1 on the smoked cover */
-  html .libfeat-foot .dl{background:rgba(228,196,119,.1);border-color:rgba(228,196,119,.26);}
-  html .libfeat:hover .libfeat-foot .dl{color:#1c1915;}
-  html .libsrc[data-src="rfo"]{--src:var(--rfo-solid);}
-  html .libsrc[data-src="r-dfars"]{--src:var(--dfars-solid);}
-  html .libsrc[data-src="far-companion"]{--src:var(--fc-solid);}
-  html .libsrc[data-src="category-management"]{--src:var(--cm-solid);}
-  html .libsrc[data-src="dafi-63-138"]{--src:var(--dafi-solid);}
-  html .libsrc[data-src="fmr"]{--src:var(--fmr-solid);}
-  html .libsrc[data-src="pgi"]{--src:var(--pgi-solid);}
-
-  /* ── Deviations: the pinned header is the column's own material, solid enough to read over rows ── */
-  html table.devtable th{background:rgba(31,28,25,.98);box-shadow:inset 0 -1px 0 var(--line);}
-  html table.devtable tbody tr:nth-child(even) td{background:rgba(255,255,255,.03);}
-  html table.devtable tbody tr:hover td{background:rgba(228,196,119,.07);}
-  html table.devtable :is(th,td){border-bottom-color:var(--line2);}
-
-  /* ── Changes ── */
-  html .chg-stat{background:rgba(255,255,255,.06);border-color:var(--line2);}
-  html .chg-kind-added{background:var(--ok-bg);color:var(--ok-ink);}
-  html .chg-kind-removed{background:var(--bad-bg);color:var(--bad-ink);}
-  html details.chg-part{background:rgba(255,255,255,.03);}
-}
-@media (max-width:600px) and (prefers-color-scheme:dark){
-  html table.devtable tbody tr:nth-child(even){background:rgba(255,255,255,.03);}
-}
-/* Reduced transparency / more contrast: the few translucent fills above go solid. */
-@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
-  html .lnav .hdr-links{background:#171512;box-shadow:none;}
-  html .lnav .hlink--on{background:#3a3530;}
-  html :is(.lnav-menu > summary,.lnav-sheet .hlink){background:#2a2622;}
-  /* :is(th,#_._) out-weighs glass.css's light opt-out list (its #main-nav.over-hero .nav-inner arm), which paints this #fff */
-  html table.devtable th:is(th,#_._){background:#1f1c19;-webkit-backdrop-filter:none;backdrop-filter:none;}
-}
-
-/* ═══ DARK — home page (/) literal light surfaces → smoked glass ═══ */
-@media (prefers-color-scheme:dark){
-  /* ── Nav pill: charcoal glass, faint white rim ── */
-  html .nav-inner,html nav#main-nav.over-hero .nav-inner{
-    background:var(--nav-pill);border-color:var(--rim);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 34px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.3);
-  }
-  html .nav-center,html nav#main-nav.over-hero .nav-center{background:rgba(255,255,255,.05);border-color:var(--line2);}
-  html .nav-center a{color:var(--ink3);}
-  html .nav-center a:hover{color:var(--ink);}
-  html .nav-pill{background:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px var(--rim);}
-  html .nav-center a.pilled{color:var(--ink);}
-  html :is(.nav-saved-btn,.nav-feedback-btn),
-  html nav#main-nav.over-hero :is(.nav-saved-btn,.nav-feedback-btn){background:rgba(255,255,255,.05);border-color:var(--line2);color:var(--ink3);}
-  html :is(.nav-saved-btn,.nav-feedback-btn):hover{background:rgba(255,255,255,.1);color:var(--ink);}
-  html .nav-saved-btn.has-changes::after{box-shadow:0 0 0 2px var(--white);}
-
-  /* ── Primary buttons: brass fill, dark ink (Apple dark accent buttons) ── */
-  html :is(.nav-cta,.market-btn,.osr-go,.lib-open-btn,.market-action.primary,.feedback-submit,.drawer-newtab-btn,.drawer-orig-btn){
-    background:linear-gradient(160deg,var(--accent-h),var(--accent));color:#1c1710;border-color:transparent;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 18px -6px rgba(0,0,0,.6);
-  }
-  html :is(.nav-cta,.market-btn,.osr-go,.lib-open-btn,.market-action.primary,.feedback-submit,.drawer-newtab-btn,.drawer-orig-btn):hover{border-color:transparent;background:linear-gradient(160deg,var(--accent-d),var(--accent-h));color:#1c1710;}
-  html .study-open-btn:hover{border-color:var(--accent-d);}
-
-  /* ── Hero: mode tabs — selected segment is lifted glass, not a white slab ── */
-  html .hero .seg-glider{background:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 2px 10px rgba(0,0,0,.35);}
-  html .hero .mode-btn.on-glider,html .hero .mode-btn.active.on-glider{color:#fff!important;}
-  html .fcard-foot .st-fy-dot{color:var(--muted2);}
-
-  /* ── Scroll edge under the nav: fade into the dusk room, not into paper ── */
-  html body:has(#main-nav.scrolled)::after{background:linear-gradient(180deg,rgba(16,14,12,.9) 0%,rgba(16,14,12,.66) 55%,rgba(16,14,12,0) 100%);}
-
-  /* ── Market Research ── */
-  html .market-field{background:rgba(255,255,255,.045);border-color:var(--line2);border-bottom-color:var(--rim);box-shadow:none;}
-  html .market-field:focus-within{border-color:var(--accent-bdr);}
-  html .market-selectable{background:rgba(255,255,255,.04);border-color:var(--line2);box-shadow:none;}
-  html .market-actions{background:rgba(255,255,255,.03);border-top-color:var(--line2);}
-  html .market-action:not(.primary){background:rgba(255,255,255,.06);border-color:var(--line2);color:var(--ink2);}
-  html :is(.market-chip,.market-pill,.market-board-btn,.market-example){background:rgba(255,255,255,.06);border-color:var(--line2);}
-  html :is(.market-pill,.market-board-btn,.market-example):hover{background:rgba(255,255,255,.11);}
-  html .market-flow-sep{color:var(--accent);}
-  html .market-board-badge{color:#1c1710;}
-
-  html .market-label{color:var(--muted);}
-  html .osr-ex-lbl{color:var(--muted);}
-  html .lib-cover-vol small{color:rgba(214,226,240,.82);}
-
-  /* ── Toolkit: Standard/Contingency segmented control ── */
-  html .thr-scope{background:rgba(255,255,255,.05);border-color:var(--line2);}
-  html .thr-scope button{color:var(--muted);}
-  html .thr-scope button.active{background:rgba(255,255,255,.14);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 1px 4px rgba(0,0,0,.35);}
-  /* CASPER table: scroll-shadow covers take the card colour, not paper white */
-  html .cra-wrap{
-    background:
-      linear-gradient(90deg,rgb(44,42,38) 30%,rgba(44,42,38,0)) left/36px 100% no-repeat local,
-      linear-gradient(270deg,rgb(44,42,38) 30%,rgba(44,42,38,0)) right/36px 100% no-repeat local,
-      radial-gradient(farthest-side at 0 50%,rgba(0,0,0,.4),transparent) left/12px 100% no-repeat scroll,
-      radial-gradient(farthest-side at 100% 50%,rgba(0,0,0,.4),transparent) right/12px 100% no-repeat scroll;
-  }
-  html #acro-tip{background:var(--modal);color:var(--ink);border:1px solid var(--rim);box-shadow:0 12px 32px rgba(0,0,0,.55);}
-  html #acro-tip .at-term{color:var(--accent);}
-
-  /* ── Coverage & trust ── */
-  html #sources .source-status-panel{background:var(--card);border-color:var(--rim);box-shadow:var(--lift);}
-  html #sources .callout{background:var(--card);border-color:var(--rim);box-shadow:var(--lift);}
-
-  /* ── Search results ── */
-  html .result-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 1px 2px rgba(0,0,0,.3);}
-  html #source-filters .fpill.active{background:rgba(255,255,255,.14);border-color:var(--accent-bdr);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
-  html .rc-badge-final{background:var(--ok-bg);color:var(--ok-ink);}
-  html .rc-badge-open{background:var(--warn-bg);color:var(--warn);}
-  html :is(.rc-badge-interim,.rc-badge-class){background:var(--bad-bg);color:var(--bad-ink);border-color:var(--bad-line);}
-  html .rc-badge-updated{background:var(--brass-bg);color:var(--accent);border-color:var(--brass-line);}
-  html .rc-pin:not(.is-pinned):not(:hover){color:var(--muted2);}  /* --line is a hairline tint, too faint for an icon */
-  html .pin-coach-star,html .pin-coach--inline .pin-coach-star{color:var(--accent);}
-
-  /* ── Browse menu ── */
-  /* opaque: at --modal's .96 the chips/headline underneath ghost through the list */
-  html .browse-source-menu{background:#201d1a;border-color:var(--rim);box-shadow:0 18px 45px rgba(0,0,0,.55);}
-  html .browse-source-menu small{border-color:var(--ok-line);}
-
-  /* ── Hamburger + mobile menu: grouped charcoal list, iOS inset style ── */
-  html .nav-hamburger{background:rgba(255,255,255,.06);border-color:var(--line2);}
-  html .nav-hamburger:hover{background:rgba(255,255,255,.11);}
-  html .nav-hamburger-bars span{background:var(--ink2);}
-  html .mobile-menu-backdrop{background:rgba(0,0,0,.5);}
-  html .mobile-menu{background:#201d1a;border-color:var(--rim);box-shadow:0 24px 60px rgba(0,0,0,.6);}
-  html .mobile-menu .mm-link{background:rgba(255,255,255,.06);color:var(--ink2);}
-  html .mobile-menu .mm-link:is(:hover,:active){background:rgba(255,255,255,.1);color:var(--accent);}
-
-  /* ── Saved drawer empty states ── */
-  html #drawer .saved-sec :is(.saved-empty,[class*="empty"]){background:rgba(255,255,255,.04);}
-}
-
-/* Dark + reduced transparency / more contrast: the light opt-out block paints nav and menus #fff — keep them solid charcoal. */
-@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
-  html :is(.nav-inner,#main-nav .nav-inner,#main-nav.over-hero .nav-inner,.browse-source-menu){background:var(--nav-pill);}
-  html .mobile-menu .mm-link{background:#2f2b26;}
-  html :is(.nav-center,.nav-saved-btn,.nav-feedback-btn,.nav-hamburger,.market-field,.market-selectable,.market-chip,.market-pill,.market-board-btn,.market-example,.thr-scope){background:#2a2622;}
-  html :is(.nav-pill,.thr-scope button.active,.hero .seg-glider,#source-filters .fpill.active){background:#3d3832;}
-  html body:has(#main-nav.scrolled)::after{background:linear-gradient(180deg,#141210 0%,#141210 55%,rgba(20,18,16,0) 100%);}
-}
-
-/* ═══ DARK — /study, /48cons, /source-selection interiors ═══════════════
-   Only the literals STUDY_CSS / SRCSEL_CSS hard-code for paper. Tokens do the rest. */
-@media (prefers-color-scheme:dark){
-
-  /* ── the pinned task bar: smoked glass, not a white strip ── */
-  html .rz-bar{background:var(--modal);border-bottom-color:var(--rim);box-shadow:inset 0 -1px 0 rgba(255,255,255,.04),0 14px 30px -22px rgba(0,0,0,.8);}
-
-  /* ── brass-tint paper (#f6efdd / #faf3e0) → a lamp-lit tint on glass ── */
-  html :is(.st-mode-ic,.st-capped,.st-g2,.st-my-tag,.st-my-warn,.st-lad-notes,.st-bd-chk-on,.st-tc-continue,
-           .st-cb-hint,.st-cb-key-back,.ss-tag,.ss-resume,.ss-train,.cui-banner,.ss-fb-warn,.ss-verdict-warn,.ss-pill-y){
-    background:var(--brass-bg);border-color:var(--brass-line);color:var(--brass-ink);}
-  html #study-app[data-mode="48cons"] .st-sim-chip{background:var(--brass-bg);border-color:var(--brass-line);}
-  html .st-link:hover{background:var(--brass-bg);}
-  html .st-cite:hover{background:var(--brass-bg);}
-  html .st-lb-list li.st-lb-me{background:var(--brass-bg);}
-  html .ss-verdict-warn h2{color:var(--brass-ink);}
-  html .st-hint-n{background:var(--brass-bright);color:#1a1408;}
-  /* the two "panel speaks" quotes: a warm card, white type */
-  html :is(.st-panel-ask,.st-bd-echo){background:var(--brass-bg)!important;color:var(--ink);border-color:var(--brass-line)!important;}
-
-  /* ── paper and off-white panels → the card material ── */
-  html :is(.st-my-item,.st-rec){background:var(--off2);}
-  html .st-my-err{background:var(--bad-bg);border-color:var(--bad-line);}
-  html .st-gv-card{background:var(--card-hi);border-color:var(--brass-line);}
-  html .ss-startnote{background:var(--brass-bg);border-color:var(--brass-line);color:var(--ink2);}
-  html .ss-startnote-ic{background:var(--brass-bright);color:#1a1408;}
-
-  /* ── progress tracks and pips (#ece8dd) ── */
-  html :is(.st-cb-hbar,.st-gv-pip,.ss-prog){background:var(--line2);}
-  html .st-gv-pip-on{background:var(--brass-bright);}
-  html .st-cb-hbar span{background:#5d5850;color:var(--ink);}
-
-  /* ── ink literals (#2a3140 / #3d444d / #33404f) on what is now charcoal ── */
-  html :is(.st-a,.st-my-a,.st-bd-chk,.st-opt,.rz-opt,.st-lad-sink-item,.st-lb-list li,.ss-log-txt,.ss-doc p,.ss-doc li){color:var(--ink2);}
-  html :is(.st-fu-debrief p,.st-fact>div,.st-bd-cite,.st-bd-source-q,.st-explain p,.st-walk ol>li,.st-walk .bs-applies,
-           .st-walk ul li,.st-hint,.st-cb-def,.st-cb-help p,.st-cb-help-row>span:last-child,.st-gv-rules span,.st-gv-miss,.st-lad-q-body,.ss-cite-q){color:var(--ink3);}
-  html :is(.st-scenario,.st-script p){color:var(--ink2);}
-  html :is(.ss-m-mod,.ss-opt-mark.warn,.ss-log-warn .ss-log-mark,.ss-log-warn .ss-log-risk){color:var(--warn);}
-  html .ss-cite-src:hover{color:var(--accent-h);}
-
-  /* ── white glyphs on fills that are now bright: dark ink instead ── */
-  html :is(.rz-lesson-done .rz-lesson-mark,.rz-side-done .rz-side-mark,.rz-step-done .rz-step-m,.ss-step-done .ss-step-m,.rz-done-tick){color:#1a1408;}
-  html .rz-item-done .rz-item-ic svg{stroke:#1a1408;}
-  html :is(.st-opt-right kbd,.st-opt-wrong kbd,.st-hub-done-mark,.st-rec-stop){color:#121410;}
-  /* the radio's hole is the card, not paper */
-  html .rz-opt-on .rz-opt-dot{box-shadow:inset 0 0 0 3.5px var(--bg),inset 0 0 0 9px var(--brass);}
-  html .rz-opt-right .rz-opt-dot{box-shadow:inset 0 0 0 3.5px var(--bg),inset 0 0 0 9px var(--ok);}
-  html .rz-opt-wrong .rz-opt-dot{box-shadow:inset 0 0 0 3.5px var(--bg),inset 0 0 0 9px var(--bad);}
-
-  /* primaries are brass in dark: see "ONE BUTTON SYSTEM" at the end of this file */
-
-  /* ── source-selection: rating pills, picked options, verdicts ── */
-  html .ss-pill-o{background:var(--rfo-bg);color:var(--rfo-txt);}
-  html .ss-pill-p{background:var(--fc-bg);color:var(--fc-txt);}
-  html .ss-opt.picked-right{background:var(--ok-bg);border-color:var(--ok-line);box-shadow:0 0 0 1px var(--ok-line);}
-  html .ss-opt.picked-wrong{background:var(--bad-bg);border-color:var(--bad-line);box-shadow:0 0 0 1px var(--bad-line);}
-  html .ss-opt.picked-warn{background:var(--warn-bg);border-color:var(--warn-line);box-shadow:0 0 0 1px var(--warn-line);}
-  html .ss-fb-good{color:var(--ok-ink);border-color:var(--ok-line);}
-  html .ss-fb-bad{color:var(--bad-ink);border-color:var(--bad-line);}
-  html .ss-fb-warn{color:var(--ink2);}
-  /* the document viewer: a dark sheet, not a sheet of paper */
-  html .ss-modal-card{background:var(--modal);box-shadow:inset 0 0 0 1px var(--rim),0 34px 80px -20px rgba(0,0,0,.8);}
-  html .ss-modal-head{background:linear-gradient(160deg,var(--ink-from),var(--ink-mid));}
-  html .dod-header{border-bottom-color:var(--line);}
-  html .dod-header h3{color:var(--ink);}
-  html .ss-doc hr{border-top-color:var(--line2);}
-  html :is(.dod-table th,.dod-table td,.dod-sig){border-color:var(--line);}
-  html .dod-table th{background:var(--off2);color:var(--ink);}
-
-  /* ── The Combination: the game's own colours, legible on charcoal ── */
-  html :is(.st-cb-c,.st-cb-p,.st-cb-key-c,.st-cb-key-p){color:#14120e;}
-  /* absent recedes (darker, dimmer); untried keys stay raised, Wordle's own dark logic */
-  html .st-cb-a{background:#3a3733;border-color:#3a3733;color:var(--ink2);}
-  html .st-cb-key-a{background:#262320;border-color:#262320;color:var(--muted2);}
-  html .st-cb-key:not(.st-cb-key-c):not(.st-cb-key-p):not(.st-cb-key-a):not(.st-cb-key-back){background:#5c5750;border-color:transparent;}
-
-  /* self-grade buttons: the token hairlines, not the light-mode literals */
-  html .st-g1{border-color:var(--bad-line);}
-  html .st-g3{border-color:var(--ok-line);}
-}
-
-/* Dark + reduced transparency: the task bar and tinted panels were the only new translucency;
-   --modal is already solid there, the brass tints sit on solid cards. */
-@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce){
-  html .rz-bar{-webkit-backdrop-filter:none;backdrop-filter:none;}
-}
 
 /* ═══ ROUND 5 ═══════════════════════════════════════════════════════ */
 /* Scroll-edge material for the pinned pill on server pages: what scrolls under the
@@ -979,9 +648,9 @@ html .lnav-sheet .hlink{border-radius:0;}
    it only fades in once the page has scrolled. Without scroll-timeline support the
    round-3 gradient stays. */
 :root{--edge:rgba(246,241,233,.97);--edge-solid:#f6f1e9;}
-@media (prefers-color-scheme:dark){ html:root{--edge:rgba(22,20,18,.97);--edge-solid:#171513;} }
+
 @media (prefers-reduced-transparency:reduce),(prefers-contrast:more){ :root{--edge:#fff;--edge-solid:#fff;} }
-@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){ html:root{--edge:#1f1c19;--edge-solid:#1f1c19;} }
+
 @supports (animation-timeline: scroll()){
   html body:has(.lnav):not(:has(.rz-bar))::after{
     height:var(--lnav-stick);
@@ -1021,47 +690,6 @@ html .source-status-chip{white-space:nowrap;}
 /* Spending: the period list in a notice reads as text, not code. */
 html .osr-empty b{font-family:inherit;font-weight:700;}
 
-@media (prefers-color-scheme:dark){
-  /* ── ONE BUTTON SYSTEM: brass fill + dark ink is the only filled primary ── */
-  html :is(.lnav .cta,.rz-btn-go,.ss-btn-primary,.st-btn-reveal,.drawer-orig-btn,.drawer-newtab-btn,.skip-link,.pn-skip){
-    background:linear-gradient(160deg,var(--accent-h),var(--accent))!important;color:#1c1710!important;border-color:transparent!important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 18px -6px rgba(0,0,0,.6)!important;
-  }
-  html :is(.lnav .cta,.rz-btn-go,.ss-btn-primary,.st-btn-reveal,.drawer-orig-btn,.drawer-newtab-btn):hover{background:linear-gradient(160deg,var(--accent-d),var(--accent-h))!important;color:#1c1710!important;}
-  html .st-btn-reveal :is(kbd,.st-kbd,small){color:#1c1710;border-color:rgba(28,23,16,.35);background:transparent;}
-  /* secondary: neutral glass */
-  html :is(.fulltext-dl-btn,.cite-copy-btn,.float-top,.pn-top){
-    background:rgba(255,255,255,.08)!important;border:1px solid var(--rim)!important;color:var(--ink)!important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 22px -10px rgba(0,0,0,.7)!important;
-  }
-  html :is(.float-top,.pn-top){background:rgba(40,36,32,.78)!important;-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);}
-  html :is(.fulltext-dl-btn,.cite-copy-btn,.float-top,.pn-top):hover{background:rgba(255,255,255,.13)!important;}
-  html :is(.float-top,.pn-top) svg{stroke:currentColor;}
-
-  /* ── navy panels inside charcoal cards → a soft blue tint ── */
-  html :is(.st-scenario,.st-script){background:rgba(127,166,214,.10)!important;border-color:rgba(127,166,214,.22)!important;}
-  html .st-walk ol>li::before{background:rgba(127,166,214,.14);box-shadow:inset 0 0 0 1px rgba(127,166,214,.3);color:var(--ink);}
-
-  /* server hero coin: a touch less saturated on charcoal */
-  html .lhero .lib-seal{filter:saturate(.7) brightness(.92);}
-
-  /* Coverage: neutral glass chips, the green dot carries "live" */
-  html .source-status-chip.live{background:rgba(255,255,255,.06);border-color:var(--rim);color:var(--ink2);}
-
-  /* Market Research selected chip: lifted glass, not navy */
-  html .market-pill.active{background:rgba(255,255,255,.1);border-color:var(--accent-bdr);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
-  html .market-pill.active::before{background:transparent;box-shadow:inset 0 0 0 1px var(--accent-bdr);color:var(--accent);}
-
-  /* Spending failure notice: a warn-tinted card (osr-fail is set by the widgets.js patch) */
-  html .osr-empty:has(.osr-fail){background:var(--warn-bg);border-color:var(--warn-line);color:var(--ink2);}
-  html .osr-empty:has(.osr-fail) b{color:var(--warn);}
-}
-@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
-  html :is(.fulltext-dl-btn,.cite-copy-btn,.float-top,.pn-top){background:#2f2b26!important;-webkit-backdrop-filter:none;backdrop-filter:none;}
-  html :is(.st-scenario,.st-script){background:#232b35!important;}
-  html :is(.source-status-chip.live,.market-pill.active){background:#2f2b26;}
-}
-
 /* ═══════════════════════════════════════════════════════════════
    HOME POLISH FRAGMENT — additive, appended after glass.css.
    Every state below was reached with live data; each rule names the flaw.
@@ -1074,59 +702,6 @@ html .osr-empty b{font-family:inherit;font-weight:700;}
    ~15px instead of overlapping. Link padding steps 11→10px to halve that shift. */
 html .nav-inner{grid-template-columns:minmax(150px,1fr) auto minmax(max-content,1fr);}
 html .nav-center a{padding:6px 10px;}
-
-@media (prefers-color-scheme:dark){
-  /* Spending › "Download Excel": brass fill kept color:var(--ink), which flips to
-     near-white in dark (1.47:1). Brass is the one filled primary → dark ink. */
-  html .osr-dl{color:#1c1710;}
-  html .osr-dl:hover{color:#1c1710;background:var(--accent-h);border-color:var(--accent-h);}
-
-  /* Spending › expanded row (appropriation / colour of money): app.css paints the
-     cell #fbfaf7 — a white slab across the dark table with 1.9:1 muted text. */
-  html .osr-fund td{background:rgba(255,255,255,.04);}
-  html .osr-fund-load,html .osr-fund-none{color:var(--muted);}
-  html .osr-tag-rdte{background:var(--rfo-bg);color:var(--rfo-txt);border-color:rgba(127,166,214,.35);}
-
-  /* Spending › Choose fields footnote sat at 4.47:1. */
-  html .osr-cols-foot{color:rgba(255,255,255,.58);}
-
-  /* Market Research › every result card faded to #faf8f3 at its foot: the bottom
-     third of each card was a cream slab with muted text washed out over it. The
-     card is a thick layer on glass, not a gradient to paper. */
-  html .market-opp-card{background:var(--card);border-color:var(--rim);}
-  html .market-opp-card:hover{background:var(--card-hi);border-color:var(--accent-bdr);box-shadow:var(--lift-hi);}
-
-  /* Browse by Source › the sticky source bar stayed cream (rgba(247,246,242,.98))
-     across the top of the dark band, and the active pill took --ink (near-white)
-     with white type: the chosen regulation's name was invisible. Mirror the
-     search filter bar: smoked glass bar, lifted-glass active pill. */
-  html .browse-source-bar{background:rgba(30,27,24,.86);border-color:var(--rim);box-shadow:0 8px 24px rgba(0,0,0,.35);}
-  html .browse-src-pill{background:rgba(255,255,255,.06);border-color:var(--rim);color:var(--ink2);box-shadow:none;}
-  html .browse-src-pill:hover{background:var(--accent-soft);border-color:var(--accent-bdr);color:var(--accent);}
-  html .browse-src-pill.active{background:rgba(255,255,255,.14);border-color:var(--accent-bdr);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
-  html .browse-src-pill.disabled,html .browse-src-pill.disabled:hover{background:transparent;color:var(--muted2);border-color:var(--line2);}
-  /* Browse reader › "Search within Part…" field was rgba(255,255,255,.96): a white
-     bar pinned under the dark chrome. Same material as the other inputs. */
-  html .br-part-search{background:rgba(40,36,32,.96);border-color:var(--rim);}
-  html .br-part-search:focus-within{border-color:var(--accent);}
-
-  /* Nav › Saved count badge: white 9px digits on brass (1.7:1). */
-  html .nav-saved-count{color:#1c1710;}
-
-  /* Saved › "Copy all with citations": white type on the brass gradient. */
-  html .saved-copyall{color:#1c1710;}
-  html .saved-copyall.copied{color:#0f2a1c;}
-  /* Saved › remove-button hover was a light pink slab (#fef2f2). */
-  html .saved-item-del{color:var(--muted2);}   /* resting ✕ was --line (2.4:1) */
-  html .saved-item-del:hover{background:var(--bad-bg);color:var(--bad);}
-}
-@media (prefers-color-scheme:dark) and (prefers-reduced-transparency:reduce),(prefers-color-scheme:dark) and (prefers-contrast:more){
-  html .market-opp-card{background:#2f2b26;}
-  html .market-opp-card:hover{background:#363129;}
-  html .osr-fund td{background:#26221e;}
-  html .browse-source-bar{background:#24211d;-webkit-backdrop-filter:none;backdrop-filter:none;}
-  html .browse-src-pill.active{background:#3d3832;}
-}
 
 /* ═══ POLISH SWEEP — interactive states on every non-home page (additive, appended after glass.css) ═══ */
 
@@ -1181,10 +756,7 @@ html .rz-bar-sep{color:var(--muted2);}
 html .st-cb-hbar span.st-cb-hbar-me{color:#1a1408;}
 /* light only (dark restyles these in glass.css): The Combination's white-on-Wordle-grey is 4.2:1,
    one step darker keeps the read; the simulator document's training / CUI ribbons on paper are 4.3:1 */
-@media not all and (prefers-color-scheme:dark){
-  html .st-cb-key-a,html .st-cb-tile.st-cb-a{background:#6b6f71;border-color:#6b6f71;}
-  html :is(.ss-train,.cui-banner){color:#6f5416;}
-}
+
 /* 48 CONS ladder card: the "DoD deviation" tag was a flat #787878 (3.9:1 on paper) */
 html .st-lad-q-dodtag{color:var(--muted);opacity:1;}
 
@@ -1238,9 +810,6 @@ html .daily-cta.daily-cta-me{font-variant-numeric:tabular-nums;}
   html #foot-changes .chg-since{display:flex;justify-content:center;margin:4px 0 0;}
 }
 @media (prefers-reduced-motion:reduce){ html #foot-changes .chg-since{animation:none;} }
-@media (prefers-color-scheme:dark){
-  html #foot-changes .chg-since{color:var(--ink2);}
-}
 
 /* ── widgets agent: threshold calm crossings · saved diff expand · vehicles closing-soon chip ── */
 
@@ -1261,10 +830,6 @@ html .saved-diff-wrap[data-open="1"] > .saved-diff-clip{visibility:visible;trans
 
 /* 3) Contract vehicles — quiet warn-tone "Closing in N days" chip (≤90 days). */
 html .veh-badge.veh-closing{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn);}
-
-@media (prefers-color-scheme:dark){
-  html .veh-badge.veh-closing{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn);}
-}
 
 @media (prefers-reduced-motion:reduce){
   html .thr-trig-mark,
@@ -1308,12 +873,208 @@ html .pxref-note{font-size:11px;font-style:italic;color:var(--muted);margin-left
   html .pxref,html .pxref.show{transform:none;}
 }
 
-@media (prefers-color-scheme:dark){
-  html .sec-hd .sec-upd{background:rgba(228,196,119,.10);color:var(--accent);border-color:rgba(228,196,119,.28);}
-  html .sec-hd .sec-upd:hover{border-color:rgba(228,196,119,.55);}
-  html .pxref{background:#24211d;border-color:rgba(255,255,255,.12);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 6px rgba(0,0,0,.35),0 24px 48px -16px rgba(0,0,0,.75);}
-}
 @media (prefers-contrast:more){
   html .pxref{border-color:var(--line);}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SAND BANDS — the navy "smoked" bands become the same warm sand glass
+   as every other band, with charcoal text and dark-brass accents.
+   Dark accents that stay: the vault panel art (.vault-panel), the brass
+   coin (svg.lib-seal) and the /study simulator feature card (.st-sim-feature).
+   Appended after glass.css; html-prefixed so it also beats STUDY_CSS.
+   ═══════════════════════════════════════════════════════════════ */
+html:root{
+  --char:      #2b2620;                     /* the one dark pill: charcoal, like the reference's active nav segment */
+  --char-hi:   #3a342c;
+  --ctl:       rgba(255,255,255,.55);       /* a control on a sand band: lifted white */
+  --ctl-hi:    rgba(255,255,255,.8);
+  --ctl-line:  rgba(var(--brass-rgb),.22);
+  --ink-brass: #1a1408;                     /* ink on a brass fill */
+}
+
+/* ── Bands: every former smoke band is sand glass ─────────────── */
+html :is(.hero,.daily-strip,.sec-dark:not(#sources),.lhero):not(.wrap *){
+  background:var(--sheet);
+  color:var(--ink);
+  border-color:var(--rim);
+  box-shadow:var(--lift);
+}
+html .lhero:is(.lhero,#_):not(.wrap *){box-shadow:var(--brass-rim),var(--lift);}
+/* the hero's own 48px grid and the lhero's bright-brass rings were tuned for navy */
+html .hero:not(.wrap *)::after{display:none;}
+html .lhero::after{background:repeating-radial-gradient(circle at 50% 50%,rgba(var(--brass-rgb),.7) 0 1px,transparent 1px 12px);opacity:.14;}
+html .study-glow{opacity:.6;}
+
+/* ── Nav: the active segment and the CTA are charcoal, not navy ──── */
+html .nav-pill{background:var(--char);box-shadow:0 2px 8px rgba(20,16,10,.22);}
+html .lnav .hlink--on{background:var(--char);}
+html :is(.nav-cta,.lnav .cta){background:var(--char);border-color:rgba(255,255,255,.12);box-shadow:0 1px 2px rgba(20,16,10,.14),0 4px 12px -2px rgba(20,16,10,.28);}
+html :is(.nav-cta,.lnav .cta):hover{border-color:rgba(var(--brass-bright-rgb),.6);box-shadow:0 2px 4px rgba(20,16,10,.16),0 6px 16px -4px rgba(20,16,10,.36);}
+/* the rest of the navy button family follows the nav: one dark family site-wide */
+html :is(.fulltext-dl-btn,.market-action.primary,.fpill.active,.cite-copy-btn,.drawer-orig-btn,.market-btn,.market-pill.active,.market-step.lit .market-step-num,.mode-btn.active){background:var(--char);border-color:rgba(255,255,255,.12);}
+
+/* ── Home hero ─────────────────────────────────────────────────── */
+html .hero .hero-headline,html .hero .hero-headline .hl-ink{color:var(--ink);-webkit-text-fill-color:var(--ink);}
+html .hero .hero-headline em{color:var(--brass-deep);-webkit-text-fill-color:var(--brass-deep);}
+html .hero .hero-sub{color:var(--ink3);}
+html .hero .hero-sub strong{color:var(--brass-ink);}
+/* search pill: lifted white glass, charcoal type, brass Search */
+html .hero .search-bar{
+  background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.66));
+  border:1px solid var(--ctl-line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 1px 2px rgba(var(--shadow-rgb),.05),0 18px 40px -22px rgba(var(--shadow-rgb),.4);
+}
+html .hero .search-bar:focus-within{box-shadow:0 0 0 4px rgba(var(--brass-rgb),.28),0 10px 30px -14px rgba(var(--shadow-rgb),.4);}
+html .hero #search-input{color:var(--ink);}
+html .hero #search-input::placeholder{color:var(--muted2);}
+html .hero .search-icon{background:rgba(var(--brass-rgb),.09);color:var(--brass-ink);}
+html .hero .search-kbd{background:rgba(var(--brass-rgb),.06);border-color:var(--ctl-line);color:var(--muted);}
+html .hero .search-go{background:var(--brass-bright);color:var(--ink-brass);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 14px -4px rgba(var(--brass-rgb),.5);}
+html .hero .search-clear{color:var(--muted);}
+/* Try chips */
+html .hero .trychip{background:var(--ctl);border-color:var(--ctl-line);color:var(--brass-ink);}
+html .hero .trychip:hover{background:var(--ctl-hi);border-color:rgba(var(--brass-rgb),.45);}
+html .hero .trychip-k{color:var(--muted);}
+/* "New to the RFO?" */
+html .hero-newhere{background:var(--ctl);border:1px solid var(--ctl-line);}
+html .hero-newhere-txt{color:var(--ink2);}
+html .hero-newhere-txt strong,html .hero-newhere-link{color:var(--brass-ink);}
+html .hero-newhere-x{color:var(--muted);}
+/* mode tabs: a lifted tray, the selected tab is the charcoal pill */
+html .hero-command-dock-b .mode-toggle{background:var(--ctl);border:1px solid var(--ctl-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.7);}
+html .hero .mode-btn{color:var(--ink2);}
+html .hero .mode-btn:hover:not(.active){color:var(--ink);background:rgba(255,255,255,.6);border-color:transparent;}
+html .hero .seg-glider{background:var(--char);box-shadow:0 2px 10px rgba(20,16,10,.25);}
+html .hero .mode-btn.on-glider,html .hero .mode-btn.active.on-glider,html .hero .mode-btn.active{color:#fff!important;}
+/* "6,417 indexed sections" and the Live sources tray */
+html .hero-statstrip,html .hero-statstrip-count,html .hero-source-strip{color:var(--muted);}
+html .hero-statstrip-count strong{color:var(--ink);}
+html .hero-source-strip{background:var(--ctl);border-color:var(--ctl-line);}
+html .hero-live-label{color:var(--ink2);}
+html .hero-source-strip b{color:var(--brass-ink);background:rgba(var(--brass-rgb),.07);border-color:rgba(var(--brass-rgb),.2);}
+html .hero-live-count{color:var(--brass-ink);}
+
+/* ── Home #study ───────────────────────────────────────────────── */
+html #study .eyebrow-light,html #spending-dashboard .eyebrow-light{color:var(--brass-ink);}
+html #study h2.sec-head,html #spending-dashboard h2.sec-head{color:var(--ink);}
+html #study .sec-sub-light{color:var(--ink3);}
+html .study-cta-note{color:var(--muted);}
+html .study-me{color:var(--ink2);}
+html .study-me-resume{color:var(--accent);}
+html .study-me-resume:focus-visible{outline-color:var(--accent);}
+html .study-open-btn{color:var(--ink-brass);border-color:rgba(var(--brass-rgb),.45);}
+html .study-open-btn:hover{border-color:var(--brass-deep);}
+html .study-open-btn:focus-visible,html .study-mode:focus-visible{outline-color:var(--accent);}
+html .study-mode,html .study-mode-flag{background:var(--card);border:1px solid var(--rim);box-shadow:var(--lift);}
+html .study-mode:hover,html .study-mode-flag:hover{background:var(--card-hi);border-color:var(--rim);box-shadow:var(--lift-hi);}
+html .study-mode-flag::before{display:none;}
+html .study-mode-flag{box-shadow:var(--brass-rim),var(--lift);}
+html .study-mode-kick{color:var(--brass-deep);}
+html .study-mode-name{color:var(--ink);}
+html .study-mode-sub{color:var(--muted);}
+
+/* ── Home #spending-dashboard ──────────────────────────────────── */
+html .osr-label,html .osr-cols-head{color:var(--muted);}
+html .osr-ex-lbl,html .osr-tokens-hint,html .osr-range-lbl,html .osr-cols-foot,html .osr-tnote{color:var(--muted);}
+html .osr-input{background:rgba(255,255,255,.86);border-color:var(--ctl-line);}
+html .osr-chip{color:var(--brass-ink);background:var(--ctl);border-color:var(--ctl-line);}
+@media (hover:hover) and (pointer:fine){ html .osr-chip:hover{color:var(--ink);background:var(--ctl-hi);border-color:rgba(var(--brass-rgb),.45);} }
+html .osr-fy-opt{color:var(--ink2);background:var(--ctl);border-color:var(--ctl-line);}
+html .osr-fy-opt.on{color:#fff;background:var(--char);border-color:var(--char);}
+html .osr-fy-opt input{accent-color:var(--brass);}
+html .osr-fy-opt.on input{accent-color:var(--brass-bright);}
+html .osr-go{color:var(--ink-brass);background:var(--brass-bright);border-color:rgba(var(--brass-rgb),.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 14px -4px rgba(var(--brass-rgb),.5);}
+html .osr-go:hover{border-color:var(--brass-deep);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 20px -6px rgba(var(--brass-rgb),.55);}
+html .osr-token{color:var(--ink);background:rgba(var(--brass-rgb),.1);border-color:rgba(var(--brass-rgb),.3);}
+html .osr-token b{color:var(--brass-ink);}
+html .osr-token span{color:var(--ink3);}
+html .osr-token-x{color:var(--ink3);background:rgba(20,16,10,.08);}
+html .osr-token-x:hover{color:var(--ink);background:rgba(20,16,10,.16);}
+html .osr-combo-btn{color:var(--brass-ink);background:rgba(var(--brass-rgb),.08);border-color:rgba(var(--brass-rgb),.3);}
+html .osr-combo-btn:hover{background:rgba(var(--brass-rgb),.16);border-color:var(--brass);}
+html .osr-date{color-scheme:light;color:var(--ink);background:rgba(255,255,255,.86);border-color:var(--ctl-line);}
+html .osr-fieldsbtn{color:var(--ink);background:var(--ctl);border-color:rgba(var(--brass-rgb),.3);}
+html .osr-fieldsbtn:hover{background:var(--ctl-hi);border-color:var(--brass);}
+html .osr-fieldsbtn.on{background:rgba(var(--brass-rgb),.12);border-color:var(--brass);}
+html .osr-fieldsbtn-n{color:var(--brass-ink);}
+html .osr-cols-panel{background:var(--card);border-color:var(--rim);box-shadow:var(--lift);}
+html .osr-cols-act{color:var(--brass-ink);border-color:rgba(var(--brass-rgb),.3);}
+html .osr-cols-act:hover{background:rgba(var(--brass-rgb),.12);}
+html .osr-cols-gname{color:var(--brass-deep);}
+html .osr-cols-opt{color:var(--ink3);}
+html .osr-cols-opt.on{color:var(--ink);}
+html .osr-cols-opt input{accent-color:var(--brass);}
+/* results: the summary card and the stat/panel cards are sand cards */
+html .osr-summary{background:var(--card);border-color:var(--rim);box-shadow:var(--lift);}
+html .osr-head-code{color:var(--brass-ink);}
+html .osr-head-code span,html .osr-catmix{color:var(--muted);}
+html .osr-sum-stats{color:var(--ink2);}
+html .osr-sum-stats b{color:var(--ink);}
+html .osr-dl{color:var(--ink-brass);border-color:rgba(var(--brass-rgb),.45);}
+html .osr-copy{color:var(--ink);background:var(--ctl);border-color:rgba(var(--brass-rgb),.3);}
+html .osr-copy:hover{background:var(--ctl-hi);}
+html .osr-warn{color:var(--brass-ink);background:rgba(var(--brass-rgb),.08);border-color:rgba(var(--brass-rgb),.3);}
+html .osr-empty{color:var(--ink2);background:var(--ctl);border-color:var(--ctl-line);}
+html .osr-empty b{color:var(--brass-ink);}
+html #spending-dashboard :is(.dash-stat,.dash-panel){background:var(--card);border:1px solid var(--rim);box-shadow:var(--lift);-webkit-backdrop-filter:none;backdrop-filter:none;}
+html #spending-dashboard .dash-stat-num,html #spending-dashboard .dash-bar-val,html #spending-dashboard .dash-mix-key b{color:var(--ink);}
+html #spending-dashboard .dash-stat-num.accent{color:var(--brass-deep);}
+html #spending-dashboard :is(.dash-stat-label,.dash-panel-title,.dash-stat-foot,.dash-bar-sub,.dash-panel-title span,.dash-foot,.dash-mix-key,.dash-loading,.dash-skeleton){color:var(--muted);}
+html #spending-dashboard .dash-bar-name{color:var(--ink2);}
+html #spending-dashboard :is(.dash-bar-track,.dash-mix-bar){background:rgba(var(--brass-rgb),.12);}
+html #spending-dashboard .dash-bar-fill{background:linear-gradient(90deg,var(--brass),var(--brass-mid));}
+html #spending-dashboard .dash-foot a{color:var(--accent);border-bottom-color:rgba(var(--brass-rgb),.4);}
+html #spending-dashboard .dash-window{background:var(--ctl);border-color:var(--ctl-line);}
+html #spending-dashboard .dash-window button{color:var(--ink3);}
+html #spending-dashboard .dash-window button:hover:not(.active){color:var(--ink);background:rgba(255,255,255,.6);}
+html #spending-dashboard .dash-window button.active{color:var(--ink-brass);}
+
+/* ── The Combination strip ─────────────────────────────────────── */
+html .daily-tiles i{color:var(--ink);background:var(--ctl);border-color:rgba(var(--brass-rgb),.3);}
+html .daily-tiles .dt-hit,html .daily-tiles .dt-near{color:var(--ink-brass);}
+html .daily-copy b,html .daily-board-list li{color:var(--ink);}
+html .daily-copy b span,html .daily-board-head,html .daily-board-list li b{color:var(--brass-deep);}
+html .daily-copy>span,html .daily-board-list li span,html .daily-board-count{color:var(--muted);}
+html .daily-cta{color:var(--ink-brass);}
+
+/* ── Server heroes (.lhero) ────────────────────────────────────── */
+html .lhero .crumbs{color:var(--muted);}
+html .lhero .crumbs a{color:var(--accent);text-decoration-color:rgba(var(--brass-rgb),.4);}
+html .lhero .crumbs a:hover{text-decoration-color:var(--accent);}
+html .lhero .eyebrow{color:var(--brass-deep);}
+html .lhero .eyebrow::before{background:var(--brass-deep);}
+html .lhero h1{color:var(--ink);}
+html .lhero .lede{color:var(--ink3);}
+html .lhero .stat{color:var(--ink2);background:var(--ctl);border-color:var(--ctl-line);}
+html .lhero .stat b{color:var(--brass-ink);}
+html .lhero .lib-seal{filter:drop-shadow(0 10px 18px rgba(var(--shadow-rgb),.3));}
+
+/* ── Opt-outs: every lifted-white control above goes solid ────── */
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){
+  html:root{--ctl:#fff;--ctl-hi:#fff;--ctl-line:var(--line2);}
+  html .hero :is(.search-bar,.mode-toggle,.trychip){background:#fff;border-color:var(--line2);-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html :is(.hero-newhere,.hero-source-strip,.osr-input,.osr-date,.osr-empty,.osr-token,.osr-fieldsbtn,.osr-copy,.lhero .stat,.daily-tiles i,#spending-dashboard .dash-window){background:#fff;border-color:var(--line2);}
+  html :is(.study-mode,.study-mode-flag,.osr-cols-panel,.osr-summary){background:#fff;border-color:var(--line2);}
+}
+
+/* ── Clearer glass, darker small brass: eyebrows and 11–13px brass links measured
+   4.2–4.4:1 over the room; one step down to --brass-ink clears 4.5. ── */
+html :is(.eyebrow-dark,.eyebrow-light,.wrap .eyebrow,.lband:not(.lhero) .eyebrow,.lhero .eyebrow,.fulltext-eyebrow,.study-mode-kick,.osr-cols-gname,.daily-board-head,.st-tc-kicker){color:var(--brass-ink);}
+/* --accent links (#6f521a) measured 4.0–4.4:1 over the clearer glass; the AA-dark brass holds 4.5 on the darkest band zones */
+@media not (prefers-contrast:more){ html:root{--accent:#5e4715;--accent-h:#4f3c11;} }
+html .lhero .eyebrow::before{background:var(--brass-ink);}
+html #spending-dashboard .dash-foot a{color:var(--brass-ink);}
+html .osr-token-x{color:var(--ink2);}
+/* office token code: brass on a brass-tinted chip measured 4.35 on a phone; the code is ink, the chip stays brass */
+html .osr-token b{color:var(--ink);}
+/* Footer sits over the darkest backdrop zone (the wood at the bottom): its small links
+   measured 4.3–4.5 at .28; this one band carries a heavier tint, nothing else changes. */
+html :is(footer,#_#_):not(.wrap *){background:rgba(255,252,246,.66);}  /* two ids: the band rule already carries one */
+
+/* Clear glass shows more of the room behind small type, so the few mid-tone labels
+   that sat at 3.9–4.4:1 take the next shade down. */
+html :is(.cra-table th,.market-flow-sep,.rz-outline-head,.rz-sec-note){color:var(--ink3);}
+html .lib-cover-vol small{color:rgba(214,226,240,.86);}   /* on the navy cover art: lighter, not darker */
+html .pin-coach-star{color:var(--brass-ink);}
+html .rc-pin:not(.pinned){color:var(--muted2);}   /* unpinned star: an icon control needs 3:1 on clear glass */
