@@ -1195,3 +1195,19 @@ html .st-lad-q-dodtag{color:var(--muted);opacity:1;}
   html .nav-inner{grid-template-columns:auto minmax(0,1fr) max-content;}
   html .nav-center a{padding:6px 8px;}
 }
+
+/* Hero, desktop: the live-data cards used to float on top of the vault (absolute,
+   overlapping its edges). They are tiles now: the vault spans the top, the two data
+   cards sit side by side beneath it, nothing overlaps. Phones already stack. */
+@media (min-width:981px){
+  html .hero-right{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"vault vault" "oblig awards";
+    gap:16px;align-content:center;align-items:stretch;min-height:0;}
+  html .hero-right .vault-panel{grid-area:vault;width:100%;aspect-ratio:auto;height:clamp(318px,23vw,336px);}  /* the 210px dial plus the tag need ~318px to breathe */
+  html .hero-right .fcard{position:static!important;inset:auto!important;width:auto!important;max-width:none;margin:0;}
+  html .hero-right .fcard-oblig{grid-area:oblig;}
+  html .hero-right .fcard-awards{grid-area:awards;}
+}
+/* Toolkit: grid tracks default to auto minimums, so at ~981–1000px the CASPER card's
+   table pushed its column past the viewport. Let both columns shrink; the table scrolls. */
+@media (min-width:921px){ html .tk-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);} }
+html .tk-col{min-width:0;}

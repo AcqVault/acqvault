@@ -320,7 +320,7 @@
                 </div>
               </div>
               <div class="cra-intro">Every CASPER gets an independent review. Find your portfolio column — the row your dollar value lands in is your Contract Review Authority (CRA).</div>
-              <div class="cra-wrap">
+              <div class="cra-wrap" tabindex="0" role="region" aria-label="CASPER review tiers (scrolls sideways)">
                 <table class="cra-table">
                   <thead><tr><th scope="col">CRA</th><th scope="col">Operational</th><th scope="col">Enterprise</th><th scope="col">PEO</th><th scope="col">PAE</th></tr></thead>
                   <tbody>
