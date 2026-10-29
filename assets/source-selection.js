@@ -112,7 +112,7 @@
       '<p class="ss-note" style="border-top:none;padding-top:2px">' + esc(scen.sourceNote) + '</p>' +
       '<div class="ss-actions"><button class="ss-btn ss-btn-primary" id="ss-begin">Begin the source selection ' + IC_ARROW + '</button></div></div>';
     el('ss-begin').onclick = begin;
-    el('ss-begin').focus();
+    if (document.activeElement && document.activeElement !== document.body) el('ss-begin').focus();
   }
 
   /* ---- a phase ---- */

@@ -32,7 +32,7 @@
   var marks = [];
   var activeIndex = -1;
 
-  var bar = document.createElement('div');
+  var bar = document.getElementById('pn-search') || document.createElement('div');
   bar.className = 'pn-search';
   bar.id = 'pn-search';
   bar.setAttribute('role', 'search');
@@ -50,8 +50,11 @@
     '<button type="button" class="pn-clear" id="pn-clear" aria-label="Clear search">✕</button>';
 
   // Above the Contents when there is one, otherwise at the head of the sections.
-  if (toc) toc.parentNode.insertBefore(bar, toc);
-  else sections[0].parentNode.insertBefore(bar, sections[0]);
+  // (The server already renders the empty box in that spot; only insert when it is missing.)
+  if (!bar.parentNode) {
+    if (toc) toc.parentNode.insertBefore(bar, toc);
+    else sections[0].parentNode.insertBefore(bar, sections[0]);
+  }
 
   var input = document.getElementById('pn-search-input');
   var countEl = document.getElementById('pn-search-count');
@@ -483,4 +486,36 @@
   // into view right after focusin armed it, and that preview should still arrive.
   window.addEventListener('scroll', function () { if (card && card.classList.contains('show')) dismiss(); }, { passive: true });
   window.addEventListener('resize', function () { if (cur) hide(); });
+})();
+
+/* ── Cite: one button per section heading, parity with the in-app reader's Cite ──
+ * Copies "RFO 15.101 Early exchanges with industry" + this page's deep link, so a
+ * pasted citation lands on the crawlable text. Only built where the clipboard API
+ * exists: a Cite button that cannot copy is worse than none. */
+(function () {
+  'use strict';
+  if (!(navigator.clipboard && navigator.clipboard.writeText)) return;
+  var cols = document.querySelector('.part-cols');
+  var prefix = cols && cols.getAttribute('data-cite');
+  if (!prefix) return;
+  var heads = document.querySelectorAll('main section.sec > .sec-hd');
+  Array.prototype.forEach.call(heads, function (hd) {
+    var sec = hd.parentNode, h2 = hd.querySelector('h2');
+    if (!sec.id || !h2) return;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sec-cite';
+    btn.textContent = 'Cite';
+    btn.setAttribute('aria-label', 'Copy citation and link for ' + h2.textContent.trim());
+    btn.addEventListener('click', function () {
+      var url = location.origin + location.pathname + '#' + sec.id;
+      navigator.clipboard.writeText(prefix + ' ' + h2.textContent.trim() + '\n' + url).then(function () {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        clearTimeout(btn._t);
+        btn._t = setTimeout(function () { btn.textContent = 'Cite'; btn.classList.remove('copied'); }, 1800);
+      }).catch(function () {});
+    });
+    h2.insertAdjacentElement('afterend', btn);
+  });
 })();

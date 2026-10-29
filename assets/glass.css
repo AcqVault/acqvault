@@ -1481,3 +1481,471 @@ html .osr-export .osr-dl{white-space:nowrap;}
 @media (max-width:600px){
   html .market-opp-type{white-space:nowrap;}
 }
+
+/* ═══ Apple team: reading ═══ */
+/* ══ READING — server-rendered regulation pages (reading lead) ══════════════
+   Part pages, source hubs, /deviations, /changes. Appended to glass.css. */
+
+/* ── Part page column ─────────────────────────────────────────── */
+/* The 40px column gap was also the row gap: 72px of air between the search box
+   and the first section. Columns keep their gap, rows do not. */
+@media (min-width:1000px){ html .part-cols{column-gap:40px;row-gap:0;} }
+/* The first section's top rule read as a stray divider under the search box. */
+html .part-main > section.sec:first-child{border-top:0;padding-top:2px;}
+/* Hairline section rules; the old --line grey was as heavy as the text. */
+html .wrap main section.sec{border-top-color:var(--line2);padding:24px 0 20px;}
+
+/* ── Body copy: the text is the product ───────────────────────── */
+@media (min-width:768px){
+  html .wrap main section.sec p{font-size:16px;line-height:1.65;margin:.55em 0;}
+}
+/* Paragraph levels as a hanging outline: each marker — (a) (1) (i) (A) — sits in the
+   gutter, flush with the text of the level above it, so the hierarchy is visible at a
+   glance instead of being inferred from indentation alone. .cont is a continuation
+   line with no marker of its own and keeps a plain indent. */
+@media (min-width:768px){
+  html .wrap main section.sec p.lvl:not(.cont){text-indent:-2.1em;}
+  html .wrap main section.sec p.lvl-1{padding-left:4.2em;}
+  html .wrap main section.sec p.lvl-2{padding-left:6.3em;}
+  html .wrap main section.sec p.lvl-3{padding-left:8.4em;}
+  html .wrap main section.sec p.lvl-4{padding-left:10.5em;}
+  html .wrap main section.sec p.lvl-1.cont{padding-left:4.2em;}
+  html .wrap main section.sec p.lvl-2.cont{padding-left:6.3em;}
+  html .wrap main section.sec p.lvl-3.cont{padding-left:8.4em;}
+  html .wrap main section.sec p.lvl-4.cont{padding-left:10.5em;}
+  /* a nested paragraph ends on the same right edge as the prose above it */
+  html .wrap main section.sec p.lvl{box-sizing:border-box;}
+}
+
+/* ── Section headings: number, then title ─────────────────────── */
+html .wrap main section.sec h2{font-size:19px;line-height:1.3;letter-spacing:-0.015em;font-weight:700;margin:0 0 8px;}
+html .sec-num{color:var(--brass-ink);font-variant-numeric:tabular-nums;font-weight:800;}
+html .sec-hd{align-items:center;gap:6px 10px;}
+/* Cite — parity with the in-app reader; quiet until you reach for it */
+html .sec-cite{flex:0 0 auto;font:inherit;font-size:11.5px;font-weight:700;line-height:1;color:var(--muted2);
+  background:transparent;border:1px solid var(--line2);border-radius:var(--r-pill);padding:6px 10px;cursor:pointer;
+  transition:color .15s,border-color .15s,background .15s;}
+html .sec-cite:hover{color:var(--brass-ink);border-color:var(--brass-line);background:rgba(var(--brass-rgb),.06);}
+html .sec-cite:active{transform:scale(.97);}
+html .sec-cite:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+html .sec-cite.copied{color:var(--ok-ink);border-color:var(--ok-line);background:var(--ok-bg);}
+@media (prefers-reduced-motion:reduce){ html .sec-cite{transition:none;} html .sec-cite:active{transform:none;} }
+
+/* ── Hub: parts grouped by subchapter ─────────────────────────── */
+html .parts-grp{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:30px 0 12px;
+  font-family:inherit;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);}
+html .lede--hub + .parts-grp,html .lede + .parts-grp{margin-top:6px;}
+html .parts-grp small{font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);font-variant-numeric:tabular-nums;}
+html .parts-grp + .parts{margin-bottom:4px;}
+
+/* ── Deviations table: the part is named, not just numbered ───── */
+html table.devtable td a .hublabel{display:block;font-size:12px;font-weight:500;line-height:1.3;color:var(--muted);margin-top:2px;max-width:30ch;}
+html table.devtable td:nth-child(3),html table.devtable td:nth-child(4){font-variant-numeric:tabular-nums;white-space:nowrap;}
+html table.devtable td:last-child{white-space:nowrap;}
+
+/* ── Changes log: a scannable grid of parts, not a 1240px-wide stack ── */
+html details.chg-part summary{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;font-size:14px;}
+html .chg-nm{font-weight:500;color:var(--ink2);}
+html .chg-n{margin-left:auto;font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;}
+@media (min-width:900px){
+  html .chg-run:not(.chg-run--quiet){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:12px;align-items:start;}
+  html .chg-run:not(.chg-run--quiet) > :is(h2,.chg-stats,.chg-checked){grid-column:1 / -1;}
+  html .chg-run details.chg-part{margin:4px 0;}
+}
+/* opened part lists: brass-ink links on a steadier pane (accent measured 3.2–4.3 over the photo) */
+html details.chg-part[open]{background:rgba(255,255,255,.78);}
+html ul.chg-list a{color:var(--brass-ink);}
+
+/* ═══ Apple team: study ═══ */
+/* ── STUDY lead fragment (appended to glass.css after reading) ─────────────────
+   Three fixes in assets/study.js need styling:
+   1. .st-resume — the returning user's one-action card on the /study picker.
+   2. .st-topic-all / .st-topic-sec — the 41+ topic list collapsed behind a native
+      <details>, grouped by course section; "Where to focus" shows six rows.
+   3. render() now clears the sticky nav pill (JS only; no CSS). */
+
+/* 1. Resume card: same navy weight the daily-session panel used to carry, so it is
+   unmistakably the first thing to do. Glass tokens, 44px controls, wraps on tablets. */
+html .st-resume{display:flex;align-items:center;justify-content:space-between;gap:20px 28px;flex-wrap:wrap;
+  margin:0 0 28px;padding:22px 26px;border-radius:var(--r-lg,18px);
+  background:linear-gradient(158deg,var(--ink-from,#14233a),var(--ink-mid,#1b3050) 62%,var(--ink-to,#22395e));
+  border:1px solid rgba(var(--brass-bright-rgb,205,178,119),.42);color:#fff;
+  box-shadow:0 22px 44px -22px rgba(var(--navy-rgb,16,30,52),.55)}
+html .st-resume-body{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 320px}
+html .st-resume-eyebrow{font-size:var(--fs-xs,11px);font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-bright,#e4c98a)}
+html .st-resume h2.st-resume-h{margin:0;font-family:var(--serif);font-weight:600;font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.012em;color:#fff}
+html .st-resume-sub{font-size:var(--fs-base,14px);line-height:1.5;color:rgba(255,255,255,.78);font-variant-numeric:tabular-nums}
+html .st-resume-sub b{color:#fff;font-weight:700}
+html .st-resume-actions{display:flex;gap:10px;flex-wrap:wrap;flex:0 0 auto}
+html .st-resume .rz-btn-go{background:var(--brass,#cdb277);border-color:var(--brass,#cdb277);color:var(--ink,#15181d);font-weight:700}
+html .st-resume .rz-btn-go:hover{background:var(--brass-bright,#e4c98a);border-color:var(--brass-bright,#e4c98a)}
+html .st-resume .rz-btn-ghost{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.32);color:#fff}
+html .st-resume .rz-btn-ghost:hover{background:rgba(255,255,255,.14)}
+html .st-resume .rz-btn:focus-visible{outline:3px solid var(--brass-bright,#e4c98a);outline-offset:2px}
+@media(max-width:640px){html .st-resume{padding:18px}html .st-resume-actions{width:100%}html .st-resume .rz-btn{flex:1 1 auto}}
+
+/* 2. Topic disclosure: a quiet row, chevron turns, groups read as a table under
+   small-caps section labels. */
+html .st-topic-all{margin-top:14px}
+html .st-topic-all>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:44px;padding:10px 14px;
+  border:1px solid var(--line-ctl,#dcd9d2);border-radius:var(--r-sm,10px);background:var(--bg,#fff);
+  font-size:var(--fs-base,14px);font-weight:700;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s}
+html .st-topic-all>summary::-webkit-details-marker{display:none}
+html .st-topic-all>summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--brass-ink,#7a5c1e);border-bottom:2px solid var(--brass-ink,#7a5c1e);
+  transform:rotate(-45deg);margin:0 4px 0 2px;transition:transform .18s}
+html .st-topic-all[open]>summary::before{transform:rotate(45deg)}
+html .st-topic-all>summary:hover{border-color:var(--brass-line,rgba(205,178,119,.5));background:var(--off,#f7f6f2)}
+html .st-topic-all>summary:focus-visible{outline:3px solid var(--brass,#cdb277);outline-offset:2px}
+html .st-topic-all[open]>summary{margin-bottom:6px}
+html .st-topic-sec{margin:18px 0 6px;font-size:var(--fs-xs,11px);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted,#5b6069)}
+html .st-topic-sec:first-of-type{margin-top:10px}
+@media(prefers-reduced-motion:reduce){html .st-topic-all>summary::before{transition:none}}
+
+/* ═══ Apple team: home ═══ */
+/* ═══ HOME fragment (appended to glass.css after reading/study) ═══ */
+
+/* Hero: the mode tabs now sit above the field they switch (index.html), so the
+   dock loses its bottom margin and rises first; the field follows it. */
+html .hero-inner-b .hero-command-dock-b{margin:0 0 10px;animation-delay:.10s;}
+html .hero-inner-b .search-container{animation-delay:.16s;}
+html .hero.search-active .hero-inner-b .hero-command-dock-b,
+html .hero.browse-active .hero-inner-b .hero-command-dock-b,
+html .hero.fulltext-active .hero-inner-b .hero-command-dock-b{margin-bottom:8px;}
+/* "8 live" stays on the last chip's line instead of orphaning onto its own */
+html .hero-inner-b .hero-live-count{white-space:nowrap;}
+
+/* Market research: one status chip + the vehicles button, so the kicker is a row, not a banner */
+html .market-kicker{margin-bottom:14px;}
+html .market-resource-row{margin-top:16px;}
+
+/* Daily toolkit: the 15-row threshold table was the tallest thing on the page and left
+   the right column 600px of empty glass. Cap it to the height of the neighbouring cards;
+   the search field above it is the real way in, and the table scrolls like the
+   acronym list beside it does. */
+html .thr-list{max-height:620px;overflow-y:auto;overscroll-behavior:contain;}
+html .thr-list:focus-visible{outline:3px solid var(--brass,#87651c);outline-offset:2px;border-radius:var(--r-md);}
+@media (max-width:860px){html .thr-list{max-height:none;}}
+
+/* Two-column hero with a narrow left column (981–1180): the long Browse label
+   collided with "Full Text"; use the short labels the phone layout already has. */
+@media (min-width:981px) and (max-width:1180px){
+  html .hero-inner-b .mode-btn-long{display:none;}
+  html .hero-inner-b .mode-btn-short{display:inline;margin-left:3px;}
+}
+
+/* ═══ Apple team: motion ═══ */
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOTION · INTERACTION · ACCESSIBILITY fragment (appended to glass.css after home)
+   Behaviour only: no colours, no layout redesign. Every rule is html-prefixed.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. CLS: metric-matched fallback fonts ──────────────────────────────────
+   Inter is ~6.6% wider than Arial and Source Serif 4 ~20% narrower than Georgia
+   (measured), so the swap re-wrapped every paragraph: /fmr/part-1 scored CLS 0.32
+   at 1280. size-adjust + overrides make the fallback occupy the same lines, so the
+   swap is a repaint, not a reflow. Mono needs none (Plex Mono ≈ Menlo/Courier). */
+/* Overrides = the web font's own hhea metrics (Inter 1984/-494 of 2048; SS4 1036/-335 of 1000). */
+/* Inter widens with weight and Arial does not, so one face per weight band (ratios measured
+   on the site's own copy at 16px): 400 → Arial ×106.4, 450–500 → ×107.6, 600 → Arial Bold
+   ×101.3, 650–700 → ×102.4, 800–900 → ×103.7. */
+@font-face{font-family:'Inter Fallback';font-weight:100 449;src:local('Arial'),local('Liberation Sans'),local('Helvetica');size-adjust:106.4%;ascent-override:96.9%;descent-override:24.1%;line-gap-override:0%;}
+@font-face{font-family:'Inter Fallback';font-weight:450 549;src:local('Arial'),local('Liberation Sans'),local('Helvetica');size-adjust:107.6%;ascent-override:96.9%;descent-override:24.1%;line-gap-override:0%;}
+@font-face{font-family:'Inter Fallback';font-weight:550 649;src:local('Arial Bold'),local('Arial-BoldMT'),local('Liberation Sans Bold'),local('Helvetica-Bold');size-adjust:101.3%;ascent-override:96.9%;descent-override:24.1%;line-gap-override:0%;}
+@font-face{font-family:'Inter Fallback';font-weight:650 749;src:local('Arial Bold'),local('Arial-BoldMT'),local('Liberation Sans Bold'),local('Helvetica-Bold');size-adjust:102.4%;ascent-override:96.9%;descent-override:24.1%;line-gap-override:0%;}
+@font-face{font-family:'Inter Fallback';font-weight:750 900;src:local('Arial Bold'),local('Arial-BoldMT'),local('Liberation Sans Bold'),local('Helvetica-Bold');size-adjust:103.7%;ascent-override:96.9%;descent-override:24.1%;line-gap-override:0%;}
+@font-face{font-family:'Source Serif 4 Fallback';src:local('Georgia');size-adjust:89.4%;ascent-override:103.6%;descent-override:33.5%;line-gap-override:0%;} /* ratio measured on the site's own h1/h2 text at 700 */
+html:root{
+  --font-sans:'Inter','Inter Fallback',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font:'Inter','Inter Fallback',-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;
+  --font-serif:'Source Serif 4','Source Serif 4 Fallback',Georgia,'Times New Roman',serif;
+  --serif:'Source Serif 4','Source Serif 4 Fallback',Georgia,'Times New Roman',serif;
+}
+/* Server pages set body's stack literally (STYLE), bypassing the token. */
+html body{font-family:'Inter','Inter Fallback',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;}
+
+/* ── 2. CLS: the hero instrument grows 290→721px as USAspending answers (0.07 CLS).
+   Reserve its settled height on desktop; the skeleton already fills the pane. */
+@media (min-width:1024px){ html .hero-instrument{min-height:600px;} }
+@media (min-width:1200px){ html .hero-instrument{min-height:720px;} } /* settles at 721 with five award rows */
+
+/* ── 3. Anchors land under the sticky in-part search bar (22px overlap measured at
+   1280 and 390: section top 96 vs bar bottom 118; 30 vs 52). 48px clears it. */
+html:has(.pn-search) section.sec,html:has(.pn-search) section.sec h2,html:has(.pn-search) .alt-head{scroll-margin-top:48px;}
+
+/* ── 4. Press feedback: every pressable answers the finger within 100ms. Only
+   controls whose base transform is none/translateY(-3px) are listed — anything
+   positioned with a transform (osr-combo-btn) is deliberately excluded. */
+html :is(.lnav .brand,.lnav .cta,.nav-logo,.nav-saved-btn,.nav-hamburger,.hero-newhere-x,
+  .market-pill,.market-chip-btn,.market-action,.market-board-btn,.market-example,.drawer-close,.drawer-newtab-btn,
+  .drawer-orig-btn,.cite-btn,.rc-cite-btn,.rc-pin,.drawer-pin,.save-search-btn,.ptoc-toggle,.pn-top,.lib-open-btn,
+  .study-open-btn,.study-mode,.st-topic,.st-mode,.st-plate,.st-opt,.ss-btn,.ss-opt,.ss-doc-chip,.rz-opt,.q-opt):active:not(:disabled){
+  transform:scale(.97);transition-duration:.1s;}
+/* Lifted cards press back down from their hover height, not from zero. */
+html :is(.lib-feature,.lib-src,.st-trackcard,.ql-card):active{transform:translateY(-1px) scale(.985);transition-duration:.1s;}
+
+/* ── 5. Hover is 350ms in the lift rule: fine for the scroll-in fade, sluggish under a
+   pointer (Emil: hover 150–200ms). Keep the slow opacity for .fade-up; move faster. */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  html :is(.ql-card,.lib-feature,.lib-src,.st-trackcard,.tk-card){
+    transition:opacity var(--dur-3,.5s) var(--ease-out,ease-out),transform .2s var(--ease-out,ease-out),box-shadow .2s var(--ease-out,ease-out),background-color .2s;
+  }
+}
+/* Hover lifts on touch devices fire on tap and stick: gate them. */
+@media (hover:none){
+  html :is(.ql-card,.lib-feature,.lib-src,.st-trackcard,.drawer-newtab-btn,.nav-cta,.search-go,.market-btn):hover{transform:none;}
+}
+
+/* ── 6. Reduced motion: what the existing fallbacks miss. The 0.85s hero-rise still
+   translates 28px under reduce; the live dot pulses forever. Keep the fade, drop
+   the movement; stop infinite loops. */
+@media (prefers-reduced-motion:reduce){
+  html :is(.hero-intro,.search-container,.hero-command-dock,.fcard){animation-duration:.01ms!important;animation-delay:0s!important;}
+  html .dash-live-dot{animation:none!important;}
+  html :is(.nav-saved-btn,.market-pill,.st-trackcard,.lib-feature,.lib-src,.ql-card):active{transform:none;}
+  html #drawer,html #mobile-menu,html .saved-panel,html .modal-box,html .search-suggest,html .browse-source-menu{transition-duration:.01ms!important;animation-duration:.01ms!important;}
+}
+
+/* ── 7. Touch targets (phones): 44×44 hit areas without redrawing a single control.
+   A centred pseudo-element extends the tappable box; the visible chip stays as the
+   visual lead designed it. Each selector uses whichever pseudo the base CSS left free.
+   Ladder: pills (32px) → 44; nav text links (16–26px) → 44; menu 40 → 44. */
+@media (max-width:768px){
+  /* NOT .lnav-menu > summary: its ::before is the menu scrim, positioned off the pill;
+     making the summary a containing block clips the scrim to 40px (measured). It stays 40. */
+  html :is(.lnav .brand,.lnav .cta,.crumbs a,.srclink,.nav-cta,.hero-newhere-link,.mode-btn,
+    .market-pill,.market-chip-btn,.market-action,.market-board-btn,.market-example,.osr-chip,.sec-upd,.pn-top,
+    .nav-logo,.nav-saved-btn,.hero-newhere-x,.hdr-links a,.rc-cite-btn,.rc-pin,.drawer-close,.cite-btn,.saved-close,
+    .st-cite,.rz-jump a,.ptoc a){position:relative;}
+  html :is(.lnav .brand,.lnav .cta,.crumbs a,.srclink,.nav-cta,.mode-btn,
+    .market-pill,.market-chip-btn,.market-action,.market-board-btn,.market-example,.osr-chip,.sec-upd,.pn-top,
+    .hdr-links a,.rc-cite-btn,.rc-pin,.drawer-close,.cite-btn,.saved-close,.st-cite,.rz-jump a,.ptoc a)::after,
+  html :is(.nav-logo,.nav-saved-btn,.hero-newhere-x,.hero-newhere-link)::before{
+    content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);
+    transform:translate(-50%,-50%);border-radius:inherit;background:none;}
+  /* .hero-newhere-link::after is the arrow glyph in app.css — its hit box is ::before (above);
+     .nav-logo::after and .nav-saved-btn::after are decorations — hit boxes also ::before. */
+  /* Pills in a wrapped row stay 32px tall vertically: the 8px gap means a taller hit box
+     would only steal taps from the row above/below (measured). Horizontal reach is 44. */
+}
+
+/* ── 10. CLS on /48cons: the deck renders into a 420px placeholder while the footer is on
+   screen (0.28 at 1280). Hold the first screen until the cover (≈990px) replaces it. */
+@media (min-width:900px){ html #study-app[data-mode="48cons"]{min-height:calc(100vh - 120px);} }
+/* /rfo/part-N: part-nav.js inserts the 52px search bar above the Contents after paint
+   (67px shift). With the SSR placeholder from patch P7 it only fills in. */
+html .pn-search:empty{min-height:52px;}
+
+/* ── 8. Overlays: origin-aware, interruptible, ease-out. The drawer and menu already
+   slide at 250–280ms; the search suggestions keyframe restarts on every keystroke
+   because `animation` cannot be retargeted. Scale-from-trigger via transition instead. */
+html .search-suggest:not([hidden]){animation:none;transform-origin:top center;}
+@media (prefers-reduced-motion:no-preference){
+  html .search-suggest{transition:opacity .16s var(--ease-out,ease-out),transform .16s var(--ease-out,ease-out);}
+  @starting-style{ html .search-suggest:not([hidden]){opacity:0;transform:translateY(-4px) scale(.98);} }
+  html .browse-source-menu.open{animation:mo-pop .16s var(--ease-out,ease-out) both;transform-origin:top left;}
+  html .modal-overlay.open .modal-box{transition-duration:.22s;}
+}
+@keyframes mo-pop{from{opacity:0;transform:translateY(-4px) scale(.98);}to{opacity:1;transform:none;}}
+
+/* ── 9. Focus: rings follow the shape they wrap, and never hide behind glass. */
+html :is(.lnav .brand,.lnav .cta,.crumbs a,.srclink,.hdr-links a,.mm-link,.market-pill,.market-chip-btn,.market-action,
+  .market-example,.osr-chip,.st-cite,.rc-open):focus-visible{border-radius:max(6px,var(--r-pill,999px));}
+html :is(.crumbs a,.srclink,.hdr-links a,.rc-open,.sec-hd .srclink):focus-visible{border-radius:6px;}
+html .pn-search-input:focus-visible,html .search-input:focus-visible,html .market-field :is(input,select):focus-visible{outline:none;} /* wrapper draws the halo (:focus-within) */
+/* A moved-to heading is announced, not outlined (study phases already do this). */
+html :is(main,#main,.st-card,.rz-main)[tabindex="-1"]:focus{outline:none;}
+
+/* ═══ Apple team: mobile (last: wins on phones) ═══ */
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE (appended last — phones and small tablets, ≤860px unless noted)
+   iOS-HIG pass: 44pt targets, 16px inputs (no focus zoom), safe-area
+   insets for the notch/home bar, a bottom-sheet reader, condensed hero.
+   Needs viewport-fit=cover on the <meta viewport> (see mobile-patches.md)
+   for env(safe-area-inset-*) to be non-zero on iPhone.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Global-mobile: inputs never trigger iOS focus zoom ─────────── */
+@media (max-width:860px){
+  html body :is(input:not([type=checkbox],[type=radio],[type=range]),select,textarea){font-size:16px;}
+}
+
+@media (max-width:860px){
+  /* ── Home nav pill: one flex row, 44pt row, 40px controls, 44px hamburger.
+     At 320 the grid put the right group past the pill edge (22px page overflow). */
+  html #main-nav .nav-inner{display:flex;align-items:center;justify-content:space-between;height:46px;padding:3px 3px 3px 10px;gap:6px;}
+  html #main-nav .nav-left{min-width:0;flex:0 1 auto;}
+  html #main-nav .nav-logo{min-height:40px;display:inline-flex;align-items:center;}
+  html #main-nav .nav-right{flex:0 0 auto;gap:5px;}
+  html #main-nav :is(.nav-saved-btn,.nav-cta){min-height:40px;display:inline-flex;align-items:center;justify-content:center;}
+  html #main-nav .nav-saved-btn{min-width:40px;padding:0 10px;}
+  html #main-nav .nav-cta{padding:0 14px;}
+  html #main-nav .nav-hamburger{width:40px;height:40px;}
+  html #main-nav .nav-hamburger::after{content:"";position:absolute;inset:-4px;}
+  html #main-nav .nav-hamburger{position:relative;}
+  html #main-nav .nav-logo svg{width:28px;height:28px;}
+  /* the phone menu sits under the pill, clears the notch in landscape */
+  html .mobile-menu{top:calc(var(--nav-height,54px) + 8px + env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-height:calc(100dvh - var(--nav-height,54px) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));}
+  html .mobile-menu .mm-link{min-height:48px;}
+
+  /* ── Server nav pill (.lnav): brand / CTA / menu are all 44pt tall ── */
+  html .lnav .brand{min-height:44px;display:inline-flex;align-items:center;}
+  html .lnav .cta{min-height:42px;display:inline-flex;align-items:center;}
+  html .lnav-menu > summary{width:44px;height:44px;}
+  html .lnav .hlink{min-height:44px;display:inline-flex;align-items:center;}
+
+  /* ── Hero: "Try" chips become one native horizontal rail (saves ~150px of hero) ── */
+  html .hero-trychips{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;gap:8px;
+    margin:0 -16px 16px;padding:2px 16px 6px;scrollbar-width:none;}
+  /* no mask on the rail: a WebKit mask flattens the chips' translucent fill into the glass */
+  html .hero-trychips::-webkit-scrollbar{display:none;}
+  /* a nowrap flex row sizes its grid/flex ancestors to its content unless they may shrink */
+  html .hero-inner-b{grid-template-columns:minmax(0,1fr);}
+  html :is(.hero-inner,.hero-left,.hero-content,.hero-intro){min-width:0;max-width:100%;}
+  html .hero-trychips{max-width:calc(100% + 32px);}
+  html .hero-trychips .trychip{flex:0 0 auto;scroll-snap-align:start;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap;}
+  html .hero-trychips .trychip:hover{transform:none;}
+  html .hero-sub{max-width:none;}
+  html .mode-btn{min-height:44px;}
+  html .hero-newhere{position:relative;padding-right:44px;}
+  html .hero-newhere-link{min-height:44px;display:inline-flex;align-items:center;}
+  html .hero-newhere-x{position:absolute;top:4px;right:4px;width:40px;height:40px;font-size:15px;}
+  html .search-bar{height:54px;}
+  html .search-clear{min-width:40px;min-height:40px;}
+
+  /* ── Results: filter pills and card actions ── */
+  html .fpill{min-height:38px;display:inline-flex;align-items:center;}
+  html #results-section .filter-bar{padding-bottom:10px;}
+
+  /* ── Reader: a bottom sheet, not a side panel. Rises from the bottom, rounded top,
+     leaves the nav peeking so "where am I" survives. Same path in and out. ── */
+  html #drawer{top:auto;bottom:0;left:0;right:0;width:100%;height:calc(100dvh - 40px - env(safe-area-inset-top));
+    border-left:none;border-top:1px solid var(--line2);border-radius:18px 18px 0 0;
+    transform:translateY(100%);box-shadow:0 -16px 48px rgba(0,0,0,.14);}
+  html #drawer.open{transform:translateY(0);}
+  html #drawer::before{content:"";position:absolute;top:6px;left:50%;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:rgba(var(--shadow-rgb,20,16,10),.18);}
+  html .drawer-header{padding:18px 12px 10px;align-items:center;}
+  html .drawer-close{width:36px;height:36px;font-size:15px;margin-top:0;}
+  html .drawer-pin{width:36px;height:36px;}
+  html .drawer-newtab-btn{height:36px;width:36px;}
+  html .drawer-close::after,html .drawer-pin::after,html .drawer-newtab-btn::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%);}
+  html .drawer-pin,html .drawer-newtab-btn{position:relative;}
+  html .drawer-filter-input{min-height:44px;}
+  html .drawer-body{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+  html .drawer-footer{padding-bottom:calc(10px + env(safe-area-inset-bottom));border-radius:0;}
+  html .drawer-orig-btn{min-height:46px;}
+  /* inline "CITE" chips in the clause text: visual stays small, hit area is 44 */
+  html .cite-copy-btn{position:relative;min-height:28px;}
+  html .cite-copy-btn::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:44px;transform:translate(-50%,-50%);}
+  html .saved-close{width:44px;height:44px;}
+  html .saved-panel{padding-bottom:env(safe-area-inset-bottom);}
+  html .saved-head{padding-top:calc(14px + env(safe-area-inset-top));}
+
+  /* ── Modals: full-width card low on the screen, thumb reach ── */
+  html .modal-overlay{align-items:flex-end;padding:0;}
+  html .modal-box{max-width:none;border-radius:20px 20px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));max-height:calc(100dvh - 40px);overflow-y:auto;}
+  html .modal-close{width:36px;height:36px;}
+  html .feedback-submit{min-height:48px;}
+
+  /* ── Home sections: pills and chips that are buttons get a 44pt hit box
+     (invisible ::after) without growing the visual scale. ── */
+  html :is(.market-chip-btn,.market-pill,.market-action,.market-board-btn,.market-example,.osr-chip,.osr-combo-btn,.thr-scope button,button.source-status-chip,.cra-dl,.hero-source-strip b){position:relative;}
+  html :is(.market-chip-btn,.market-pill,.market-action,.market-board-btn,.market-example,.osr-chip,.osr-combo-btn,.thr-scope button,button.source-status-chip,.cra-dl)::after{
+    content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%);}
+  html :is(.market-btn,.lib-open-btn,.study-open-btn,.thr-calc-btn,.osr-build-btn){min-height:48px;}
+  html .thr-scope button{min-height:36px;}
+  html .source-status-chip{min-height:40px;}
+  html label.osr-label,html label.thr-calc-label{min-height:0;}
+
+  /* ── Part pages ── */
+  html .ptoc-toggle{min-width:64px;padding:6px 10px;}
+  html .sec-cite{position:relative;}
+  html .sec-cite::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:44px;transform:translate(-50%,-50%);}
+  /* /changes: "Sources checked" disclosure rows */
+  html details > summary{min-height:44px;}
+  html .srclink{display:inline-flex;align-items:center;min-height:44px;}
+  html .pn-top{right:max(16px,env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));}
+  html .pn-search{top:env(safe-area-inset-top);}
+
+  /* ── Deviations stacked rows: "Part 4Administrative…" had no gap; the two links
+     at the foot of each record read as a row of 44pt buttons. ── */
+  html table.devtable td .hublabel{display:block;font-weight:500;color:var(--muted);margin-top:2px;line-height:1.35;}
+  html table.devtable td:nth-child(5) a{display:inline-flex;align-items:center;min-height:44px;}
+
+  /* ── Study / 48cons / source selection ── */
+  html .st-link{min-height:44px;}
+  html .ss-cite-src{display:inline-flex;align-items:center;min-height:44px;position:relative;}
+  html .ss-doc-open,html .ss-doc-btn{min-height:44px;}
+  html .rz-bar{top:env(safe-area-inset-top);}
+  html .ss-modal-card{padding-bottom:calc(16px + env(safe-area-inset-bottom));}
+
+  /* ── Footer links: 44pt rows ── */
+  html .foot-links a{display:inline-flex;align-items:center;min-height:44px;}
+  html footer:not(.wrap *){padding-bottom:calc(24px + env(safe-area-inset-bottom));}
+}
+
+/* ── Phones only ─────────────────────────────────────────────────── */
+@media (max-width:600px){
+  html :is(.sec,footer,.lband,.hero,.daily-strip,#results-section,#fulltext-section,#browse-section):not(.wrap *){
+    margin-left:max(var(--band-gap),env(safe-area-inset-left));margin-right:max(var(--band-gap),env(safe-area-inset-right));width:auto;}
+  html .wrap,html .wrap.wrap--wide{margin-left:max(var(--band-gap),env(safe-area-inset-left));margin-right:max(var(--band-gap),env(safe-area-inset-right));width:auto;}
+  /* deviations: at 320–600 the 9.5rem label column squeezed the right column; two full-width lines */
+  html table.devtable tr{grid-template-columns:minmax(0,1fr) auto;}
+  html table.devtable td:nth-child(5){margin-top:2px;}
+  /* quick links: a 2-up grid of 214px-tall cards is a wall; one column, shorter cards */
+  html .quick-links-grid{grid-template-columns:1fr;}
+  html .ql-card{min-height:0;}
+  /* the deviation rows' hover tint has no meaning on touch */
+  html table.devtable tbody tr:hover td{background:inherit;}
+}
+@media (max-width:380px){
+  html #main-nav .nav-cta{padding:0 11px;font-size:13px;}
+  html #main-nav .nav-saved-label{display:none;}
+}
+
+/* ── Touch: no hover-only lifts; press feedback instead ─────────── */
+@media (hover:none){
+  html :is(.ql-card,.lib-feature,.lib-src,.st-trackcard,.tk-card,.trychip,.libfeat,.libsrc):hover{transform:none;box-shadow:var(--lift);background:var(--card);}
+  html :is(.ql-card,.lib-feature,.lib-src,.st-trackcard,.tk-card,.trychip,.fpill,.mode-btn,.mm-link,.result-card):active{transform:scale(.985);transition-duration:.08s;}
+}
+@media (prefers-reduced-motion:reduce){
+  html :is(.ql-card,.lib-feature,.lib-src,.st-trackcard,.tk-card,.trychip,.fpill,.mode-btn,.mm-link,.result-card):active{transform:none;}
+}
+
+/* ═══ Integration review ═══ */
+/* Cold pass over the five fragments above, combined. Four fixes, each measured. */
+
+/* 1. Browse menu on phones: the home fragment moved the mode tabs above the field, so the
+   Browse button now sits mid-dock and its 286px menu (anchored to the button) ran 62–125px
+   past the right edge at 320–390 (Chromium + WebKit). Anchor the menu to the segmented
+   control instead, full width of it. */
+@media (max-width:600px){
+  html .hero-command-dock .browse-source-picker{position:static;}
+  html .hero-command-dock .browse-source-menu{left:0;right:0;min-width:0;transform-origin:top center;}
+}
+
+/* 2. Two phone targets the mobile fragment's ladder missed on the results page:
+   "Save this search" (29px), the pin-coach dismiss (22px) and the inline "cite" chip in
+   result/reader text (36×18). Same invisible 44px hit box the mobile fragment uses. */
+@media (max-width:860px){
+  html .save-search-btn,html .pin-coach-x,html .dc-cite-btn{position:relative;}
+  html .save-search-btn::after,html .pin-coach-x::after,html .dc-cite-btn::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:44px;transform:translate(-50%,-50%);}
+}
+
+/* 3. "Active deviation" class badge measured 3.97:1 over the result card (11px text needs 4.5). */
+html .rc-badge-class{color:#1c3a70;}
+
+/* 4. Two-column hero at 981–1180: the right column's 440px floor left the headline 357–392px
+   wide, wrapping "is here." and "word of it." onto their own lines (5 lines at 1024, 3 at
+   1280). A 360px floor and a 1.25:.75 split give the copy its measure; the instrument is fine
+   at 360 (phones render it at 358). Search/browse/fulltext and the no-data fallback still collapse to one
+   column: their selectors are more specific. */
+@media (min-width:981px) and (max-width:1180px){
+  html .hero-inner-b{grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr);}
+}
+/* The grid is only 840–900px wide here, so the type steps down too: 44px holds the
+   three-line break until the 1060px formula value catches up. */
+@media (min-width:981px) and (max-width:1060px){ html .hero-headline{font-size:44px;} }
+
+/* Returning users on phones: the resume card is the one action they came for, so the
+   marketing hero steps aside once the card is on the page (first visits keep the hero). */
+@media (max-width:860px){ html body:has(.st-resume) .lhero{display:none;} }

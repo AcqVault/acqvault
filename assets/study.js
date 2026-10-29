@@ -389,7 +389,10 @@
     // Skip the very first paint so a cold page load stays on the hero instead of
     // auto-scrolling past it.
     if (!rendered) { rendered = true; return; }
-    var y = Math.max(0, app.getBoundingClientRect().top + window.scrollY - 20);
+    // Clear the sticky nav pill: --lnav-stick is its rest + height (0 on phones, where it
+    // is not sticky). Anchoring at -20 put each view's first row under the pill.
+    var stick = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--lnav-stick')) || 0;
+    var y = Math.max(0, app.getBoundingClientRect().top + window.scrollY - stick - 20);
     if (Math.abs(y - window.scrollY) > 2) window.scrollTo({ top: y, behavior: 'instant' });
     // Move focus into the new view (skipping the first paint, like the scroll above) so a
     // keyboard user isn't dropped on <body> and a screen reader announces the new card.
@@ -410,7 +413,30 @@
         '<span class="st-tc-kicker">' + kicker + '</span><b>' + name + '</b><p>' + blurb + '</p></span></button>';
     }
     var nBasic = trackLessonCount('basic'), nAdv = trackLessonCount('advanced');
+    /* The returning user wants back in with one action. Before this, their progress
+       surfaced as a small "you were here" pill on a marketing page; now the next lesson
+       and the review pile lead, and the course picker follows. */
+    var resumeHtml = '', rNext = null, rDue = 0;
+    if (last) {
+      var rLessons = courseLessons(), rProg = courseProgress(rLessons);
+      rDue = recallPool().filter(function (c) { return isDue(c.id) && cardState(c.id).box > 0; }).length;
+      if (rProg.done || rDue) {
+        rNext = rLessons.filter(function (l) { return !lessonDone(l.key); })[0];
+        var run = streakRun();
+        resumeHtml = '<section class="st-resume" aria-labelledby="st-resume-h">' +
+          '<div class="st-resume-body"><span class="st-resume-eyebrow">Welcome back \u00b7 ' +
+          (last === 'basic' ? 'Basic' : 'Advanced') + (run >= 2 ? ' \u00b7 ' + run + '-day streak' : '') + '</span>' +
+          '<h2 class="st-resume-h" id="st-resume-h">' + (rNext ? 'Lesson ' + rNext.n + ' \u00b7 ' + esc(rNext.topic) : 'Course complete \u2014 keep it sharp') + '</h2>' +
+          '<span class="st-resume-sub">' + rProg.done + ' of ' + rProg.total + ' lessons complete' +
+          (rDue ? ' \u00b7 <b>' + rDue + ' card' + (rDue !== 1 ? 's' : '') + ' due for review</b>' : ' \u00b7 nothing due for review') + '</span></div>' +
+          '<div class="st-resume-actions">' +
+          (rNext ? '<button class="rz-btn rz-btn-go" id="st-resume-go">Continue lesson <span aria-hidden="true">\u2192</span></button>' : '') +
+          (rDue ? '<button class="rz-btn ' + (rNext ? 'rz-btn-ghost' : 'rz-btn-go') + '" id="st-resume-review">Review ' + Math.min(rDue, SESSION_CAP) + ' due</button>' : '') +
+          '</div></section>';
+      }
+    }
     render(
+      resumeHtml +
       '<p class="st-intro"><b>Learn</b> the whole domain as a course, then <b>practice by deciding</b> in the simulators.</p>' +
       '<h2 class="st-h2" style="margin-top:2px">Courses</h2>' +
       '<p class="st-sub">Two courses, walked lesson by lesson. Progress saves per lesson and per card, and you can switch between them any time without losing it.</p>' +
@@ -423,6 +449,8 @@
       gamesSectionHtml());
     el('t-basic').onclick = function () { S.track = 'basic'; depth1View = viewCourse; save(); goDepth(1, viewCourse); };
     el('t-adv').onclick = function () { S.track = 'advanced'; depth1View = viewCourse; save(); goDepth(1, viewCourse); };
+    if (el('st-resume-go')) el('st-resume-go').onclick = function () { depth1View = viewCourse; openLesson(rNext.key); };
+    if (el('st-resume-review')) el('st-resume-review').onclick = function () { depth1View = viewHome; goDepth(1, viewHome); };
     wireGamesSection();
   }
 
@@ -455,15 +483,35 @@
     // on the day you return is how a backlog becomes a wall.
     var due = comeback ? seenDue : dueAll;
     var byTopic = topicsFor(pool);
-    var names = Object.keys(byTopic).sort();
-    var rows = names.map(function (t) {
+    function topicRow(t) {
       var m = mastery(byTopic[t]);
       var d = byTopic[t].filter(function (c) { return isDue(c.id); }).length;
       return '<button class="st-topic" data-topic="' + esc(t) + '" aria-label="Study ' + esc(t) + ', mastery ' + m + ' percent">' +
         '<span class="st-topic-name">' + esc(t) + '</span>' +
         '<span class="st-bar" aria-hidden="true"><span class="st-bar-fill" style="width:' + m + '%"></span></span>' +
         '<span class="st-topic-meta">' + m + '%' + (d ? ' <b class="st-due">· ' + d + ' due</b>' : '') + '</span></button>';
-    }).join('');
+    }
+    /* 41+ topics in one alphabetical grid was the confirmed cognitive-load problem. Lead
+       with the handful that need work (weakest mastery among topics with cards due), and
+       keep the full list behind a disclosure, grouped the way the course outline is. */
+    var names = Object.keys(byTopic);
+    var focus = names.filter(function (t) { return byTopic[t].some(function (c) { return isDue(c.id); }); });
+    if (!focus.length) focus = names.slice();
+    // Topics you have met and are shaky on come before ones you have never opened.
+    function met(t) { return byTopic[t].some(function (c) { return cardState(c.id).box > 0; }) ? 0 : 1; }
+    focus.sort(function (a, b) { return met(a) - met(b) || mastery(byTopic[a]) - mastery(byTopic[b]) || a.localeCompare(b); });
+    focus = focus.slice(0, 6);
+    var grouped = '', placed = {};
+    courseSections().forEach(function (sec) {
+      var ts = sec[2].filter(function (t) { return byTopic[t] && !placed[t]; });
+      if (!ts.length) return;
+      ts.forEach(function (t) { placed[t] = 1; });
+      grouped += '<h3 class="st-topic-sec">' + esc(sec[1]) + '</h3><div class="st-topics">' + ts.map(topicRow).join('') + '</div>';
+    });
+    var rest = names.filter(function (t) { return !placed[t]; }).sort();
+    if (rest.length) grouped += '<h3 class="st-topic-sec">More</h3><div class="st-topics">' + rest.map(topicRow).join('') + '</div>';
+    var topicsHtml = '<div class="st-topics">' + focus.map(topicRow).join('') + '</div>' +
+      '<details class="st-topic-all"><summary>All ' + names.length + ' topics by section</summary>' + grouped + '</details>';
     /* The scenario self-grade (1 rough / 2 getting there / 3 board-ready) reads back on
        the Board Simulator card on the landing page — see gamesSectionHtml(). */
     var overall = mastery(pool);
@@ -529,9 +577,9 @@
       '<button class="st-mode" id="m-deep"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Deep Study</b><span>Endless random cards, every topic in the mix — go as long as you want</span></button>' +
       '<button class="st-mode" id="m-sprint"><b><span class="st-mode-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Threshold Sprint</b><span>Rapid-fire numbers · best streak ' + (S.sprint.best || 0) + '</span></button>' +
       '</div>' +
-      '<div class="st-ready-head"><h2 class="st-h2">Readiness by topic</h2><span class="st-overall">' + overall + '% overall</span></div>' +
-      '<p class="st-sub">Tap a topic to study it directly, due or not.</p>' +
-      '<div class="st-topics">' + rows + '</div>' +
+      '<div class="st-ready-head"><h2 class="st-h2">Where to focus</h2><span class="st-overall">' + overall + '% overall</span></div>' +
+      '<p class="st-sub">Your weakest topics with cards waiting. Tap one to study it directly, due or not.</p>' +
+      topicsHtml +
       footToolsHtml()
     );
     if (due.length) el('m-daily').onclick = function () { goDepth(2, function () { startSession(due, 'Daily Review'); }); };

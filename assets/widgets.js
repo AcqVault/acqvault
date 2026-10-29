@@ -306,7 +306,7 @@
                 <div class="thr-calc-out" id="thr-calc-out" role="status" aria-live="polite"></div>
               </div>
               <div class="thr-list-label">Reference table</div>
-              <div class="thr-list" id="thr-list"></div>
+              <div class="thr-list" id="thr-list" tabindex="0" role="region" aria-label="Threshold reference table (scrolls)"></div>
               <div class="thr-foot">Per the FY2025 inflation adjustment effective Oct. 1, 2025 and carried into the RFO; DoD deviations live in the R-DFARS. Always verify against the live regulation &amp; any class deviations before acting. The RFO may revise these.</div>
             </div>
           </div>

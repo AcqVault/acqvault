@@ -834,7 +834,9 @@ function renderContent(content, title, anchorBase, tables, source, partNum) {
     if (derived === null) derived = decimalLevel(s, source, baseDepth);
     const lvl = derived !== null ? derived
               : (lvlM ? Math.min(parseInt(lvlM[1], 10), 4) : 0);
-    const pcls = lvl > 0 ? ` class="lvl lvl-${lvl}"` : '';
+    // `cont` marks a continuation line (level from the stored L-marker alone, no marker
+    // of its own): the hanging indent the CSS gives .lvl would outdent plain prose there.
+    const pcls = lvl > 0 ? ` class="lvl lvl-${lvl}${derived === null ? ' cont' : ''}"` : '';
     const rt = parseRatingTable(lines, li, esc);
     if (rt) { out.push(rt.html); li = rt.endIdx; continue; }
 
@@ -1279,13 +1281,13 @@ function lnavHtml(canonical) {
          `<nav class="lnav-sheet" aria-label="Menu">${navLinks(canonical)}</nav></details></div></header>`;
 }
 
-function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero, ogType, glass = true }) {
+function shell({ title, description, canonical, jsonld, body, wide, bleed, ogImage, source, partNav, noindex, preload, hero, ogType, glass = true, htmlClass = '' }) {
   const og = ogImage || 'og-home-v2.png';
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en"${htmlClass ? ` class="${htmlClass}"` : ''}>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <title>${esc(title)}</title>
 <meta name="description" content="${description}">
@@ -1301,11 +1303,13 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<link rel=
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${SITE}/assets/${og}">
 <link rel="icon" href="/assets/favicon-vault.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 ${preload || ''}<style>${STYLE}</style>
 ${glass ? `<link rel="stylesheet" href="/assets/glass.css?v=${GLASS_V}">\n` : ''}<script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>
-${bleed ? body : `<a class="pn-skip" href="#main">Skip to content</a>
+${bleed ? `<a class="pn-skip" href="#main">Skip to content</a>\n${body}` : `<a class="pn-skip" href="#main">Skip to content</a>
 ${lnavHtml(canonical)}${hero ? `
 ${hero}` : ''}
 <div class="wrap${wide ? ' wrap--wide' : ''}">
@@ -1359,6 +1363,12 @@ function updatedChip(id, upd) {
   return ` <a class="sec-upd" href="/changes#run-${esc(changesRunSlug(at, upd.dayCount))}" title="Text changed in AcqVault's ${fmtRunDate(at)} re-index">Updated ${short}</a>`;
 }
 
+// "15.101 Early exchanges with industry" → the number in its own span so the eye can
+// walk the numbers down the page; textContent is unchanged, character for character.
+function secTitleHtml(title) {
+  const m = /^((?:Subpart\s+)?\d[\d.\-]*)(\s+)(.+)$/i.exec(String(title || ''));
+  return m ? `<span class="sec-num">${esc(m[1])}</span>${m[2]}${esc(m[3])}` : esc(title);
+}
 function renderPartPage(source, part) {
   const meta = SOURCES[source];
   const { groups } = partsForSource(source);
@@ -1426,7 +1436,7 @@ function renderPartPage(source, part) {
       : '';
     const compassNote = (d.url && !sharedUrl && /dps\.mil/i.test(d.url)) ? srcref(d.url) : '';
     return `<section class="sec" id="${anchor}">
-<div class="sec-hd"><h2><a href="#${anchor}">${esc(d.title)}</a></h2>${updatedChip(d.id, upd)}${src}</div>
+<div class="sec-hd"><h2><a href="#${anchor}">${secTitleHtml(d.title)}</a></h2>${updatedChip(d.id, upd)}${src}</div>
 ${compassNote}
 ${pairChip(source, d, pairIdx, ownCounts)}
 ${supersededChip(d)}
@@ -1468,13 +1478,20 @@ ${renderContent(d.content, d.title, anchor, d.tables, source, part)}
 <p class="lede">${esc(meta.desc)} Full text of ${esc(label)} (${docs.length} ${docs.every(d => /^Chapter /.test(d.title || '')) ? 'chapter' : 'section'}${docs.length !== 1 ? 's' : ''}), searchable at <a href="/?q=part%20${esc(part)}">AcqVault</a>.</p>
 ${partPairBanner(source, part, pairIdx)}
 ${partSrc}
-<div class="part-cols">${toc}<div class="part-main">${sections}</div></div>`;
+<div class="part-cols" data-cite="${esc(meta.short)}"><div class="pn-search" id="pn-search" role="search"></div>${toc}<div class="part-main">${sections}</div></div>`;
 
   return shell({ title, description, canonical, jsonld, body, source, ogImage: `og-src-${source}-v2.png`, partNav: true, wide: docs.length > 1, ogType: 'article' });
 }
 
 // The library seal, reused so the hubs speak the same language as /library and
 // /study rather than opening on bare text links.
+// FAR subchapters A–H by part range; parts past 53 are the DoD-only supplements.
+const FAR_SUBCHAPTERS = [
+  [1, 4, 'General'], [5, 12, 'Competition and Acquisition Planning'],
+  [13, 18, 'Contracting Methods and Contract Types'], [19, 26, 'Socioeconomic Programs'],
+  [27, 33, 'General Contracting Requirements'], [34, 41, 'Special Categories of Contracting'],
+  [42, 51, 'Contract Management'], [52, 53, 'Clauses and Forms'], [54, 999, 'DoD-only supplements']
+];
 const HUB_SEAL = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="hs-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#hs-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
 
 function renderHubPage(source) {
@@ -1488,11 +1505,21 @@ function renderHubPage(source) {
   const description = esc(meta.metaDesc || clampDesc(meta.desc, 155));
 
   const names = partNames()[source] || {};
-  const links = parts.map(p => {
+  const link = p => {
     const nm = names[String(p)] || names[String(displayPartForSource(source, p))];
     return `<a href="/${source}/part-${encodeURIComponent(p)}">${esc(partLabel(source, p))}` +
            (nm ? `<span class="hublabel">${esc(nm)}</span>` : '') + `</a>`;
-  }).join('\n');
+  };
+  // FAR-numbered sources are picked by subchapter, the way the book is organised:
+  // 49 identical cards gave the reader nothing to scan by. Other sources (FMR
+  // volumes, SSP chapters) have no such grouping and keep the flat grid.
+  const farNumbered = parts.length > 12 && parts.every(p => /^\d+$/.test(String(p)));
+  const links = farNumbered
+    ? FAR_SUBCHAPTERS.map(([lo, hi, nm]) => {
+        const ps = parts.filter(p => +p >= lo && +p <= hi);
+        return ps.length ? `<h2 class="parts-grp"><span>${esc(nm)}</span>${hi <= 53 ? `<small>Parts ${lo}–${hi}</small>` : ''}</h2>\n<div class="parts">${ps.map(link).join('\n')}</div>` : '';
+      }).filter(Boolean).join('\n')
+    : `<div class="parts">${parts.map(link).join('\n')}</div>`;
 
   const jsonld = {
     '@context': 'https://schema.org', '@type': 'CollectionPage',
@@ -1504,7 +1531,7 @@ function renderHubPage(source) {
     ? `<p class="lede" style="margin-top:-12px"><strong><a href="/deviations">→ R-DFARS Deviations Index</a></strong> — every deviation with effective date &amp; DARS tracking number.</p>`
     : '';
   const unit = hubUnit(source, parts.length);
-  const hero = `<section class="lband lhero"><div class="lband-inner">
+  const hero = `<section class="lband lhero" aria-label="Overview"><div class="lband-inner">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › ${esc(meta.name)}</nav>
 <div class="eyebrow">AcqVault · Full text</div>
 <h1>${esc(meta.name)}</h1>
@@ -1514,7 +1541,7 @@ ${HUB_SEAL}
 </div></section>`;
   const body = `<p class="lede lede--hub">Browse all ${parts.length} ${unit} below, or <a href="/?home=1">search the full text</a>.</p>
 ${devLink}
-<div class="parts">${links}</div>`;
+${links}`;
 
   return shell({ title, description, canonical, jsonld, body, hero, source, ogImage: `og-src-${source}-v2.png` });
 }
@@ -1526,8 +1553,10 @@ function renderDeviationsPage() {
   const title = `R-DFARS Deviations Index — DoD class deviations for the FAR Overhaul | AcqVault`;
   const description = esc(`All ${rows.length} DoD R-DFARS class deviations implementing the Revolutionary FAR Overhaul — RFO part, legacy DFARS reference, effective date, DARS tracking number, and full text.`);
 
+  const names = partNames().rfo || {};   // the column is the RFO part
+  const devName = p => names[String(p)] || '';
   const tr = rows.map(r => `<tr>
-<td><a href="/r-dfars/part-${esc(r.rfo_part)}">${Number(r.rfo_part) > 53 ? 'DFARS only' : 'Part ' + esc(r.rfo_part)}</a></td>
+<td><a href="/r-dfars/part-${esc(r.rfo_part)}">${Number(r.rfo_part) > 53 ? 'DFARS only' : 'Part ' + esc(r.rfo_part)}${devName(r.rfo_part) ? `<span class="hublabel">${esc(devName(r.rfo_part))}</span>` : ''}</a></td>
 <td>${r.dfars_part ? 'DFARS ' + esc(r.dfars_part) : '—'}</td>
 <td>${esc(r.effective || '—')}</td>
 <td class="mono">${esc(r.dars || '—')}${r.revision ? ' Rev.&nbsp;' + esc(r.revision) : ''}</td>
@@ -1541,7 +1570,7 @@ function renderDeviationsPage() {
   };
 
   const withMemo = rows.filter(r => r.pdf_url).length;
-  const hero = `<section class="lband lhero"><div class="lband-inner">
+  const hero = `<section class="lband lhero" aria-label="Overview"><div class="lband-inner">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/r-dfars">R-DFARS Deviations</a> › Index</nav>
 <div class="eyebrow">AcqVault · R-DFARS</div>
 <h1>R-DFARS Deviations Index</h1>
@@ -1650,7 +1679,7 @@ ${cat.blurb ? `<p class="catblurb">${esc(cat.blurb)}</p>` : ''}
 
 
   const body = `${lnavHtml(canonical)}
-<main>
+<main id="main" tabindex="-1">
 <section class="lband lhero"><div class="lband-inner">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Library</nav>
 <div class="eyebrow">AcqVault · Library</div>
@@ -1702,6 +1731,7 @@ function renderChangesPage() {
   // first one. Same-day runs carry their UTC time in both.
   const dayCount = runDayCount(runs);
   const runSlug = (iso) => changesRunSlug(iso, dayCount);
+  const rfoNames = partNames().rfo || {};
   const runHtml = [...runs].reverse().map(run => {
     const rfo = run.rfo || {};
     const added = rfo.added || [];
@@ -1730,7 +1760,7 @@ function renderChangesPage() {
         return `<li>${kindChip}${link}</li>`;
       }).join('\n');
       return `<details class="chg-part">
-<summary><strong>RFO Part ${esc(p)}</strong> — ${byPart.get(p).length} section${byPart.get(p).length !== 1 ? 's' : ''}</summary>
+<summary><strong>RFO Part ${esc(p)}</strong>${rfoNames[p] ? ` <span class="chg-nm">${esc(rfoNames[p])}</span>` : ''} <span class="chg-n">${byPart.get(p).length} section${byPart.get(p).length !== 1 ? 's' : ''}</span></summary>
 <ul class="chg-list">${rows}</ul>
 </details>`;
     }).join('\n');
@@ -1807,7 +1837,7 @@ ul.chg-other{font-size:var(--fs-md);color:var(--muted);margin:4px 0 0;padding-le
 .chg-run--quiet .chg-checked{margin-top:0;flex-basis:100%}
 </style>`;
 
-  const hero = `<section class="lband lhero"><div class="lband-inner">
+  const hero = `<section class="lband lhero" aria-label="Overview"><div class="lband-inner">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › What changed</nav>
 <div class="eyebrow">AcqVault · Change record</div>
 <h1>What changed</h1>
@@ -3225,7 +3255,7 @@ function renderStudyPage() {
   const SEAL_SVG = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="st-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#st-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
 
   const body = `${STUDY_CSS}${lnavHtml(canonical)}
-<main>
+<main id="main" tabindex="-1">
 <section class="lband lhero"><div class="lband-inner">
 ${SEAL_SVG}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › Study</nav>
@@ -3268,7 +3298,7 @@ function render48ConsPage() {
 
 
   const body = `${STUDY_CSS}${lnavHtml(canonical)}
-<main>
+<main id="main" tabindex="-1">
 <section class="lband lhero lhero--cons lband--rail"><div class="lband-inner">
 <img class="cons-patch" src="/assets/48cons-patch.png?v=3" alt="48th Contracting Squadron emblem" width="182" height="186" decoding="async">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> &rsaquo; <a href="/study">Study</a> &rsaquo; Warrant board prep</nav>
@@ -3288,7 +3318,7 @@ function render48ConsPage() {
 </div></footer>
 <script defer src="/assets/study.js?v=${STUDY_V}"></script>`;
 
-  return shell({ title, description, canonical, jsonld, body, preload: DECK_PRELOAD, bleed: true, noindex: true, ogImage: 'og-study-v2.png' });
+  return shell({ title, description, canonical, jsonld, body, preload: DECK_PRELOAD, bleed: true, noindex: true, ogImage: 'og-study-v2.png', htmlClass: 'st-hero-off' });
 }
 
 /* Blank Slip - an unlisted party game at /slip. Kept hidden exactly the way
@@ -4094,7 +4124,7 @@ ${CHROME_CSS(22, 34)}
   const SEAL = '<svg class="lib-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="ss-seal-g" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#f2d89a"/><stop offset="48%" stop-color="#cda857"/><stop offset="100%" stop-color="#876514"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#ss-seal-g)" stroke="#6f521a" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6f521a" stroke-width="1" stroke-dasharray="1.2 2.6" opacity="0.55"/><circle cx="50" cy="50" r="22" fill="none" stroke="#16263f" stroke-width="2.4" opacity="0.9"/><g stroke="#16263f" stroke-width="3" stroke-linecap="round" opacity="0.9"><line x1="50" y1="33" x2="50" y2="41"/><line x1="50" y1="67" x2="50" y2="59"/><line x1="33" y1="50" x2="41" y2="50"/><line x1="67" y1="50" x2="59" y2="50"/></g><circle cx="50" cy="50" r="5.5" fill="#16263f" opacity="0.9"/></svg>';
 
   const body = `${SRCSEL_CSS}${lnavHtml(canonical)}
-<main>
+<main id="main" tabindex="-1">
 <section class="lband lhero"><div class="lband-inner">
 ${SEAL}
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › <a href="/study">Study</a> › Source Selection</nav>
@@ -4144,7 +4174,7 @@ function renderExplainerPage() {
       '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }
   ]};
 
-  const hero = `<section class="lband lhero"><div class="lband-inner">
+  const hero = `<section class="lband lhero" aria-label="Overview"><div class="lband-inner">
 <nav class="crumbs"><a href="/?home=1">AcqVault</a> › What is the RFO?</nav>
 <div class="eyebrow">AcqVault · Explainer</div>
 <h1>What is the Revolutionary FAR&nbsp;Overhaul?</h1>
@@ -4191,7 +4221,7 @@ ${body}
 // 404s (unknown routes); this covers bad source/part params inside the hub/page
 // functions. If you edit one, hand-copy the change to the other.
 function renderNotFoundPage() {
-  return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Page not found — AcqVault</title>\n<meta name=\"robots\" content=\"noindex\">\n<link rel=\"icon\" href=\"/assets/favicon-vault.svg\" type=\"image/svg+xml\">\n<style>\n@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}\n*{box-sizing:border-box;margin:0;padding:0;}\nbody{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;\n  background:radial-gradient(120% 140% at 12% 8%,#1b436b 0%,#123253 42%,var(--ink-to) 100%);\n  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color:#eaf1fb;}\n.card{max-width:520px;width:100%;text-align:center;padding:48px 32px;}\n.dial{width:88px;height:88px;margin:0 auto 28px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.4));}\n.eyebrow{font-size:var(--fs-base);font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-bright);margin-bottom:14px;}\nh1{font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:clamp(30px,6vw,42px);line-height:1.05;letter-spacing:-.015em;color:#fff;margin-bottom:14px;}\np{font-size:16px;line-height:1.55;color:rgba(230,238,248,.82);margin-bottom:28px;}\n.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}\n.btn{display:inline-block;font-size:var(--fs-lg);font-weight:700;text-decoration:none;padding:11px 20px;border-radius:var(--r-pill);transition:transform .15s,background .15s;}\n.btn:hover{transform:translateY(-1px);}\n.btn-brass{background:var(--brass-bright);color:var(--ink-to);}\n.btn-brass:hover{background:#f0d79a;}\n.btn-ghost{color:#eaf1fb;border:1px solid rgba(255,255,255,.22);}\n.btn-ghost:hover{background:rgba(255,255,255,.07);}\n.links{margin-top:24px;font-size:var(--fs-md);color:rgba(230,238,248,.6);}\n.links a{color:var(--brass-bright);text-decoration:none;margin:0 8px;}\n.links a:hover{text-decoration:underline;}\na:focus-visible,.btn:focus-visible{outline:2px solid var(--brass-bright);outline-offset:3px;}\n</style>\n</head>\n<body>\n<main class=\"card\">\n  <svg class=\"dial\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"94\" height=\"94\" rx=\"20\" fill=\"#0f2540\" stroke=\"#6f521a\" stroke-width=\"1\"/><rect x=\"11\" y=\"11\" width=\"78\" height=\"78\" rx=\"14\" fill=\"none\" stroke=\"#87651c\" stroke-width=\"2\"/><circle cx=\"50\" cy=\"50\" r=\"24\" fill=\"none\" stroke=\"#e4c477\" stroke-width=\"3.5\"/><g stroke=\"#e4c477\" stroke-width=\"4\" stroke-linecap=\"round\"><line x1=\"50\" y1=\"29\" x2=\"50\" y2=\"39\"/><line x1=\"50\" y1=\"71\" x2=\"50\" y2=\"61\"/><line x1=\"29\" y1=\"50\" x2=\"39\" y2=\"50\"/><line x1=\"71\" y1=\"50\" x2=\"61\" y2=\"50\"/></g><circle cx=\"50\" cy=\"50\" r=\"6\" fill=\"#e4c477\"/></svg>\n  <div class=\"eyebrow\">404 · Not found</div>\n  <h1>This one isn&rsquo;t in the vault.</h1>\n  <p>The page you&rsquo;re after doesn&rsquo;t exist — it may have moved when the rulebook did. Search the full text instead, or start from the front door.</p>\n  <div class=\"actions\">\n    <a class=\"btn btn-brass\" href=\"/?q=\">Search the rulebook</a>\n    <a class=\"btn btn-ghost\" href=\"/?home=1\">Go home</a>\n  </div>\n  <div class=\"links\">\n    <a href=\"/rfo\">RFO</a>·<a href=\"/r-dfars\">R-DFARS</a>·<a href=\"/library\">Library</a>·<a href=\"/study\">Study</a>\n  </div>\n</main>\n</body>\n</html>\n";
+  return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n<title>Page not found — AcqVault</title>\n<meta name=\"robots\" content=\"noindex\">\n<link rel=\"icon\" href=\"/assets/favicon-vault.svg\" type=\"image/svg+xml\">\n<style>\n@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url(/assets/fonts/source-serif4-latin.woff2) format('woff2');}\n*{box-sizing:border-box;margin:0;padding:0;}\nbody{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;\n  background:radial-gradient(120% 140% at 12% 8%,#1b436b 0%,#123253 42%,#0a1c33 100%);\n  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color:#eaf1fb;}\n.card{max-width:520px;width:100%;text-align:center;padding:48px 32px;}\n.dial{width:88px;height:88px;margin:0 auto 28px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.4));}\n.eyebrow{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#e4c477;margin-bottom:14px;}\nh1{font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:clamp(30px,6vw,42px);line-height:1.05;letter-spacing:-.015em;color:#fff;margin-bottom:14px;}\np{font-size:16px;line-height:1.55;color:rgba(230,238,248,.82);margin-bottom:28px;}\n.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}\n.btn{display:inline-block;font-size:14.5px;font-weight:700;text-decoration:none;padding:11px 22px;border-radius:999px;transition:transform .15s,background .15s;}\n.btn:hover{transform:translateY(-1px);}\n.btn-brass{background:#e4c477;color:#0a1c33;}\n.btn-brass:hover{background:#f0d79a;}\n.btn-ghost{color:#eaf1fb;border:1px solid rgba(255,255,255,.22);}\n.btn-ghost:hover{background:rgba(255,255,255,.07);}\n.links{margin-top:26px;font-size:14px;color:rgba(230,238,248,.6);}\n.links a{color:#e4c477;text-decoration:none;margin:0 8px;}\n.links a:hover{text-decoration:underline;}\na:focus-visible,.btn:focus-visible{outline:2px solid #e4c477;outline-offset:3px;}\n</style>\n</head>\n<body>\n<main class=\"card\">\n  <svg class=\"dial\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"94\" height=\"94\" rx=\"20\" fill=\"#0f2540\" stroke=\"#6f521a\" stroke-width=\"1\"/><rect x=\"11\" y=\"11\" width=\"78\" height=\"78\" rx=\"14\" fill=\"none\" stroke=\"#87651c\" stroke-width=\"2\"/><circle cx=\"50\" cy=\"50\" r=\"24\" fill=\"none\" stroke=\"#e4c477\" stroke-width=\"3.5\"/><g stroke=\"#e4c477\" stroke-width=\"4\" stroke-linecap=\"round\"><line x1=\"50\" y1=\"29\" x2=\"50\" y2=\"39\"/><line x1=\"50\" y1=\"71\" x2=\"50\" y2=\"61\"/><line x1=\"29\" y1=\"50\" x2=\"39\" y2=\"50\"/><line x1=\"71\" y1=\"50\" x2=\"61\" y2=\"50\"/></g><circle cx=\"50\" cy=\"50\" r=\"6\" fill=\"#e4c477\"/></svg>\n  <div class=\"eyebrow\">404 · Not found</div>\n  <h1>This one isn&rsquo;t in the vault.</h1>\n  <p>The page you&rsquo;re after doesn&rsquo;t exist — it may have moved when the rulebook did. Search the full text instead, or start from the front door.</p>\n  <div class=\"actions\">\n    <a class=\"btn btn-brass\" href=\"/?q=\">Search the rulebook</a>\n    <a class=\"btn btn-ghost\" href=\"/?home=1\">Go home</a>\n  </div>\n  <div class=\"links\">\n    <a href=\"/rfo\">RFO</a>·<a href=\"/r-dfars\">R-DFARS</a>·<a href=\"/library\">Library</a>·<a href=\"/study\">Study</a>\n  </div>\n</main>\n</body>\n</html>\n";
 }
 
 module.exports = { SOURCES, SOURCE_KEYS, partLabel, displayPartForSource, partWord, regOrderKey, renderPartPage, renderHubPage, renderDeviationsPage, renderExplainerPage, renderLibraryPage, renderChangesPage, renderStudyPage, renderSourceSelectionPage, render48ConsPage, renderSlipPage, renderSitemap, renderNotFoundPage, SITE };

@@ -92,4 +92,13 @@
     var m = (e && e.detail && e.detail.mode) || '';
     if (m === 'browse' || m === 'fulltext') send({ a: m });
   });
+  // Not analytics: the one script every server page loads also gives the <details> site
+  // menu the Escape-to-close every other overlay on the site has, returning focus to its button.
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var d = document.querySelector('details.lnav-menu[open]');
+    if (!d) return;
+    d.open = false;
+    var s = d.querySelector('summary'); if (s) s.focus();
+  });
 })();

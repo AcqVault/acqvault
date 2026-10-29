@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <title>Revolutionary FAR Overhaul &amp; R-DFARS Deviations Search | AcqVault</title>
 <link rel="icon" href="/assets/favicon-vault.svg" type="image/svg+xml">
@@ -36,7 +36,7 @@
 <link rel="preload" href="/assets/fonts/source-serif4-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.usaspending.gov" crossorigin>
 <link rel="stylesheet" href="/assets/app.css?v=08ce6d839146">
-<link rel="stylesheet" href="/assets/glass.css?v=ef6d64e867b1">
+<link rel="stylesheet" href="/assets/glass.css?v=52e81746d13b">
 </head>
 <body data-xlsx="/assets/xlsxgen.js?v=2389f2dc3cfa">
 
@@ -71,8 +71,6 @@
       <a href="/library">Library</a>
       <a href="/study">Study</a>
       <!-- Toolkit injected after Study by widgets.js -->
-      <a href="#quick-links">Quick Links</a>
-      <a href="#sources">Coverage</a>
     </div>
     <div class="nav-right">
       <button class="nav-saved-btn" id="nav-saved" type="button" aria-haspopup="dialog" aria-label="Open saved clauses and searches"><span class="nav-saved-star" aria-hidden="true">★</span><span class="nav-saved-label">Saved</span><span class="nav-saved-count" id="nav-saved-count" style="display:none"></span></button>
@@ -104,6 +102,27 @@
         <p class="hero-sub">Full-text search across all eight official sources — free, no account. Just the authoritative <strong>RFO</strong>, <strong>R-DFARS</strong>, and DoD acquisition text, every copy dated. No summaries and no paraphrase — the text itself.</p>
       </div>
 
+      <!-- mode tabs (Search / Browse / Full Text) sit above the field they switch -->
+      <div class="hero-command-dock hero-command-dock-b" aria-label="Search modes and live sources">
+        <div class="mode-toggle">
+          <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" data-action="set-mode" data-arg="search"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg> Search</button>
+          <div class="browse-source-picker">
+            <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="true" aria-expanded="false" data-action="toggle-browse-menu"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/></svg> <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
+            <div class="browse-source-menu" id="browse-source-menu" role="group" aria-label="Browse by source or regulation">
+              <button type="button" data-action="choose-browse-source" data-arg="rfo"><span>RFO</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="r-dfars"><span>R-DFARS</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="pgi"><span>R-DFARS PGI</span><small>Guidance</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="far-companion"><span>FAR Companion</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="category-management"><span>Category Management Buying Guide</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="afi-63-138"><span>DAFI 63-138</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="fmr"><span>DoW FMR</span><small>Live</small></button>
+              <button type="button" data-action="choose-browse-source" data-arg="ssp"><span>DoD Source Selection Procedures</span><small>Live</small></button>
+            </div>
+          </div>
+          <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" data-action="set-mode" data-arg="fulltext"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg> <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
+        </div>
+      </div>
+
       <div class="search-container" role="search">
         <span class="search-glow" aria-hidden="true"></span>
         <div class="search-bar">
@@ -129,27 +148,6 @@
         <span class="hero-newhere-txt">New to the <strong>RFO</strong>? It's the Revolutionary FAR Overhaul — the rewritten FAR you cite for new acquisitions, in place of the legacy FAR/DFARS.</span>
         <a class="hero-newhere-link" href="/what-is-the-rfo">What changed →</a>
         <button class="hero-newhere-x" type="button" aria-label="Dismiss" data-action="dismiss-newhere">✕</button>
-      </div>
-
-      <!-- compact secondary mode row (Browse / Full Text) -->
-      <div class="hero-command-dock hero-command-dock-b" aria-label="Search modes and live sources">
-        <div class="mode-toggle">
-          <button type="button" class="mode-btn active" id="mode-search" aria-pressed="true" data-action="set-mode" data-arg="search"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg> Search</button>
-          <div class="browse-source-picker">
-            <button type="button" class="mode-btn" id="mode-browse" aria-pressed="false" aria-haspopup="true" aria-expanded="false" data-action="toggle-browse-menu"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.2"/></svg> <span class="mode-btn-long">Browse by Source/Regulation</span><span class="mode-btn-short">Browse</span></button>
-            <div class="browse-source-menu" id="browse-source-menu" role="group" aria-label="Browse by source or regulation">
-              <button type="button" data-action="choose-browse-source" data-arg="rfo"><span>RFO</span><small>Live</small></button>
-              <button type="button" data-action="choose-browse-source" data-arg="r-dfars"><span>R-DFARS</span><small>Live</small></button>
-              <button type="button" data-action="choose-browse-source" data-arg="pgi"><span>R-DFARS PGI</span><small>Guidance</small></button>
-              <button type="button" data-action="choose-browse-source" data-arg="far-companion"><span>FAR Companion</span><small>Live</small></button>
-              <button type="button" data-action="choose-browse-source" data-arg="category-management"><span>Category Management Buying Guide</span><small>Live</small></button>
-              <button type="button" data-action="choose-browse-source" data-arg="afi-63-138"><span>DAFI 63-138</span><small>Live</small></button>
-              <button type="button" data-action="choose-browse-source" data-arg="fmr"><span>DoW FMR</span><small>Live</small></button>
-              <button type="button" data-action="choose-browse-source" data-arg="ssp"><span>DoD Source Selection Procedures</span><small>Live</small></button>
-            </div>
-          </div>
-          <button type="button" class="mode-btn" id="mode-fulltext" aria-pressed="false" data-action="set-mode" data-arg="fulltext"><svg class="mode-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg> <span class="mode-btn-long">Full Text</span><span class="mode-btn-short">PDFs</span></button>
-        </div>
       </div>
 
       <!-- bottom stats + source strip -->
@@ -297,14 +295,11 @@
   <div class="sec-inner">
     <p class="eyebrow eyebrow-dark fade-up">Market research</p>
     <h2 class="sec-head fade-up">From requirement idea<br>to market signal.</h2>
-    <p class="sec-sub sec-sub-dark fade-up">A dedicated acquisition research workspace for SAM.gov discovery, comparable notices, likely NAICS and PSC codes, <b>the contract vehicles that already cover your market</b> — GWACs, IDIQs, BPAs, schedules, with fees and ordering rules — and the source links that turn a search into a defensible file.</p>
+    <p class="sec-sub sec-sub-dark fade-up">Search SAM.gov notices and awards without leaving the page, pin what matters to a board, and see <b>the contract vehicles that already cover your market</b> — GWACs, IDIQs, BPAs and schedules, with fees and ordering rules.</p>
     <div class="market-shell">
       <div class="market-panel market-search-panel fade-up">
         <div class="market-kicker">
           <span class="market-chip live">In-site SAM.gov search</span>
-          <span class="market-chip">Opportunities</span>
-          <span class="market-chip">Awards</span>
-          <span class="market-chip">Set-asides</span>
           <button type="button" class="market-chip market-chip-btn" id="market-veh-chip" aria-haspopup="dialog" title="Browse every contract vehicle AcqVault tracks">Contract vehicles →</button>
         </div>
         <div class="market-query">
@@ -312,7 +307,7 @@
           <input type="text" placeholder="Search a requirement (e.g. base operations support)" aria-label="Market research query" id="market-query-input" />
           <button class="market-btn" type="button" id="market-snapshot-btn">Search market</button>
         </div>
-        <p class="market-query-hint">Keyword matches the notice <strong>title</strong> only. Add a NAICS or PSC code below for a whole-market scan across awards and closed notices — a keyword of 3+ letters also ranks the results.</p>
+        <p class="market-query-hint">Keyword matches the notice <strong>title</strong>. Add a NAICS or PSC code for a whole-market scan across awards and closed notices.</p>
         <div class="market-filter-grid market-filter-grid-wide">
           <label class="market-field"><span class="market-label">NAICS</span><input type="text" inputmode="numeric" value="" placeholder="optional" aria-label="NAICS code" id="market-naics-input" /></label>
           <label class="market-field"><span class="market-label">PSC</span><input type="text" value="" placeholder="optional" aria-label="PSC code" id="market-psc-input" /></label>
@@ -324,7 +319,6 @@
         <div class="market-selectable">
           <div class="market-selectable-head">
             <span class="market-label">Notice type</span>
-            <span class="market-selectable-hint">Selectable filters. All is selected by default for the broadest market view.</span>
           </div>
           <div class="market-pill-row" id="market-notice-types" role="group" aria-label="Notice type filters">
             <button type="button" class="market-pill active" data-type="all" aria-pressed="true">All</button>
@@ -337,27 +331,11 @@
           </div>
         </div>
         <div class="market-resource-row">
-          <div class="market-resource-note">Use the in-site results for discovery, then jump to the official record or source guidance when you need the authoritative file.</div>
+          <div class="market-resource-note">For the authoritative file, go to the official record.</div>
           <div class="market-actions">
             <a class="market-action primary" href="https://sam.gov/search/" target="_blank" rel="noopener">Open SAM.gov</a>
             <a class="market-action" href="https://www.gsa.gov/about-us/organization/federal-acquisition-service/customer-and-stakeholder-engagement/market-research-as-a-service" target="_blank" rel="noopener">GSA MRAS</a>
             <a class="market-action" href="/rfo/part-10">RFO Part 10</a>
-          </div>
-        </div>
-        <div class="market-flow" aria-label="How to use this tool">
-          <div class="market-flow-step">
-            <span class="market-flow-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>
-            <div class="market-flow-tx"><div class="market-flow-t">Search opportunities</div><div class="market-flow-d">By keyword, NAICS, PSC, agency, or set-aside — results appear below.</div></div>
-          </div>
-          <span class="market-flow-sep" aria-hidden="true">→</span>
-          <div class="market-flow-step">
-            <span class="market-flow-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4.2L5 21V4.5a1 1 0 0 1 1-1Z"/></svg></span>
-            <div class="market-flow-tx"><div class="market-flow-t">Pin to your board</div><div class="market-flow-d">Tap the bookmark on any result to build your working set.</div></div>
-          </div>
-          <span class="market-flow-sep" aria-hidden="true">→</span>
-          <div class="market-flow-step">
-            <span class="market-flow-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7l-4-4Z"/><path d="M14 3v4h4"/><line x1="9" y1="13.5" x2="15" y2="13.5"/><line x1="9" y1="17" x2="13.5" y2="17"/></svg></span>
-            <div class="market-flow-tx"><div class="market-flow-t">Open the board → generate</div><div class="market-flow-d">Review incumbents &amp; patterns, then generate a report or copy a snapshot.</div></div>
           </div>
         </div>
         <div class="market-panel market-results-panel">
@@ -370,7 +348,7 @@
         </div>
           <div class="market-active-filters" id="market-active-filters" role="group" aria-label="Active filters" hidden></div>
           <div class="market-results-list" id="market-results-list">
-            <div class="market-empty"><strong>Ready for market research.</strong> Keep Notice type on All for broad discovery, or select one or more types to narrow the result set.</div>
+            <div class="market-empty"><strong>Ready for market research.</strong> Search a requirement above; pin results with the bookmark to build a board, then generate a report from it.</div>
           </div>
         </div>
       </div>
@@ -537,6 +515,8 @@
       <a href="/changes" id="foot-changes">What Changed</a>
       <a href="/library">Library</a>
       <a href="/study">Study</a>
+      <a href="#quick-links">Quick Links</a>
+      <a href="#sources">Coverage</a>
       <a href="#" data-action="open-feedback">Feedback</a>
       <a href="https://github.com/AcqVault/acqvault" target="_blank" rel="noopener">GitHub</a>
     </div>
@@ -615,10 +595,10 @@
 </div>
 
 
-<script defer src="/assets/analytics.js?v=174b6d5d3dd2"></script>
+<script defer src="/assets/analytics.js?v=862faa01eea3"></script>
 <script defer src="/assets/app.js?v=1564af3fc5a0"></script>
 <script defer src="/assets/saved.js?v=36e416a3f758"></script>
-<script defer src="/assets/widgets.js?v=f41c04c086a9"></script>
+<script defer src="/assets/widgets.js?v=43b5a00456a3"></script>
 <script defer src="/assets/polish.js?v=8afd617d63bc"></script>
 </body>
 </html>
