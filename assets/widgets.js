@@ -1017,7 +1017,7 @@
   function osrRenderTokens() {
     const host = $('#osr-tokens'); if (!host) return;
     host.innerHTML = osrPicked.map((o, i) =>
-      '<span class="osr-token"' + (o.missing ? ' data-missing="1"' : '') + '><b>' + esc(o.code) + '</b>'
+      '<span class="osr-token" role="listitem"' + (o.missing ? ' data-missing="1"' : '') + '><b>' + esc(o.code) + '</b>'
       + (o.name ? '<span>' + esc(o.name) + '</span>' : '')
       + '<button type="button" class="osr-token-x" data-i="' + i + '" aria-label="Remove ' + esc(o.code) + (o.name ? ' ' + esc(o.name) : '') + '">&times;</button></span>').join('');
     host.hidden = !osrPicked.length;

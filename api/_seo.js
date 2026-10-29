@@ -190,6 +190,14 @@ function partNames() {
   try {
     partNamesCache = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'output', 'part-labels.json'), 'utf8'));
   } catch (e) { partNamesCache = {}; }
+  // The in-app grid's DFARS/PGI labels are abbreviated to fit tiles ("Fed A-R Sys"). Their part
+  // titles mirror the FAR/RFO part of the same number (DFARS 215 = Part 15), so pages use the full
+  // name; parts with no RFO twin (DFARS 270) keep their own label.
+  const rfo = partNamesCache.rfo || {};
+  for (const src of ['r-dfars', 'pgi']) {
+    const m = partNamesCache[src]; if (!m) continue;
+    for (const k of Object.keys(m)) { const twin = rfo[String(+k % 200)]; if (twin) m[k] = twin; }
+  }
   return partNamesCache;
 }
 
@@ -1360,7 +1368,7 @@ function updatedChip(id, upd) {
   if (!at) return '';
   const d = new Date(at);
   const short = `${MONTHS[d.getUTCMonth()].slice(0, 3)} ${d.getUTCDate()}`;
-  return ` <a class="sec-upd" href="/changes#run-${esc(changesRunSlug(at, upd.dayCount))}" title="Text changed in AcqVault's ${fmtRunDate(at)} re-index">Updated ${short}</a>`;
+  return ` <a class="sec-upd" data-at="${esc(at)}" href="/changes#run-${esc(changesRunSlug(at, upd.dayCount))}" title="Text changed in AcqVault's ${fmtRunDate(at)} re-index">Updated ${short}</a>`;
 }
 
 // "15.101 Early exchanges with industry" → the number in its own span so the eye can

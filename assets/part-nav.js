@@ -509,13 +509,37 @@
     btn.setAttribute('aria-label', 'Copy citation and link for ' + h2.textContent.trim());
     btn.addEventListener('click', function () {
       var url = location.origin + location.pathname + '#' + sec.id;
-      navigator.clipboard.writeText(prefix + ' ' + h2.textContent.trim() + '\n' + url).then(function () {
+      var ref = prefix + ' ' + h2.textContent.trim(), plain = ref + '\n' + url;
+      var done = function () {
         btn.textContent = 'Copied';
         btn.classList.add('copied');
         clearTimeout(btn._t);
         btn._t = setTimeout(function () { btn.textContent = 'Cite'; btn.classList.remove('copied'); }, 1800);
-      }).catch(function () {});
+      };
+      var plainCopy = function () { navigator.clipboard.writeText(plain).then(done).catch(function () {}); };
+      // Same paste as the in-app Cite: a hyperlinked reference in Word/Outlook/Docs, plain text elsewhere.
+      if (navigator.clipboard.write && window.ClipboardItem) {
+        try {
+          var esc = function (t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+          navigator.clipboard.write([new ClipboardItem({
+            'text/plain': new Blob([plain], { type: 'text/plain' }),
+            'text/html': new Blob(['<a href="' + esc(url) + '">' + esc(ref) + '</a>'], { type: 'text/html' })
+          })]).then(done).catch(plainCopy);
+          return;
+        } catch (e) { /* older engines throw constructing ClipboardItem */ }
+      }
+      plainCopy();
     });
     h2.insertAdjacentElement('afterend', btn);
+  });
+})();
+
+/* Updated chips are baked in server-side and the CDN may serve that HTML for up to a week;
+ * drop any chip whose run has since aged out of the 45-day window (UPDATED_WINDOW_DAYS). */
+(function () {
+  var cutoff = Date.now() - 45 * 86400000;
+  Array.prototype.forEach.call(document.querySelectorAll('.sec-upd[data-at]'), function (a) {
+    var t = Date.parse(a.getAttribute('data-at'));
+    if (!isNaN(t) && t < cutoff) a.remove();
   });
 })();

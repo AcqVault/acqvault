@@ -1949,3 +1949,16 @@ html .rc-badge-class{color:#1c3a70;}
 /* Returning users on phones: the resume card is the one action they came for, so the
    marketing hero steps aside once the card is on the page (first visits keep the hero). */
 @media (max-width:860px){ html body:has(.st-resume) .lhero{display:none;} }
+
+/* ═══ Open items: phone tap targets (44px Apple minimum) ═══ */
+@media (max-width:600px){
+  html .fpill{min-height:44px;}
+  html .search-clear,html .modal-close{min-width:44px;min-height:44px;}
+  html .acro-search input{min-height:44px;}
+  html :is(#fb-name,#fb-email){min-height:44px;}
+  html :is(.nav-logo,.lnav .brand,.foot-logo > a){position:relative;}
+  html :is(.nav-logo,.lnav .brand,.foot-logo > a)::before{content:"";position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%);}
+}
+
+/* One focus-ring weight sitewide (server pages already used 3px; the home page used 2px). */
+html body :is(a,button,summary,[role=button],input,select,textarea,[tabindex]):focus-visible{outline-width:3px;}
