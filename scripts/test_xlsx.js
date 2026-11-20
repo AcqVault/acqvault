@@ -341,5 +341,34 @@ assert.ok(withC['xl/worksheets/sheet1.xml'].indexOf('POM tabs: FPDS obligations'
 assert.ok(/Distinct vendors<\/t><\/is><\/c><c r="B\d+" s="11"><v>7<\/v>/.test(withC['xl/worksheets/sheet1.xml']), 'Distinct vendors uses the page\'s normalised count');
 
 
-console.log('xlsx generator: all checks passed (' + expect.length + ' parts, ' + chartNames.length
-  + ' charts [' + seenTypes.join(', ') + '], CRC + graph + schema order verified)');
+// ── compressed build: same parts byte-for-byte, deflated, valid CRCs, smaller ──
+(async () => {
+  const zlib = require('zlib');
+  assert.strictEqual(typeof global.window.acqBuildXlsxCompressed, 'function', 'acqBuildXlsxCompressed exported');
+  const big = Object.assign({}, opts, { rows: Array.from({ length: 400 }, (_, k) => Object.assign({}, rows[k % rows.length], { piid: 'FA8501' + String(k).padStart(7, '0') })) });
+  const stored = build(big), comp = await global.window.acqBuildXlsxCompressed(big);
+  assert.ok(comp.length < stored.length / 3, 'compressed workbook is much smaller (' + stored.length + ' -> ' + comp.length + ')');
+  const parts = (u8) => { const out = {}; let o = 0;
+    while (o + 4 <= u8.length && u32(u8, o) === 0x04034b50) {
+      const method = u16(u8, o + 8), crc = u32(u8, o + 14), csize = u32(u8, o + 18), usize = u32(u8, o + 22), nlen = u16(u8, o + 26), elen = u16(u8, o + 28);
+      const name = Buffer.from(u8.slice(o + 30, o + 30 + nlen)).toString('utf8'), ds = o + 30 + nlen + elen;
+      const raw = u8.slice(ds, ds + csize), data = method === 8 ? new Uint8Array(zlib.inflateRawSync(raw)) : raw;
+      assert.ok(method === 0 || method === 8, 'method is STORE or DEFLATE');
+      assert.strictEqual(data.length, usize, 'uncompressed size matches for ' + name);
+      assert.strictEqual(crc32(data), crc, 'CRC of inflated ' + name);
+      out[name] = Buffer.from(data).toString('utf8'); o = ds + csize;
+    } return out; };
+  const a = parts(stored), b = parts(comp);
+  assert.deepStrictEqual(Object.keys(b).sort(), Object.keys(a).sort(), 'same part list');
+  Object.keys(a).forEach((n) => assert.strictEqual(b[n], a[n], 'identical content: ' + n));
+  // the central directory must agree with the local headers (method + sizes)
+  const eocd = comp.length - 22; const cdOff = u32(comp, eocd + 16), n = u16(comp, eocd + 10);
+  for (let k = 0, q = cdOff; k < n; k++) {
+    const lo = u32(comp, q + 42);
+    assert.strictEqual(u16(comp, q + 10), u16(comp, lo + 8), 'central/local method agree');
+    assert.strictEqual(u32(comp, q + 20), u32(comp, lo + 18), 'central/local compressed size agree');
+    q += 46 + u16(comp, q + 28) + u16(comp, q + 30) + u16(comp, q + 32);
+  }
+  console.log('xlsx generator: all checks passed (' + expect.length + ' parts, ' + chartNames.length
+    + ' charts [' + seenTypes.join(', ') + '], CRC + graph + schema order verified)');
+})().catch((e) => { console.error(e); process.exit(1); });

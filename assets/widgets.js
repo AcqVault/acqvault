@@ -1961,7 +1961,9 @@
         if (osrFundOn()) { const t = xl.textContent; xl.disabled = true; xl.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { xl.disabled = false; xl.textContent = t; } }
         if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
         try {
-          const u8 = window.acqBuildXlsx(osrWorkbookData(wbArgs()));
+          const wd = osrWorkbookData(wbArgs());
+          const u8 = window.acqBuildXlsxCompressed ? await window.acqBuildXlsxCompressed(wd) : window.acqBuildXlsx(wd);
+          if (token !== osrToken) return;
           if (!osrDownload(u8, base + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) xl.textContent = 'Use CSV \u2192';
         } catch (e) { xl.textContent = 'Use CSV \u2192'; }
       });

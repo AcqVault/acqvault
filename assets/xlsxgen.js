@@ -43,8 +43,9 @@
 
   var enc = new TextEncoder();
 
-  // ── ZIP writer (STORE / no compression — Excel accepts stored parts) ───────
-  // Central-directory + local-header layout, little-endian throughout.
+  // ── ZIP writer ─────────────────────────────────────────────────────────────
+  // Central-directory + local-header layout, little-endian throughout. A file with
+  // f.comp (raw-deflate bytes) is written as method 8; otherwise STORE (method 0).
   function zip(files) {
     var parts = [], central = [], offset = 0;
     function u16(n) { return [n & 0xFF, (n >>> 8) & 0xFF]; }
@@ -53,17 +54,18 @@
       var name = enc.encode(f.name);
       var data = f.data;
       var crc = crc32(data);
+      var body = f.comp || data, method = f.comp ? 8 : 0;
       var local = [].concat(
-        u32(0x04034b50), u16(20), u16(0), u16(0), u16(0), u16(0),
-        u32(crc), u32(data.length), u32(data.length),
+        u32(0x04034b50), u16(20), u16(0), u16(method), u16(0), u16(0),
+        u32(crc), u32(body.length), u32(data.length),
         u16(name.length), u16(0));
-      parts.push(new Uint8Array(local), name, data);
+      parts.push(new Uint8Array(local), name, body);
       central.push([].concat(
-        u32(0x02014b50), u16(20), u16(20), u16(0), u16(0), u16(0), u16(0),
-        u32(crc), u32(data.length), u32(data.length),
+        u32(0x02014b50), u16(20), u16(20), u16(0), u16(method), u16(0), u16(0),
+        u32(crc), u32(body.length), u32(data.length),
         u16(name.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset)));
       central.push(name);
-      offset += local.length + name.length + data.length;
+      offset += local.length + name.length + body.length;
     });
     var cdStart = offset, cdBytes = [];
     central.forEach(function (c) { cdBytes = cdBytes.concat(Array.isArray(c) ? c : Array.from(c)); });
@@ -471,7 +473,7 @@
 
   function bytes(s) { return enc.encode(s); }
 
-  window.acqBuildXlsx = function (opts) {
+  function buildFiles(opts) {
     var o = {
       office: opts.office || '', officeName: opts.officeName || '', fyLabel: opts.fyLabel || '',
       columns: opts.columns || [], rows: opts.rows || [],
@@ -522,6 +524,22 @@
     ];
     o.extra.forEach(function (sh, i) { files.push({ name: 'xl/worksheets/sheet' + (3 + i) + '.xml', data: bytes(dataSheet(sh.columns, sh.rows, sh.nums, sh.tab)) }); });
     charts.forEach(function (c, i) { files.push({ name: 'xl/charts/chart' + (i + 1) + '.xml', data: bytes(c) }); });
+    return files;
+  }
+  // Uncompressed (STORE): synchronous, works everywhere.
+  window.acqBuildXlsx = function (opts) { return zip(buildFiles(opts)); };
+  // Compressed (~10x smaller): the browser's own raw-deflate. Falls back to STORE
+  // where CompressionStream('deflate-raw') is missing, or per part if it isn't smaller.
+  window.acqBuildXlsxCompressed = async function (opts) {
+    var files = buildFiles(opts);
+    if (typeof CompressionStream === 'undefined') return zip(files);
+    try {
+      for (var i = 0; i < files.length; i++) {
+        var cs = new Response(new Blob([files[i].data]).stream().pipeThrough(new CompressionStream('deflate-raw')));
+        var c = new Uint8Array(await cs.arrayBuffer());
+        if (c.length < files[i].data.length) files[i].comp = c;
+      }
+    } catch (e) { files.forEach(function (f) { delete f.comp; }); }
     return zip(files);
   };
 })();
