@@ -400,7 +400,8 @@
   function axes(idA, idB, catPos, valPos) {
     return '<c:catAx><c:axId val="' + idA + '"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="' + catPos + '"/>'
       + '<c:numFmt formatCode="General" sourceLinked="0"/>'
-      + '<c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
+      // 'low' pins category labels to the chart edge, so a negative bar never draws over them.
+      + '<c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="low"/>'
       + '<c:spPr><a:noFill/><a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="' + RULE + '"/></a:solidFill><a:round/></a:ln></c:spPr>'
       + '<c:txPr>' + txPr(900) + '</c:txPr>'
       + '<c:crossAx val="' + idB + '"/><c:crosses val="autoZero"/><c:auto val="1"/><c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/></c:catAx>'
@@ -492,9 +493,9 @@
       // Offices first: when several are in play, how they compare IS the report.
       { key: 'off', title: 'Obligations by contracting office', data: o.byOffice, type: 'barh', min: 2 },
       { key: 'fy', title: 'Obligations by fiscal year', data: o.byFy, type: 'bar', min: 2 },
-      { key: 'cat', title: 'Work type (PSC)', data: o.byCat, type: o.byCat.some(function (x) { return x.value <= 0; }) ? 'barh' : 'doughnut', min: 2 },
+      { key: 'cat', title: 'Work type (PSC)', data: o.byCat, type: 'doughnut', min: 2 },
       { key: 'ven', title: 'Top vendors', data: o.byVen, type: 'barh', min: 2 },
-      { key: 'col', title: 'Color of money (USAspending label, FPDS net obligations)', data: o.byColor, type: o.byColor.some(function (x) { return x.value <= 0; }) ? 'barh' : 'doughnut', min: 2 },
+      { key: 'col', title: 'Color of money (USAspending label, FPDS net obligations)', data: o.byColor, type: 'doughnut', min: 2 },
       { key: 'mon', title: 'Obligations by month signed', data: o.byMonth, type: 'line', min: 3 },
       { key: 'set', title: 'Set-aside', data: o.bySet, type: 'barh', min: 2 }
     ].filter(function (sp) { return sp.data && sp.data.length >= sp.min; });
@@ -503,11 +504,16 @@
       .concat((opts.extraSheets || []).filter(function (sh) { return sh && sh.rows && sh.rows.length; }));
     var summ = summarySheet(o, series);
     var charts = summ.tables.slice(0, 4).map(function (t, i) {
+      // A doughnut charts only the positive groups (tables are sorted largest first, so
+      // they are the leading rows); the table beside it still lists every group,
+      // net negatives included in red. A negative slice can't be drawn honestly.
+      var n = t.type === 'doughnut' ? t.data.filter(function (d) { return d.value > 0; }).length : t.data.length;
+      n = Math.max(1, n);
       return chartXml({
         idx: i, type: t.type, title: t.title,
-        cats: 'Summary!$A$' + t.range.start + ':$A$' + t.range.end,
-        vals: 'Summary!$B$' + t.range.start + ':$B$' + t.range.end,
-        items: t.data
+        cats: 'Summary!$A$' + t.range.start + ':$A$' + (t.range.start + n - 1),
+        vals: 'Summary!$B$' + t.range.start + ':$B$' + (t.range.start + n - 1),
+        items: t.data.slice(0, n)
       });
     });
     var files = [

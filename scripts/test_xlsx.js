@@ -341,6 +341,15 @@ assert.ok(withC['xl/worksheets/sheet1.xml'].indexOf('POM tabs: FPDS obligations'
 assert.ok(/Distinct vendors<\/t><\/is><\/c><c r="B\d+" s="11"><v>7<\/v>/.test(withC['xl/worksheets/sheet1.xml']), 'Distinct vendors uses the page\'s normalised count');
 
 
+// ── a doughnut charts only the positive groups; the table keeps every group ──
+{
+  const neg = unpack(build(Object.assign({}, opts, { byFy: [], byMonth: [], bySet: [],
+    byColor: [{ label: 'O&M', value: 900 }, { label: 'RDT&E', value: 100 }, { label: 'Mixed: A + B', value: -50 }] })));
+  const col = Object.keys(neg).filter((n) => /^xl\/charts\//.test(n)).map((n) => neg[n]).find((x) => x.indexOf('Color of money') >= 0);
+  assert.ok(col && /<c:doughnutChart>/.test(col), 'color of money stays a doughnut');
+  assert.ok(/<c:ptCount val="2"\/>/.test(col) && col.indexOf('Mixed: A + B') < 0, 'negative group left out of the doughnut');
+  assert.ok(neg['xl/worksheets/sheet1.xml'].indexOf('Mixed: A + B') >= 0, 'but kept in the Summary table');
+}
 // ── compressed build: same parts byte-for-byte, deflated, valid CRCs, smaller ──
 (async () => {
   const zlib = require('zlib');
