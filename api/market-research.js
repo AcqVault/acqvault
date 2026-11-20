@@ -185,7 +185,9 @@ module.exports = async function handler(req, res) {
   // Contract Awards (FPDS) rows for a DoDAAC + FY — GET so the CDN edge-cache holds it
   // and repeated public queries don't each burn the shared SAM key's daily quota.
   if (req.method === 'GET' && req.query && req.query.mode === 'award-rows') {
-    if (await enforce(req, res, { max: 20, name: 'mr' })) return;
+    // Own bucket: a 12-slot pull (offices x years) plus its one-time retries must not
+    // trip the limit the site's other searches share.
+    if (await enforce(req, res, { max: 40, name: 'rows' })) return;
     return contractAwardsRows(req, res, process.env.SAM_API_KEY);
   }
   // Per-contract appropriation ("color of money") — FPDS carries none, so this reaches
@@ -391,7 +393,12 @@ async function fetchContractAwards(qs, apiKey) {
   const url = new URL(CA_URL);
   url.searchParams.set('api_key', apiKey);
   for (const k in qs) if (qs[k] != null && qs[k] !== '') url.searchParams.set(k, String(qs[k]));
-  const upstream = await timedFetch(url.toString(), { headers: { Accept: 'application/json' } }, 9000);
+  // One retry on a timeout, network reset or 5xx from SAM.gov: a single slow page used to
+  // drop a whole office-year ("did not come back"). A 429 (daily quota) is not retried.
+  let upstream;
+  try { upstream = await timedFetch(url.toString(), { headers: { Accept: 'application/json' } }, 9000); }
+  catch (e) { await new Promise((r) => setTimeout(r, 1500)); upstream = await timedFetch(url.toString(), { headers: { Accept: 'application/json' } }, 9000); }
+  if (upstream.status >= 500) { await new Promise((r) => setTimeout(r, 1500)); upstream = await timedFetch(url.toString(), { headers: { Accept: 'application/json' } }, 9000); }
   const text = await upstream.text();
   let data; try { data = JSON.parse(text); } catch (e) { data = { _raw: text.slice(0, 300) }; }
   return { ok: upstream.ok, status: upstream.status, data,
@@ -520,7 +527,7 @@ async function contractAwardsRows(req, res, apiKey) {
   } catch (error) {
     const status = error && error.status;
     console.error('contract-awards error:', error && error.message, error && error.body ? JSON.stringify(error.body).slice(0, 300) : '');
-    res.setHeader('Cache-Control', 's-maxage=600');
+    res.setHeader('Cache-Control', status === 429 ? 's-maxage=600' : 'no-store');   // only the quota answer is worth caching
     return res.status(200).json({
       office, fiscalYear: fy, limited: true, status: status || null, rows: [],
       note: status === 429 ? 'Hit the daily SAM.gov Contract Awards quota — try again later.'
@@ -694,7 +701,8 @@ async function contractAwardFunding(req, res) {
         try { results[p] = await lookupFunding(p); if (results[p].partial) failed++; } catch (e) { failed++; results[p] = { piid: p, found: false, accounts: [], failed: true }; }
       }
     }
-    await Promise.race([Promise.all([worker(), worker(), worker(), worker()]), new Promise((r) => setTimeout(r, 50000))]);
+    // Up to 10 contracts per batch, looked up in parallel (was 4 at a time).
+    await Promise.race([Promise.all(Array.from({ length: piids.length }, () => worker())), new Promise((r) => setTimeout(r, 50000))]);
     piids.forEach((p) => { if (!results[p]) { failed++; results[p] = { piid: p, found: false, accounts: [], failed: true }; } });
     // A batch with any failure is never cached: the retry must reach USAspending again.
     res.setHeader('Cache-Control', failed ? 'no-store' : 's-maxage=86400, stale-while-revalidate=604800');

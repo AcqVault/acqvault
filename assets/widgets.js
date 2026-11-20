@@ -1195,16 +1195,16 @@
   function osrSelectedFys() { return [...document.querySelectorAll('#osr-fy input[type=checkbox]:checked')].filter((c) => c.id !== 'osr-custom').map((c) => c.value).sort(); }
   // `s` is a response-schema version — bump it when caRow's columns change so the
   // CDN serves fresh rows instead of a cached shape missing the new fields.
-  async function osrFetch(qs) {
-    const r = await fetch('/api/market-research?mode=award-rows&s=2&' + qs, { headers: { Accept: 'application/json' } });
+  async function osrFetch(qs, retry) {
+    const r = await fetch('/api/market-research?mode=award-rows&s=2&' + qs + (retry ? '&r=1' : ''), { headers: { Accept: 'application/json' } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
-  function osrFetchFy(office, fy) { return osrFetch('office=' + encodeURIComponent(office) + '&fy=' + fy); }
+  function osrFetchFy(office, fy, retry) { return osrFetch('office=' + encodeURIComponent(office) + '&fy=' + fy, retry); }
   // A date window is filtered by SAM, not here: an office like N00019 truncates at the
   // page cap and the rows it returns are in no order, so slicing a truncated year on
   // this side would hand back a fraction of the window that looks like all of it.
-  function osrFetchRange(office, r) { return osrFetch('office=' + encodeURIComponent(office) + '&from=' + r.from + '&to=' + r.to); }
+  function osrFetchRange(office, r, retry) { return osrFetch('office=' + encodeURIComponent(office) + '&from=' + r.from + '&to=' + r.to, retry); }
   function osrCsvCell(v) {
     const s = String(v == null ? '' : v);
     if (/^\d+E\d+$/i.test(s)) return '"=""' + s + '"""';   // Excel reads 7E20 (a PSC) as 7E+20; ="7E20" keeps it text
@@ -1468,7 +1468,7 @@
     const todo = order.filter((p) => !osrFundCache[p]);
     const batches = [];
     for (let i = 0; i < todo.length; i += 10) batches.push(todo.slice(i, i + 10));
-    osrFundProg = { done: order.length - todo.length, total: order.length };
+    osrFundProg = { done: order.length - todo.length, total: order.length, start: Date.now(), start0: order.length - todo.length };
     const live = () => token === osrToken && rows === osrRows;
     const job = { rows, failed: 0, done: false, p: null };
     const p = (async () => {
@@ -1503,7 +1503,7 @@
           osrFundNote();
         }
       }
-      await Promise.all([worker(), worker(), worker()]);
+      await Promise.all([worker(), worker(), worker(), worker()]);
       job.done = true;
       if (live()) { osrFundProg = null; osrFundNote(); osrRenderFundPanel(); osrSay('Funding loaded. ' + osrFundStats(osrRows).line + '.'); }
     })();
@@ -1516,10 +1516,26 @@
     await osrEnsureFunding();
     if (osrFundJob && osrFundJob.done && osrFundJob.failed) await osrEnsureFunding(true);
   }
+  function osrFundPct() { return osrFundProg && osrFundProg.total ? Math.floor((osrFundProg.done / osrFundProg.total) * 100) : 100; }
+  // Time left from the pace so far (only once there's enough to measure).
+  function osrFundEta() {
+    const p = osrFundProg; if (!p) return '';
+    const did = p.done - p.start0, secs = (Date.now() - p.start) / 1000;
+    if (did < 20 || secs < 5) return '';
+    const left = Math.round(((p.total - p.done) * secs) / did);
+    return left < 60 ? ' \u00b7 under a minute left' : ' \u00b7 about ' + Math.ceil(left / 60) + ' min left';
+  }
+  // Export buttons say what they're waiting on, live, instead of a static label.
+  async function osrWaitFunding(btn, label) {
+    btn.disabled = true;
+    const tick = () => { btn.textContent = osrFundProg ? 'Filling funding ' + osrFundPct() + '%' + osrFundEta() : 'Preparing\u2026'; };
+    tick(); const t = setInterval(tick, 700);
+    try { await osrFundReady(); } finally { clearInterval(t); btn.disabled = false; btn.textContent = label; }
+  }
   function osrFundNoteText() {
     if (!osrFundOn()) return '';
     return osrFundProg
-      ? 'Filling funding columns from USAspending \u2014 ' + osrFundProg.done.toLocaleString() + ' of ' + osrFundProg.total.toLocaleString() + ' contracts\u2026'
+      ? 'Filling funding columns from USAspending \u2014 ' + osrFundProg.done.toLocaleString() + ' of ' + osrFundProg.total.toLocaleString() + ' contracts (' + osrFundPct() + '%)' + osrFundEta() + '\u2026'
       : 'Funding columns come from USAspending (File C, the account data agencies report to Treasury), one lookup per contract, and describe the whole contract. Dollar columns are FPDS obligations in the selected period. \u201cNot reported\u201d means USAspending shows no account for that contract \u2014 common for DoD, and not zero.';
   }
   function osrFundNote() {
@@ -1764,8 +1780,8 @@
   function osrSlots(offices, fys, range) {
     const out = [];
     offices.forEach((code) => {
-      if (range) out.push({ office: code, period: osrDay(range.from) + ' \u2013 ' + osrDay(range.to), get: () => osrFetchRange(code, range) });
-      else fys.forEach((fy) => out.push({ office: code, period: 'FY' + fy, fy: fy, get: () => osrFetchFy(code, fy) }));
+      if (range) out.push({ office: code, period: osrDay(range.from) + ' \u2013 ' + osrDay(range.to), get: (retry) => osrFetchRange(code, range, retry) });
+      else fys.forEach((fy) => out.push({ office: code, period: 'FY' + fy, fy: fy, get: (retry) => osrFetchFy(code, fy, retry) }));
     });
     return out;
   }
@@ -1781,6 +1797,12 @@
       while (i < slots.length) {
         const n = i++;
         try { out[n] = await slots[n].get(); } catch (e) { out[n] = null; }
+        // One automatic retry for a transient miss (timeout, rate limit, SAM hiccup);
+        // the daily-quota answer is final, so it isn't retried.
+        if (osrSlotFailed(out[n]) && !(out[n] && out[n].status === 429)) {
+          await new Promise((ok) => setTimeout(ok, 4000));
+          try { out[n] = await slots[n].get(true); } catch (e) { out[n] = null; }
+        }
         if (onDone) onDone();
       }
     }
@@ -1958,7 +1980,7 @@
           xl.disabled = false; xl.textContent = before;
           if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV \u2192'; return; }
         }
-        if (osrFundOn()) { const t = xl.textContent; xl.disabled = true; xl.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { xl.disabled = false; xl.textContent = t; } }
+        if (osrFundOn()) await osrWaitFunding(xl, xl.textContent);
         if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
         try {
           const wd = osrWorkbookData(wbArgs());
@@ -1968,7 +1990,7 @@
         } catch (e) { xl.textContent = 'Use CSV \u2192'; }
       });
       const dl = $('#osr-dl'); if (dl) dl.addEventListener('click', async () => {
-        if (osrFundOn()) { dl.disabled = true; dl.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { dl.disabled = false; dl.textContent = 'CSV'; } }
+        if (osrFundOn()) await osrWaitFunding(dl, 'CSV');
         if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
         if (!osrDownload('\uFEFF' + osrBuildCsv(rows), base + '.csv')) dl.textContent = 'Use Copy \u2192';   // BOM: Excel reads UTF-8
       });
@@ -1984,12 +2006,12 @@
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(ok, bad); else bad();
       });
       const sm = $('#osr-sum'); if (sm) sm.addEventListener('click', async () => {
-        if (osrFundOn()) { sm.disabled = true; sm.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { sm.disabled = false; sm.textContent = 'Summary CSV'; } }
+        if (osrFundOn()) await osrWaitFunding(sm, 'Summary CSV');
         if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
         if (!osrDownload('\uFEFF' + osrSummaryCsv(osrWorkbookData(wbArgs())), base + '_summary.csv')) sm.textContent = 'Use JSON \u2192';
       });
       const js = $('#osr-json'); if (js) js.addEventListener('click', async () => {
-        if (osrFundOn()) { js.disabled = true; js.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { js.disabled = false; js.textContent = 'JSON'; } }
+        if (osrFundOn()) await osrWaitFunding(js, 'JSON');
         if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
         const cols = osrPickedCols(), ccols = osrContractCols();
         const pick = (r, cs) => { const o = {}; cs.forEach((c) => { o[c[0]] = r[c[0]] == null ? null : r[c[0]]; }); return o; };
