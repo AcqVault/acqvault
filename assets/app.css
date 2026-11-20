@@ -612,6 +612,17 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-fund-per { margin-left:8px; font-weight: var(--fw-bold); letter-spacing: 0; text-transform: none; color: var(--brass-ink); }
 .osr-fund-amt.osr-fund-neg { color: #9a3412; }
 .osr-fund-cav { margin-top:8px; padding-top:9px; border-top: 1px solid var(--line2); font-size: var(--fs-sm); line-height: 1.5; color: var(--muted); max-width: 74ch; }
+.osr-fund-wait { color: var(--muted2); }
+.osr-acct-help { margin-top:10px; font-size: var(--fs-sm); line-height: 1.55; color: var(--muted); max-width: 78ch; }
+.osr-acct-help summary { cursor: pointer; font-weight: var(--fw-semibold); color: var(--brass-ink); }
+.osr-acct-help summary:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; border-radius: var(--r-sm); }
+.osr-acct-help p { margin: 8px 0 0; }
+.osr-acct-help b, .osr-acct-help dt, .osr-acct-help th { color: var(--ink); }
+.osr-acct-help dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 8px 0 0; }
+.osr-acct-help dt { font-family: ui-monospace, Menlo, monospace; font-weight: var(--fw-bold); }
+.osr-acct-help dd { margin: 0; }
+.osr-acct-help table { border-collapse: collapse; margin-top: 8px; }
+.osr-acct-help th, .osr-acct-help td { text-align: left; vertical-align: top; padding: 3px 12px 3px 0; white-space: normal; }
 
 @media (max-width: 620px) { .osr-fields { grid-template-columns: 1fr; } .osr-summary { flex-direction: column; align-items: flex-start; } .osr-go { width: 100%; } }
 @media (prefers-reduced-motion: reduce) { .osr-results { transition: opacity .2s ease; transform: none; } }

@@ -541,67 +541,121 @@ function apprType(title) {
   if (/shipbuilding/.test(t)) return 'SCN';
   return 'Other';
 }
+// Treasury agency identifier (the 3 digits before the dash) → who the money was
+// appropriated to. 097 is DoD-as-a-whole, not a Service: OSD, the defense agencies
+// and SOCOM all spend from it, so it does not by itself say which one.
+const ACCT_AGENCY = { '057': 'Air Force', '097': 'Defense-Wide', '021': 'Army', '017': 'Navy', '096': 'Corps of Engineers', '011': 'Foreign Military Sales', '047': 'GSA' };
+function acctSource(code, title) {
+  const ag = String(code || '').slice(0, 3);
+  if (ag === '017' && /marine corps/i.test(title)) return 'Marine Corps (017)';
+  return ag ? (ACCT_AGENCY[ag] || 'Agency') + ' (' + ag + ')' : '';
+}
+const FUND_NONE = 'No appropriation reported. Color of money comes from the funding agency’s Treasury submission (File C), not from FPDS — and DoD leaves most contract actions unlinked. Blank means not reported, not zero.';
+// One PIID → its File C funding. Throws on an upstream failure so the caller can
+// tell "USASpending didn't answer" apart from "nothing reported".
+async function lookupFunding(piid) {
+  // 1) resolve the PIID to a USASpending award id. `award_ids` matches the contract
+  // number EXACTLY. `keywords` (used here until 2026-08-25) matched SUBSTRINGS, so a
+  // short PIID — N00019 alone has 29 four-character delivery-order numbers — resolved
+  // to a different agency's contract entirely (live: '0018' returned a CDW Government
+  // Army IT order). A PIID is only unique WITH its parent, which FPDS doesn't give us,
+  // so more than one exact hit means we genuinely cannot tell which contract is yours:
+  // say so rather than print another agency's appropriation under this one.
+  const s = await usaPost('/api/v2/search/spending_by_award/', {
+    filters: { award_type_codes: ['A', 'B', 'C', 'D'], award_ids: [piid] },
+    fields: ['Award ID', 'generated_internal_id'], limit: 100
+  });
+  const exact = (s.results || []).filter(function (r) { return String(r['Award ID'] || '').toUpperCase() === piid; });
+  if (exact.length !== 1 || !exact[0].generated_internal_id) {
+    return {
+      piid, found: false, accounts: [], ambiguous: exact.length > 1, source: 'USASpending.gov account funding (File C)',
+      note: exact.length > 1
+        ? ('This contract number isn’t unique on USASpending — ' + exact.length + ' awards under different parents share it, so no appropriation can be tied to this one.')
+        : FUND_NONE
+    };
+  }
+  const gid = exact[0].generated_internal_id;
+  // 2) roll up its funding accounts (File C), plus object class and reporting year.
+  // File C is reported per the SUBMITTING agency's fiscal periods over the whole
+  // contract's life, not per FPDS action, so track which fiscal years the money was
+  // reported in — without that label a FY2019-21 total reads as this year's money.
+  const roll = {}, oc = {}, byFy = {};
+  let fyMin = null, fyMax = null;
+  // Outlays come from the award record, NOT a sum of File C rows: File C outlays are
+  // fiscal-year-to-date running balances, so summing them double-counts (live:
+  // FA002120F0002 rows summed to $11.4M against an award total of $5.5M).
+  const detailP = timedFetch('https://api.usaspending.gov/api/v2/awards/' + encodeURIComponent(gid) + '/', { headers: { Accept: 'application/json' } }, 9000)
+    .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  for (let page = 1; page <= 4; page++) {
+    const f = await usaPost('/api/v2/awards/funding/', { award_id: gid, limit: 100, page, sort: 'reporting_fiscal_date', order: 'desc' });
+    const rows = f.results || [];
+    for (let i = 0; i < rows.length; i++) {
+      const x = rows[i];
+      const code = x.federal_account || '';
+      const title = x.account_title || code || '—';
+      const amt = Number(x.transaction_obligated_amount) || 0;
+      const fy = Number(x.reporting_fiscal_year) || 0;
+      if (fy) {
+        if (fyMin == null || fy < fyMin) fyMin = fy; if (fyMax == null || fy > fyMax) fyMax = fy;
+        byFy[fy] = (byFy[fy] || 0) + amt;
+      }
+      const k = code + '|' + title;
+      if (!roll[k]) roll[k] = { code: code, title: title, type: apprType(title), source: acctSource(code, title), amount: 0 };
+      roll[k].amount += amt;
+      if (x.object_class) {
+        if (!oc[x.object_class]) oc[x.object_class] = { code: x.object_class, name: x.object_class_name || '', amount: 0 };
+        oc[x.object_class].amount += amt;
+      }
+    }
+    if (rows.length < 100) break;
+  }
+  const byAbs = function (a, b) { return Math.abs(b.amount) - Math.abs(a.amount); };
+  // Keep an account that netted to zero (obligated then fully de-obligated) — the
+  // money still came from it, and dropping it made such contracts read "not reported".
+  const accounts = Object.keys(roll).map(function (k) { return roll[k]; }).sort(byAbs);
+  const total = accounts.reduce(function (sum, a) { return sum + a.amount; }, 0);
+  const detail = await detailP;
+  const outlays = detail && detail.total_outlay != null ? Math.round(Number(detail.total_outlay)) : null;
+  return {
+    piid, found: accounts.length > 0,
+    accounts: accounts.slice(0, 12).map(function (a) { return { code: a.code, title: a.title, type: a.type, source: a.source, amount: Math.round(a.amount) }; }),
+    objectClasses: Object.keys(oc).map(function (k) { return oc[k]; }).sort(byAbs).slice(0, 8)
+      .map(function (o) { return { code: o.code, name: o.name, amount: Math.round(o.amount) }; }),
+    byFy: Object.keys(byFy).sort().map(function (y) { return { fy: Number(y), amount: Math.round(byFy[y]) }; }),
+    total: Math.round(total),
+    outlays,
+    fyFrom: fyMin, fyTo: fyMax,
+    source: 'USASpending.gov account funding (File C)',
+    note: accounts.length ? undefined : FUND_NONE
+  };
+}
+function cleanPiid(v) { return String(v || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 50); }
+const FUND_BATCH = 10;
 async function contractAwardFunding(req, res) {
-  const piid = String((req.query || {}).piid || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 50);
+  const q = req.query || {};
+  // Batch: ?piids=A,B,C (≤10) for the table's funding columns — one rate-limit hit
+  // per ten contracts instead of ten. Each PIID still resolves on its own.
+  if (q.piids != null) {
+    const piids = [...new Set(String(q.piids).split(',').map(cleanPiid).filter(function (p) { return p.length >= 4; }))].slice(0, FUND_BATCH);
+    const results = {};
+    let failed = 0;
+    let i = 0;
+    async function worker() {
+      while (i < piids.length) {
+        const p = piids[i++];
+        try { results[p] = await lookupFunding(p); } catch (e) { failed++; results[p] = { piid: p, found: false, accounts: [], failed: true }; }
+      }
+    }
+    await Promise.all([worker(), worker(), worker(), worker()]);
+    res.setHeader('Cache-Control', failed ? 's-maxage=600' : 's-maxage=86400, stale-while-revalidate=604800');
+    return res.status(200).json({ results });
+  }
+  const piid = cleanPiid(q.piid);
   if (piid.length < 4) return res.status(200).json({ note: 'Provide a contract PIID.' });
   try {
-    // 1) resolve the PIID to a USASpending award id. `award_ids` matches the contract
-    // number EXACTLY. `keywords` (used here until 2026-08-25) matched SUBSTRINGS, so a
-    // short PIID — N00019 alone has 29 four-character delivery-order numbers — resolved
-    // to a different agency's contract entirely (live: '0018' returned a CDW Government
-    // Army IT order). A PIID is only unique WITH its parent, which FPDS doesn't give us,
-    // so more than one exact hit means we genuinely cannot tell which contract is yours:
-    // say so rather than print another agency's appropriation under this one.
-    const s = await usaPost('/api/v2/search/spending_by_award/', {
-      filters: { award_type_codes: ['A', 'B', 'C', 'D'], award_ids: [piid] },
-      fields: ['Award ID', 'generated_internal_id'], limit: 100
-    });
-    const exact = (s.results || []).filter(function (r) { return String(r['Award ID'] || '').toUpperCase() === piid; });
-    if (exact.length !== 1 || !exact[0].generated_internal_id) {
-      res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
-      return res.status(200).json({
-        piid, found: false, accounts: [], ambiguous: exact.length > 1,
-        note: exact.length > 1
-          ? ('This contract number isn’t unique on USASpending — ' + exact.length + ' awards under different parents share it, so no appropriation can be tied to this one.')
-          : 'No appropriation reported. Color of money comes from the funding agency’s Treasury submission (File C), not from FPDS — and DoD leaves most contract actions unlinked. Blank means not reported, not zero.'
-      });
-    }
-    const hit = exact[0];
-    // 2) roll up its funding accounts (File C)
-    const roll = {};
-    // File C is reported per the SUBMITTING agency's fiscal periods over the whole
-    // contract's life, not per FPDS action, so track which fiscal years the money was
-    // reported in — without that label a FY2019-21 total reads as this year's money.
-    let fyMin = null, fyMax = null;
-    for (let page = 1; page <= 4; page++) {
-      const f = await usaPost('/api/v2/awards/funding/', { award_id: hit.generated_internal_id, limit: 100, page, sort: 'reporting_fiscal_date', order: 'desc' });
-      const rows = f.results || [];
-      for (let i = 0; i < rows.length; i++) {
-        const x = rows[i];
-        const code = x.federal_account || '';
-        const title = x.account_title || code || '—';
-        const amt = Number(x.transaction_obligated_amount) || 0;
-        const fy = Number(x.reporting_fiscal_year) || 0;
-        if (fy) { if (fyMin == null || fy < fyMin) fyMin = fy; if (fyMax == null || fy > fyMax) fyMax = fy; }
-        const k = code + '|' + title;
-        if (!roll[k]) roll[k] = { code: code, title: title, type: apprType(title), amount: 0 };
-        roll[k].amount += amt;
-      }
-      if (rows.length < 100) break;
-    }
-    const accounts = Object.keys(roll).map(function (k) { return roll[k]; })
-      .filter(function (a) { return Math.round(a.amount) !== 0; })
-      .sort(function (a, b) { return Math.abs(b.amount) - Math.abs(a.amount); });
-    const total = accounts.reduce(function (sum, a) { return sum + a.amount; }, 0);
+    const d = await lookupFunding(piid);
     res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
-    return res.status(200).json({
-      piid, found: accounts.length > 0,
-      accounts: accounts.slice(0, 12).map(function (a) { return { code: a.code, title: a.title, type: a.type, amount: Math.round(a.amount) }; }),
-      total: Math.round(total),
-      fyFrom: fyMin, fyTo: fyMax,
-      source: 'USASpending.gov account funding (File C)',
-      note: accounts.length ? undefined : 'No appropriation reported. Color of money comes from the funding agency’s Treasury submission (File C), not from FPDS — and DoD leaves most contract actions unlinked. Blank means not reported, not zero.'
-    });
+    return res.status(200).json(d);
   } catch (error) {
     console.error('award-funding error:', error && error.message);
     res.setHeader('Cache-Control', 's-maxage=600');

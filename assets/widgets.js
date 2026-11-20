@@ -900,6 +900,7 @@
     ['naicsCode', 'NAICS'], ['naicsName', 'NAICS Name'], ['description', 'Description'],
     ['vendor', 'Vendor'], ['vendorUEI', 'Vendor UEI'], ['smallBusiness', 'Small Business'],
     ['obligated', 'Obligated (Action)'], ['awardAmount', 'Award Amount'], ['ceiling', 'Ceiling (All Options)'], ['pricingType', 'Pricing Type'],
+    ['fundSource', 'Funding Source'], ['appropriation', 'Appropriation (Treasury Acct)'], ['colorOfMoney', 'Color of Money'], ['objectClass', 'Object Class'],
     ['setAside', 'Set-Aside'], ['extentCompeted', 'Extent Competed'],
     ['popState', 'PoP State'], ['dateSigned', 'Date Signed']
   ];
@@ -911,13 +912,15 @@
     ['Money', ['obligated', 'awardAmount', 'ceiling', 'pricingType']],
     ['What was bought', ['category', 'pscCode', 'pscName', 'naicsCode', 'naicsName', 'description']],
     ['Who got it', ['vendor', 'vendorUEI', 'smallBusiness', 'popState']],
-    ['How it was bought', ['awardOrIdv', 'awardType', 'setAside', 'extentCompeted']]
+    ['How it was bought', ['awardOrIdv', 'awardType', 'setAside', 'extentCompeted']],
+    ['Funding (USAspending)', ['fundSource', 'appropriation', 'colorOfMoney', 'objectClass']]
   ];
   const OSR_COLS_KEY = 'acqvault-osr-cols';
   // Every report is one office, so Office and Office Name hold the same value on every
   // row — they are in the heading and the filename already. Off by default, one click
   // to add back for anyone stacking several offices into one sheet.
-  const OSR_COLS_OFF = { office: 1, officeName: 1 };
+  // The funding columns cost one USAspending lookup per contract, so they are opt-in.
+  const OSR_COLS_OFF = { office: 1, officeName: 1, fundSource: 1, appropriation: 1, colorOfMoney: 1, objectClass: 1 };
   function osrDefaultCols() {
     const d = {}; OSR_COLS.forEach((c) => { if (!OSR_COLS_OFF[c[0]]) d[c[0]] = 1; });
     return d;
@@ -1272,9 +1275,101 @@
   // A column of that would be blank far more often than not, and where it did fill it
   // would state a whole contract's lifetime funding beside a single action's dollars.
   const osrFundCache = {};
+  // Plain-English key to a Treasury account code. Titles checked against
+  // USAspending's federal_accounts API 2026-11-20.
+  const OSR_ACCT_HELP = '<details class="osr-acct-help"><summary>How to read these account codes</summary>'
+    + '<p>An account code like <b>057-3400</b> has two parts: <b>057</b> is who the money was appropriated to, and <b>3400</b> is which appropriation (the color of money).</p>'
+    + '<dl>'
+    + '<dt>057</dt><dd>Department of the Air Force (Air Force and Space Force).</dd>'
+    + '<dt>097</dt><dd>Defense-Wide: money given to DoD as a whole, not to one Service. OSD, the defense agencies (DLA, DISA, DHA, MDA and others) and U.S. Special Operations Command all spend from these accounts, so 097 alone does not say which one. For a special operations unit such as AFSOC, SOCOM-provided money shows up here and Air Force-provided money shows up as 057.</dd>'
+    + '<dt>021 · 017</dt><dd>Army · Navy and Marine Corps.</dd>'
+    + '</dl>'
+    + '<table><tbody>'
+    + '<tr><th>O&amp;M</th><td>3400 Air Force · 3740 AF Reserve · 3840 Air National Guard · 3410 Space Force · 0100 Defense-Wide</td></tr>'
+    + '<tr><th>RDT&amp;E</th><td>3600 Air Force · 3620 Space Force · 0400 Defense-Wide</td></tr>'
+    + '<tr><th>Procurement</th><td>3010 Aircraft · 3020 Missile · 3011 Ammunition · 3080 Other (all Air Force) · 3022 Space Force · 0300 Defense-Wide</td></tr>'
+    + '<tr><th>MILCON</th><td>3300 Air Force · 0500 Defense-Wide</td></tr>'
+    + '<tr><th>MILPERS</th><td>3500 Air Force</td></tr>'
+    + '</tbody></table>'
+    + '<p><b>Object class</b> is the government-wide category of what the money bought: 25.x contracted services, 26.0 supplies, 31.0 equipment.</p>'
+    + '<p><b>Not published anywhere:</b> which year\u2019s money it is, the Major Force Program (MFP-11 and the rest), program element, EEIC and fund code. Those live only in DoD\u2019s internal accounting systems such as DEAMS.</p>'
+    + '<p><b>\u201cNot reported\u201d</b> means DoD did not link this contract to an account in its Treasury reporting (USAspending File C). It does not mean zero, and it is common.</p>'
+    + '</details>';
+  const OSR_FUND_COLS = ['fundSource', 'appropriation', 'colorOfMoney', 'objectClass'];
+  const OSR_FUND_V = 2; // bump when the award-funding response shape changes (busts the CDN copy)
+  function osrFundOn() { return OSR_FUND_COLS.some((k) => osrOn[k]); }
+  const osrUniq = (a) => [...new Set(a.filter(Boolean))];
+  // One lookup answer → the four flat column values for every row of that contract.
+  function osrFundCells(d) {
+    if (!d || d.failed) return { fundSource: 'Lookup failed', appropriation: 'Lookup failed', colorOfMoney: 'Lookup failed', objectClass: 'Lookup failed' };
+    if (d.ambiguous) { const t = 'Contract number not unique'; return { fundSource: t, appropriation: t, colorOfMoney: t, objectClass: t }; }
+    if (!d.found || !(d.accounts && d.accounts.length)) return { fundSource: 'Not reported', appropriation: 'Not reported', colorOfMoney: 'Not reported', objectClass: 'Not reported' };
+    return {
+      fundSource: osrUniq(d.accounts.map((a) => a.source)).join('; '),
+      appropriation: d.accounts.map((a) => a.code + ' ' + a.title).join('; '),
+      colorOfMoney: osrUniq(d.accounts.map((a) => a.type)).join(' / '),
+      objectClass: (d.objectClasses || []).map((o) => o.code + ' ' + o.name).join('; ')
+    };
+  }
+  let osrFundJob = null, osrFundProg = null;
+  // Fill the funding columns for EVERY row: one lookup per distinct contract, ten to a
+  // request, three requests at a time. The 25 preview contracts go first so the table
+  // on screen completes early. Returns the same promise until the rows change.
+  function osrEnsureFunding() {
+    if (!osrFundOn() || !osrRows.length) return Promise.resolve();
+    if (osrFundJob && osrFundJob.rows === osrRows) return osrFundJob.p;
+    const rows = osrRows, token = osrToken;
+    const byPiid = {};
+    rows.forEach((r) => { if (r.piid) (byPiid[r.piid] = byPiid[r.piid] || []).push(r); });
+    const apply = (piid) => { const c = osrFundCells(osrFundCache[piid]); byPiid[piid].forEach((r) => Object.assign(r, c)); };
+    const first = osrUniq(osrPreview.map((r) => r.piid));
+    const order = osrUniq(first.concat(Object.keys(byPiid)));
+    order.filter((p) => osrFundCache[p]).forEach(apply);
+    const todo = order.filter((p) => !osrFundCache[p]);
+    const batches = [];
+    for (let i = 0; i < todo.length; i += 10) batches.push(todo.slice(i, i + 10));
+    osrFundProg = { done: order.length - todo.length, total: order.length };
+    const live = () => token === osrToken && rows === osrRows;
+    const p = (async () => {
+      let bi = 0;
+      async function worker() {
+        while (bi < batches.length && live()) {
+          const b = batches[bi++];
+          let got = {};
+          try {
+            const r = await fetch('/api/market-research?mode=award-funding&v=' + OSR_FUND_V + '&piids=' + b.map(encodeURIComponent).join(','), { headers: { Accept: 'application/json' } });
+            got = r.ok ? ((await r.json()).results || {}) : {};
+          } catch (e) { /* counted as failed below */ }
+          if (!live()) return;
+          b.forEach((pid) => {
+            const d = got[pid];
+            // Only cache an ANSWER; a failure stays retryable on the next build/export.
+            if (d && !d.failed) osrFundCache[pid] = d;
+            const c = osrFundCells(d || { failed: true });
+            byPiid[pid].forEach((r) => Object.assign(r, c));
+          });
+          osrFundProg.done += b.length;
+          // Re-draw the table only while it is still waiting on its own rows.
+          if (b.some((pid) => first.indexOf(pid) >= 0)) osrRenderTable(); else osrFundNote();
+        }
+      }
+      await Promise.all([worker(), worker(), worker()]);
+      if (live()) { osrFundProg = null; osrRenderTable(); }
+    })();
+    osrFundJob = { rows, p };
+    if (todo.length) osrRenderTable();
+    return p;
+  }
+  function osrFundNoteText() {
+    if (!osrFundOn()) return '';
+    return osrFundProg
+      ? 'Filling funding columns from USAspending \u2014 ' + osrFundProg.done.toLocaleString() + ' of ' + osrFundProg.total.toLocaleString() + ' contracts\u2026'
+      : 'Funding columns come from USAspending (File C), one lookup per contract. \u201cNot reported\u201d means DoD did not link that contract to an account, not zero.';
+  }
+  function osrFundNote() { const n = $('#osr-fund-note'); if (n) n.textContent = osrFundNoteText(); }
   function osrFundHtml(d) {
     if (!d || !d.found || !(d.accounts && d.accounts.length)) {
-      return '<div class="osr-fund-box osr-fund-none">' + esc((d && d.note) || 'No appropriation reported for this contract.') + '</div>';
+      return '<div class="osr-fund-box osr-fund-none">' + esc((d && d.note) || 'No appropriation reported for this contract.') + OSR_ACCT_HELP + '</div>';
     }
     const max = Math.max.apply(null, d.accounts.map((a) => Math.abs(a.amount)).concat([1]));
     const period = d.fyFrom ? (d.fyFrom === d.fyTo ? 'FY' + d.fyFrom : 'FY' + d.fyFrom + '\u2013FY' + d.fyTo) : '';
@@ -1288,12 +1383,16 @@
           + '<span class="osr-fund-amt' + (a.amount < 0 ? ' osr-fund-neg' : '') + '">' + fmtExact(a.amount) + '</span>'
           + '<span class="osr-fund-track"><span class="osr-fund-fill" style="width:' + Math.max(3, (Math.abs(a.amount) / max) * 100).toFixed(1) + '%"></span></span>'
         + '</div>').join('')
-      + '<div class="osr-fund-foot">Total across accounts: <b>' + fmtExact(d.total) + '</b></div>'
+      + '<div class="osr-fund-foot">Total across accounts: <b>' + fmtExact(d.total) + '</b>'
+        + (d.outlays != null ? ' \u00b7 Paid out to date (outlays): <b>' + fmtExact(d.outlays) + '</b>' : '') + '</div>'
+      + (d.byFy && d.byFy.length > 1 ? '<div class="osr-fund-foot">By fiscal year reported: ' + d.byFy.map((y) => 'FY' + y.fy + ' <b>' + fmtExact(y.amount) + '</b>').join(' \u00b7 ') + '</div>' : '')
+      + (d.objectClasses && d.objectClasses.length ? '<div class="osr-fund-foot">Object class: ' + d.objectClasses.map((o) => esc(o.code + ' ' + o.name) + ' <b>' + fmtExact(o.amount) + '</b>').join(' \u00b7 ') + '</div>' : '')
       // Said plainly because it will not tie, and a KO who spots that unprompted is
       // right to stop trusting the number: File C covers the contract's whole life in
       // the submitting agency's fiscal periods, while the row above is one action.
       + '<div class="osr-fund-cav">Covers the whole contract' + (period ? ' across ' + esc(period) : '')
         + ', not the single action in the row above, so these figures will not match that obligation. De-obligations report as negatives.</div>'
+      + OSR_ACCT_HELP
       + '</div>';
   }
   async function osrToggleFunding(tr) {
@@ -1316,7 +1415,7 @@
     try {
       let d = osrFundCache[piid];
       if (!d) {
-        const r = await fetch('/api/market-research?mode=award-funding&piid=' + encodeURIComponent(piid), { headers: { Accept: 'application/json' } });
+        const r = await fetch('/api/market-research?mode=award-funding&v=' + OSR_FUND_V + '&piid=' + encodeURIComponent(piid), { headers: { Accept: 'application/json' } });
         d = r.ok ? await r.json() : { found: false, note: 'Appropriation lookup failed.' };
         // Only cache an ANSWER. The handler returns 200 even when USASpending timed
         // out, so caching that pinned "try again shortly" to the row for the life of
@@ -1340,13 +1439,14 @@
       + preview.map((r) => '<tr class="osr-clk" data-piid="' + esc(String(r.piid || '')) + '" tabindex="0" aria-expanded="false" title="Show appropriation (color of money)">'
           + cols.map((c) => OSR_NUM[c[0]]
               ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
-              : '<td' + (c[0] === 'description' ? ' class="osr-desc"' : '') + '>' + esc(String(r[c[0]] == null ? '' : r[c[0]])) + '</td>').join('')
+              : '<td' + (c[0] === 'description' ? ' class="osr-desc"' : '') + '>' + (r[c[0]] == null && OSR_FUND_COLS.indexOf(c[0]) >= 0 ? '<span class="osr-fund-wait">\u2026</span>' : esc(String(r[c[0]] == null ? '' : r[c[0]]))) + '</td>').join('')
         + '</tr>').join('')
       + '</tbody></table></div>'
       + '<div class="osr-tnote">Top <b>' + preview.length + '</b> of ' + Number(rows.length).toLocaleString()
         + ' awards by obligation' + (osrMulti ? ' across every office \u2014 one office can fill this list; the per-office split is in the panel above' : '')
         + ' \u00b7 click any row for its appropriation (color of money) \u00b7 the CSV and workbook carry all '
-        + Number(rows.length).toLocaleString() + ' rows across the ' + cols.length + ' column' + (cols.length === 1 ? '' : 's') + ' you picked</div>';
+        + Number(rows.length).toLocaleString() + ' rows across the ' + cols.length + ' column' + (cols.length === 1 ? '' : 's') + ' you picked</div>'
+      + (osrFundOn() ? '<div class="osr-tnote" id="osr-fund-note">' + esc(osrFundNoteText()) + '</div>' + OSR_ACCT_HELP : '');
   }
   function osrBindRows() {
     const tbody = document.querySelector('#osr-table .osr-table tbody'); if (!tbody) return;
@@ -1384,7 +1484,7 @@
       const cb = e.target.closest('input[type=checkbox]'); if (!cb) return;
       if (cb.checked) osrOn[cb.value] = 1; else delete osrOn[cb.value];
       const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', cb.checked);
-      osrSaveCols(); osrSyncCols(); osrRenderTable();
+      osrSaveCols(); osrSyncCols(); osrRenderTable(); osrEnsureFunding();
     });
     panel.addEventListener('click', (e) => {
       const act = e.target.closest('.osr-cols-act'); if (!act) return;
@@ -1395,7 +1495,7 @@
         const on = !!osrOn[cb.value];
         cb.checked = on; const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', on);
       });
-      osrSaveCols(); osrSyncCols(); osrRenderTable();
+      osrSaveCols(); osrSyncCols(); osrRenderTable(); osrEnsureFunding();
     });
   }
 
@@ -1602,20 +1702,25 @@
           xl.disabled = false; xl.textContent = before;
           if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV \u2192'; return; }
         }
+        if (osrFundOn()) { const t = xl.textContent; xl.disabled = true; xl.textContent = 'Filling funding\u2026'; await osrEnsureFunding(); xl.disabled = false; xl.textContent = t; }
         try {
           const u8 = window.acqBuildXlsx(osrWorkbookData({
             offices: gotOffices, nameOf: nameOf, label: label, chartFys: chartFys, rows: rows,
             byOffice: multi ? byOffice.map((b) => ({ label: b.label + (nameOf(b.label) ? ' ' + nameOf(b.label) : ''), value: b.value })) : [],
-            caveat: [failLine, truncSlots.length ? 'Some periods hit the pull cap, so these totals are a floor.' : '']
+            caveat: [failLine, truncSlots.length ? 'Some periods hit the pull cap, so these totals are a floor.' : '',
+              osrFundOn() ? 'Funding columns: USAspending File C, by contract. 057 = Air Force, 097 = Defense-Wide (DoD as a whole: OSD, defense agencies, SOCOM), 021 = Army, 017 = Navy/Marine Corps; the last four digits are the appropriation. "Not reported" means DoD did not link the contract to an account, not zero. MFP, program element and fund year are not published.' : '']
               .filter(Boolean).join(' ').replace(/<[^>]+>/g, '')
           }));
           if (!osrDownload(u8, base + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) xl.textContent = 'Use CSV \u2192';
         } catch (e) { xl.textContent = 'Use CSV \u2192'; }
       });
-      const dl = $('#osr-dl'); if (dl) dl.addEventListener('click', () => {
+      const dl = $('#osr-dl'); if (dl) dl.addEventListener('click', async () => {
+        if (osrFundOn()) { dl.disabled = true; dl.textContent = 'Filling funding\u2026'; await osrEnsureFunding(); dl.disabled = false; dl.textContent = 'CSV'; }
         if (!osrDownload(osrBuildCsv(osrRows), base + '.csv')) dl.textContent = 'Use Copy \u2192';
       });
       const cp = $('#osr-copy'); if (cp) cp.addEventListener('click', () => {
+        // The clipboard needs this click's user activation, which a long wait loses.
+        if (osrFundOn() && osrFundProg) { cp.textContent = 'Funding loading \u2014 copy again shortly'; osrEnsureFunding(); setTimeout(() => { cp.textContent = 'Copy'; }, 2600); return; }
         const csv = osrBuildCsv(osrRows);
         const back = () => setTimeout(() => { cp.textContent = 'Copy'; }, 1900);
         const ok = () => { cp.textContent = 'Copied'; back(); };
@@ -1625,6 +1730,7 @@
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(ok, bad); else bad();
       });
       osrRenderTable();
+      osrEnsureFunding();
     } catch (e) {
       if (token !== osrToken) return;
       box.innerHTML = '<div class="dash-loading dash-skeleton">Spend lookup is briefly unavailable \u2014 try again shortly.</div>';
