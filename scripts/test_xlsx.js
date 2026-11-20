@@ -278,5 +278,68 @@ Object.keys(thinParts).forEach((n) => {
   assert.ok(thinParts['[Content_Types].xml'].indexOf('PartName="/' + n + '"') >= 0, 'thin build: content-types missing ' + n);
 });
 
+// ── optional By Contract sheet + funding tables ──
+function unpack(buf) {
+  const out = {}; let o = 0;
+  while (o + 4 <= buf.length && u32(buf, o) === 0x04034b50) {
+    const crc = u32(buf, o + 14), size = u32(buf, o + 18), nlen = u16(buf, o + 26), elen = u16(buf, o + 28);
+    const name = Buffer.from(buf.slice(o + 30, o + 30 + nlen)).toString('utf8');
+    const ds = o + 30 + nlen + elen, d = buf.slice(ds, ds + size);
+    assert.strictEqual(crc32(d), crc, 'CRC mismatch for ' + name);
+    out[name] = Buffer.from(d).toString('utf8'); o = ds + size;
+  }
+  return out;
+}
+const withC = unpack(build(Object.assign({}, opts, {
+  byColor: [{ label: 'O&M', value: 900 }, { label: 'RDT&E', value: 100 }],
+  byFund: [{ label: 'Defense-Wide (097)', value: 900 }, { label: 'Air Force (057)', value: 100 }],
+  fundCoverage: 'Funding reported for 1 of 2 contracts (99% of dollars)',
+  kpis: [{ label: 'Small business share of $', value: 0.412 }],
+  vendorCount: 7,
+  extraSheets: [
+    { name: 'POM by Work Type', columns: [['group', 'Work Type (PSC)'], ['fy2024', 'FY2024 Obligated'], ['fy2025', 'FY2025 Obligated'], ['active', 'FYs With Obligations'], ['pattern', 'Pattern']],
+      rows: [{ group: 'Service', fy2024: 10.5, fy2025: 20, active: 2, pattern: 'Every year' }, { group: 'Total', _total: true, fy2024: 10.5, fy2025: 20 }], nums: { fy2024: 1, fy2025: 1, active: 'n' }, tab: 'FF0F2540' },
+    { name: 'POM by PSC', columns: [['group', 'PSC'], ['fy2025', 'FY2025 Obligated']], rows: [{ group: 'R&D <x>', fy2025: 5 }], nums: { fy2025: 1 } },
+    { name: 'Empty', columns: [['group', 'X']], rows: [] },
+    { name: 'Blank Col', columns: [['group', 'Group'], ['ghost', 'Always Blank'], ['v', 'Value']], rows: [{ group: 'a', ghost: '', v: 1 }, { group: 'b', v: 2 }], nums: { v: 1 } }
+  ],
+  contracts: { columns: [['piid', 'Contract (PIID)'], ['actions', 'Actions'], ['obligated', 'Obligated (Period)'], ['appropriation', 'Appropriation']],
+    rows: [{ piid: 'FA850124F0025', actions: 3, obligated: 8354345, appropriation: '097-0100 Operation and Maintenance, Defense-Wide, Defense' },
+           { piid: 'FA850125P0018', actions: 1, obligated: 18750.5, appropriation: 'Not reported' }] }
+})));
+const s3 = withC['xl/worksheets/sheet3.xml'];
+assert.ok(s3, 'By Contract sheet written');
+assert.ok(withC['[Content_Types].xml'].indexOf('PartName="/xl/worksheets/sheet3.xml"') >= 0, 'content-types covers sheet3');
+assert.ok(/<sheet name="By Contract" sheetId="3" r:id="rId4"\/>/.test(withC['xl/workbook.xml']), 'workbook lists By Contract');
+assert.ok(/Id="rId4"[^>]*worksheets\/sheet3\.xml/.test(withC['xl/_rels/workbook.xml.rels']), 'rId4 resolves to sheet3');
+assert.ok(withC['xl/workbook.xml'].indexOf("'By Contract'!$1:$1") >= 0, 'By Contract prints its header row');
+assert.strictEqual((s3.match(/<row /g) || []).length, 3, 'By Contract = header + 2 contracts');
+assert.ok(/<c r="B2" s="19"><v>3<\/v><\/c>/.test(s3), 'Actions is a plain number, not currency or text');
+assert.ok(/<c r="C2" s="17"><v>8354345<\/v><\/c>/.test(s3), 'Obligated is currency-with-cents formatted');
+assert.ok(withC['xl/worksheets/sheet1.xml'].indexOf('Funding reported for 1 of 2 contracts') >= 0, 'coverage line on Summary');
+assert.ok(withC['xl/worksheets/sheet1.xml'].indexOf('Funding source: Treasury account where reported') >= 0, 'funding table on Summary');
+Object.keys(withC).filter((n) => /^xl\/charts\//.test(n)).forEach((n) => checkOrder(withC[n], 'contracts/' + n));
+// POM tabs: sheet4/sheet5 wired through content-types, workbook, rels and print titles; empty tab dropped
+[[4, 'POM by Work Type', 5], [5, 'POM by PSC', 6]].forEach(([n, name, rid]) => {
+  assert.ok(withC['xl/worksheets/sheet' + n + '.xml'], 'sheet' + n + ' written');
+  assert.ok(withC['[Content_Types].xml'].indexOf('PartName="/xl/worksheets/sheet' + n + '.xml"') >= 0, 'content-types covers sheet' + n);
+  assert.ok(withC['xl/workbook.xml'].indexOf('<sheet name="' + name + '" sheetId="' + n + '" r:id="rId' + rid + '"/>') >= 0, 'workbook lists ' + name);
+  assert.ok(new RegExp('Id="rId' + rid + '"[^>]*worksheets/sheet' + n + '\\.xml').test(withC['xl/_rels/workbook.xml.rels']), 'rId' + rid + ' resolves');
+  assert.ok(withC['xl/workbook.xml'].indexOf("'" + name + "'!$1:$1") >= 0, name + ' prints its header');
+});
+assert.ok(withC['xl/workbook.xml'].indexOf('Empty') < 0, 'an empty extra tab is dropped');
+assert.ok(withC['xl/worksheets/sheet6.xml'] && withC['xl/worksheets/sheet6.xml'].indexOf('Always Blank') < 0 && withC['xl/worksheets/sheet6.xml'].indexOf('>Value<') >= 0, 'a column blank on every row is left out');
+assert.ok(/<c r="B2" s="17"><v>10.5<\/v><\/c>/.test(withC['xl/worksheets/sheet4.xml']), 'POM FY cell is currency');
+assert.ok(/<c r="D2" s="19"><v>2<\/v><\/c>/.test(withC['xl/worksheets/sheet4.xml']), 'POM active-years is a plain number');
+assert.ok(withC['xl/worksheets/sheet5.xml'].indexOf('R&amp;D &lt;x&gt;') >= 0, 'POM text is escaped');
+assert.ok(withC['xl/styles.xml'].indexOf('formatCode="&quot;$&quot;#,##0.00_);[Red](&quot;$&quot;#,##0.00)"') >= 0, 'money cells use accounting format: negatives red, in parentheses');
+assert.ok(/<c r="B3" s="20"><v>10.5<\/v><\/c>/.test(withC['xl/worksheets/sheet4.xml']), 'Total row money is bold with a rule above');
+assert.ok(/<autoFilter ref="A1:[A-Z]+2"\/>/.test(withC['xl/worksheets/sheet4.xml']), 'Total row sits outside the autofilter');
+assert.ok(/<tabColor rgb="FF0F2540"\/>/.test(withC['xl/worksheets/sheet4.xml']), 'POM tabs are coloured');
+assert.ok(/<c r="B\d+" s="13"><v>0.412<\/v><\/c>/.test(withC['xl/worksheets/sheet1.xml']), 'KPI share is a %-formatted number');
+assert.ok(withC['xl/worksheets/sheet1.xml'].indexOf('POM tabs: FPDS obligations') >= 0, 'POM note on Summary');
+assert.ok(/Distinct vendors<\/t><\/is><\/c><c r="B\d+" s="11"><v>7<\/v>/.test(withC['xl/worksheets/sheet1.xml']), 'Distinct vendors uses the page\'s normalised count');
+
+
 console.log('xlsx generator: all checks passed (' + expect.length + ' parts, ' + chartNames.length
   + ' charts [' + seenTypes.join(', ') + '], CRC + graph + schema order verified)');

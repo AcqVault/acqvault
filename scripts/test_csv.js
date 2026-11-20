@@ -30,6 +30,8 @@ assert.strictEqual(osrCsvCell('SAY "HI"'), '"SAY ""HI"""');                     
 assert.strictEqual(osrCsvCell('line1\nline2'), '"line1\nline2"');                         // newline → quoted
 assert.strictEqual(osrCsvCell(18750), '18750');
 assert.strictEqual(osrCsvCell(null), '');
+assert.strictEqual(osrCsvCell('7E20'), '"=""7E20"""', 'a PSC like 7E20 stays text in Excel (not 7E+20)');
+assert.strictEqual(osrCsvCell('R425'), 'R425', 'ordinary PSCs are untouched');
 
 // a full build with a comma-bearing vendor and a description holding a comma
 const rows = [

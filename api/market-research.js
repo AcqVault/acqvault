@@ -1,4 +1,5 @@
 const { enforce } = require('./_ratelimit');
+const zlib = require('zlib');
 
 // A slow or hung upstream (SAM.gov) would otherwise run until the platform kills the
 // function and returns a raw 504; this gives it a real deadline so the handler's own
@@ -195,6 +196,14 @@ module.exports = async function handler(req, res) {
     // sharing 'mr' let them exhaust the counter and 429 the actual award-rows search.
     if (await enforce(req, res, { max: 150, name: 'fund' })) return;
     return contractAwardFunding(req, res);
+  }
+  // Fund years (period of availability) for ONE contract — only USASpending's award
+  // download carries the full Treasury account symbol, and it takes ~40s to build, so
+  // the client starts it here and polls the same mode with &file=.
+  if (req.method === 'GET' && req.query && req.query.mode === 'award-fundyear') {
+    // Starting one queues a heavy USASpending download job — keep that rare per visitor.
+    if (await enforce(req, res, req.query.file == null ? { max: 6, name: 'fydl' } : { max: 30, name: 'fyp' })) return;
+    return contractFundYears(req, res);
   }
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST, GET');
@@ -522,18 +531,34 @@ async function contractAwardsRows(req, res, apiKey) {
 }
 
 // ── Per-contract appropriation via USASpending account funding (File C) ───────
-async function usaPost(path, body) {
-  const r = await timedFetch('https://api.usaspending.gov' + path,
-    { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) }, 9000);
-  if (!r.ok) { const e = new Error('USASpending ' + r.status); e.status = r.status; throw e; }
-  return r.json();
+// USAspending is intermittently flaky (socket resets, 5xx, an HTML error page with a
+// 200): retry twice with a short backoff. A 9s timeout is not retried (time budget).
+async function usaPost(path, body, attempt) {
+  attempt = attempt || 0;
+  const again = async (e) => {
+    if (attempt >= 2) throw e;
+    await new Promise((res) => setTimeout(res, 500 * (attempt + 1)));
+    return usaPost(path, body, attempt + 1);
+  };
+  let r;
+  try {
+    r = await timedFetch('https://api.usaspending.gov' + path,
+      { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) }, 9000);
+  } catch (e) {
+    if (e && e.name === 'TypeError') return again(e);
+    throw e;
+  }
+  if (r.status >= 500 || r.status === 429) return again(Object.assign(new Error('USAspending ' + r.status), { status: r.status }));
+  if (!r.ok) { const e = new Error('USAspending ' + r.status); e.status = r.status; throw e; }
+  const text = await r.text();
+  try { return JSON.parse(text); } catch (e) { return again(new Error('USAspending sent a non-JSON body')); }
 }
 // The account title names the appropriation; tag the color of money from it.
 function apprType(title) {
   const t = String(title || '').toLowerCase();
-  if (/research.*development.*test|rdt.?&.?e|\brdte\b/.test(t)) return 'RDT&E';
+  if (/research.*development.*test|rdt.?&.?e|\brdte\b|operational test and evaluation/.test(t)) return 'RDT&E';
   if (/operation.*maintenance|\bo&m\b/.test(t)) return 'O&M';
-  if (/military personnel|milpers/.test(t)) return 'MILPERS';
+  if (/military personnel|reserve personnel|national guard personnel|milpers/.test(t)) return 'MILPERS';
   if (/construction/.test(t)) return 'MILCON';
   if (/procurement/.test(t)) return 'Procurement';
   if (/working capital|revolving|defense working/.test(t)) return 'WCF';
@@ -544,13 +569,20 @@ function apprType(title) {
 // Treasury agency identifier (the 3 digits before the dash) → who the money was
 // appropriated to. 097 is DoD-as-a-whole, not a Service: OSD, the defense agencies
 // and SOCOM all spend from it, so it does not by itself say which one.
-const ACCT_AGENCY = { '057': 'Air Force', '097': 'Defense-Wide', '021': 'Army', '017': 'Navy', '096': 'Corps of Engineers', '011': 'Foreign Military Sales', '047': 'GSA' };
+const ACCT_AGENCY = { '057': 'Air Force', '097': 'Defense-Wide', '021': 'Army', '017': 'Navy', '096': 'Corps of Engineers', '011': 'Funds to the President', '047': 'GSA' };
 function acctSource(code, title) {
   const ag = String(code || '').slice(0, 3);
   if (ag === '017' && /marine corps/i.test(title)) return 'Marine Corps (017)';
   return ag ? (ACCT_AGENCY[ag] || 'Agency') + ' (' + ag + ')' : '';
 }
-const FUND_NONE = 'No appropriation reported. Color of money comes from the funding agency’s Treasury submission (File C), not from FPDS — and DoD leaves most contract actions unlinked. Blank means not reported, not zero.';
+const FUND_NONE = 'No appropriation reported. Color of money comes from the funding agency’s Treasury submission (File C), not from FPDS — and DoD often leaves contract actions unlinked. Not reported does not mean zero.';
+async function resolveAward(piid) {
+  const s = await usaPost('/api/v2/search/spending_by_award/', {
+    filters: { award_type_codes: ['A', 'B', 'C', 'D'], award_ids: [piid] },
+    fields: ['Award ID', 'generated_internal_id'], limit: 100
+  });
+  return (s.results || []).filter(function (r) { return String(r['Award ID'] || '').toUpperCase() === piid; });
+}
 // One PIID → its File C funding. Throws on an upstream failure so the caller can
 // tell "USASpending didn't answer" apart from "nothing reported".
 async function lookupFunding(piid) {
@@ -561,16 +593,12 @@ async function lookupFunding(piid) {
   // Army IT order). A PIID is only unique WITH its parent, which FPDS doesn't give us,
   // so more than one exact hit means we genuinely cannot tell which contract is yours:
   // say so rather than print another agency's appropriation under this one.
-  const s = await usaPost('/api/v2/search/spending_by_award/', {
-    filters: { award_type_codes: ['A', 'B', 'C', 'D'], award_ids: [piid] },
-    fields: ['Award ID', 'generated_internal_id'], limit: 100
-  });
-  const exact = (s.results || []).filter(function (r) { return String(r['Award ID'] || '').toUpperCase() === piid; });
+  const exact = await resolveAward(piid);
   if (exact.length !== 1 || !exact[0].generated_internal_id) {
     return {
       piid, found: false, accounts: [], ambiguous: exact.length > 1, source: 'USASpending.gov account funding (File C)',
       note: exact.length > 1
-        ? ('This contract number isn’t unique on USASpending — ' + exact.length + ' awards under different parents share it, so no appropriation can be tied to this one.')
+        ? ('This contract number isn’t unique on USAspending — ' + exact.length + ' awards under different parents share it, so no appropriation can be tied to this one.')
         : FUND_NONE
     };
   }
@@ -584,8 +612,18 @@ async function lookupFunding(piid) {
   // Outlays come from the award record, NOT a sum of File C rows: File C outlays are
   // fiscal-year-to-date running balances, so summing them double-counts (live:
   // FA002120F0002 rows summed to $11.4M against an award total of $5.5M).
-  const detailP = timedFetch('https://api.usaspending.gov/api/v2/awards/' + encodeURIComponent(gid) + '/', { headers: { Accept: 'application/json' } }, 9000)
-    .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  // Retried like usaPost: a flake here used to blank the lifetime fields silently.
+  const detailP = (async function () {
+    for (let a = 0; a < 3; a++) {
+      try {
+        const r = await timedFetch('https://api.usaspending.gov/api/v2/awards/' + encodeURIComponent(gid) + '/', { headers: { Accept: 'application/json' } }, 9000);
+        if (r.ok) return JSON.parse(await r.text());
+        if (r.status < 500 && r.status !== 429) return null;
+      } catch (e) { if (e && e.status === 504) return null; }
+      await new Promise((res) => setTimeout(res, 500 * (a + 1)));
+    }
+    return null;
+  })();
   for (let page = 1; page <= 4; page++) {
     const f = await usaPost('/api/v2/awards/funding/', { award_id: gid, limit: 100, page, sort: 'reporting_fiscal_date', order: 'desc' });
     const rows = f.results || [];
@@ -616,6 +654,9 @@ async function lookupFunding(piid) {
   const total = accounts.reduce(function (sum, a) { return sum + a.amount; }, 0);
   const detail = await detailP;
   const outlays = detail && detail.total_outlay != null ? Math.round(Number(detail.total_outlay)) : null;
+  // FPDS is the system of record for obligations; File C is the agency's accounting
+  // report and routinely covers only part of it. Return both so the page can show the gap.
+  const fpdsTotal = detail && detail.total_obligation != null ? Math.round(Number(detail.total_obligation)) : null;
   return {
     piid, found: accounts.length > 0,
     accounts: accounts.slice(0, 12).map(function (a) { return { code: a.code, title: a.title, type: a.type, source: a.source, amount: Math.round(a.amount) }; }),
@@ -624,8 +665,12 @@ async function lookupFunding(piid) {
     byFy: Object.keys(byFy).sort().map(function (y) { return { fy: Number(y), amount: Math.round(byFy[y]) }; }),
     total: Math.round(total),
     outlays,
+    fpdsTotal,
     fyFrom: fyMin, fyTo: fyMax,
     source: 'USASpending.gov account funding (File C)',
+    // partial: the award detail didn't answer, so outlays/fpdsTotal are missing —
+    // never cache this; the client retries it.
+    partial: detail ? undefined : true,
     note: accounts.length ? undefined : FUND_NONE
   };
 }
@@ -640,25 +685,30 @@ async function contractAwardFunding(req, res) {
     const results = {};
     let failed = 0;
     let i = 0;
+    // Overall deadline: one slow contract must not let maxDuration kill the other nine answers.
+    const t0 = Date.now();
     async function worker() {
       while (i < piids.length) {
         const p = piids[i++];
-        try { results[p] = await lookupFunding(p); } catch (e) { failed++; results[p] = { piid: p, found: false, accounts: [], failed: true }; }
+        if (Date.now() - t0 > 30000) { failed++; results[p] = { piid: p, found: false, accounts: [], failed: true }; continue; }
+        try { results[p] = await lookupFunding(p); if (results[p].partial) failed++; } catch (e) { failed++; results[p] = { piid: p, found: false, accounts: [], failed: true }; }
       }
     }
-    await Promise.all([worker(), worker(), worker(), worker()]);
-    res.setHeader('Cache-Control', failed ? 's-maxage=600' : 's-maxage=86400, stale-while-revalidate=604800');
+    await Promise.race([Promise.all([worker(), worker(), worker(), worker()]), new Promise((r) => setTimeout(r, 50000))]);
+    piids.forEach((p) => { if (!results[p]) { failed++; results[p] = { piid: p, found: false, accounts: [], failed: true }; } });
+    // A batch with any failure is never cached: the retry must reach USAspending again.
+    res.setHeader('Cache-Control', failed ? 'no-store' : 's-maxage=86400, stale-while-revalidate=604800');
     return res.status(200).json({ results });
   }
   const piid = cleanPiid(q.piid);
   if (piid.length < 4) return res.status(200).json({ note: 'Provide a contract PIID.' });
   try {
     const d = await lookupFunding(piid);
-    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800');
+    res.setHeader('Cache-Control', d.partial ? 'no-store' : 's-maxage=86400, stale-while-revalidate=604800');
     return res.status(200).json(d);
   } catch (error) {
     console.error('award-funding error:', error && error.message);
-    res.setHeader('Cache-Control', 's-maxage=600');
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ piid, found: false, accounts: [], note: 'Appropriation lookup is unavailable right now — try again shortly.' });
   }
 }
@@ -709,5 +759,107 @@ async function sourcesMode(req, res, apiKey) {
         ? 'The capable-sources lookup hit its daily SAM.gov quota — try again later, or search DSBS directly.'
         : 'Capable-sources lookup unavailable right now — search DSBS directly.'
     });
+  }
+}
+
+// ── Fund years via USASpending's per-award download ──────────────────────────
+// The download is a zip (deflate) of CSVs; only *_FederalAccountFunding_*.csv is
+// read. Minimal central-directory reader — no dependency for one file.
+function unzipEntry(buf, test) {
+  let eocd = -1;
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) { if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; } }
+  if (eocd < 0) throw new Error('not a zip');
+  const n = buf.readUInt16LE(eocd + 10);
+  let p = buf.readUInt32LE(eocd + 16);
+  for (let k = 0; k < n; k++) {
+    if (buf.readUInt32LE(p) !== 0x02014b50) throw new Error('bad zip directory');
+    const method = buf.readUInt16LE(p + 10), csize = buf.readUInt32LE(p + 20);
+    const nlen = buf.readUInt16LE(p + 28), xlen = buf.readUInt16LE(p + 30), clen = buf.readUInt16LE(p + 32);
+    const off = buf.readUInt32LE(p + 42);
+    const name = buf.toString('utf8', p + 46, p + 46 + nlen);
+    p += 46 + nlen + xlen + clen;
+    if (!test(name)) continue;
+    const start = off + 30 + buf.readUInt16LE(off + 26) + buf.readUInt16LE(off + 28);
+    const raw = buf.subarray(start, start + csize);
+    return method === 8 ? zlib.inflateRawSync(raw, { maxOutputLength: 200e6 }) : method === 0 ? raw : null;
+  }
+  return null;
+}
+// RFC 4180: quoted fields may hold commas ("Operation and Maintenance, Defense-Wide").
+function parseCsv(text) {
+  text = text.replace(/^\uFEFF/, '');
+  const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; continue; }
+    if (c === '"') q = true;
+    else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\n') { row.push(cur.replace(/\r$/, '')); rows.push(row); row = []; cur = ''; }
+    else cur += c;
+  }
+  if (cur || row.length) { row.push(cur); rows.push(row); }
+  const head = rows.shift() || [];
+  return rows.filter((r) => r.length > 1).map((r) => { const o = {}; head.forEach((h, i) => { o[h] = r[i]; }); return o; });
+}
+function fundYearLabel(b, e, avail) {
+  if (String(avail).toUpperCase() === 'X') return 'No-year (X)';
+  if (!b && !e) return '';
+  if (!e || b === e) return 'FY' + (b || e) + ' (1-year)';
+  return 'FY' + b + '–FY' + e + ' (' + (Number(e) - Number(b) + 1) + '-year)';
+}
+const DL_FILE = /^CONT_[A-Z0-9-]{1,60}_\d{4}-\d{2}-\d{2}_H\d{2}M\d{2}S\d{6,10}\.zip$/;
+async function contractFundYears(req, res) {
+  const q = req.query || {};
+  try {
+    if (q.file == null) {
+      const piid = cleanPiid(q.piid);
+      if (piid.length < 4) return res.status(200).json({ note: 'Provide a contract PIID.' });
+      const exact = await resolveAward(piid);
+      if (exact.length !== 1) return res.status(200).json({ piid, done: true, years: [], note: exact.length > 1 ? 'This contract number isn’t unique on USAspending, so fund years can’t be tied to it.' : 'USAspending has no record of this contract.' });
+      const d = await usaPost('/api/v2/download/contract/', { award_id: exact[0].generated_internal_id });
+      if (!d || !DL_FILE.test(String(d.file_name || ''))) throw new Error('unexpected download response');
+      res.setHeader('Cache-Control', 'no-store');   // never hand a failed/expired file name back
+      return res.status(200).json({ piid, file: d.file_name });
+    }
+    // Only ever fetch a USASpending-generated file name — never an arbitrary URL.
+    const file = String(q.file);
+    if (!DL_FILE.test(file)) return res.status(400).json({ error: 'Bad file name.' });
+    const sr = await timedFetch('https://api.usaspending.gov/api/v2/download/status?file_name=' + encodeURIComponent(file), { headers: { Accept: 'application/json' } }, 8000);
+    if (sr.status >= 400 && sr.status < 500 && sr.status !== 429) return res.status(200).json({ done: true, years: [], failed: true, note: 'That download has expired — close and reopen the contract to try again.' });
+    if (!sr.ok) throw Object.assign(new Error('status HTTP ' + sr.status), { transient: true });
+    const st = await sr.json().catch(() => { throw Object.assign(new Error('status not JSON'), { transient: true }); });
+    if (st.status === 'failed') return res.status(200).json({ done: true, years: [], failed: true, note: 'USAspending could not build the download — try again later.' });
+    if (st.status !== 'finished') { res.setHeader('Cache-Control', 'no-store'); return res.status(200).json({ done: false, seconds: Number(st.seconds_elapsed) || 0 }); }
+    // The whole fetch, body included, gets one deadline (timedFetch's ends at headers).
+    const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 20000);
+    let zbuf;
+    try {
+      const zr = await fetch('https://files.usaspending.gov/generated_downloads/' + file, { signal: ctl.signal });
+      if (!zr.ok) throw new Error('zip HTTP ' + zr.status);
+      if (Number(zr.headers.get('content-length')) > 60e6) throw new Error('zip too large');
+      zbuf = Buffer.from(await zr.arrayBuffer());
+      if (zbuf.length > 60e6) throw new Error('zip too large');
+    } finally { clearTimeout(tm); }
+    const csv = unzipEntry(zbuf, (n) => /FederalAccountFunding.*\.csv$/i.test(n));
+    // An unreadable zip or a renamed column is a failure (not cached), never "no detail".
+    if (!csv) throw new Error('no FederalAccountFunding csv in the download');
+    const rows = parseCsv(csv.toString('utf8'));
+    if (rows.length && !('treasury_account_symbol' in rows[0])) throw new Error('fund-year columns changed');
+    const roll = {};
+    rows.forEach((x) => {
+      const tas = x.treasury_account_symbol || '';
+      if (!tas) return;
+      if (!roll[tas]) roll[tas] = { tas, account: x.federal_account_symbol || '', title: x.federal_account_name || x.treasury_account_name || '', years: fundYearLabel(x.beginning_period_of_availability, x.ending_period_of_availability, x.availability_type_code), amount: 0 };
+      roll[tas].amount += Number(x.transaction_obligated_amount) || 0;
+    });
+    const years = Object.values(roll).map((a) => Object.assign(a, { amount: Math.round(a.amount) }))
+      .sort((a, b) => (a.tas < b.tas ? -1 : 1));
+    res.setHeader('Cache-Control', 's-maxage=86400');
+    return res.status(200).json({ done: true, years, source: 'USASpending.gov award download (File C, Treasury account symbol)', note: years.length ? undefined : 'No fund-year detail reported for this contract.' });
+  } catch (e) {
+    console.error('fundyear error:', e && e.message);
+    res.setHeader('Cache-Control', 'no-store');
+    if (q.file != null && (e.transient || (e && /did not respond|aborted|fetch failed/i.test(e.message)))) return res.status(200).json({ done: false, retry: true });
+    return res.status(200).json({ done: true, years: [], failed: true, note: 'Fund-year lookup is unavailable right now — try again shortly.' });
   }
 }

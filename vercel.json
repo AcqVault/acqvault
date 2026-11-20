@@ -1,4 +1,5 @@
 {
+  "functions": { "api/market-research.js": { "maxDuration": 60 } },
   "redirects": [
     { "source": "/fmr/part-:v(2[ABab])", "destination": "/fmr/part-2", "permanent": true },
     { "source": "/fmr/part-:v(6[ABab])", "destination": "/fmr/part-6", "permanent": true },

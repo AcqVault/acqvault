@@ -613,6 +613,26 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-fund-amt.osr-fund-neg { color: #9a3412; }
 .osr-fund-cav { margin-top:8px; padding-top:9px; border-top: 1px solid var(--line2); font-size: var(--fs-sm); line-height: 1.5; color: var(--muted); max-width: 74ch; }
 .osr-fund-wait { color: var(--muted2); }
+.osr-neg { color: #b42318; font-variant-numeric: tabular-nums; }
+.osr-recon { margin-top:10px; padding:8px 10px; border-left:3px solid var(--brass); background: rgba(var(--brass-rgb),0.06); font-size: var(--fs-sm); color: var(--ink2); line-height:1.5; }
+.osr-recon b { color: var(--ink); }
+.osr-kpis { margin-top:14px; }
+.osr-kpis .dash-stat-num { font-size: 26px; }
+.osr-dash-fund { grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,0.8fr); }
+.osr-cov .dash-stat-num { margin-top:12px; }
+.osr-fundcta { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; padding:14px 16px; border:1px dashed rgba(var(--brass-rgb),0.35); border-radius: var(--r-lg); font-size: var(--fs-sm); color: var(--muted); }
+.osr-fundcta b { color: var(--ink); }
+.osr-fy-wrap { margin-top:10px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; }
+.osr-fy-btn { font: inherit; font-size: var(--fs-sm); font-weight: var(--fw-semibold); padding:6px 12px; border-radius: var(--r-pill); border:1px solid rgba(var(--brass-rgb),0.4); background: rgba(var(--brass-rgb),0.10); color: var(--brass-ink); cursor:pointer; }
+.osr-fy-btn:disabled { cursor: progress; opacity: .8; }
+.osr-fy-btn:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+.osr-fy-hint { font-size: var(--fs-xs); color: var(--muted2); }
+.osr-fy-out { flex-basis:100%; }
+.osr-fy-t { border-collapse: collapse; font-size: var(--fs-sm); margin-top:4px; }
+.osr-fy-t th, .osr-fy-t td { text-align:left; padding:4px 14px 4px 0; border-bottom:1px solid var(--line2); white-space: nowrap; color: var(--ink2); }
+.osr-fy-t th { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: var(--ls-wide); color: var(--muted2); }
+.osr-fy-t .osr-num { text-align:right; font-variant-numeric: tabular-nums; }
+@media (max-width: 860px) { .osr-dash-fund { grid-template-columns: 1fr; } .osr-fundcta { flex-direction: column; align-items: flex-start; } }
 .osr-acct-help { margin-top:10px; font-size: var(--fs-sm); line-height: 1.55; color: var(--muted); max-width: 78ch; }
 .osr-acct-help summary { cursor: pointer; font-weight: var(--fw-semibold); color: var(--brass-ink); }
 .osr-acct-help summary:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; border-radius: var(--r-sm); }

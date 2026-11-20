@@ -13,6 +13,7 @@
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const fmtUSD = (n) => {
     n = Number(n) || 0;
+    if (n < 0) return '-' + fmtUSD(-n);   // was "$-5242642" for a negative
     if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T';
     if (n >= 1e9)  return '$' + (n / 1e9).toFixed(2) + 'B';
     if (n >= 1e6)  return '$' + (n / 1e6).toFixed(1) + 'M';
@@ -20,6 +21,8 @@
     return '$' + Math.round(n).toLocaleString();
   };
   const fmtExact = (n) => '$' + Math.round(Number(n) || 0).toLocaleString();
+  // Accounting convention for the spend tool: a negative (deobligation) reads ($1,234) in red.
+  const osrNeg = (n, f) => { n = Number(n) || 0; return n < 0 ? '<span class="osr-neg">(' + (f || fmtExact)(-n) + ')</span>' : (f || fmtExact)(n); };
 
   /* ════════════════════════════════════════════════════════════
      DATA
@@ -896,11 +899,12 @@
   const OSR_COLS = [
     ['office', 'Office'], ['officeName', 'Office Name'], ['fiscalYear', 'FY'],
     ['piid', 'Contract (PIID)'], ['mod', 'Mod'], ['awardOrIdv', 'Award/IDV'], ['awardType', 'Award Type'],
-    ['category', 'Category'], ['pscCode', 'PSC'], ['pscName', 'PSC Name'],
+    ['category', 'Work Type'], ['pscCode', 'PSC'], ['pscName', 'PSC Name'],
     ['naicsCode', 'NAICS'], ['naicsName', 'NAICS Name'], ['description', 'Description'],
     ['vendor', 'Vendor'], ['vendorUEI', 'Vendor UEI'], ['smallBusiness', 'Small Business'],
     ['obligated', 'Obligated (Action)'], ['awardAmount', 'Award Amount'], ['ceiling', 'Ceiling (All Options)'], ['pricingType', 'Pricing Type'],
-    ['fundSource', 'Funding Source'], ['appropriation', 'Appropriation (Treasury Acct)'], ['colorOfMoney', 'Color of Money'], ['objectClass', 'Object Class'],
+    ['fundingSubtier', 'Funding Agency (FPDS)'], ['fundingOffice', 'Funding Office (FPDS)'],
+    ['fundSource', 'Funding Source'], ['appropriation', 'Account(s) on Contract (USAspending)'], ['colorOfMoney', 'Color of Money'], ['objectClass', 'Object Class'],
     ['setAside', 'Set-Aside'], ['extentCompeted', 'Extent Competed'],
     ['popState', 'PoP State'], ['dateSigned', 'Date Signed']
   ];
@@ -913,6 +917,7 @@
     ['What was bought', ['category', 'pscCode', 'pscName', 'naicsCode', 'naicsName', 'description']],
     ['Who got it', ['vendor', 'vendorUEI', 'smallBusiness', 'popState']],
     ['How it was bought', ['awardOrIdv', 'awardType', 'setAside', 'extentCompeted']],
+    ['Who paid (FPDS)', ['fundingSubtier', 'fundingOffice']],
     ['Funding (USAspending)', ['fundSource', 'appropriation', 'colorOfMoney', 'objectClass']]
   ];
   const OSR_COLS_KEY = 'acqvault-osr-cols';
@@ -955,7 +960,7 @@
             }).join('')
           + '</div>').join('')
       + '</div>'
-      + '<div class="osr-cols-foot" id="osr-cols-foot">Applies to the table on this page, the CSV and the workbook.</div>'
+      + '<div class="osr-cols-foot" id="osr-cols-foot">Applies to the table on this page, the CSV and the JSON. The Excel Data tab always carries every field.</div>'
       + '</div>';
   }
 
@@ -1202,6 +1207,7 @@
   function osrFetchRange(office, r) { return osrFetch('office=' + encodeURIComponent(office) + '&from=' + r.from + '&to=' + r.to); }
   function osrCsvCell(v) {
     const s = String(v == null ? '' : v);
+    if (/^\d+E\d+$/i.test(s)) return '"=""' + s + '"""';   // Excel reads 7E20 (a PSC) as 7E+20; ="7E20" keeps it text
     return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
   }
   function osrBuildCsv(rows) {
@@ -1234,7 +1240,7 @@
   }
   function osrBarsHtml(items, max) {
     return items.map((it) => '<div class="dash-bar osr-bar">'
-      + '<div class="dash-bar-top"><div class="dash-bar-name">' + esc(it.label) + '</div><div class="dash-bar-val">' + fmtUSD(it.value) + '</div></div>'
+      + '<div class="dash-bar-top"><div class="dash-bar-name">' + esc(it.label) + '</div><div class="dash-bar-val">' + osrNeg(it.value, fmtUSD) + '</div></div>'
       + '<div class="dash-bar-track" aria-hidden="true"><div class="dash-bar-fill" data-pct="' + Math.max(3, (it.value / (max || 1)) * 100).toFixed(1) + '"></div></div></div>').join('');
   }
   function osrPaint(host) {
@@ -1262,11 +1268,106 @@
     const byCat = osrSumBy(rows, (r) => r.category);
     const byVen = osrSumBy(rows, (r) => osrVendorClean(r.vendor)).slice(0, 6);
     const mx = (a) => Math.max.apply(null, a.map((x) => x.value).concat([1]));
-    return '<div class="osr-dash">'
+    return osrKpiHtml(rows) + '<div class="osr-dash">'
       + '<div class="dash-panel"><div class="dash-panel-title">' + (byOffice && byOffice.length ? 'Obligations by contracting office' : 'Obligations by fiscal year') + '</div><div class="osr-chart" id="osr-c-fy">' + osrBarsHtml(byFy, mx(byFy)) + '</div></div>'
       + '<div class="dash-panel"><div class="dash-panel-title">Work type · Service / Commodity / R&amp;D</div><div class="osr-chart" id="osr-c-cat">' + osrBarsHtml(byCat, mx(byCat)) + '</div></div>'
       + '<div class="dash-panel"><div class="dash-panel-title">Top vendors</div><div class="osr-chart" id="osr-c-ven">' + osrBarsHtml(byVen, mx(byVen)) + '</div></div>'
+      + '</div><div id="osr-fundpanel"></div>';
+  }
+  // ── headline tiles: shares are of DOLLARS, the way spend reviews read them ──
+  function osrPct(part, whole) { return whole > 0 ? Math.round((part / whole) * 100) + '%' : '\u2014'; }
+  function osrKpis(rows) {
+    const contracts = new Set(rows.map((r) => (r.office || '') + '|' + (r.piid || ''))).size;
+    const vendors = new Set(rows.map((r) => osrVendorClean(r.vendor))).size;
+    const pos = (r) => Math.max(0, Number(r.obligated) || 0);   // de-obligations would skew a share
+    const all = rows.reduce((a, r) => a + pos(r), 0);
+    const sb = rows.filter((r) => /^y/i.test(String(r.smallBusiness || ''))).reduce((a, r) => a + pos(r), 0);
+    const labeled = rows.filter((r) => String(r.extentCompeted || '').trim());
+    const lab$ = labeled.reduce((a, r) => a + pos(r), 0);
+    const comp$ = labeled.filter((r) => !/NOT COMPETED|NOT AVAILABLE|NON-COMPETITIVE/i.test(r.extentCompeted)).reduce((a, r) => a + pos(r), 0);
+    const frac = (p, w) => (w > 0 ? Math.round((p / w) * 1000) / 1000 : null);
+    return { contracts, actions: rows.length, vendors, small: osrPct(sb, all), competed: osrPct(comp$, lab$), smallShare: frac(sb, all), competedShare: frac(comp$, lab$) };
+  }
+  function osrKpiHtml(rows) {
+    const contracts = new Set(rows.map((r) => (r.office || '') + '|' + (r.piid || ''))).size;
+    const vendors = new Set(rows.map((r) => osrVendorClean(r.vendor))).size;
+    const pos = (r) => Math.max(0, Number(r.obligated) || 0);   // de-obligations would skew a share
+    const all = rows.reduce((a, r) => a + pos(r), 0);
+    const sb = rows.filter((r) => /^y/i.test(String(r.smallBusiness || ''))).reduce((a, r) => a + pos(r), 0);
+    const labeled = rows.filter((r) => String(r.extentCompeted || '').trim());
+    const lab$ = labeled.reduce((a, r) => a + pos(r), 0);
+    const comp$ = labeled.filter((r) => !/NOT COMPETED|NOT AVAILABLE|NON-COMPETITIVE/i.test(r.extentCompeted)).reduce((a, r) => a + pos(r), 0);
+    const tile = (label, num, foot) => '<div class="dash-stat"><div class="dash-stat-label">' + label + '</div><div class="dash-stat-num">' + num + '</div><div class="dash-stat-foot">' + foot + '</div></div>';
+    return '<div class="dash-grid osr-kpis">'
+      + tile('Contracts', contracts.toLocaleString(), rows.length.toLocaleString() + ' award actions')
+      + tile('Vendors', vendors.toLocaleString(), 'distinct awardees')
+      + tile('Small business', osrPct(sb, all), 'of obligated dollars (positive obligations only)')
+      + tile('Competed', osrPct(comp$, lab$), 'of obligated dollars on actions with a competition label (positive only)')
       + '</div>';
+  }
+  // ── funding panel: fills in once the USAspending lookups finish ──────────
+  function osrFundStats(rows) {
+    const cs = osrContracts(rows);
+    const rep = cs.filter((c) => c.appropriation && !/^(Not reported|Contract number not unique|Lookup failed)/.test(c.appropriation));
+    const tot = cs.reduce((a, c) => a + Math.max(0, c.obligated), 0);
+    const rep$ = rep.reduce((a, c) => a + Math.max(0, c.obligated), 0);
+    return { contracts: cs.length, reported: rep.length, pct: osrPct(rep$, tot),
+      line: 'Funding reported for ' + rep.length.toLocaleString() + ' of ' + cs.length.toLocaleString() + ' contracts (' + osrPct(rep$, tot) + ' of dollars)'
+        + ((function (n) { return n ? '; ' + n.toLocaleString() + ' could not be looked up (USAspending did not answer)' : ''; })(cs.filter((c) => c.appropriation === 'Lookup failed').length)) };
+  }
+  function osrRenderFundPanel() {
+    const host = $('#osr-fundpanel'); if (!host) return;
+    if (!osrRows.length) { host.innerHTML = ''; return; }
+    if (!osrFundOn()) {
+      host.innerHTML = '<div class="osr-fundcta"><div><b>Color of money</b> \u2014 see which appropriations (057 Air Force, 097 Defense-Wide, O&amp;M, RDT&amp;E\u2026) paid for these contracts.</div>'
+        + '<button type="button" class="osr-copy" id="osr-fund-on">Add funding fields</button></div>';
+      const b = $('#osr-fund-on'); if (b) b.addEventListener('click', () => {
+        OSR_FUND_COLS.forEach((k) => { osrOn[k] = 1; });
+        document.querySelectorAll('#osr-cols-panel input[type=checkbox]').forEach((cb) => { if (osrOn[cb.value]) { cb.checked = true; const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.add('on'); } });
+        osrSaveCols(); osrSyncCols(); osrRenderTable(); osrEnsureFunding(); osrRenderFundPanel();
+        osrSay('Adding funding fields from USAspending.');
+        const pg = $('#osr-fundprog'); if (pg) { pg.tabIndex = -1; pg.focus(); }
+      });
+      return;
+    }
+    if (osrFundProg) { host.innerHTML = '<div class="osr-fundcta"><div id="osr-fundprog">' + esc(osrFundNoteText()) + '</div></div>'; return; }
+    const st = osrFundStats(osrRows);
+    // Top six plus one remainder bar, so the bars always add to the FPDS total.
+    const top = (a) => a.length <= 7 ? a : a.slice(0, 6).concat([{ label: 'All other (' + (a.length - 6) + ' groups, incl. de-obligations)', value: a.slice(6).reduce((x, y) => x + y.value, 0) }]);
+    const bySrc = top(osrSumBy(osrRows, (r) => r.fundSource));
+    const byCol = top(osrSumBy(osrRows, (r) => r.colorOfMoney));
+    const mx = (a) => Math.max.apply(null, a.map((x) => x.value).concat([1]));
+    host.innerHTML = '<div class="osr-dash osr-dash-fund">'
+      + '<div class="dash-panel"><div class="dash-panel-title">Funding source (Treasury account where reported, otherwise FPDS funding agency)</div><div class="osr-chart" id="osr-c-src">' + osrBarsHtml(bySrc, mx(bySrc)) + '</div></div>'
+      + '<div class="dash-panel"><div class="dash-panel-title">Color of money</div><div class="osr-chart" id="osr-c-col">' + osrBarsHtml(byCol, mx(byCol)) + '</div></div>'
+      + '<div class="dash-panel osr-cov"><div class="dash-panel-title">Coverage</div><div class="dash-stat-num">' + esc(st.pct) + '</div>'
+        + '<div class="dash-stat-foot">' + esc(st.line) + '. A contract counts as reported if USAspending shows any account for it, at its full FPDS dollars. Dollars are FPDS action obligations; each contract\u2019s dollars sit under the account(s) USAspending reports for it. USAspending often covers only part of a contract, so the split is a label, not an exact breakdown. \u201cNot reported\u201d is common for DoD and is not zero.</div></div>'
+      + '</div>';
+    osrPaint($('#osr-c-src')); osrPaint($('#osr-c-col'));
+  }
+  // ── one row per contract (office + PIID) ─────────────────────────────────
+  // shortcut: keyed on office+PIID because SAM rows carry no parent IDV; two orders
+  // with the same short number under different BPAs in ONE office would merge.
+  function osrContracts(rows) {
+    const m = new Map();
+    rows.forEach((r) => {
+      const k = (r.office || '') + '|' + (r.piid || '');
+      let c = m.get(k);
+      if (!c) { c = { office: r.office, piid: r.piid, vendor: r.vendor, awardType: r.awardType, category: r.category, pscCode: r.pscCode, description: r.description, actions: 0, obligated: 0, first: '', last: '', fundingSubtier: r.fundingSubtier, fundingOffice: r.fundingOffice }; m.set(k, c); }
+      c.actions++; c.obligated += Number(r.obligated) || 0;
+      const d = String(r.dateSigned || '');
+      if (d && (!c.first || d < c.first)) c.first = d;
+      if (d && (!c.last || d >= c.last)) { c.last = d; if (r.description) c.description = r.description; if (r.vendor) c.vendor = r.vendor; }
+      OSR_FUND_COLS.forEach((f) => { if (r[f] != null) c[f] = r[f]; });
+    });
+    return [...m.values()].map((c) => Object.assign(c, { obligated: Math.round(c.obligated * 100) / 100 })).sort((a, b) => b.obligated - a.obligated);
+  }
+  function osrContractCols() {
+    return (osrMulti ? [['office', 'Office']] : []).concat([
+      ['piid', 'Contract (PIID)'], ['vendor', 'Vendor'], ['awardType', 'Award Type'], ['category', 'Work Type'], ['pscCode', 'PSC'],
+      ['description', 'Description (latest action)'], ['actions', 'Actions'], ['first', 'First Signed'], ['last', 'Last Signed'],
+      ['obligated', 'Obligated (selected period)'], ['fundingSubtier', 'Funding Agency (FPDS)'], ['fundingOffice', 'Funding Office (FPDS)']
+    ]).concat(osrFundOn() ? OSR_COLS.filter((c) => OSR_FUND_COLS.indexOf(c[0]) >= 0) : []);
   }
   // Per-contract appropriation drill-down (color of money via USASpending File C).
   // This is click-to-open per contract, deliberately: FPDS carries no appropriation,
@@ -1278,10 +1379,10 @@
   // Plain-English key to a Treasury account code. Titles checked against
   // USAspending's federal_accounts API 2026-11-20.
   const OSR_ACCT_HELP = '<details class="osr-acct-help"><summary>How to read these account codes</summary>'
-    + '<p>An account code like <b>057-3400</b> has two parts: <b>057</b> is who the money was appropriated to, and <b>3400</b> is which appropriation (the color of money).</p>'
+    + '<p>An account code like <b>057-3400</b> has two parts: <b>057</b> is the department that owns the account, and <b>3400</b> is which appropriation (the color of money).</p>'
     + '<dl>'
     + '<dt>057</dt><dd>Department of the Air Force (Air Force and Space Force).</dd>'
-    + '<dt>097</dt><dd>Defense-Wide: money given to DoD as a whole, not to one Service. OSD, the defense agencies (DLA, DISA, DHA, MDA and others) and U.S. Special Operations Command all spend from these accounts, so 097 alone does not say which one. For a special operations unit such as AFSOC, SOCOM-provided money shows up here and Air Force-provided money shows up as 057.</dd>'
+    + '<dt>097</dt><dd>Defense-Wide: money given to DoD as a whole, not to one Service. OSD, the defense agencies (DLA, DISA, DHA, MDA and others) and U.S. Special Operations Command all spend from these accounts, so 097 alone does not say which one. For a special operations unit such as AFSOC, SOCOM-provided money usually shows up here and Air Force-provided money as 057.</dd>'
     + '<dt>021 · 017</dt><dd>Army · Navy and Marine Corps.</dd>'
     + '</dl>'
     + '<table><tbody>'
@@ -1291,37 +1392,76 @@
     + '<tr><th>MILCON</th><td>3300 Air Force · 0500 Defense-Wide</td></tr>'
     + '<tr><th>MILPERS</th><td>3500 Air Force</td></tr>'
     + '</tbody></table>'
-    + '<p><b>Object class</b> is the government-wide category of what the money bought: 25.x contracted services, 26.0 supplies, 31.0 equipment.</p>'
-    + '<p><b>Not published anywhere:</b> which year\u2019s money it is, the Major Force Program (MFP-11 and the rest), program element, EEIC and fund code. Those live only in DoD\u2019s internal accounting systems such as DEAMS.</p>'
-    + '<p><b>\u201cNot reported\u201d</b> means DoD did not link this contract to an account in its Treasury reporting (USAspending File C). It does not mean zero, and it is common.</p>'
+    + '<p><b>Mixed</b> (for example \u201cMixed: Air Force (057) + Defense-Wide (097)\u201d) means USAspending shows more than one account paying for the same contract \u2014 common for special operations units, where SOCOM Defense-Wide money and Air Force money fund one contract. FPDS does not record which action used which account, so the contract\u2019s dollars are not split between them.</p>'
+    + '<p><b>Which number wins:</b> FPDS (SAM.gov) is the system of record for every dollar on this page. USAspending\u2019s account data comes from DoD\u2019s accounting reports; it labels which appropriation paid, and where its amounts differ from FPDS, FPDS stands.</p>'
+    + '<p><b>Object class</b> is the government-wide category of what the money bought: 25.x contractual services (25.3 means bought from another federal agency), 26.0 supplies, 31.0 equipment.</p>'
+    + '<p><b>Fund years:</b> open a contract and press <b>Show fund years</b>. The full code, e.g. <b>097-2019/2019-0100-000</b>, means funds available in FY2019 only (one-year money) from 097-0100; a code like 097-2025/2027-0400-000 is three-year money.</p>'
+    + '<p><b>File C</b> is the account data agencies report to Treasury, shown on USAspending. <b>Outlays</b> are money actually paid out, as opposed to obligated.</p>'
+    + '<p><b>Not published in federal data:</b> the Major Force Program (MFP-11 and the rest), program element, EEIC and fund code. Those are kept in DoD\u2019s internal accounting systems.</p>'
+    + '<p><b>\u201cNot reported\u201d</b> means USAspending shows no account for this contract (File C). It does not mean zero, and it is common for DoD. USAspending also runs about four months behind SAM.gov, so a contract whose actions were all signed in the last four months shows \u201cNot reported yet\u201d. In both cases Funding Source shows the funding agency FPDS records on the action, when FPDS has one.</p>'
     + '</details>';
   const OSR_FUND_COLS = ['fundSource', 'appropriation', 'colorOfMoney', 'objectClass'];
-  const OSR_FUND_V = 2; // bump when the award-funding response shape changes (busts the CDN copy)
+  const OSR_FUND_V = 6; // bump when the award-funding response shape changes (busts the CDN copy)
   function osrFundOn() { return OSR_FUND_COLS.some((k) => osrOn[k]); }
   const osrUniq = (a) => [...new Set(a.filter(Boolean))];
+  const osrMixed = (a) => { const u = osrUniq(a).sort(); return u.length > 1 ? 'Mixed: ' + u.join(' + ') : (u[0] || ''); };
   // One lookup answer → the four flat column values for every row of that contract.
   function osrFundCells(d) {
     if (!d || d.failed) return { fundSource: 'Lookup failed', appropriation: 'Lookup failed', colorOfMoney: 'Lookup failed', objectClass: 'Lookup failed' };
     if (d.ambiguous) { const t = 'Contract number not unique'; return { fundSource: t, appropriation: t, colorOfMoney: t, objectClass: t }; }
     if (!d.found || !(d.accounts && d.accounts.length)) return { fundSource: 'Not reported', appropriation: 'Not reported', colorOfMoney: 'Not reported', objectClass: 'Not reported' };
     return {
-      fundSource: osrUniq(d.accounts.map((a) => a.source)).join('; '),
+      // One contract paid from more than one account reads "Mixed: A + B" — FPDS doesn't
+      // say which action used which account, so the contract's dollars are not split.
+      fundSource: osrMixed(d.accounts.map((a) => a.source)),
       appropriation: d.accounts.map((a) => a.code + ' ' + a.title).join('; '),
-      colorOfMoney: osrUniq(d.accounts.map((a) => a.type)).join(' / '),
+      colorOfMoney: osrMixed(d.accounts.map((a) => a.type)),
       objectClass: (d.objectClasses || []).map((o) => o.code + ' ' + o.name).join('; ')
     };
   }
+  // USAspending runs behind SAM/FPDS: measured 2026-11-20 on AFSOC offices, nothing
+  // signed after 24 Jul 2026 had posted (~119 days). A recent action with no account
+  // is usually just not in yet — say so instead of a flat "Not reported".
+  const OSR_LAG_DAYS = 120;
+  function osrRecent(r) { const d = String(r.dateSigned || ''); return d.length >= 10 && (Date.now() - Date.parse(d)) < OSR_LAG_DAYS * 864e5; }
+  // Decided once per CONTRACT (File C is per contract): "yet" only when every action
+  // pulled for it is recent, so one contract never lands in two buckets. When no account
+  // is reported, Funding Source falls back to what FPDS itself records — the funding
+  // agency on the action (owner: SAM/FPDS is the system of record).
+  function osrFundAssign(rows, d) {
+    const c = osrFundCells(d);
+    if (c.appropriation === 'Not reported') {
+      const t = rows.every(osrRecent) && !(d && d.fpdsTotal) ? 'Not reported yet (signed in last 4 months)' : 'Not reported';
+      OSR_FUND_COLS.forEach((k) => { c[k] = t; });
+    }
+    rows.forEach((r) => {
+      Object.assign(r, c);
+      if (c.fundSource === 'Lookup failed') r.fundSource = 'Lookup failed' + (r.fundingSubtier ? ' (FPDS funding agency: ' + r.fundingSubtier + ')' : '');
+      else if (/^(Not reported|Contract number not unique)/.test(c.fundSource) && r.fundingSubtier) r.fundSource = 'FPDS funding agency: ' + r.fundingSubtier;
+    });
+  }
   let osrFundJob = null, osrFundProg = null;
+  const osrFundPart = {};   // partial answers (labels, no award detail): shown, retried, never cached
+  // Update the preview table's funding cells in place: a rebuild would close an open
+  // detail row and lose scroll/focus.
+  function osrPatchFundCells() {
+    const ths = [...document.querySelectorAll('#osr-table .osr-table th')].map((t) => t.textContent);
+    const idx = OSR_COLS.filter((c) => OSR_FUND_COLS.indexOf(c[0]) >= 0).map((c) => [c[0], ths.indexOf(c[1])]).filter((x) => x[1] >= 0);
+    if (!idx.length) return;
+    const trs = document.querySelectorAll('#osr-table tr.osr-clk');
+    trs.forEach((tr, i) => { const r = osrPreview[i]; if (!r) return; idx.forEach(([k, j]) => { const td = tr.children[j]; if (td && r[k] != null) td.textContent = r[k]; }); });
+  }
   // Fill the funding columns for EVERY row: one lookup per distinct contract, ten to a
   // request, three requests at a time. The 25 preview contracts go first so the table
   // on screen completes early. Returns the same promise until the rows change.
-  function osrEnsureFunding() {
+  // retry: only an export asks to re-run failed lookups; column toggles reuse the job.
+  function osrEnsureFunding(retry) {
     if (!osrFundOn() || !osrRows.length) return Promise.resolve();
-    if (osrFundJob && osrFundJob.rows === osrRows) return osrFundJob.p;
+    if (osrFundJob && osrFundJob.rows === osrRows && !(retry && osrFundJob.done && osrFundJob.failed)) return osrFundJob.p;
     const rows = osrRows, token = osrToken;
     const byPiid = {};
     rows.forEach((r) => { if (r.piid) (byPiid[r.piid] = byPiid[r.piid] || []).push(r); });
-    const apply = (piid) => { const c = osrFundCells(osrFundCache[piid]); byPiid[piid].forEach((r) => Object.assign(r, c)); };
+    const apply = (piid) => { osrFundAssign(byPiid[piid], osrFundCache[piid]); };
     const first = osrUniq(osrPreview.map((r) => r.piid));
     const order = osrUniq(first.concat(Object.keys(byPiid)));
     order.filter((p) => osrFundCache[p]).forEach(apply);
@@ -1330,70 +1470,174 @@
     for (let i = 0; i < todo.length; i += 10) batches.push(todo.slice(i, i + 10));
     osrFundProg = { done: order.length - todo.length, total: order.length };
     const live = () => token === osrToken && rows === osrRows;
+    const job = { rows, failed: 0, done: false, p: null };
     const p = (async () => {
-      let bi = 0;
+      let bi = 0, pausedUntil = 0;
+      const tries = new Map(), sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
       async function worker() {
         while (bi < batches.length && live()) {
           const b = batches[bi++];
+          const wait = pausedUntil - Date.now(); if (wait > 0) { await sleep(wait); if (!live()) return; }
           let got = {};
           try {
             const r = await fetch('/api/market-research?mode=award-funding&v=' + OSR_FUND_V + '&piids=' + b.map(encodeURIComponent).join(','), { headers: { Accept: 'application/json' } });
+            // Rate-limited: pause everyone and requeue the batch (up to 3 times), don't fail it.
+            if (r.status === 429 && (tries.get(b) || 0) < 3) {
+              tries.set(b, (tries.get(b) || 0) + 1);
+              pausedUntil = Math.max(pausedUntil, Date.now() + Math.min(60, Number(r.headers.get('Retry-After')) || 15) * 1000);
+              batches.push(b); continue;
+            }
             got = r.ok ? ((await r.json()).results || {}) : {};
           } catch (e) { /* counted as failed below */ }
           if (!live()) return;
           b.forEach((pid) => {
             const d = got[pid];
-            // Only cache an ANSWER; a failure stays retryable on the next build/export.
-            if (d && !d.failed) osrFundCache[pid] = d;
-            const c = osrFundCells(d || { failed: true });
-            byPiid[pid].forEach((r) => Object.assign(r, c));
+            // Only cache a full ANSWER. A partial one (labels, no award detail) is shown and
+            // retried; if that retry fails, the partial labels stay rather than "Lookup failed".
+            if (d && !d.failed) { if (d.partial) osrFundPart[pid] = d; else { osrFundCache[pid] = d; delete osrFundPart[pid]; } }
+            if (!d || d.failed || d.partial) job.failed++;
+            osrFundAssign(byPiid[pid], d && !d.failed ? d : (osrFundPart[pid] || { failed: true }));
           });
           osrFundProg.done += b.length;
-          // Re-draw the table only while it is still waiting on its own rows.
-          if (b.some((pid) => first.indexOf(pid) >= 0)) osrRenderTable(); else osrFundNote();
+          if (b.some((pid) => first.indexOf(pid) >= 0)) osrPatchFundCells();
+          osrFundNote();
         }
       }
       await Promise.all([worker(), worker(), worker()]);
-      if (live()) { osrFundProg = null; osrRenderTable(); }
+      job.done = true;
+      if (live()) { osrFundProg = null; osrFundNote(); osrRenderFundPanel(); osrSay('Funding loaded. ' + osrFundStats(osrRows).line + '.'); }
     })();
-    osrFundJob = { rows, p };
-    if (todo.length) osrRenderTable();
+    osrFundJob = job; job.p = p;
+    osrRenderTable(); osrRenderFundPanel();   // shows cached answers now; batches redraw as they land
     return p;
+  }
+  // Before writing a file: finish the job, then retry any lookups that failed once.
+  async function osrFundReady() {
+    await osrEnsureFunding();
+    if (osrFundJob && osrFundJob.done && osrFundJob.failed) await osrEnsureFunding(true);
   }
   function osrFundNoteText() {
     if (!osrFundOn()) return '';
     return osrFundProg
       ? 'Filling funding columns from USAspending \u2014 ' + osrFundProg.done.toLocaleString() + ' of ' + osrFundProg.total.toLocaleString() + ' contracts\u2026'
-      : 'Funding columns come from USAspending (File C), one lookup per contract. \u201cNot reported\u201d means DoD did not link that contract to an account, not zero.';
+      : 'Funding columns come from USAspending (File C, the account data agencies report to Treasury), one lookup per contract, and describe the whole contract. Dollar columns are FPDS obligations in the selected period. \u201cNot reported\u201d means USAspending shows no account for that contract \u2014 common for DoD, and not zero.';
   }
-  function osrFundNote() { const n = $('#osr-fund-note'); if (n) n.textContent = osrFundNoteText(); }
+  function osrFundNote() {
+    const n = $('#osr-fund-note'); if (n) n.textContent = osrFundNoteText();
+    const p = $('#osr-fundprog'); if (p && osrFundProg && osrFundOn()) p.textContent = osrFundNoteText();
+  }
   function osrFundHtml(d) {
     if (!d || !d.found || !(d.accounts && d.accounts.length)) {
-      return '<div class="osr-fund-box osr-fund-none">' + esc((d && d.note) || 'No appropriation reported for this contract.') + OSR_ACCT_HELP + '</div>';
+      const mine = d && d.source && !d.ambiguous ? osrRows.filter((r) => r.piid && r.piid === d.piid) : [];
+      const msg = mine.length && mine.every(osrRecent) && !(d && d.fpdsTotal)
+        ? 'Not reported yet. USAspending runs about four months behind SAM.gov, so a contract signed in the last four months may not have account data posted. Try again later.'
+        : ((d && d.note) || 'No appropriation reported for this contract.');
+      return '<div class="osr-fund-box osr-fund-none">' + esc(msg) + (d ? osrReconHtml(d) : '') + OSR_ACCT_HELP + '</div>';
     }
     const max = Math.max.apply(null, d.accounts.map((a) => Math.abs(a.amount)).concat([1]));
     const period = d.fyFrom ? (d.fyFrom === d.fyTo ? 'FY' + d.fyFrom : 'FY' + d.fyFrom + '\u2013FY' + d.fyTo) : '';
     return '<div class="osr-fund-box">'
       + '<div class="osr-fund-h">Appropriation &middot; color of money'
-        + (period ? '<b class="osr-fund-per">reported ' + esc(period) + '</b>' : '')
-        + '<span>USASpending File C</span></div>'
+        + (period ? '<b class="osr-fund-per">account data covers ' + esc(period) + '</b>' : '')
+        + '<span>USAspending File C</span></div>'
       + d.accounts.map((a) => '<div class="osr-fund-row">'
           + '<span class="osr-tag osr-tag-' + esc(a.type.toLowerCase().replace(/[^a-z]/g, '')) + '">' + esc(a.type) + '</span>'
           + '<span class="osr-fund-title">' + esc(a.title) + (a.code ? ' <em>' + esc(a.code) + '</em>' : '') + '</span>'
-          + '<span class="osr-fund-amt' + (a.amount < 0 ? ' osr-fund-neg' : '') + '">' + fmtExact(a.amount) + '</span>'
+          + '<span class="osr-fund-amt' + (a.amount < 0 ? ' osr-fund-neg' : '') + '">' + osrNeg(a.amount) + '</span>'
           + '<span class="osr-fund-track"><span class="osr-fund-fill" style="width:' + Math.max(3, (Math.abs(a.amount) / max) * 100).toFixed(1) + '%"></span></span>'
         + '</div>').join('')
-      + '<div class="osr-fund-foot">Total across accounts: <b>' + fmtExact(d.total) + '</b>'
-        + (d.outlays != null ? ' \u00b7 Paid out to date (outlays): <b>' + fmtExact(d.outlays) + '</b>' : '') + '</div>'
-      + (d.byFy && d.byFy.length > 1 ? '<div class="osr-fund-foot">By fiscal year reported: ' + d.byFy.map((y) => 'FY' + y.fy + ' <b>' + fmtExact(y.amount) + '</b>').join(' \u00b7 ') + '</div>' : '')
-      + (d.objectClasses && d.objectClasses.length ? '<div class="osr-fund-foot">Object class: ' + d.objectClasses.map((o) => esc(o.code + ' ' + o.name) + ' <b>' + fmtExact(o.amount) + '</b>').join(' \u00b7 ') + '</div>' : '')
+      + '<div class="osr-fy-wrap"><button type="button" class="osr-fy-btn" data-piid="' + esc(d.piid || '') + '">Show fund years</button>'
+        + '<span class="osr-fy-hint">Full Treasury code with the year of the money \u2014 USAspending builds it on request, usually under a minute.</span><div class="osr-fy-out" role="status" aria-live="polite" tabindex="-1"></div></div>'
+      + osrReconHtml(d)
+      + '<div class="osr-fund-foot">Amount USAspending links to accounts (not an FPDS figure): <b>' + osrNeg(d.total) + '</b>'
+        + (d.outlays != null ? ' \u00b7 USAspending: paid out to date (outlays): <b>' + osrNeg(d.outlays) + '</b>' : '') + '</div>'
+      + (d.byFy && d.byFy.length > 1 ? '<div class="osr-fund-foot">USAspending (File C) amounts by fiscal year reported, not FPDS: ' + d.byFy.map((y) => 'FY' + y.fy + ' <b>' + osrNeg(y.amount) + '</b>').join(' \u00b7 ') + '</div>' : '')
+      + (d.objectClasses && d.objectClasses.length ? '<div class="osr-fund-foot">Object class (USAspending File C amounts): ' + d.objectClasses.map((o) => esc(o.code + ' ' + o.name) + ' <b>' + osrNeg(o.amount) + '</b>').join(' \u00b7 ') + '</div>' : '')
       // Said plainly because it will not tie, and a KO who spots that unprompted is
       // right to stop trusting the number: File C covers the contract's whole life in
       // the submitting agency's fiscal periods, while the row above is one action.
       + '<div class="osr-fund-cav">Covers the whole contract' + (period ? ' across ' + esc(period) : '')
-        + ', not the single action in the row above, so these figures will not match that obligation. De-obligations report as negatives.</div>'
+        + ', not the single action in the row above. Every dollar in the table, charts and downloads is FPDS; USAspending only tells you which account paid. De-obligations report as negatives.</div>'
       + OSR_ACCT_HELP
       + '</div>';
+  }
+  // FPDS (via SAM.gov) is the system of record for what was obligated. File C is the
+  // agency's accounting report of which account paid; it often covers only part of
+  // the FPDS total, so state the gap rather than let the two read as competing facts.
+  function osrReconHtml(d) {
+    // 1) The SAM.gov figure from THIS pull leads: it is the system of record.
+    const mine = osrRows.filter((r) => r.piid && r.piid === d.piid);
+    const sam = mine.reduce((a, r) => a + (Number(r.obligated) || 0), 0);
+    const fys = [...new Set(mine.map((r) => String(r.fiscalYear || '')).filter(Boolean))].sort();
+    const parts = [];
+    if (mine.length) parts.push('<b>SAM.gov (FPDS, system of record), this pull: ' + osrNeg(sam) + '</b> across ' + mine.length + ' action' + (mine.length === 1 ? '' : 's')
+      + (fys.length ? ' in ' + esc(fys.map((y) => 'FY' + y).join(', ')) : '') + '.');
+    // 2) USAspending's copy of FPDS for the whole contract, flagged when it trails SAM.
+    if (d.fpdsTotal != null) {
+      parts.push('Total obligated on this contract, all time: ' + osrNeg(d.fpdsTotal) + ' (FPDS figure, as copied on USAspending).');
+      if (mine.length && sam > d.fpdsTotal + 1) parts.push(mine.some(osrRecent)
+        ? '<b>USAspending is behind SAM.gov for this contract</b> (it runs about four months late) \u2014 rely on the SAM.gov figure.'
+        : 'The all-time total is lower than this pull because of actions signed outside the selected period (for example later de-obligations).');
+    }
+    // 3) How much of it the agency's accounting reports (File C) tie to an account.
+    if (d.fpdsTotal) {
+      const pct = Math.round(((d.total || 0) / d.fpdsTotal) * 100);
+      const gap = d.fpdsTotal - (d.total || 0);
+      parts.push(Math.abs(gap) < 1 ? 'All of that total has an account reported (File C).'
+        : pct < 0 || (d.total || 0) > d.fpdsTotal ? 'The account data (File C) does not line up with FPDS for this contract (' + pct + '%). Use the FPDS amount; treat the accounts only as labels.'
+        : pct + '% of that total has an account reported (File C); the other ' + fmtExact(gap) + ' has none.');
+    }
+    return parts.length ? '<div class="osr-recon">' + parts.join(' ') + '</div>' : '';
+  }
+  const osrFyCache = {};
+  function osrFyHtml(d) {
+    if (!d || !d.years || !d.years.length) return '<div class="osr-fund-foot">' + esc((d && d.note) || 'No fund-year detail reported for this contract.') + '</div>';
+    return '<table class="osr-fy-t"><thead><tr><th>Treasury account symbol</th><th>Money from</th><th>Account</th><th class="osr-num">Obligated (USAspending)</th></tr></thead><tbody>'
+      + d.years.map((y) => '<tr><td><code>' + esc(y.tas) + '</code></td><td>' + esc(y.years) + '</td><td>' + esc(y.title || y.account) + '</td><td class="osr-num' + (y.amount < 0 ? ' osr-fund-neg' : '') + '">' + osrNeg(y.amount) + '</td></tr>').join('')
+      + '</tbody></table><div class="osr-fund-foot">Read <code>097-2019/2019-0100-000</code> as agency 097 \u00b7 begins FY2019 / ends FY2019, so funds available in FY2019 only (one-year money) \u00b7 account 0100 \u00b7 sub-account 000. Whole contract life; de-obligations are negative.</div>';
+  }
+  // ~40s on USAspending's side, so: start, then poll every 4s. Keeps polling if a redraw
+  // removes the panel (the answer is cached for reopening); one lookup per PIID at a time.
+  // One in-flight lookup per PIID: a second click (or a reopened panel) joins it.
+  const osrFyPending = {};
+  function osrFyFetch(piid) {
+    if (osrFyPending[piid]) return osrFyPending[piid];
+    const base = '/api/market-research?mode=award-fundyear&';
+    const p = (async () => {
+      let d = await fetch(base + 'piid=' + encodeURIComponent(piid)).then((r) => r.json());
+      if (!d.file && !d.done) throw new Error(d.error || 'start failed');   // e.g. rate-limited
+      if (d.file) {
+        const file = d.file, t0 = Date.now(); d = null;
+        while (Date.now() - t0 < 150000) {
+          await new Promise((res) => setTimeout(res, 4000));
+          const r = await fetch(base + 'file=' + encodeURIComponent(file)).then((x) => x.json()).catch(() => ({}));
+          if (r.done) { d = r; break; }
+          document.querySelectorAll('.osr-fy-btn[data-piid="' + piid + '"]').forEach((b) => { b.textContent = 'USAspending is building the file — ' + Math.round((Date.now() - t0) / 1000) + 's…'; });
+        }
+        if (!d) d = { years: [], failed: true, note: 'USAspending is taking longer than usual — close and reopen this contract to try again.' };
+      }
+      if (d.done && !d.failed) osrFyCache[piid] = d;
+      return d;
+    })();
+    osrFyPending[piid] = p;
+    p.then(() => { delete osrFyPending[piid]; }, () => { delete osrFyPending[piid]; });
+    return p;
+  }
+  async function osrFundYears(btn) {
+    const piid = btn.dataset.piid || '';
+    const out = btn.parentNode.querySelector('.osr-fy-out');
+    const hint = btn.parentNode.querySelector('.osr-fy-hint');
+    const done = (d) => {
+      if (d && d.failed) { btn.disabled = false; btn.textContent = 'Try fund years again'; if (out) out.innerHTML = osrFyHtml(d); return; }
+      btn.remove(); if (hint) hint.remove(); if (out) { out.innerHTML = osrFyHtml(d); out.focus(); }
+    };
+    if (osrFyCache[piid]) return done(osrFyCache[piid]);
+    btn.disabled = true; btn.textContent = 'Asking USAspending\u2026';
+    if (out) out.textContent = 'Asking USAspending for fund years \u2014 this usually takes under a minute.';
+    try {
+      const d = await osrFyFetch(piid);
+      if (btn.isConnected) done(d);
+    } catch (e) { if (btn.isConnected) { btn.disabled = false; btn.textContent = 'Fund-year lookup failed \u2014 try again'; if (out) out.textContent = 'Fund-year lookup failed. Try again.'; } }
   }
   async function osrToggleFunding(tr) {
     const next = tr.nextElementSibling;
@@ -1420,7 +1664,7 @@
         // Only cache an ANSWER. The handler returns 200 even when USASpending timed
         // out, so caching that pinned "try again shortly" to the row for the life of
         // the page and trying again did nothing. `source` marks a real lookup.
-        if (d && (d.source || d.found === true || d.ambiguous)) osrFundCache[piid] = d;
+        if (d && !d.partial && (d.source || d.found === true || d.ambiguous)) osrFundCache[piid] = d;
       }
       if (det.parentNode) det.querySelector('td').innerHTML = osrFundHtml(d);
     } catch (e) {
@@ -1438,7 +1682,7 @@
       + '</tr></thead><tbody>'
       + preview.map((r) => '<tr class="osr-clk" data-piid="' + esc(String(r.piid || '')) + '" tabindex="0" aria-expanded="false" title="Show appropriation (color of money)">'
           + cols.map((c) => OSR_NUM[c[0]]
-              ? '<td class="osr-num">' + fmtExact(r[c[0]]) + '</td>'
+              ? '<td class="osr-num">' + osrNeg(r[c[0]]) + '</td>'
               : '<td' + (c[0] === 'description' ? ' class="osr-desc"' : '') + '>' + (r[c[0]] == null && OSR_FUND_COLS.indexOf(c[0]) >= 0 ? '<span class="osr-fund-wait">\u2026</span>' : esc(String(r[c[0]] == null ? '' : r[c[0]]))) + '</td>').join('')
         + '</tr>').join('')
       + '</tbody></table></div>'
@@ -1450,7 +1694,10 @@
   }
   function osrBindRows() {
     const tbody = document.querySelector('#osr-table .osr-table tbody'); if (!tbody) return;
-    tbody.addEventListener('click', (e) => { const tr = e.target.closest('tr.osr-clk'); if (tr) osrToggleFunding(tr); });
+    tbody.addEventListener('click', (e) => {
+      const fy = e.target.closest('.osr-fy-btn'); if (fy) { if (!fy.disabled) osrFundYears(fy); return; }
+      const tr = e.target.closest('tr.osr-clk'); if (tr) osrToggleFunding(tr);
+    });
     tbody.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const tr = e.target.closest('tr.osr-clk'); if (tr) { e.preventDefault(); osrToggleFunding(tr); } } });
   }
   // Re-picking fields re-renders the table from rows already in hand — it must never
@@ -1464,9 +1711,9 @@
     const n = osrPickedCols().length;
     const badge = $('#osr-cols-count'); if (badge) badge.textContent = n === OSR_COLS.length ? '' : (' · ' + n);
     const foot = $('#osr-cols-foot');
-    if (foot) foot.textContent = n + ' of ' + OSR_COLS.length + ' fields · applies to the table on this page, the CSV and the workbook.';
+    if (foot) foot.textContent = n + ' of ' + OSR_COLS.length + ' fields \u00b7 applies to the table on this page, the CSV and the JSON. The Excel Data tab always carries every field.';
     // an export of nothing is not a file anybody wants to open
-    ['#osr-xlsx', '#osr-dl', '#osr-copy'].forEach((sel) => { const b = $(sel); if (b) b.disabled = !n; });
+    ['#osr-xlsx', '#osr-dl', '#osr-copy', '#osr-json'].forEach((sel) => { const b = $(sel); if (b) b.disabled = !n; });
   }
   function initColsPicker() {
     const host = $('#osr-cols-host'), btn = $('#osr-cols-btn');
@@ -1484,7 +1731,7 @@
       const cb = e.target.closest('input[type=checkbox]'); if (!cb) return;
       if (cb.checked) osrOn[cb.value] = 1; else delete osrOn[cb.value];
       const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', cb.checked);
-      osrSaveCols(); osrSyncCols(); osrRenderTable(); osrEnsureFunding();
+      osrSaveCols(); osrSyncCols(); osrRenderTable(); osrEnsureFunding(); osrRenderFundPanel();
     });
     panel.addEventListener('click', (e) => {
       const act = e.target.closest('.osr-cols-act'); if (!act) return;
@@ -1495,7 +1742,7 @@
         const on = !!osrOn[cb.value];
         cb.checked = on; const lb = cb.closest('.osr-cols-opt'); if (lb) lb.classList.toggle('on', on);
       });
-      osrSaveCols(); osrSyncCols(); osrRenderTable(); osrEnsureFunding();
+      osrSaveCols(); osrSyncCols(); osrRenderTable(); osrEnsureFunding(); osrRenderFundPanel();
     });
   }
 
@@ -1646,7 +1893,7 @@
         '<div class="osr-summary">'
           + '<div class="osr-sum-l">'
             + '<div class="osr-head-code">' + head + '</div>'
-            + '<div class="osr-sum-stats">' + atLeast + '<b>' + Number(rows.length).toLocaleString() + '</b> awards \u00b7 ' + atLeast + '<b>' + fmtUSD(total) + '</b> obligated \u00b7 ' + esc(label)
+            + '<div class="osr-sum-stats">' + atLeast + '<b>' + Number(rows.length).toLocaleString() + '</b> awards \u00b7 ' + atLeast + '<b>' + osrNeg(total, fmtUSD) + '</b> obligated \u00b7 ' + esc(label)
               + (lostOffices.length ? ' \u00b7 ' + gotOffices.length + ' of ' + offices.length + ' offices' : '')
               + '<span class="osr-catmix">' + esc(osrCatMix(rows)) + '</span></div>'
           + '</div>'
@@ -1654,6 +1901,8 @@
             + '<button type="button" class="osr-dl" id="osr-xlsx">Download Excel</button>'
             + '<button type="button" class="osr-copy" id="osr-dl">CSV</button>'
             + '<button type="button" class="osr-copy" id="osr-copy">Copy</button>'
+            + '<button type="button" class="osr-copy" id="osr-sum" title="Dashboard tables and POM views (obligations by fiscal year) in one CSV">Summary CSV</button>'
+            + '<button type="button" class="osr-copy" id="osr-json" title="Machine-readable: rows, per-contract rollup, column definitions and caveats">JSON</button>'
           + '</div>'
         + '</div>'
         + (failed.length ? '<div class="osr-warn">' + failLine + ' They are not zeros.</div>' : '')
@@ -1683,6 +1932,13 @@
 
       osrSyncCols();
 
+      const wbArgs = () => ({
+        offices: gotOffices, nameOf: nameOf, label: label, chartFys: chartFys, rows: rows, pomFys: range ? null : gotFys, pomRange: range || null,
+        byOffice: multi ? byOffice.map((b) => ({ label: b.label + (nameOf(b.label) ? ' ' + nameOf(b.label) : ''), value: b.value })) : [],
+        caveat: [failLine, truncSlots.length ? 'Some periods hit the pull cap, so these totals are a floor.' : '',
+          osrFundOn() ? 'Dollars are FPDS obligations in the selected period; funding labels come from USAspending and describe the whole contract. See the POM - Read Me tab and the explainer on acqvault.com.' : '']
+          .filter(Boolean).join(' ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      });
       const xl = $('#osr-xlsx'); if (xl) xl.addEventListener('click', async () => {
         // xlsxgen.js is 32KB and was deferred into every home page view for a button
         // most visitors never press. Fetched on the first press instead; the URL comes
@@ -1702,21 +1958,17 @@
           xl.disabled = false; xl.textContent = before;
           if (typeof window.acqBuildXlsx !== 'function') { xl.textContent = 'Use CSV \u2192'; return; }
         }
-        if (osrFundOn()) { const t = xl.textContent; xl.disabled = true; xl.textContent = 'Filling funding\u2026'; await osrEnsureFunding(); xl.disabled = false; xl.textContent = t; }
+        if (osrFundOn()) { const t = xl.textContent; xl.disabled = true; xl.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { xl.disabled = false; xl.textContent = t; } }
+        if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
         try {
-          const u8 = window.acqBuildXlsx(osrWorkbookData({
-            offices: gotOffices, nameOf: nameOf, label: label, chartFys: chartFys, rows: rows,
-            byOffice: multi ? byOffice.map((b) => ({ label: b.label + (nameOf(b.label) ? ' ' + nameOf(b.label) : ''), value: b.value })) : [],
-            caveat: [failLine, truncSlots.length ? 'Some periods hit the pull cap, so these totals are a floor.' : '',
-              osrFundOn() ? 'Funding columns: USAspending File C, by contract. 057 = Air Force, 097 = Defense-Wide (DoD as a whole: OSD, defense agencies, SOCOM), 021 = Army, 017 = Navy/Marine Corps; the last four digits are the appropriation. "Not reported" means DoD did not link the contract to an account, not zero. MFP, program element and fund year are not published.' : '']
-              .filter(Boolean).join(' ').replace(/<[^>]+>/g, '')
-          }));
+          const u8 = window.acqBuildXlsx(osrWorkbookData(wbArgs()));
           if (!osrDownload(u8, base + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) xl.textContent = 'Use CSV \u2192';
         } catch (e) { xl.textContent = 'Use CSV \u2192'; }
       });
       const dl = $('#osr-dl'); if (dl) dl.addEventListener('click', async () => {
-        if (osrFundOn()) { dl.disabled = true; dl.textContent = 'Filling funding\u2026'; await osrEnsureFunding(); dl.disabled = false; dl.textContent = 'CSV'; }
-        if (!osrDownload(osrBuildCsv(osrRows), base + '.csv')) dl.textContent = 'Use Copy \u2192';
+        if (osrFundOn()) { dl.disabled = true; dl.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { dl.disabled = false; dl.textContent = 'CSV'; } }
+        if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
+        if (!osrDownload('\uFEFF' + osrBuildCsv(rows), base + '.csv')) dl.textContent = 'Use Copy \u2192';   // BOM: Excel reads UTF-8
       });
       const cp = $('#osr-copy'); if (cp) cp.addEventListener('click', () => {
         // The clipboard needs this click's user activation, which a long wait loses.
@@ -1729,7 +1981,36 @@
         const bad = () => { cp.textContent = 'Copy failed'; back(); };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv).then(ok, bad); else bad();
       });
+      const sm = $('#osr-sum'); if (sm) sm.addEventListener('click', async () => {
+        if (osrFundOn()) { sm.disabled = true; sm.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { sm.disabled = false; sm.textContent = 'Summary CSV'; } }
+        if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
+        if (!osrDownload('\uFEFF' + osrSummaryCsv(osrWorkbookData(wbArgs())), base + '_summary.csv')) sm.textContent = 'Use JSON \u2192';
+      });
+      const js = $('#osr-json'); if (js) js.addEventListener('click', async () => {
+        if (osrFundOn()) { js.disabled = true; js.textContent = 'Filling funding\u2026'; try { await osrFundReady(); } finally { js.disabled = false; js.textContent = 'JSON'; } }
+        if (token !== osrToken) return;   // a rebuild started meanwhile: never write a half-filled file
+        const cols = osrPickedCols(), ccols = osrContractCols();
+        const pick = (r, cs) => { const o = {}; cs.forEach((c) => { o[c[0]] = r[c[0]] == null ? null : r[c[0]]; }); return o; };
+        const doc = {
+          source: 'SAM.gov Contract Awards API (FPDS)' + (osrFundOn() ? '; funding fields from USAspending.gov account funding (File C)' : ''),
+          generated: new Date().toISOString(), generator: 'AcqVault (acqvault.com)',
+          offices: gotOffices, period: label, totalObligated: Math.round(total * 100) / 100, awardActions: rows.length,
+          caveats: [failLine.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'"), truncSlots.length ? 'Some periods hit the pull cap; totals are a floor.' : '',
+            'Dollars are the obligation on each FPDS action; de-obligations are negative.',
+            osrFundOn() ? 'Dollar fields are FPDS obligations in the selected period; funding fields (USAspending File C, the account data agencies report to Treasury) describe the whole contract. \u201cNot reported\u201d means USAspending shows no account for that contract \u2014 common for DoD, and not zero; fundSource then shows the FPDS funding agency. Treasury agency 057 = Air Force, 097 = Defense-Wide, 021 = Army, 017 = Navy/Marine Corps; the last four digits are the appropriation. MFP, program element and fund code are not published in federal data.' : ''].filter(Boolean),
+          columns: cols.map((c) => ({ key: c[0], label: c[1] })),
+          rows: rows.map((r) => pick(r, cols)),
+          contracts: osrContracts(rows).map((c) => pick(c, ccols))
+        };
+        const wd = osrWorkbookData(wbArgs());
+        const cents = (a) => (a || []).map((d) => ({ label: d.label, value: Math.round((Number(d.value) || 0) * 100) / 100 }));
+        doc.dashboard = { kpis: Object.assign(osrKpis(rows), { fundCoverage: wd.fundCoverage || null }), byOffice: cents(wd.byOffice), byFiscalYear: cents(wd.byFy), byWorkType: cents(wd.byCat),
+          topVendors: cents(wd.byVen), bySetAside: cents(wd.bySet), byMonth: cents(wd.byMonth), byFundingSource: cents(wd.byFund), byColorOfMoney: cents(wd.byColor) };
+        doc.pom = wd.extraSheets.filter((sh) => /^POM/.test(sh.name)).map((sh) => ({ view: sh.name, note: 'FPDS obligations (actuals) by fiscal year, not budget authority', columns: sh.columns.map((c) => ({ key: c[0], label: c[1] })), rows: sh.rows.filter((r) => !r._total).map((r) => pick(r, sh.columns)) }));
+        if (!osrDownload(JSON.stringify(doc, null, 1), base + '.json', 'application/json')) js.textContent = 'Use CSV \u2192';
+      });
       osrRenderTable();
+      osrRenderFundPanel();
       osrEnsureFunding();
     } catch (e) {
       if (token !== osrToken) return;
@@ -1741,6 +2022,126 @@
   function osrDay(iso) { return Number(iso.slice(8, 10)) + ' ' + OSR_MON[Number(iso.slice(5, 7)) - 1] + ' ' + iso.slice(0, 4); }
   // Everything the workbook needs, derived once. Kept here rather than in xlsxgen.js
   // so the generator stays a pure formatter with no knowledge of contract data.
+  // ── POM view: FPDS obligations (actuals) pivoted by fiscal year ──────────
+  // What a POM builder needs from contract actuals: what was spent, on what, in which
+  // year, and whether it recurs. These are obligations, not budget authority.
+  // avgFys: the complete fiscal years (not in progress, not clipped by custom dates) that
+  // the average, active-year count and pattern are measured over.
+  function osrPivot(rows, keyFn, fys, extra, avgFys) {
+    const base = avgFys || fys;
+    const m = new Map();
+    rows.forEach((r) => {
+      const k = keyFn(r) || '—';
+      let g = m.get(k);
+      if (!g) { g = { group: k, total: 0, deob: 0 }; fys.forEach((y) => { g['fy' + y] = 0; }); if (extra) Object.assign(g, extra(r)); m.set(k, g); }
+      else if (extra) { const e = extra(r); Object.keys(e).forEach((f) => { if (g[f] !== e[f] && g[f] !== 'Varies') g[f] = 'Varies'; }); }
+      const v = Number(r.obligated) || 0, fy = String(r.fiscalYear || '');
+      if (('fy' + fy) in g) g['fy' + fy] += v;
+      g.total += v;
+      if (v < 0) g.deob += v;
+    });
+    const c2 = (x) => Math.round(x * 100) / 100;
+    return [...m.values()].map((g) => {
+      fys.forEach((y) => { g['fy' + y] = c2(g['fy' + y]); });
+      g.active = base.filter((y) => g['fy' + y] >= 1).length;   // a year with only deobligations isn't a year of spend
+      g.total = c2(g.total); g.deob = c2(g.deob);
+      g.avg = base.length ? c2(base.reduce((a, y) => a + g['fy' + y], 0) / base.length) : null;
+      g.pattern = base.length < 2 ? '' : g.active === base.length ? 'Every year' : g.active >= 2 ? 'Recurring' : 'One year only';
+      return g;
+    }).sort((a, b) => b.total - a.total);
+  }
+  // POM views of FPDS actuals, kept to what helps oversight and planning (owner,
+  // 2026-11-20): obligations by appropriation and by work type per FY, and phasing.
+  // Basis: POM/FYDP are laid out by appropriation and FY (CRS R47178); the 20%
+  // last-two-months rule (CRS IF10365).
+  // fysIn: the fiscal years that were pulled AND answered (a failed or unpicked year must
+  // never appear as $0). Custom date ranges pass nothing: every FY first..last then counts.
+  function osrPomSheets(rows, fysIn, range) {
+    const seen = rows.map((r) => Number(r.fiscalYear)).filter((y) => y > 1990);
+    let fys = (fysIn || []).map(String).filter(Boolean).sort();
+    if (!fys.length && seen.length) for (let y = Math.min.apply(null, seen); y <= Math.max.apply(null, seen); y++) fys.push(String(y));
+    const now = new Date(), curFy = now.getUTCFullYear() + (now.getUTCMonth() >= 9 ? 1 : 0);
+    // A custom date window can clip the first/last FY; the current FY is still in progress.
+    const clipped = (y) => !!range && (range.from > (Number(y) - 1) + '-10-01' || range.to < y + '-09-30');
+    const full = fys.filter((y) => !clipped(y) && Number(y) < curFy);
+    const multi = full.length > 1;
+    const fyCols = fys.map((y) => ['fy' + y, 'FY' + y + ' Obligated, by date signed' + (clipped(y) ? ', partial year' : Number(y) >= curFy ? ', in progress' : '') + ' (TY$)']);
+    // Multi-year columns only when there are two or more complete years to compare.
+    const tail = [['total', 'Total (TY$)'], ['deob', 'Deobligations (TY$)']].concat(multi
+      ? [['avg', 'Avg per Complete FY, ' + full.length + ' yrs (TY$)'], ['pattern', 'Pattern']] : []);
+    const nums = { total: 1, avg: 1, deob: 1, active: 'n' }; fys.forEach((y) => { nums['fy' + y] = 1; });
+    const out = [];
+    out.push({ name: 'POM - Read Me', tab: 'FF0F2540', nums: { note: 'w' }, columns: [['topic', 'Topic'], ['note', 'Note']], rows: [
+      { topic: 'What these tabs are', note: 'Contract OBLIGATIONS from FPDS (SAM.gov), the system of record, pivoted by fiscal year for oversight and planning. Then-year dollars (TY$); no inflation applied — convert with the OSD Green Book indices for constant dollars.' },
+      { topic: 'What they are not', note: 'Not budget authority, TOA or programmed amounts. No program element, budget line, MFP or EEIC — those are not in federal contract data.' },
+      { topic: 'Fiscal Year columns', note: 'The FY the action was SIGNED, not the year the money was appropriated: an FY2026 action can spend FY2025 RDT&E (2-year money) or FY2024 Procurement (3-year money). Deobligations land in the FY of the mod, often returning expired prior-year money, so they add no buying power in that year.' },
+      { topic: 'Which office', note: 'Filtered by CONTRACTING office (who awarded it), not by funding office. The Funding Agency/Office (FPDS) columns on the Data and By Contract tabs show who paid.' },
+      { topic: 'Not included', note: 'Civilian pay, MIPRs and reimbursables awarded by another office, GPC buys under the micro-purchase threshold, classified actions, grants and cooperative agreements. Other transactions appear only where reported to FPDS. Foreign Military Sales and other foreign-funded actions are not separated out and can inflate totals.' },
+      { topic: 'Source data', note: 'Every FPDS action behind these tabs, with every field, is on the Data tab.' },
+      { topic: 'Timing', note: 'DoD actions reach public data on a delay; the latest quarter is likely incomplete. USAspending (account labels) ran ~4 months behind SAM.gov when measured 2026-11-20.' }
+    ].concat(osrFundOn() ? [
+      { topic: 'Account labels', note: 'From USAspending (File C, the account data agencies report to Treasury). Labels apply to the whole contract: a contract paid from several accounts appears once under its combined label (Color of Money and Funding Source read \u201cMixed: \u2026\u201d), with ALL its FPDS dollars on that row \u2014 FPDS does not record which action used which account, so dollars are not split by account. A Treasury account (e.g. 057-3400) is not a budget line.' }
+    ] : []).concat(multi ? [
+      { topic: 'Avg per FY and Pattern', note: 'Straight-line over the COMPLETE fiscal years pulled (a year still in progress, or clipped by custom dates, is shown but left out of the average); a starting point for a requirement, not a requirement. Severable services funded for 12 months across FYs (10 USC 3133) and incrementally funded contracts make one FY’s obligations differ from the annual cost. “One year only” can still be a multi-year need funded up front.' }
+    ] : []).concat([
+      { topic: 'Quarterly Phasing', note: 'FPDS obligations by fiscal quarter of the date signed; shares are of positive obligations. Q4, Aug–Sep and September shares show year-end surge. An indicator only: the 20% last-two-months limit (a DoD appropriations act general provision) applies to one-year appropriations such as O&M, in aggregate \u2014 not to multi-year Procurement or RDT&E and not to one office\u2019s contracts. These shares mix all colors of money, so this is not a compliance test.' }
+    ]) });
+    if (osrFundOn()) out.push({ name: 'POM - Oblig by Appropriation', nums,
+      columns: [['group', 'Account(s) on Contract (USAspending)'], ['color', 'Color of Money'], ['source', 'Funding Source']].concat(fyCols, tail),
+      rows: osrPivot(rows, (r) => r.appropriation, fys, (r) => ({ color: r.colorOfMoney, source: r.fundSource }), full) });
+    out.push({ name: 'POM - Oblig by Work Type', nums, columns: [['group', 'Work Type (PSC)']].concat(fyCols, tail), rows: osrPivot(rows, (r) => r.category, fys, null, full) });
+    // A bold Total row on each pivot ties it to the grand FPDS total at a glance.
+    out.forEach((sh) => {
+      if (!sh.columns.some((c) => c[0] === 'total')) return;
+      const t = { group: 'Total', _total: true };
+      sh.columns.forEach((c) => { if (sh.nums && sh.nums[c[0]] === 1) t[c[0]] = Math.round(sh.rows.reduce((a, r) => a + (Number(r[c[0]]) || 0), 0) * 100) / 100; });
+      // The Total row's average comes from its own complete-FY columns, not a sum of rounded averages.
+      if ('avg' in t && full.length) t.avg = Math.round((full.reduce((a, y) => a + (t['fy' + y] || 0), 0) / full.length) * 100) / 100;
+      sh.rows = sh.rows.concat([t]); sh.tab = 'FF0F2540';
+    });
+    // A Deobligations column that is $0 on every row says nothing: leave it out.
+    out.forEach((sh) => { if (sh.columns.some((c) => c[0] === 'deob') && sh.rows.every((r) => !r.deob)) sh.columns = sh.columns.filter((c) => c[0] !== 'deob'); });
+    // Quarterly phasing by FY (fiscal quarters of the date signed).
+    const ph = fys.map((y) => {
+      const q = [0, 0, 0, 0], pq = [0, 0, 0, 0]; let sep = 0, augsep = 0;
+      rows.filter((r) => String(r.fiscalYear) === y).forEach((r) => {
+        const m = Number(String(r.dateSigned || '').slice(5, 7)); if (!m) return;
+        const v = Number(r.obligated) || 0, p = Math.max(0, v), i = m >= 10 ? 0 : m <= 3 ? 1 : m <= 6 ? 2 : 3;
+        q[i] += v; pq[i] += p; if (m === 9) sep += p; if (m >= 8 && m <= 9) augsep += p;
+      });
+      const tot = q[0] + q[1] + q[2] + q[3], ptot = pq[0] + pq[1] + pq[2] + pq[3], c2 = (x) => Math.round(x * 100) / 100;
+      const pct = (x) => ptot > 0 ? Math.round((x / ptot) * 1000) / 1000 : null;
+      return { fy: 'FY' + y + (clipped(y) ? ' (partial year)' : Number(y) >= curFy ? ' (in progress)' : ''), q1: c2(q[0]), q2: c2(q[1]), q3: c2(q[2]), q4: c2(q[3]), total: c2(tot), q4share: pct(pq[3]), augsep: pct(augsep), sepshare: pct(sep) };
+    });
+    out.push({ name: 'POM - Quarterly Phasing', tab: 'FF0F2540', nums: { q1: 1, q2: 1, q3: 1, q4: 1, total: 1, q4share: 'p', augsep: 'p', sepshare: 'p' },
+      columns: [['fy', 'Fiscal Year'], ['q1', 'Q1 Oct–Dec (TY$)'], ['q2', 'Q2 Jan–Mar (TY$)'], ['q3', 'Q3 Apr–Jun (TY$)'], ['q4', 'Q4 Jul–Sep (TY$)'], ['total', 'Total (TY$)'], ['q4share', 'Q4 Share (positive $)'], ['augsep', 'Aug–Sep Share (positive $)'], ['sepshare', 'September Share (positive $)']],
+      rows: ph });
+    return out;
+  }
+  // Every dashboard table + the POM tables as one sectioned CSV (the main CSV stays one
+  // clean row per action so it filters and imports).
+  function osrSummaryCsv(wd) {
+    const L = [], line = (a) => L.push(a.map(osrCsvCell).join(','));
+    const money = (v) => Math.round((Number(v) || 0) * 100) / 100;
+    line(['Contract Awards summary', wd.office, wd.officeName, wd.fyLabel]);
+    line(['Source: SAM.gov Contract Awards API (FPDS). Dollars are FPDS obligations (actuals), not budget authority. Generated by AcqVault']);
+    if (wd.caveat) line([wd.caveat]);
+    L.push(''); line(['AT A GLANCE']);
+    line(['Award actions', wd.awards]); line(['Total obligated', money(wd.total)]);
+    line(['Distinct contracts', wd.contracts.rows.length]);
+    line(['Distinct vendors', wd.vendorCount]);
+    wd.kpis.forEach((k) => line([k.label, typeof k.value === 'number' ? (Math.round(k.value * 1000) / 10) + '%' : k.value]));
+    if (wd.fundCoverage) line([wd.fundCoverage]);
+    [['Obligations by contracting office', wd.byOffice], ['Obligations by fiscal year', wd.byFy], ['Work type (PSC)', wd.byCat],
+     ['Top vendors', wd.byVen], ['Set-aside', wd.bySet], ['Obligations by month signed', wd.byMonth],
+     ['Funding source: Treasury account where reported, else FPDS funding agency (FPDS dollars)', wd.byFund], ['Color of money (USAspending label, FPDS net obligations)', wd.byColor]]
+      .filter((t) => t[1] && t[1].length).forEach((t) => { L.push(''); line([t[0].toUpperCase()]); line(['Item', 'Obligated']); t[1].forEach((d) => line([d.label, money(d.value)])); });
+    wd.extraSheets.filter((sh) => /^POM/.test(sh.name)).forEach((sh) => {
+      const cols = sh.columns.filter((c) => sh.rows.some((r) => r[c[0]] != null && r[c[0]] !== ''));   // no all-blank columns
+      L.push(''); line([sh.name.toUpperCase() + (/Read Me/.test(sh.name) ? '' : ' (FPDS obligations by fiscal year)')]); line(cols.map((c) => c[1])); sh.rows.forEach((r) => line(cols.map((c) => r[c[0]])));
+    });
+    return L.join('\r\n');
+  }
   function osrWorkbookData(o) {
     const rows = o.rows, chartFys = o.chartFys;
     const byFy = chartFys.map((fy) => ({ label: 'FY ' + fy, value: rows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + (Number(r.obligated) || 0), 0) }));
@@ -1752,13 +2153,22 @@
       officeName: o.offices.length === 1 ? o.nameOf(o.offices[0]) : o.offices.join(' \u00b7 '),
       fyLabel: o.label,
       caveat: o.caveat || '',
-      columns: osrPickedCols(), rows,
+      // The workbook's Data tab carries EVERY field (it is the source behind every other tab);
+      // the picker shapes the on-page table, the CSV and the JSON. Blank columns drop out.
+      columns: OSR_COLS.filter((c) => osrFundOn() || OSR_FUND_COLS.indexOf(c[0]) < 0), rows,
       byOffice: o.byOffice || [],
       byFy,
       byCat: osrSumBy(rows, (r) => r.category),
       byVen: osrSumBy(rows, (r) => osrVendorClean(r.vendor)).slice(0, 8),
-      bySet: osrSumBy(rows, (r) => (r.setAside && !/^no set.?aside/i.test(r.setAside)) ? r.setAside : 'No set-aside').slice(0, 6),
+      bySet: osrSumBy(rows, (r) => !String(r.setAside || '').trim() ? 'Not recorded on action (orders/calls inherit the vehicle\u2019s)' : /^no set.?aside/i.test(r.setAside) ? 'No set-aside' : r.setAside).slice(0, 6),
       byMonth: byMonth.length > 1 ? byMonth : [],
+      byColor: osrFundOn() ? osrSumBy(rows, (r) => r.colorOfMoney) : [],
+      byFund: osrFundOn() ? osrSumBy(rows, (r) => r.fundSource) : [],
+      fundCoverage: osrFundOn() ? osrFundStats(rows).line : '',
+      contracts: { columns: osrContractCols(), rows: osrContracts(rows) },
+      vendorCount: osrKpis(rows).vendors,
+      kpis: (function (k) { return [{ label: 'Small business share of $', value: k.smallShare == null ? '\u2014' : k.smallShare }, { label: 'Competed share of $', value: k.competedShare == null ? '\u2014' : k.competedShare }]; })(osrKpis(rows)),
+      extraSheets: osrPomSheets(rows, o.pomFys, o.pomRange),
       awards: rows.length,
       total: rows.reduce((s, r) => s + (Number(r.obligated) || 0), 0)
     };
@@ -1826,7 +2236,9 @@
     const sec = $('#spending-dashboard');
     if (sec) sec.addEventListener('click', (e) => { const c = e.target.closest('.osr-chip'); if (!c) return; osrSugClose(); osrSugPick(c.dataset.office); });
     if (sec) {
-      // Deep link wins over the demo pull: ?office=FA8750 or ?office=FA8501,FA8750.
+      // Only an explicit deep link pre-picks: ?office=FA8750 or ?office=FA8501,FA8750.
+      // No demo office (owner, 2026-11-20): a pre-picked FA8501 stayed in the box and
+      // got pulled alongside the visitor's own office by accident.
       // Comma, not `~` — the server refuses a separator-bearing office outright.
       let deep = [];
       try {
@@ -1835,11 +2247,13 @@
           .filter((c) => c.length >= 4 && c.length <= 6);
         deep = deep.filter((c, i) => deep.indexOf(c) === i).slice(0, OSR_MAX_OFFICES);
       } catch (_) {}
-      const io = new IntersectionObserver((ents) => { ents.forEach((e) => { if (e.isIntersecting) {
-        (deep.length ? deep : ['FA8501']).forEach(osrAddOffice);
-        osrBuild(); io.disconnect();
-      } }); }, { rootMargin: '200px' });
-      io.observe(sec);
+      if (deep.length) {
+        const io = new IntersectionObserver((ents) => { ents.forEach((e) => { if (e.isIntersecting) {
+          deep.forEach(osrAddOffice);
+          osrBuild(); io.disconnect();
+        } }); }, { rootMargin: '200px' });
+        io.observe(sec);
+      }
     }
   }
 
