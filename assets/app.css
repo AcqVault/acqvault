@@ -618,6 +618,14 @@ abbr.acq-acro:hover { border-bottom-color: var(--accent); }
 .osr-recon b { color: var(--ink); }
 .osr-kpis { margin-top:14px; }
 .osr-kpis .dash-stat-num { font-size: 26px; }
+.osr-kpis .osr-of { font-size: 15px; font-weight: 600; color: var(--muted2); }
+.osr-portfolio { margin-top:12px; padding:16px 18px 18px; }
+.osr-pf-wrap { margin-top:8px; max-height:none; }
+.osr-pf { min-width: 720px; }
+.osr-pf-office { min-width: 1100px; }
+.osr-pf-sub { display:block; font-size: var(--fs-xs); font-weight: 400; color: var(--muted2); }
+.osr-pf-total th, .osr-pf-total td { font-weight: 700; border-top: 1px solid var(--brass); }
+.osr-pf th[scope="row"] { text-align:left; font-size: var(--fs-sm); color: var(--ink2); font-weight: 600; text-transform:none; letter-spacing:0; padding:9px 14px; background:transparent; position:static; }
 .osr-dash-fund { grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,0.8fr); }
 .osr-cov .dash-stat-num { margin-top:12px; }
 .osr-fundcta { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; padding:14px 16px; border:1px dashed rgba(var(--brass-rgb),0.35); border-radius: var(--r-lg); font-size: var(--fs-sm); color: var(--muted); }

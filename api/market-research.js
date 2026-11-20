@@ -387,6 +387,8 @@ const CA_URL = 'https://api.sam.gov/contract-awards/v1/search';
 const CA_PAGE = 100;
 const CA_MAX_PAGES = 20;  // 2,000 awards fully covers the vast majority of office-years; bounded to protect the shared key's quota
 
+// A missing total stays null (unknown), never $0.
+function caNumOrNull(x) { return x == null || x === '' ? null : caNum(x); }
 function caNum(x) { const n = Number(String(x == null ? '' : x).replace(/[^0-9.-]/g, '')); return isFinite(n) ? n : 0; }
 
 async function fetchContractAwards(qs, apiKey) {
@@ -454,7 +456,17 @@ function caRow(a, office, fy) {
     fundingSubtier: caPath(a, ['coreData', 'federalOrganization', 'fundingInformation', 'fundingSubtier', 'name']),
     fundingOffice: caPath(a, ['coreData', 'federalOrganization', 'fundingInformation', 'fundingOffice', 'name']),
     popState: caPath(a, ['coreData', 'principalPlaceOfPerformance', 'state', 'name']),
-    dateSigned: String(caPath(a, ['awardDetails', 'dates', 'dateSigned']) || '').slice(0, 10)
+    dateSigned: String(caPath(a, ['awardDetails', 'dates', 'dateSigned']) || '').slice(0, 10),
+    // Whole-contract FPDS figures as of THIS action (awardDetails.totalContractDollars),
+    // so the latest action in a pull carries the contract's current position.
+    totalObligated: caNumOrNull(caPath(a, ['awardDetails', 'totalContractDollars', 'totalActionObligation'])),
+    currentValue: caNumOrNull(caPath(a, ['awardDetails', 'totalContractDollars', 'totalBaseAndExercisedOptionsValue'])),
+    faceValue: caNumOrNull(caPath(a, ['awardDetails', 'totalContractDollars', 'totalBaseAndAllOptionsValue'])),
+    popStart: String(caPath(a, ['awardDetails', 'dates', 'periodOfPerformanceStartDate']) || '').slice(0, 10),
+    popEnd: String(caPath(a, ['awardDetails', 'dates', 'currentCompletionDate']) || '').slice(0, 10),
+    popUltimate: String(caPath(a, ['awardDetails', 'dates', 'ultimateCompletionDate']) || '').slice(0, 10),
+    lastDateToOrder: String(caPath(a, ['awardDetails', 'dates', 'lastDateToOrder']) || '').slice(0, 10),
+    parentIdv: caPath(a, ['contractId', 'referencedIDVPiid'])
   };
 }
 

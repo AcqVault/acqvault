@@ -147,8 +147,12 @@ const seenTypes = [];
 chartNames.forEach((name, i) => {
   const c = parts[name];
   checkOrder(c, name);
-  assert.ok(/Summary!\$B\$\d+:\$B\$\d+/.test(c), name + ' must reference a Summary value range');
-  assert.ok(/Summary!\$A\$\d+:\$A\$\d+/.test(c), name + ' must reference a Summary category range');
+  const vr = c.match(/<c:val><c:numRef><c:f>Summary!\$([A-Z])\$(\d+):\$\1\$(\d+)<\/c:f>/);
+  assert.ok(vr, name + ' must reference a Summary value range');
+  // every referenced value cell must exist on the Summary and hold a number
+  for (let rr = Number(vr[2]); rr <= Number(vr[3]); rr++) assert.ok(new RegExp('<c r="' + vr[1] + rr + '"[^>]*><v>-?[0-9.]+</v>').test(parts['xl/worksheets/sheet1.xml']), name + ': value cell ' + vr[1] + rr + ' is a number');
+  const cr = c.match(/<c:cat><c:strRef><c:f>Summary!\$([A-Z])\$(\d+):\$\1\$(\d+)<\/c:f>/);
+  assert.ok(cr && cr[2] === vr[2] && cr[3] === vr[3] && cr[1].charCodeAt(0) + 1 === vr[1].charCodeAt(0), name + ' must reference a Summary category range beside its values');
 
   const type = (c.match(/<c:(barChart|lineChart|doughnutChart|pieChart)>/) || [])[1];
   assert.ok(type, name + ' has no chart group');
@@ -240,7 +244,7 @@ assert.ok(parts[chartNames[1]].indexOf('R&amp;D') >= 0 || chartNames.some((n) =>
 assert.ok(/showGridLines="0"/.test(summaryXml), 'Summary hides gridlines');
 assert.ok(/<pane ySplit="1"/.test(data), 'Data freezes its header row');
 assert.ok(/<autoFilter ref="A1:/.test(data), 'Data carries an autofilter');
-assert.ok(/<mergeCells count="1">/.test(summaryXml), 'Summary merges its title band');
+assert.ok(/<mergeCell ref="A1:K1"\/>/.test(summaryXml), 'Summary title band spans the full width');
 assert.ok(/_xlnm\.Print_Area/.test(parts['xl/workbook.xml']), 'a print area is defined');
 // worksheet child order: <drawing> is near the end of CT_Worksheet
 assert.ok(summaryXml.indexOf('<sheetData>') < summaryXml.indexOf('<mergeCells'), 'mergeCells must follow sheetData');
@@ -294,8 +298,8 @@ const withC = unpack(build(Object.assign({}, opts, {
   byColor: [{ label: 'O&M', value: 900 }, { label: 'RDT&E', value: 100 }],
   byFund: [{ label: 'Defense-Wide (097)', value: 900 }, { label: 'Air Force (057)', value: 100 }],
   fundCoverage: 'Funding reported for 1 of 2 contracts (99% of dollars)',
-  kpis: [{ label: 'Small business share of $', value: 0.412 }],
-  vendorCount: 7,
+  tiles: [{ label: 'Award actions', value: 2, kind: 'n' }, { label: 'Distinct vendors', value: 7, kind: 'n' }, { label: 'Face value (all options)', value: 1234.5, kind: '$' }, { label: 'Small business share of $', value: 0.412, kind: '%' }, { label: 'Active contracts', value: '3 of 5', kind: 't' }],
+  portfolio: [{ title: 'Active contracts', items: [{ label: 'Contracts', value: 3, kind: 'n' }, { label: 'Face value (all options)', value: 900.25 }] }, { title: 'Inactive contracts', items: [{ label: 'Contracts', value: 2, kind: 'n' }] }],
   extraSheets: [
     { name: 'POM by Work Type', columns: [['group', 'Work Type (PSC)'], ['fy2024', 'FY2024 Obligated'], ['fy2025', 'FY2025 Obligated'], ['active', 'FYs With Obligations'], ['pattern', 'Pattern']],
       rows: [{ group: 'Service', fy2024: 10.5, fy2025: 20, active: 2, pattern: 'Every year' }, { group: 'Total', _total: true, fy2024: 10.5, fy2025: 20 }], nums: { fy2024: 1, fy2025: 1, active: 'n' }, tab: 'FF0F2540' },
@@ -336,11 +340,28 @@ assert.ok(withC['xl/styles.xml'].indexOf('formatCode="&quot;$&quot;#,##0.00_);[R
 assert.ok(/<c r="B3" s="20"><v>10.5<\/v><\/c>/.test(withC['xl/worksheets/sheet4.xml']), 'Total row money is bold with a rule above');
 assert.ok(/<autoFilter ref="A1:[A-Z]+2"\/>/.test(withC['xl/worksheets/sheet4.xml']), 'Total row sits outside the autofilter');
 assert.ok(/<tabColor rgb="FF0F2540"\/>/.test(withC['xl/worksheets/sheet4.xml']), 'POM tabs are coloured');
-assert.ok(/<c r="B\d+" s="13"><v>0.412<\/v><\/c>/.test(withC['xl/worksheets/sheet1.xml']), 'KPI share is a %-formatted number');
+assert.ok(/<c r="[A-K]\d+" s="25"><v>0.412<\/v><\/c>/.test(withC['xl/worksheets/sheet1.xml']), 'KPI share is a %-formatted number (large tile style)');
+assert.ok(/<c r="D\d+" s="24"><v>7<\/v><\/c>/.test(withC['xl/worksheets/sheet1.xml']), 'second KPI tile sits in column D (tiles run across)');
+assert.ok(/<c r="J\d+" s="25"><v>0.412<\/v>/.test(withC['xl/worksheets/sheet1.xml']), 'fourth tile in column J');
+assert.ok(withC['xl/worksheets/sheet1.xml'].indexOf('Portfolio by status') >= 0 && /<c r="D\d+" s="9" t="inlineStr"><is><t xml:space="preserve">Inactive contracts/.test(withC['xl/worksheets/sheet1.xml']), 'portfolio tables sit side by side');
 assert.ok(withC['xl/worksheets/sheet1.xml'].indexOf('POM tabs: FPDS obligations') >= 0, 'POM note on Summary');
-assert.ok(/Distinct vendors<\/t><\/is><\/c><c r="B\d+" s="11"><v>7<\/v>/.test(withC['xl/worksheets/sheet1.xml']), 'Distinct vendors uses the page\'s normalised count');
+
+// (vendor count now arrives as a tile from the page; asserted above)
 
 
+// ── Portfolio by Office tab: right after Data, total row bold and outside the filter ──
+{
+  const ob = unpack(build(Object.assign({}, opts, {
+  officeSheet: { name: 'Portfolio by Office', tab: 'FF87651C', columns: [['office', 'Office'], ['obligated', 'Obligated'], ['small', 'Small Business Share of $']], nums: { obligated: 1, small: 'p' },
+    rows: [{ office: 'FA0021', obligated: 150, small: 0.5 }, { office: 'FA4855', obligated: 50, small: '\u2014' }, { office: 'All selected offices', obligated: 200, small: 0.4, _total: true }] },
+    contracts: { columns: [['piid', 'Contract (PIID)']], rows: [{ piid: 'X' }] }
+  })));
+  const pbo = ob['xl/worksheets/sheet3.xml'];
+  assert.ok(/<sheet name="Portfolio by Office" sheetId="3" r:id="rId4"\/>/.test(ob['xl/workbook.xml']) && /<sheet name="By Contract" sheetId="4"/.test(ob['xl/workbook.xml']), 'Portfolio by Office sits right after Data, before By Contract');
+  assert.ok(pbo.indexOf('NaN') < 0 && pbo.indexOf('>\u2014<') >= 0, 'a dash in a numeric column stays text, never NaN');
+  assert.ok(/<c r="B4" s="20"><v>200<\/v>/.test(pbo) && /<autoFilter ref="A1:C3"\/>/.test(pbo), 'portfolio total is bold and outside the filter');
+  assert.ok(/<c r="C4" s="18"><v>0.4<\/v>/.test(pbo), 'a share on the total row stays %-formatted');
+}
 // ── a doughnut charts only the positive groups; the table keeps every group ──
 {
   const neg = unpack(build(Object.assign({}, opts, { byFy: [], byMonth: [], bySet: [],

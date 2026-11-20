@@ -902,30 +902,33 @@
     ['category', 'Work Type'], ['pscCode', 'PSC'], ['pscName', 'PSC Name'],
     ['naicsCode', 'NAICS'], ['naicsName', 'NAICS Name'], ['description', 'Description'],
     ['vendor', 'Vendor'], ['vendorUEI', 'Vendor UEI'], ['smallBusiness', 'Small Business'],
-    ['obligated', 'Obligated (Action)'], ['awardAmount', 'Award Amount'], ['ceiling', 'Ceiling (All Options)'], ['pricingType', 'Pricing Type'],
+    ['obligated', 'Obligated (Action)'], ['awardAmount', 'Value Change (This Action)'], ['ceiling', 'Options Value Change (This Action)'], ['pricingType', 'Pricing Type'],
+    ['contractStatus', 'Contract Status'], ['totalObligated', 'Obligated to Date (Contract; not outlays)'], ['currentValue', 'Current Value (Base + Exercised)'], ['faceValue', 'Face Value (Potential: Base + All Options)'],
+    ['popStart', 'PoP Start'], ['popEnd', 'PoP End (Current)'], ['popUltimate', 'PoP End (All Options)'], ['lastDateToOrder', 'Last Date to Order (Vehicle)'], ['parentIdv', 'Parent Vehicle (IDV)'],
     ['fundingSubtier', 'Funding Agency (FPDS)'], ['fundingOffice', 'Funding Office (FPDS)'],
     ['fundSource', 'Funding Source'], ['appropriation', 'Account(s) on Contract (USAspending)'], ['colorOfMoney', 'Color of Money'], ['objectClass', 'Object Class'],
     ['setAside', 'Set-Aside'], ['extentCompeted', 'Extent Competed'],
     ['popState', 'PoP State'], ['dateSigned', 'Date Signed']
   ];
-  const OSR_NUM = { obligated: 1, awardAmount: 1, ceiling: 1 };
+  const OSR_NUM = { obligated: 1, awardAmount: 1, ceiling: 1, totalObligated: 1, currentValue: 1, faceValue: 1 };
   // Column groups drive the picker's layout only — OSR_COLS stays the single source
   // of column order for the table, the CSV and the workbook.
   const OSR_GROUPS = [
     ['Identity', ['office', 'officeName', 'fiscalYear', 'piid', 'mod', 'dateSigned']],
-    ['Money', ['obligated', 'awardAmount', 'ceiling', 'pricingType']],
+    ['Money (this action)', ['obligated', 'awardAmount', 'ceiling', 'pricingType']],
+    ['Contract value & status', ['contractStatus', 'totalObligated', 'currentValue', 'faceValue', 'popStart', 'popEnd', 'popUltimate', 'lastDateToOrder', 'parentIdv']],
     ['What was bought', ['category', 'pscCode', 'pscName', 'naicsCode', 'naicsName', 'description']],
     ['Who got it', ['vendor', 'vendorUEI', 'smallBusiness', 'popState']],
     ['How it was bought', ['awardOrIdv', 'awardType', 'setAside', 'extentCompeted']],
     ['Who paid (FPDS)', ['fundingSubtier', 'fundingOffice']],
     ['Funding (USAspending)', ['fundSource', 'appropriation', 'colorOfMoney', 'objectClass']]
   ];
-  const OSR_COLS_KEY = 'acqvault-osr-cols';
+  const OSR_COLS_KEY = 'acqvault-osr-cols-v2';   // v2: contract value & status columns join the defaults once
   // Every report is one office, so Office and Office Name hold the same value on every
   // row — they are in the heading and the filename already. Off by default, one click
   // to add back for anyone stacking several offices into one sheet.
   // The funding columns cost one USAspending lookup per contract, so they are opt-in.
-  const OSR_COLS_OFF = { office: 1, officeName: 1, fundSource: 1, appropriation: 1, colorOfMoney: 1, objectClass: 1 };
+  const OSR_COLS_OFF = { office: 1, officeName: 1, popStart: 1, popUltimate: 1, lastDateToOrder: 1, parentIdv: 1, awardAmount: 1, ceiling: 1, fundSource: 1, appropriation: 1, colorOfMoney: 1, objectClass: 1 };
   function osrDefaultCols() {
     const d = {}; OSR_COLS.forEach((c) => { if (!OSR_COLS_OFF[c[0]]) d[c[0]] = 1; });
     return d;
@@ -1196,7 +1199,7 @@
   // `s` is a response-schema version — bump it when caRow's columns change so the
   // CDN serves fresh rows instead of a cached shape missing the new fields.
   async function osrFetch(qs, retry) {
-    const r = await fetch('/api/market-research?mode=award-rows&s=2&' + qs + (retry ? '&r=1' : ''), { headers: { Accept: 'application/json' } });
+    const r = await fetch('/api/market-research?mode=award-rows&s=3&' + qs + (retry ? '&r=1' : ''), { headers: { Accept: 'application/json' } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
@@ -1277,7 +1280,9 @@
   // ── headline tiles: shares are of DOLLARS, the way spend reviews read them ──
   function osrPct(part, whole) { return whole > 0 ? Math.round((part / whole) * 100) + '%' : '\u2014'; }
   function osrKpis(rows) {
-    const contracts = new Set(rows.map((r) => (r.office || '') + '|' + (r.piid || ''))).size;
+    const isV = (r) => /idv/i.test(String(r.awardOrIdv || ''));
+    const keyOf = osrKeyer(rows);
+    const contracts = new Set(rows.filter((r) => !isV(r)).map(keyOf)).size, vehicles = new Set(rows.filter(isV).map(keyOf)).size;
     const vendors = new Set(rows.map((r) => osrVendorClean(r.vendor))).size;
     const pos = (r) => Math.max(0, Number(r.obligated) || 0);   // de-obligations would skew a share
     const all = rows.reduce((a, r) => a + pos(r), 0);
@@ -1286,24 +1291,46 @@
     const lab$ = labeled.reduce((a, r) => a + pos(r), 0);
     const comp$ = labeled.filter((r) => !/NOT COMPETED|NOT AVAILABLE|NON-COMPETITIVE/i.test(r.extentCompeted)).reduce((a, r) => a + pos(r), 0);
     const frac = (p, w) => (w > 0 ? Math.round((p / w) * 1000) / 1000 : null);
-    return { contracts, actions: rows.length, vendors, small: osrPct(sb, all), competed: osrPct(comp$, lab$), smallShare: frac(sb, all), competedShare: frac(comp$, lab$) };
+    return { contracts, vehicles, actions: rows.length, vendors, small: osrPct(sb, all), competed: osrPct(comp$, lab$), smallShare: frac(sb, all), competedShare: frac(comp$, lab$) };
   }
   function osrKpiHtml(rows) {
-    const contracts = new Set(rows.map((r) => (r.office || '') + '|' + (r.piid || ''))).size;
-    const vendors = new Set(rows.map((r) => osrVendorClean(r.vendor))).size;
-    const pos = (r) => Math.max(0, Number(r.obligated) || 0);   // de-obligations would skew a share
-    const all = rows.reduce((a, r) => a + pos(r), 0);
-    const sb = rows.filter((r) => /^y/i.test(String(r.smallBusiness || ''))).reduce((a, r) => a + pos(r), 0);
-    const labeled = rows.filter((r) => String(r.extentCompeted || '').trim());
-    const lab$ = labeled.reduce((a, r) => a + pos(r), 0);
-    const comp$ = labeled.filter((r) => !/NOT COMPETED|NOT AVAILABLE|NON-COMPETITIVE/i.test(r.extentCompeted)).reduce((a, r) => a + pos(r), 0);
+    const k = osrKpis(rows), p = osrPortfolio(rows);
+    const money = (v) => (v == null ? '\u2014' : osrNeg(v, fmtUSD));
     const tile = (label, num, foot) => '<div class="dash-stat"><div class="dash-stat-label">' + label + '</div><div class="dash-stat-num">' + num + '</div><div class="dash-stat-foot">' + foot + '</div></div>';
+    const period = rows.reduce((a, r) => a + (Number(r.obligated) || 0), 0);
+    const td = (v) => '<td class="osr-num">' + money(v) + '</td>';
+    const row = (name, b, activeCols) => '<tr><th scope="row">' + name + '</th><td class="osr-num">' + b.n.toLocaleString() + '</td>' + td(b.period) + td(b.toDate) + td(b.current) + td(b.face)
+      + (activeCols ? td(b.remaining) + td(b.unfunded) : '<td class="osr-num">\u2014</td><td class="osr-num">\u2014</td>') + '</tr>';
     return '<div class="dash-grid osr-kpis">'
-      + tile('Contracts', contracts.toLocaleString(), rows.length.toLocaleString() + ' award actions')
-      + tile('Vendors', vendors.toLocaleString(), 'distinct awardees')
-      + tile('Small business', osrPct(sb, all), 'of obligated dollars (positive obligations only)')
-      + tile('Competed', osrPct(comp$, lab$), 'of obligated dollars on actions with a competition label (positive only)')
-      + '</div>';
+      + tile('Contracts &amp; orders', p.all.n.toLocaleString(), rows.length.toLocaleString() + ' award actions \u00b7 ' + k.vendors.toLocaleString() + ' vendors')
+      + tile('Obligated', money(period), 'FPDS actions in the selected period')
+      + tile('Current value', money(p.all.current), 'whole contracts, base + exercised options')
+      + tile('Face value', money(p.all.face), 'potential: base + all options' + (p.all.reported < p.all.n ? ' \u00b7 reported for ' + p.all.reported + ' of ' + p.all.n : '') + (p.vehicles.n ? ' \u00b7 vehicles not included' : ''))
+      + tile('Active', p.active.n.toLocaleString() + ' <span class="osr-of">of ' + p.all.n.toLocaleString() + '</span>', money(p.active.unfunded) + ' unfunded \u00b7 ' + p.active.soon + ' ending within 6 months')
+      + tile('Ended', p.ended.n.toLocaleString(), 'period of performance passed' + (p.ended.lapsed ? ' \u00b7 ' + p.ended.lapsed + ' with options unexercised' : '') + (p.unknown.n ? ' \u00b7 ' + p.unknown.n + ' with no end date' : ''))
+      + tile('Small business', osrPct(k.smallShare == null ? 0 : k.smallShare, k.smallShare == null ? 0 : 1), 'of obligated dollars (positive only)')
+      + tile('Competed', osrPct(k.competedShare == null ? 0 : k.competedShare, k.competedShare == null ? 0 : 1), 'of dollars with a competition label (positive only)')
+      + '</div>'
+      + '<div class="dash-panel osr-portfolio"><div class="dash-panel-title">Portfolio by status</div>'
+      + '<div class="osr-tablewrap osr-pf-wrap"><table class="osr-table osr-pf"><thead><tr><th scope="col">Status</th><th scope="col" class="osr-num">Contracts</th><th scope="col" class="osr-num">Obligated, period</th><th scope="col" class="osr-num">Obligated to date (not outlays)</th><th scope="col" class="osr-num">Current value</th><th scope="col" class="osr-num">Face value</th><th scope="col" class="osr-num">Remaining options</th><th scope="col" class="osr-num">Unfunded balance</th></tr></thead><tbody>'
+      + row('Active', p.active, true) + row('Ended', p.ended) + (p.unknown.n ? row('No end date reported', p.unknown) : '') + row('<b>All contracts &amp; orders</b>', p.all, true)
+      + '</tbody></table></div>'
+      + '<div class="dash-stat-foot osr-pf-note">' + esc(osrStatusNote(rows))
+        + (p.vehicles.n ? ' ' + p.vehicles.n + (p.vehicles.n === 1 ? ' vehicle (IDV)' : ' vehicles (IDVs)') + ' awarded, ' + p.vehicles.open + ' open for orders \u2014 vehicle ceilings are shared across awardees and not added to these totals.' : '')
+      + '</div></div>'
+      + (osrMulti ? osrOfficeTableHtml(rows) : '');
+  }
+  function osrOfficeTableHtml(rows) {
+    const R = osrOfficeRollup(rows), money = (v) => (v == null ? '\u2014' : osrNeg(v, fmtUSD)), pct = (v) => (v == null ? '\u2014' : Math.round(v * 100) + '%');
+    const cols = [['contracts', 'Contracts'], ['obligated', 'Obligated'], ['services', 'Services'], ['products', 'Products'], ['rnd', 'R&amp;D'], ['current', 'Current value'], ['face', 'Face value'],
+      ['active', 'Active'], ['activeFace', 'Active face'], ['unfunded', 'Unfunded'], ['ended', 'Ended'], ['small', 'Small bus.'], ['competed', 'Competed']];
+    const cellOf = (r, k) => /^(contracts|active|ended)$/.test(k) ? (r[k] || 0).toLocaleString() : /^(small|competed)$/.test(k) ? pct(r[k]) : money(r[k]);
+    return '<div class="dash-panel osr-portfolio"><div class="dash-panel-title">Portfolio by office \u00b7 total counts each contract once</div>'
+      + '<div class="osr-tablewrap osr-pf-wrap"><table class="osr-table osr-pf osr-pf-office"><thead><tr><th scope="col">Office</th>'
+      + cols.map((c) => '<th scope="col" class="osr-num">' + c[1] + '</th>').join('') + '</tr></thead><tbody>'
+      + R.map((r) => '<tr' + (r._total ? ' class="osr-pf-total"' : '') + '><th scope="row">' + (r._total ? '<b>All selected offices</b>' : esc(r.office) + (r.officeName ? ' <span class="osr-pf-sub">' + esc(r.officeName) + '</span>' : '')) + '</th>'
+        + cols.map((c) => '<td class="osr-num">' + cellOf(r, c[0]) + '</td>').join('') + '</tr>').join('')
+      + '</tbody></table></div></div>';
   }
   // ── funding panel: fills in once the USAspending lookups finish ──────────
   function osrFundStats(rows) {
@@ -1346,27 +1373,184 @@
     osrPaint($('#osr-c-src')); osrPaint($('#osr-c-col'));
   }
   // ── one row per contract (office + PIID) ─────────────────────────────────
-  // shortcut: keyed on office+PIID because SAM rows carry no parent IDV; two orders
-  // with the same short number under different BPAs in ONE office would merge.
+  // One key per contract everywhere: FPDS makes an order's PIID unique only within its
+  // parent vehicle, while a definitive PIID (DoDAAC-prefixed) is unique on its own — so a
+  // contract recorded under two offices is still one contract.
+  function osrCKey(r) { return (r.parentIdv ? r.parentIdv + '/' : '') + (r.piid || ''); }
+  // A mod that omits the parent vehicle borrows it from the order's other mods (when they
+  // agree on one), so an order never splits into two contracts.
+  function osrKeyer(rows) {
+    const par = new Map();
+    rows.forEach((r) => { if (r.parentIdv && r.piid) (par.get(r.piid) || par.set(r.piid, new Set()).get(r.piid)).add(r.parentIdv); });
+    return (r) => { const s = !r.parentIdv && par.get(r.piid); return osrCKey(s && s.size === 1 ? { piid: r.piid, parentIdv: [...s][0] } : r); };
+  }
+  // Later action: date first, then mod number compared numerically (P00010 after P00009).
+  function osrLater(a, b) { return !b || a.d > b.d || (a.d === b.d && a.m.localeCompare(b.m, undefined, { numeric: true }) >= 0); }
   function osrContracts(rows) {
-    const m = new Map();
+    const m = new Map(), keyOf = osrKeyer(rows);
     rows.forEach((r) => {
-      const k = (r.office || '') + '|' + (r.piid || '');
+      const k = keyOf(r);
       let c = m.get(k);
-      if (!c) { c = { office: r.office, piid: r.piid, vendor: r.vendor, awardType: r.awardType, category: r.category, pscCode: r.pscCode, description: r.description, actions: 0, obligated: 0, first: '', last: '', fundingSubtier: r.fundingSubtier, fundingOffice: r.fundingOffice }; m.set(k, c); }
+      if (!c) { c = { office: r.office, piid: r.piid, vendor: r.vendor, awardType: r.awardType, category: r.category, pscCode: r.pscCode, description: r.description, actions: 0, obligated: 0, first: '', last: '', _lk: {}, _lastKey: null, fundingSubtier: r.fundingSubtier, fundingOffice: r.fundingOffice, awardOrIdv: r.awardOrIdv }; m.set(k, c); }
       c.actions++; c.obligated += Number(r.obligated) || 0;
-      const d = String(r.dateSigned || '');
+      if (r.office && (' + ' + c.office + ' + ').indexOf(' + ' + r.office + ' + ') < 0) c.office = c.office ? c.office + ' + ' + r.office : r.office;
+      c._key = k;
+      const d = String(r.dateSigned || ''), key = { d, m: String(r.mod || '') };
       if (d && (!c.first || d < c.first)) c.first = d;
-      if (d && (!c.last || d >= c.last)) { c.last = d; if (r.description) c.description = r.description; if (r.vendor) c.vendor = r.vendor; }
+      if (d && osrLater(key, c._lastKey)) { c._lastKey = key; c.last = d; if (r.description) c.description = r.description; if (r.vendor) c.vendor = r.vendor; }
+      // Each whole-contract field comes from the latest action that REPORTS it, so the
+      // result never depends on row order or on a later action with blank totals.
+      if (d) OSR_LIFE.forEach((f) => { if (r[f] != null && r[f] !== '' && osrLater(key, c._lk[f])) { c[f] = r[f]; c._lk[f] = key; } });
       OSR_FUND_COLS.forEach((f) => { if (r[f] != null) c[f] = r[f]; });
     });
-    return [...m.values()].map((c) => Object.assign(c, { obligated: Math.round(c.obligated * 100) / 100 })).sort((a, b) => b.obligated - a.obligated);
+    return [...m.values()].map((c) => Object.assign(c, { obligated: Math.round(c.obligated * 100) / 100 }, osrStatus(c))).sort((a, b) => b.obligated - a.obligated);
+  }
+  // Whole-contract FPDS fields, read from a contract's latest action in the pull.
+  const OSR_LIFE = ['totalObligated', 'currentValue', 'faceValue', 'popStart', 'popEnd', 'popUltimate', 'lastDateToOrder', 'parentIdv', 'awardOrIdv'];
+  // Active = period of performance runs past today (a vehicle: still open for orders).
+  // Vehicles (IDVs) are kept apart: a multiple-award ceiling would swamp face value
+  // and double-count the orders placed under it.
+  function osrStatus(c) {
+    // The viewer's local date (UTC flipped a contract ending today to Ended after 7 pm Eastern).
+    const today = new Date().toLocaleDateString('en-CA'), soon = new Date(Date.now() + 183 * 864e5).toLocaleDateString('en-CA');
+    const idv = /idv/i.test(String(c.awardOrIdv || ''));
+    const end = idv ? (c.lastDateToOrder || c.popEnd || '') : (c.popEnd || '');
+    // Ended = period of performance passed (FPDS has no closeout status). If the
+    // all-options end is still ahead, the options went unexercised.
+    const status = !end ? 'Unknown (no end date)' : end >= today ? 'Active'
+      : (!idv && c.popUltimate && c.popUltimate >= today ? 'Ended (options unexercised)' : 'Ended');
+    const val = (x) => (x == null || x === '' ? null : Number(x));
+    const cur = val(c.currentValue), face = val(c.faceValue), toDate = val(c.totalObligated);
+    const active = status === 'Active';
+    // Remaining options and unfunded balance mean something only while a contract is
+    // active. A negative difference is FPDS totals not updated by a mod: shown as $0 and counted.
+    const diff = (a, b) => (a != null && b != null ? Math.round((a - b) * 100) / 100 : null);
+    const rem = active ? diff(face, cur) : null, unf = active ? diff(cur, toDate) : null;
+    return {
+      _idv: idv, kind: idv ? 'Vehicle (IDV)' : 'Contract / order', status,
+      endsSoon: active ? (end <= soon ? 'Yes' : 'No') : '\u2014',
+      remaining: rem == null ? null : Math.max(0, rem),
+      unobligated: unf == null ? null : Math.max(0, unf),
+      _fpdsGap: (rem != null && rem < 0) || (unf != null && unf < 0)
+    };
+  }
+  // Every row carries its contract's status, so the table, CSV and Data tab can filter on it.
+  function osrStampStatus(rows) {
+    const keyOf = osrKeyer(rows), st = new Map(osrContracts(rows).map((c) => [c._key, c.status]));
+    rows.forEach((r) => { r.contractStatus = st.get(keyOf(r)) || ''; });
+  }
+  // The headline tiles, in reading order (four per row in Excel and on the page).
+  function osrTiles(rows) {
+    const k = osrKpis(rows), p = osrPortfolio(rows), dash = (v) => (v == null ? '\u2014' : v);
+    return [
+      { label: 'Award actions', value: rows.length, kind: 'n' },
+      { label: 'Contracts & orders', value: p.all.n, kind: 'n' },
+      { label: 'Vendors', value: k.vendors, kind: 'n' },
+      { label: 'Obligated, selected period', value: Math.round(rows.reduce((a, r) => a + (Number(r.obligated) || 0), 0) * 100) / 100, kind: '$' },
+      { label: 'Obligated to date (whole contracts; not outlays)', value: dash(p.all.toDate), kind: '$' },
+      { label: 'Current value (base + exercised)', value: dash(p.all.current), kind: '$' },
+      { label: 'Face value (potential: base + all options)', value: dash(p.all.face), kind: '$' },
+      { label: 'Remaining options (active contracts)', value: dash(p.active.remaining), kind: '$' },
+      { label: 'Active contracts', value: p.active.n + ' of ' + p.all.n, kind: 't' },
+      { label: 'Active face value', value: dash(p.active.face), kind: '$' },
+      { label: 'Active unfunded balance (current \u2212 obligated)', value: dash(p.active.unfunded), kind: '$' },
+      { label: 'Active, ending within 6 months', value: p.active.soon, kind: 'n' },
+      { label: 'Ended contracts', value: p.ended.n, kind: 'n' },
+      { label: 'Ended with options unexercised', value: p.ended.lapsed, kind: 'n' },
+      { label: 'Small business share of $', value: k.smallShare == null ? '\u2014' : k.smallShare, kind: '%' },
+      { label: 'Competed share of $', value: k.competedShare == null ? '\u2014' : k.competedShare, kind: '%' }
+    ];
+  }
+  function osrStatusNote(rows) {
+    const last = rows.reduce((a, r) => (String(r.dateSigned || '') > a ? String(r.dateSigned) : a), '');
+    const p = osrPortfolio(rows), miss = p.all.n - p.all.reported;
+    return 'Status and whole-contract values as of each contract\u2019s latest action in this pull' + (last ? ' (latest action ' + last + ')' : '')
+      + '; later modifications are not included. \u201cEnded\u201d means the period of performance has passed \u2014 not a closeout status.'
+      + (miss > 0 ? ' Whole-contract values were reported for ' + p.all.reported + ' of ' + p.all.n + ' contracts; totals cover those only.' : '')
+      + (p.vehicles.period ? ' Obligations recorded on vehicle records (' + fmtExact(p.vehicles.period) + ') are in the Obligated total but not in the status rows.' : '')
+      + (p.active.fpdsGaps ? ' ' + p.active.fpdsGaps + ' active contract' + (p.active.fpdsGaps === 1 ? '' : 's') + ' had FPDS totals that don\u2019t reconcile (a mod didn\u2019t update them); counted as $0 in remaining options and unfunded balance.' : '');
+  }
+  function osrPortfolioTables(rows) {
+    const p = osrPortfolio(rows), d = (v) => (v == null ? '\u2014' : v);
+    const base = (b) => [
+      { label: 'Contracts & orders', value: b.n, kind: 'n' },
+      { label: 'Obligated, selected period', value: d(b.period) },
+      { label: 'Obligated to date (not outlays)', value: d(b.toDate) },
+      { label: 'Current value (base + exercised)', value: d(b.current) },
+      { label: 'Face value (potential: base + all options)', value: d(b.face) }
+    ];
+    const out = [
+      { title: 'Active contracts', items: base(p.active).concat([
+        { label: 'Remaining options', value: d(p.active.remaining) },
+        { label: 'Unfunded balance (current \u2212 obligated)', value: d(p.active.unfunded) },
+        { label: 'Ending within 6 months', value: p.active.soon, kind: 'n' }]) },
+      { title: 'Ended contracts', items: base(p.ended).concat([{ label: 'Ended with options unexercised', value: p.ended.lapsed, kind: 'n' }]) },
+      { title: 'All contracts & orders', items: base(p.all) }
+    ];
+    if (p.unknown.n) out.push({ title: 'No end date reported', items: base(p.unknown) });
+    if (p.vehicles.n) out.push({ title: 'Vehicles (IDVs), not in the totals', items: [
+      { label: 'Vehicles awarded', value: p.vehicles.n, kind: 'n' },
+      { label: 'Open for orders', value: p.vehicles.open, kind: 'n' },
+      { label: 'Largest single ceiling', value: d(p.vehicles.maxFace) },
+      { label: 'Ceilings are shared across awardees \u2014 not added', value: '', kind: 't' }
+    ] });
+    return out;
+  }
+  // Portfolio by office: the leadership view across the selected offices. The total row is
+  // computed from every row together, so a contract shared by two offices counts once.
+  const OSR_OFFICE_COLS = [['office', 'Office'], ['officeName', 'Office Name'], ['actions', 'Award Actions'], ['contracts', 'Contracts & Orders'], ['vendors', 'Vendors'],
+    ['obligated', 'Obligated, Selected Period'], ['services', 'Services'], ['products', 'Products'], ['rnd', 'R&D'],
+    ['toDate', 'Obligated to Date (not outlays)'], ['current', 'Current Value (base + exercised)'], ['face', 'Face Value (potential: all options)'],
+    ['active', 'Active Contracts'], ['activeFace', 'Active Face Value'], ['unfunded', 'Active Unfunded Balance'], ['remaining', 'Remaining Options (active)'], ['soon', 'Active, Ending \u2264 6 Months'],
+    ['ended', 'Ended Contracts'], ['small', 'Small Business Share of $'], ['competed', 'Competed Share of $'], ['vehicles', 'Vehicles (IDVs)']];
+  // Whole dollars ('$') on the leadership tab; cents stay on Data / By Contract.
+  const OSR_OFFICE_NUMS = { actions: 'n', contracts: 'n', vendors: 'n', obligated: '$', services: '$', products: '$', rnd: '$', toDate: '$', current: '$', face: '$',
+    active: 'n', activeFace: '$', unfunded: '$', remaining: '$', soon: 'n', ended: 'n', small: 'p', competed: 'p', vehicles: 'n' };
+  function osrOfficeRollup(rows) {
+    const c2 = (x) => Math.round(x * 100) / 100;
+    const line = (office, officeName, rs, all) => {
+      const p = osrPortfolio(rs, all), k = osrKpis(rs);
+      const cat = (c) => c2(rs.filter((r) => r.category === c).reduce((a, r) => a + (Number(r.obligated) || 0), 0));
+      return { office, officeName, actions: rs.length, contracts: p.all.n, vendors: k.vendors,
+        obligated: c2(rs.reduce((a, r) => a + (Number(r.obligated) || 0), 0)), services: cat('Service'), products: cat('Product'), rnd: cat('R&D'),
+        toDate: p.all.toDate, current: p.all.current, face: p.all.face, active: p.active.n, activeFace: p.active.face, unfunded: p.active.unfunded,
+        remaining: p.active.remaining, soon: p.active.soon, ended: p.ended.n, small: k.smallShare, competed: k.competedShare, vehicles: p.vehicles.n };
+    };
+    const offices = [...new Set(rows.map((r) => r.office).filter(Boolean))];
+    const nameOf = (o) => osrOfficeName(o) || String((rows.find((r) => r.office === o) || {}).officeName || '').replace(new RegExp('^\\s*' + o + '\\b[\\s-]*', 'i'), '').trim();
+    return offices.map((o) => line(o, nameOf(o), rows.filter((r) => r.office === o), rows)).sort((a, b) => b.obligated - a.obligated)
+      .concat([Object.assign(line('All selected offices', 'Portfolio total (each contract counted once)', rows), { _total: true })]);
+  }
+  // Portfolio by status: whole-contract FPDS values, vehicles kept separate.
+  // all (optional): the whole pull. Each contract then keeps its whole-contract status and
+  // values (an extension mod filed under another office still counts); only the period
+  // dollars come from these rows.
+  function osrPortfolio(rows, all) {
+    let cs = osrContracts(all || rows);
+    if (all) {
+      const keyOf = osrKeyer(all), per = new Map();
+      rows.forEach((r) => { const k = keyOf(r); per.set(k, (per.get(k) || 0) + (Number(r.obligated) || 0)); });
+      cs = cs.filter((c) => per.has(c._key)).map((c) => Object.assign({}, c, { obligated: Math.round(per.get(c._key) * 100) / 100 }));
+    }
+    const deals = cs.filter((c) => !c._idv), vehicles = cs.filter((c) => c._idv);
+    const sum = (list, f) => { const xs = list.map((c) => c[f]).filter((x) => x != null && x !== ''); return xs.length ? Math.round(xs.reduce((a, x) => a + Number(x), 0) * 100) / 100 : null; };
+    const block = (list) => ({ n: list.length, period: sum(list, 'obligated'), toDate: sum(list, 'totalObligated'), current: sum(list, 'currentValue'), face: sum(list, 'faceValue'),
+      remaining: sum(list, 'remaining'), unfunded: sum(list, 'unobligated'), soon: list.filter((c) => c.endsSoon === 'Yes').length,
+      lapsed: list.filter((c) => c.status === 'Ended (options unexercised)').length, fpdsGaps: list.filter((c) => c._fpdsGap).length,
+      reported: list.filter((c) => c.faceValue != null && c.faceValue !== '').length });
+    const act = deals.filter((c) => c.status === 'Active'), end = deals.filter((c) => /^Ended/.test(c.status)), unk = deals.filter((c) => /^Unknown/.test(c.status));
+    const faces = vehicles.map((c) => c.faceValue).filter((x) => x != null && x !== '').map(Number);
+    return { all: block(deals), active: block(act), ended: block(end), unknown: block(unk),
+      vehicles: { n: vehicles.length, open: vehicles.filter((c) => c.status === 'Active').length, maxFace: faces.length ? Math.max.apply(null, faces) : null, period: sum(vehicles, 'obligated') } };
   }
   function osrContractCols() {
     return (osrMulti ? [['office', 'Office']] : []).concat([
       ['piid', 'Contract (PIID)'], ['vendor', 'Vendor'], ['awardType', 'Award Type'], ['category', 'Work Type'], ['pscCode', 'PSC'],
       ['description', 'Description (latest action)'], ['actions', 'Actions'], ['first', 'First Signed'], ['last', 'Last Signed'],
-      ['obligated', 'Obligated (selected period)'], ['fundingSubtier', 'Funding Agency (FPDS)'], ['fundingOffice', 'Funding Office (FPDS)']
+      ['obligated', 'Obligated (selected period)'], ['status', 'Status'], ['endsSoon', 'Ends Within 6 Months'], ['kind', 'Type'],
+      ['totalObligated', 'Obligated to Date (whole contract; not outlays)'], ['currentValue', 'Current Value (base + exercised)'], ['faceValue', 'Face Value (potential: base + all options)'],
+      ['remaining', 'Remaining Options (active only)'], ['unobligated', 'Unfunded Balance, Active (current \u2212 obligated)'], ['popEnd', 'PoP End (Current)'], ['popUltimate', 'PoP End (All Options)'],
+      ['parentIdv', 'Parent Vehicle (IDV)'], ['fundingSubtier', 'Funding Agency (FPDS)'], ['fundingOffice', 'Funding Office (FPDS)']
     ]).concat(osrFundOn() ? OSR_COLS.filter((c) => OSR_FUND_COLS.indexOf(c[0]) >= 0) : []);
   }
   // Per-contract appropriation drill-down (color of money via USASpending File C).
@@ -1582,26 +1766,32 @@
   // the FPDS total, so state the gap rather than let the two read as competing facts.
   function osrReconHtml(d) {
     // 1) The SAM.gov figure from THIS pull leads: it is the system of record.
-    const mine = osrRows.filter((r) => r.piid && r.piid === d.piid);
+    let mine = osrRows.filter((r) => r.piid && r.piid === d.piid);
+    // Same order number under different parent vehicles: never blend two orders' dollars.
+    const split = mine.length && (d.ambiguous || osrContracts(mine).length > 1);
+    if (split) mine = [];
     const sam = mine.reduce((a, r) => a + (Number(r.obligated) || 0), 0);
     const fys = [...new Set(mine.map((r) => String(r.fiscalYear || '')).filter(Boolean))].sort();
-    const parts = [];
+    const parts = split ? ['This order number appears under more than one parent vehicle in this pull; see the By Contract view for each order\u2019s SAM.gov figures.'] : [];
     if (mine.length) parts.push('<b>SAM.gov (FPDS, system of record), this pull: ' + osrNeg(sam) + '</b> across ' + mine.length + ' action' + (mine.length === 1 ? '' : 's')
       + (fys.length ? ' in ' + esc(fys.map((y) => 'FY' + y).join(', ')) : '') + '.');
-    // 2) USAspending's copy of FPDS for the whole contract, flagged when it trails SAM.
+    // 2) The whole-contract FPDS figure straight from SAM.gov (latest action in the pull).
+    const life = mine.length ? osrContracts(mine)[0] : null;
+    if (life && life.totalObligated != null && life.totalObligated !== '') parts.push('<b>Obligated to date, whole contract (SAM.gov FPDS, as of ' + esc(life.last || '') + '): ' + osrNeg(life.totalObligated) + '.</b>');
+    // 3) USAspending's copy of FPDS for the whole contract, flagged when it trails SAM.
     if (d.fpdsTotal != null) {
-      parts.push('Total obligated on this contract, all time: ' + osrNeg(d.fpdsTotal) + ' (FPDS figure, as copied on USAspending).');
+      parts.push('USAspending\u2019s copy of that figure: ' + osrNeg(d.fpdsTotal) + '.');
       if (mine.length && sam > d.fpdsTotal + 1) parts.push(mine.some(osrRecent)
         ? '<b>USAspending is behind SAM.gov for this contract</b> (it runs about four months late) \u2014 rely on the SAM.gov figure.'
         : 'The all-time total is lower than this pull because of actions signed outside the selected period (for example later de-obligations).');
     }
-    // 3) How much of it the agency's accounting reports (File C) tie to an account.
+    // 4) How much of it the agency's accounting reports (File C) tie to an account.
     if (d.fpdsTotal) {
       const pct = Math.round(((d.total || 0) / d.fpdsTotal) * 100);
       const gap = d.fpdsTotal - (d.total || 0);
       parts.push(Math.abs(gap) < 1 ? 'All of that total has an account reported (File C).'
         : pct < 0 || (d.total || 0) > d.fpdsTotal ? 'The account data (File C) does not line up with FPDS for this contract (' + pct + '%). Use the FPDS amount; treat the accounts only as labels.'
-        : pct + '% of that total has an account reported (File C); the other ' + fmtExact(gap) + ' has none.');
+        : pct + '% of USAspending\u2019s total has an account reported (File C); the other ' + fmtExact(gap) + ' has none.');
     }
     return parts.length ? '<div class="osr-recon">' + parts.join(' ') + '</div>' : '';
   }
@@ -1861,6 +2051,7 @@
       const failed = [], okSlots = [];
       slots.forEach((sl, i) => { (osrSlotFailed(results[i]) ? failed : okSlots).push({ sl: sl, d: results[i] }); });
       const rows = okSlots.reduce((acc, x) => acc.concat(x.d.rows), []);
+      osrStampStatus(rows);
       osrRows = rows;
 
       // Which offices and periods actually came back — everything downstream, including
@@ -2028,7 +2219,7 @@
         };
         const wd = osrWorkbookData(wbArgs());
         const cents = (a) => (a || []).map((d) => ({ label: d.label, value: Math.round((Number(d.value) || 0) * 100) / 100 }));
-        doc.dashboard = { kpis: Object.assign(osrKpis(rows), { fundCoverage: wd.fundCoverage || null }), byOffice: cents(wd.byOffice), byFiscalYear: cents(wd.byFy), byWorkType: cents(wd.byCat),
+        doc.dashboard = { portfolioByOffice: wd.officeSheet ? wd.officeSheet.rows.map((r) => { const o = {}; OSR_OFFICE_COLS.forEach((c) => { o[c[0]] = r[c[0]] == null ? null : r[c[0]]; }); o.isTotal = !!r._total; return o; }) : null, tiles: wd.tiles.map((t) => Object.assign({}, t, { value: t.value === '\u2014' ? null : t.value })), portfolio: osrPortfolio(rows), kpis: Object.assign(osrKpis(rows), { fundCoverage: wd.fundCoverage || null }), byOffice: cents(wd.byOffice), byFiscalYear: cents(wd.byFy), byWorkType: cents(wd.byCat),
           topVendors: cents(wd.byVen), bySetAside: cents(wd.bySet), byMonth: cents(wd.byMonth), byFundingSource: cents(wd.byFund), byColorOfMoney: cents(wd.byColor) };
         doc.pom = wd.extraSheets.filter((sh) => /^POM/.test(sh.name)).map((sh) => ({ view: sh.name, note: 'FPDS obligations (actuals) by fiscal year, not budget authority', columns: sh.columns.map((c) => ({ key: c[0], label: c[1] })), rows: sh.rows.filter((r) => !r._total).map((r) => pick(r, sh.columns)) }));
         if (!osrDownload(JSON.stringify(doc, null, 1), base + '.json', 'application/json')) js.textContent = 'Use CSV \u2192';
@@ -2095,7 +2286,7 @@
       ? [['avg', 'Avg per Complete FY, ' + full.length + ' yrs (TY$)'], ['pattern', 'Pattern']] : []);
     const nums = { total: 1, avg: 1, deob: 1, active: 'n' }; fys.forEach((y) => { nums['fy' + y] = 1; });
     const out = [];
-    out.push({ name: 'POM - Read Me', tab: 'FF0F2540', nums: { note: 'w' }, columns: [['topic', 'Topic'], ['note', 'Note']], rows: [
+    out.push({ name: 'POM - Read Me', tab: 'FF0F2540', nums: { note: 'w', topic: 'w' }, columns: [['topic', 'Topic'], ['note', 'Note']], rows: [
       { topic: 'What these tabs are', note: 'Contract OBLIGATIONS from FPDS (SAM.gov), the system of record, pivoted by fiscal year for oversight and planning. Then-year dollars (TY$); no inflation applied — convert with the OSD Green Book indices for constant dollars.' },
       { topic: 'What they are not', note: 'Not budget authority, TOA or programmed amounts. No program element, budget line, MFP or EEIC — those are not in federal contract data.' },
       { topic: 'Fiscal Year columns', note: 'The FY the action was SIGNED, not the year the money was appropriated: an FY2026 action can spend FY2025 RDT&E (2-year money) or FY2024 Procurement (3-year money). Deobligations land in the FY of the mod, often returning expired prior-year money, so they add no buying power in that year.' },
@@ -2151,11 +2342,15 @@
     line(['Source: SAM.gov Contract Awards API (FPDS). Dollars are FPDS obligations (actuals), not budget authority. Generated by AcqVault']);
     if (wd.caveat) line([wd.caveat]);
     L.push(''); line(['AT A GLANCE']);
-    line(['Award actions', wd.awards]); line(['Total obligated', money(wd.total)]);
-    line(['Distinct contracts', wd.contracts.rows.length]);
-    line(['Distinct vendors', wd.vendorCount]);
-    wd.kpis.forEach((k) => line([k.label, typeof k.value === 'number' ? (Math.round(k.value * 1000) / 10) + '%' : k.value]));
+    wd.tiles.forEach((t) => line([t.label, typeof t.value !== 'number' ? t.value : t.kind === '%' ? (Math.round(t.value * 1000) / 10) + '%' : t.kind === '$' ? money(t.value) : t.value]));
     if (wd.fundCoverage) line([wd.fundCoverage]);
+    if (wd.officeSheet) {
+      L.push(''); line(['PORTFOLIO BY OFFICE (the total counts each contract once)']);
+      line(wd.officeSheet.columns.map((c) => c[1]));
+      wd.officeSheet.rows.forEach((r) => line(wd.officeSheet.columns.map((c) => { const v = r[c[0]]; return v == null ? '' : OSR_OFFICE_NUMS[c[0]] === 'p' ? (Math.round(v * 1000) / 10) + '%' : OSR_OFFICE_NUMS[c[0]] === '$' ? money(v) : v; })));
+    }
+    L.push(''); line(['PORTFOLIO BY STATUS']); line([wd.statusNote]);
+    wd.portfolio.forEach((b) => { line([b.title]); b.items.forEach((it) => line([it.label, typeof it.value === 'number' && it.kind !== 'n' ? money(it.value) : it.value])); });
     [['Obligations by contracting office', wd.byOffice], ['Obligations by fiscal year', wd.byFy], ['Work type (PSC)', wd.byCat],
      ['Top vendors', wd.byVen], ['Set-aside', wd.bySet], ['Obligations by month signed', wd.byMonth],
      ['Funding source: Treasury account where reported, else FPDS funding agency (FPDS dollars)', wd.byFund], ['Color of money (USAspending label, FPDS net obligations)', wd.byColor]]
@@ -2191,6 +2386,10 @@
       fundCoverage: osrFundOn() ? osrFundStats(rows).line : '',
       contracts: { columns: osrContractCols(), rows: osrContracts(rows) },
       vendorCount: osrKpis(rows).vendors,
+      tiles: osrTiles(rows),
+      portfolio: osrPortfolioTables(rows),
+      statusNote: osrStatusNote(rows),
+      officeSheet: osrMulti ? { name: 'Portfolio by Office', tab: 'FF87651C', columns: OSR_OFFICE_COLS, nums: OSR_OFFICE_NUMS, rows: osrOfficeRollup(rows).map((r) => Object.assign({}, r, { small: r.small == null ? '\u2014' : r.small, competed: r.competed == null ? '\u2014' : r.competed })) } : null,
       kpis: (function (k) { return [{ label: 'Small business share of $', value: k.smallShare == null ? '\u2014' : k.smallShare }, { label: 'Competed share of $', value: k.competedShare == null ? '\u2014' : k.competedShare }]; })(osrKpis(rows)),
       extraSheets: osrPomSheets(rows, o.pomFys, o.pomRange),
       awards: rows.length,

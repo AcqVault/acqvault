@@ -128,7 +128,7 @@
       + '<sheets><sheet name="Summary" sheetId="1" r:id="rId1"/><sheet name="Data" sheetId="2" r:id="rId2"/>'
         + s.extra.map(function (sh, i) { return '<sheet name="' + xml(sh.name) + '" sheetId="' + (3 + i) + '" r:id="rId' + (4 + i) + '"/>'; }).join('') + '</sheets>'
       + '<definedNames>'
-        + '<definedName name="_xlnm.Print_Area" localSheetId="0">Summary!$A$1:$U$' + s.printRows + '</definedName>'
+        + '<definedName name="_xlnm.Print_Area" localSheetId="0">Summary!$A$1:$K$' + s.printRows + '</definedName>'
         + '<definedName name="_xlnm.Print_Titles" localSheetId="1">Data!$1:$1</definedName>'
         + s.extra.map(function (sh, i) { return '<definedName name="_xlnm.Print_Titles" localSheetId="' + (2 + i) + '">\'' + xml(sh.name) + '\'!$1:$1</definedName>'; }).join('')
       + '</definedNames></workbook>';
@@ -180,7 +180,7 @@
         + '<border><left/><right/><top style="thin"><color rgb="FF87651C"/></top><bottom/><diagonal/></border>'
       + '</borders>'
       + '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
-      + '<cellXfs count="23">'
+      + '<cellXfs count="29">'
         + '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
         + '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>'
         + '<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>'
@@ -204,6 +204,14 @@
         + '<xf numFmtId="167" fontId="1" fillId="0" borderId="4" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>'
         + '<xf numFmtId="0" fontId="1" fillId="0" borderId="4" xfId="0" applyFont="1" applyBorder="1"/>'
         + '<xf numFmtId="0" fontId="0" fillId="0" borderId="3" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>'
+        // 23-26: Summary KPI tile values, large and left-aligned under their label
+        + '<xf numFmtId="164" fontId="7" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1" applyAlignment="1"><alignment horizontal="left"/></xf>'
+        + '<xf numFmtId="165" fontId="7" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1" applyAlignment="1"><alignment horizontal="left"/></xf>'
+        + '<xf numFmtId="166" fontId="7" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1" applyAlignment="1"><alignment horizontal="left"/></xf>'
+        + '<xf numFmtId="0" fontId="7" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment horizontal="left"/></xf>'
+        // 27-28: whole-dollar money cells (leadership tabs) and their bold total
+        + '<xf numFmtId="164" fontId="0" fillId="0" borderId="3" xfId="0" applyNumberFormat="1" applyBorder="1"/>'
+        + '<xf numFmtId="164" fontId="1" fillId="0" borderId="4" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>'
       + '</cellXfs>'
       + '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>'
       + '<dxfs count="0"/>'
@@ -212,70 +220,103 @@
   }
 
   // ── Summary sheet ──────────────────────────────────────────────────────────
-  // Column A/B hold the headline band and every chart's source table; the charts
-  // are anchored from column D rightwards so the two never collide.
+  // Laid out ACROSS the page (owner, 2026-11-20): a title band, KPI tiles four to a
+  // row, a portfolio-by-status band, a 2x2 grid of charts, then the detail tables four
+  // to a row. Label columns A/D/G/J are wide, value columns B/E/H/K hold numbers, and
+  // C/F/I are narrow gutters.
+  var SUM_LABEL = [0, 3, 6, 9];
   function summarySheet(o, series) {
-    var rows = [], r = 1, merges = [];
-    function put(cells, ht) { rows.push(row(r, cells, ht)); r++; }
-    function skip() { r++; }
-    function sect(title) { put([cell('A' + r, title, 9), cell('B' + r, '', 9)]); }
-    // a labelled table whose rows the charts point at
-    function table(title, data, fmt) {
-      sect(title);
-      var head = r;
-      put([cell('A' + r, 'Item', 6), cell('B' + r, 'Obligated', 7)]);
-      var start = r;
-      // Cents stored, whole dollars displayed: the column sums to the total exactly.
-      data.forEach(function (d) { put([cell('A' + r, d.label), cell('B' + r, Math.round(d.value * 100) / 100, fmt || 2)]); });
-      return { head: head, start: start, end: r - 1, n: data.length };
-    }
-
-    put([cell('A' + r, 'Contract Awards · ' + o.office, 5), cell('B' + r, '', 5)], 30);
-    merges.push('A1:B1');
-    put([cell('A' + r, o.officeName || '', 8), cell('B' + r, '', 8)]);
-    put([cell('A' + r, o.fyLabel, 8), cell('B' + r, '', 8)]);
+    var grid = {}, merges = [], heights = {}, r = 1;
+    function set(c, rr, v, st) { (grid[rr] = grid[rr] || {})[c] = cell(col(c) + rr, v, st); }
+    function band(n) { merges.push('A' + n + ':K' + n); }
+    // title band
+    set(0, 1, 'Contract Awards · ' + o.office, 5); for (var c = 1; c <= 10; c++) set(c, 1, '', 5);
+    band(1); heights[1] = 30;
+    set(0, 2, [o.officeName, o.fyLabel].filter(Boolean).join(' · '), 8); band(2);
+    r = 3;
     // Whatever could not be retrieved travels with the file — a workbook that gets
     // forwarded is the last place a missing period should become invisible.
-    if (o.caveat) put([cell('A' + r, o.caveat, 8), cell('B' + r, '', 8)]);
-    skip();
-    sect('At a glance');
-    put([cell('A' + r, 'Award actions', 1), cell('B' + r, o.awards || o.rows.length, 11)]);
-    put([cell('A' + r, 'Total obligated', 1), cell('B' + r, Math.round((o.total || 0) * 100) / 100, 10)]);
-    // The page passes its normalised count ("X LLC" == "X, LLC") so the two never disagree.
-    var vendors = {}; o.rows.forEach(function (x) { if (x.vendor) vendors[x.vendor] = 1; });
-    put([cell('A' + r, 'Distinct vendors', 1), cell('B' + r, o.vendorCount != null ? o.vendorCount : Object.keys(vendors).length, 11)]);
-    var big = 0; o.rows.forEach(function (x) { var v = Number(x.obligated) || 0; if (v > big) big = v; });
-    put([cell('A' + r, 'Largest single action', 1), cell('B' + r, Math.round(big), 12)]);
-    if (o.contracts) put([cell('A' + r, 'Distinct contracts', 1), cell('B' + r, o.contracts.rows.length, 11)]);
-    // A share is a real number with a % format (13), so Excel doesn't flag text-as-number.
-    (o.kpis || []).forEach(function (k) { put([cell('A' + r, k.label, 1), cell('B' + r, k.value, typeof k.value === 'number' ? 13 : 1)]); });
-    if (o.fundCoverage) put([cell('A' + r, o.fundCoverage, 8), cell('B' + r, '', 8)]);
-    skip();
-
-    var t = series.map(function (sp, i) {
-      var range = table(sp.title, sp.data);
-      if (i < series.length - 1) skip();
-      return { key: sp.key, title: sp.title, type: sp.type, data: sp.data, range: range };
+    if (o.caveat) { set(0, 3, o.caveat, 8); band(3); heights[3] = 30; r = 4; }
+    r++;
+    // KPI tiles: small label over a large value, four per row
+    var styleOf = { n: 24, $: 23, '%': 25 };
+    var tiles = (o.tiles && o.tiles.length) ? o.tiles : [
+      { label: 'Award actions', value: o.awards || o.rows.length, kind: 'n' },
+      { label: 'Total obligated', value: o.total || 0, kind: '$' }
+    ];
+    for (var i = 0; i < tiles.length; i += 4) {
+      tiles.slice(i, i + 4).forEach(function (t, j) {
+        var cc = SUM_LABEL[j], v = t.value;
+        set(cc, r, t.label, 8);
+        set(cc, r + 1, typeof v === 'number' && t.kind === '$' ? Math.round(v * 100) / 100 : v, typeof v === 'number' ? styleOf[t.kind] || 24 : 26);
+      });
+      heights[r + 1] = 26; r += 3;
+    }
+    if (o.fundCoverage) { set(0, r, o.fundCoverage, 8); band(r); r += 2; }
+    // a labelled two-column table at column cc, starting at row r0
+    function table(cc, r0, title, data, head) {
+      set(cc, r0, title, 9); set(cc + 1, r0, '', 9);
+      set(cc, r0 + 1, (head && head[0]) || 'Item', 6); set(cc + 1, r0 + 1, (head && head[1]) || 'Obligated', 7);
+      data.forEach(function (d, k) {
+        var v = d.value, st = d.kind === 'n' ? 0 : d.kind === 't' ? 1 : 2;
+        // Cents stored, whole dollars displayed: the column sums to the total exactly.
+        set(cc, r0 + 2 + k, d.label, 0);
+        set(cc + 1, r0 + 2 + k, typeof v === 'number' && st === 2 ? Math.round(v * 100) / 100 : v, st);
+      });
+      return { col: cc, start: r0 + 2, end: r0 + 1 + data.length, height: data.length + 2 };
+    }
+    // lay tables out four to a row; returns their placements
+    function bands(list) {
+      var placed = [];
+      for (var i = 0; i < list.length; i += 4) {
+        var h = 0;
+        list.slice(i, i + 4).forEach(function (t, j) {
+          var p = table(SUM_LABEL[j], r, t.title, t.data, t.head);
+          placed.push({ t: t, range: p }); if (p.height > h) h = p.height;
+        });
+        r += h + 1;
+      }
+      return placed;
+    }
+    // portfolio by status (counts and whole-contract values), side by side
+    if (o.portfolio && o.portfolio.length) {
+      // Excel never auto-fits a merged row, so give the (wrapping) note room.
+      set(0, r, 'Portfolio by status \u00b7 ' + (o.statusNote || 'whole-contract FPDS figures as of each contract\u2019s latest action in this pull'), 8); band(r);
+      heights[r] = Math.min(75, 15 * Math.ceil(String(o.statusNote || '').length / 190) + 15); r++;
+      bands(o.portfolio.map(function (pf) { return { title: pf.title, data: pf.items, head: ['Measure', 'Value'] }; }));
+    }
+    // 2x2 chart grid (anchors are 0-based col/row)
+    var chartTop = r - 1, chartH = 16, slots = [];
+    var chartList = series.slice(0, 4);
+    chartList.forEach(function (sp, i) {
+      var c0 = (i % 2) ? 6 : 0, r0 = chartTop + Math.floor(i / 2) * (chartH + 1);
+      slots.push([c0, r0, c0 + 5, r0 + chartH]);
     });
-    // Funding source is a table only: the charts are capped at four quadrants.
-    if (o.byFund && o.byFund.length) { skip(); table('Funding source: Treasury account where reported, else FPDS funding agency (FPDS dollars)', o.byFund); }
-    skip();
-    if (o.extra.some(function (sh) { return /^POM/.test(sh.name); })) put([cell('A' + r, 'POM tabs: FPDS obligations (actuals) pivoted by fiscal year, then-year dollars. They show what was spent, not budget authority or programmed amounts.', 8)]);
-    put([cell('A' + r, 'Source: SAM.gov Contract Awards API (FPDS). Dollars are the obligation on each action. Generated by AcqVault — acqvault.com', 8)]);
+    r += chartList.length ? (chartList.length > 2 ? 2 : 1) * (chartH + 1) + 1 : 0;
+    // detail tables, four to a row (every dashboard table; the first four feed the charts)
+    var detail = series.slice();
+    if (o.byFund && o.byFund.length) detail.push({ key: 'fund', title: 'Funding source: Treasury account where reported, else FPDS funding agency (FPDS dollars)', data: o.byFund });
+    var placed = bands(detail);
+    var t = placed.slice(0, series.length).map(function (p) { return { key: p.t.key, title: p.t.title, type: p.t.type, data: p.t.data, range: p.range }; });
+    if (o.extra.some(function (sh) { return /^POM/.test(sh.name); })) { set(0, r, 'POM tabs: FPDS obligations (actuals) pivoted by fiscal year, then-year dollars. They show what was spent, not budget authority or programmed amounts.', 8); band(r); r++; }
+    set(0, r, 'Source: SAM.gov Contract Awards API (FPDS). Dollars are the obligation on each action unless labelled as a whole-contract value. Generated by AcqVault — acqvault.com', 8); band(r);
     var lastRow = r;
-
+    var rowsXml = Object.keys(grid).map(Number).sort(function (a, b) { return a - b; }).map(function (rr) {
+      var cs = grid[rr]; return row(rr, Object.keys(cs).map(Number).sort(function (a, b) { return a - b; }).map(function (k) { return cs[k]; }), heights[rr]);
+    });
+    var widths = [36, 16, 2.5, 36, 16, 2.5, 36, 16, 2.5, 36, 16];
     var body = HEAD + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
       + '<sheetPr><tabColor rgb="FF87651C"/><pageSetUpPr fitToPage="1"/></sheetPr>'
       + '<sheetViews><sheetView showGridLines="0" tabSelected="1" workbookViewId="0"><selection activeCell="A1" sqref="A1"/></sheetView></sheetViews>'
       + '<sheetFormatPr defaultRowHeight="15"/>'
-      + '<cols><col min="1" max="1" width="34" customWidth="1"/><col min="2" max="2" width="20" customWidth="1"/><col min="3" max="3" width="2.5" customWidth="1"/></cols>'
-      + '<sheetData>' + rows.join('') + '</sheetData>'
+      + '<cols>' + widths.map(function (w, k) { return '<col min="' + (k + 1) + '" max="' + (k + 1) + '" width="' + w + '" customWidth="1"/>'; }).join('') + '</cols>'
+      + '<sheetData>' + rowsXml.join('') + '</sheetData>'
       + '<mergeCells count="' + merges.length + '">' + merges.map(function (m) { return '<mergeCell ref="' + m + '"/>'; }).join('') + '</mergeCells>'
       + '<printOptions horizontalCentered="1"/>'
-      + '<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/>'
+      + '<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/>'
       + '<pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0" paperSize="1"/>'
       + '<drawing r:id="rId1"/></worksheet>';
-    return { xml: body, tables: t, printRows: Math.max(lastRow, 38), extra: o.extra };
+    return { xml: body, tables: t, slots: slots, printRows: lastRow, extra: o.extra };
   }
   function summaryRels() {
     return HEAD + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
@@ -284,8 +325,8 @@
   }
 
   // ── Data sheet ─────────────────────────────────────────────────────────────
-  var WIDE = { description: 52, pscName: 30, naicsName: 30, vendor: 34, officeName: 28, awardType: 26, setAside: 26, extentCompeted: 26, pricingType: 24,
-    appropriation: 50, fundSource: 30, objectClass: 40, fundingOffice: 32, fundingSubtier: 30, colorOfMoney: 18, group: 40, source: 30, color: 18, note: 110, topic: 24, endStatus: 48 };
+  var WIDE = { description: 52, pscName: 30, naicsName: 30, vendor: 34, officeName: 44, awardType: 26, setAside: 26, extentCompeted: 26, pricingType: 24,
+    appropriation: 50, fundSource: 30, objectClass: 40, fundingOffice: 32, fundingSubtier: 30, colorOfMoney: 18, group: 40, source: 30, color: 18, note: 110, topic: 24, endStatus: 48, office: 22 };
   // nums: key → 1 (currency) or 'n' (plain count). Defaults to the award-row money columns.
   // A row with _total: true is a bold totals line under a brass rule, kept outside the
   // autofilter so sorting never moves it. nums: 1 money, 'p' percent, 'n' count, 'w' wrapped text.
@@ -299,9 +340,12 @@
       var d = data[i], cells = [];
       for (var j = 0; j < columns.length; j++) {
         var key = columns[j][0], v = d[key];
-        var kind = NUM[key], isNum = kind === 1 || kind === 'p' || kind === 'n';
-        var st = d._total ? (kind === 1 ? 20 : 21) : kind === 1 ? 17 : kind === 'p' ? 18 : kind === 'n' ? 19 : kind === 'w' ? 22 : 16;
-        cells.push(cell(col(j) + r, (isNum && v != null && v !== '') ? Number(v) : v, st));
+        // kinds: 1 money (cents), '$' money (whole dollars), 'p' percent, 'n' count, 'w' wrapped text
+        var kind = NUM[key], isNum = kind === 1 || kind === '$' || kind === 'p' || kind === 'n';
+        var st = d._total ? (kind === 1 ? 20 : kind === '$' ? 28 : kind === 'p' ? 18 : 21) : kind === 1 ? 17 : kind === '$' ? 27 : kind === 'p' ? 18 : kind === 'n' ? 19 : kind === 'w' ? 22 : 16;
+        var nv = (isNum && v != null && v !== '') ? Number(v) : v;
+        if (typeof nv === 'number' && !isFinite(nv)) nv = v;   // '—' stays text, never "NaN"
+        cells.push(cell(col(j) + r, nv, st));
       }
       out.push(row(r, cells)); r++;
     }
@@ -310,6 +354,7 @@
       // Extra width (and a right indent on number headers) keeps text clear of the
       // autofilter arrow, which otherwise covers the end of the header.
       var w = WIDE[c[0]] || Math.max(12, Math.min(46, String(c[1]).length + 9));
+      if ((NUM[c[0]] === 1 || NUM[c[0]] === '$') && w < 18) w = 18;   // a money column must fit $999,999,999.99
       return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>';
     }).join('');
     return HEAD + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
@@ -332,16 +377,15 @@
           : '')
       + '</worksheet>';
   }
-  var OSRNUM = { obligated: 1, awardAmount: 1, ceiling: 1 };
+  var OSRNUM = { obligated: 1, awardAmount: 1, ceiling: 1, totalObligated: 1, currentValue: 1, faceValue: 1 };
 
   // ── drawing: ONE part, one twoCellAnchor per chart ─────────────────────────
   // CT_Worksheet allows a single <drawing>, so N charts must share this part.
   // xdr:col/row are 0-based; cNvPr id must be unique and non-zero (1 is reserved).
-  var SLOTS = [[3, 1, 11, 17], [3, 18, 11, 34], [12, 1, 20, 17], [12, 18, 20, 34]];
-  function drawing(n) {
+  function drawing(n, slots) {
     var out = '';
     for (var i = 0; i < n; i++) {
-      var s = SLOTS[i] || [3 + (i * 9), 1, 11 + (i * 9), 17];
+      var s = slots[i];
       out += '<xdr:twoCellAnchor editAs="oneCell">'
         + '<xdr:from><xdr:col>' + s[0] + '</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>' + s[1] + '</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from>'
         + '<xdr:to><xdr:col>' + s[2] + '</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>' + s[3] + '</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>'
@@ -482,7 +526,7 @@
       bySet: opts.bySet || [], byMonth: opts.byMonth || [], byOffice: opts.byOffice || [],
       byColor: opts.byColor || [], byFund: opts.byFund || [], fundCoverage: opts.fundCoverage || '',
       contracts: opts.contracts && opts.contracts.rows && opts.contracts.rows.length ? opts.contracts : null,
-      kpis: opts.kpis || [], vendorCount: opts.vendorCount,
+      kpis: opts.kpis || [], vendorCount: opts.vendorCount, tiles: opts.tiles || null, portfolio: opts.portfolio || null, statusNote: opts.statusNote || '', officeSheet: opts.officeSheet || null,
       caveat: opts.caveat || '',
       awards: opts.awards, total: opts.total
     };
@@ -500,7 +544,8 @@
       { key: 'set', title: 'Set-aside', data: o.bySet, type: 'barh', min: 2 }
     ].filter(function (sp) { return sp.data && sp.data.length >= sp.min; });
     // Extra tabs: By Contract first, then any caller-supplied ones (POM views).
-    o.extra = (o.contracts ? [{ name: 'By Contract', columns: o.contracts.columns, rows: o.contracts.rows, nums: { obligated: 1, actions: 'n' }, tab: 'FF8A8578' }] : [])
+    // Portfolio by Office (multi-office pulls) sits right after the Summary.
+    o.extra = (o.officeSheet && o.officeSheet.rows && o.officeSheet.rows.length ? [o.officeSheet] : []).concat(o.contracts ? [{ name: 'By Contract', columns: o.contracts.columns, rows: o.contracts.rows, nums: { obligated: 1, actions: 'n', totalObligated: 1, currentValue: 1, faceValue: 1, remaining: 1, unobligated: 1 }, tab: 'FF8A8578' }] : [])
       .concat((opts.extraSheets || []).filter(function (sh) { return sh && sh.rows && sh.rows.length; }));
     var summ = summarySheet(o, series);
     var charts = summ.tables.slice(0, 4).map(function (t, i) {
@@ -511,8 +556,8 @@
       n = Math.max(1, n);
       return chartXml({
         idx: i, type: t.type, title: t.title,
-        cats: 'Summary!$A$' + t.range.start + ':$A$' + (t.range.start + n - 1),
-        vals: 'Summary!$B$' + t.range.start + ':$B$' + (t.range.start + n - 1),
+        cats: 'Summary!$' + col(t.range.col) + '$' + t.range.start + ':$' + col(t.range.col) + '$' + (t.range.start + n - 1),
+        vals: 'Summary!$' + col(t.range.col + 1) + '$' + t.range.start + ':$' + col(t.range.col + 1) + '$' + (t.range.start + n - 1),
         items: t.data.slice(0, n)
       });
     });
@@ -525,7 +570,7 @@
       { name: 'xl/worksheets/sheet1.xml', data: bytes(summ.xml) },
       { name: 'xl/worksheets/_rels/sheet1.xml.rels', data: bytes(summaryRels()) },
       { name: 'xl/worksheets/sheet2.xml', data: bytes(dataSheet(o.columns, o.rows, null, 'FF8A8578')) },
-      { name: 'xl/drawings/drawing1.xml', data: bytes(drawing(charts.length)) },
+      { name: 'xl/drawings/drawing1.xml', data: bytes(drawing(charts.length, summ.slots)) },
       { name: 'xl/drawings/_rels/drawing1.xml.rels', data: bytes(drawingRels(charts.length)) }
     ];
     o.extra.forEach(function (sh, i) { files.push({ name: 'xl/worksheets/sheet' + (3 + i) + '.xml', data: bytes(dataSheet(sh.columns, sh.rows, sh.nums, sh.tab)) }); });
