@@ -443,7 +443,7 @@ def main():
     # with a 200 and every gate green. This also turns _seo.js's failure from
     # "could not extract the renderer functions" into the actual SyntaxError.
     import subprocess as _sp
-    for mod in ('api/_seo.js', 'assets/study.js', 'assets/source-selection.js', 'assets/app.js'):
+    for mod in ('api/_seo.js', 'assets/study.js', 'assets/source-selection.js', 'assets/app.js', 'assets/widgets.js', 'assets/xlsxgen.js', 'api/market-research.js'):
         f = BASE / mod
         if not f.exists():
             continue

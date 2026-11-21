@@ -493,6 +493,7 @@ async function contractAwardsRows(req, res, apiKey) {
   const asked = String(q.office || '').toUpperCase().replace(/[^A-Z0-9~,;| ]/g, '').split(/[~,;| ]+/).filter(Boolean);
   if (asked.length > 1) return res.status(200).json({ limited: true, rows: [], note: 'This lookup takes one contracting office at a time.' });
   const office = asked[0] || '';
+  if (String(q.active || '') === '1') return activeContractRows(res, apiKey, office, isoDay(q.asof));
   const fy = String(q.fy || '').replace(/[^0-9]/g, '').slice(0, 4);
   const from = isoDay(q.from), to = isoDay(q.to);
   const ranged = !!(from && to && from <= to);
@@ -546,6 +547,117 @@ async function contractAwardsRows(req, res, apiKey) {
         : status === 404 ? 'Contract Awards API returned 404 — endpoint or parameters need adjusting.'
           : 'Contract Awards lookup is unavailable right now.'
     });
+  }
+}
+
+// Every action whose current completion date is on or after `asof`: the latest action of
+// every contract still running, whatever year it was signed in. That is the current
+// portfolio, which a fiscal-year pull misses (an active contract with no mod this year).
+// SAM.gov answers a filter it does not apply with ALL records, silently (see the `~`
+// note above), so the rows are checked: one row ending before `asof` (or with no end
+// date) means the filter was ignored, and the answer is refused rather than passed off
+// as the active list.
+function caActiveCheck(rows, asof) { return rows.every(function (r) { return r.popEnd && r.popEnd >= asof; }); }
+function caAddDays(iso, n) { const d = new Date(iso + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+function caDayBefore(iso) { return caAddDays(iso, -1); }
+// The date filter keeps a contract's older actions (future end dates) even when a LATER
+// mod moved the end date into the past: a termination, a descoping supplemental
+// agreement, an admin fix of a mistyped date. So the office's actions signed since the
+// oldest "latest active action", with an end date before `asof`, are pulled too, and the
+// ones newer than their contract's latest active action ride along; the client's rollup
+// then takes the newest action, which ends the contract. Any reason code counts. That
+// window can span years (one old long-running contract), so it is walked newest-first a
+// year at a time within a page budget, and the answer says how far back it got.
+const CA_ACTIVE_PAGES = 20, CA_ENDED_PAGES = 10, CA_ACTIVE_DEADLINE = 25000;   // one SAM call can take ~30s with its retries
+async function activeContractRows(res, apiKey, office, asof) {
+  if (office.length < 4 || office.length > 6) return res.status(200).json({ note: 'Provide a contracting office code (DoDAAC), e.g. office=FA8501.' });
+  const today = new Date().toISOString().slice(0, 10), max = new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
+  if (!asof || asof < '2000-01-01' || asof > max) asof = today;   // the viewer's local day may run a day ahead of UTC
+  const t0 = Date.now();
+  // Page 1, check, then the rest four at a time (a big office would otherwise run past
+  // the function's 60s limit, and a killed function is never cached).
+  async function pages(filter, maxPages, check) {
+    const get = async (page) => {
+      if (Date.now() - t0 > CA_ACTIVE_DEADLINE) { const e = new Error('deadline'); e.status = 'deadline'; throw e; }
+      const r = await fetchContractAwards(Object.assign({ contractingOfficeCode: office, limit: CA_PAGE, offset: page }, filter), apiKey);
+      if (!r.ok) { const e = new Error('Contract Awards HTTP ' + r.status); e.status = r.status; e.body = r.data; throw e; }
+      const total = r.data.totalRecords ?? r.data.totalRecordCount ?? null;
+      const recs = r.data.awardSummary || r.data.results || r.data.data;
+      // An answer we cannot read is a failure, never an empty portfolio.
+      if (!Array.isArray(recs) && (total == null || Number(total) !== 0)) { const e = new Error('unreadable'); e.status = 'unreadable'; throw e; }
+      return { total, rows: (recs || []).map((a) => caRow(a, office, '')) };
+    };
+    const first = await get(0);
+    if (check && !check(first.rows)) return { refused: true };
+    const total = first.total, need = total == null ? (first.rows.length < CA_PAGE ? 1 : maxPages) : Math.min(maxPages, Math.ceil(total / CA_PAGE));
+    let rows = first.rows, used = 1;
+    for (let p = 1; p < need; p += 4) {
+      const batch = await Promise.all([p, p + 1, p + 2, p + 3].filter((x) => x < need).map(get));
+      used += batch.length;
+      batch.forEach((b) => { rows = rows.concat(b.rows); });
+      if (batch.some((b) => b.rows.length < CA_PAGE)) break;
+    }
+    // With no total reported, a run of full pages up to the cap means there may be more.
+    return { rows, total, used, truncated: total == null ? rows.length >= maxPages * CA_PAGE : rows.length < total };
+  }
+  try {
+    const main = await pages({ currentCompletionDate: '[' + mdy(asof) + ',12/31/2099]' }, CA_ACTIVE_PAGES, (rs) => caActiveCheck(rs, asof));
+    if (main.refused || !caActiveCheck(main.rows, asof)) {
+      res.setHeader('Cache-Control', 's-maxage=600');
+      return res.status(200).json({ office, active: true, asof, limited: true, final: true, rows: [], note: 'SAM.gov did not apply the active-contract filter, so the current portfolio could not be pulled.' });
+    }
+    // Latest active action per contract (vehicles carry no completion date that matters
+    // here). A row and its contract match on parent + PIID, or on PIID alone when either
+    // side is missing the parent and the PIID is unambiguous.
+    const key = (r) => (r.parentIdv || '') + '/' + r.piid, latest = new Map(), byPiid = new Map();
+    main.rows.forEach((r) => { const k = key(r); if (!latest.has(k) || r.dateSigned > latest.get(k)) latest.set(k, r.dateSigned); byPiid.set(r.piid, (byPiid.get(r.piid) || new Set()).add(k)); });
+    const matchOf = (r) => {
+      if (latest.has(key(r))) return key(r);
+      const ks = byPiid.get(r.piid);
+      if (!ks || ks.size !== 1) return null;
+      const only = [...ks][0];
+      return (!r.parentIdv || only === '/' + r.piid) ? only : null;
+    };
+    const dated = main.rows.filter((r) => !/idv/i.test(String(r.awardOrIdv || '')) && r.dateSigned).map(matchOf).filter(Boolean);
+    const since = [...new Set(dated)].map((k) => latest.get(k)).filter(Boolean).sort()[0] || today;
+    // Newest-first, a year per query, until the page budget, the deadline or `since`.
+    // checkedFrom: every early-end mod signed on or after it has been seen.
+    const ended = []; let checkedFrom = caAddDays(today, 1), budget = CA_ENDED_PAGES, endNote = '';
+    try {
+      for (let hi = today; dated.length && hi >= since && budget > 0;) {
+        if (Date.now() - t0 > CA_ACTIVE_DEADLINE) { endNote = 'deadline'; break; }
+        const lo = caAddDays(hi, -365) < since ? since : caAddDays(hi, -365);
+        const r = await pages({ currentCompletionDate: '[01/01/1990,' + mdy(caDayBefore(asof)) + ']', dateSigned: '[' + mdy(lo) + ',' + mdy(hi) + ']' }, budget);
+        budget -= r.used;
+        // A row outside the window means SAM ignored the date filter: stop, keep nothing from it.
+        if (r.rows.some((x) => !(x.dateSigned >= lo && x.dateSigned <= hi))) { endNote = 'filter'; break; }
+        r.rows.forEach((x) => { const k = matchOf(x); if (k && !/idv/i.test(String(x.awardOrIdv || '')) && x.dateSigned >= latest.get(k) && x.popEnd !== '' && x.popEnd < asof) ended.push(x); });
+        if (r.truncated) { endNote = 'pages'; break; }
+        checkedFrom = lo; hi = caDayBefore(lo);
+      }
+    } catch (e) { endNote = 'failed'; }
+    if (!endNote && dated.length && checkedFrom > since) endNote = 'pages';   // budget ran out before `since`
+    // Active contracts whose latest action predates checkedFrom could have an unseen early end.
+    // (a contract whose early end WAS found is settled: nothing older can override it)
+    const hit = new Set(ended.map(matchOf));
+    const unchecked = [...latest.entries()].filter(([k, d]) => d < checkedFrom && !hit.has(k) && main.rows.some((r) => key(r) === k && !/idv/i.test(String(r.awardOrIdv || '')))).length;
+    // A transient early-end miss is worth retrying soon; a budget limit is the same tomorrow.
+    res.setHeader('Cache-Control', endNote === 'failed' || endNote === 'deadline' || endNote === 'filter' ? 's-maxage=600' : 's-maxage=21600, stale-while-revalidate=43200');
+    return res.status(200).json({
+      office, active: true, asof, count: main.rows.length, totalRecords: main.total,
+      truncated: !!main.truncated, endCheckedFrom: checkedFrom <= today ? checkedFrom : '', endUnchecked: unchecked, endNote: endNote || undefined,
+      officeName: (main.rows.find((r) => r.officeName) || {}).officeName || '',
+      rows: main.rows.concat(ended), endedEarly: ended.length,
+      source: 'SAM.gov Contract Awards API (FPDS): actions with a current completion date on or after ' + asof + ', plus later mods that moved an end date earlier',
+      note: main.truncated ? ('Returned ' + main.rows.length + ' of ' + main.total + ' active-contract actions (page cap).') : undefined
+    });
+  } catch (error) {
+    const status = error && error.status;
+    console.error('contract-awards active error:', error && error.message);
+    res.setHeader('Cache-Control', status === 429 ? 's-maxage=600' : 'no-store');
+    return res.status(200).json({ office, active: true, asof, limited: true, status: status || null, rows: [],
+      note: status === 429 ? 'Hit the daily SAM.gov Contract Awards quota — try again later.'
+        : status === 'deadline' ? 'SAM.gov was too slow to list the current portfolio this time.' : 'The current-portfolio lookup is unavailable right now.' });
   }
 }
 

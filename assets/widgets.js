@@ -1203,6 +1203,9 @@
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
+  // The current portfolio: every contract SAM.gov shows running on or after `asof`, signed
+  // in any year (api/market-research.js activeContractRows).
+  function osrFetchActive(office, asof, retry) { return osrFetch('office=' + encodeURIComponent(office) + '&active=1&asof=' + asof, retry); }
   function osrFetchFy(office, fy, retry) { return osrFetch('office=' + encodeURIComponent(office) + '&fy=' + fy, retry); }
   // A date window is filtered by SAM, not here: an office like N00019 truncates at the
   // page cap and the rows it returns are in no order, so slicing a truncated year on
@@ -1306,14 +1309,17 @@
       + tile('Obligated', money(period), 'FPDS actions in the selected period')
       + tile('Current value', money(p.all.current), 'whole contracts, base + exercised options')
       + tile('Face value', money(p.all.face), 'potential: base + all options' + (p.all.reported < p.all.n ? ' \u00b7 reported for ' + p.all.reported + ' of ' + p.all.n : '') + (p.vehicles.n ? ' \u00b7 vehicles not included' : ''))
-      + tile('Active', p.active.n.toLocaleString() + ' <span class="osr-of">of ' + p.all.n.toLocaleString() + '</span>', money(p.active.unfunded) + ' unfunded \u00b7 ' + p.active.soon + ' ending within 6 months')
+      + (osrAsOf
+        ? tile('Active today', p.active.n.toLocaleString() + ' <span class="osr-of">current portfolio</span>', (p.active.outside ? p.active.outside + ' with no action in the period \u00b7 ' : '') + money(p.active.unfunded) + ' unfunded \u00b7 ' + p.active.soon + ' ending within 6 months')
+        : tile('Active', p.active.n.toLocaleString() + ' <span class="osr-of">of ' + p.all.n.toLocaleString() + '</span>', money(p.active.unfunded) + ' unfunded \u00b7 ' + p.active.soon + ' ending within 6 months'))
       + tile('Ended', p.ended.n.toLocaleString(), 'period of performance passed' + (p.ended.lapsed ? ' \u00b7 ' + p.ended.lapsed + ' with options unexercised' : '') + (p.unknown.n ? ' \u00b7 ' + p.unknown.n + ' with no end date' : ''))
       + tile('Small business', osrPct(k.smallShare == null ? 0 : k.smallShare, k.smallShare == null ? 0 : 1), 'of obligated dollars (positive only)')
       + tile('Competed', osrPct(k.competedShare == null ? 0 : k.competedShare, k.competedShare == null ? 0 : 1), 'of dollars with a competition label (positive only)')
       + '</div>'
       + '<div class="dash-panel osr-portfolio"><div class="dash-panel-title">Portfolio by status</div>'
       + '<div class="osr-tablewrap osr-pf-wrap"><table class="osr-table osr-pf"><thead><tr><th scope="col">Status</th><th scope="col" class="osr-num">Contracts</th><th scope="col" class="osr-num">Obligated, period</th><th scope="col" class="osr-num">Obligated to date (not outlays)</th><th scope="col" class="osr-num">Current value</th><th scope="col" class="osr-num">Face value</th><th scope="col" class="osr-num">Remaining options</th><th scope="col" class="osr-num">Unfunded balance</th></tr></thead><tbody>'
-      + row('Active', p.active, true) + row('Ended', p.ended) + (p.unknown.n ? row('No end date reported', p.unknown) : '') + row('<b>All contracts &amp; orders</b>', p.all, true)
+      + row(osrAsOf ? 'Active today <span class="osr-pf-sub">current portfolio, any year signed</span>' : 'Active', p.active, true) + row('Ended <span class="osr-pf-sub">selected period</span>', p.ended)
+      + (p.unknown.n ? row('No end date reported', p.unknown) : '') + row('<b>All contracts &amp; orders</b> <span class="osr-pf-sub">selected period</span>', p.all, true)
       + '</tbody></table></div>'
       + '<div class="dash-stat-foot osr-pf-note">' + esc(osrStatusNote(rows))
         + (p.vehicles.n ? ' ' + p.vehicles.n + (p.vehicles.n === 1 ? ' vehicle (IDV)' : ' vehicles (IDVs)') + ' awarded, ' + p.vehicles.open + ' open for orders \u2014 vehicle ceilings are shared across awardees and not added to these totals.' : '')
@@ -1379,10 +1385,13 @@
   function osrCKey(r) { return (r.parentIdv ? r.parentIdv + '/' : '') + (r.piid || ''); }
   // A mod that omits the parent vehicle borrows it from the order's other mods (when they
   // agree on one), so an order never splits into two contracts.
+  // A mod missing its parent borrows it from the order's other mods, if they agree. The
+  // period rows decide first: a current-portfolio row (_live) naming a second vehicle with
+  // the same order number must not split an order the period rows already resolve.
   function osrKeyer(rows) {
-    const par = new Map();
-    rows.forEach((r) => { if (r.parentIdv && r.piid) (par.get(r.piid) || par.set(r.piid, new Set()).get(r.piid)).add(r.parentIdv); });
-    return (r) => { const s = !r.parentIdv && par.get(r.piid); return osrCKey(s && s.size === 1 ? { piid: r.piid, parentIdv: [...s][0] } : r); };
+    const map = (list) => { const par = new Map(); list.forEach((r) => { if (r.parentIdv && r.piid) (par.get(r.piid) || par.set(r.piid, new Set()).get(r.piid)).add(r.parentIdv); }); return par; };
+    const own = map(rows.filter((r) => !r._live)), all = map(rows);
+    return (r) => { const s = !r.parentIdv && (own.get(r.piid) || all.get(r.piid)); return osrCKey(s && s.size === 1 ? { piid: r.piid, parentIdv: [...s][0] } : r); };
   }
   // Later action: date first, then mod number compared numerically (P00010 after P00009).
   function osrLater(a, b) { return !b || a.d > b.d || (a.d === b.d && a.m.localeCompare(b.m, undefined, { numeric: true }) >= 0); }
@@ -1435,9 +1444,24 @@
     };
   }
   // Every row carries its contract's status, so the table, CSV and Data tab can filter on it.
-  function osrStampStatus(rows) {
-    const keyOf = osrKeyer(rows), st = new Map(osrContracts(rows).map((c) => [c._key, c.status]));
+  // base: the period rows the status is judged against (defaults to `rows`).
+  function osrStampStatus(rows, base) {
+    const U = osrUnion(base || rows), keyOf = osrKeyer(U), st = new Map(osrContracts(U).map((c) => [c._key, c.status]));
     rows.forEach((r) => { r.contractStatus = st.get(keyOf(r)) || ''; });
+  }
+  // By Contract: every contract with an action in the period, plus every contract active
+  // today. Actions, obligated and first-signed are the period's; status and whole-contract
+  // values come from the latest action SAM.gov shows.
+  function osrContractList(rows) {
+    const U = osrUnion(rows), keyOf = osrKeyer(U), per = new Map(), live = new Set(osrActive.map(keyOf));
+    rows.forEach((r) => {
+      const k = keyOf(r), p = per.get(k) || { n: 0, o: 0, f: '' }, d = String(r.dateSigned || '');
+      p.n++; p.o += Number(r.obligated) || 0; if (d && (!p.f || d < p.f)) p.f = d; per.set(k, p);
+    });
+    return osrContracts(U).filter((c) => per.has(c._key) || (live.has(c._key) && c.status === 'Active')).map((c) => {
+      const p = per.get(c._key) || { n: 0, o: 0, f: '' };
+      return Object.assign(c, { actions: p.n, obligated: Math.round(p.o * 100) / 100, first: p.f, inPeriod: per.has(c._key) ? 'Yes' : 'No (active today)' });
+    }).sort((a, b) => b.obligated - a.obligated || (Number(b.faceValue) || 0) - (Number(a.faceValue) || 0));
   }
   // The headline tiles, in reading order (four per row in Excel and on the page).
   function osrTiles(rows) {
@@ -1451,7 +1475,7 @@
       { label: 'Current value (base + exercised)', value: dash(p.all.current), kind: '$' },
       { label: 'Face value (potential: base + all options)', value: dash(p.all.face), kind: '$' },
       { label: 'Remaining options (active contracts)', value: dash(p.active.remaining), kind: '$' },
-      { label: 'Active contracts', value: p.active.n + ' of ' + p.all.n, kind: 't' },
+      osrAsOf ? { label: 'Active contracts today (current portfolio)', value: p.active.n, kind: 'n' } : { label: 'Active contracts', value: p.active.n + ' of ' + p.all.n, kind: 't' },
       { label: 'Active face value', value: dash(p.active.face), kind: '$' },
       { label: 'Active unfunded balance (current \u2212 obligated)', value: dash(p.active.unfunded), kind: '$' },
       { label: 'Active, ending within 6 months', value: p.active.soon, kind: 'n' },
@@ -1461,11 +1485,24 @@
       { label: 'Competed share of $', value: k.competedShare == null ? '\u2014' : k.competedShare, kind: '%' }
     ];
   }
+  // Active contracts the early-end check could not reach back to: Active may be too HIGH.
+  function osrGapLine() {
+    return osrActiveGap.map((g) => g.office + ': ' + g.n + ' active contract' + (g.n === 1 ? '\u2019s' : 's\u2019') + ' latest action predates '
+      + (g.from ? osrDay(g.from) : 'the early-end check, which did not finish')).join('; ') + ' \u2014 a mod that ended ' + (osrActiveGap.reduce((a, g) => a + g.n, 0) === 1 ? 'it' : 'them')
+      + ' early before then was not checked, so Active may include contracts that have already ended.';
+  }
   function osrStatusNote(rows) {
     const last = rows.reduce((a, r) => (String(r.dateSigned || '') > a ? String(r.dateSigned) : a), '');
     const p = osrPortfolio(rows), miss = p.all.n - p.all.reported;
-    return 'Status and whole-contract values as of each contract\u2019s latest action in this pull' + (last ? ' (latest action ' + last + ')' : '')
-      + '; later modifications are not included. \u201cEnded\u201d means the period of performance has passed \u2014 not a closeout status.'
+    return (osrAsOf
+      ? 'Active today = every contract SAM.gov (FPDS) shows running on or after ' + osrDay(osrAsOf) + ', whatever year it was signed'
+        + (p.active.outside ? ' (' + p.active.outside + ' had no action in the selected period)' : '') + '; a later mod that moved a contract\u2019s end date into the past (a termination, for example) ends it. Status and whole-contract values come from each contract\u2019s latest SAM.gov action.'
+        + (osrActiveMiss.length ? ' The current-portfolio pull did not come back for ' + osrList(osrActiveMiss) + '; Active there covers only contracts with actions in the selected period.' : '')
+        + (osrActiveTrunc.length ? ' The current-portfolio pull for ' + osrList(osrActiveTrunc) + ' was larger than one pull can carry, so its Active counts and dollars are incomplete.' : '')
+        + (osrActiveGap.length ? ' ' + osrGapLine() : '')
+        + ' Ended, All and vehicles cover the selected period.'
+      : 'Status and whole-contract values as of each contract\u2019s latest action in this pull' + (last ? ' (latest action ' + last + ')' : '') + '; later modifications are not included.')
+      + ' \u201cEnded\u201d means the period of performance has passed \u2014 not a closeout status.'
       + (miss > 0 ? ' Whole-contract values were reported for ' + p.all.reported + ' of ' + p.all.n + ' contracts; totals cover those only.' : '')
       + (p.vehicles.period ? ' Obligations recorded on vehicle records (' + fmtExact(p.vehicles.period) + ') are in the Obligated total but not in the status rows.' : '')
       + (p.active.fpdsGaps ? ' ' + p.active.fpdsGaps + ' active contract' + (p.active.fpdsGaps === 1 ? '' : 's') + ' had FPDS totals that don\u2019t reconcile (a mod didn\u2019t update them); counted as $0 in remaining options and unfunded balance.' : '');
@@ -1480,12 +1517,12 @@
       { label: 'Face value (potential: base + all options)', value: d(b.face) }
     ];
     const out = [
-      { title: 'Active contracts', items: base(p.active).concat([
+      { title: osrAsOf ? 'Active contracts today (current portfolio)' : 'Active contracts', items: base(p.active).concat(osrAsOf ? [{ label: 'With no action in the selected period', value: p.active.outside, kind: 'n' }] : []).concat([
         { label: 'Remaining options', value: d(p.active.remaining) },
         { label: 'Unfunded balance (current \u2212 obligated)', value: d(p.active.unfunded) },
         { label: 'Ending within 6 months', value: p.active.soon, kind: 'n' }]) },
-      { title: 'Ended contracts', items: base(p.ended).concat([{ label: 'Ended with options unexercised', value: p.ended.lapsed, kind: 'n' }]) },
-      { title: 'All contracts & orders', items: base(p.all) }
+      { title: 'Ended contracts (selected period)', items: base(p.ended).concat([{ label: 'Ended with options unexercised', value: p.ended.lapsed, kind: 'n' }]) },
+      { title: 'All contracts & orders (selected period)', items: base(p.all) }
     ];
     if (p.unknown.n) out.push({ title: 'No end date reported', items: base(p.unknown) });
     if (p.vehicles.n) out.push({ title: 'Vehicles (IDVs), not in the totals', items: [
@@ -1501,53 +1538,57 @@
   const OSR_OFFICE_COLS = [['office', 'Office'], ['officeName', 'Office Name'], ['actions', 'Award Actions'], ['contracts', 'Contracts & Orders'], ['vendors', 'Vendors'],
     ['obligated', 'Obligated, Selected Period'], ['services', 'Services'], ['products', 'Products'], ['rnd', 'R&D'],
     ['toDate', 'Obligated to Date (not outlays)'], ['current', 'Current Value (base + exercised)'], ['face', 'Face Value (potential: all options)'],
-    ['active', 'Active Contracts'], ['activeFace', 'Active Face Value'], ['unfunded', 'Active Unfunded Balance'], ['remaining', 'Remaining Options (active)'], ['soon', 'Active, Ending \u2264 6 Months'],
+    ['active', 'Active Contracts (today)'], ['activeFace', 'Active Face Value'], ['unfunded', 'Active Unfunded Balance'], ['remaining', 'Remaining Options (active)'], ['soon', 'Active, Ending \u2264 6 Months'],
     ['ended', 'Ended Contracts'], ['small', 'Small Business Share of $'], ['competed', 'Competed Share of $'], ['vehicles', 'Vehicles (IDVs)']];
   // Whole dollars ('$') on the leadership tab; cents stay on Data / By Contract.
   const OSR_OFFICE_NUMS = { actions: 'n', contracts: 'n', vendors: 'n', obligated: '$', services: '$', products: '$', rnd: '$', toDate: '$', current: '$', face: '$',
     active: 'n', activeFace: '$', unfunded: '$', remaining: '$', soon: 'n', ended: 'n', small: 'p', competed: 'p', vehicles: 'n' };
   function osrOfficeRollup(rows) {
     const c2 = (x) => Math.round(x * 100) / 100;
-    const line = (office, officeName, rs, all) => {
-      const p = osrPortfolio(rs, all), k = osrKpis(rs);
+    const line = (office, officeName, rs, all, only) => {
+      const p = osrPortfolio(rs, all, only), k = osrKpis(rs);
       const cat = (c) => c2(rs.filter((r) => r.category === c).reduce((a, r) => a + (Number(r.obligated) || 0), 0));
       return { office, officeName, actions: rs.length, contracts: p.all.n, vendors: k.vendors,
         obligated: c2(rs.reduce((a, r) => a + (Number(r.obligated) || 0), 0)), services: cat('Service'), products: cat('Product'), rnd: cat('R&D'),
         toDate: p.all.toDate, current: p.all.current, face: p.all.face, active: p.active.n, activeFace: p.active.face, unfunded: p.active.unfunded,
         remaining: p.active.remaining, soon: p.active.soon, ended: p.ended.n, small: k.smallShare, competed: k.competedShare, vehicles: p.vehicles.n };
     };
-    const offices = [...new Set(rows.map((r) => r.office).filter(Boolean))];
-    const nameOf = (o) => osrOfficeName(o) || String((rows.find((r) => r.office === o) || {}).officeName || '').replace(new RegExp('^\\s*' + o + '\\b[\\s-]*', 'i'), '').trim();
-    return offices.map((o) => line(o, nameOf(o), rows.filter((r) => r.office === o), rows)).sort((a, b) => b.obligated - a.obligated)
+    const offices = [...new Set(rows.concat(osrActive).map((r) => r.office).filter(Boolean))];
+    const nameOf = (o) => osrOfficeName(o) || String((rows.find((r) => r.office === o) || osrActive.find((r) => r.office === o) || {}).officeName || '').replace(new RegExp('^\\s*' + o + '\\b[\\s-]*', 'i'), '').trim();
+    return offices.map((o) => line(o, nameOf(o), rows.filter((r) => r.office === o), rows, o)).sort((a, b) => b.obligated - a.obligated)
       .concat([Object.assign(line('All selected offices', 'Portfolio total (each contract counted once)', rows), { _total: true })]);
   }
   // Portfolio by status: whole-contract FPDS values, vehicles kept separate.
-  // all (optional): the whole pull. Each contract then keeps its whole-contract status and
-  // values (an extension mod filed under another office still counts); only the period
-  // dollars come from these rows.
-  function osrPortfolio(rows, all) {
-    let cs = osrContracts(all || rows);
-    if (all) {
-      const keyOf = osrKeyer(all), per = new Map();
-      rows.forEach((r) => { const k = keyOf(r); per.set(k, (per.get(k) || 0) + (Number(r.obligated) || 0)); });
-      cs = cs.filter((c) => per.has(c._key)).map((c) => Object.assign({}, c, { obligated: Math.round(per.get(c._key) * 100) / 100 }));
-    }
-    const deals = cs.filter((c) => !c._idv), vehicles = cs.filter((c) => c._idv);
+  // This pull plus the current-portfolio (active today) pull, each FPDS action once.
+  function osrUnion(rows) { return osrActive.length ? rows.concat(osrActiveOnly(rows).map((r) => { r._live = true; return r; })) : rows; }
+  // rows: the period's actions (all offices, or one office's). all: every period row, so a
+  // contract keeps its whole-contract values when another office filed its latest mod.
+  // office: limit the active-today contracts to that office (the office rows).
+  // Period dollars come only from `rows`. Status and whole-contract values come from each
+  // contract's latest action across this pull and the active-today pull, and Active counts
+  // every contract running today, including ones with no action in the period.
+  function osrPortfolio(rows, all, office) {
+    const U = osrUnion(all || rows), keyOf = osrKeyer(U), per = new Map(), live = new Set();
+    rows.forEach((r) => { const k = keyOf(r); per.set(k, (per.get(k) || 0) + (Number(r.obligated) || 0)); });
+    osrActive.forEach((r) => { if (!office || r.office === office) live.add(keyOf(r)); });
+    const cs = osrContracts(U).filter((c) => per.has(c._key) || live.has(c._key))
+      .map((c) => Object.assign({}, c, { obligated: Math.round((per.get(c._key) || 0) * 100) / 100, _inPeriod: per.has(c._key) }));
+    const inP = cs.filter((c) => c._inPeriod), deals = inP.filter((c) => !c._idv), vehicles = inP.filter((c) => c._idv);
     const sum = (list, f) => { const xs = list.map((c) => c[f]).filter((x) => x != null && x !== ''); return xs.length ? Math.round(xs.reduce((a, x) => a + Number(x), 0) * 100) / 100 : null; };
     const block = (list) => ({ n: list.length, period: sum(list, 'obligated'), toDate: sum(list, 'totalObligated'), current: sum(list, 'currentValue'), face: sum(list, 'faceValue'),
       remaining: sum(list, 'remaining'), unfunded: sum(list, 'unobligated'), soon: list.filter((c) => c.endsSoon === 'Yes').length,
       lapsed: list.filter((c) => c.status === 'Ended (options unexercised)').length, fpdsGaps: list.filter((c) => c._fpdsGap).length,
       reported: list.filter((c) => c.faceValue != null && c.faceValue !== '').length });
-    const act = deals.filter((c) => c.status === 'Active'), end = deals.filter((c) => /^Ended/.test(c.status)), unk = deals.filter((c) => /^Unknown/.test(c.status));
+    const act = cs.filter((c) => !c._idv && c.status === 'Active'), end = deals.filter((c) => /^Ended/.test(c.status)), unk = deals.filter((c) => /^Unknown/.test(c.status));
     const faces = vehicles.map((c) => c.faceValue).filter((x) => x != null && x !== '').map(Number);
-    return { all: block(deals), active: block(act), ended: block(end), unknown: block(unk),
+    return { all: block(deals), active: Object.assign(block(act), { outside: act.filter((c) => !c._inPeriod).length }), ended: block(end), unknown: block(unk),
       vehicles: { n: vehicles.length, open: vehicles.filter((c) => c.status === 'Active').length, maxFace: faces.length ? Math.max.apply(null, faces) : null, period: sum(vehicles, 'obligated') } };
   }
   function osrContractCols() {
     return (osrMulti ? [['office', 'Office']] : []).concat([
       ['piid', 'Contract (PIID)'], ['vendor', 'Vendor'], ['awardType', 'Award Type'], ['category', 'Work Type'], ['pscCode', 'PSC'],
       ['description', 'Description (latest action)'], ['actions', 'Actions'], ['first', 'First Signed'], ['last', 'Last Signed'],
-      ['obligated', 'Obligated (selected period)'], ['status', 'Status'], ['endsSoon', 'Ends Within 6 Months'], ['kind', 'Type'],
+      ['obligated', 'Obligated (selected period)'], ['inPeriod', 'Action in Selected Period'], ['status', 'Status'], ['endsSoon', 'Ends Within 6 Months'], ['kind', 'Type'],
       ['totalObligated', 'Obligated to Date (whole contract; not outlays)'], ['currentValue', 'Current Value (base + exercised)'], ['faceValue', 'Face Value (potential: base + all options)'],
       ['remaining', 'Remaining Options (active only)'], ['unobligated', 'Unfunded Balance, Active (current \u2212 obligated)'], ['popEnd', 'PoP End (Current)'], ['popUltimate', 'PoP End (All Options)'],
       ['parentIdv', 'Parent Vehicle (IDV)'], ['fundingSubtier', 'Funding Agency (FPDS)'], ['fundingOffice', 'Funding Office (FPDS)']
@@ -1878,6 +1919,9 @@
     }
   }
   let osrToken = 0, osrRows = [], osrPreview = [];
+  // The current-portfolio pull: its rows, its as-of day ('' when no office's pull came back),
+  // and the offices whose pull failed or hit the page cap.
+  let osrActive = [], osrAsOf = '', osrActiveMiss = [], osrActiveTrunc = [], osrActiveGap = [];
   // Preview table + its note, rebuilt on its own whenever the column picker changes
   // so re-picking columns never re-fetches (or re-pages) anything.
   function osrTableHtml(preview, rows) {
@@ -1989,7 +2033,7 @@
         try { out[n] = await slots[n].get(); } catch (e) { out[n] = null; }
         // One automatic retry for a transient miss (timeout, rate limit, SAM hiccup);
         // the daily-quota answer is final, so it isn't retried.
-        if (osrSlotFailed(out[n]) && !(out[n] && out[n].status === 429)) {
+        if (osrSlotFailed(out[n]) && !(out[n] && (out[n].status === 429 || out[n].final))) {
           await new Promise((ok) => setTimeout(ok, 4000));
           try { out[n] = await slots[n].get(true); } catch (e) { out[n] = null; }
         }
@@ -2034,25 +2078,27 @@
         + '. Drop an office or a period.');
     }
     const token = ++osrToken;
+    const asof = new Date().toLocaleDateString('en-CA');
+    const live = offices.map((code) => ({ office: code, period: 'current portfolio', get: (retry) => osrFetchActive(code, asof, retry) }));
     const label = range ? (osrDay(range.from) + ' \u2013 ' + osrDay(range.to)) : osrFyLabel(fys);
     const officeLabel = offices.length === 1 ? offices[0] : offices.length + ' offices';
     box.hidden = false; box.classList.remove('is-in');
     let done = 0;
     const tick = () => {
       const n = box.firstElementChild;
-      if (n && slots.length > 1) n.textContent = 'Pulling ' + slots.length + ' office-periods from SAM.gov (FPDS) \u2014 ' + done + ' of ' + slots.length + ' back\u2026';
+      const all = slots.length + live.length;
+      if (n) n.textContent = 'Pulling ' + all + ' lookups from SAM.gov (FPDS), including the current portfolio \u2014 ' + done + ' of ' + all + ' back\u2026';
     };
     box.innerHTML = '<div class="dash-loading dash-skeleton">Pulling ' + esc(officeLabel) + ' awards for ' + esc(label) + ' from SAM.gov (FPDS)\u2026</div>';
     osrSay('Pulling ' + officeLabel + ' awards for ' + label + '.');
     try {
-      const results = await osrRun(slots, () => { done++; tick(); });
+      const both = await osrRun(slots.concat(live), () => { done++; tick(); });
       if (token !== osrToken) return;
+      const results = both.slice(0, slots.length), liveRes = both.slice(slots.length);
 
       const failed = [], okSlots = [];
       slots.forEach((sl, i) => { (osrSlotFailed(results[i]) ? failed : okSlots).push({ sl: sl, d: results[i] }); });
       const rows = okSlots.reduce((acc, x) => acc.concat(x.d.rows), []);
-      osrStampStatus(rows);
-      osrRows = rows;
 
       // Which offices and periods actually came back — everything downstream, including
       // the filename and the workbook heading, is built from THESE, never from what was
@@ -2060,6 +2106,17 @@
       const gotOffices = offices.filter((o) => okSlots.some((x) => x.sl.office === o));
       const lostOffices = offices.filter((o) => !slots.some((sl, i) => sl.office === o && !osrSlotFailed(results[i])));
       const gotFys = range ? [] : fys.filter((fy) => okSlots.some((x) => x.sl.fy === fy));
+      // The current portfolio only for offices whose period data came back: an office that
+      // "did not come back" must not reappear in the Active figures.
+      const liveOk = live.map((sl, i) => ({ sl: sl, d: liveRes[i] })).filter((x) => gotOffices.indexOf(x.sl.office) >= 0);
+      osrActive = liveOk.filter((x) => !osrSlotFailed(x.d)).reduce((acc, x) => acc.concat(x.d.rows), []);
+      osrAsOf = liveOk.some((x) => !osrSlotFailed(x.d)) ? (liveOk.find((x) => !osrSlotFailed(x.d)).d.asof || asof) : '';
+      osrActiveMiss = liveOk.filter((x) => osrSlotFailed(x.d)).map((x) => x.sl.office);
+      osrActiveTrunc = liveOk.filter((x) => !osrSlotFailed(x.d) && x.d.truncated).map((x) => x.sl.office);
+      osrActiveGap = liveOk.filter((x) => !osrSlotFailed(x.d) && x.d.endUnchecked > 0).map((x) => ({ office: x.sl.office, n: x.d.endUnchecked, from: x.d.endCheckedFrom || '' }));
+      osrStampStatus(rows);
+      osrStampStatus(osrActive, rows);
+      osrRows = rows;
       // The note is a sentence, so it ends with a full stop before "Nothing below…".
       const failNote = failed.map((x) => x.d && x.d.note).find(Boolean) || 'the lookup was rate-limited or unavailable';
       const failLine = failed.length
@@ -2119,6 +2176,9 @@
           + '</div>'
         + '</div>'
         + (failed.length ? '<div class="osr-warn">' + failLine + ' They are not zeros.</div>' : '')
+        + (osrActiveMiss.length ? '<div class="osr-warn"><b>Current portfolio for ' + esc(osrList(osrActiveMiss)) + '</b> did not come back, so Active there covers only contracts with actions in the selected period.</div>' : '')
+        + (osrActiveTrunc.length ? '<div class="osr-warn"><b>Current portfolio for ' + esc(osrList(osrActiveTrunc)) + '</b> was larger than one pull can carry, so its Active counts and dollars are incomplete.</div>' : '')
+        + (osrActiveGap.length ? '<div class="osr-warn">' + esc(osrGapLine()) + '</div>' : '')
         + (truncSlots.length
             ? '<div class="osr-warn"><b>' + esc(osrList(truncSlots.map((x) => (multi ? x.sl.office + ' \u00b7 ' : '') + x.sl.period)))
               + '</b> returned more awards than one pull can carry, and the ones it carries are not the largest or the most recent \u2014 just the ones SAM handed back first. '
@@ -2215,7 +2275,8 @@
             osrFundOn() ? 'Dollar fields are FPDS obligations in the selected period; funding fields (USAspending File C, the account data agencies report to Treasury) describe the whole contract. \u201cNot reported\u201d means USAspending shows no account for that contract \u2014 common for DoD, and not zero; fundSource then shows the FPDS funding agency. Treasury agency 057 = Air Force, 097 = Defense-Wide, 021 = Army, 017 = Navy/Marine Corps; the last four digits are the appropriation. MFP, program element and fund code are not published in federal data.' : ''].filter(Boolean),
           columns: cols.map((c) => ({ key: c[0], label: c[1] })),
           rows: rows.map((r) => pick(r, cols)),
-          contracts: osrContracts(rows).map((c) => pick(c, ccols))
+          contracts: osrContractList(rows).map((c) => pick(c, ccols)),
+          currentPortfolio: osrAsOf ? { asOf: osrAsOf, note: 'Every FPDS action with a current completion date on or after asOf (any year signed), plus termination mods of those contracts. Used for status and the Active figures only; period dollars come from rows.', officesMissing: osrActiveMiss, officesIncomplete: osrActiveTrunc, earlyEndUnchecked: osrActiveGap, rows: osrActiveOnly(rows).map((r) => pick(r, OSR_COLS)) } : null
         };
         const wd = osrWorkbookData(wbArgs());
         const cents = (a) => (a || []).map((d) => ({ label: d.label, value: Math.round((Number(d.value) || 0) * 100) / 100 }));
@@ -2361,6 +2422,8 @@
     });
     return L.join('\r\n');
   }
+  // Current-portfolio rows that are not already in the period rows.
+  function osrActiveOnly(rows) { const id = (r) => [r.office, r.piid, r.parentIdv, r.mod, r.dateSigned, r.obligated].join('|'), seen = new Set(rows.map(id)); return osrActive.filter((r) => !seen.has(id(r))); }
   function osrWorkbookData(o) {
     const rows = o.rows, chartFys = o.chartFys;
     const byFy = chartFys.map((fy) => ({ label: 'FY ' + fy, value: rows.filter((r) => String(r.fiscalYear) === String(fy)).reduce((s, r) => s + (Number(r.obligated) || 0), 0) }));
@@ -2384,14 +2447,15 @@
       byColor: osrFundOn() ? osrSumBy(rows, (r) => r.colorOfMoney) : [],
       byFund: osrFundOn() ? osrSumBy(rows, (r) => r.fundSource) : [],
       fundCoverage: osrFundOn() ? osrFundStats(rows).line : '',
-      contracts: { columns: osrContractCols(), rows: osrContracts(rows) },
+      contracts: { columns: osrContractCols(), rows: osrContractList(rows) },
       vendorCount: osrKpis(rows).vendors,
       tiles: osrTiles(rows),
       portfolio: osrPortfolioTables(rows),
       statusNote: osrStatusNote(rows),
       officeSheet: osrMulti ? { name: 'Portfolio by Office', tab: 'FF87651C', columns: OSR_OFFICE_COLS, nums: OSR_OFFICE_NUMS, rows: osrOfficeRollup(rows).map((r) => Object.assign({}, r, { small: r.small == null ? '\u2014' : r.small, competed: r.competed == null ? '\u2014' : r.competed })) } : null,
       kpis: (function (k) { return [{ label: 'Small business share of $', value: k.smallShare == null ? '\u2014' : k.smallShare }, { label: 'Competed share of $', value: k.competedShare == null ? '\u2014' : k.competedShare }]; })(osrKpis(rows)),
-      extraSheets: osrPomSheets(rows, o.pomFys, o.pomRange),
+      // The raw rows behind Active today that are not already on the Data tab.
+      extraSheets: (osrAsOf ? [{ name: 'Data - Active Today', tab: 'FF5B7F95', columns: OSR_COLS.filter((c) => OSR_FUND_COLS.indexOf(c[0]) < 0), rows: osrActiveOnly(rows) }] : []).concat(osrPomSheets(rows, o.pomFys, o.pomRange)),
       awards: rows.length,
       total: rows.reduce((s, r) => s + (Number(r.obligated) || 0), 0)
     };
